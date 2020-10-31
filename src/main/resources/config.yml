@@ -1,0 +1,36 @@
+#===============================================================================$
+#   __          __   _ _      _         _   _            _____           _      #
+#   \ \        / /  | | |    (_)       | | | |          |  __ \         | |     #
+#    \ \  /\  / /_ _| | | __  _ _ __   | |_| |__   ___  | |__) |_ _ _ __| | __  #
+#     \ \/  \/ / _` | | |/ / | | '_ \  | __| '_ \ / _ \ |  ___/ _` | '__| |/ /  #
+#      \  /\  / (_| | |   <  | | | | | | |_| | | |  __/ | |  | (_| | |  |   <   #
+#       \/  \/ \__,_|_|_|\_\ |_|_| |_|  \__|_| |_|\___| |_|   \__,_|_|  |_|\_\  #
+#                                                                               #
+#===============================================================================#
+
+#===============================================================================#
+#                                                                               #
+#                        (c) Efnilite 2019-2020                                 #
+#                                                                               #
+#===============================================================================#
+
+# Enable games
+# Should this instance of the plugin be able to run games? (Set to false if you only want stuff like setup commands/tutorial)
+enable_games: true
+
+# Enable metrics
+# Metrics is for collecting anonymous server data (about the plugin)
+metrics: true
+
+# Verbosing
+# If this is set to true it will display extra data when stuff happens (useful for developers)
+verbose: true # todo remove
+
+# Options about Bungeecord
+bungeecord:
+
+    # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
+    enabled: true
+
+    # The server the players will be returned to after the game is done
+    return_server: Lobby

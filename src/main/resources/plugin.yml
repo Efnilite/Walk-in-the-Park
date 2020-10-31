@@ -1,0 +1,11 @@
+name: 'WITP'
+description: 'lol'
+api-version: 1.16
+author: Efnilite, Ice_Pancake
+version: 1.0
+depend: [ProtocolLib]
+main: dev.efnilite.witp.WITP
+commands:
+    witp:
+        aliases: [parkour]
+        description: Main command

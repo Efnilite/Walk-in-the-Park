@@ -1,0 +1,36 @@
+# Settings for generation
+
+generation:
+
+    # The settings for normal jumps
+    normal-jump:
+
+        # The chance for normal jumps to appear (in %)
+        chance: 95
+
+        # The chances of different types of block jumps
+        # if 'normal-jump' is selected to be the next parkour section
+        1-block: 5
+        2-block: 30
+        3-block: 55
+        4-block: 10
+        # todo slab, ice, etc.
+
+        # The chances of where the blocks will appear
+        up: 25
+        level: 65
+        down: 10
+
+    # The settings for structures
+    structures:
+
+        # The chance for structures to appear (in %)
+        chance: 5
+
+    settings:
+
+        # The minimal y value for parkour to be generated at
+        min-y: 20
+
+        # The maximum y value for parkour to be generated at
+        max-y: 200
