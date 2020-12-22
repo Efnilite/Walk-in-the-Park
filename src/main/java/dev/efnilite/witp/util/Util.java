@@ -13,6 +13,7 @@ import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
  * General utilities
  */
 public class Util {
-
 
     /**
      * Makes a boolean readable for the normies
@@ -110,12 +110,12 @@ public class Util {
      *
      * @return the size
      */
-    public static int getNodeSize(FileConfiguration file, String path) {
+    public static @Nullable List<String> getNode(FileConfiguration file, String path) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
-            return 0;
+            return null;
         }
-        return section.getKeys(false).size();
+        return new ArrayList<>(section.getKeys(false));
     }
 
     /**
@@ -131,6 +131,14 @@ public class Util {
         int i = 0;
         for (String string : strings) {
             ret[i++] = Util.color(string);
+        }
+        return ret;
+    }
+
+    public static List<String> color(List<String> strings) {
+        List<String> ret = new ArrayList<>();
+        for (String string : strings) {
+            ret.add(Util.color(string));
         }
         return ret;
     }

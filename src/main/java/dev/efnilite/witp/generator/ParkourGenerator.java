@@ -2,43 +2,113 @@ package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The class that generates the parkour, which each {@link dev.efnilite.witp.ParkourPlayer} has
+ * @author Efnilite
  */
 public class ParkourGenerator {
 
+    /**
+     * The score of the player
+     */
+    public int score;
+
+    /**
+     * The difficulty multiplier (goes up to 1.00)
+     */
+    public String time = "0ms";
     private Location lastSpawn;
+    private Location lastPlayer;
+    private Location previousSpawn;
+    private final Stopwatch stopwatch;
+    private final LinkedHashMap<String, Integer> buildLog;
     private final ParkourPlayer player;
-    private HashMap<Integer, Integer> defaultChances;
-    private HashMap<Integer, Integer> normalChances;
+    private final HashMap<Integer, Integer> defaultChances;
+    private final HashMap<Integer, Integer> distanceChances;
+    private final HashMap<Integer, Integer> heightChances;
+    private final HashMap<Integer, Double> multiplierDecreases;
 
     public ParkourGenerator(ParkourPlayer player) {
+        this.score = 0;
         this.player = player;
         this.lastSpawn = player.getPlayer().getLocation().clone().toCenterLocation();
+        this.lastPlayer = lastSpawn.clone();
         this.defaultChances = new HashMap<>();
-        this.normalChances = new HashMap<>();
+        this.distanceChances = new HashMap<>();
+        this.heightChances = new HashMap<>();
+        this.buildLog = new LinkedHashMap<>();
+        this.stopwatch = new Stopwatch();
+        this.multiplierDecreases = new HashMap<>();
+
+        double multiplier = Configurable.MULTIPLIER;
+        multiplierDecreases.put(1, (Configurable.MAXED_ONE_BLOCK - Configurable.NORMAL_ONE_BLOCK) / multiplier);
+        multiplierDecreases.put(2, (Configurable.MAXED_TWO_BLOCK - Configurable.NORMAL_TWO_BLOCK) / multiplier);
+        multiplierDecreases.put(3, (Configurable.MAXED_THREE_BLOCK - Configurable.NORMAL_THREE_BLOCK) / multiplier);
+        multiplierDecreases.put(4, (Configurable.MAXED_FOUR_BLOCK - Configurable.NORMAL_FOUR_BLOCK) / multiplier);
+
+        Tasks.syncRepeat(new BukkitRunnable() {
+            @Override
+            public void run() {
+                Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
+                if (current.getType() != Material.AIR) {
+                    previousSpawn = lastPlayer.clone();
+                    lastPlayer = current.getLocation();
+                    String last = Util.toString(lastPlayer, false);
+                    if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
+                        if (!stopwatch.hasStarted()) {
+                            stopwatch.start();
+                        }
+                        score++;
+                        player.updateScoreboard();
+                        List<String> locations = new ArrayList<>(buildLog.keySet());
+                        int lastIndex = locations.indexOf(last) + 1;
+                        int size = locations.size();
+                        for (int i = lastIndex; i < size; i++) {
+                            Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
+                        }
+                    }
+
+                    Integer latest = buildLog.get(last);
+                    if (latest == null) {
+                        return;
+                    }
+                    int difference = player.blockLead - latest;
+                    if (difference > 0) {
+                        generateNext(Math.abs(difference));
+                    }
+                }
+                time = stopwatch.toString();
+                player.updateScoreboard();
+            }
+        }, Configurable.GENERATOR_CHECK);
     }
 
+    /**
+     * Generates the next parkour block, choosing between structures and normal jumps.
+     * If it's a normal jump, it will get a random distance between them and whether it
+     * goes up or not.
+     */
     public void generateNext() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         if (defaultChances.size() == 0) {
             // Counting with % above 100%
-            defaultChances = new HashMap<>();
             int index = 0;
-            for (int i = 0; i < GeneratorChance.NORMAL; i++) {
+            for (int i = 0; i < Configurable.NORMAL; i++) {
                 defaultChances.put(index, 0);
                 index++;
             }
@@ -51,59 +121,122 @@ public class ParkourGenerator {
         switch (defaultChances.get(random.nextInt(defaultChances.size()))) {
             case 0:
 
-                if (normalChances.size() == 0) {
-                    normalChances = new HashMap<>();
+                int one = Configurable.MAXED_ONE_BLOCK;
+                int two = Configurable.MAXED_TWO_BLOCK;
+                int three = Configurable.MAXED_THREE_BLOCK;
+                int four = Configurable.MAXED_FOUR_BLOCK;
+                if (score <= Configurable.MULTIPLIER) {
+                    one = (int) (Configurable.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
+                    two = (int) (Configurable.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
+                    three = (int) (Configurable.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
+                    four = (int) (Configurable.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
+                }
+                if (distanceChances.size() == 0) {
                     int index = 0;
-                    for (int i = 0; i < GeneratorChance.NORMAL_ONE_BLOCK; i++) {
-                        normalChances.put(index, 1);
+                    for (int i = 0; i < one; i++) {
+                        distanceChances.put(index, 1);
                         index++;
                     }
-                    for (int i = 0; i < GeneratorChance.NORMAL_TWO_BLOCK; i++) {
-                        normalChances.put(index, 2);
+                    for (int i = 0; i < two; i++) {
+                        distanceChances.put(index, 2);
                         index++;
                     }
-                    for (int i = 0; i < GeneratorChance.NORMAL_THREE_BLOCK; i++) {
-                        normalChances.put(index, 3);
+                    for (int i = 0; i < three; i++) {
+                        distanceChances.put(index, 3);
                         index++;
                     }
-                    for (int i = 0; i < GeneratorChance.NORMAL_FOUR_BLOCK; i++) {
-                        normalChances.put(index, 4);
+                    for (int i = 0; i < four; i++) {
+                        distanceChances.put(index, 4);
                         index++;
                     }
                 }
 
-                int gap = normalChances.get(random.nextInt(normalChances.size())) + 1;
-                lastSpawn.getBlock().setType(Material.LIGHT_BLUE_WOOL);
-                List<Block> possible = getPossible(gap);
-                Block chosen = possible.get(random.nextInt(possible.size() - 1));
-                chosen.setType(Material.BLUE_WOOL);
-                lastSpawn = chosen.getLocation().clone().toCenterLocation();
+                if (heightChances.size() == 0) {
+                    int index = 0;
+                    for (int i = 0; i < Configurable.NORMAL_UP; i++) {
+                        heightChances.put(index, -1);
+                        index++;
+                    }
+                    for (int i = 0; i < Configurable.NORMAL_LEVEL; i++) {
+                        heightChances.put(index, 0);
+                        index++;
+                    }
+                    for (int i = 0; i < Configurable.NORMAL_DOWN; i++) {
+                        heightChances.put(index, 1);
+                        index++;
+                    }
+                    for (int i = 0; i < Configurable.NORMAL_DOWN2; i++) {
+                        heightChances.put(index, 2);
+                        index++;
+                    }
+                }
+
+                int height = heightChances.get(random.nextInt(heightChances.size())) * -1; // -1 * -1 = +1 when y should be +1, so this works
+                int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                List<Block> possible = getPossible(gap - height, height);
+                if (possible.size() == 0) {
+                    generateNext();
+                    return;
+                }
+                Block chosen = possible.get(random.nextInt(possible.size()));
+                chosen.setType(player.randomMaterial());
+                lastSpawn = chosen.getLocation().clone();
 
                 break;
             case 1:
+                System.out.println("other");
                 break;
+        }
+
+        int listSize = 10; // the size of the queue of parkour blocks
+        listSize--;
+        List<String> locations = new ArrayList<>(buildLog.keySet());
+        if (locations.size() > listSize) {
+            locations = locations.subList(0, listSize);
+        }
+        buildLog.clear();
+        buildLog.put(Util.toString(lastSpawn, false), 0);
+        for (int i = 0; i < locations.size(); i++) {
+            String location = locations.get(i);
+            if (location != null) {
+                buildLog.put(location, i + 1);
+            }
         }
     }
 
-    private List<Block> getPossible(double radius) {
+    // Generates in a loop
+    private void generateNext(int amount) {
+        for (int i = 0; i < amount; i++) {
+            generateNext();
+        }
+    }
+
+    // Gets all possible parkour locations
+    private List<Block> getPossible(double radius, int dy) {
         List<Block> possible = new ArrayList<>();
         World world = lastSpawn.getWorld();
-        double increment = (2 * Math.PI) / 50;
+        System.out.println(">" + dy);
+        Location base = lastSpawn.add(0, dy, 0);
+        System.out.println(Util.toString(base, true));
+        double detail = (radius * 12);
+        double increment = (2 * Math.PI) / detail;
 
-        for (int i = 0; i < 50; i++) {
+        double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1);   // if dy <= 2 set max gap between blocks to default -1,
+                                                            // otherwise jump will be impossible
+        for (int i = 0; i < detail; i++) {
             double angle = i * increment;
-            double x = lastSpawn.getX() + (radius * Math.cos(angle));
-            double z = lastSpawn.getZ() + (radius * Math.sin(angle));
-            Block block = new Location(world, x, lastSpawn.getY(), z).getBlock();
-            if (lastSpawn.clone().subtract(block.getLocation()).toVector().getX() < 0 &&
-                    block.getLocation().toCenterLocation().distance(lastSpawn) <= 5) {
+            double x = base.getX() + (radius * Math.cos(angle));
+            double z = base.getZ() + (radius * Math.sin(angle));
+            Block block = new Location(world, x, base.getY(), z).getBlock();
+            if (base.clone().subtract(block.getLocation()).toVector().getX() < 0 &&
+                    block.getLocation().toCenterLocation().distance(base) <= heightGap) {
                 possible.add(block);
             }
         }
         return possible;
     }
 
-    public static class GeneratorChance {
+    public static class Configurable {
 
         public static int NORMAL;
         public static int STRUCTURES;
@@ -112,6 +245,21 @@ public class ParkourGenerator {
         public static int NORMAL_TWO_BLOCK;
         public static int NORMAL_THREE_BLOCK;
         public static int NORMAL_FOUR_BLOCK;
+
+        public static int NORMAL_UP;
+        public static int NORMAL_LEVEL;
+        public static int NORMAL_DOWN;
+        public static int NORMAL_DOWN2;
+
+        // Advanced settings
+        public static int GENERATOR_CHECK;
+        public static double HEIGHT_GAP;
+        public static double MULTIPLIER;
+
+        public static int MAXED_ONE_BLOCK;
+        public static int MAXED_TWO_BLOCK;
+        public static int MAXED_THREE_BLOCK;
+        public static int MAXED_FOUR_BLOCK;
 
         public static void init() {
             FileConfiguration file = WITP.getConfiguration().getFile("generation");
@@ -122,6 +270,21 @@ public class ParkourGenerator {
             NORMAL_TWO_BLOCK = file.getInt("generation.normal-jump.2-block");
             NORMAL_THREE_BLOCK = file.getInt("generation.normal-jump.3-block");
             NORMAL_FOUR_BLOCK = file.getInt("generation.normal-jump.4-block");
+
+            NORMAL_UP = file.getInt("generation.normal-jump.up");
+            NORMAL_LEVEL = file.getInt("generation.normal-jump.level");
+            NORMAL_DOWN = file.getInt("generation.normal-jump.down");
+            NORMAL_DOWN2 = file.getInt("generation.normal-jump.down2");
+
+            // Advanced settings
+            GENERATOR_CHECK = file.getInt("advanced.generator-check");
+            HEIGHT_GAP = file.getDouble("advanced.height-gap");
+            MULTIPLIER = file.getInt("advanced.maxed-multiplier");
+
+            MAXED_ONE_BLOCK = file.getInt("advanced.maxed-values.1-block");
+            MAXED_TWO_BLOCK = file.getInt("advanced.maxed-values.2-block");
+            MAXED_THREE_BLOCK = file.getInt("advanced.maxed-values.3-block");
+            MAXED_FOUR_BLOCK = file.getInt("advanced.maxed-values.4-block");
         }
     }
 }

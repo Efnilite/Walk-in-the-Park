@@ -1,18 +1,14 @@
 package dev.efnilite.witp;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Metrics;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class WITP extends JavaPlugin implements Listener {
+public class WITP extends JavaPlugin {
 
     private static WITP instance;
     private static Configuration configuration;
@@ -21,13 +17,12 @@ public class WITP extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         configuration = new Configuration(this);
-        getServer().getPluginManager().registerEvents(this, this);
 
         if (configuration.getFile("config").getBoolean("metrics")) {
             new Metrics(this, 9272);
         }
 
-        ParkourGenerator.GeneratorChance.init();
+        ParkourGenerator.Configurable.init();
 
         addCommand("witp", new MainCommand());
     }
@@ -41,14 +36,6 @@ public class WITP extends JavaPlugin implements Listener {
 
         command.setExecutor(wrapper);
         command.setTabCompleter(wrapper);
-    }
-
-    @EventHandler
-    public void jump(PlayerJumpEvent e) {
-        ParkourPlayer player = ParkourPlayer.getPlayer(e.getPlayer());
-        if (player != null) {
-            player.getGenerator().generateNext();
-        }
     }
 
     public static Configuration getConfiguration() {

@@ -1,35 +1,41 @@
 package dev.efnilite.witp.util.inventory;
 
+import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Builds inventories
  *
  * @author Efnilite
  */
-@SuppressWarnings("unused")
-public class InventoryBuilder {
+public class InventoryBuilder implements Listener {
+
+    private final ParkourPlayer pp;
 
     private int rows;
     private boolean open;
     private String name;
-    private HumanEntity holder;
+    private Player holder;
+    private final UUID uuid;
+    private final HandlerList handlerList;
     private final HashMap<Integer, ItemStack> items;
-
-    /**
-     * {@link #InventoryBuilder(int, String)} but without arguments
-     */
-    public InventoryBuilder() {
-        this(null, 1, "");
-    }
+    private final HashMap<Integer, InventoryConsumer> onClick;
 
     /**
      * New instance for builder
@@ -46,12 +52,16 @@ public class InventoryBuilder {
     /**
      * {@link #InventoryBuilder(int, String)} but with the holder
      */
-    public InventoryBuilder(HumanEntity holder, int rows, String name) {
+    public InventoryBuilder(ParkourPlayer pp, int rows, String name) {
         this.open = false;
         this.rows = rows;
         this.name = name;
-        this.holder = holder;
+        this.pp = pp;
+        this.holder = pp.getPlayer();
+        this.uuid = UUID.randomUUID();
+        this.handlerList = new HandlerList();
         this.items = new HashMap<>();
+        this.onClick = new HashMap<>();
     }
 
     /**
@@ -64,7 +74,10 @@ public class InventoryBuilder {
         }
         if (open) {
             holder.openInventory(inventory);
+            pp.openInventory = uuid;
         }
+        unregister();
+        Bukkit.getPluginManager().registerEvents(this, WITP.getInstance());
         return inventory;
     }
 
@@ -79,18 +92,54 @@ public class InventoryBuilder {
     /**
      * Set the holder
      */
-    public InventoryBuilder setHolder(HumanEntity holder) {
+    public InventoryBuilder setHolder(Player holder) {
         this.holder = holder;
         return this;
     }
 
-
     /**
      * Set an item in a slot
      */
-    public InventoryBuilder setItem(int slot, ItemStack item) {
+    public InventoryBuilder setItem(int slot, ItemStack item, InventoryConsumer onClick) {
+        this.onClick.put(slot, onClick);
         this.items.put(slot, item);
         return this;
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+        if (player.getOpenInventory().getTitle().equals(name) && ParkourPlayer.getPlayer(player) != null) {
+            pp.openInventory = null;
+            unregister();
+        }
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack current = event.getCurrentItem();
+        if (player.getOpenInventory().getTitle().equals(name) && ParkourPlayer.getPlayer(player) != null && current != null && uuid == pp.openInventory) {
+            event.setCancelled(true);
+            InventoryConsumer consumer = onClick.get(event.getSlot());
+            if (consumer != null) {
+                consumer.accept(event, current);
+            }
+        }
+    }
+
+    /**
+     * Returns the UUID for this inventory
+     */
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Unregisters this thing
+     */
+    public void unregister() {
+        handlerList.unregister(this);
     }
 
     /**

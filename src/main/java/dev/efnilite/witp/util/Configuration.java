@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * An utilities class for the Configuration
@@ -38,7 +40,6 @@ public class Configuration {
             for (String file : defaultFiles) {
                 plugin.saveResource(file, false);
             }
-//            reload();
             Verbose.info("Downloaded all config files");
         }
 
@@ -131,5 +132,41 @@ public class Configuration {
             config = files.get(file);
         }
         return config;
+    }
+
+    /**
+     * Gets a coloured string
+     *
+     * @param   file
+     *          The file
+     * @param   path
+     *          The path
+     *
+     * @return a coloured string
+     */
+    public @Nullable List<String> getStringList(String file, String path) {
+        List<String> string = this.getFile(file).getStringList(path);
+        if (string.size() == 0) {
+            return null;
+        }
+        return Util.color(string);
+    }
+
+    /**
+     * Gets a coloured string
+     *
+     * @param   file
+     *          The file
+     * @param   path
+     *          The path
+     *
+     * @return a coloured string
+     */
+    public @Nullable String getString(String file, String path) {
+        String string = this.getFile(file).getString(path);
+        if (string == null) {
+            return null;
+        }
+        return Util.color(string);
     }
 }

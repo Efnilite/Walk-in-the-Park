@@ -1,12 +1,15 @@
 package dev.efnilite.witp.command;
 
 import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.task.Tasks;
+import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,6 +34,8 @@ public class MainCommand extends BukkitCommand {
                 return true;
             } else if (args[0].equalsIgnoreCase("generate")) {
                 ParkourPlayer.getPlayer(player).getGenerator().generateNext();
+            } else if (args[0].equalsIgnoreCase("customize")) {
+                ParkourPlayer.getPlayer(player).menu();
             }
         }
         return false;
@@ -38,6 +43,6 @@ public class MainCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(Player player, String[] args) {
-        return Arrays.asList("join", "generate");
+        return Arrays.asList("join", "generate", "customize");
     }
 }

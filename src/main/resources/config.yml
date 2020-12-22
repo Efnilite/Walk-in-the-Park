@@ -10,7 +10,7 @@
 
 #===============================================================================#
 #                                                                               #
-#                        (c) Efnilite 2019-2020                                 #
+#                        (c) Efnilite 2020-2021                                 #
 #                                                                               #
 #===============================================================================#
 
@@ -24,7 +24,7 @@ metrics: true
 
 # Verbosing
 # If this is set to true it will display extra data when stuff happens (useful for developers)
-verbose: true # todo remove
+verbose: false
 
 # Options about Bungeecord
 bungeecord:
@@ -34,3 +34,34 @@ bungeecord:
 
     # The server the players will be returned to after the game is done
     return_server: Lobby
+
+# The different styles players can select
+styles:
+
+    # If styles are enabled
+    enabled: true
+
+    # The list of all available styles, which you can add to if you want
+    list:
+        red: [red_wool, red_stained_glass, red_concrete, red_terracotta]
+        blue: [blue_wool, blue_stained_glass, blue_concrete, blue_terracotta]
+        light blue: [light_blue_wool, light_blue_stained_glass, light_blue_concrete, light_blue_terracotta]
+        green: [green_wool, green_stained_glass, green_concrete, green_terracotta]
+        yellow: [yellow_wool, yellow_stained_glass, yellow_concrete, yellow_terracotta]
+        gray: [gray_wool, gray_stained_glass, gray_concrete, gray_terracotta]
+        end: [end_stone, end_stone_bricks, purpur_block, purpur_pillar]
+        nether: [netherrack, nether_bricks, red_nether_bricks, chiseled_nether_bricks, nether_wart_block, nether_gold_ore, netherite_block]
+        quartz: [smooth_quartz, chiseled_quartz_block, quartz_block, quartz_bricks, quartz_pillar]
+        ocean: [prismarine, prismarine_bricks, dark_prismarine, sea_lantern]
+        redstone: [observer, dispenser, redstone_block, piston, sticky_piston, redstone_lamp, target]
+
+# How the scoreboard looks
+# Placeholders: %score%, %time%
+scoreboard:
+    title: '&c&lInfinite Parkour'
+    lines:
+        - '&a'
+        - '&7Score: &f%score%'
+        - '&7Time: &f%time%'
+        - '&b'
+        - '&6&lserver.ip'

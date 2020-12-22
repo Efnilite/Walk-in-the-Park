@@ -17,9 +17,10 @@ generation:
         # todo slab, ice, etc.
 
         # The chances of where the blocks will appear
-        up: 25
-        level: 65
+        up: 15
+        level: 70
         down: 10
+        down2: 5 # Goes down 2 blocks
 
     # The settings for structures
     structures:
@@ -34,3 +35,24 @@ generation:
 
         # The maximum y value for parkour to be generated at
         max-y: 200
+
+# Advanced settings
+# Don't modify these if you don't know what you're doing!
+advanced:
+
+    # Time interval for the generator checking what block the player is on
+    generator-check: 3
+
+    # The height gap used for determining the distance between
+    height-gap: 4.5
+
+    # From which score the difficulty multiplier is maxed (so from e.g.
+    # 1000 score you get more 4 block jumps than at 200 score)
+    maxed-multiplier: 1000
+
+    # The values of all jumps when the multiplier is maxed
+    maxed-values:
+        1-block: 5
+        2-block: 15
+        3-block: 40
+        4-block: 40
