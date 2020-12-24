@@ -46,7 +46,7 @@ public class ParkourGenerator {
     public ParkourGenerator(ParkourPlayer player) {
         this.score = 0;
         this.player = player;
-        this.lastSpawn = player.getPlayer().getLocation().clone().toCenterLocation();
+        this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
         this.defaultChances = new HashMap<>();
         this.distanceChances = new HashMap<>();
@@ -175,7 +175,6 @@ public class ParkourGenerator {
                 int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
-                    generateNext();
                     return;
                 }
                 Block chosen = possible.get(random.nextInt(possible.size()));
@@ -188,7 +187,7 @@ public class ParkourGenerator {
                 break;
         }
 
-        int listSize = 10; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 5; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
@@ -221,15 +220,15 @@ public class ParkourGenerator {
         double detail = (radius * 12);
         double increment = (2 * Math.PI) / detail;
 
-        double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1);   // if dy <= 2 set max gap between blocks to default -1,
-                                                            // otherwise jump will be impossible
+        double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1); // if dy <= 2 set max gap between blocks to default -1,
+                                                                                                        // otherwise jump will be impossible
         for (int i = 0; i < detail; i++) {
             double angle = i * increment;
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
-            Block block = new Location(world, x, base.getY(), z).getBlock();
+            Block block = new Location(world, x, base.getBlockY(), z).getBlock();
             if (base.clone().subtract(block.getLocation()).toVector().getX() < 0 &&
-                    block.getLocation().toCenterLocation().distance(base) <= heightGap) {
+                    block.getLocation().distance(base) <= heightGap) {
                 possible.add(block);
             }
         }

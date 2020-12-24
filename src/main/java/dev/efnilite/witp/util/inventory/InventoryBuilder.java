@@ -3,6 +3,7 @@ package dev.efnilite.witp.util.inventory;
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
@@ -15,7 +16,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredListener;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -32,7 +35,7 @@ public class InventoryBuilder implements Listener {
     private boolean open;
     private String name;
     private Player holder;
-    private final UUID uuid;
+    private UUID uuid;
     private final HandlerList handlerList;
     private final HashMap<Integer, ItemStack> items;
     private final HashMap<Integer, InventoryConsumer> onClick;
@@ -52,13 +55,15 @@ public class InventoryBuilder implements Listener {
     /**
      * {@link #InventoryBuilder(int, String)} but with the holder
      */
-    public InventoryBuilder(ParkourPlayer pp, int rows, String name) {
+    public InventoryBuilder(@Nullable ParkourPlayer pp, int rows, String name) {
         this.open = false;
+        this.uuid = null;
         this.rows = rows;
         this.name = name;
         this.pp = pp;
-        this.holder = pp.getPlayer();
-        this.uuid = UUID.randomUUID();
+        if (pp != null) {
+            this.holder = pp.getPlayer();
+        }
         this.handlerList = new HandlerList();
         this.items = new HashMap<>();
         this.onClick = new HashMap<>();
@@ -72,9 +77,14 @@ public class InventoryBuilder implements Listener {
         for (int slot : items.keySet()) {
             inventory.setItem(slot, items.get(slot));
         }
+        uuid = UUID.randomUUID();
         if (open) {
-            holder.openInventory(inventory);
-            pp.openInventory = uuid;
+            if (pp == null) {
+                Verbose.error("Tried opening inventory " + uuid.toString() + " but player is null");
+            } else {
+                holder.openInventory(inventory);
+                pp.openInventory = uuid;
+            }
         }
         unregister();
         Bukkit.getPluginManager().registerEvents(this, WITP.getInstance());
@@ -100,7 +110,7 @@ public class InventoryBuilder implements Listener {
     /**
      * Set an item in a slot
      */
-    public InventoryBuilder setItem(int slot, ItemStack item, InventoryConsumer onClick) {
+    public InventoryBuilder setItem(int slot, ItemStack item, @Nullable InventoryConsumer onClick) {
         this.onClick.put(slot, onClick);
         this.items.put(slot, item);
         return this;

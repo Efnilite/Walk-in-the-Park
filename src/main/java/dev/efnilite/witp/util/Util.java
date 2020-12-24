@@ -2,6 +2,7 @@ package dev.efnilite.witp.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,18 +24,15 @@ import java.util.stream.Collectors;
 public class Util {
 
     /**
-     * Makes a boolean readable for the normies
+     * Makes a boolean readable for normal players
      *
      * @param   value
      *          The value
      *
      * @return true -> yes, false -> no
      */
-    public static String normalizeBoolean(boolean value) {
-        if (value) {
-            return "yes";
-        }
-        return "no";
+    public static String normalizeBoolean(String value) {
+        return value.replaceAll("true", "yes").replaceAll("false", "no");
     }
 
     /**
@@ -90,7 +88,7 @@ public class Util {
         out.writeUTF("Connect");
         out.writeUTF(server);
         try {
-//            player.sendPluginMessage(TowerAPI.getPlugin().getPlugin(), "BungeeCord", out.toByteArray());
+            player.sendPluginMessage(WITP.getInstance(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
             player.sendMessage(Util.color("&cThere was an error while trying to move you to server " + server));
             player.sendMessage(Util.color("&cPlease quit the server and contact a server administrator about this issue."));
@@ -391,26 +389,6 @@ public class Util {
     }
 
     /**
-     * Gets the players between 2 locations
-     *
-     * @param   box
-     *          The containment box
-     *
-     * @return the players between locations
-     */
-//    public static List<TowerPlayer> getPlayers(BoundingBox box) {
-//        box.expand(0.5, 2, 0.5);
-//        List<TowerPlayer> players = new ArrayList<>();
-//        for (TowerPlayer player : TowerAPI.getInstance().getGame().getPlayers()) {
-//            Location pos = player.getPlayer().getLocation();
-//            if (isInCuboid(box, pos)) {
-//                players.add(player);
-//            }
-//        }
-//        return players;
-//    }
-
-    /**
      * Get a location from a string
      *
      * @param   location
@@ -421,5 +399,14 @@ public class Util {
     public static Location parseLocation(String location) {
         String[] values = location.replaceAll("[()]", "").replaceAll(",", " ").split(" ");
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+    }
+
+    /**
+     * Gets the NMS version
+     *
+     * @return the nms version
+     */
+    public static String getVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
     }
 }
