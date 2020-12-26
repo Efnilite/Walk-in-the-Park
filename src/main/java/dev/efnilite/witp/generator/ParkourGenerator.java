@@ -35,6 +35,9 @@ public class ParkourGenerator {
     private Location lastSpawn;
     private Location lastPlayer;
     private Location previousSpawn;
+
+    private Location spawn;
+
     private final Stopwatch stopwatch;
     private final LinkedHashMap<String, Integer> buildLog;
     private final ParkourPlayer player;
@@ -227,8 +230,7 @@ public class ParkourGenerator {
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, base.getBlockY(), z).getBlock();
-            if (base.clone().subtract(block.getLocation()).toVector().getX() < 0 &&
-                    block.getLocation().distance(base) <= heightGap) {
+            if (base.clone().subtract(block.getLocation()).toVector().getX() < 0 && block.getLocation().distance(base) <= heightGap) {
                 possible.add(block);
             }
         }

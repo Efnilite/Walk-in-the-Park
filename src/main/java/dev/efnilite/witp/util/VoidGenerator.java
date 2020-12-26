@@ -9,18 +9,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class VoidGenerator extends JavaPlugin {
+public class VoidGenerator extends ChunkGenerator {
 
     @Override
-    public @Nullable ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
-        return new Generator();
-    }
-
-    public static class Generator extends ChunkGenerator {
-
-        @Override
-        public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int x, int z, @NotNull BiomeGrid biome) {
-            return Bukkit.createChunkData(world);
-        }
+    public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int x, int z, @NotNull BiomeGrid biome) {
+        return Bukkit.createChunkData(world);
     }
 }

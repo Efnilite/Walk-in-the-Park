@@ -249,7 +249,9 @@ public class Util {
                     location.setY(y);
                     location.setZ(z);
 
-                    add.add(location.clone());
+                    if (location.getBlock().getType() != Material.AIR) {
+                        add.add(location.clone());
+                    }
                 }
             }
         }

@@ -42,19 +42,11 @@ public class Configuration {
             }
             Verbose.info("Downloaded all config files");
         }
-
         for (String file : defaultFiles) {
             files.put(file.replaceAll("(.+/|.yml)", ""), this.getFile(plugin.getDataFolder() + "/" + file));
         }
 
-//        structures();
-//        BukkitRunnable runnable = new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                save();
-//            }
-//        };
-//        Tasks.asyncRepeat(runnable, 300 * 20);
+        structures();
     }
 
     /**
@@ -86,9 +78,8 @@ public class Configuration {
      * Downloads the structures
      */
     private void structures() {
-        if (!(new File(plugin.getDataFolder().toString() + "/structures/zeus-4.nbt").exists())) {
-            String[] schematics = new String[] {"archer-%l.nbt", "artillery-%l.nbt", "bee-%l.nbt", "force-%l.nbt", "ice-%l.nbt",
-                    "leach-%l.nbt", "mage-%l.nbt", "necromancer-%l.nbt", "poison-%l.nbt", "quake-%l.nbt", "turret-%l.nbt", "zeus-%l.nbt"};
+        if (!(new File(plugin.getDataFolder().toString() + "/structures/spawn-island.nbt").exists())) {
+            String[] schematics = new String[] {"spawn-island.nbt"};
             File folder = new File(plugin.getDataFolder().toString() + "/structures");
             folder.mkdirs();
             Verbose.info("Downloading all structures...");
@@ -96,22 +87,16 @@ public class Configuration {
                 @Override
                 public void run() {
                     try {
-                        String replaced;
-                        for (String schem : schematics) {
-                            if (schem.contains("leach") || schem.contains("necromancer") || schem.contains("turret")) {
-                                for (int i = 1; i < 4; i++) {
-                                    replaced = schem.replaceAll("%l", Integer.toString(i));
-                                    InputStream stream = new URL("https://github.com/Efnilite/TowerDefenceX/blob/master/structures/" + replaced + "?raw=true").openStream();
-                                    Files.copy(stream, Paths.get(folder + "/" + replaced));
-                                    Verbose.verbose("Downloaded " + replaced);
-                                    stream.close();
-                                }
-                            }
+                        for (String schematic : schematics) {
+                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/structures/" + schematic + "?raw=true").openStream();
+                            Files.copy(stream, Paths.get(folder + "/" + schematic));
+                            Verbose.verbose("Downloaded " + schematic);
+                            stream.close();
                         }
                         Verbose.info("Downloaded all structures");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Verbose.error("Stopped download - delete all the structures that have been downloaded and restart the server");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");
                     }
                     this.cancel();
                 }

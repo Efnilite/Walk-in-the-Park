@@ -40,6 +40,15 @@ generation:
 # Don't modify these if you don't know what you're doing!
 advanced:
 
+    # The block the options villager will spawn on
+    island-villager-spawn-block: glass_block
+
+    # The block the player will spawn on
+    island-player-spawn-block: stone_bricks
+
+    # The size of 1 side of the playable area (so the diameter) of the square playing area
+    border-size: 10000
+
     # Time interval for the generator checking what block the player is on
     generator-check: 3
 

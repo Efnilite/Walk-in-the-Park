@@ -4,6 +4,7 @@ api-version: 1.16
 author: Efnilite, Ice_Pancake
 version: 1.0
 main: dev.efnilite.witp.WITP
+depend: [ProtocolLib]
 commands:
     witp:
         aliases: [parkour]

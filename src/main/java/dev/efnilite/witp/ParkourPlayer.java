@@ -68,6 +68,7 @@ public class ParkourPlayer {
         updateScoreboard();
 
         setStyle(style);
+        WITP.getDivider().generate(this);
     }
 
     /**
