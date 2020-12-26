@@ -14,6 +14,10 @@ public class Stopwatch {
         this.start = System.currentTimeMillis();
     }
 
+    public void stop() {
+        start = 0;
+    }
+
     @Override
     public String toString() {
         if (start == 0) {

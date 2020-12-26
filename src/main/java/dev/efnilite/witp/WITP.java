@@ -1,21 +1,22 @@
 package dev.efnilite.witp;
 
-import com.comphenix.protocol.ProtocolLib;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
-import dev.efnilite.witp.generator.SubareaDivider;
-import dev.efnilite.witp.structure.StructureManager;
-import dev.efnilite.witp.structure.StructureManager_v1_16_R3;
+import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Metrics;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import dev.efnilite.witp.version.VersionManager;
+import dev.efnilite.witp.version.VersionManager_v1_16_R3;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,15 +26,14 @@ public class WITP extends JavaPlugin implements Listener {
 
     private static WITP instance;
     private static Configuration configuration;
-    private static StructureManager structureManager;
-    private static ProtocolManager protocolManager;
+    private static VersionManager versionManager;
     private static SubareaDivider divider;
 
     @Override
     public void onEnable() {
         String version = Util.getVersion();
         if ("v1_16_R3".equals(version)) {
-            structureManager = new StructureManager_v1_16_R3();
+            versionManager = new VersionManager_v1_16_R3();
         } else {
             Verbose.error("You are trying to start this plugin using an invalid server version");
             Verbose.error("This plugin only works in version 1.16.4");
@@ -52,7 +52,6 @@ public class WITP extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
-        protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {
@@ -78,6 +77,16 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void damage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (ParkourPlayer.getPlayer(player) != null) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
     public static SubareaDivider getDivider() {
         return divider;
     }
@@ -86,12 +95,8 @@ public class WITP extends JavaPlugin implements Listener {
         return configuration;
     }
 
-    public static StructureManager getStructureManager() {
-        return structureManager;
-    }
-
-    public static ProtocolManager getProtocolManager() {
-        return protocolManager;
+    public static VersionManager getVersionManager() {
+        return versionManager;
     }
 
     public static WITP getInstance() {

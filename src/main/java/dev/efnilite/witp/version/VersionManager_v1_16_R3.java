@@ -1,9 +1,11 @@
-package dev.efnilite.witp.structure;
+package dev.efnilite.witp.version;
 
 import dev.efnilite.witp.util.Util;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -12,10 +14,23 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class StructureManager_v1_16_R3 implements StructureManager {
+public class VersionManager_v1_16_R3 implements VersionManager {
 
     @Override
-    public void paste(File file, Location to) {
+    public void setWorldBorder(Player player, Vector vector, double size) {
+        System.out.println("Call with: " + player.getName() + " / " + vector.toString() + " / " + size);
+        WorldBorder border = new WorldBorder();
+        border.world = ((CraftWorld) player.getWorld()).getHandle();
+        border.setCenter(vector.getX(), vector.getZ());
+        border.setSize(size);
+        border.setWarningDistance(50);
+        border.setWarningTime(0);
+        PacketPlayOutWorldBorder packet = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    @Override
+    public void pasteStructure(File file, Location to) {
         try {
             DefinedStructure structure = new DefinedStructure();
             structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -42,7 +57,7 @@ public class StructureManager_v1_16_R3 implements StructureManager {
     }
 
     @Override
-    public Vector dimensions(File file, Location to) {
+    public Vector getDimensions(File file, Location to) {
         try {
             DefinedStructure structure = new DefinedStructure();
             structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));

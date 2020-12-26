@@ -1,14 +1,9 @@
 package dev.efnilite.witp.command;
 
 import dev.efnilite.witp.ParkourPlayer;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;

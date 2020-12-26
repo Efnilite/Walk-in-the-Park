@@ -41,7 +41,7 @@ generation:
 advanced:
 
     # The block the options villager will spawn on
-    island-villager-spawn-block: glass_block
+    island-villager-spawn-block: glass
 
     # The block the player will spawn on
     island-player-spawn-block: stone_bricks

@@ -18,7 +18,12 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The class that generates the parkour, which each {@link dev.efnilite.witp.ParkourPlayer} has
+ * The class that generates the parkour, which each {@link dev.efnilite.witp.ParkourPlayer} has.<br>
+ *
+ * Important notice: tempering with details in this class could result in complete malfunction of code since
+ * this class has been meticulously made using a lot of cross-references. Same goes for
+ * {@link dev.efnilite.witp.generator.subarea.SubareaDivider}.
+ *
  * @author Efnilite
  */
 public class ParkourGenerator {
@@ -36,7 +41,8 @@ public class ParkourGenerator {
     private Location lastPlayer;
     private Location previousSpawn;
 
-    private Location spawn;
+    private Location playerSpawn;
+    private Location blockSpawn;
 
     private final Stopwatch stopwatch;
     private final LinkedHashMap<String, Integer> buildLog;
@@ -68,37 +74,58 @@ public class ParkourGenerator {
             @Override
             public void run() {
                 Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
+                if (lastPlayer.getY() - player.getPlayer().getLocation().getY() > 10) {
+                    reset();
+                    return;
+                }
+                String last = Util.toString(lastPlayer, false);
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();
-                    String last = Util.toString(lastPlayer, false);
-                    if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
-                        if (!stopwatch.hasStarted()) {
-                            stopwatch.start();
+                    if (buildLog.get(last) != null) {
+                        if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
+                            if (!stopwatch.hasStarted()) {
+                                stopwatch.start();
+                            }
+                            score++;
+                            player.updateScoreboard();
+                            List<String> locations = new ArrayList<>(buildLog.keySet());
+                            int lastIndex = locations.indexOf(last) + 1;
+                            int size = locations.size();
+                            for (int i = lastIndex; i < size; i++) {
+                                Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
+                            }
                         }
-                        score++;
-                        player.updateScoreboard();
-                        List<String> locations = new ArrayList<>(buildLog.keySet());
-                        int lastIndex = locations.indexOf(last) + 1;
-                        int size = locations.size();
-                        for (int i = lastIndex; i < size; i++) {
-                            Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
-                        }
-                    }
 
-                    Integer latest = buildLog.get(last);
-                    if (latest == null) {
-                        return;
-                    }
-                    int difference = player.blockLead - latest;
-                    if (difference > 0) {
-                        generateNext(Math.abs(difference));
+                        Integer latest = buildLog.get(last);
+                        if (latest == null) {
+                            return;
+                        }
+                        int difference = player.blockLead - latest;
+                        if (difference > 0) {
+                            generateNext(Math.abs(difference));
+                        }
                     }
                 }
                 time = stopwatch.toString();
+                player.getPlayer().setSaturation(20);
                 player.updateScoreboard();
             }
         }, Configurable.GENERATOR_CHECK);
+    }
+
+    /**
+     * Resets the parkour
+     */
+    public void reset() {
+        for (String s : buildLog.keySet()) {
+            Util.parseLocation(s).getBlock().setType(Material.AIR);
+        }
+        buildLog.clear();
+        player.getPlayer().teleport(playerSpawn);
+        score = 0;
+        stopwatch.stop();
+        generateFirst(playerSpawn, blockSpawn);
     }
 
     /**
@@ -206,6 +233,21 @@ public class ParkourGenerator {
         }
     }
 
+    /**
+     * Generates the first few blocks (which come off the spawn island)
+     *
+     * @param   spawn
+     *          The spawn of the player
+     * @param   block
+     *          The location used to begin the parkour of off
+     */
+    public void generateFirst(Location spawn, Location block) {
+        playerSpawn = spawn.clone();
+        blockSpawn = block.clone();
+        lastSpawn = block.clone();
+        generateNext(player.blockLead);
+    }
+
     // Generates in a loop
     private void generateNext(int amount) {
         for (int i = 0; i < amount; i++) {
@@ -217,9 +259,7 @@ public class ParkourGenerator {
     private List<Block> getPossible(double radius, int dy) {
         List<Block> possible = new ArrayList<>();
         World world = lastSpawn.getWorld();
-        System.out.println(">" + dy);
         Location base = lastSpawn.add(0, dy, 0);
-        System.out.println(Util.toString(base, true));
         double detail = (radius * 12);
         double increment = (2 * Math.PI) / detail;
 
@@ -230,7 +270,8 @@ public class ParkourGenerator {
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, base.getBlockY(), z).getBlock();
-            if (base.clone().subtract(block.getLocation()).toVector().getX() < 0 && block.getLocation().distance(base) <= heightGap) {
+            if (base.clone().subtract(block.getLocation()).toVector().getZ() > 0 // direction change
+                    && block.getLocation().distance(base) <= heightGap) {
                 possible.add(block);
             }
         }

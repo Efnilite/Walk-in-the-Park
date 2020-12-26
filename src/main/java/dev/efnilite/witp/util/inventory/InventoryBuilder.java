@@ -6,7 +6,6 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -16,7 +15,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredListener;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
