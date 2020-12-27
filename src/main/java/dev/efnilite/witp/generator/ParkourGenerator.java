@@ -85,7 +85,7 @@ public class ParkourGenerator {
                 }
                 Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
                 if (lastPlayer.getY() - player.getPlayer().getLocation().getY() > 10) {
-                    reset();
+                    reset(true);
                     return;
                 }
                 String last = Util.toString(lastPlayer, false);
@@ -127,7 +127,7 @@ public class ParkourGenerator {
     /**
      * Resets the parkour
      */
-    public void reset() {
+    public void reset(boolean regenerate) {
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
@@ -150,7 +150,9 @@ public class ParkourGenerator {
                 "&7----------------------------------------");
         score = 0;
         stopwatch.stop();
-        generateFirst(playerSpawn, blockSpawn);
+        if (regenerate) {
+            generateFirst(playerSpawn, blockSpawn);
+        }
     }
 
     /**

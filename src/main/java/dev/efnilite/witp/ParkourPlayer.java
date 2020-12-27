@@ -346,7 +346,7 @@ public class ParkourPlayer {
      *          When saving the player's file goes wrong
      */
     public static void unregister(@NotNull ParkourPlayer player) throws IOException {
-        player.generator.reset();
+        player.generator.reset(false);
         player.generator.finish();
         player.save();
         WITP.getDivider().leave(player);

@@ -37,7 +37,12 @@ public class SubareaDivider {
     private SubareaPoint current;
     private World world;
     private File spawnIsland;
+
+    private int spawnYaw;
+    private int spawnPitch;
     private Material playerSpawn;
+    private Material parkourSpawn;
+
     /**
      * The SubareaPoints available in the current layer
      */
@@ -61,7 +66,11 @@ public class SubareaDivider {
             this.world = createWorld(worldName);
         }
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
-        this.playerSpawn = Material.getMaterial(gen.getString("advanced.island-player-spawn-block").toUpperCase());
+        this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
+        this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
+        this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
+        this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour-begin-block").toUpperCase());
+
         this.borderSize = gen.getDouble("advanced.border-size");
         this.current = new SubareaPoint(0, 0);
         this.spawnIsland = new File(WITP.getInstance().getDataFolder() + "/structures/spawn-island.nbt");
@@ -114,7 +123,6 @@ public class SubareaDivider {
             if (point == null) {
                 fetchPossibleInLayer();
                 point = possibleInLayer.get(0);
-                Verbose.info("Possible in layer is null");
             }
 
             current = point;
@@ -122,6 +130,12 @@ public class SubareaDivider {
         }
     }
 
+    /**
+     * Removes a player from the registry
+     *
+     * @param   player
+     *          The player
+     */
     public void leave(@NotNull ParkourPlayer player) {
         SubareaPoint point = getPoint(player);
         collection.remove(point);
@@ -200,12 +214,20 @@ public class SubareaDivider {
         List<Location> blocks = Util.getBlocks(min, min.clone().add(dimension));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         Location to = null;
+        Location parkourBegin = null;
         boolean playerDetected = false;
+        boolean parkourDetected = false;
         for (Location block : blocks) {
+            if (playerDetected && parkourDetected) {
+                break;
+            }
             Material type = block.getBlock().getType();
-            if (type == playerSpawn) {
-                to = block.clone().add(0.5, 1, 0.5);
+            if (type == playerSpawn && !playerDetected) {
+                to = block.clone().add(0.5, 0, 0.5);
+                to.setPitch(spawnPitch);
+                to.setYaw(spawnYaw);
                 player.teleport(to);
+                block.getBlock().setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
                 String mat = WITP.getConfiguration().getString("config", "options.item");
@@ -215,14 +237,20 @@ public class SubareaDivider {
                 }
                 player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
-                break;
+            } else if (type == parkourSpawn && !parkourDetected) {
+                parkourBegin = block.clone();
+                block.getBlock().setType(Material.AIR);
+                parkourDetected = true;
             }
         }
         if (!playerDetected) {
             Verbose.error("Couldn't find the spawn of a player - please check your block types and structures");
         }
-        if (to != null) {
-            pp.getGenerator().generateFirst(to, to.clone().subtract(0, 1, dimension.getZ() / 2.0 - 1));
+        if (!parkourDetected) {
+            Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
+        }
+        if (to != null && parkourBegin != null) {
+            pp.getGenerator().generateFirst(to, parkourBegin);
         }
         BukkitRunnable delay = new BukkitRunnable() {
             @Override

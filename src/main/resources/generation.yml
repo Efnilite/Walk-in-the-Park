@@ -40,13 +40,22 @@ generation:
 # Don't modify these if you don't know what you're doing!
 advanced:
 
-    # The block the player will spawn on
-    # This block will be set to air once the schematic's been pasted
-    island-player-spawn-block: diamond_block
+    # Options for the spawn island
+    island:
 
-    # The block from which the parkour begins
-    # This block will be set to air once the schematic's been pasted
-    island-parkour-begin-block: emerald_block
+        # Options for spawning
+        spawn:
+
+            # The block the player will spawn on
+            # This block will be set to air once the schematic's been pasted
+            player-block: diamond_block
+            yaw: 180
+            pitch: 0
+
+        # The block from which the parkour begins
+        # This block will be set to air once the schematic's been pasted
+        parkour-begin-block: emerald_block
+
 
     # The size of 1 side of the playable area (so the diameter) of the square playing area
     border-size: 10000
