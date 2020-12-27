@@ -1,7 +1,5 @@
 package dev.efnilite.witp;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
@@ -12,12 +10,19 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
+import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -80,9 +85,46 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler
     public void damage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
-            if (ParkourPlayer.getPlayer(player) != null) {
+            if (ParkourPlayer.getPlayer((Player) event.getEntity()) != null) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event) {
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void interact(PlayerInteractEvent event) {
+        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null &&
+                (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
+                event.getHand() == EquipmentSlot.HAND) {
+            String mat = WITP.getConfiguration().getString("config", "options.item");
+            if (mat == null) {
+                Verbose.error("Material for options in config is null - defaulting to compass");
+                mat = "COMPASS";
+            }
+            if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
+                player.menu();
             }
         }
     }

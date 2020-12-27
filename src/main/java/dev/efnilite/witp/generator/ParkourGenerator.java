@@ -2,7 +2,9 @@ package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,9 +36,13 @@ public class ParkourGenerator {
     public int score;
 
     /**
-     * The difficulty multiplier (goes up to 1.00)
+     * The time of the player's current session
+     * @see Stopwatch#toString()
      */
     public String time = "0ms";
+    public SubareaPoint.Data data;
+
+    private boolean stopped;
     private Location lastSpawn;
     private Location lastPlayer;
     private Location previousSpawn;
@@ -45,8 +51,8 @@ public class ParkourGenerator {
     private Location blockSpawn;
 
     private final Stopwatch stopwatch;
-    private final LinkedHashMap<String, Integer> buildLog;
     private final ParkourPlayer player;
+    private final LinkedHashMap<String, Integer> buildLog;
     private final HashMap<Integer, Integer> defaultChances;
     private final HashMap<Integer, Integer> distanceChances;
     private final HashMap<Integer, Integer> heightChances;
@@ -54,6 +60,7 @@ public class ParkourGenerator {
 
     public ParkourGenerator(ParkourPlayer player) {
         this.score = 0;
+        this.stopped = false;
         this.player = player;
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
@@ -73,6 +80,9 @@ public class ParkourGenerator {
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
+                if (stopped) {
+                    this.cancel();
+                }
                 Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
                 if (lastPlayer.getY() - player.getPlayer().getLocation().getY() > 10) {
                     reset();
@@ -90,7 +100,7 @@ public class ParkourGenerator {
                             score++;
                             player.updateScoreboard();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
-                            int lastIndex = locations.indexOf(last) + 1;
+                            int lastIndex = locations.indexOf(last);
                             int size = locations.size();
                             for (int i = lastIndex; i < size; i++) {
                                 Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
@@ -123,6 +133,21 @@ public class ParkourGenerator {
         }
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
+        String message;
+        if (score == player.highScore) {
+            message = "You tied your high score!";
+        } else if (score > player.highScore) {
+            message = "You beat your high score by " + (score - player.highScore) + " points!";
+        } else {
+            message = "You missed your high score by " + (player.highScore - score) + " points!";
+        }
+        if (score > player.highScore) {
+            player.setHighScore(score);
+        }
+        player.send("&7----------------------------------------",
+                "&aYour score: &f" + score, "&aYour time: &f" + time,
+                "&aYour highscore: &f" + player.highScore, "&7" + message,
+                "&7----------------------------------------");
         score = 0;
         stopwatch.stop();
         generateFirst(playerSpawn, blockSpawn);
@@ -135,87 +160,93 @@ public class ParkourGenerator {
      */
     public void generateNext() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        if (defaultChances.size() == 0) {
-            // Counting with % above 100%
-            int index = 0;
-            for (int i = 0; i < Configurable.NORMAL; i++) {
-                defaultChances.put(index, 0);
-                index++;
-            }
+//        if (defaultChances.size() == 0) {
+//            // Counting with % above 100%
+//            int index = 0;
+//            for (int i = 0; i < Configurable.NORMAL; i++) {
+//                defaultChances.put(index, 0);
+//                index++;
+//            }
 //            for (int i = 0; i < GeneratorChance.STRUCTURES; i++) {
 //                defaultChances.put(index, 1);
 //                index++;
 //            } // todo remove comment
+//        }
+
+//        switch (defaultChances.get(random.nextInt(defaultChances.size()))) {
+//            case 0:
+
+        int one = Configurable.MAXED_ONE_BLOCK;
+        int two = Configurable.MAXED_TWO_BLOCK;
+        int three = Configurable.MAXED_THREE_BLOCK;
+        int four = Configurable.MAXED_FOUR_BLOCK;
+        if (player.useDifficulty) {
+            if (score <= Configurable.MULTIPLIER) {
+                one = (int) (Configurable.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
+                two = (int) (Configurable.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
+                three = (int) (Configurable.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
+                four = (int) (Configurable.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
+            }
+        } else {
+            one = Configurable.NORMAL_ONE_BLOCK;
+            two = Configurable.NORMAL_TWO_BLOCK;
+            three = Configurable.NORMAL_THREE_BLOCK;
+            four = Configurable.NORMAL_FOUR_BLOCK;
+        }
+        if (distanceChances.size() == 0) {
+            int index = 0;
+            for (int i = 0; i < one; i++) {
+                distanceChances.put(index, 1);
+                index++;
+            }
+            for (int i = 0; i < two; i++) {
+                distanceChances.put(index, 2);
+                index++;
+            }
+            for (int i = 0; i < three; i++) {
+                distanceChances.put(index, 3);
+                index++;
+            }
+            for (int i = 0; i < four; i++) {
+                distanceChances.put(index, 4);
+                index++;
+            }
         }
 
-        switch (defaultChances.get(random.nextInt(defaultChances.size()))) {
-            case 0:
-
-                int one = Configurable.MAXED_ONE_BLOCK;
-                int two = Configurable.MAXED_TWO_BLOCK;
-                int three = Configurable.MAXED_THREE_BLOCK;
-                int four = Configurable.MAXED_FOUR_BLOCK;
-                if (score <= Configurable.MULTIPLIER) {
-                    one = (int) (Configurable.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
-                    two = (int) (Configurable.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
-                    three = (int) (Configurable.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
-                    four = (int) (Configurable.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
-                }
-                if (distanceChances.size() == 0) {
-                    int index = 0;
-                    for (int i = 0; i < one; i++) {
-                        distanceChances.put(index, 1);
-                        index++;
-                    }
-                    for (int i = 0; i < two; i++) {
-                        distanceChances.put(index, 2);
-                        index++;
-                    }
-                    for (int i = 0; i < three; i++) {
-                        distanceChances.put(index, 3);
-                        index++;
-                    }
-                    for (int i = 0; i < four; i++) {
-                        distanceChances.put(index, 4);
-                        index++;
-                    }
-                }
-
-                if (heightChances.size() == 0) {
-                    int index = 0;
-                    for (int i = 0; i < Configurable.NORMAL_UP; i++) {
-                        heightChances.put(index, -1);
-                        index++;
-                    }
-                    for (int i = 0; i < Configurable.NORMAL_LEVEL; i++) {
-                        heightChances.put(index, 0);
-                        index++;
-                    }
-                    for (int i = 0; i < Configurable.NORMAL_DOWN; i++) {
-                        heightChances.put(index, 1);
-                        index++;
-                    }
-                    for (int i = 0; i < Configurable.NORMAL_DOWN2; i++) {
-                        heightChances.put(index, 2);
-                        index++;
-                    }
-                }
-
-                int height = heightChances.get(random.nextInt(heightChances.size())) * -1; // -1 * -1 = +1 when y should be +1, so this works
-                int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
-                List<Block> possible = getPossible(gap - height, height);
-                if (possible.size() == 0) {
-                    return;
-                }
-                Block chosen = possible.get(random.nextInt(possible.size()));
-                chosen.setType(player.randomMaterial());
-                lastSpawn = chosen.getLocation().clone();
-
-                break;
-            case 1:
-                System.out.println("other");
-                break;
+        if (heightChances.size() == 0) {
+            int index = 0;
+            for (int i = 0; i < Configurable.NORMAL_UP; i++) {
+                heightChances.put(index, -1);
+                index++;
+            }
+            for (int i = 0; i < Configurable.NORMAL_LEVEL; i++) {
+                heightChances.put(index, 0);
+                index++;
+            }
+            for (int i = 0; i < Configurable.NORMAL_DOWN; i++) {
+                heightChances.put(index, 1);
+                index++;
+            }
+            for (int i = 0; i < Configurable.NORMAL_DOWN2; i++) {
+                heightChances.put(index, 2);
+                index++;
+            }
         }
+
+        int height = heightChances.get(random.nextInt(heightChances.size())) * -1; // -1 * -1 = +1 when y should be +1, so this works
+        int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+        List<Block> possible = getPossible(gap - height, height);
+        if (possible.size() == 0) {
+            Verbose.info("Size of 0");
+            return;
+        }
+        Block chosen = possible.get(random.nextInt(possible.size()));
+        chosen.setType(player.randomMaterial());
+        lastSpawn = chosen.getLocation().clone();
+//                break;
+//            case 1:
+//                break;
+//        }
 
         int listSize = player.blockLead + 5; // the size of the queue of parkour blocks
         listSize--;
@@ -231,6 +262,10 @@ public class ParkourGenerator {
                 buildLog.put(location, i + 1);
             }
         }
+    }
+
+    public void finish() {
+        stopped = true;
     }
 
     /**

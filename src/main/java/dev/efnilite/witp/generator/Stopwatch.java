@@ -2,6 +2,11 @@ package dev.efnilite.witp.generator;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 
+/**
+ * A stopwatch that.. counts
+ *
+ * @author Efnilite
+ */
 public class Stopwatch {
 
     private long start;

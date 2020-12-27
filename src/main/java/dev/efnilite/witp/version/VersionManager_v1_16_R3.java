@@ -14,11 +14,13 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author Efnilite
+ */
 public class VersionManager_v1_16_R3 implements VersionManager {
 
     @Override
     public void setWorldBorder(Player player, Vector vector, double size) {
-        System.out.println("Call with: " + player.getName() + " / " + vector.toString() + " / " + size);
         WorldBorder border = new WorldBorder();
         border.world = ((CraftWorld) player.getWorld()).getHandle();
         border.setCenter(vector.getX(), vector.getZ());

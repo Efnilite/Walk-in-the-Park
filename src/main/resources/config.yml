@@ -34,11 +34,23 @@ bungeecord:
 # The world in which the personal parkours will take place
 world: witp
 
+# Options for the option menu
+options:
+
+    # If options are enabled
+    enabled: true
+
+    # The item
+    item: compass
+
 # The different styles players can select
 styles:
 
     # If styles are enabled
     enabled: true
+
+    # The default style
+    default: red
 
     # The list of all available styles, which you can add to if you want
     list:

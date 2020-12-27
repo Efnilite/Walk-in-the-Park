@@ -6,6 +6,11 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 
+/**
+ * Interface for version-specific dealings
+ *
+ * @author Efnilite
+ */
 public interface VersionManager {
 
     void pasteStructure(File file, Location to);

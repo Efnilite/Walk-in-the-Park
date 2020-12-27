@@ -1,10 +1,17 @@
 package dev.efnilite.witp.generator.subarea;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a 2D Vector -> (x, z)
+ *
+ * @author Efnilite
+ */
 public class SubareaPoint {
 
     public int x;
@@ -79,5 +86,17 @@ public class SubareaPoint {
     @Override
     public String toString() {
         return "SubareaPoint{" + "x=" + x + ", z=" + z + '}';
+    }
+
+    /**
+     * Data for SubareaPoints - used to delete the spawn island once the player leaves
+     */
+    public static class Data {
+
+        public List<Location> blocks;
+
+        public Data(List<Location> blocks) {
+            this.blocks = blocks;
+        }
     }
 }

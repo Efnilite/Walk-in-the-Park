@@ -6,7 +6,7 @@ generation:
     normal-jump:
 
         # The chance for normal jumps to appear (in %)
-        chance: 95
+        chance: 99
 
         # The chances of different types of block jumps
         # if 'normal-jump' is selected to be the next parkour section
@@ -26,7 +26,7 @@ generation:
     structures:
 
         # The chance for structures to appear (in %)
-        chance: 5
+        chance: 1
 
     settings:
 
@@ -39,9 +39,6 @@ generation:
 # Advanced settings
 # Don't modify these if you don't know what you're doing!
 advanced:
-
-    # The block the options villager will spawn on
-    island-villager-spawn-block: glass
 
     # The block the player will spawn on
     island-player-spawn-block: stone_bricks

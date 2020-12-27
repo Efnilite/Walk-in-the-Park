@@ -5,6 +5,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,12 +37,15 @@ public class SubareaDivider {
     private SubareaPoint current;
     private World world;
     private File spawnIsland;
-    private Material villagerSpawn;
     private Material playerSpawn;
     /**
      * The SubareaPoints available in the current layer
      */
     private List<SubareaPoint> possibleInLayer;
+    /**
+     * Open spaces which may open up if a player leaves
+     */
+    private List<SubareaPoint> openSpaces;
     private HashMap<SubareaPoint, ParkourPlayer> collection;
 
     public SubareaDivider() {
@@ -57,12 +61,12 @@ public class SubareaDivider {
             this.world = createWorld(worldName);
         }
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
-        this.villagerSpawn = Material.getMaterial(gen.getString("advanced.island-villager-spawn-block").toUpperCase());
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island-player-spawn-block").toUpperCase());
         this.borderSize = gen.getDouble("advanced.border-size");
         this.current = new SubareaPoint(0, 0);
         this.spawnIsland = new File(WITP.getInstance().getDataFolder() + "/structures/spawn-island.nbt");
         this.collection = new HashMap<>();
+        this.openSpaces = new ArrayList<>();
         this.possibleInLayer = new ArrayList<>();
     }
 
@@ -93,18 +97,38 @@ public class SubareaDivider {
         amount++;
         int copy = amount - 1;
 
+        if (openSpaces.size() > 0) {
+            SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
+            createIsland(player, last);
+            openSpaces.remove(last);
+            return;
+        }
         if (copy % 8 == 0) { // every new layer has +8 area points
-            createIsland(player);
-            collection.put(current, player);
+            createIsland(player, current);
             current = current.zero();
             layer++;
 
             fetchPossibleInLayer();
         } else {
+            SubareaPoint point = possibleInLayer.get(0);
+            if (point == null) {
+                fetchPossibleInLayer();
+                point = possibleInLayer.get(0);
+                Verbose.info("Possible in layer is null");
+            }
 
+            current = point;
+            createIsland(player, current);
         }
     }
 
+    public void leave(@NotNull ParkourPlayer player) {
+        SubareaPoint point = getPoint(player);
+        collection.remove(point);
+        openSpaces.add(point);
+    }
+
+    // gets all possible points in a square in the current layer
     private void fetchPossibleInLayer() {
         SubareaPoint corner1 = new SubareaPoint(layer, layer); // layer 2 has an offset of 2, so it would be (2,2)
         SubareaPoint corner2 = new SubareaPoint(layer, -layer); // (2,-2)
@@ -141,6 +165,7 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setAutoSave(false);
         world.save();
@@ -157,9 +182,10 @@ public class SubareaDivider {
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, borderSize);
     }
 
-    private void createIsland(ParkourPlayer pp) {
+    private void createIsland(ParkourPlayer pp, SubareaPoint point) {
         Player player = pp.getPlayer();
-        Location spawn = current.getEstimatedCenter(borderSize).toLocation(world).clone();
+        collection.put(point, pp);
+        Location spawn = point.getEstimatedCenter(borderSize).toLocation(world).clone();
 
         Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
         spawn.setY(spawn.getY() - dimension.getY());
@@ -169,9 +195,9 @@ public class SubareaDivider {
         min.setZ(min.getZ() - (dimension.getZ() / 2.0));
 
         List<Location> blocks = Util.getBlocks(min, min.clone().add(dimension));
+        pp.getGenerator().data = new SubareaPoint.Data(blocks);
         Location to = null;
         boolean playerDetected = false;
-        boolean villagerDetected = false;
         for (Location block : blocks) {
             Material type = block.getBlock().getType();
             if (type == playerSpawn) {
@@ -179,14 +205,21 @@ public class SubareaDivider {
                 player.teleport(to);
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
+                String mat = WITP.getConfiguration().getString("config", "options.item");
+                if (mat == null) {
+                    Verbose.error("Material for options in config is null - defaulting to compass");
+                    mat = "COMPASS";
+                }
+                player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
+                break;
             }
         }
         if (!playerDetected) {
             Verbose.error("Couldn't find the spawn of a player - please check your block types and structures");
         }
         if (to != null) {
-            pp.getGenerator().generateFirst(to, to.clone().subtract(0, 1, dimension.getZ() / 2.0));
+            pp.getGenerator().generateFirst(to, to.clone().subtract(0, 1, dimension.getZ() / 2.0 - 1));
         }
         BukkitRunnable delay = new BukkitRunnable() {
             @Override

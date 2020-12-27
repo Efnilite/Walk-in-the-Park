@@ -27,8 +27,6 @@ public class MainCommand extends BukkitCommand {
                     e.printStackTrace();
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("generate")) {
-                ParkourPlayer.getPlayer(player).getGenerator().generateNext();
             } else if (args[0].equalsIgnoreCase("customize")) {
                 ParkourPlayer.getPlayer(player).menu();
             }

@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 /**
  * General utilities
+ *
+ * @author Efnilite
  */
 public class Util {
 
