@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -125,6 +126,19 @@ public class WITP extends JavaPlugin implements Listener {
             }
             if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
                 player.menu();
+            }
+        }
+    }
+
+    @EventHandler
+    public void leave(PlayerQuitEvent event) {
+        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+        if (player != null) {
+            try {
+                ParkourPlayer.unregister(player);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");
             }
         }
     }

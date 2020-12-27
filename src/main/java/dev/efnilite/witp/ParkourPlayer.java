@@ -302,18 +302,21 @@ public class ParkourPlayer {
      *          Thrown if the reader fails or the getting fails
      */
     public static void register(Player player) throws IOException {
-        UUID uuid = player.getUniqueId();
-        File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
-        if (data.exists()) {
-            FileReader reader = new FileReader(data);
-            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-            players.put(player, new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead, from.useDifficulty, from.useStructures));
-            reader.close();
-        } else {
-            ParkourPlayer pp = new ParkourPlayer(player, 0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                    4, true, true);
-            players.put(player, pp);
-            pp.save();
+        if (players.get(player) == null) {
+            UUID uuid = player.getUniqueId();
+            File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+            if (data.exists()) {
+                FileReader reader = new FileReader(data);
+                ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                players.put(player, new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
+                        from.useDifficulty, from.useStructures));
+                reader.close();
+            } else {
+                ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
+                        WITP.getConfiguration().getString("config", "styles.default"), 4, true, true);
+                players.put(player, pp);
+                pp.save();
+            }
         }
     }
 
@@ -342,10 +345,11 @@ public class ParkourPlayer {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(ParkourPlayer player) throws IOException {
+    public static void unregister(@NotNull ParkourPlayer player) throws IOException {
         player.generator.reset();
         player.generator.finish();
         player.save();
+        WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
     }
 

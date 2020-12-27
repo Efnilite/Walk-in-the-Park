@@ -126,6 +126,9 @@ public class SubareaDivider {
         SubareaPoint point = getPoint(player);
         collection.remove(point);
         openSpaces.add(point);
+        for (Location block : player.getGenerator().data.blocks) {
+            block.getBlock().setType(Material.AIR);
+        }
     }
 
     // gets all possible points in a square in the current layer
