@@ -2,6 +2,9 @@ package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.events.BlockGenerateEvent;
+import dev.efnilite.witp.events.PlayerFallEvent;
+import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -12,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +45,7 @@ public class ParkourGenerator {
      */
     public String time = "0ms";
     public SubareaPoint.Data data;
+    public Vector heading;
 
     private boolean stopped;
     private Location lastSpawn;
@@ -58,6 +63,12 @@ public class ParkourGenerator {
     private final HashMap<Integer, Integer> heightChances;
     private final HashMap<Integer, Double> multiplierDecreases;
 
+    /**
+     * Creates a new ParkourGenerator instance
+     *
+     * @param   player
+     *          The player associated with this generator
+     */
     public ParkourGenerator(ParkourPlayer player) {
         this.score = 0;
         this.stopped = false;
@@ -85,6 +96,7 @@ public class ParkourGenerator {
                 }
                 Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
                 if (lastPlayer.getY() - player.getPlayer().getLocation().getY() > 10) {
+                    new PlayerFallEvent(player).call();
                     reset(true);
                     return;
                 }
@@ -98,6 +110,7 @@ public class ParkourGenerator {
                                 stopwatch.start();
                             }
                             score++;
+                            new PlayerScoreEvent(player).call();
                             player.updateScoreboard();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last);
@@ -159,6 +172,9 @@ public class ParkourGenerator {
      * Generates the next parkour block, choosing between structures and normal jumps.
      * If it's a normal jump, it will get a random distance between them and whether it
      * goes up or not.
+     *
+     * Note: please be cautious when messing about with parkour generation, since even simple changes
+     * could break the entire plugin
      */
     public void generateNext() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -178,24 +194,25 @@ public class ParkourGenerator {
 //        switch (defaultChances.get(random.nextInt(defaultChances.size()))) {
 //            case 0:
 
-        int one = Configurable.MAXED_ONE_BLOCK;
-        int two = Configurable.MAXED_TWO_BLOCK;
-        int three = Configurable.MAXED_THREE_BLOCK;
-        int four = Configurable.MAXED_FOUR_BLOCK;
-        if (player.useDifficulty) {
-            if (score <= Configurable.MULTIPLIER) {
-                one = (int) (Configurable.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
-                two = (int) (Configurable.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
-                three = (int) (Configurable.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
-                four = (int) (Configurable.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
+        if (player.useDifficulty || distanceChances.size() == 0) {
+            int one = Configurable.MAXED_ONE_BLOCK;
+            int two = Configurable.MAXED_TWO_BLOCK;
+            int three = Configurable.MAXED_THREE_BLOCK;
+            int four = Configurable.MAXED_FOUR_BLOCK;
+            if (player.useDifficulty) {
+                if (score <= Configurable.MULTIPLIER) {
+                    one = (int) (Configurable.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
+                    two = (int) (Configurable.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
+                    three = (int) (Configurable.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
+                    four = (int) (Configurable.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
+                }
+            } else {
+                one = Configurable.NORMAL_ONE_BLOCK;
+                two = Configurable.NORMAL_TWO_BLOCK;
+                three = Configurable.NORMAL_THREE_BLOCK;
+                four = Configurable.NORMAL_FOUR_BLOCK;
             }
-        } else {
-            one = Configurable.NORMAL_ONE_BLOCK;
-            two = Configurable.NORMAL_TWO_BLOCK;
-            three = Configurable.NORMAL_THREE_BLOCK;
-            four = Configurable.NORMAL_FOUR_BLOCK;
-        }
-        if (distanceChances.size() == 0) {
+            distanceChances.clear();
             int index = 0;
             for (int i = 0; i < one; i++) {
                 distanceChances.put(index, 1);
@@ -216,22 +233,22 @@ public class ParkourGenerator {
         }
 
         if (heightChances.size() == 0) {
-            int index = 0;
+            int index1 = 0;
             for (int i = 0; i < Configurable.NORMAL_UP; i++) {
-                heightChances.put(index, -1);
-                index++;
+                heightChances.put(index1, -1);
+                index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_LEVEL; i++) {
-                heightChances.put(index, 0);
-                index++;
+                heightChances.put(index1, 0);
+                index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_DOWN; i++) {
-                heightChances.put(index, 1);
-                index++;
+                heightChances.put(index1, 1);
+                index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_DOWN2; i++) {
-                heightChances.put(index, 2);
-                index++;
+                heightChances.put(index1, 2);
+                index1++;
             }
         }
 
@@ -239,11 +256,11 @@ public class ParkourGenerator {
         int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
         List<Block> possible = getPossible(gap - height, height);
         if (possible.size() == 0) {
-            Verbose.info("Size of 0");
             return;
         }
         Block chosen = possible.get(random.nextInt(possible.size()));
         chosen.setType(player.randomMaterial());
+        new BlockGenerateEvent(chosen, this, player).call();
         lastSpawn = chosen.getLocation().clone();
 //                break;
 //            case 1:
@@ -297,7 +314,7 @@ public class ParkourGenerator {
         List<Block> possible = new ArrayList<>();
         World world = lastSpawn.getWorld();
         Location base = lastSpawn.add(0, dy, 0);
-        double detail = (radius * 12);
+        double detail = (radius * 8);
         double increment = (2 * Math.PI) / detail;
 
         double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1); // if dy <= 2 set max gap between blocks to default -1,
@@ -307,7 +324,7 @@ public class ParkourGenerator {
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, base.getBlockY(), z).getBlock();
-            if (base.clone().subtract(block.getLocation()).toVector().getZ() > 0 // direction change
+            if (isFollowing(base.clone().subtract(block.getLocation()).toVector()) // direction change
                     && block.getLocation().distance(base) <= heightGap) {
                 possible.add(block);
             }
@@ -315,6 +332,28 @@ public class ParkourGenerator {
         return possible;
     }
 
+    /**
+     * Checks if a vector is following the assigned heading
+     *
+     * @param   vector
+     *          The direction vector between the latest spawned parkour block and a new possible block
+     *
+     * @return true if the vector is following the heading assigned to param heading
+     */
+    public boolean isFollowing(Vector vector) {
+        if (heading.getBlockZ() != 0) {
+            return vector.getZ() * heading.getZ() > 0;
+        } else if (heading.getBlockX() != 0) {
+            return vector.getX() * heading.getX() > 0;
+        } else {
+            Verbose.error("Invalid direction vector");
+            return false;
+        }
+    }
+
+    /**
+     * Class for variables required in generating without accessing the file a lot (constants)
+     */
     public static class Configurable {
 
         public static int NORMAL;

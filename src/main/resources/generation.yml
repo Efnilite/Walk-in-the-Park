@@ -42,20 +42,21 @@ advanced:
 
     # Options for the spawn island
     island:
-
-        # Options for spawning
         spawn:
-
             # The block the player will spawn on
             # This block will be set to air once the schematic's been pasted
             player-block: diamond_block
             yaw: 180
             pitch: 0
 
-        # The block from which the parkour begins
-        # This block will be set to air once the schematic's been pasted
-        parkour-begin-block: emerald_block
+        parkour:
+            # The block from which the parkour begins
+            # This block will be set to air once the schematic's been pasted
+            begin-block: emerald_block
 
+            # The directional heading of the parkour
+            # Possible options: north, south, west and east.
+            heading: north
 
     # The size of 1 side of the playable area (so the diameter) of the square playing area
     border-size: 10000

@@ -22,13 +22,31 @@ public class MainCommand extends BukkitCommand {
             if (args[0].equalsIgnoreCase("join")) {
                 try {
                     ParkourPlayer.register(player);
-                } catch (IOException e) {
+                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                    if (pp != null) {
+                        pp.send("&aYou joined the parkour");
+                    }
+                } catch (IOException ex) {
                     Verbose.error("Error while joining");
-                    e.printStackTrace();
+                    ex.printStackTrace();
                 }
                 return true;
+            } else if (args[0].equalsIgnoreCase("leave")) {
+                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                if (pp != null) {
+                    try {
+                        pp.send("&cYou left the parkour");
+                        ParkourPlayer.unregister(pp);
+                    } catch (IOException ex) {
+                        Verbose.error("Error while leaving");
+                        ex.printStackTrace();
+                    }
+                }
             } else if (args[0].equalsIgnoreCase("customize")) {
-                ParkourPlayer.getPlayer(player).menu();
+                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                if (pp != null) {
+                    pp.menu();
+                }
             }
         }
         return false;

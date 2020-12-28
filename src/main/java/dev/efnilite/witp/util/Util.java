@@ -26,6 +26,30 @@ import java.util.stream.Collectors;
 public class Util {
 
     /**
+     * Gets the direction from a facing (e.g. north, south, west)
+     *
+     * @param   face
+     *          The string direction (north, south, east and west)
+     *
+     * @return a vector that indicates the direction
+     */
+    public static Vector getDirection(String face) {
+        switch (face.toLowerCase()) {
+            case "north":
+                return new Vector(0, 0, -1);
+            case "south":
+                return new Vector(0, 0, 1);
+            case "east":
+                return new Vector(1, 0, 0);
+            case "west":
+                return new Vector(-1, 0, 0);
+            default:
+                Verbose.error("Invalid direction (direction used: " + face + ")");
+                return new Vector(0, 0, 0);
+        }
+    }
+
+    /**
      * Makes a boolean readable for normal players
      *
      * @param   value

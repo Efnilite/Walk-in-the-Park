@@ -50,31 +50,6 @@ public class Configuration {
     }
 
     /**
-     * Saves the configuration files
-     */
-    public void save() {
-        Verbose.verbose("Saving config files..");
-        for (String file : defaultFiles) {
-            try {
-                getFile(file.replaceAll("(.+/|.yml)", "")).save(plugin.getDataFolder() + "/" + file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Verbose.error("Couldn't init default files");
-            }
-        }
-    }
-
-    /**
-     * Reloads the files
-     */
-    public void reload() {
-        for (String file : new HashMap<>(files).keySet()) {
-            String path = files.get(file).getCurrentPath();
-            files.put(file, YamlConfiguration.loadConfiguration(new File(path)));
-        }
-    }
-
-    /**
      * Downloads the structures
      */
     private void structures() {

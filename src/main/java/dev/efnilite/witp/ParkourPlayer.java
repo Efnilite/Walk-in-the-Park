@@ -21,23 +21,47 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Wrapper class for regular player to store plugin-usable data
+ * Wrapper class for a regular player to store plugin-usable data
  *
  * @author Efnilite
  */
 public class ParkourPlayer {
 
+    /**
+     * Player data used in saving
+     */
     public @Expose int highScore;
+    /**
+     * Player data used in saving
+     */
     public @Expose int blockLead;
+    /**
+     * Player data used in saving
+     */
     public @Expose boolean useDifficulty;
+    /**
+     * Player data used in saving
+     */
     public @Expose boolean useStructures;
+    /**
+     * Player data used in saving
+     */
     public @Expose String time;
+    /**
+     * Player data used in saving
+     */
     public @Expose String style;
 
+    /**
+     * The player's points
+     */
     public int points;
     public UUID openInventory;
     private List<Material> possibleStyle;
@@ -50,7 +74,7 @@ public class ParkourPlayer {
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
-     * If you are using the API, please use {@link #register(Player)} instead
+     * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useDifficulty, boolean useStructures) {
         this.highScore = highScore;
@@ -93,6 +117,7 @@ public class ParkourPlayer {
 
     /**
      * Returns a random material from the possible styles
+     * @see ParkourGenerator#generateNext()
      *
      * @return a random material
      */
@@ -235,12 +260,7 @@ public class ParkourPlayer {
         Tasks.asyncTask(runnable);
     }
 
-    /**
-     * Gets all possible blocks from a specific styles
-     *
-     * @return the possible blocks
-     */
-    public @Nullable List<Material> getPossibleMaterials(String style) {
+    private @Nullable List<Material> getPossibleMaterials(String style) {
         List<Material> possibleStyles = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
         if (possible == null) {
@@ -281,7 +301,7 @@ public class ParkourPlayer {
     }
 
     /**
-     * Sends a message or array of it
+     * Sends a message or array of it - coloured allowed, using '&'
      *
      * @param   messages
      *          The message
@@ -301,23 +321,27 @@ public class ParkourPlayer {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static void register(Player player) throws IOException {
+    public static @NotNull ParkourPlayer register(Player player) throws IOException {
         if (players.get(player) == null) {
             UUID uuid = player.getUniqueId();
             File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
             if (data.exists()) {
                 FileReader reader = new FileReader(data);
                 ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-                players.put(player, new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useDifficulty, from.useStructures));
+                ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
+                        from.useDifficulty, from.useStructures);
+                players.put(player, pp);
                 reader.close();
+                return pp;
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
                         WITP.getConfiguration().getString("config", "styles.default"), 4, true, true);
                 players.put(player, pp);
                 pp.save();
+                return pp;
             }
         }
+        return players.get(player);
     }
 
     /**
@@ -353,10 +377,20 @@ public class ParkourPlayer {
         players.remove(player.getPlayer());
     }
 
+    /**
+     * Gets the player's {@link ParkourGenerator}
+     *
+     * @return the ParkourGenerator associated with this player
+     */
     public ParkourGenerator getGenerator() {
         return generator;
     }
 
+    /**
+     * Gets the Bukkit version of the player
+     *
+     * @return the player
+     */
     public @NotNull Player getPlayer() {
         return player;
     }

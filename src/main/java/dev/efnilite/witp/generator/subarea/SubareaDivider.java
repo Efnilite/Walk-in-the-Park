@@ -42,6 +42,7 @@ public class SubareaDivider {
     private int spawnPitch;
     private Material playerSpawn;
     private Material parkourSpawn;
+    private Vector heading;
 
     /**
      * The SubareaPoints available in the current layer
@@ -53,6 +54,13 @@ public class SubareaDivider {
     private List<SubareaPoint> openSpaces;
     private HashMap<SubareaPoint, ParkourPlayer> collection;
 
+    /**
+     * New instance of the SubareaDivider
+     *
+     * Note: initiating another instance of this class might lead to serious problems
+     * DON'T INITIATE THIS CLASS!
+     */
+    @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         String worldName = config.getString("world");
@@ -69,7 +77,8 @@ public class SubareaDivider {
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
-        this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour-begin-block").toUpperCase());
+        this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
+        this.heading = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
 
         this.borderSize = gen.getDouble("advanced.border-size");
         this.current = new SubareaPoint(0, 0);
@@ -97,41 +106,44 @@ public class SubareaDivider {
     }
 
     /**
-     * Generates the next block
+     * Generates the next playable area
      *
      * @param   player
      *          The player of who the generator belongs to
      */
     public void generate(@NotNull ParkourPlayer player) {
-        amount++;
-        int copy = amount - 1;
+        if (getPoint(player) == null) {
+            amount++;
+            int copy = amount - 1;
 
-        if (openSpaces.size() > 0) {
-            SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
-            createIsland(player, last);
-            openSpaces.remove(last);
-            return;
-        }
-        if (copy % 8 == 0) { // every new layer has +8 area points
-            createIsland(player, current);
-            current = current.zero();
-            layer++;
-
-            fetchPossibleInLayer();
-        } else {
-            SubareaPoint point = possibleInLayer.get(0);
-            if (point == null) {
-                fetchPossibleInLayer();
-                point = possibleInLayer.get(0);
+            if (openSpaces.size() > 0) {
+                SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
+                createIsland(player, last);
+                openSpaces.remove(last);
+                return;
             }
+            if (copy % 8 == 0) { // every new layer has +8 area points
+                createIsland(player, current);
+                current = current.zero();
+                layer++;
 
-            current = point;
-            createIsland(player, current);
+                fetchPossibleInLayer();
+            } else {
+                SubareaPoint point = possibleInLayer.get(0);
+                if (point == null) {
+                    fetchPossibleInLayer();
+                    point = possibleInLayer.get(0);
+                }
+
+                current = point;
+                createIsland(player, current);
+            }
         }
     }
 
     /**
      * Removes a player from the registry
+     * If you're using the API, please use {@link dev.efnilite.witp.WITPAPI#unregisterPlayer(ParkourPlayer)} instead!
      *
      * @param   player
      *          The player
@@ -213,6 +225,7 @@ public class SubareaDivider {
 
         List<Location> blocks = Util.getBlocks(min, min.clone().add(dimension));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
+        pp.getGenerator().heading = heading;
         Location to = null;
         Location parkourBegin = null;
         boolean playerDetected = false;
@@ -238,7 +251,7 @@ public class SubareaDivider {
                 player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.clone();
+                parkourBegin = block.clone().add(heading.multiply(-1)); // remove an extra block of jumping space
                 block.getBlock().setType(Material.AIR);
                 parkourDetected = true;
             }

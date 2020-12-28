@@ -1,6 +1,7 @@
 package dev.efnilite.witp;
 
 import dev.efnilite.witp.command.MainCommand;
+import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.util.Configuration;

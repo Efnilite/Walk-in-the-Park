@@ -1,7 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
