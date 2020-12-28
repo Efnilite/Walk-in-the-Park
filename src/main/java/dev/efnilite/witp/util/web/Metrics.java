@@ -1,4 +1,4 @@
-package dev.efnilite.witp.util;
+package dev.efnilite.witp.util.web;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

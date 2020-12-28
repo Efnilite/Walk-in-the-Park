@@ -62,7 +62,6 @@ public class ParkourPlayer {
     /**
      * The player's points
      */
-    public int points;
     public UUID openInventory;
     private List<Material> possibleStyle;
     private final File file;
@@ -84,7 +83,6 @@ public class ParkourPlayer {
         this.useDifficulty = useDifficulty;
         this.useStructures = useStructures;
 
-        this.points = 0;
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.player = player;
         this.possibleStyle = new ArrayList<>();

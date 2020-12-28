@@ -38,6 +38,7 @@ public class ParkourGenerator {
      * The score of the player
      */
     public int score;
+    public double borderOffset;
 
     /**
      * The time of the player's current session
@@ -45,7 +46,11 @@ public class ParkourGenerator {
      */
     public String time = "0ms";
     public SubareaPoint.Data data;
+    /**
+     * The heading of the parkour
+     */
     public Vector heading;
+    public Vector originalHeading;
 
     private boolean stopped;
     private Location lastSpawn;
@@ -58,7 +63,6 @@ public class ParkourGenerator {
     private final Stopwatch stopwatch;
     private final ParkourPlayer player;
     private final LinkedHashMap<String, Integer> buildLog;
-    private final HashMap<Integer, Integer> defaultChances;
     private final HashMap<Integer, Integer> distanceChances;
     private final HashMap<Integer, Integer> heightChances;
     private final HashMap<Integer, Double> multiplierDecreases;
@@ -75,7 +79,6 @@ public class ParkourGenerator {
         this.player = player;
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
-        this.defaultChances = new HashMap<>();
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();
         this.buildLog = new LinkedHashMap<>();
@@ -94,12 +97,13 @@ public class ParkourGenerator {
                 if (stopped) {
                     this.cancel();
                 }
-                Block current = player.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
-                if (lastPlayer.getY() - player.getPlayer().getLocation().getY() > 10) {
+                Location playerLoc = player.getPlayer().getLocation();
+                if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
                     new PlayerFallEvent(player).call();
                     reset(true);
                     return;
                 }
+                Block current = playerLoc.subtract(0, 1, 0).getBlock();
                 String last = Util.toString(lastPlayer, false);
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
@@ -144,6 +148,7 @@ public class ParkourGenerator {
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
+        heading = originalHeading.clone();
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
         String message;
@@ -194,6 +199,15 @@ public class ParkourGenerator {
 //        switch (defaultChances.get(random.nextInt(defaultChances.size()))) {
 //            case 0:
 
+        if (isNearBorder(lastSpawn.toVector())) {
+            int copy = score;
+            reset(true);
+            score = copy;
+            player.send("&cSorry for the inconvenience, but you have been teleported back to spawn");
+            player.send("&cYou can continue adding to your score");
+            return;
+        }
+
         if (player.useDifficulty || distanceChances.size() == 0) {
             int one = Configurable.MAXED_ONE_BLOCK;
             int two = Configurable.MAXED_TWO_BLOCK;
@@ -235,7 +249,7 @@ public class ParkourGenerator {
         if (heightChances.size() == 0) {
             int index1 = 0;
             for (int i = 0; i < Configurable.NORMAL_UP; i++) {
-                heightChances.put(index1, -1);
+                heightChances.put(index1, 1);
                 index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_LEVEL; i++) {
@@ -243,16 +257,44 @@ public class ParkourGenerator {
                 index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_DOWN; i++) {
-                heightChances.put(index1, 1);
+                heightChances.put(index1, -1);
                 index1++;
             }
             for (int i = 0; i < Configurable.NORMAL_DOWN2; i++) {
-                heightChances.put(index1, 2);
+                heightChances.put(index1, -2);
                 index1++;
             }
         }
 
-        int height = heightChances.get(random.nextInt(heightChances.size())) * -1; // -1 * -1 = +1 when y should be +1, so this works
+        int height = 0;
+        int deltaYMin = lastSpawn.getBlockY() - Configurable.MIN_Y;
+        int deltaYMax = lastSpawn.getBlockY() - Configurable.MAX_Y;
+        if (deltaYMin < 20) { // buffer of 20, so the closer to the max/min the more chance of opposite
+            int delta = (deltaYMin - 20) * -1;
+            int chanceRise = delta * 5;
+            if (chanceRise >= random.nextInt(100) + 1) {
+                height = 1;
+            } else {
+                height = heightChances.get(random.nextInt(heightChances.size()));
+            }
+        } else if (deltaYMax > -20) {
+            int delta = deltaYMax + 20;
+            int chanceRise = delta * 5;
+            if (chanceRise >= random.nextInt(100) + 1) {
+                switch (random.nextInt(2)) {
+                    case 0:
+                        height = -2;
+                        break;
+                    case 1:
+                        height = -1;
+                        break;
+                }
+            } else {
+                height = heightChances.get(random.nextInt(heightChances.size()));
+            }
+        } else {
+            height = heightChances.get(random.nextInt(heightChances.size())); // -1 * -1 = +1 when y should be +1, so this works
+        }
         int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
         List<Block> possible = getPossible(gap - height, height);
         if (possible.size() == 0) {
@@ -346,9 +388,23 @@ public class ParkourGenerator {
         } else if (heading.getBlockX() != 0) {
             return vector.getX() * heading.getX() > 0;
         } else {
-            Verbose.error("Invalid direction vector");
+            Verbose.error("Invalid heading vector: " + heading.toString());
             return false;
         }
+    }
+
+    /**
+     * If the vector is near the border
+     *
+     * @param   vector
+     *          The vector
+     */
+    public boolean isNearBorder(Vector vector) {
+        return borderOffset - Math.abs(vector.getX()) < 25 || borderOffset - Math.abs(vector.getZ()) < 25;
+    }
+
+    public boolean isNearIsland(Vector vector) {
+        return vector.distance(playerSpawn.toVector()) < 50;
     }
 
     /**
@@ -368,6 +424,9 @@ public class ParkourGenerator {
         public static int NORMAL_LEVEL;
         public static int NORMAL_DOWN;
         public static int NORMAL_DOWN2;
+
+        public static int MAX_Y;
+        public static int MIN_Y;
 
         // Advanced settings
         public static int GENERATOR_CHECK;
@@ -393,6 +452,9 @@ public class ParkourGenerator {
             NORMAL_LEVEL = file.getInt("generation.normal-jump.level");
             NORMAL_DOWN = file.getInt("generation.normal-jump.down");
             NORMAL_DOWN2 = file.getInt("generation.normal-jump.down2");
+
+            MAX_Y = file.getInt("generation.settings.max-y");
+            MIN_Y = file.getInt("generation.settings.min-y");
 
             // Advanced settings
             GENERATOR_CHECK = file.getInt("advanced.generator-check");

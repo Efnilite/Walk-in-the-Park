@@ -1,13 +1,13 @@
 package dev.efnilite.witp;
 
 import dev.efnilite.witp.command.MainCommand;
-import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.util.Configuration;
-import dev.efnilite.witp.util.Metrics;
+import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
@@ -59,6 +59,8 @@ public class WITP extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
+
+        new UpdateChecker().check();
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {

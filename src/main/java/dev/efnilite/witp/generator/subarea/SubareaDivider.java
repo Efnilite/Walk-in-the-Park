@@ -58,7 +58,6 @@ public class SubareaDivider {
      * New instance of the SubareaDivider
      *
      * Note: initiating another instance of this class might lead to serious problems
-     * DON'T INITIATE THIS CLASS!
      */
     @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
@@ -111,8 +110,10 @@ public class SubareaDivider {
      * @param   player
      *          The player of who the generator belongs to
      */
-    public void generate(@NotNull ParkourPlayer player) {
+    public synchronized void generate(@NotNull ParkourPlayer player) {
         if (getPoint(player) == null) {
+            player.getGenerator().borderOffset = borderSize / 2.0;
+            player.getGenerator().originalHeading = heading.clone();
             amount++;
             int copy = amount - 1;
 
@@ -195,6 +196,8 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setClearWeatherDuration(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setAutoSave(false);
         world.save();
