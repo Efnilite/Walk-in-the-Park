@@ -50,7 +50,7 @@ public class UpdateChecker {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String version = reader.lines()
-                .filter(s -> s.contains("version: "))
+                .filter(s -> s.contains("version: ") && !s.contains("api"))
                 .collect(Collectors.toList())
                 .get(0)
                 .replace("version: ", "");
