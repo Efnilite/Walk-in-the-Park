@@ -1,10 +1,12 @@
 ![](https://i.imgur.com/muzq2bk.png)
 
-Welcome to the Walk in the Park Github page!
+## Welcome to the Walk in the Park Github page!
 
 **Looking to work with the API?**
 
 Wiki: https://github.com/Efnilite/Walk-in-the-Park/wiki
+
+Javadocs: https://efnilite.github.io/Walk-in-the-Park/javadocs/
 
 **Got any questions?**
 
