@@ -53,19 +53,26 @@ public class Configuration {
      * Downloads the structures
      */
     private void structures() {
-        if (!(new File(plugin.getDataFolder().toString() + "/structures/spawn-island.nbt").exists())) {
+        if (!(new File(plugin.getDataFolder().toString() + "/structures/parkour-16.nbt").exists())) {
             String[] schematics = new String[] {"spawn-island.nbt"};
             File folder = new File(plugin.getDataFolder().toString() + "/structures");
             folder.mkdirs();
             Verbose.info("Downloading all structures...");
+            int structureCount = 18;
             BukkitRunnable runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
                     try {
                         for (String schematic : schematics) {
                             InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/structures/" + schematic + "?raw=true").openStream();
                             Files.copy(stream, Paths.get(folder + "/" + schematic));
                             Verbose.verbose("Downloaded " + schematic);
+                            stream.close();
+                        }
+                        for (int i = 1; i <= structureCount; i++) {
+                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/structures/parkour-" + i + ".nbt?raw=true").openStream();
+                            Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".nbt"));
+                            Verbose.verbose("Downloaded parkour-" + i);
                             stream.close();
                         }
                         Verbose.info("Downloaded all structures");

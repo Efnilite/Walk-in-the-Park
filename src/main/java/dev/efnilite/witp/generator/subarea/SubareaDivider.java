@@ -8,6 +8,7 @@ import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -113,7 +114,6 @@ public class SubareaDivider {
     public synchronized void generate(@NotNull ParkourPlayer player) {
         if (getPoint(player) == null) {
             player.getGenerator().borderOffset = borderSize / 2.0;
-            player.getGenerator().originalHeading = heading.clone();
             amount++;
             int copy = amount - 1;
 
@@ -153,8 +153,8 @@ public class SubareaDivider {
         SubareaPoint point = getPoint(player);
         collection.remove(point);
         openSpaces.add(point);
-        for (Location block : player.getGenerator().data.blocks) {
-            block.getBlock().setType(Material.AIR);
+        for (Block block : player.getGenerator().data.blocks) {
+            block.setType(Material.AIR);
         }
     }
 
@@ -226,24 +226,24 @@ public class SubareaDivider {
         min.setX(min.getX() - (dimension.getX() / 2.0));
         min.setZ(min.getZ() - (dimension.getZ() / 2.0));
 
-        List<Location> blocks = Util.getBlocks(min, min.clone().add(dimension));
+        List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         pp.getGenerator().heading = heading;
         Location to = null;
         Location parkourBegin = null;
         boolean playerDetected = false;
         boolean parkourDetected = false;
-        for (Location block : blocks) {
+        for (Block block : blocks) {
             if (playerDetected && parkourDetected) {
                 break;
             }
-            Material type = block.getBlock().getType();
+            Material type = block.getType();
             if (type == playerSpawn && !playerDetected) {
-                to = block.clone().add(0.5, 0, 0.5);
+                to = block.getLocation().clone().add(0.5, 0, 0.5);
                 to.setPitch(spawnPitch);
                 to.setYaw(spawnYaw);
                 player.teleport(to);
-                block.getBlock().setType(Material.AIR);
+                block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
                 String mat = WITP.getConfiguration().getString("config", "options.item");
@@ -254,8 +254,8 @@ public class SubareaDivider {
                 player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.clone().add(heading.multiply(-1)); // remove an extra block of jumping space
-                block.getBlock().setType(Material.AIR);
+                parkourBegin = block.getLocation().clone().add(heading.multiply(-1)); // remove an extra block of jumping space
+                block.setType(Material.AIR);
                 parkourDetected = true;
             }
         }

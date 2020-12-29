@@ -185,7 +185,7 @@ public class ParkourPlayer {
         builder.setItem(12, new ItemBuilder(Material.GLASS, "&a&lLead")
                 .setLore("&7How many blocks will", "&7be generated ahead of you.", "", "&7Currently: &a" + blockLead + " blocks").build(), (t, e) -> {
             for (int i = 10; i < 17; i++) {
-                builder1.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + i + " block(s)").build(), (t2, e2) -> {
+                builder1.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
                     int amount = t2.getSlot() - 9;
                     blockLead = amount;
                     send("&7You selected a " + amount + " block lead.");

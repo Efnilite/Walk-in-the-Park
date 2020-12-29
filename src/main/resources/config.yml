@@ -65,6 +65,7 @@ styles:
         quartz: [smooth_quartz, chiseled_quartz_block, quartz_block, quartz_bricks, quartz_pillar]
         ocean: [prismarine, prismarine_bricks, dark_prismarine, sea_lantern]
         redstone: [observer, dispenser, redstone_block, piston, sticky_piston, redstone_lamp, target]
+        overworld: [grass_block, stone, cobblestone, oak_log]
 
 # How the scoreboard looks
 # Placeholders: %score%, %time%

@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -258,9 +259,9 @@ public class Util {
      *
      * @return the locations of all the blocks between the positions
      */
-    public static List<Location> getBlocks(Location position, Location position2) {
+    public static List<Block> getBlocks(Location position, Location position2) {
         World w = position.getWorld();
-        List<Location> add = new ArrayList<>();
+        List<Block> add = new ArrayList<>();
         Location location = new Location(w, 0, 0, 0);
         int max = Math.max(position.getBlockX(), position2.getBlockX());
         int mix = Math.min(position.getBlockX(), position2.getBlockX());
@@ -276,7 +277,7 @@ public class Util {
                     location.setZ(z);
 
                     if (location.getBlock().getType() != Material.AIR) {
-                        add.add(location.clone());
+                        add.add(location.clone().getBlock());
                     }
                 }
             }

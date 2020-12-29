@@ -3,9 +3,7 @@ package dev.efnilite.witp.util.web;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.task.Tasks;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

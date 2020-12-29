@@ -1,6 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
-import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -92,9 +92,9 @@ public class SubareaPoint {
      */
     public static class Data {
 
-        public List<Location> blocks;
+        public List<Block> blocks;
 
-        public Data(List<Location> blocks) {
+        public Data(List<Block> blocks) {
             this.blocks = blocks;
         }
     }

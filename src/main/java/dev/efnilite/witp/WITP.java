@@ -4,9 +4,9 @@ import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.util.Configuration;
-import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
@@ -17,8 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -102,19 +100,19 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
-            event.setCancelled(true);
-        }
-    }
+//    @EventHandler
+//    public void onPlace(BlockPlaceEvent event) {
+//        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+//            event.setCancelled(true);
+//        }
+//    }
+//
+//    @EventHandler
+//    public void onBreak(BlockBreakEvent event) {
+//        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+//            event.setCancelled(true);
+//        }
+//    }
 
     @EventHandler
     public void interact(PlayerInteractEvent event) {
