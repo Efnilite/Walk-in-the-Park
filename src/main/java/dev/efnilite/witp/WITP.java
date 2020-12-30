@@ -12,7 +12,9 @@ import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,6 +32,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -86,16 +90,33 @@ public class WITP extends JavaPlugin implements Listener {
 
     @EventHandler
     public void join(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        World world = WITP.getDivider().getWorld();
         if (configuration.getFile("config").getBoolean("bungeecord.enabled")) {
             if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
                 event.setJoinMessage(configuration.getString("config", "messages.join").replaceAll("%p",
-                        event.getPlayer().getName()));
+                        player.getName()));
             }
             try {
-                ParkourPlayer.register(event.getPlayer());
+                ParkourPlayer.register(player);
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("Something went wrong while trying to fetch a player's (" + event.getPlayer().getName() + ") data");
+                Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
+            }
+        } else if (player.getWorld() == WITP.getDivider().getWorld()) {
+            World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall_back"));
+            if (fallback != null) {
+                player.teleport(fallback.getSpawnLocation());
+            } else {
+                Verbose.error("There is no backup world! Selecting one at random...");
+                for (World last : Bukkit.getWorlds()) {
+                    if (!(last.getName().equals(world.getName()))) {
+                        player.teleport(last.getSpawnLocation());
+                        return;
+                    }
+                }
+                Verbose.error("There are no worlds for player " + player.getName() + " to fall back to! Kicking player..");
+                player.kickPlayer("There are no accessible worlds for you to go to - please rejoin");
             }
         }
     }

@@ -62,7 +62,7 @@ public class SubareaDivider {
     @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
         FileConfiguration config = WITP.getConfiguration().getFile("config");
-        String worldName = config.getString("world");
+        String worldName = config.getString("world.name");
         if (worldName == null) {
             Verbose.error("Name of world is null in config");
             return;
@@ -84,6 +84,10 @@ public class SubareaDivider {
         this.collection = new HashMap<>();
         this.openSpaces = new ArrayList<>();
         this.possibleInLayer = new ArrayList<>();
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     /**
@@ -206,12 +210,7 @@ public class SubareaDivider {
         return world;
     }
 
-    private void setBorder(@NotNull ParkourPlayer player) {
-        SubareaPoint point = getPoint(player);
-        if (point == null) {
-            Verbose.error("Error while trying to get the current SubareaPoint of player " + player.getPlayer().getName());
-            return;
-        }
+    private void setBorder(@NotNull ParkourPlayer player, @NotNull SubareaPoint point) {
         int size = (int) player.getGenerator().borderOffset * 2;
         Vector estimated = point.getEstimatedCenter(size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
@@ -274,7 +273,7 @@ public class SubareaDivider {
         BukkitRunnable delay = new BukkitRunnable() {
             @Override
             public void run() {
-                setBorder(pp);
+                setBorder(pp, point);
             }
         };
         Tasks.syncDelay(delay, 10 * 20);

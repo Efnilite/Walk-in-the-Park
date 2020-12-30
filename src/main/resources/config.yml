@@ -26,13 +26,17 @@ verbose: false
 bungeecord:
 
     # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
-    enabled: true
+    enabled: false
 
     # The server the players will be returned to after the game is done
     return_server: Lobby
 
-# The world in which the personal parkours will take place
-world: witp
+world:
+    # The world in which the personal parkours will take place
+    name: witp
+
+    # The world players will be teleported to if they accidentally join the WITP world without being a player
+    fall_back: world
 
 # Options for the option menu
 options:

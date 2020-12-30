@@ -108,6 +108,7 @@ public class ParkourGenerator {
             public void run() {
                 if (stopped) {
                     this.cancel();
+                    return;
                 }
                 Location playerLoc = player.getPlayer().getLocation();
                 if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
@@ -172,8 +173,14 @@ public class ParkourGenerator {
 
     /**
      * Resets the parkour
+     *
+     * @param   regenerate
+     *          false if this is the last reset (when the player leaves), true for resets by falling
      */
     public void reset(boolean regenerate) {
+        if (!regenerate) {
+            stopped = true;
+        }
         for (Block block : structureBlocks) {
             block.setType(Material.AIR);
         }
@@ -381,10 +388,6 @@ public class ParkourGenerator {
                 buildLog.put(location, i + 1);
             }
         }
-    }
-
-    public void finish() {
-        stopped = true;
     }
 
     /**

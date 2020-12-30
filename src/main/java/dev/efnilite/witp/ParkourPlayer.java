@@ -115,6 +115,10 @@ public class ParkourPlayer {
         }
     }
 
+    public FastBoard getBoard() {
+        return board;
+    }
+
     /**
      * Updates the scoreboard
      */
@@ -429,13 +433,14 @@ public class ParkourPlayer {
     public static void unregister(@NotNull ParkourPlayer player) throws IOException {
         new PlayerLeaveEvent(player).call();
         player.generator.reset(false);
-        player.generator.finish();
+        player.getBoard().delete();
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
         if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
             Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
         } else {
+            player.getPlayer().getInventory().clear();
             player.getPlayer().teleport(player.getPreviousLocation());
             for (int slot : player.getPreviousInventory().keySet()){
                 player.getPlayer().getInventory().setItem(slot, player.getPreviousInventory().get(slot));
