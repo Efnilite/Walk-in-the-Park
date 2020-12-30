@@ -24,10 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -89,6 +86,9 @@ public class ParkourPlayer {
                 previousInventory.put(index, item);
             }
         }
+        if (player.isOp() && WITP.isOutdated) {
+            send("&7The WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
+        }
 
         this.highScore = highScore;
         this.blockLead = blockLead;
@@ -104,6 +104,7 @@ public class ParkourPlayer {
         setStyle(style);
         this.generator = new ParkourGenerator(this);
 
+        player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
         updateScoreboard();
     }
@@ -211,20 +212,17 @@ public class ParkourPlayer {
         });
         builder.setItem(14, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
-            HashMap<String, Integer> times = new HashMap<>();
-            times.put("Day", 1000);
-            times.put("Noon", 6000);
-            times.put("Dawn", 12500);
-            times.put("Night", 15000);
-            times.put("Midnight", 18000);
+            List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
             int i = 11;
-            for (String time : times.keySet()) {
+            for (String time : times) {
                 builder3.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
-                    String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
-                    this.time = name;
-                    send("&7You changed your time preference to &a" + time.toLowerCase());
-                    player.setPlayerTime(times.get(name), false);
-                    saveStats();
+                    if (e2.getItemMeta() != null) {
+                        String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
+                        this.time = name;
+                        send("&7You changed your time preference to &a" + time.toLowerCase());
+                        player.setPlayerTime(getTime(name), false);
+                        saveStats();
+                    }
                 });
                 i++;
             }
@@ -253,7 +251,7 @@ public class ParkourPlayer {
 //                    saveStats();
 //                    player.closeInventory();
 //        });
-        builder.setItem(3 * 9 - 1, new ItemBuilder(Material.ARROW, "&4&lQuit").build(), (t2, e2) -> {
+        builder.setItem(3 * 9 - 1, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
             try {
                 ParkourPlayer.unregister(this);
             } catch (IOException ex) {
@@ -378,6 +376,22 @@ public class ParkourPlayer {
             }
         }
         return null;
+    }
+
+    public int getTime(String time) {
+        switch (time.toLowerCase()) {
+            case "noon":
+                return 6000;
+            case "dawn":
+                return 12500;
+            case "night":
+                return 15000;
+            case "midnight":
+                return 18000;
+            case "day":
+            default:
+                return 1000;
+        }
     }
 
     /**

@@ -67,11 +67,7 @@ public class SubareaDivider {
             Verbose.error("Name of world is null in config");
             return;
         }
-        this.world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            Verbose.info("World " + worldName + " doesn't exist! Creating one now...");
-            this.world = createWorld(worldName);
-        }
+        this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
@@ -121,6 +117,7 @@ public class SubareaDivider {
                 return;
             }
             if (copy % 8 == 0) { // every new layer has +8 area points
+
                 createIsland(player, current);
                 current = current.zero();
                 layer++;
@@ -137,6 +134,7 @@ public class SubareaDivider {
                 }
 
                 current = point;
+                possibleInLayer.remove(point);
                 createIsland(player, current);
             }
         }
@@ -185,7 +183,7 @@ public class SubareaDivider {
     }
 
     private @Nullable World createWorld(String name) {
-        WorldCreator creator = new WorldCreator(name).generateStructures(false).hardcore(false)
+        WorldCreator creator = new WorldCreator(name).generateStructures(false).hardcore(false).type(WorldType.FLAT)
                 .generator(new VoidGenerator()).environment(World.Environment.NORMAL);
         World world = Bukkit.createWorld(creator);
         if (world == null) {

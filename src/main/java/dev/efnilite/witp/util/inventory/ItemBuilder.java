@@ -1,7 +1,6 @@
 package dev.efnilite.witp.util.inventory;
 
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.enchantment.GlowEnchant;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +24,6 @@ import java.util.List;
  */
 public class ItemBuilder {
 
-    private boolean glowing;
     private int amount;
     private int durability;
     private boolean unbreakable;
@@ -73,7 +71,6 @@ public class ItemBuilder {
         this.lore = new ArrayList<>();
         this.data = new HashMap<>();
         this.type = material;
-        this.glowing = false;
         this.unbreakable = false;
     }
 
@@ -86,11 +83,6 @@ public class ItemBuilder {
         ItemStack item = new ItemStack(type, amount);
         ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
         assert meta != null;
-
-        if (glowing) {
-            meta.addEnchant(GlowEnchant.getEnchantment(), 1, false);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
 
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         meta.setLore(lore);
@@ -153,7 +145,6 @@ public class ItemBuilder {
      */
     public ItemBuilder glowing(boolean predicate) {
         if (predicate) {
-            this.glowing = true;
         }
         return this;
     }
@@ -164,7 +155,6 @@ public class ItemBuilder {
      * @return the instance
      */
     public ItemBuilder glowing() {
-        this.glowing = true;
         return this;
     }
 

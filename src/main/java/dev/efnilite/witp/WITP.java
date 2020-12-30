@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,6 +31,7 @@ import java.io.IOException;
 
 public class WITP extends JavaPlugin implements Listener {
 
+    public static boolean isOutdated = false;
     private static WITP instance;
     private static Configuration configuration;
     private static VersionManager versionManager;
@@ -100,19 +103,19 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void onPlace(BlockPlaceEvent event) {
-//        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
-//            event.setCancelled(true);
-//        }
-//    }
-//
-//    @EventHandler
-//    public void onBreak(BlockBreakEvent event) {
-//        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
-//            event.setCancelled(true);
-//        }
-//    }
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event) {
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler
     public void interact(PlayerInteractEvent event) {
