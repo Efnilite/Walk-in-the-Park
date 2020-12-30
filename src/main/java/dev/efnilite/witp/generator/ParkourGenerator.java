@@ -8,11 +8,12 @@ import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.particle.ParticleData;
+import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.task.Tasks;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -50,6 +51,7 @@ public class ParkourGenerator {
      */
     public Vector heading;
 
+    private int totalScore;
     private int structureCooldown;
     private boolean deleteStructure;
     private boolean stopped;
@@ -69,6 +71,9 @@ public class ParkourGenerator {
     private final HashMap<Integer, Integer> defaultChances;
     private final HashMap<Integer, Double> multiplierDecreases;
 
+    private static final ParticleData<?> particleData = new ParticleData<>(Particle.SPELL_INSTANT, null, 20, 0.4,
+            0.5, 1, 0.5);
+
     /**
      * Creates a new ParkourGenerator instance
      *
@@ -76,6 +81,7 @@ public class ParkourGenerator {
      */
     public ParkourGenerator(ParkourPlayer player) {
         this.score = 0;
+        this.totalScore = 0;
         this.borderOffset = Configurable.BORDER_SIZE / 2.0;
         this.stopped = false;
         this.player = player;
@@ -129,6 +135,11 @@ public class ParkourGenerator {
                                 stopwatch.start();
                             }
                             score++;
+                            totalScore++;
+                            if (Configurable.REWARDS && totalScore % Configurable.REWARDS_INTERVAL == 0 && Configurable.REWARDS_COMMAND != null) {
+                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
+                                player.send(Configurable.REWARDS_MESSAGE);
+                            }
                             new PlayerScoreEvent(player).call();
                             player.updateScoreboard();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -326,10 +337,16 @@ public class ParkourGenerator {
                 chosen.setType(player.randomMaterial());
                 new BlockGenerateEvent(chosen, this, player).call();
                 lastSpawn = chosen.getLocation().clone();
+
+                if (player.useParticles) {
+                    particleData.setType(Configurable.PARTICLE_TYPE);
+                    Particles.draw(lastSpawn.clone().add(0, 1, 0), particleData);
+                    player.getPlayer().playSound(lastSpawn.clone(), Configurable.SOUND_TYPE, 4, Configurable.SOUND_PITCH);
+                }
+
                 if (structureCooldown > 0) {
                     structureCooldown--;
                 }
-
                 break;
             case 1:
                 File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
@@ -467,6 +484,16 @@ public class ParkourGenerator {
         public static int MAX_Y;
         public static int MIN_Y;
 
+        // Config stuff
+        public static boolean REWARDS;
+        public static int REWARDS_INTERVAL;
+        public static String REWARDS_COMMAND;
+        public static String REWARDS_MESSAGE;
+
+        public static Sound SOUND_TYPE;
+        public static int SOUND_PITCH;
+        public static Particle PARTICLE_TYPE;
+
         // Advanced settings
         public static double BORDER_SIZE;
         public static int GENERATOR_CHECK;
@@ -480,6 +507,7 @@ public class ParkourGenerator {
 
         public static void init() {
             FileConfiguration file = WITP.getConfiguration().getFile("generation");
+            FileConfiguration config = WITP.getConfiguration().getFile("config");
             NORMAL = file.getInt("generation.normal-jump.chance");
             STRUCTURES = file.getInt("generation.structures.chance");
 
@@ -495,6 +523,22 @@ public class ParkourGenerator {
 
             MAX_Y = file.getInt("generation.settings.max-y");
             MIN_Y = file.getInt("generation.settings.min-y");
+
+            // Config stuff
+            REWARDS = config.getBoolean("rewards.enabled");
+            REWARDS_INTERVAL = config.getInt("rewards.interval");
+            REWARDS_COMMAND = config.getString("rewards.command").replaceAll("/", "");
+            if (REWARDS_COMMAND.equalsIgnoreCase("null")) {
+                REWARDS_COMMAND = null;
+            }
+            REWARDS_MESSAGE = config.getString("rewards.message");
+            if (REWARDS_MESSAGE.equalsIgnoreCase("null")) {
+                REWARDS_MESSAGE = null;
+            }
+
+            SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
+            SOUND_PITCH = config.getInt("particles.sound-pitch");
+            PARTICLE_TYPE = Particle.valueOf(config.getString("particles.particle-type").toUpperCase());
 
             // Advanced settings
             BORDER_SIZE = file.getDouble("advanced.border-size");

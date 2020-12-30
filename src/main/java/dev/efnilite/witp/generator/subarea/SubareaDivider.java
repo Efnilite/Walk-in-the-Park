@@ -67,6 +67,10 @@ public class SubareaDivider {
             Verbose.error("Name of world is null in config");
             return;
         }
+        File folder = new File(worldName);
+        if (folder.exists() && folder.isDirectory()) {
+            folder.delete();
+        }
         this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");

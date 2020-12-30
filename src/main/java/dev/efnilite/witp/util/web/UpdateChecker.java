@@ -40,6 +40,7 @@ public class UpdateChecker {
 
     private String getLatestVersion() throws IOException {
         InputStream stream;
+        Verbose.info("Checking for updates...");
         try {
             stream = new URL("https://raw.githubusercontent.com/Efnilite/Walk-in-the-Park/master/src/main/resources/plugin.yml").openStream();
         } catch (IOException e) {

@@ -77,3 +77,43 @@ scoreboard:
         - '&7Time: &f%time%'
         - '&b'
         - '&6&lserver.ip'
+
+# Options for the messages
+# %p is the player.
+messages:
+
+    # If join/leave messages should be shown
+    join-leave-enabled: true
+    join: '&7%p has joined the server.'
+    leave: '&7%p has left the server.'
+
+# Options for custom rewards
+rewards:
+
+    # If rewards are enabled
+    enabled: false
+
+    # The interval at which they get a reward
+    interval: 50
+
+    # The command that will be executed if the interval is met
+    # 'null' means no command
+    command: 'null'
+
+    # The message you get after the interval is met
+    # 'null' means no message
+    message: '&6+5 coins'
+
+# Options for particles/sounds
+particles:
+
+    # The particle type
+    # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
+    particle-type: 'SPELL_INSTANT'
+
+    # The sound type
+    # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
+    sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
+
+    # The pitch of the sound
+    sound-pitch: 3

@@ -6,6 +6,7 @@ import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 
@@ -36,6 +38,7 @@ public class WITP extends JavaPlugin implements Listener {
     private static Configuration configuration;
     private static VersionManager versionManager;
     private static SubareaDivider divider;
+    private static UpdateChecker checker;
 
     @Override
     public void onEnable() {
@@ -61,7 +64,13 @@ public class WITP extends JavaPlugin implements Listener {
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
 
-        new UpdateChecker().check();
+        checker = new UpdateChecker();
+        Tasks.syncRepeat(new BukkitRunnable() {
+            @Override
+            public void run() {
+                checker.check();
+            }
+        }, 20 * 60 * 20);
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {
@@ -78,6 +87,10 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent event) {
         if (configuration.getFile("config").getBoolean("bungeecord.enabled")) {
+            if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
+                event.setJoinMessage(configuration.getString("config", "messages.join").replaceAll("%p",
+                        event.getPlayer().getName()));
+            }
             try {
                 ParkourPlayer.register(event.getPlayer());
             } catch (IOException ex) {
@@ -138,6 +151,10 @@ public class WITP extends JavaPlugin implements Listener {
     public void leave(PlayerQuitEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         if (player != null) {
+            if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
+                event.setQuitMessage(configuration.getString("config", "messages.leave").replaceAll("%p",
+                        event.getPlayer().getName()));
+            }
             try {
                 ParkourPlayer.unregister(player);
             } catch (IOException ex) {

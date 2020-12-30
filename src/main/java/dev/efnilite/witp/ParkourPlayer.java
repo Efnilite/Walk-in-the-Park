@@ -49,6 +49,10 @@ public class ParkourPlayer {
     /**
      * Player data used in saving
      */
+    public @Expose Boolean useParticles;
+    /**
+     * Player data used in saving
+     */
     public @Expose boolean useStructures;
     /**
      * Player data used in saving
@@ -77,7 +81,8 @@ public class ParkourPlayer {
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
-    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useDifficulty, boolean useStructures) {
+    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
+                         boolean useDifficulty, boolean useStructures) {
         this.previousLocation = player.getLocation().clone();
         this.previousInventory = new HashMap<>();
         int index = 0;
@@ -86,13 +91,11 @@ public class ParkourPlayer {
                 previousInventory.put(index, item);
             }
         }
-        if (player.isOp() && WITP.isOutdated) {
-            send("&7The WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
-        }
 
         this.highScore = highScore;
         this.blockLead = blockLead;
         this.style = style;
+        this.useParticles = useParticles;
         this.time = time;
         this.useDifficulty = useDifficulty;
         this.useStructures = useStructures;
@@ -107,6 +110,9 @@ public class ParkourPlayer {
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
         updateScoreboard();
+        if (player.isOp() && WITP.isOutdated) {
+            send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
+        }
     }
 
     /**
@@ -181,8 +187,7 @@ public class ParkourPlayer {
                 for (String style : styles) {
                     List<Material> possible = this.getPossibleMaterials(style);
                     if (possible == null) {
-                        Verbose.error("Possible materials is null");
-                        return;
+                        continue;
                     }
                     Material material = possible.get(possible.size() - 1);
                     builder2.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
@@ -210,7 +215,7 @@ public class ParkourPlayer {
             builder1.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder1.build();
         });
-        builder.setItem(14, new ItemBuilder(Material.CLOCK, "&a&lTime")
+        builder.setItem(13, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
             List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
             int i = 11;
@@ -236,18 +241,32 @@ public class ParkourPlayer {
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
                     useDifficulty = !useDifficulty;
-                    send("&7You changed your changed your usage of difficulty to " + Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
+                    send("&7You changed your changed your usage of difficulty to " +
+                            Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
                     saveStats();
                     player.closeInventory();
         });
+        Material particles = useParticles ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String particlesString = Boolean.toString(useParticles);
+        String particlesValue = Util.normalizeBoolean(Util.colorBoolean(particlesString));
+        builder.setItem(14, new ItemBuilder(particles, "&a&lUse particles and sounds")
+                .setLore("&7If enabled every generated block", "&7will show particles and play a sound.", "",
+                        "&7Currently: " + particlesValue).build(), (t2, e2) -> {
+            useParticles = !useParticles;
+            send("&7You changed your changed your usage of particles to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
+            saveStats();
+            player.closeInventory();
+        });
 //        Material structures = useStructures ? Material.GREEN_WOOL : Material.RED_WOOL;
 //        String structuresString = Boolean.toString(useStructures);
-//        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
+//        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(useStructures));
 //        builder.setItem(15, new ItemBuilder(structures, "&a&lUse structures")
 //                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
 //                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
 //                    useStructures = !useStructures;
-//                    send("&7You changed your changed your usage of structures to " + Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
+//                    send("&7You changed your changed your usage of structures to " +
+        //                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
 //                    saveStats();
 //                    player.closeInventory();
 //        });
@@ -289,7 +308,6 @@ public class ParkourPlayer {
         for (String material : materials) {
             Material mat = Material.getMaterial(material.toUpperCase());
             if (mat == null) {
-                Verbose.error("Unknown material (" + material + ") in style " + style);
                 return null;
             }
             possibleStyles.add(mat);
@@ -346,14 +364,19 @@ public class ParkourPlayer {
             if (data.exists()) {
                 FileReader reader = new FileReader(data);
                 ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                if (from.useParticles == null) { // outdated file format
+                    from.useParticles = true;
+                }
                 ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useDifficulty, from.useStructures);
+                        from.useParticles, from.useDifficulty, from.useStructures);
+                pp.save();
                 players.put(player, pp);
                 reader.close();
                 return pp;
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
-                        WITP.getConfiguration().getString("config", "styles.default"), 4, true, false);
+                        WITP.getConfiguration().getString("config", "styles.default"),
+                        4, true, true, false);
                 players.put(player, pp);
                 pp.save();
                 return pp;
