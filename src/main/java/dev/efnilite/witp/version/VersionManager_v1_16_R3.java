@@ -62,6 +62,7 @@ public class VersionManager_v1_16_R3 implements VersionManager {
         }
     }
 
+    // todo holy shit please fix this
     @Override
     public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to) {
         try {
@@ -95,19 +96,22 @@ public class VersionManager_v1_16_R3 implements VersionManager {
                 return null;
             }
 
-            Vector location = to.clone().subtract(beginPos).toVector();
-            structure.a((WorldAccess) world, new BlockPosition(location.getX(), location.getY(), location.getZ()), info, ThreadLocalRandom.current());
-
             List<DefinedStructure.BlockInfo> endBlock = structure.a(pos, info, Blocks.RED_WOOL);
             Location endPos = null;
-            for (DefinedStructure.BlockInfo blockInfo : endBlock) {
-                endPos = new Location(to.getWorld(), blockInfo.a.getX(), blockInfo.a.getY(), blockInfo.a.getZ());
+            for (DefinedStructure.BlockInfo blockinfo : endBlock) {
+                endPos = new Location(to.getWorld(), blockinfo.a.getX(), blockinfo.a.getY(), blockinfo.a.getZ());
             }
             if (endPos == null) {
                 Verbose.error("There is no red wool (end of parkour) in structure " + file.getName());
                 return null;
             }
-            return new ParkourGenerator.StructureData(endPos, Util.getBlocks(min, max));
+
+            Vector location = to.clone().subtract(beginPos).toVector();
+            structure.a((WorldAccess) world, new BlockPosition(location.getX(), location.getY(), location.getZ()), info, ThreadLocalRandom.current());
+
+            Location loc = base.toLocation(to.getWorld());
+            Vector vector = new Vector(deltaX + 1, max.subtract(min).getBlockY() + 1, deltaZ + 1);
+            return new ParkourGenerator.StructureData(endPos.clone(), Util.getBlocks(loc, loc.clone().add(vector)));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

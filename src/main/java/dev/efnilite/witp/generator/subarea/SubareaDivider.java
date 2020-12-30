@@ -34,7 +34,6 @@ public class SubareaDivider {
 
     private int amount = 0;
     private int layer = 0;
-    private double borderSize;
     private SubareaPoint current;
     private World world;
     private File spawnIsland;
@@ -80,7 +79,6 @@ public class SubareaDivider {
         this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
         this.heading = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
 
-        this.borderSize = gen.getDouble("advanced.border-size");
         this.current = new SubareaPoint(0, 0);
         this.spawnIsland = new File(WITP.getInstance().getDataFolder() + "/structures/spawn-island.nbt");
         this.collection = new HashMap<>();
@@ -113,7 +111,6 @@ public class SubareaDivider {
      */
     public synchronized void generate(@NotNull ParkourPlayer player) {
         if (getPoint(player) == null) {
-            player.getGenerator().borderOffset = borderSize / 2.0;
             amount++;
             int copy = amount - 1;
 
@@ -130,6 +127,9 @@ public class SubareaDivider {
 
                 fetchPossibleInLayer();
             } else {
+                if (possibleInLayer.size() == 0){
+                    fetchPossibleInLayer();
+                }
                 SubareaPoint point = possibleInLayer.get(0);
                 if (point == null) {
                     fetchPossibleInLayer();
@@ -210,14 +210,15 @@ public class SubareaDivider {
             Verbose.error("Error while trying to get the current SubareaPoint of player " + player.getPlayer().getName());
             return;
         }
-        Vector estimated = point.getEstimatedCenter(borderSize);
-        WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, borderSize);
+        int size = (int) player.getGenerator().borderOffset * 2;
+        Vector estimated = point.getEstimatedCenter(size);
+        WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
 
     private void createIsland(ParkourPlayer pp, SubareaPoint point) {
         Player player = pp.getPlayer();
         collection.put(point, pp);
-        Location spawn = point.getEstimatedCenter(borderSize).toLocation(world).clone();
+        Location spawn = point.getEstimatedCenter((int) pp.getGenerator().borderOffset * 2).toLocation(world).clone();
 
         Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
         spawn.setY(spawn.getY() - dimension.getY());
@@ -228,7 +229,7 @@ public class SubareaDivider {
 
         List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
-        pp.getGenerator().heading = heading;
+        pp.getGenerator().heading = heading.clone();
         Location to = null;
         Location parkourBegin = null;
         boolean playerDetected = false;
@@ -254,7 +255,7 @@ public class SubareaDivider {
                 player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(heading.multiply(-1)); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1)); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }
@@ -266,7 +267,7 @@ public class SubareaDivider {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
         }
         if (to != null && parkourBegin != null) {
-            pp.getGenerator().generateFirst(to, parkourBegin);
+            pp.getGenerator().generateFirst(to.clone(), parkourBegin.clone());
         }
         BukkitRunnable delay = new BukkitRunnable() {
             @Override

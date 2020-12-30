@@ -46,7 +46,7 @@ advanced:
             # The block the player will spawn on
             # This block will be set to air once the schematic's been pasted
             player-block: diamond_block
-            yaw: 180
+            yaw: -90
             pitch: 0
 
         parkour:
@@ -56,7 +56,7 @@ advanced:
 
             # The directional heading of the parkour
             # Possible options: north, south, west and east.
-            heading: north
+            heading: east
 
     # The size of 1 side of the playable area (so the diameter) of the square playing area
     border-size: 10000

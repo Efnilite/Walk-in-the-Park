@@ -51,6 +51,7 @@ public class ParkourGenerator {
     public Vector heading;
 
     private int structureCooldown;
+    private boolean deleteStructure;
     private boolean stopped;
     private Location lastSpawn;
     private Location lastPlayer;
@@ -75,6 +76,7 @@ public class ParkourGenerator {
      */
     public ParkourGenerator(ParkourPlayer player) {
         this.score = 0;
+        this.borderOffset = Configurable.BORDER_SIZE / 2.0;
         this.stopped = false;
         this.player = player;
         this.structureCooldown = 30;
@@ -87,6 +89,7 @@ public class ParkourGenerator {
         this.stopwatch = new Stopwatch();
         this.structureBlocks = new ArrayList<>();
         this.multiplierDecreases = new HashMap<>();
+        this.deleteStructure = false;
 
         double multiplier = Configurable.MULTIPLIER;
         multiplierDecreases.put(1, (Configurable.MAXED_ONE_BLOCK - Configurable.NORMAL_ONE_BLOCK) / multiplier);
@@ -111,16 +114,16 @@ public class ParkourGenerator {
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();
-                    Integer value = buildLog.get(last);
-                    if (value != null) {
-                        if (value == -1) {
-                            score += 10;
-                            for (Block block : structureBlocks) {
-                                block.setType(Material.AIR);
-                            }
-                            player.updateScoreboard();
-                            return;
-                        }
+                    if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
+                        score += 10;
+                        player.updateScoreboard();
+                        structureCooldown = 30;
+                        generateNext(player.blockLead);
+                        deleteStructure = true;
+                        return;
+                    }
+                    Integer latest = buildLog.get(last);
+                    if (latest != null) {
                         if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
                             if (!stopwatch.hasStarted()) {
                                 stopwatch.start();
@@ -134,12 +137,15 @@ public class ParkourGenerator {
                             for (int i = lastIndex; i < size; i++) {
                                 Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
                             }
+                            if (deleteStructure) {
+                                deleteStructure = false;
+                                for (Block block : structureBlocks) {
+                                    block.setType(Material.AIR);
+                                }
+                                structureBlocks.clear();
+                            }
                         }
 
-                        Integer latest = buildLog.get(last);
-                        if (latest == null) {
-                            return;
-                        }
                         int difference = player.blockLead - latest;
                         if (difference > 0) {
                             generateNext(Math.abs(difference));
@@ -157,9 +163,14 @@ public class ParkourGenerator {
      * Resets the parkour
      */
     public void reset(boolean regenerate) {
+        for (Block block : structureBlocks) {
+            block.setType(Material.AIR);
+        }
+        structureBlocks.clear();
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
+        structureCooldown = 30;
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
         String message;
@@ -206,10 +217,11 @@ public class ParkourGenerator {
             }
         }
 
-        int def = structureCooldown == 0 && player.useStructures ? defaultChances.get(random.nextInt(defaultChances.size())) : 0;
+//        int def = structureCooldown == 0 && player.useStructures ? defaultChances.get(random.nextInt(defaultChances.size())) : 0;
+        int def = 0;
         switch (def) {
             case 0:
-                if (isNearBorder(lastSpawn.toVector())) {
+                if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
                     int copy = score;
                     reset(true);
                     score = copy;
@@ -317,12 +329,14 @@ public class ParkourGenerator {
                 if (structureCooldown > 0) {
                     structureCooldown--;
                 }
+
                 break;
             case 1:
                 File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File structure = files.get(random.nextInt(files.size() - 1));
 
+                structureCooldown = 30;
                 int gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
                 if (possibleStructure.size() == 0) {
@@ -331,22 +345,19 @@ public class ParkourGenerator {
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
 
                 StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation());
-                structureBlocks = data.blocks;
+                structureBlocks = new ArrayList<>(data.blocks);
                 lastSpawn = data.end.clone();
-                generateNext(player.blockLead);
-
-                structureCooldown = 20;
                 break;
         }
 
-        int listSize = player.blockLead + 5; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 7; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
             locations = locations.subList(0, listSize);
         }
         buildLog.clear();
-        buildLog.put(Util.toString(lastSpawn, false), (def == 0 ? 0 : -1));
+        buildLog.put(Util.toString(lastSpawn, false), 0);
         for (int i = 0; i < locations.size(); i++) {
             String location = locations.get(i);
             if (location != null) {
@@ -415,7 +426,7 @@ public class ParkourGenerator {
         if (heading.getBlockZ() != 0) {
             return vector.getZ() * heading.getZ() > 0;
         } else if (heading.getBlockX() != 0) {
-            return vector.getX() * heading.getX() > 0;
+            return vector.getX() * heading.getX() < 0;
         } else {
             Verbose.error("Invalid heading vector: " + heading.toString());
             return false;
@@ -428,7 +439,7 @@ public class ParkourGenerator {
      * @param vector The vector
      */
     public boolean isNearBorder(Vector vector) {
-        return borderOffset - Math.abs(vector.getX()) < 25 || borderOffset - Math.abs(vector.getZ()) < 25;
+        return Math.abs(borderOffset - Math.abs(vector.getX())) < 25 || Math.abs(borderOffset - Math.abs(vector.getZ())) < 25;
     }
 
     public boolean isNearIsland(Vector vector) {
@@ -457,6 +468,7 @@ public class ParkourGenerator {
         public static int MIN_Y;
 
         // Advanced settings
+        public static double BORDER_SIZE;
         public static int GENERATOR_CHECK;
         public static double HEIGHT_GAP;
         public static double MULTIPLIER;
@@ -485,6 +497,7 @@ public class ParkourGenerator {
             MIN_Y = file.getInt("generation.settings.min-y");
 
             // Advanced settings
+            BORDER_SIZE = file.getDouble("advanced.border-size");
             GENERATOR_CHECK = file.getInt("advanced.generator-check");
             HEIGHT_GAP = file.getDouble("advanced.height-gap");
             MULTIPLIER = file.getInt("advanced.maxed-multiplier");

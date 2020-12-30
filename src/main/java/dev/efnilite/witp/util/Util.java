@@ -117,10 +117,8 @@ public class Util {
         try {
             player.sendPluginMessage(WITP.getInstance(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
-            player.sendMessage(Util.color("&cThere was an error while trying to move you to server " + server));
-            player.sendMessage(Util.color("&cPlease quit the server and contact a server administrator about this issue."));
-            Verbose.error("Tried to send " + player.getName() + " to server " + server + " but this server" +
-                    " is not registered!");
+            Verbose.error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
+            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
         }
     }
 

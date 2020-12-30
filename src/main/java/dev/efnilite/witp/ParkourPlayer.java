@@ -3,6 +3,7 @@ package dev.efnilite.witp;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -11,8 +12,10 @@ import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,6 +66,8 @@ public class ParkourPlayer {
      * The player's points
      */
     public UUID openInventory;
+    private final Location previousLocation;
+    private HashMap<Integer, ItemStack> previousInventory;
     private List<Material> possibleStyle;
     private final File file;
     private final Player player;
@@ -76,6 +81,15 @@ public class ParkourPlayer {
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useDifficulty, boolean useStructures) {
+        this.previousLocation = player.getLocation().clone();
+        this.previousInventory = new HashMap<>();
+        int index = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null) {
+                previousInventory.put(index, item);
+            }
+        }
+
         this.highScore = highScore;
         this.blockLead = blockLead;
         this.style = style;
@@ -86,12 +100,12 @@ public class ParkourPlayer {
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.player = player;
         this.possibleStyle = new ArrayList<>();
-        this.generator = new ParkourGenerator(this);
         this.board = new FastBoard(player);
-        updateScoreboard();
-
         setStyle(style);
+        this.generator = new ParkourGenerator(this);
+
         WITP.getDivider().generate(this);
+        updateScoreboard();
     }
 
     /**
@@ -177,7 +191,7 @@ public class ParkourPlayer {
                         this.saveStats();
                     });
                     i++;
-                    builder2.setItem(22, new ItemBuilder(Material.BARRIER, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+                    builder2.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
                 }
                 builder2.build();
             });
@@ -192,10 +206,10 @@ public class ParkourPlayer {
                     saveStats();
                 });
             }
-            builder1.setItem(22, new ItemBuilder(Material.BARRIER, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+            builder1.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder1.build();
         });
-        builder.setItem(13, new ItemBuilder(Material.CLOCK, "&a&lTime")
+        builder.setItem(14, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
             HashMap<String, Integer> times = new HashMap<>();
             times.put("Day", 1000);
@@ -214,13 +228,13 @@ public class ParkourPlayer {
                 });
                 i++;
             }
-            builder3.setItem(22, new ItemBuilder(Material.BARRIER, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+            builder3.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder3.build();
         });
         Material difficulty = useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL;
         String difficultyString = Boolean.toString(useDifficulty);
         String difficultyValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
-        builder.setItem(14, new ItemBuilder(difficulty, "&a&lUse difficulty")
+        builder.setItem(15, new ItemBuilder(difficulty, "&a&lUse difficulty")
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
                     useDifficulty = !useDifficulty;
@@ -228,18 +242,26 @@ public class ParkourPlayer {
                     saveStats();
                     player.closeInventory();
         });
-        Material structures = useStructures ? Material.GREEN_WOOL : Material.RED_WOOL;
-        String structuresString = Boolean.toString(useStructures);
-        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
-        builder.setItem(15, new ItemBuilder(structures, "&a&lUse structures")
-                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
-                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
-                    useStructures = !useStructures;
-                    send("&7You changed your changed your usage of structures to " + Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-                    saveStats();
-                    player.closeInventory();
+//        Material structures = useStructures ? Material.GREEN_WOOL : Material.RED_WOOL;
+//        String structuresString = Boolean.toString(useStructures);
+//        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
+//        builder.setItem(15, new ItemBuilder(structures, "&a&lUse structures")
+//                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
+//                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
+//                    useStructures = !useStructures;
+//                    send("&7You changed your changed your usage of structures to " + Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
+//                    saveStats();
+//                    player.closeInventory();
+//        });
+        builder.setItem(3 * 9 - 1, new ItemBuilder(Material.ARROW, "&4&lQuit").build(), (t2, e2) -> {
+            try {
+                ParkourPlayer.unregister(this);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to quit player " + player.getName());
+            }
         });
-        builder.setItem(22, new ItemBuilder(Material.BARRIER, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+        builder.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
         builder.build();
     }
 
@@ -333,7 +355,7 @@ public class ParkourPlayer {
                 return pp;
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
-                        WITP.getConfiguration().getString("config", "styles.default"), 4, true, true);
+                        WITP.getConfiguration().getString("config", "styles.default"), 4, true, false);
                 players.put(player, pp);
                 pp.save();
                 return pp;
@@ -368,11 +390,28 @@ public class ParkourPlayer {
      *          When saving the player's file goes wrong
      */
     public static void unregister(@NotNull ParkourPlayer player) throws IOException {
+        new PlayerLeaveEvent(player).call();
         player.generator.reset(false);
         player.generator.finish();
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
+        if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
+            Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+        } else {
+            player.getPlayer().teleport(player.getPreviousLocation());
+            for (int slot : player.getPreviousInventory().keySet()){
+                player.getPlayer().getInventory().setItem(slot, player.getPreviousInventory().get(slot));
+            }
+        }
+    }
+
+    public HashMap<Integer, ItemStack> getPreviousInventory() {
+        return previousInventory;
+    }
+
+    public Location getPreviousLocation() {
+        return previousLocation;
     }
 
     /**
