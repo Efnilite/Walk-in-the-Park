@@ -31,7 +31,7 @@ generation:
     settings:
 
         # The minimal y value for parkour to be generated at
-        min-y: 60
+        min-y: 100
 
         # The maximum y value for parkour to be generated at
         max-y: 200

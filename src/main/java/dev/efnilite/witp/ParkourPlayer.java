@@ -38,42 +38,26 @@ public class ParkourPlayer {
      * Player data used in saving
      */
     public @Expose int highScore;
-    /**
-     * Player data used in saving
-     */
     public @Expose int blockLead;
-    /**
-     * Player data used in saving
-     */
     public @Expose boolean useDifficulty;
-    /**
-     * Player data used in saving
-     */
     public @Expose Boolean useParticles;
-    /**
-     * Player data used in saving
-     */
+    public @Expose Boolean showScoreboard;
+    public @Expose Boolean showDeathMsg;
     public @Expose boolean useStructures;
-    /**
-     * Player data used in saving
-     */
     public @Expose String time;
-    /**
-     * Player data used in saving
-     */
     public @Expose String style;
 
     /**
      * The player's points
      */
     public UUID openInventory;
-    private final Location previousLocation;
-    private HashMap<Integer, ItemStack> previousInventory;
+    private FastBoard board;
     private List<Material> possibleStyle;
+    private final Location previousLocation;
+    private final HashMap<Integer, ItemStack> previousInventory;
     private final File file;
     private final Player player;
     private final ParkourGenerator generator;
-    private final FastBoard board;
     private static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
@@ -82,7 +66,7 @@ public class ParkourPlayer {
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
-                         boolean useDifficulty, boolean useStructures) {
+                         boolean useDifficulty, boolean useStructures, boolean showScoreboard, boolean showDeathMsg) {
         this.previousLocation = player.getLocation().clone();
         this.previousInventory = new HashMap<>();
         int index = 0;
@@ -92,6 +76,8 @@ public class ParkourPlayer {
             }
         }
 
+        this.showScoreboard = showScoreboard;
+        this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
         this.blockLead = blockLead;
         this.style = style;
@@ -180,7 +166,7 @@ public class ParkourPlayer {
         InventoryBuilder builder3 = new InventoryBuilder(this, 3, "Time").open();
 
         if (WITP.getConfiguration().getFile("config").getBoolean("styles.enabled")) {
-            builder.setItem(11, new ItemBuilder(Material.END_STONE, "&a&lParkour style")
+            builder.setItem(10, new ItemBuilder(Material.END_STONE, "&a&lParkour style")
                     .setLore("&7The style of your parkour.", "&7(which blocks will be used)", "", "&7Currently: &a" + style).build(), (t, e) -> {
                 List<String> styles = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                 if (styles == null) {
@@ -206,7 +192,7 @@ public class ParkourPlayer {
                 builder2.build();
             });
         }
-        builder.setItem(12, new ItemBuilder(Material.GLASS, "&a&lLead")
+        builder.setItem(11, new ItemBuilder(Material.GLASS, "&a&lLead")
                 .setLore("&7How many blocks will", "&7be generated ahead of you.", "", "&7Currently: &a" + blockLead + " blocks").build(), (t, e) -> {
             for (int i = 10; i < 17; i++) {
                 builder1.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
@@ -219,7 +205,7 @@ public class ParkourPlayer {
             builder1.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder1.build();
         });
-        builder.setItem(13, new ItemBuilder(Material.CLOCK, "&a&lTime")
+        builder.setItem(12, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
             List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
             int i = 11;
@@ -241,7 +227,7 @@ public class ParkourPlayer {
         Material difficulty = useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL;
         String difficultyString = Boolean.toString(useDifficulty);
         String difficultyValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
-        builder.setItem(15, new ItemBuilder(difficulty, "&a&lUse difficulty")
+        builder.setItem(13, new ItemBuilder(difficulty, "&a&lUse difficulty")
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
                     useDifficulty = !useDifficulty;
@@ -259,6 +245,36 @@ public class ParkourPlayer {
             useParticles = !useParticles;
             send("&7You changed your changed your usage of particles to " +
                     Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
+            saveStats();
+            player.closeInventory();
+        });
+        Material deathMsg = showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String deathString = Boolean.toString(showDeathMsg);
+        String deathValue = Util.normalizeBoolean(Util.colorBoolean(deathString));
+        builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow death message")
+                .setLore("&7If enabled shows a message", "&7when you fall with extra info.", "",
+                        "&7Currently: " + deathValue).build(), (t2, e2) -> {
+            showDeathMsg = !showDeathMsg;
+            send("&7You changed your changed your showing of the death message to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
+            saveStats();
+            player.closeInventory();
+        });
+        Material scoreboard = showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String scoreboardString = Boolean.toString(showScoreboard);
+        String scoreboardValue = Util.normalizeBoolean(Util.colorBoolean(scoreboardString));
+        builder.setItem(16, new ItemBuilder(scoreboard, "&a&lShow scoreboard")
+                .setLore("&7If enabled shows the scoreboard", "",
+                        "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
+            showScoreboard = !showScoreboard;
+            if (showScoreboard) {
+                board = new FastBoard(player);
+                updateScoreboard();
+            } else {
+                board.delete();
+            }
+            send("&7You changed your changed your showing of the scoreboard to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
             saveStats();
             player.closeInventory();
         });
@@ -371,8 +387,14 @@ public class ParkourPlayer {
                 if (from.useParticles == null) { // outdated file format
                     from.useParticles = true;
                 }
+                if (from.showDeathMsg == null) {
+                    from.showDeathMsg = true;
+                }
+                if (from.showScoreboard == null) {
+                    from.showScoreboard = true;
+                }
                 ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useParticles, from.useDifficulty, from.useStructures);
+                        from.useParticles, from.useDifficulty, from.useStructures, from.showScoreboard, from.showDeathMsg);
                 pp.save();
                 players.put(player, pp);
                 reader.close();
@@ -380,7 +402,7 @@ public class ParkourPlayer {
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
                         WITP.getConfiguration().getString("config", "styles.default"),
-                        4, true, true, false);
+                        4, true, true, false, true, true);
                 players.put(player, pp);
                 pp.save();
                 return pp;

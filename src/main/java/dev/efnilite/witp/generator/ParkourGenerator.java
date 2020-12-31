@@ -123,7 +123,9 @@ public class ParkourGenerator {
                     lastPlayer = current.getLocation();
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        player.updateScoreboard();
+                        if (player.showScoreboard) {
+                            player.updateScoreboard();
+                        }
                         structureCooldown = 30;
                         generateNext(player.blockLead);
                         deleteStructure = true;
@@ -142,7 +144,9 @@ public class ParkourGenerator {
                                 player.send(Configurable.REWARDS_MESSAGE);
                             }
                             new PlayerScoreEvent(player).call();
-                            player.updateScoreboard();
+                            if (player.showScoreboard) {
+                                player.updateScoreboard();
+                            }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last);
                             int size = locations.size();
@@ -166,7 +170,9 @@ public class ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                player.updateScoreboard();
+                if (player.showScoreboard) {
+                    player.updateScoreboard();
+                }
             }
         }, Configurable.GENERATOR_CHECK);
     }
@@ -191,21 +197,26 @@ public class ParkourGenerator {
         structureCooldown = 30;
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
-        String message;
-        if (score == player.highScore) {
-            message = "You tied your high score!";
-        } else if (score > player.highScore) {
-            message = "You beat your high score by " + (score - player.highScore) + " points!";
+        if (player.showDeathMsg) {
+            String message;
+            if (score == player.highScore) {
+                message = "You tied your high score!";
+            } else if (score > player.highScore) {
+                message = "You beat your high score by " + (score - player.highScore) + " points!";
+            } else {
+                message = "You missed your high score by " + (player.highScore - score) + " points!";
+            }
+            if (score > player.highScore) {
+                player.setHighScore(score);
+            }
+            player.send("&7----------------------------------------", "&aYour score: &f" +
+                            score, "&aYour time: &f" + time, "&aYour highscore: &f" + player.highScore, "&7" + message,
+                    "&7----------------------------------------");
         } else {
-            message = "You missed your high score by " + (player.highScore - score) + " points!";
+            if (score > player.highScore) {
+                player.setHighScore(score);
+            }
         }
-        if (score > player.highScore) {
-            player.setHighScore(score);
-        }
-        player.send("&7----------------------------------------",
-                "&aYour score: &f" + score, "&aYour time: &f" + time,
-                "&aYour highscore: &f" + player.highScore, "&7" + message,
-                "&7----------------------------------------");
         score = 0;
         stopwatch.stop();
         if (regenerate) {
