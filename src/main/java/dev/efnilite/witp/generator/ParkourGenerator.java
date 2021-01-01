@@ -13,7 +13,6 @@ import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -67,6 +66,7 @@ public class ParkourGenerator {
     private final ParkourPlayer player;
     private final LinkedHashMap<String, Integer> buildLog;
     private final HashMap<Integer, Integer> distanceChances;
+    private final HashMap<Integer, Integer> specialChances;
     private final HashMap<Integer, Integer> heightChances;
     private final HashMap<Integer, Integer> defaultChances;
     private final HashMap<Integer, Double> multiplierDecreases;
@@ -90,6 +90,7 @@ public class ParkourGenerator {
         this.lastPlayer = lastSpawn.clone();
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();
+        this.specialChances = new HashMap<>();
         this.buildLog = new LinkedHashMap<>();
         this.defaultChances = new HashMap<>();
         this.stopwatch = new Stopwatch();
@@ -123,7 +124,7 @@ public class ParkourGenerator {
                     lastPlayer = current.getLocation();
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        if (player.showScoreboard) {
+                        if (player.useSpecial) {
                             player.updateScoreboard();
                         }
                         structureCooldown = 30;
@@ -144,7 +145,7 @@ public class ParkourGenerator {
                                 player.send(Configurable.REWARDS_MESSAGE);
                             }
                             new PlayerScoreEvent(player).call();
-                            if (player.showScoreboard) {
+                            if (player.useSpecial) {
                                 player.updateScoreboard();
                             }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -170,7 +171,7 @@ public class ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                if (player.showScoreboard) {
+                if (player.useSpecial) {
                     player.updateScoreboard();
                 }
             }
@@ -244,10 +245,19 @@ public class ParkourGenerator {
                 defaultChances.put(index, 1);
                 index++;
             }
+            for (int i = 0; i < Configurable.SPECIAL; i++) {
+                defaultChances.put(index, 2);
+                index++;
+            }
         }
 
-//        int def = structureCooldown == 0 && player.useStructures ? defaultChances.get(random.nextInt(defaultChances.size())) : 0;
-        int def = 0;
+        int def = defaultChances.get(random.nextInt(defaultChances.size())); // 0 = normal, 1 = structures
+        int special = def == 2 ? 1 : 0; // 1 = yes, 0 = no
+        if (special == 1) {
+            def = 0;
+        } else {
+            def = structureCooldown == 0 && player.useStructures ? def : 0;
+        }
         switch (def) {
             case 0:
                 if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
@@ -347,12 +357,31 @@ public class ParkourGenerator {
                     height = heightChances.get(random.nextInt(heightChances.size())); // -1 * -1 = +1 when y should be +1, so this works
                 }
                 int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+
+                Material material = player.randomMaterial();
+                if (special == 1 && player.useSpecial) {
+                    if (specialChances.size() == 0) {
+                        int index = 0;
+                        for (int i = 0; i < Configurable.SPECIAL_ICE; i++) {
+                            specialChances.put(index, 0);
+                            index++;
+                        }
+                    }
+
+                    int spec = specialChances.get(random.nextInt(specialChances.size() - 1));
+                    if (spec == 0) {
+                        material = Material.PACKED_ICE;
+                        gap++;
+                    }
+                }
+
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
                     return;
                 }
+
                 Block chosen = possible.get(random.nextInt(possible.size()));
-                chosen.setType(player.randomMaterial());
+                chosen.setType(material);
                 new BlockGenerateEvent(chosen, this, player).call();
                 lastSpawn = chosen.getLocation().clone();
 
@@ -483,7 +512,10 @@ public class ParkourGenerator {
     public static class Configurable {
 
         public static int NORMAL;
+        public static int SPECIAL;
         public static int STRUCTURES;
+
+        public static int SPECIAL_ICE;
 
         public static int NORMAL_ONE_BLOCK;
         public static int NORMAL_TWO_BLOCK;
@@ -524,6 +556,9 @@ public class ParkourGenerator {
             FileConfiguration config = WITP.getConfiguration().getFile("config");
             NORMAL = file.getInt("generation.normal-jump.chance");
             STRUCTURES = file.getInt("generation.structures.chance");
+            SPECIAL = file.getInt("generation.normal-jump.special.chance");
+
+            SPECIAL_ICE = file.getInt("generation.normal-jump.special.ice");
 
             NORMAL_ONE_BLOCK = file.getInt("generation.normal-jump.1-block");
             NORMAL_TWO_BLOCK = file.getInt("generation.normal-jump.2-block");

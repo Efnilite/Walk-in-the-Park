@@ -6,7 +6,7 @@ generation:
     normal-jump:
 
         # The chance for normal jumps to appear (in %)
-        chance: 99
+        chance: 90
 
         # The chances of different types of block jumps
         # if 'normal-jump' is selected to be the next parkour section
@@ -21,11 +21,21 @@ generation:
         down: 10
         down2: 5 # Goes down 2 blocks
 
+        # Settings for special blocks
+        # Note: these jumps use the chances above for distance
+        special:
+
+            # The chance for special jumps to appear (in %)
+            chance: 10
+
+            # The type of block
+            ice: 100
+
     # The settings for structures
     structures:
 
         # The chance for structures to appear (in %)
-        chance: 1
+        chance: 0
 
     settings:
 

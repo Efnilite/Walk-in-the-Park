@@ -41,7 +41,7 @@ public class ParkourPlayer {
     public @Expose int blockLead;
     public @Expose boolean useDifficulty;
     public @Expose Boolean useParticles;
-    public @Expose Boolean showScoreboard;
+    public @Expose Boolean useSpecial;
     public @Expose Boolean showDeathMsg;
     public @Expose boolean useStructures;
     public @Expose String time;
@@ -76,7 +76,7 @@ public class ParkourPlayer {
             }
         }
 
-        this.showScoreboard = showScoreboard;
+        this.useSpecial = showScoreboard;
         this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
         this.blockLead = blockLead;
@@ -251,30 +251,30 @@ public class ParkourPlayer {
         Material deathMsg = showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL;
         String deathString = Boolean.toString(showDeathMsg);
         String deathValue = Util.normalizeBoolean(Util.colorBoolean(deathString));
-        builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow death message")
-                .setLore("&7If enabled shows a message", "&7when you fall with extra info.", "",
+        builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow fall message & scoreboard")
+                .setLore("&7If enabled shows a message when you fall", "&7with extra info and the scoreboard", "",
                         "&7Currently: " + deathValue).build(), (t2, e2) -> {
             showDeathMsg = !showDeathMsg;
-            send("&7You changed your changed your showing of the death message to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
-            saveStats();
-            player.closeInventory();
-        });
-        Material scoreboard = showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL;
-        String scoreboardString = Boolean.toString(showScoreboard);
-        String scoreboardValue = Util.normalizeBoolean(Util.colorBoolean(scoreboardString));
-        builder.setItem(16, new ItemBuilder(scoreboard, "&a&lShow scoreboard")
-                .setLore("&7If enabled shows the scoreboard", "",
-                        "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
-            showScoreboard = !showScoreboard;
-            if (showScoreboard) {
+            if (showDeathMsg) {
                 board = new FastBoard(player);
                 updateScoreboard();
             } else {
                 board.delete();
             }
-            send("&7You changed your changed your showing of the scoreboard to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+            send("&7You changed your changed your showing of the fall message and scoreboard to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
+            saveStats();
+            player.closeInventory();
+        });
+        Material special = useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String specialString = Boolean.toString(useSpecial);
+        String specialValue = Util.normalizeBoolean(Util.colorBoolean(specialString));
+        builder.setItem(16, new ItemBuilder(special, "&a&lUse special blocks")
+                .setLore("&7If enabled uses special blocks.", "",
+                        "&7Currently: " + specialValue).build(), (t2, e2) -> {
+            useSpecial = !useSpecial;
+            send("&7You changed your changed your usage of special blocks to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
             saveStats();
             player.closeInventory();
         });
@@ -390,11 +390,11 @@ public class ParkourPlayer {
                 if (from.showDeathMsg == null) {
                     from.showDeathMsg = true;
                 }
-                if (from.showScoreboard == null) {
-                    from.showScoreboard = true;
+                if (from.useSpecial == null) {
+                    from.useSpecial = true;
                 }
                 ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useParticles, from.useDifficulty, from.useStructures, from.showScoreboard, from.showDeathMsg);
+                        from.useParticles, from.useDifficulty, from.useStructures, from.useSpecial, from.showDeathMsg);
                 pp.save();
                 players.put(player, pp);
                 reader.close();

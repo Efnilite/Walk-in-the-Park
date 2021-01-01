@@ -19,7 +19,10 @@ public class MainCommand extends BukkitCommand {
     public boolean execute(Player player, String[] args) {
         if (args.length == 0) {
             player.sendMessage(Util.color("&7--------------- &aWITP &7---------------"));
-            player.sendMessage(Util.color("&a/witp &f- Main command"));
+            player.sendMessage(Util.color("&a/witp &f- &7Main command"));
+            player.sendMessage(Util.color("&a/witp join &f- &7Join the game on this server"));
+            player.sendMessage(Util.color("&a/witp leave &f- &7Leave the game on this server"));
+            player.sendMessage(Util.color("&a/witp customize &f- &7Open the customization menu"));
             return true;
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("join")) {
@@ -50,8 +53,6 @@ public class MainCommand extends BukkitCommand {
                 if (pp != null) {
                     pp.menu();
                 }
-            } else if (args[0].equalsIgnoreCase("test")) {
-                new VersionManager_v1_16_R3().placeAt(new File(WITP.getInstance().getDataFolder() + "/structures/parkour-1.nbt"), player.getLocation());
             }
         }
         return false;
@@ -59,6 +60,6 @@ public class MainCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(Player player, String[] args) {
-        return Arrays.asList("join", "generate", "customize");
+        return Arrays.asList("join", "generate", "customize", "leave");
     }
 }
