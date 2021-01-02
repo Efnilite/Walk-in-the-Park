@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 public class Verbose {
 
     private static Boolean enabled;
-    private static final Logger logger;
+    private static Logger logger;
 
-    static {
+    public static void init() {
         logger = WITP.getInstance().getLogger();
     }
 

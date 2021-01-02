@@ -13,6 +13,8 @@ import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -117,8 +119,11 @@ public class ParkourGenerator {
                     reset(true);
                     return;
                 }
-                Block current = playerLoc.subtract(0, 1, 0).getBlock();
-                String last = Util.toString(lastPlayer, false);
+                Block at = playerLoc.getBlock();
+                Block current = playerLoc.clone().subtract(0, 1, 0).getBlock();
+                if (at.getType() != Material.AIR) {
+                    current = at;
+                }
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();
@@ -132,6 +137,7 @@ public class ParkourGenerator {
                         deleteStructure = true;
                         return;
                     }
+                    String last = Util.toString(lastPlayer, false);
                     Integer latest = buildLog.get(last);
                     if (latest != null) {
                         if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
@@ -149,7 +155,7 @@ public class ParkourGenerator {
                                 player.updateScoreboard();
                             }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
-                            int lastIndex = locations.indexOf(last);
+                            int lastIndex = locations.indexOf(last) + 1;
                             int size = locations.size();
                             for (int i = lastIndex; i < size; i++) {
                                 Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
@@ -354,11 +360,11 @@ public class ParkourGenerator {
                         height = heightChances.get(random.nextInt(heightChances.size()));
                     }
                 } else {
-                    height = heightChances.get(random.nextInt(heightChances.size())); // -1 * -1 = +1 when y should be +1, so this works
+                    height = heightChances.get(random.nextInt(heightChances.size()));
                 }
-                int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                double gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
 
-                Material material = player.randomMaterial();
+                BlockData material = player.randomMaterial().createBlockData();
                 if (special == 1 && player.useSpecial) {
                     if (specialChances.size() == 0) {
                         int index = 0;
@@ -366,22 +372,44 @@ public class ParkourGenerator {
                             specialChances.put(index, 0);
                             index++;
                         }
+                        for (int i = 0; i < Configurable.SPECIAL_SLAB; i++) {
+                            specialChances.put(index, 1);
+                            index++;
+                        }
+                        for (int i = 0; i < Configurable.SPECIAL_PANE; i++) {
+                            specialChances.put(index, 2);
+                            index++;
+                        }
                     }
 
                     int spec = specialChances.get(random.nextInt(specialChances.size() - 1));
-                    if (spec == 0) {
-                        material = Material.PACKED_ICE;
-                        gap++;
+                    switch (spec) {
+                        case 0: // ice
+                            material = Material.PACKED_ICE.createBlockData();
+                            gap++;
+                            break;
+                        case 1: // slab
+                            material = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
+                            ((Slab) material).setType(Slab.Type.BOTTOM);
+                            height = Math.min(height, 0);
+                            break;
+                        case 2: // pane
+                            material = Material.GLASS_PANE.createBlockData();
+                            gap -= 0.5;
+                            break;
                     }
                 }
 
+                Location local = lastSpawn.clone();
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
+                    lastSpawn = local;
+                    generateNext();
                     return;
                 }
 
                 Block chosen = possible.get(random.nextInt(possible.size()));
-                chosen.setType(material);
+                chosen.setBlockData(material);
                 new BlockGenerateEvent(chosen, this, player).call();
                 lastSpawn = chosen.getLocation().clone();
 
@@ -458,16 +486,18 @@ public class ParkourGenerator {
         List<Block> possible = new ArrayList<>();
         World world = lastSpawn.getWorld();
         Location base = lastSpawn.add(0, dy, 0);
+        int y = base.getBlockY();
         double detail = (radius * 8);
         double increment = (2 * Math.PI) / detail;
 
-        double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1); // if dy <= 2 set max gap between blocks to default -1,
+        double heightGap = dy >= 0 ? Configurable.HEIGHT_GAP - dy : Configurable.HEIGHT_GAP - (dy + 1);
+        // if dy <= 2 set max gap between blocks to default -1,
         // otherwise jump will be impossible
         for (int i = 0; i < detail; i++) {
             double angle = i * increment;
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
-            Block block = new Location(world, x, base.getBlockY(), z).getBlock();
+            Block block = new Location(world, x, y, z).getBlock();
             if (isFollowing(base.clone().subtract(block.getLocation()).toVector()) // direction change
                     && block.getLocation().distance(base) <= heightGap) {
                 possible.add(block);
@@ -516,6 +546,8 @@ public class ParkourGenerator {
         public static int STRUCTURES;
 
         public static int SPECIAL_ICE;
+        public static int SPECIAL_SLAB;
+        public static int SPECIAL_PANE;
 
         public static int NORMAL_ONE_BLOCK;
         public static int NORMAL_TWO_BLOCK;
@@ -559,6 +591,8 @@ public class ParkourGenerator {
             SPECIAL = file.getInt("generation.normal-jump.special.chance");
 
             SPECIAL_ICE = file.getInt("generation.normal-jump.special.ice");
+            SPECIAL_SLAB = file.getInt("generation.normal-jump.special.slab");
+            SPECIAL_PANE = file.getInt("generation.normal-jump.special.pane");
 
             NORMAL_ONE_BLOCK = file.getInt("generation.normal-jump.1-block");
             NORMAL_TWO_BLOCK = file.getInt("generation.normal-jump.2-block");

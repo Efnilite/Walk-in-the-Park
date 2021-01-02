@@ -11,7 +11,9 @@ import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
+import dev.efnilite.witp.version.VersionManager_v1_16_R2;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,8 +34,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -46,19 +46,25 @@ public class WITP extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        instance = this;
+        Verbose.init();
+
         String version = Util.getVersion();
-        if ("v1_16_R3".equals(version)) {
-            versionManager = new VersionManager_v1_16_R3();
-        } else {
-            Verbose.error("You are trying to start this plugin using an invalid server version");
-            Verbose.error("This plugin only works in version 1.16.4");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
+        switch (version) {
+            case "v1_16_R3":
+                versionManager = new VersionManager_v1_16_R3();
+                break;
+            case "v1_16_R2":
+                versionManager = new VersionManager_v1_16_R2();
+                break;
+            default:
+                Verbose.error("You are trying to start this plugin using an invalid server version");
+                Verbose.error("This plugin only works in version 1.16.4");
+                this.getServer().getPluginManager().disablePlugin(this);
+                return;
         }
 
-        instance = this;
         configuration = new Configuration(this);
-
         if (configuration.getFile("config").getBoolean("metrics")) {
             new Metrics(this, 9272);
         }

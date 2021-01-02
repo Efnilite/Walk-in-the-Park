@@ -29,7 +29,9 @@ generation:
             chance: 10
 
             # The type of block
-            ice: 100
+            ice: 60
+            slab: 30 # for bottom-side half slabs
+            pane: 10 # for glass panes
 
     # The settings for structures
     structures:
@@ -73,7 +75,7 @@ advanced:
     # Time interval for the generator checking what block the player is on
     generator-check: 2
 
-    # The height gap used for determining the distance between
+    # The height gap used for determining the max distance between 2 blocks
     height-gap: 4.5
 
     # From which score the difficulty multiplier is maxed (so from e.g.
