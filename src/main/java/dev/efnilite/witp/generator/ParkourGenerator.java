@@ -129,7 +129,7 @@ public class ParkourGenerator {
                     lastPlayer = current.getLocation();
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        if (player.useSpecial) {
+                        if (player.showDeathMsg) {
                             player.updateScoreboard();
                         }
                         structureCooldown = 30;
@@ -151,7 +151,7 @@ public class ParkourGenerator {
                                 player.send(Configurable.REWARDS_MESSAGE);
                             }
                             new PlayerScoreEvent(player).call();
-                            if (player.useSpecial) {
+                            if (player.showDeathMsg) {
                                 player.updateScoreboard();
                             }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -177,7 +177,7 @@ public class ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                if (player.useSpecial) {
+                if (player.showDeathMsg) {
                     player.updateScoreboard();
                 }
             }

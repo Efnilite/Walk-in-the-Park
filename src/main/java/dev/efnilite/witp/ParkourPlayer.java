@@ -20,10 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -46,6 +43,8 @@ public class ParkourPlayer {
     public @Expose boolean useStructures;
     public @Expose String time;
     public @Expose String style;
+    public @Expose String lang;
+
 
     /**
      * The player's points
@@ -59,6 +58,7 @@ public class ParkourPlayer {
     private final Player player;
     private final ParkourGenerator generator;
     private static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
+    private static final HashMap<Integer, UUID> highScores = new HashMap<>();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     /**
@@ -75,7 +75,6 @@ public class ParkourPlayer {
                 previousInventory.put(index, item);
             }
         }
-
         this.useSpecial = showScoreboard;
         this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
@@ -101,6 +100,34 @@ public class ParkourPlayer {
         }
     }
 
+
+    /**
+     * Gets a message from lang.yml
+     *
+     * @param   path
+     *          The path name in lang.yml (for example: 'time-preference')
+     *
+     * @param   replaceable
+     *          What can be replaced (for example: %s to yes)
+     */
+    public void sendTranslated(String path, String... replaceable) {
+        path = "lang." + lang + "." + path;
+        String string = WITP.getConfiguration().getString("lang", path);
+        if (string == null) {
+            Verbose.error("Unknown path: " + path);
+            return;
+        }
+        for (String s : replaceable) {
+            string = string.replaceAll("%[a-z]", s);
+        }
+        send(string);
+    }
+
+    /**
+     * Gets the scoreboard of the player
+     *
+     * @return the {@link FastBoard} of the player
+     */
     public FastBoard getBoard() {
         return board;
     }
@@ -153,6 +180,7 @@ public class ParkourPlayer {
      */
     public void setHighScore(int score) {
         this.highScore = score;
+        highScores.put(score, player.getUniqueId());
         saveStats();
     }
 
@@ -175,6 +203,10 @@ public class ParkourPlayer {
                 }
                 int i = 0;
                 for (String style : styles) {
+                    if (i == 26) {
+                        Verbose.error("There are too many styles to display!");
+                        return;
+                    }
                     List<Material> possible = this.getPossibleMaterials(style);
                     if (possible == null) {
                         continue;
@@ -187,7 +219,7 @@ public class ParkourPlayer {
                         this.saveStats();
                     });
                     i++;
-                    builder2.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+                    builder2.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
                 }
                 builder2.build();
             });
@@ -202,7 +234,7 @@ public class ParkourPlayer {
                     saveStats();
                 });
             }
-            builder1.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+            builder1.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder1.build();
         });
         builder.setItem(12, new ItemBuilder(Material.CLOCK, "&a&lTime")
@@ -221,7 +253,7 @@ public class ParkourPlayer {
                 });
                 i++;
             }
-            builder3.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+            builder3.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder3.build();
         });
         Material difficulty = useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL;
@@ -231,7 +263,7 @@ public class ParkourPlayer {
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
                     useDifficulty = !useDifficulty;
-                    send("&7You changed your changed your usage of difficulty to " +
+                    send("&7You changed your usage of difficulty to " +
                             Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
                     saveStats();
                     player.closeInventory();
@@ -243,7 +275,7 @@ public class ParkourPlayer {
                 .setLore("&7If enabled every generated block", "&7will show particles and play a sound.", "",
                         "&7Currently: " + particlesValue).build(), (t2, e2) -> {
             useParticles = !useParticles;
-            send("&7You changed your changed your usage of particles to " +
+            send("&7You changed your usage of particles to " +
                     Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
             saveStats();
             player.closeInventory();
@@ -261,7 +293,7 @@ public class ParkourPlayer {
             } else {
                 board.delete();
             }
-            send("&7You changed your changed your showing of the fall message and scoreboard to " +
+            send("&7You changed your showing of the fall message and scoreboard to " +
                     Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
             saveStats();
             player.closeInventory();
@@ -273,7 +305,7 @@ public class ParkourPlayer {
                 .setLore("&7If enabled uses special blocks.", "",
                         "&7Currently: " + specialValue).build(), (t2, e2) -> {
             useSpecial = !useSpecial;
-            send("&7You changed your changed your usage of special blocks to " +
+            send("&7You changed your usage of special blocks to " +
                     Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
             saveStats();
             player.closeInventory();
@@ -290,7 +322,7 @@ public class ParkourPlayer {
 //                    saveStats();
 //                    player.closeInventory();
 //        });
-        builder.setItem(3 * 9 - 1, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
+        builder.setItem(26, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
             try {
                 ParkourPlayer.unregister(this);
             } catch (IOException ex) {
@@ -298,7 +330,7 @@ public class ParkourPlayer {
                 Verbose.error("Error while trying to quit player " + player.getName());
             }
         });
-        builder.setItem(22, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+        builder.setItem(25, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
         builder.build();
     }
 
@@ -411,6 +443,22 @@ public class ParkourPlayer {
         return players.get(player);
     }
 
+    // todo scoreboard
+    /**
+     * Gets the highscores of all player
+     *
+     * @throws  IOException
+     *          When creating the file reader goes wrong
+     */
+    public static void fetchHighScores() throws IOException {
+        File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+        for (File file : folder.listFiles()) {
+            FileReader reader = new FileReader(file);
+            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+            highScores.put(from.highScore, UUID.fromString(file.getName()));
+        }
+    }
+
     /**
      * Gets a ParkourPlayer from a regular Player
      *
@@ -427,6 +475,14 @@ public class ParkourPlayer {
         return null;
     }
 
+    /**
+     * Gets the time from a string
+     *
+     * @param   time
+     *          The time as a string
+     *
+     * @return the int value used to set the time
+     */
     public int getTime(String time) {
         switch (time.toLowerCase()) {
             case "noon":
