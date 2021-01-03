@@ -94,7 +94,7 @@ public class ParkourPlayer {
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
-        if (showDeathMsg) {
+        if (showDeathMsg && ParkourGenerator.Configurable.SCOREBOARD) {
             updateScoreboard();
         }
         if (player.isOp() && WITP.isOutdated) {
@@ -196,7 +196,7 @@ public class ParkourPlayer {
         InventoryBuilder builder3 = new InventoryBuilder(this, 3, "Time").open();
 
         if (WITP.getConfiguration().getFile("config").getBoolean("styles.enabled")) {
-            builder.setItem(10, new ItemBuilder(Material.END_STONE, "&a&lParkour style")
+            builder.setItem(9, new ItemBuilder(Material.END_STONE, "&a&lParkour style")
                     .setLore("&7The style of your parkour.", "&7(which blocks will be used)", "", "&7Currently: &a" + style).build(), (t, e) -> {
                 List<String> styles = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                 if (styles == null) {
@@ -226,7 +226,7 @@ public class ParkourPlayer {
                 builder2.build();
             });
         }
-        builder.setItem(11, new ItemBuilder(Material.GLASS, "&a&lLead")
+        builder.setItem(10, new ItemBuilder(Material.GLASS, "&a&lLead")
                 .setLore("&7How many blocks will", "&7be generated ahead of you.", "", "&7Currently: &a" + blockLead + " blocks").build(), (t, e) -> {
             for (int i = 10; i < 17; i++) {
                 builder1.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
@@ -239,7 +239,7 @@ public class ParkourPlayer {
             builder1.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
             builder1.build();
         });
-        builder.setItem(12, new ItemBuilder(Material.CLOCK, "&a&lTime")
+        builder.setItem(11, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
             List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
             int i = 11;
@@ -261,7 +261,7 @@ public class ParkourPlayer {
         Material difficulty = useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL;
         String difficultyString = Boolean.toString(useDifficulty);
         String difficultyValue = Util.normalizeBoolean(Util.colorBoolean(difficultyString));
-        builder.setItem(13, new ItemBuilder(difficulty, "&a&lUse difficulty")
+        builder.setItem(12, new ItemBuilder(difficulty, "&a&lUse difficulty")
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
                     useDifficulty = !useDifficulty;
@@ -304,7 +304,7 @@ public class ParkourPlayer {
         String specialString = Boolean.toString(useSpecial);
         String specialValue = Util.normalizeBoolean(Util.colorBoolean(specialString));
         builder.setItem(16, new ItemBuilder(special, "&a&lUse special blocks")
-                .setLore("&7If enabled uses special blocks.", "",
+                .setLore("&7If enabled uses special blocks like ice and slabs.", "",
                         "&7Currently: " + specialValue).build(), (t2, e2) -> {
             useSpecial = !useSpecial;
             send("&7You changed your usage of special blocks to " +
@@ -312,18 +312,18 @@ public class ParkourPlayer {
             saveStats();
             player.closeInventory();
         });
-//        Material structures = useStructures ? Material.GREEN_WOOL : Material.RED_WOOL;
-//        String structuresString = Boolean.toString(useStructures);
-//        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(useStructures));
-//        builder.setItem(15, new ItemBuilder(structures, "&a&lUse structures")
-//                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
-//                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
-//                    useStructures = !useStructures;
-//                    send("&7You changed your changed your usage of structures to " +
-        //                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-//                    saveStats();
-//                    player.closeInventory();
-//        });
+        Material structures = useStructure ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String structuresString = Boolean.toString(useStructure);
+        String structuresValue = Util.normalizeBoolean(Util.colorBoolean(structuresString));
+        builder.setItem(17, new ItemBuilder(structures, "&a&lUse structures")
+                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
+                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
+                    useStructure = !useStructure;
+                    send("&7You changed your usage of structures to " +
+                            Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
+                    saveStats();
+                    player.closeInventory();
+        });
         builder.setItem(26, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
             try {
                 ParkourPlayer.unregister(this, true);

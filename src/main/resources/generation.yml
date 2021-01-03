@@ -6,7 +6,8 @@ generation:
     normal-jump:
 
         # The chance for normal jumps to appear (in %)
-        chance: 70
+        # When compared to structures.chance and special.chance this should be 100%, but it can go over
+        chance: 88
 
         # The chances of different types of block jumps
         # if 'normal-jump' is selected to be the next parkour section
@@ -37,7 +38,7 @@ generation:
     structures:
 
         # The chance for structures to appear (in %)
-        chance: 20
+        chance: 2
 
     settings:
 

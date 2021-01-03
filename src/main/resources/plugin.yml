@@ -1,9 +1,10 @@
 name: 'WITP'
 description: 'Automatically generating, infinitely long parkour plugin. The sky, and your time, is the limit. The further you go, the harder it gets. Should be a walk in the park, right?'
 author: Efnilite, Ice_Pancake
-version: 1.4a
+version: 1.5
 api-version: 1.16
 main: dev.efnilite.witp.WITP
+softdepend: [Vault, PlaceholderAPI]
 commands:
     witp:
         aliases: [parkour]

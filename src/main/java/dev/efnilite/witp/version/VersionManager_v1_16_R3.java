@@ -94,7 +94,7 @@ public class VersionManager_v1_16_R3 implements VersionManager {
 
             World world = ((CraftWorld) to.getWorld()).getHandle();
             DefinedStructureInfo info = new DefinedStructureInfo().a(EnumBlockMirror.NONE).a(getRotation(heading))
-                    .a(false).a((ChunkCoordIntPair) null).c(false).a(ThreadLocalRandom.current());
+                    .a(true).a((ChunkCoordIntPair) null).c(true).a(ThreadLocalRandom.current());
             StructureBoundingBox box = structure.b(info, new BlockPosition(to.getBlockX(), to.getBlockY(), to.getBlockZ()));
             Location pos1 = new Location(to.getWorld(), box.a, box.b, box.c); // box coords to bukkit
             Location pos2 = new Location(to.getWorld(), box.d, box.e, box.f); // box coords to bukkit
@@ -124,10 +124,7 @@ public class VersionManager_v1_16_R3 implements VersionManager {
             to = to.subtract(beginPos); // where the structure gets pasted from (top left corner)
             structure.a((WorldAccess) world, new BlockPosition(to.getX(), to.getY(), to.getZ()), info, ThreadLocalRandom.current());
 
-            Verbose.info(min.toString());
-            Verbose.info(max.toString());
-
-            List<Block> blocks = Util.getBlocks(max, min);
+            List<Block> blocks = Util.getBlocks(max.clone(), min.clone());
             Location endPos = null;
             for (Block block : blocks) {
                 if (block.getType() == org.bukkit.Material.RED_WOOL) {

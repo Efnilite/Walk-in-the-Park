@@ -87,7 +87,7 @@ public class ParkourGenerator {
         this.borderOffset = Configurable.BORDER_SIZE / 2.0;
         this.stopped = false;
         this.player = player;
-        this.structureCooldown = 30;
+        this.structureCooldown = 20;
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
         this.distanceChances = new HashMap<>();
@@ -131,10 +131,10 @@ public class ParkourGenerator {
                     // Structure deletion check
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        if (player.showDeathMsg) {
+                        if (player.showDeathMsg && Configurable.SCOREBOARD) {
                             player.updateScoreboard();
                         }
-                        structureCooldown = 30;
+                        structureCooldown = 20;
                         generateNext(player.blockLead);
                         deleteStructure = true;
                         return;
@@ -150,16 +150,18 @@ public class ParkourGenerator {
                             totalScore++;
 
                             // Rewards
-                            if (Configurable.REWARDS && totalScore % Configurable.REWARDS_INTERVAL == 0 && Configurable.REWARDS_COMMAND != null) {
-                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
-                                player.send(Configurable.REWARDS_MESSAGE);
+                            if (Configurable.REWARDS && totalScore % Configurable.REWARDS_INTERVAL == 0) {
+                                if (Configurable.REWARDS_COMMAND != null) {
+                                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
+                                }
                                 if (Configurable.REWARDS_MONEY != 0) {
                                     Util.depositPlayer(player.getPlayer(), Configurable.REWARDS_MONEY);
                                 }
+                                player.send(Configurable.REWARDS_MESSAGE);
                             }
 
                             new PlayerScoreEvent(player).call();
-                            if (player.showDeathMsg) {
+                            if (player.showDeathMsg && Configurable.SCOREBOARD) {
                                 player.updateScoreboard();
                             }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -185,7 +187,7 @@ public class ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                if (player.showDeathMsg) {
+                if (player.showDeathMsg && Configurable.SCOREBOARD) {
                     player.updateScoreboard();
                 }
             }
@@ -209,7 +211,7 @@ public class ParkourGenerator {
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
-        structureCooldown = 30;
+        structureCooldown = 20;
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
         if (player.showDeathMsg) {
@@ -412,7 +414,6 @@ public class ParkourGenerator {
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
                     lastSpawn = local;
-                    generateNext();
                     return;
                 }
 
@@ -436,17 +437,30 @@ public class ParkourGenerator {
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File structure = files.get(random.nextInt(files.size() - 1));
 
-                structureCooldown = 30;
+                structureCooldown = 20;
                 int gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+
+                Location local2 = lastSpawn.clone();
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
                 if (possibleStructure.size() == 0) {
+                    lastSpawn = local2;
                     return;
                 }
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
 
                 StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation(), heading);
-                structureBlocks = new ArrayList<>(data.blocks);
+                structureBlocks = data.blocks;
                 lastSpawn = data.end.clone();
+
+                // if something during the pasting was set to air
+                List<String> locations = new ArrayList<>(buildLog.keySet());
+                int index = buildLog.get(Util.toString(lastPlayer, false));
+                for (int i = 0; i < index; i++) {
+                    Block block = Util.parseLocation(locations.get(i)).getBlock();
+                    if (!structureBlocks.contains(block) && block.getType() == Material.AIR) {
+                        block.setType(player.randomMaterial());
+                    }
+                }
                 break;
         }
 
@@ -540,10 +554,6 @@ public class ParkourGenerator {
         return Math.abs(borderOffset - Math.abs(vector.getX())) < 25 || Math.abs(borderOffset - Math.abs(vector.getZ())) < 25;
     }
 
-    public boolean isNearIsland(Vector vector) {
-        return vector.distance(playerSpawn.toVector()) < 50;
-    }
-
     /**
      * Class for variables required in generating without accessing the file a lot (constants)
      */
@@ -580,6 +590,8 @@ public class ParkourGenerator {
         public static Sound SOUND_TYPE;
         public static int SOUND_PITCH;
         public static Particle PARTICLE_TYPE;
+
+        public static boolean SCOREBOARD;
 
         // Advanced settings
         public static double BORDER_SIZE;
@@ -628,6 +640,8 @@ public class ParkourGenerator {
             if (REWARDS_MESSAGE.equalsIgnoreCase("null")) {
                 REWARDS_MESSAGE = null;
             }
+
+            SCOREBOARD = config.getBoolean("scoreboard.enabled");
 
             SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
             SOUND_PITCH = config.getInt("particles.sound-pitch");

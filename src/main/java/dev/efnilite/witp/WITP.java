@@ -3,6 +3,7 @@ package dev.efnilite.witp;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
+import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -68,6 +69,9 @@ public class WITP extends JavaPlugin implements Listener {
         if (configuration.getFile("config").getBoolean("metrics")) {
             new Metrics(this, 9272);
         }
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderHook().register();
+        }
 
         ParkourGenerator.Configurable.init();
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -80,7 +84,7 @@ public class WITP extends JavaPlugin implements Listener {
             public void run() {
                 checker.check();
             }
-        }, 20 * 60 * 20);
+        }, 30 * 60 * 20);
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {

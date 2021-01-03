@@ -53,7 +53,7 @@ public class Configuration {
      * Downloads the structures
      */
     private void structures() {
-        if (!(new File(plugin.getDataFolder().toString() + "/structures/spawn-island.nbt").exists())) {
+        if (!(new File(plugin.getDataFolder().toString() + "/structures/parkour-1.nbt").exists())) {
             String[] schematics = new String[] {"spawn-island.nbt"};
             File folder = new File(plugin.getDataFolder().toString() + "/structures");
             folder.mkdirs();
