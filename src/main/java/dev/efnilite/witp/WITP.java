@@ -183,7 +183,7 @@ public class WITP extends JavaPlugin implements Listener {
                         event.getPlayer().getName()));
             }
             try {
-                ParkourPlayer.unregister(player);
+                ParkourPlayer.unregister(player, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");

@@ -25,7 +25,7 @@ public interface VersionManager {
      *
      * @return Structure data, including the blocks of the structure and where it ends
      */
-    ParkourGenerator.StructureData placeAt(File file, Location to);
+    ParkourGenerator.StructureData placeAt(File file, Location to, Vector heading);
 
     void pasteStructure(File file, Location to);
 

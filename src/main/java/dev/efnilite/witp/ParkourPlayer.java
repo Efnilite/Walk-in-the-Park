@@ -40,7 +40,7 @@ public class ParkourPlayer {
     public @Expose Boolean useParticles;
     public @Expose Boolean useSpecial;
     public @Expose Boolean showDeathMsg;
-    public @Expose boolean useStructures;
+    public @Expose Boolean useStructure;
     public @Expose String time;
     public @Expose String style;
     public @Expose String lang;
@@ -66,7 +66,7 @@ public class ParkourPlayer {
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
-                         boolean useDifficulty, boolean useStructures, boolean showScoreboard, boolean showDeathMsg) {
+                         boolean useDifficulty, boolean useStructure, boolean showScoreboard, boolean showDeathMsg) {
         this.previousLocation = player.getLocation().clone();
         this.previousInventory = new HashMap<>();
         int index = 0;
@@ -83,7 +83,7 @@ public class ParkourPlayer {
         this.useParticles = useParticles;
         this.time = time;
         this.useDifficulty = useDifficulty;
-        this.useStructures = useStructures;
+        this.useStructure = useStructure;
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.player = player;
@@ -94,7 +94,9 @@ public class ParkourPlayer {
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
-        updateScoreboard();
+        if (showDeathMsg) {
+            updateScoreboard();
+        }
         if (player.isOp() && WITP.isOutdated) {
             send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
         }
@@ -324,7 +326,7 @@ public class ParkourPlayer {
 //        });
         builder.setItem(26, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
             try {
-                ParkourPlayer.unregister(this);
+                ParkourPlayer.unregister(this, true);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to quit player " + player.getName());
@@ -425,8 +427,11 @@ public class ParkourPlayer {
                 if (from.useSpecial == null) {
                     from.useSpecial = true;
                 }
+                if (from.useStructure == null) {
+                    from.useStructure = true;
+                }
                 ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useParticles, from.useDifficulty, from.useStructures, from.useSpecial, from.showDeathMsg);
+                        from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg);
                 pp.save();
                 players.put(player, pp);
                 reader.close();
@@ -434,7 +439,7 @@ public class ParkourPlayer {
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
                         WITP.getConfiguration().getString("config", "styles.default"),
-                        4, true, true, false, true, true);
+                        4, true, true, true, true, true);
                 players.put(player, pp);
                 pp.save();
                 return pp;
@@ -508,10 +513,12 @@ public class ParkourPlayer {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(@NotNull ParkourPlayer player) throws IOException {
+    public static void unregister(@NotNull ParkourPlayer player, boolean sendBack) throws IOException {
         new PlayerLeaveEvent(player).call();
         player.generator.reset(false);
-        player.getBoard().delete();
+        if (!player.getBoard().isDeleted()) {
+            player.getBoard().delete();
+        }
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());

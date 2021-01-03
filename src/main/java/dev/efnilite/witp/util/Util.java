@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -25,6 +27,33 @@ import java.util.stream.Collectors;
  * @author Efnilite
  */
 public class Util {
+
+    private static Economy economy;
+
+    /**
+     * Deposits money to a player using Vault
+     *
+     * @param   player
+     *          The player
+     *
+     * @param   amount
+     *          The amount
+     */
+    public static void depositPlayer(Player player, double amount) {
+        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+            if (economy == null) {
+                RegisteredServiceProvider<Economy> service = Bukkit.getServicesManager().getRegistration(Economy.class);
+                if (service != null) {
+                    economy = service.getProvider();
+                    economy.depositPlayer(player, amount);
+                } else {
+                    Verbose.error("There was an error while trying to fetch the Vault economy!");
+                }
+                return;
+            }
+            economy.depositPlayer(player, amount);
+        }
+    }
 
     /**
      * Gets the direction from a facing (e.g. north, south, west)
@@ -46,7 +75,7 @@ public class Util {
                 return new Vector(-1, 0, 0);
             default:
                 Verbose.error("Invalid direction (direction used: " + face + ")");
-                return new Vector(0, 0, 0);
+                return new Vector(1, 0, 0);
         }
     }
 

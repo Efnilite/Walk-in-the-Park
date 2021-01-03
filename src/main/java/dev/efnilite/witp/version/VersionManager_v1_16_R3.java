@@ -5,10 +5,12 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -62,16 +64,36 @@ public class VersionManager_v1_16_R3 implements VersionManager {
         }
     }
 
+    // gets the appropriate rotation fo the schematic for the heading
+    private EnumBlockRotation getRotation(@NotNull Vector heading) {
+        if (heading.getBlockZ() != 0) { // north/south
+            switch (heading.getBlockZ()) {
+                case 1: // south
+                    return EnumBlockRotation.CLOCKWISE_180;
+                case -1: // north
+                    return EnumBlockRotation.NONE;
+            }
+        } else if (heading.getBlockX() != 0) { // east/west
+            switch (heading.getBlockX()) {
+                case 1: // east
+                    return EnumBlockRotation.CLOCKWISE_90;
+                case -1: // west
+                    return EnumBlockRotation.COUNTERCLOCKWISE_90;
+            }
+        }
+        return EnumBlockRotation.COUNTERCLOCKWISE_90;
+    }
+
     // todo holy shit please fix this
     @Override
-    public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to) {
+    public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to, Vector heading) {
         try {
             to = to.getBlock().getLocation().clone();
             DefinedStructure structure = new DefinedStructure();
             structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
 
             World world = ((CraftWorld) to.getWorld()).getHandle();
-            DefinedStructureInfo info = new DefinedStructureInfo().a(EnumBlockMirror.NONE).a(EnumBlockRotation.NONE)
+            DefinedStructureInfo info = new DefinedStructureInfo().a(EnumBlockMirror.NONE).a(getRotation(heading))
                     .a(false).a((ChunkCoordIntPair) null).c(false).a(ThreadLocalRandom.current());
             StructureBoundingBox box = structure.b(info, new BlockPosition(to.getBlockX(), to.getBlockY(), to.getBlockZ()));
             Location pos1 = new Location(to.getWorld(), box.a, box.b, box.c); // box coords to bukkit
@@ -89,29 +111,35 @@ public class VersionManager_v1_16_R3 implements VersionManager {
             List<DefinedStructure.BlockInfo> beginBlock = structure.a(pos, info, Blocks.LIME_WOOL);
             Vector beginPos = null;
             for (DefinedStructure.BlockInfo blockInfo : beginBlock) {
-                beginPos = new Vector(blockInfo.a.getX(), blockInfo.a.getY(), blockInfo.a.getZ()).clone().subtract(base);
+                BlockPosition position = blockInfo.a;
+                beginPos = new Vector(position.getX(), position.getY(), position.getZ()).subtract(base);
             }
             if (beginPos == null) {
                 Verbose.error("There is no lime wool (start of parkour) in structure " + file.getName());
                 return null;
             }
 
-            List<DefinedStructure.BlockInfo> endBlock = structure.a(pos, info, Blocks.RED_WOOL);
+            max.subtract(beginPos); // the max values of everything, but offset so it matches where the schematic gets pasted
+            min.subtract(beginPos); // the min values of everything, but also offset
+            to = to.subtract(beginPos); // where the structure gets pasted from (top left corner)
+            structure.a((WorldAccess) world, new BlockPosition(to.getX(), to.getY(), to.getZ()), info, ThreadLocalRandom.current());
+
+            Verbose.info(min.toString());
+            Verbose.info(max.toString());
+
+            List<Block> blocks = Util.getBlocks(max, min);
             Location endPos = null;
-            for (DefinedStructure.BlockInfo blockinfo : endBlock) {
-                endPos = new Location(to.getWorld(), blockinfo.a.getX(), blockinfo.a.getY(), blockinfo.a.getZ());
+            for (Block block : blocks) {
+                if (block.getType() == org.bukkit.Material.RED_WOOL) {
+                    endPos = block.getLocation();
+                }
             }
             if (endPos == null) {
                 Verbose.error("There is no red wool (end of parkour) in structure " + file.getName());
                 return null;
             }
 
-            Vector location = to.clone().subtract(beginPos).toVector();
-            structure.a((WorldAccess) world, new BlockPosition(location.getX(), location.getY(), location.getZ()), info, ThreadLocalRandom.current());
-
-            Location loc = base.toLocation(to.getWorld());
-            Vector vector = new Vector(deltaX + 1, max.subtract(min).getBlockY() + 1, deltaZ + 1);
-            return new ParkourGenerator.StructureData(endPos.clone(), Util.getBlocks(loc, loc.clone().add(vector)));
+            return new ParkourGenerator.StructureData(endPos.clone(), blocks);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

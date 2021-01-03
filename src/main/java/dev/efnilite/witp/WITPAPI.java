@@ -29,33 +29,37 @@ public class WITPAPI {
 
     /**
      * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
-     * @see #unregisterPlayer(ParkourPlayer)
      *
      * @param   player
      *          The Bukkit version of the player
      *
+     * @param   sendBack
+     *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
+     *          
      * @throws IOException If saving the file of the player goes wrong
      */
-    public static void unregisterPlayer(@NotNull Player player) throws IOException {
+    public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException {
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp == null) {
             Verbose.error("Player " + player.getName() + " isn't registered!");
             return;
         }
-        ParkourPlayer.unregister(pp);
+        ParkourPlayer.unregister(pp, sendBack);
     }
 
     /**
      * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
-     * @see #unregisterPlayer(Player)
      *
      * @param   player
      *          The player
      *
+     * @param   sendBack
+     *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
+     *
      * @throws IOException If saving the file of the player goes wrong
      */
-    public static void unregisterPlayer(@NotNull ParkourPlayer player) throws IOException {
-        ParkourPlayer.unregister(player);
+    public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException {
+        ParkourPlayer.unregister(player, sendBack);
     }
 
     /**

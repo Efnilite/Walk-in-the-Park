@@ -40,6 +40,12 @@
             <systemPath>${project.basedir}/libs/spigot-1.16.4.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api-v1163</artifactId>
             <version>1.16.3-R0.1-SNAPSHOT</version>

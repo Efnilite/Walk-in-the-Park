@@ -64,7 +64,7 @@ public class VersionManager_v1_16_R2 implements VersionManager {
 
     // todo holy shit please fix this
     @Override
-    public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to) {
+    public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to, Vector heading) {
         try {
             to = to.getBlock().getLocation().clone();
             DefinedStructure structure = new DefinedStructure();

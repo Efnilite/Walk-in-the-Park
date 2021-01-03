@@ -26,6 +26,7 @@ verbose: false
 bungeecord:
 
     # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
+    # If this is disabled, you have to use /witp join to join and /witp leave to leave.
     enabled: true
 
     # The server the players will be returned to after the game is done
@@ -98,11 +99,16 @@ rewards:
     enabled: false
 
     # The interval at which they get a reward
+    # (so for every 50 blocks the player jumps, they get a reward)
+    # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
     interval: 50
 
     # The command that will be executed if the interval is met
     # 'null' means no command
     command: 'null'
+
+    # The amount of money players will receive as Vault currency
+    vault-reward: 5
 
     # The message you get after the interval is met
     # 'null' means no message

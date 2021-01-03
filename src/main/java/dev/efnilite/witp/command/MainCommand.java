@@ -42,7 +42,7 @@ public class MainCommand extends BukkitCommand {
                 if (pp != null) {
                     try {
                         pp.send("&cYou left the parkour");
-                        ParkourPlayer.unregister(pp);
+                        ParkourPlayer.unregister(pp, true);
                     } catch (IOException ex) {
                         Verbose.error("Error while leaving");
                         ex.printStackTrace();

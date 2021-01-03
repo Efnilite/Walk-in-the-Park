@@ -350,7 +350,6 @@ public class FastBoard {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-
         deleted = true;
     }
 

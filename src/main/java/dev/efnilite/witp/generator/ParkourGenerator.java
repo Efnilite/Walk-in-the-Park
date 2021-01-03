@@ -114,6 +114,7 @@ public class ParkourGenerator {
                     return;
                 }
                 Location playerLoc = player.getPlayer().getLocation();
+                // Fall check
                 if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
                     new PlayerFallEvent(player).call();
                     reset(true);
@@ -127,6 +128,7 @@ public class ParkourGenerator {
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();
+                    // Structure deletion check
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
                         if (player.showDeathMsg) {
@@ -146,10 +148,16 @@ public class ParkourGenerator {
                             }
                             score++;
                             totalScore++;
+
+                            // Rewards
                             if (Configurable.REWARDS && totalScore % Configurable.REWARDS_INTERVAL == 0 && Configurable.REWARDS_COMMAND != null) {
                                 Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
                                 player.send(Configurable.REWARDS_MESSAGE);
+                                if (Configurable.REWARDS_MONEY != 0) {
+                                    Util.depositPlayer(player.getPlayer(), Configurable.REWARDS_MONEY);
+                                }
                             }
+
                             new PlayerScoreEvent(player).call();
                             if (player.showDeathMsg) {
                                 player.updateScoreboard();
@@ -257,12 +265,12 @@ public class ParkourGenerator {
             }
         }
 
-        int def = defaultChances.get(random.nextInt(defaultChances.size())); // 0 = normal, 1 = structures
+        int def = defaultChances.get(random.nextInt(defaultChances.size())); // 0 = normal, 1 = structures, 2 = special
         int special = def == 2 ? 1 : 0; // 1 = yes, 0 = no
         if (special == 1) {
             def = 0;
         } else {
-            def = structureCooldown == 0 && player.useStructures ? def : 0;
+            def = structureCooldown == 0 && player.useStructure ? def : 0;
         }
         switch (def) {
             case 0:
@@ -390,8 +398,8 @@ public class ParkourGenerator {
                             break;
                         case 1: // slab
                             material = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
-                            ((Slab) material).setType(Slab.Type.BOTTOM);
                             height = Math.min(height, 0);
+                            ((Slab) material).setType(Slab.Type.BOTTOM);
                             break;
                         case 2: // pane
                             material = Material.GLASS_PANE.createBlockData();
@@ -436,7 +444,7 @@ public class ParkourGenerator {
                 }
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
 
-                StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation());
+                StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation(), heading);
                 structureBlocks = new ArrayList<>(data.blocks);
                 lastSpawn = data.end.clone();
                 break;
@@ -513,9 +521,9 @@ public class ParkourGenerator {
      * @return true if the vector is following the heading assigned to param heading
      */
     public boolean isFollowing(Vector vector) {
-        if (heading.getBlockZ() != 0) {
+        if (heading.getBlockZ() != 0) { // north/south
             return vector.getZ() * heading.getZ() > 0;
-        } else if (heading.getBlockX() != 0) {
+        } else if (heading.getBlockX() != 0) { // east/west
             return vector.getX() * heading.getX() < 0;
         } else {
             Verbose.error("Invalid heading vector: " + heading.toString());
@@ -565,6 +573,7 @@ public class ParkourGenerator {
         // Config stuff
         public static boolean REWARDS;
         public static int REWARDS_INTERVAL;
+        public static double REWARDS_MONEY;
         public static String REWARDS_COMMAND;
         public static String REWARDS_MESSAGE;
 
@@ -610,6 +619,7 @@ public class ParkourGenerator {
             // Config stuff
             REWARDS = config.getBoolean("rewards.enabled");
             REWARDS_INTERVAL = config.getInt("rewards.interval");
+            REWARDS_MONEY = config.getInt("rewards.vault-reward");
             REWARDS_COMMAND = config.getString("rewards.command").replaceAll("/", "");
             if (REWARDS_COMMAND.equalsIgnoreCase("null")) {
                 REWARDS_COMMAND = null;
