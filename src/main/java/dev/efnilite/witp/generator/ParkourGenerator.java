@@ -400,7 +400,7 @@ public class ParkourGenerator {
                             break;
                         case 1: // slab
                             material = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
-                            height = Math.min(height, 0);
+                            height = 0; // todo allow multiple heights
                             ((Slab) material).setType(Slab.Type.BOTTOM);
                             break;
                         case 2: // pane
@@ -413,7 +413,7 @@ public class ParkourGenerator {
                 Location local = lastSpawn.clone();
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
-                    lastSpawn = local;
+                    lastSpawn = local.clone();
                     return;
                 }
 
@@ -435,7 +435,15 @@ public class ParkourGenerator {
             case 1:
                 File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-                File structure = files.get(random.nextInt(files.size() - 1));
+                File structure;
+                if (files.size() > 1) {
+                    structure = files.get(random.nextInt(files.size()));
+                } else if (files.size() == 1) {
+                    structure = files.get(0);
+                } else {
+                    Verbose.error("No structures to choose from!");
+                    return;
+                }
 
                 structureCooldown = 20;
                 int gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;

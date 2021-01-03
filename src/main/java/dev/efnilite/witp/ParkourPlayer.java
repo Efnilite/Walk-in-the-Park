@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -70,10 +71,12 @@ public class ParkourPlayer {
         this.previousLocation = player.getLocation().clone();
         this.previousInventory = new HashMap<>();
         int index = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
+        Inventory inventory = player.getInventory();
+        for (ItemStack item : inventory.getContents()) {
             if (item != null) {
                 previousInventory.put(index, item);
             }
+            index++;
         }
         this.useSpecial = showScoreboard;
         this.showDeathMsg = showDeathMsg;
@@ -522,13 +525,17 @@ public class ParkourPlayer {
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
-        if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
-            Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
-        } else {
-            player.getPlayer().getInventory().clear();
-            player.getPlayer().teleport(player.getPreviousLocation());
-            for (int slot : player.getPreviousInventory().keySet()){
-                player.getPlayer().getInventory().setItem(slot, player.getPreviousInventory().get(slot));
+        if (sendBack) {
+            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
+                Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+            } else {
+                Player pl = player.getPlayer();
+                pl.getInventory().clear();
+                pl.teleport(player.getPreviousLocation());
+                for (int slot : player.getPreviousInventory().keySet()) {
+                    pl.getInventory().setItem(slot, player.getPreviousInventory().get(slot));
+                }
+                pl.resetPlayerTime();
             }
         }
     }
