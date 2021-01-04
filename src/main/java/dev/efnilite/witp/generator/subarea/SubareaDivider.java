@@ -203,6 +203,7 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
         world.setWeatherDuration(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setAutoSave(false);

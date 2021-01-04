@@ -54,8 +54,16 @@ public class MainCommand extends BukkitCommand {
                     pp.menu();
                 }
             }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null) {
+                int page = Integer.parseInt(args[1]);
+                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                if (pp != null) {
+                    pp.scoreboard(page);
+                }
+            }
         }
-        return false;
+        return true;
     }
 
     @Override

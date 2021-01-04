@@ -18,6 +18,7 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -390,9 +391,13 @@ public class ParkourGenerator {
                             specialChances.put(index, 2);
                             index++;
                         }
+                        for (int i = 0; i < Configurable.SPECIAL_FENCE; i++) {
+                            specialChances.put(index, 3);
+                            index++;
+                        }
                     }
 
-                    int spec = specialChances.get(random.nextInt(specialChances.size() - 1));
+                    int spec = specialChances.get(random.nextInt(specialChances.size()));
                     switch (spec) {
                         case 0: // ice
                             material = Material.PACKED_ICE.createBlockData();
@@ -400,20 +405,29 @@ public class ParkourGenerator {
                             break;
                         case 1: // slab
                             material = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
-                            height = 0; // todo allow multiple heights
+                            height = Math.min(height, 0);
                             ((Slab) material).setType(Slab.Type.BOTTOM);
                             break;
                         case 2: // pane
                             material = Material.GLASS_PANE.createBlockData();
                             gap -= 0.5;
                             break;
+                        case 3:
+                            material = Material.OAK_FENCE.createBlockData();
+                            height = Math.min(height, 0);
+                            gap -= 0.5;
+                            break;
                     }
                 }
 
                 Location local = lastSpawn.clone();
+                if (local.getBlock().getType() == Material.SMOOTH_QUARTZ_SLAB) {
+                    height = Math.min(height, 0);
+                }
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
                     lastSpawn = local.clone();
+                    Verbose.error(lastSpawn.toString());
                     return;
                 }
 
@@ -451,7 +465,7 @@ public class ParkourGenerator {
                 Location local2 = lastSpawn.clone();
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
                 if (possibleStructure.size() == 0) {
-                    lastSpawn = local2;
+                    lastSpawn = local2.clone();
                     return;
                 }
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
@@ -574,6 +588,7 @@ public class ParkourGenerator {
         public static int SPECIAL_ICE;
         public static int SPECIAL_SLAB;
         public static int SPECIAL_PANE;
+        public static int SPECIAL_FENCE;
 
         public static int NORMAL_ONE_BLOCK;
         public static int NORMAL_TWO_BLOCK;
@@ -622,6 +637,7 @@ public class ParkourGenerator {
             SPECIAL_ICE = file.getInt("generation.normal-jump.special.ice");
             SPECIAL_SLAB = file.getInt("generation.normal-jump.special.slab");
             SPECIAL_PANE = file.getInt("generation.normal-jump.special.pane");
+            SPECIAL_FENCE = file.getInt("generation.normal-jump.special.fence");
 
             NORMAL_ONE_BLOCK = file.getInt("generation.normal-jump.1-block");
             NORMAL_TWO_BLOCK = file.getInt("generation.normal-jump.2-block");

@@ -30,9 +30,10 @@ generation:
             chance: 10
 
             # The type of block
-            ice: 60
+            ice: 50
             slab: 30 # for bottom-side half slabs
             pane: 10 # for glass panes
+            fence: 10
 
     # The settings for structures
     structures:

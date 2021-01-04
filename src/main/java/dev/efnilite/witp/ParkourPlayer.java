@@ -11,9 +11,11 @@ import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import fr.mrmicky.fastboard.FastBoard;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +61,7 @@ public class ParkourPlayer {
     private final Player player;
     private final ParkourGenerator generator;
     private static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
-    private static final HashMap<Integer, UUID> highScores = new HashMap<>();
+    private static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     /**
@@ -102,6 +104,15 @@ public class ParkourPlayer {
         }
         if (player.isOp() && WITP.isOutdated) {
             send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
+        }
+        if (highScores.size() == 0) {
+            try {
+                fetchHighScores();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to fetch the high scores!");
+            }
+            highScores = Util.sortByValue(highScores);
         }
     }
 
@@ -185,7 +196,7 @@ public class ParkourPlayer {
      */
     public void setHighScore(int score) {
         this.highScore = score;
-        highScores.put(score, player.getUniqueId());
+        highScores.put(player.getUniqueId(), score);
         saveStats();
     }
 
@@ -327,6 +338,11 @@ public class ParkourPlayer {
                     saveStats();
                     player.closeInventory();
         });
+        builder.setItem(22, new ItemBuilder(Material.GOLD_BLOCK, "&6&lLeaderboard")
+                .setLore("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + highScores.get(player.getUniqueId()) + ")").build(), (t2, e2) -> {
+            scoreboard(1);
+            player.closeInventory();
+        });
         builder.setItem(26, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
             try {
                 ParkourPlayer.unregister(this, true);
@@ -406,6 +422,93 @@ public class ParkourPlayer {
     }
 
     /**
+     * Shows the scoreboard (as a chat message)
+     */
+    public void scoreboard(int page) {
+        if (highScores.size() == 0) {
+            try {
+                fetchHighScores();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to fetch the high scores!");
+            }
+        }
+
+        int lowest = page * 10;
+        int highest = (page - 1) * 10;
+        if (page < 1) {
+            return;
+        }
+        if (page > 1 && highest > highScores.size()) {
+            return;
+        }
+
+        HashMap<UUID, Integer> sorted = Util.sortByValue(highScores);
+        highScores = sorted;
+        List<UUID> uuids = new ArrayList<>(sorted.keySet());
+
+        send("", "", "", "", "", "", "", "");
+        send("&7----------------------------------------");
+        for (int i = highest; i < lowest; i++) {
+            if (i == uuids.size()) {
+                break;
+            }
+            UUID uuid = uuids.get(i);
+            if (uuid == null) {
+                continue;
+            }
+            String name = Bukkit.getOfflinePlayer(uuid).getName();
+            int rank = i + 1;
+            send("&c#" + rank + ". &7" + name + " &f- " + highScores.get(uuid));
+        }
+        send("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + highScores.get(player.getUniqueId()) + ")");
+        send("");
+
+        int prevPage = page - 1;
+        int nextPage = page + 1;
+        BaseComponent[] previous = new ComponentBuilder()
+                .append("<< Previous page").color(net.md_5.bungee.api.ChatColor.RED)
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + prevPage))
+                .append(" | ").color(net.md_5.bungee.api.ChatColor.GRAY)
+                .event((ClickEvent) null)
+                .append("Next page >>").color(net.md_5.bungee.api.ChatColor.RED)
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + nextPage))
+                .create();
+
+        player.spigot().sendMessage(previous);
+        send("&7----------------------------------------");
+    }
+
+    /**
+     * Gets the high score of a player
+     *
+     * @param   player
+     *          The player
+     *
+     * @return the high score of the player
+     */
+    public static int getHighScore(@NotNull UUID player) {
+        return highScores.get(player);
+    }
+
+    /**
+     * Gets the player at a certain place
+     * Note: places are indicated in normal fashion (a.k.a. #1 is the first)
+     *
+     * @param   place
+     *          The place
+     *
+     * @return the player at that place
+     */
+    public static UUID getAtPlace(int place) {
+        return new ArrayList<>(highScores.keySet()).get(place);
+    }
+
+    private int getRank(UUID player) {
+        return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
+    }
+
+    /**
      * Registers a player
      *
      * @param   player
@@ -463,7 +566,8 @@ public class ParkourPlayer {
         for (File file : folder.listFiles()) {
             FileReader reader = new FileReader(file);
             ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-            highScores.put(from.highScore, UUID.fromString(file.getName()));
+            String name = file.getName();
+            highScores.put(UUID.fromString(name.substring(0, name.lastIndexOf('.'))), from.highScore);
         }
     }
 
@@ -540,14 +644,6 @@ public class ParkourPlayer {
         }
     }
 
-    public HashMap<Integer, ItemStack> getPreviousInventory() {
-        return previousInventory;
-    }
-
-    public Location getPreviousLocation() {
-        return previousLocation;
-    }
-
     /**
      * Gets the player's {@link ParkourGenerator}
      *
@@ -564,5 +660,13 @@ public class ParkourPlayer {
      */
     public @NotNull Player getPlayer() {
         return player;
+    }
+
+    public HashMap<Integer, ItemStack> getPreviousInventory() {
+        return previousInventory;
+    }
+
+    public Location getPreviousLocation() {
+        return previousLocation;
     }
 }

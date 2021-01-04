@@ -31,6 +31,24 @@ public class Util {
     private static Economy economy;
 
     /**
+     * Sorts a HashMap by value
+     * Source: https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values
+     *
+     * @return a sorted HashMap
+     */
+    public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        HashMap<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
+    /**
      * Deposits money to a player using Vault
      *
      * @param   player

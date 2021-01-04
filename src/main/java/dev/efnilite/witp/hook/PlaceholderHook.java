@@ -3,6 +3,8 @@ package dev.efnilite.witp.hook;
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +67,15 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "time_pref":
             case "time_preference":
                 return pp.time;
+            case "leader":
+            case "rank_one":
+            case "record_player":
+                return Bukkit.getOfflinePlayer(ParkourPlayer.getAtPlace(1)).getName();
+            case "leader_score":
+            case "rank_one_score":
+            case "record_score":
+            case "record":
+                return Integer.toString(ParkourPlayer.getHighScore(ParkourPlayer.getAtPlace(1)));
         }
 
         return null;
