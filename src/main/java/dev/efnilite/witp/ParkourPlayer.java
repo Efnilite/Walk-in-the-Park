@@ -338,8 +338,9 @@ public class ParkourPlayer {
                     saveStats();
                     player.closeInventory();
         });
+        Integer score = highScores.get(player.getUniqueId());
         builder.setItem(22, new ItemBuilder(Material.GOLD_BLOCK, "&6&lLeaderboard")
-                .setLore("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + highScores.get(player.getUniqueId()) + ")").build(), (t2, e2) -> {
+                .setLore("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + (score == null ? 0 : score) + ")").build(), (t2, e2) -> {
             scoreboard(1);
             player.closeInventory();
         });
@@ -563,6 +564,10 @@ public class ParkourPlayer {
      */
     public static void fetchHighScores() throws IOException {
         File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+        if (!(folder.exists())) {
+            folder.mkdirs();
+            return;
+        }
         for (File file : folder.listFiles()) {
             FileReader reader = new FileReader(file);
             ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);

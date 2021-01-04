@@ -427,7 +427,6 @@ public class ParkourGenerator {
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
                     lastSpawn = local.clone();
-                    Verbose.error(lastSpawn.toString());
                     return;
                 }
 
