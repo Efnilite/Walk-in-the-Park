@@ -1,10 +1,7 @@
 package dev.efnilite.witp.util.wrapper;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +18,7 @@ public abstract class BukkitCommand implements CommandExecutor, TabCompleter {
     /**
      * Execute a command
      */
-    public abstract boolean execute(Player player, String[] args);
+    public abstract boolean execute(CommandSender player, String[] args);
 
     /**
      * Get what should be suggested
@@ -50,6 +47,8 @@ public abstract class BukkitCommand implements CommandExecutor, TabCompleter {
             }
 
             return execute(player, args);
+        } else if (sender instanceof ConsoleCommandSender) {
+            return execute(Bukkit.getConsoleSender(), args);
         } else {
             return false;
         }

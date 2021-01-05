@@ -7,6 +7,7 @@ import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
@@ -30,9 +31,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -98,13 +102,27 @@ public class WITP extends JavaPlugin implements Listener {
         command.setTabCompleter(wrapper);
     }
 
+    @Nullable
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
+        String config = WITP.getConfiguration().getString("config", "world.name");
+        if (config == null) {
+            Verbose.error("World name is null");
+            config = "witp";
+        }
+        if (worldName.equalsIgnoreCase(config)) {
+            return new VoidGenerator();
+        }
+        return super.getDefaultWorldGenerator(worldName, id);
+    }
+
     @EventHandler
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World world = WITP.getDivider().getWorld();
         if (configuration.getFile("config").getBoolean("bungeecord.enabled")) {
             if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
-                event.setJoinMessage(configuration.getString("config", "messages.join").replaceAll("%p",
+                event.setJoinMessage(configuration.getString("config", "messages.join").replaceAll("%[a-z]",
                         player.getName()));
             }
             try {
@@ -114,7 +132,7 @@ public class WITP extends JavaPlugin implements Listener {
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
             }
         } else if (player.getWorld() == WITP.getDivider().getWorld()) {
-            World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall_back"));
+            World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall-back"));
             if (fallback != null) {
                 player.teleport(fallback.getSpawnLocation());
             } else {

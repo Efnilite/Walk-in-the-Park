@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -43,18 +44,16 @@ public class ParkourPlayer {
     public @Expose Boolean useParticles;
     public @Expose Boolean useSpecial;
     public @Expose Boolean showDeathMsg;
+    public @Expose Boolean showScoreboard;
     public @Expose Boolean useStructure;
     public @Expose String time;
     public @Expose String style;
     public @Expose String lang;
 
-
-    /**
-     * The player's points
-     */
     public UUID openInventory;
     private FastBoard board;
     private List<Material> possibleStyle;
+    private final GameMode previousGamemode;
     private final Location previousLocation;
     private final HashMap<Integer, ItemStack> previousInventory;
     private final File file;
@@ -69,18 +68,21 @@ public class ParkourPlayer {
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
-                         boolean useDifficulty, boolean useStructure, boolean showScoreboard, boolean showDeathMsg) {
+                         boolean useDifficulty, boolean useStructure, boolean useSpecial, boolean showDeathMsg, boolean showScoreboard) {
         this.previousLocation = player.getLocation().clone();
+        this.previousGamemode = player.getGameMode();
         this.previousInventory = new HashMap<>();
-        int index = 0;
-        Inventory inventory = player.getInventory();
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null) {
-                previousInventory.put(index, item);
+        if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+            int index = 0;
+            Inventory inventory = player.getInventory();
+            for (ItemStack item : inventory.getContents()) {
+                if (item != null) {
+                    previousInventory.put(index, item);
+                }
+                index++;
             }
-            index++;
         }
-        this.useSpecial = showScoreboard;
+        this.useSpecial = useSpecial;
         this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
         this.blockLead = blockLead;
@@ -89,6 +91,7 @@ public class ParkourPlayer {
         this.time = time;
         this.useDifficulty = useDifficulty;
         this.useStructure = useStructure;
+        this.showScoreboard = showScoreboard;
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.player = player;
@@ -99,7 +102,7 @@ public class ParkourPlayer {
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
-        if (showDeathMsg && ParkourGenerator.Configurable.SCOREBOARD) {
+        if (showScoreboard && ParkourGenerator.Configurable.SCOREBOARD) {
             updateScoreboard();
         }
         if (player.isOp() && WITP.isOutdated) {
@@ -126,9 +129,9 @@ public class ParkourPlayer {
      * @param   replaceable
      *          What can be replaced (for example: %s to yes)
      */
-    public void sendTranslated(String path, String... replaceable) {
-        path = "lang." + lang + "." + path;
-        String string = WITP.getConfiguration().getString("lang", path);
+    public void sendTranslated(String path, String... replaceable) { // todo add lang.yml
+        path = "messages." + path;
+        String string = WITP.getConfiguration().getString("config", path);
         if (string == null) {
             Verbose.error("Unknown path: " + path);
             return;
@@ -287,7 +290,7 @@ public class ParkourPlayer {
         Material particles = useParticles ? Material.GREEN_WOOL : Material.RED_WOOL;
         String particlesString = Boolean.toString(useParticles);
         String particlesValue = Util.normalizeBoolean(Util.colorBoolean(particlesString));
-        builder.setItem(14, new ItemBuilder(particles, "&a&lUse particles and sounds")
+        builder.setItem(13, new ItemBuilder(particles, "&a&lUse particles and sounds")
                 .setLore("&7If enabled every generated block", "&7will show particles and play a sound.", "",
                         "&7Currently: " + particlesValue).build(), (t2, e2) -> {
             useParticles = !useParticles;
@@ -296,20 +299,32 @@ public class ParkourPlayer {
             saveStats();
             player.closeInventory();
         });
-        Material deathMsg = showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL;
-        String deathString = Boolean.toString(showDeathMsg);
-        String deathValue = Util.normalizeBoolean(Util.colorBoolean(deathString));
-        builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow fall message & scoreboard")
-                .setLore("&7If enabled shows a message when you fall", "&7with extra info and the scoreboard", "",
-                        "&7Currently: " + deathValue).build(), (t2, e2) -> {
-            showDeathMsg = !showDeathMsg;
-            if (showDeathMsg) {
+        Material scoreboard = showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String scoreboardString = Boolean.toString(showScoreboard);
+        String scoreboardValue = Util.normalizeBoolean(Util.colorBoolean(scoreboardString));
+        builder.setItem(14, new ItemBuilder(scoreboard, "&a&lShow scoreboard")
+                .setLore("&7If enabled shows the scoreboard", "",
+                        "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
+            showScoreboard = !showScoreboard;
+            if (showScoreboard) {
                 board = new FastBoard(player);
                 updateScoreboard();
             } else {
                 board.delete();
             }
-            send("&7You changed your showing of the fall message and scoreboard to " +
+            send("&7You changed your usage of the scoreboard to " +
+                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+            saveStats();
+            player.closeInventory();
+        });
+        Material deathMsg = showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL;
+        String deathString = Boolean.toString(showDeathMsg);
+        String deathValue = Util.normalizeBoolean(Util.colorBoolean(deathString));
+        builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow fall message")
+                .setLore("&7If enabled shows a message when you fall", "&7with extra info", "",
+                        "&7Currently: " + deathValue).build(), (t2, e2) -> {
+            showDeathMsg = !showDeathMsg;
+            send("&7You changed your showing of the fall message to " +
                     Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
             saveStats();
             player.closeInventory();
@@ -416,7 +431,7 @@ public class ParkourPlayer {
      * @param   messages
      *          The message
      */
-    public void send(@NotNull String... messages) {
+    public void send(String... messages) {
         for (String msg : messages) {
             player.sendMessage(Util.color(msg));
         }
@@ -477,7 +492,7 @@ public class ParkourPlayer {
                 .create();
 
         player.spigot().sendMessage(previous);
-        send("&7----------------------------------------");
+        send(WITP.getConfiguration().getString("config", "messages.divider"));
     }
 
     /**
@@ -537,8 +552,11 @@ public class ParkourPlayer {
                 if (from.useStructure == null) {
                     from.useStructure = true;
                 }
+                if (from.showScoreboard == null) {
+                    from.showScoreboard = true;
+                }
                 ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
-                        from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg);
+                        from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
                 pp.save();
                 players.put(player, pp);
                 reader.close();
@@ -546,7 +564,8 @@ public class ParkourPlayer {
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
                         WITP.getConfiguration().getString("config", "styles.default"),
-                        4, true, true, true, true, true);
+                        4, true, true, true, true,
+                        true, true);
                 players.put(player, pp);
                 pp.save();
                 return pp;
@@ -639,10 +658,14 @@ public class ParkourPlayer {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 Player pl = player.getPlayer();
-                pl.getInventory().clear();
-                pl.teleport(player.getPreviousLocation());
-                for (int slot : player.getPreviousInventory().keySet()) {
-                    pl.getInventory().setItem(slot, player.getPreviousInventory().get(slot));
+                WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
+                pl.setGameMode(player.previousGamemode);
+                pl.teleport(player.previousLocation);
+                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+                    pl.getInventory().clear();
+                    for (int slot : player.previousInventory.keySet()) {
+                        pl.getInventory().setItem(slot, player.previousInventory.get(slot));
+                    }
                 }
                 pl.resetPlayerTime();
             }
@@ -665,13 +688,5 @@ public class ParkourPlayer {
      */
     public @NotNull Player getPlayer() {
         return player;
-    }
-
-    public HashMap<Integer, ItemStack> getPreviousInventory() {
-        return previousInventory;
-    }
-
-    public Location getPreviousLocation() {
-        return previousLocation;
     }
 }

@@ -6,6 +6,9 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -16,15 +19,23 @@ import java.util.List;
 public class MainCommand extends BukkitCommand {
 
     @Override
-    public boolean execute(Player player, String[] args) {
+    public boolean execute(CommandSender sender, String[] args) {
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        }
         if (args.length == 0) {
-            player.sendMessage(Util.color("&7--------------- &aWITP &7---------------"));
-            player.sendMessage(Util.color("&a/witp &f- &7Main command"));
-            player.sendMessage(Util.color("&a/witp join &f- &7Join the game on this server"));
-            player.sendMessage(Util.color("&a/witp leave &f- &7Leave the game on this server"));
-            player.sendMessage(Util.color("&a/witp customize &f- &7Open the customization menu"));
+            sender.sendMessage(Util.color("&7--------------- &aWITP &7---------------"));
+            sender.sendMessage(Util.color("&a/witp &f- &7Main command"));
+            sender.sendMessage(Util.color("&a/witp join [player] &f- &7Join the game on this server or make another player join"));
+            sender.sendMessage(Util.color("&a/witp leave &f- &7Leave the game on this server"));
+            sender.sendMessage(Util.color("&a/witp menu &f- &7Open the customization menu"));
+            sender.sendMessage(Util.color("&a/witp leaderboard &f- &7Open the leaderboard"));
             return true;
         } else if (args.length == 1) {
+            if (player == null) {
+                return true;
+            }
             if (args[0].equalsIgnoreCase("join")) {
                 try {
                     ParkourPlayer.register(player);
@@ -33,10 +44,9 @@ public class MainCommand extends BukkitCommand {
                         pp.send("&aYou joined the parkour");
                     }
                 } catch (IOException ex) {
-                    Verbose.error("Error while joining");
                     ex.printStackTrace();
+                    Verbose.error("Error while joining");
                 }
-                return true;
             } else if (args[0].equalsIgnoreCase("leave")) {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
@@ -44,22 +54,40 @@ public class MainCommand extends BukkitCommand {
                         pp.send("&cYou left the parkour");
                         ParkourPlayer.unregister(pp, true);
                     } catch (IOException ex) {
-                        Verbose.error("Error while leaving");
                         ex.printStackTrace();
+                        Verbose.error("Error while leaving");
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("customize")) {
+            } else if (args[0].equalsIgnoreCase("menu")) {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
                     pp.menu();
                 }
             }
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null) {
+            if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
                 int page = Integer.parseInt(args[1]);
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
                     pp.scoreboard(page);
+                }
+            } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {
+                if (sender.isOp()) {
+                    Player join = Bukkit.getPlayer(args[1]);
+                    if (join == null) {
+                        Verbose.error("Player " + args[1] + " doesn't exist!");
+                        return true;
+                    }
+                    try {
+                        ParkourPlayer.register(join);
+                        ParkourPlayer pp = ParkourPlayer.getPlayer(join);
+                        if (pp != null) {
+                            pp.send("&aYou joined the parkour");
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        Verbose.error("Error while joining");
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package dev.efnilite.witp.generator.subarea;
 
 import dev.efnilite.witp.ParkourPlayer;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -150,7 +151,7 @@ public class SubareaDivider {
 
     /**
      * Removes a player from the registry
-     * If you're using the API, please use {@link dev.efnilite.witp.WITPAPI#unregisterPlayer(ParkourPlayer)} instead!
+     * If you're using the API, please use {@link dev.efnilite.witp.WITPAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
      *
      * @param   player
      *          The player
@@ -248,13 +249,15 @@ public class SubareaDivider {
                 player.teleport(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
-                player.getInventory().clear();
-                String mat = WITP.getConfiguration().getString("config", "options.item");
-                if (mat == null) {
-                    Verbose.error("Material for options in config is null - defaulting to compass");
-                    mat = "COMPASS";
+                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+                    player.getInventory().clear();
+                    String mat = WITP.getConfiguration().getString("config", "options.item");
+                    if (mat == null) {
+                        Verbose.error("Material for options in config is null - defaulting to compass");
+                        mat = "COMPASS";
+                    }
+                    player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 }
-                player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
                 parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1)); // remove an extra block of jumping space

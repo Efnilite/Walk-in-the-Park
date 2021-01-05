@@ -37,7 +37,7 @@ world:
     name: witp
 
     # The world players will be teleported to if they accidentally join the WITP world without being a player
-    fall_back: world
+    fall-back: world
 
 # Options for the option menu
 options:
@@ -47,6 +47,9 @@ options:
 
     # The item
     item: compass
+
+    # Enables/disables the inventory handling system
+    inventory-handling: true
 
 # The different styles players can select
 styles:
@@ -98,6 +101,15 @@ messages:
     join-leave-enabled: true
     join: '&7%p has joined the server.'
     leave: '&7%p has left the server.'
+
+    divider: '&7----------------------------------------'
+    score: '&aYour score: &f%s'
+    time: '&aYour time: &f%s'
+    highscore: '&aYour highscore: &f%s'
+    message:
+        miss: '&7You missed your high score by %s points!'
+        beat: '&7You beat your high score by %s points!'
+        tied: '&7You tied your high score!'
 
 # Options for custom rewards
 rewards:

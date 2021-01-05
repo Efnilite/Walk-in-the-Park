@@ -6,6 +6,7 @@ import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
+import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -115,6 +116,9 @@ public class ParkourGenerator {
                     return;
                 }
                 Location playerLoc = player.getPlayer().getLocation();
+                if (playerLoc.getWorld() != lastPlayer.getWorld()) {
+                    return;
+                }
                 // Fall check
                 if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
                     new PlayerFallEvent(player).call();
@@ -132,7 +136,7 @@ public class ParkourGenerator {
                     // Structure deletion check
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        if (player.showDeathMsg && Configurable.SCOREBOARD) {
+                        if (player.showScoreboard && Configurable.SCOREBOARD) {
                             player.updateScoreboard();
                         }
                         structureCooldown = 20;
@@ -162,7 +166,7 @@ public class ParkourGenerator {
                             }
 
                             new PlayerScoreEvent(player).call();
-                            if (player.showDeathMsg && Configurable.SCOREBOARD) {
+                            if (player.showScoreboard && Configurable.SCOREBOARD) {
                                 player.updateScoreboard();
                             }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -188,7 +192,7 @@ public class ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                if (player.showDeathMsg && Configurable.SCOREBOARD) {
+                if (player.showScoreboard && Configurable.SCOREBOARD) {
                     player.updateScoreboard();
                 }
             }
@@ -217,19 +221,25 @@ public class ParkourGenerator {
         player.getPlayer().teleport(playerSpawn);
         if (player.showDeathMsg) {
             String message;
+            int number = 0;
             if (score == player.highScore) {
-                message = "You tied your high score!";
+                message = "message.tied";
             } else if (score > player.highScore) {
-                message = "You beat your high score by " + (score - player.highScore) + " points!";
+                number = score - player.highScore;
+                message = "message.beat";
             } else {
-                message = "You missed your high score by " + (player.highScore - score) + " points!";
+                number = player.highScore - score;
+                message = "message.miss";
             }
             if (score > player.highScore) {
                 player.setHighScore(score);
             }
-            player.send("&7----------------------------------------", "&aYour score: &f" +
-                            score, "&aYour time: &f" + time, "&aYour highscore: &f" + player.highScore, "&7" + message,
-                    "&7----------------------------------------");
+            player.sendTranslated("divider");
+            player.sendTranslated("score", Integer.toString(score));
+            player.sendTranslated("time", time);
+            player.sendTranslated("highscore", Integer.toString(score));
+            player.sendTranslated(message, Integer.toString(number));
+            player.sendTranslated("divider");
         } else {
             if (score > player.highScore) {
                 player.setHighScore(score);
@@ -614,6 +624,7 @@ public class ParkourGenerator {
         public static Particle PARTICLE_TYPE;
 
         public static boolean SCOREBOARD;
+        public static boolean INVENTORY_HANDLING;
 
         // Advanced settings
         public static double BORDER_SIZE;
@@ -665,6 +676,7 @@ public class ParkourGenerator {
             }
 
             SCOREBOARD = config.getBoolean("scoreboard.enabled");
+            INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
 
             SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
             SOUND_PITCH = config.getInt("particles.sound-pitch");

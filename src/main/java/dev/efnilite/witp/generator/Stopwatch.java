@@ -26,7 +26,7 @@ public class Stopwatch {
     @Override
     public String toString() {
         if (start == 0) {
-            return "0ms";
+            return "0.0s";
         }
         long delta = System.currentTimeMillis() - start;
         String format = DurationFormatUtils.formatDuration(delta, "HH:mm:ss:SSS", true);
@@ -41,19 +41,10 @@ public class Stopwatch {
             updated += mins + "m ";
         }
         int secs = Integer.parseInt(split[2]);
-        if (secs > 0) {
-            updated += secs + "s ";
-        }
+        updated += secs;
         int ms = Integer.parseInt(split[3]);
-        StringBuilder string = new StringBuilder(String.valueOf(ms));
-        if (string.length() == 0) {
-            string.insert(0, "000");
-        } else if (string.length() < 3) {
-            for (int i = 0; i < (3 - string.length()); i++) {
-                string.insert(0, "0");
-            }
-        }
-        updated += string.toString() + "ms";
+        String parsed = Integer.toString(ms);
+        updated += "." + parsed.charAt(0) + "s";
         return updated;
     }
 }
