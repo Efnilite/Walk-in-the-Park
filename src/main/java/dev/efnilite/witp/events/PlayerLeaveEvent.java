@@ -1,6 +1,6 @@
 package dev.efnilite.witp.events;
 
-import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 
 /**

@@ -1,5 +1,6 @@
 package dev.efnilite.witp;
 
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

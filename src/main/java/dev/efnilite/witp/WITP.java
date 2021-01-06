@@ -4,6 +4,7 @@ import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.PlaceholderHook;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -15,7 +16,6 @@ import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import dev.efnilite.witp.version.VersionManager;
 import dev.efnilite.witp.version.VersionManager_v1_16_R2;
 import dev.efnilite.witp.version.VersionManager_v1_16_R3;
-import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -27,10 +27,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -192,6 +189,19 @@ public class WITP extends JavaPlugin implements Listener {
             }
             if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
                 player.menu();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSwitch(PlayerChangedWorldEvent event) {
+        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+        if (player != null && player.getPlayer().getWorld().getName().equals(WITP.getDivider().getWorld().getName())) {
+            try {
+                ParkourPlayer.unregister(player, true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to unregister player");
             }
         }
     }

@@ -1,6 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
-import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
@@ -146,6 +146,7 @@ public class SubareaDivider {
                 possibleInLayer.remove(point);
                 createIsland(player, current);
             }
+            Verbose.verbose("New Subarea divided to " + player.getPlayer().getName());
         }
     }
 

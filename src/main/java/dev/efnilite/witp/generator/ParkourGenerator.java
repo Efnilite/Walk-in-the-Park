@@ -1,12 +1,11 @@
 package dev.efnilite.witp.generator;
 
-import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
-import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -19,14 +18,13 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The class that generates the parkour, which each {@link dev.efnilite.witp.ParkourPlayer} has.<br>
+ * The class that generates the parkour, which each {@link ParkourPlayer} has.<br>
  * <p>
  * Important notice: tempering with details in this class could result in complete malfunction of code since
  * this class has been meticulously made using a lot of cross-references. Same goes for
@@ -47,7 +45,7 @@ public class ParkourGenerator {
      *
      * @see Stopwatch#toString()
      */
-    public String time = "0ms";
+    public String time = "0.0s";
     public SubareaPoint.Data data;
     /**
      * The heading of the parkour
@@ -84,6 +82,7 @@ public class ParkourGenerator {
      * @param player The player associated with this generator
      */
     public ParkourGenerator(ParkourPlayer player) {
+        Verbose.verbose("Init of Generator of " + player.getPlayer().getName());
         this.score = 0;
         this.totalScore = 0;
         this.borderOffset = Configurable.BORDER_SIZE / 2.0;
@@ -117,6 +116,7 @@ public class ParkourGenerator {
                 }
                 Location playerLoc = player.getPlayer().getLocation();
                 if (playerLoc.getWorld() != lastPlayer.getWorld()) {
+                    lastPlayer = playerLoc.clone();
                     return;
                 }
                 // Fall check

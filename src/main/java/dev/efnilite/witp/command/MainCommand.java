@@ -1,17 +1,13 @@
 package dev.efnilite.witp.command;
 
-import dev.efnilite.witp.ParkourPlayer;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
-import dev.efnilite.witp.version.VersionManager_v1_16_R3;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

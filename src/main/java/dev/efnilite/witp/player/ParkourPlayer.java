@@ -1,8 +1,10 @@
-package dev.efnilite.witp;
+package dev.efnilite.witp.player;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.WITPAPI;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
@@ -14,7 +16,6 @@ import fr.mrmicky.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -33,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Efnilite
  */
-public class ParkourPlayer {
+public class ParkourPlayer extends ParkourUser {
 
     /**
      * Player data used in saving
@@ -53,11 +54,7 @@ public class ParkourPlayer {
     public UUID openInventory;
     private FastBoard board;
     private List<Material> possibleStyle;
-    private final GameMode previousGamemode;
-    private final Location previousLocation;
-    private final HashMap<Integer, ItemStack> previousInventory;
     private final File file;
-    private final Player player;
     private final ParkourGenerator generator;
     private static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
     private static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
@@ -69,6 +66,8 @@ public class ParkourPlayer {
      */
     public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
                          boolean useDifficulty, boolean useStructure, boolean useSpecial, boolean showDeathMsg, boolean showScoreboard) {
+        super(player);
+        Verbose.verbose("Init of Player " + player.getName());
         this.previousLocation = player.getLocation().clone();
         this.previousGamemode = player.getGameMode();
         this.previousInventory = new HashMap<>();
@@ -94,7 +93,6 @@ public class ParkourPlayer {
         this.showScoreboard = showScoreboard;
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
-        this.player = player;
         this.possibleStyle = new ArrayList<>();
         this.board = new FastBoard(player);
         setStyle(style);

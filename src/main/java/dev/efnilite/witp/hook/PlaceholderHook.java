@@ -1,10 +1,9 @@
 package dev.efnilite.witp.hook;
 
-import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

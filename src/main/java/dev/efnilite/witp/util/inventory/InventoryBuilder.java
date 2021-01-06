@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.inventory;
 
-import dev.efnilite.witp.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
