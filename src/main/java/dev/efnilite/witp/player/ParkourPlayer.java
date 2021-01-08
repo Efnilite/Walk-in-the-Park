@@ -1,7 +1,5 @@
 package dev.efnilite.witp.player;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.WITPAPI;
@@ -13,19 +11,19 @@ import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import fr.mrmicky.fastboard.FastBoard;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -51,14 +49,10 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String style;
     public @Expose String lang;
 
-    public UUID openInventory;
-    private FastBoard board;
+    private ParkourGenerator generator;
     private List<Material> possibleStyle;
     private final File file;
-    private final ParkourGenerator generator;
-    private static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
-    private static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
+    private final HashMap<String, ParkourSpectator> spectators;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -68,19 +62,6 @@ public class ParkourPlayer extends ParkourUser {
                          boolean useDifficulty, boolean useStructure, boolean useSpecial, boolean showDeathMsg, boolean showScoreboard) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
-        this.previousLocation = player.getLocation().clone();
-        this.previousGamemode = player.getGameMode();
-        this.previousInventory = new HashMap<>();
-        if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
-            int index = 0;
-            Inventory inventory = player.getInventory();
-            for (ItemStack item : inventory.getContents()) {
-                if (item != null) {
-                    previousInventory.put(index, item);
-                }
-                index++;
-            }
-        }
         this.useSpecial = useSpecial;
         this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
@@ -91,10 +72,10 @@ public class ParkourPlayer extends ParkourUser {
         this.useDifficulty = useDifficulty;
         this.useStructure = useStructure;
         this.showScoreboard = showScoreboard;
+        this.spectators = new HashMap<>();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.possibleStyle = new ArrayList<>();
-        this.board = new FastBoard(player);
         setStyle(style);
         this.generator = new ParkourGenerator(this);
 
@@ -117,46 +98,38 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
+    public void removeSpectators(ParkourSpectator... spectators) {
+        for (ParkourSpectator spectator : spectators) {
+            this.spectators.remove(spectator.getPlayer().getName());
+        }
+    }
 
-    /**
-     * Gets a message from lang.yml
-     *
-     * @param   path
-     *          The path name in lang.yml (for example: 'time-preference')
-     *
-     * @param   replaceable
-     *          What can be replaced (for example: %s to yes)
-     */
-    public void sendTranslated(String path, String... replaceable) { // todo add lang.yml
-        path = "messages." + path;
-        String string = WITP.getConfiguration().getString("config", path);
-        if (string == null) {
-            Verbose.error("Unknown path: " + path);
-            return;
+    public void addSpectator(ParkourSpectator... spectators) {
+        for (ParkourSpectator spectator : spectators) {
+            this.spectators.put(spectator.getPlayer().getName(), spectator);
         }
-        for (String s : replaceable) {
-            string = string.replaceAll("%[a-z]", s);
-        }
-        send(string);
     }
 
     /**
-     * Gets the scoreboard of the player
-     *
-     * @return the {@link FastBoard} of the player
+     * Updates the stats for spectators
      */
-    public FastBoard getBoard() {
-        return board;
+    public void updateSpectators() {
+        for (ParkourSpectator spectator : spectators.values()) {
+            spectator.checkDistance();
+            spectator.updateScoreboard();
+        }
     }
 
     /**
      * Updates the scoreboard
      */
+    @Override
     public void updateScoreboard() {
-        board.updateTitle(WITP.getConfiguration().getString("config", "scoreboard.title"));
+        board.updateTitle(ParkourGenerator.Configurable.SCOREBOARD_TITLE);
         List<String> list = new ArrayList<>();
-        List<String> lines = WITP.getConfiguration().getStringList("config", "scoreboard.lines");
+        List<String> lines = ParkourGenerator.Configurable.SCOREBOARD_LINES;
         if (lines == null) {
+            Verbose.error("Scoreboard lines are null! Check your config!");
             return;
         }
         for (String s : lines) {
@@ -206,72 +179,78 @@ public class ParkourPlayer extends ParkourUser {
      */
     public void menu() {
         InventoryBuilder builder = new InventoryBuilder(this, 3, "Customize").open();
-        InventoryBuilder builder1 = new InventoryBuilder(this, 3, "Lead").open();
-        InventoryBuilder builder2 = new InventoryBuilder(this, 3, "Parkour style").open();
-        InventoryBuilder builder3 = new InventoryBuilder(this, 3, "Time").open();
+        InventoryBuilder lead = new InventoryBuilder(this, 3, "Lead").open();
+        InventoryBuilder styling = new InventoryBuilder(this, 3, "Parkour style").open();
+        InventoryBuilder timeofday = new InventoryBuilder(this, 3, "Time").open();
+        String close = getTranslated("item-close");
 
         if (WITP.getConfiguration().getFile("config").getBoolean("styles.enabled")) {
             builder.setItem(9, new ItemBuilder(Material.END_STONE, "&a&lParkour style")
                     .setLore("&7The style of your parkour.", "&7(which blocks will be used)", "", "&7Currently: &a" + style).build(), (t, e) -> {
-                List<String> styles = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
-                if (styles == null) {
-                    Verbose.error("Error while trying to fetch possible styles from config.yml");
-                    return;
-                }
-                int i = 0;
-                for (String style : styles) {
-                    if (i == 26) {
-                        Verbose.error("There are too many styles to display!");
-                        return;
-                    }
-                    List<Material> possible = this.getPossibleMaterials(style);
-                    if (possible == null) {
-                        continue;
-                    }
-                    Material material = possible.get(possible.size() - 1);
-                    builder2.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
-                        String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
-                        this.setStyle(selected);
-                        this.send("&7You selected style &c" + selected + "&7!");
-                        this.saveStats();
-                    });
-                    i++;
-                    builder2.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
-                }
-                builder2.build();
+                        if (checkPermission("witp.style")) {
+                            List<String> styles = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
+                            if (styles == null) {
+                                Verbose.error("Error while trying to fetch possible styles from config.yml");
+                                return;
+                            }
+                            int i = 0;
+                            for (String style : styles) {
+                                if (i == 26) {
+                                    Verbose.error("There are too many styles to display!");
+                                    return;
+                                }
+                                List<Material> possible = this.getPossibleMaterials(style);
+                                if (possible == null) {
+                                    continue;
+                                }
+                                Material material = possible.get(possible.size() - 1);
+                                styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
+                                    String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
+                                    setStyle(selected);
+                                    sendTranslated("selected-style", selected);
+                                    saveStats();
+                                });
+                                i++;
+                                styling.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                            }
+                            styling.build();
+                        }
             });
         }
         builder.setItem(10, new ItemBuilder(Material.GLASS, "&a&lLead")
                 .setLore("&7How many blocks will", "&7be generated ahead of you.", "", "&7Currently: &a" + blockLead + " blocks").build(), (t, e) -> {
-            for (int i = 10; i < 17; i++) {
-                builder1.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
-                    int amount = t2.getSlot() - 9;
-                    blockLead = amount;
-                    send("&7You selected a " + amount + " block lead.");
-                    saveStats();
-                });
+            if (checkPermission("witp.lead")) {
+                for (int i = 10; i < 17; i++) {
+                    lead.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
+                        blockLead = t2.getSlot() - 9;
+                        sendTranslated("selected-block-lead", Integer.toString(blockLead));
+                        saveStats();
+                    });
+                }
+                lead.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                lead.build();
             }
-            builder1.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
-            builder1.build();
         });
         builder.setItem(11, new ItemBuilder(Material.CLOCK, "&a&lTime")
                 .setLore("&7The time of day.", "", "&7Currently: &a" + time.toLowerCase()).build(), (t, e) -> {
-            List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
-            int i = 11;
-            for (String time : times) {
-                builder3.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
-                    if (e2.getItemMeta() != null) {
-                        String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
-                        this.time = name;
-                        send("&7You changed your time preference to &a" + time.toLowerCase());
-                        player.setPlayerTime(getTime(name), false);
-                        saveStats();
-                    }
-                });
-                i++;
+            if (checkPermission("witp.time")) {
+                List<String> times = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
+                int i = 11;
+                for (String time : times) {
+                    timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
+                        if (e2.getItemMeta() != null) {
+                            String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
+                            this.time = name;
+                            sendTranslated("selected-time", time.toLowerCase());
+                            player.setPlayerTime(getTime(name), false);
+                            saveStats();
+                        }
+                    });
+                    i++;
+                }
+                timeofday.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                timeofday.build();
             }
-            builder3.setItem(26, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
-            builder3.build();
         });
         Material difficulty = useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL;
         String difficultyString = Boolean.toString(useDifficulty);
@@ -279,11 +258,12 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(12, new ItemBuilder(difficulty, "&a&lUse difficulty")
                 .setLore("&7If enabled having a higher score will mean", "&7the parkour becomes more difficult.", "",
                         "&7Currently: " + difficultyValue).build(), (t2, e2) -> {
-                    useDifficulty = !useDifficulty;
-                    send("&7You changed your usage of difficulty to " +
-                            Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
-                    saveStats();
-                    player.closeInventory();
+            if (checkPermission("witp.difficulty")) {
+                useDifficulty = !useDifficulty;
+                sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
+                saveStats();
+                player.closeInventory();
+            }
         });
         Material particles = useParticles ? Material.GREEN_WOOL : Material.RED_WOOL;
         String particlesString = Boolean.toString(useParticles);
@@ -291,11 +271,12 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(13, new ItemBuilder(particles, "&a&lUse particles and sounds")
                 .setLore("&7If enabled every generated block", "&7will show particles and play a sound.", "",
                         "&7Currently: " + particlesValue).build(), (t2, e2) -> {
-            useParticles = !useParticles;
-            send("&7You changed your usage of particles to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
-            saveStats();
-            player.closeInventory();
+            if (checkPermission("witp.particles")) {
+                useParticles = !useParticles;
+                sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
+                saveStats();
+                player.closeInventory();
+            }
         });
         Material scoreboard = showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL;
         String scoreboardString = Boolean.toString(showScoreboard);
@@ -303,17 +284,22 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(14, new ItemBuilder(scoreboard, "&a&lShow scoreboard")
                 .setLore("&7If enabled shows the scoreboard", "",
                         "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
-            showScoreboard = !showScoreboard;
-            if (showScoreboard) {
-                board = new FastBoard(player);
-                updateScoreboard();
-            } else {
-                board.delete();
+            if (checkPermission("witp.scoreboard")) {
+                if (ParkourGenerator.Configurable.SCOREBOARD) {
+                    showScoreboard = !showScoreboard;
+                    if (showScoreboard) {
+                        board = new FastBoard(player);
+                        updateScoreboard();
+                    } else {
+                        board.delete();
+                    }
+                    sendTranslated("selected-scoreboard", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+                    saveStats();
+                    player.closeInventory();
+                } else {
+                    sendTranslated("cant-do");
+                }
             }
-            send("&7You changed your usage of the scoreboard to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
-            saveStats();
-            player.closeInventory();
         });
         Material deathMsg = showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL;
         String deathString = Boolean.toString(showDeathMsg);
@@ -321,11 +307,12 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(15, new ItemBuilder(deathMsg, "&a&lShow fall message")
                 .setLore("&7If enabled shows a message when you fall", "&7with extra info", "",
                         "&7Currently: " + deathValue).build(), (t2, e2) -> {
-            showDeathMsg = !showDeathMsg;
-            send("&7You changed your showing of the fall message to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
-            saveStats();
-            player.closeInventory();
+            if (checkPermission("witp.fall")) {
+                showDeathMsg = !showDeathMsg;
+                sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
+                saveStats();
+                player.closeInventory();
+            }
         });
         Material special = useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL;
         String specialString = Boolean.toString(useSpecial);
@@ -333,31 +320,41 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(16, new ItemBuilder(special, "&a&lUse special blocks")
                 .setLore("&7If enabled uses special blocks like ice and slabs.", "",
                         "&7Currently: " + specialValue).build(), (t2, e2) -> {
-            useSpecial = !useSpecial;
-            send("&7You changed your usage of special blocks to " +
-                    Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
-            saveStats();
-            player.closeInventory();
+            if (checkPermission("witp.special")) {
+                useSpecial = !useSpecial;
+                sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
+                saveStats();
+                player.closeInventory();
+            }
         });
         Material structures = useStructure ? Material.GREEN_WOOL : Material.RED_WOOL;
         String structuresString = Boolean.toString(useStructure);
         String structuresValue = Util.normalizeBoolean(Util.colorBoolean(structuresString));
         builder.setItem(17, new ItemBuilder(structures, "&a&lUse structures")
-                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "",
-                        "&7Currently: " + structuresValue).build(), (t2, e2) -> {
-                    useStructure = !useStructure;
-                    send("&7You changed your usage of structures to " +
-                            Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-                    saveStats();
-                    player.closeInventory();
+                .setLore("&7If enabled static structures", "&7will appear throughout the parkour.", "", "&7Currently: " + structuresValue).build(), (t2, e2) -> {
+            if (checkPermission("witp.structures")) {
+                useStructure = !useStructure;
+                sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
+                saveStats();
+                player.closeInventory();
+            }
+        });
+        builder.setItem(18, new ItemBuilder(Material.PAPER, "&c&lGamemode").build(), (t2, e2) -> {
+            if (checkPermission("witp.gamemode")) {
+                player.closeInventory();
+                gamemode();
+            }
         });
         Integer score = highScores.get(player.getUniqueId());
-        builder.setItem(22, new ItemBuilder(Material.GOLD_BLOCK, "&6&lLeaderboard")
-                .setLore("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + (score == null ? 0 : score) + ")").build(), (t2, e2) -> {
-            scoreboard(1);
-            player.closeInventory();
+        builder.setItem(19, new ItemBuilder(Material.GOLD_BLOCK, "&6&lLeaderboard")
+                .setLore(getTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())), Integer.toString(score == null ? 0 : score)))
+                .build(), (t2, e2) -> {
+            if (checkPermission("witp.leaderboard")) {
+                scoreboard(1);
+                player.closeInventory();
+            }
         });
-        builder.setItem(26, new ItemBuilder(Material.BARRIER, "&4&lQuit").build(), (t2, e2) -> {
+        builder.setItem(26, new ItemBuilder(Material.BARRIER, getTranslated("item-quit")).build(), (t2, e2) -> {
             try {
                 ParkourPlayer.unregister(this, true);
             } catch (IOException ex) {
@@ -365,8 +362,19 @@ public class ParkourPlayer extends ParkourUser {
                 Verbose.error("Error while trying to quit player " + player.getName());
             }
         });
-        builder.setItem(25, new ItemBuilder(Material.ARROW, "&c&lClose").build(), (t2, e2) -> player.closeInventory());
+        builder.setItem(25, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
         builder.build();
+    }
+
+    private boolean checkPermission(String perm) {
+        if (ParkourGenerator.Configurable.PERMISSIONS) {
+            boolean check = player.hasPermission(perm);
+            if (!check) {
+                sendTranslated("cant-do");
+            }
+            return check;
+        }
+        return true;
     }
 
     private void saveStats() {
@@ -424,76 +432,6 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     /**
-     * Sends a message or array of it - coloured allowed, using '&'
-     *
-     * @param   messages
-     *          The message
-     */
-    public void send(String... messages) {
-        for (String msg : messages) {
-            player.sendMessage(Util.color(msg));
-        }
-    }
-
-    /**
-     * Shows the scoreboard (as a chat message)
-     */
-    public void scoreboard(int page) {
-        if (highScores.size() == 0) {
-            try {
-                fetchHighScores();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to fetch the high scores!");
-            }
-        }
-
-        int lowest = page * 10;
-        int highest = (page - 1) * 10;
-        if (page < 1) {
-            return;
-        }
-        if (page > 1 && highest > highScores.size()) {
-            return;
-        }
-
-        HashMap<UUID, Integer> sorted = Util.sortByValue(highScores);
-        highScores = sorted;
-        List<UUID> uuids = new ArrayList<>(sorted.keySet());
-
-        send("", "", "", "", "", "", "", "");
-        send("&7----------------------------------------");
-        for (int i = highest; i < lowest; i++) {
-            if (i == uuids.size()) {
-                break;
-            }
-            UUID uuid = uuids.get(i);
-            if (uuid == null) {
-                continue;
-            }
-            String name = Bukkit.getOfflinePlayer(uuid).getName();
-            int rank = i + 1;
-            send("&c#" + rank + ". &7" + name + " &f- " + highScores.get(uuid));
-        }
-        send("&7Your rank: &f#" + getRank(player.getUniqueId()) + " &7(" + highScores.get(player.getUniqueId()) + ")");
-        send("");
-
-        int prevPage = page - 1;
-        int nextPage = page + 1;
-        BaseComponent[] previous = new ComponentBuilder()
-                .append("<< Previous page").color(net.md_5.bungee.api.ChatColor.RED)
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + prevPage))
-                .append(" | ").color(net.md_5.bungee.api.ChatColor.GRAY)
-                .event((ClickEvent) null)
-                .append("Next page >>").color(net.md_5.bungee.api.ChatColor.RED)
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + nextPage))
-                .create();
-
-        player.spigot().sendMessage(previous);
-        send(WITP.getConfiguration().getString("config", "messages.divider"));
-    }
-
-    /**
      * Gets the high score of a player
      *
      * @param   player
@@ -516,10 +454,6 @@ public class ParkourPlayer extends ParkourUser {
      */
     public static UUID getAtPlace(int place) {
         return new ArrayList<>(highScores.keySet()).get(place);
-    }
-
-    private int getRank(UUID player) {
-        return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
     }
 
     /**
@@ -570,27 +504,6 @@ public class ParkourPlayer extends ParkourUser {
             }
         }
         return players.get(player);
-    }
-
-    // todo scoreboard
-    /**
-     * Gets the highscores of all player
-     *
-     * @throws  IOException
-     *          When creating the file reader goes wrong
-     */
-    public static void fetchHighScores() throws IOException {
-        File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
-        if (!(folder.exists())) {
-            folder.mkdirs();
-            return;
-        }
-        for (File file : folder.listFiles()) {
-            FileReader reader = new FileReader(file);
-            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-            String name = file.getName();
-            highScores.put(UUID.fromString(name.substring(0, name.lastIndexOf('.'))), from.highScore);
-        }
     }
 
     /**
@@ -651,6 +564,17 @@ public class ParkourPlayer extends ParkourUser {
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
+        users.remove(player);
+        for (ParkourSpectator spectator : player.spectators.values()) {
+            try {
+                ParkourPlayer.register(spectator.getPlayer());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to register player" + player.getPlayer().getName());
+            }
+        }
+        player.spectators.clear();
+
         if (sendBack) {
             if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
@@ -668,6 +592,7 @@ public class ParkourPlayer extends ParkourUser {
                 pl.resetPlayerTime();
             }
         }
+        player.generator = null;
     }
 
     /**
@@ -677,14 +602,5 @@ public class ParkourPlayer extends ParkourUser {
      */
     public ParkourGenerator getGenerator() {
         return generator;
-    }
-
-    /**
-     * Gets the Bukkit version of the player
-     *
-     * @return the player
-     */
-    public @NotNull Player getPlayer() {
-        return player;
     }
 }

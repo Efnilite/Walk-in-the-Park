@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.inventory;
 
-import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Bukkit;
@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
@@ -27,13 +26,11 @@ import java.util.UUID;
  */
 public class InventoryBuilder implements Listener {
 
-    private final ParkourPlayer pp;
-
     private int rows;
     private boolean open;
     private String name;
-    private Player holder;
     private UUID uuid;
+    private final ParkourUser player;
     private final HandlerList handlerList;
     private final HashMap<Integer, ItemStack> items;
     private final HashMap<Integer, InventoryConsumer> onClick;
@@ -53,15 +50,12 @@ public class InventoryBuilder implements Listener {
     /**
      * {@link #InventoryBuilder(int, String)} but with the holder
      */
-    public InventoryBuilder(@Nullable ParkourPlayer pp, int rows, String name) {
+    public InventoryBuilder(@Nullable ParkourUser player, int rows, String name) {
         this.open = false;
         this.uuid = null;
         this.rows = rows;
         this.name = name;
-        this.pp = pp;
-        if (pp != null) {
-            this.holder = pp.getPlayer();
-        }
+        this.player = player;
         this.handlerList = new HandlerList();
         this.items = new HashMap<>();
         this.onClick = new HashMap<>();
@@ -77,11 +71,11 @@ public class InventoryBuilder implements Listener {
         }
         uuid = UUID.randomUUID();
         if (open) {
-            if (pp == null) {
+            if (player == null) {
                 Verbose.error("Tried opening inventory " + uuid.toString() + " but player is null");
             } else {
-                holder.openInventory(inventory);
-                pp.openInventory = uuid;
+                player.getPlayer().openInventory(inventory);
+                player.openInventory = uuid;
             }
         }
         unregister();
@@ -98,14 +92,6 @@ public class InventoryBuilder implements Listener {
     }
 
     /**
-     * Set the holder
-     */
-    public InventoryBuilder setHolder(Player holder) {
-        this.holder = holder;
-        return this;
-    }
-
-    /**
      * Set an item in a slot
      */
     public InventoryBuilder setItem(int slot, ItemStack item, @Nullable InventoryConsumer onClick) {
@@ -117,8 +103,8 @@ public class InventoryBuilder implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        if (player.getOpenInventory().getTitle().equals(name) && ParkourPlayer.getPlayer(player) != null) {
-            pp.openInventory = null;
+        if (player.getOpenInventory().getTitle().equals(name) && ParkourUser.getUser(player) != null) {
+            this.player.openInventory = null;
             unregister();
         }
     }
@@ -127,7 +113,7 @@ public class InventoryBuilder implements Listener {
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack current = event.getCurrentItem();
-        if (player.getOpenInventory().getTitle().equals(name) && ParkourPlayer.getPlayer(player) != null && current != null && uuid == pp.openInventory) {
+        if (player.getOpenInventory().getTitle().equals(name) && ParkourUser.getUser(player) != null && current != null && uuid == this.player.openInventory) {
             event.setCancelled(true);
             InventoryConsumer consumer = onClick.get(event.getSlot());
             if (consumer != null) {
@@ -178,13 +164,6 @@ public class InventoryBuilder implements Listener {
      */
     public int getRows() {
         return rows;
-    }
-
-    /**
-     * Gets the holder
-     */
-    public InventoryHolder getHolder() {
-        return holder;
     }
 
     /**

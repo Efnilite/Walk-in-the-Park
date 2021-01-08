@@ -39,6 +39,20 @@ world:
     # The world players will be teleported to if they accidentally join the WITP world without being a player
     fall-back: world
 
+# Options for permissions
+# These permissions are used to determine which things the player can change.
+# List: https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions
+permissions:
+
+    # If permissions are enabled
+    enabled: false
+
+# Options for focus mode
+focus-mode:
+
+    # If focus mode is enabled players can't use commands while in parkour
+    enabled: false
+
 # Options for the option menu
 options:
 
@@ -85,31 +99,13 @@ styles:
 scoreboard:
     enabled: true
 
-    title: '&c&lInfinite Parkour'
+    title: '&a&lWITP'
     lines:
         - '&a'
         - '&7Score: &f%score%'
         - '&7Time: &f%time%'
         - '&b'
         - '&6&lserver.ip'
-
-# Options for the messages
-# %p is the player.
-messages:
-
-    # If join/leave messages should be shown
-    join-leave-enabled: true
-    join: '&7%p has joined the server.'
-    leave: '&7%p has left the server.'
-
-    divider: '&7----------------------------------------'
-    score: '&aYour score: &f%s'
-    time: '&aYour time: &f%s'
-    highscore: '&aYour highscore: &f%s'
-    message:
-        miss: '&7You missed your high score by %s points!'
-        beat: '&7You beat your high score by %s points!'
-        tied: '&7You tied your high score!'
 
 # Options for custom rewards
 rewards:

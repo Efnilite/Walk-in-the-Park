@@ -1,8 +1,8 @@
 package dev.efnilite.witp.generator.subarea;
 
-import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -11,13 +11,16 @@ import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.FileUtil;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +73,12 @@ public class SubareaDivider {
         }
         File folder = new File(worldName);
         if (folder.exists() && folder.isDirectory()) {
-            folder.delete();
+            try {
+                FileUtils.deleteDirectory(folder);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while deleting the playing world");
+            }
         }
         this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
@@ -101,7 +109,7 @@ public class SubareaDivider {
      */
     public @Nullable SubareaPoint getPoint(@NotNull ParkourPlayer player) {
         for (SubareaPoint point : collection.keySet()) {
-            if (collection.get(point) == player) {
+            if (collection.get(point).getPlayer().getUniqueId() == player.getPlayer().getUniqueId()) {
                 return point;
             }
         }
@@ -123,10 +131,10 @@ public class SubareaDivider {
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
                 createIsland(player, last);
                 openSpaces.remove(last);
+                Verbose.verbose("Used Subarea divided to " + player.getPlayer().getName());
                 return;
             }
             if (copy % 8 == 0) { // every new layer has +8 area points
-
                 createIsland(player, current);
                 current = current.zero();
                 layer++;
@@ -206,6 +214,7 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.setWeatherDuration(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setAutoSave(false);
@@ -213,7 +222,7 @@ public class SubareaDivider {
         return world;
     }
 
-    private void setBorder(@NotNull ParkourPlayer player, @NotNull SubareaPoint point) {
+    public void setBorder(@NotNull ParkourPlayer player, @NotNull SubareaPoint point) {
         int size = (int) player.getGenerator().borderOffset * 2;
         Vector estimated = point.getEstimatedCenter(size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
@@ -281,6 +290,6 @@ public class SubareaDivider {
                 setBorder(pp, point);
             }
         };
-        Tasks.syncDelay(delay, 10 * 20);
+        Tasks.syncDelay(delay, 5 * 20);
     }
 }

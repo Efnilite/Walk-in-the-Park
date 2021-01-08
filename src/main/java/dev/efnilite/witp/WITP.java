@@ -5,6 +5,7 @@ import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -61,7 +62,7 @@ public class WITP extends JavaPlugin implements Listener {
                 break;
             default:
                 Verbose.error("You are trying to start this plugin using an invalid server version");
-                Verbose.error("This plugin only works in version 1.16.4");
+                Verbose.error("This plugin only works in version 1.16.4, 1.16.3 or 1.16.2");
                 this.getServer().getPluginManager().disablePlugin(this);
                 return;
         }
@@ -118,15 +119,17 @@ public class WITP extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         World world = WITP.getDivider().getWorld();
         if (configuration.getFile("config").getBoolean("bungeecord.enabled")) {
-            if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
-                event.setJoinMessage(configuration.getString("config", "messages.join").replaceAll("%[a-z]",
-                        player.getName()));
-            }
             try {
                 ParkourPlayer.register(player);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
+            }
+            if (configuration.getFile("lang").getBoolean("messages.join-leave-enabled")) {
+                event.setJoinMessage(null);
+                for (ParkourUser user : ParkourUser.getUsers()) {
+                    user.sendTranslated("join", player.getName());
+                }
             }
         } else if (player.getWorld() == WITP.getDivider().getWorld()) {
             World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall-back"));
@@ -149,29 +152,40 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler
     public void damage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
-            if (ParkourPlayer.getPlayer((Player) event.getEntity()) != null) {
+            if (ParkourUser.getUser((Player) event.getEntity()) != null) {
                 event.setCancelled(true);
             }
         }
     }
 
     @EventHandler
+    public void command(PlayerCommandPreprocessEvent event) {
+        if (ParkourGenerator.Configurable.FOCUS_MODE) {
+            ParkourUser user = ParkourUser.getUser(event.getPlayer());
+            if (user != null && !(event.getMessage().toLowerCase().contains("witp"))) {
+                event.setCancelled(true);
+                user.sendTranslated("cant-do");
+            }
+        }
+    }
+
+    @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+        if (ParkourUser.getUser(event.getPlayer()) != null) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+        if (ParkourUser.getUser(event.getPlayer()) != null) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null) {
+        if (ParkourUser.getUser(event.getPlayer()) != null) {
             event.setCancelled(true);
         }
     }
@@ -196,7 +210,7 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler
     public void onSwitch(PlayerChangedWorldEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-        if (player != null && player.getPlayer().getWorld().getName().equals(WITP.getDivider().getWorld().getName())) {
+        if (player != null && player.getPlayer().getWorld().getUID() != WITP.getDivider().getWorld().getUID()) {
             try {
                 ParkourPlayer.unregister(player, true);
             } catch (IOException ex) {
@@ -210,9 +224,11 @@ public class WITP extends JavaPlugin implements Listener {
     public void leave(PlayerQuitEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         if (player != null) {
-            if (configuration.getFile("config").getBoolean("messages.join-leave-enabled")) {
-                event.setQuitMessage(configuration.getString("config", "messages.leave").replaceAll("%p",
-                        event.getPlayer().getName()));
+            if (configuration.getFile("lang").getBoolean("messages.join-leave-enabled")) {
+                event.setQuitMessage(null);
+                for (ParkourUser user : ParkourUser.getUsers()) {
+                    user.sendTranslated("leave", player.getPlayer().getName());
+                }
             }
             try {
                 ParkourPlayer.unregister(player, false);

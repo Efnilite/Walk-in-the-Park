@@ -32,9 +32,9 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        defaultFiles = new String[] {"config.yml", "generation.yml"};
+        defaultFiles = new String[] {"config.yml", "generation.yml", "lang.yml"};
 
-        if (!new File(plugin.getDataFolder() + "/config.yml").exists()) {
+        if (!new File(plugin.getDataFolder() + "/lang.yml").exists()) {
             plugin.getDataFolder().mkdirs();
 
             for (String file : defaultFiles) {

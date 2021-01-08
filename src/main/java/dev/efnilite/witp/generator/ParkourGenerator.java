@@ -1,11 +1,11 @@
 package dev.efnilite.witp.generator;
 
-import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -113,10 +113,14 @@ public class ParkourGenerator {
                 if (stopped) {
                     this.cancel();
                     return;
-                }
+                } // todo check if first location isn't current
                 Location playerLoc = player.getPlayer().getLocation();
-                if (playerLoc.getWorld() != lastPlayer.getWorld()) {
-                    lastPlayer = playerLoc.clone();
+                if (playerLoc.getWorld().getUID() != lastPlayer.getWorld().getUID()) {
+                    Verbose.error("Worlds are not the same (1)");
+                    return;
+                }
+                if (playerLoc.getWorld().getUID() != playerSpawn.getWorld().getUID()) {
+                    Verbose.error("Worlds are not the same (2)");
                     return;
                 }
                 // Fall check
@@ -136,9 +140,6 @@ public class ParkourGenerator {
                     // Structure deletion check
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
                         score += 10;
-                        if (player.showScoreboard && Configurable.SCOREBOARD) {
-                            player.updateScoreboard();
-                        }
                         structureCooldown = 20;
                         generateNext(player.blockLead);
                         deleteStructure = true;
@@ -166,9 +167,6 @@ public class ParkourGenerator {
                             }
 
                             new PlayerScoreEvent(player).call();
-                            if (player.showScoreboard && Configurable.SCOREBOARD) {
-                                player.updateScoreboard();
-                            }
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last) + 1;
                             int size = locations.size();
@@ -195,6 +193,7 @@ public class ParkourGenerator {
                 if (player.showScoreboard && Configurable.SCOREBOARD) {
                     player.updateScoreboard();
                 }
+                player.updateSpectators();
             }
         }, Configurable.GENERATOR_CHECK);
     }
@@ -212,14 +211,14 @@ public class ParkourGenerator {
         for (Block block : structureBlocks) {
             block.setType(Material.AIR);
         }
-        structureBlocks.clear();
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
+        structureBlocks.clear();
         structureCooldown = 20;
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
-        if (player.showDeathMsg) {
+        if (player.showDeathMsg && regenerate) {
             String message;
             int number = 0;
             if (score == player.highScore) {
@@ -237,7 +236,7 @@ public class ParkourGenerator {
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
             player.sendTranslated("time", time);
-            player.sendTranslated("highscore", Integer.toString(score));
+            player.sendTranslated("highscore", Integer.toString(player.highScore));
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
@@ -495,7 +494,7 @@ public class ParkourGenerator {
                 break;
         }
 
-        int listSize = player.blockLead + 7; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 10; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
@@ -522,6 +521,7 @@ public class ParkourGenerator {
      */
     public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn.clone();
+        lastPlayer = spawn.clone();
         blockSpawn = block.clone();
         lastSpawn = block.clone();
         generateNext(player.blockLead);
@@ -625,6 +625,10 @@ public class ParkourGenerator {
 
         public static boolean SCOREBOARD;
         public static boolean INVENTORY_HANDLING;
+        public static String SCOREBOARD_TITLE;
+        public static List<String> SCOREBOARD_LINES;
+        public static boolean PERMISSIONS;
+        public static boolean FOCUS_MODE;
 
         // Advanced settings
         public static double BORDER_SIZE;
@@ -676,7 +680,11 @@ public class ParkourGenerator {
             }
 
             SCOREBOARD = config.getBoolean("scoreboard.enabled");
+            SCOREBOARD_TITLE = Util.color(config.getString("scoreboard.title"));
+            SCOREBOARD_LINES = Util.color(config.getStringList("scoreboard.lines"));
             INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
+            PERMISSIONS = config.getBoolean("permissions.enabled");
+            FOCUS_MODE = config.getBoolean("focus-mode.enabled");
 
             SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
             SOUND_PITCH = config.getInt("particles.sound-pitch");
