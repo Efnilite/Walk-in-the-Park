@@ -223,7 +223,7 @@ public class SubareaDivider {
     }
 
     public void setBorder(@NotNull ParkourPlayer player, @NotNull SubareaPoint point) {
-        int size = (int) player.getGenerator().borderOffset * 2;
+        int size = (int) ParkourGenerator.Configurable.BORDER_SIZE;
         Vector estimated = point.getEstimatedCenter(size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
@@ -287,9 +287,10 @@ public class SubareaDivider {
         BukkitRunnable delay = new BukkitRunnable() {
             @Override
             public void run() {
+
                 setBorder(pp, point);
             }
         };
-        Tasks.syncDelay(delay, 5 * 20);
+        Tasks.syncRepeat(delay, 5 * 20);
     }
 }

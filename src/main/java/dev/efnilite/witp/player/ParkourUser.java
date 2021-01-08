@@ -28,6 +28,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class to envelop every user in WITP.
+ */
 public abstract class ParkourUser {
 
     public UUID openInventory;
@@ -52,6 +55,9 @@ public abstract class ParkourUser {
         users.put(player.getName(), this);
     }
 
+    /**
+     * Saves the inventory to cache, so if the player leaves the player gets their items back
+     */
     protected void saveInventory() {
         this.previousInventory = new HashMap<>();
         if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
@@ -66,6 +72,14 @@ public abstract class ParkourUser {
         }
     }
 
+    /**
+     * Gets a user from a Bukkit Player
+     *
+     * @param   player
+     *          The Bukkit Player
+     *
+     * @return the associated {@link ParkourUser}
+     */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
         for (ParkourUser user : users.values()) {
             if (user.player.getUniqueId() == player.getUniqueId()) {
@@ -261,6 +275,12 @@ public abstract class ParkourUser {
         send(string);
     }
 
+    /**
+     * Same as {@link #sendTranslated(String, String...)}, but without sending the text (used in GUIs)
+     * @param path
+     * @param replaceable
+     * @return
+     */
     public String getTranslated(String path, String... replaceable) {
         path = "messages.en." + path;
         String string = WITP.getConfiguration().getString("lang", path);

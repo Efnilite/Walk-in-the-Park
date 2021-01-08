@@ -564,7 +564,7 @@ public class ParkourPlayer extends ParkourUser {
         player.save();
         WITP.getDivider().leave(player);
         players.remove(player.getPlayer());
-        users.remove(player);
+        users.remove(player.getPlayer().getName());
         for (ParkourSpectator spectator : player.spectators.values()) {
             try {
                 ParkourPlayer.register(spectator.getPlayer());

@@ -38,7 +38,7 @@ public class ParkourGenerator {
      * The score of the player
      */
     public int score;
-    public double borderOffset;
+    public final double borderOffset;
 
     /**
      * The time of the player's current session

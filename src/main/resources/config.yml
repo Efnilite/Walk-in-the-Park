@@ -99,7 +99,7 @@ styles:
 scoreboard:
     enabled: true
 
-    title: '&a&lWITP'
+    title: '&a&lWalk in the Park'
     lines:
         - '&a'
         - '&7Score: &f%score%'

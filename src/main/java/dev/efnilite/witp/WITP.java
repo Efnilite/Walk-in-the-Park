@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -114,7 +115,7 @@ public class WITP extends JavaPlugin implements Listener {
         return super.getDefaultWorldGenerator(worldName, id);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World world = WITP.getDivider().getWorld();
@@ -207,18 +208,19 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSwitch(PlayerChangedWorldEvent event) {
-        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-        if (player != null && player.getPlayer().getWorld().getUID() != WITP.getDivider().getWorld().getUID()) {
-            try {
-                ParkourPlayer.unregister(player, true);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to unregister player");
-            }
-        }
-    }
+    // todo add join timer
+//    @EventHandler
+//    public void onSwitch(PlayerChangedWorldEvent event) {
+//        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+//        if (player != null && player.getPlayer().getWorld().getUID() != WITP.getDivider().getWorld().getUID()) {
+//            try {
+//                ParkourPlayer.unregister(player, true);
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//                Verbose.error("Error while trying to unregister player");
+//            }
+//        }
+//    }
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {

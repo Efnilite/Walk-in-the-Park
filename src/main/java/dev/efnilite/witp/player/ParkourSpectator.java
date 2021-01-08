@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for spectators
+ */
 public class ParkourSpectator extends ParkourUser {
 
     protected final ParkourPlayer watching;
@@ -42,6 +45,10 @@ public class ParkourSpectator extends ParkourUser {
         sendTranslated("spectator");
     }
 
+    /**
+     * Checks the distance between the person the spectator is watching and the spectator.
+     * If the distance is more than 30 blocks, the player gets teleported back.
+     */
     public void checkDistance() {
         if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
             player.teleport(watching.getPlayer().getLocation());
