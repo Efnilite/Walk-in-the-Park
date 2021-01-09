@@ -208,19 +208,18 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-    // todo add join timer
-//    @EventHandler
-//    public void onSwitch(PlayerChangedWorldEvent event) {
-//        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-//        if (player != null && player.getPlayer().getWorld().getUID() != WITP.getDivider().getWorld().getUID()) {
-//            try {
-//                ParkourPlayer.unregister(player, true);
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//                Verbose.error("Error while trying to unregister player");
-//            }
-//        }
-//    }
+    @EventHandler
+    public void onSwitch(PlayerChangedWorldEvent event) {
+        ParkourUser user = ParkourUser.getUser(event.getPlayer());
+        if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null) {
+            try {
+                ParkourUser.unregister(user, true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to unregister player");
+            }
+        }
+    }
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {

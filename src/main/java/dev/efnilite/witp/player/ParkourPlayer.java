@@ -74,7 +74,6 @@ public class ParkourPlayer extends ParkourUser {
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.possibleStyle = new ArrayList<>();
         setStyle(style);
-        this.generator = new ParkourGenerator(this);
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
@@ -93,6 +92,10 @@ public class ParkourPlayer extends ParkourUser {
             }
             highScores = Util.sortByValue(highScores);
         }
+    }
+
+    public void setGenerator(ParkourGenerator generator) {
+        this.generator = generator;
     }
 
     public void removeSpectators(ParkourSpectator... spectators) {

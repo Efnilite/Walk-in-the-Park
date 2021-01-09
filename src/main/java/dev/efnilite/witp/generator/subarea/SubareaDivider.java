@@ -225,14 +225,13 @@ public class SubareaDivider {
     public void setBorder(@NotNull ParkourUser player, @NotNull SubareaPoint point) {
         int size = (int) ParkourGenerator.Configurable.BORDER_SIZE;
         Vector estimated = point.getEstimatedCenter(size);
-        Verbose.info(estimated.toString() + " // " + size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
 
     private void createIsland(ParkourPlayer pp, SubareaPoint point) {
         Player player = pp.getPlayer();
         collection.put(point, pp);
-        Location spawn = point.getEstimatedCenter((int) pp.getGenerator().borderOffset * 2).toLocation(world).clone();
+        Location spawn = point.getEstimatedCenter((int) ParkourGenerator.Configurable.BORDER_SIZE).toLocation(world).clone();
 
         Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
         spawn.setY(spawn.getY() - dimension.getY());
@@ -242,6 +241,8 @@ public class SubareaDivider {
         min.setZ(min.getZ() - (dimension.getZ() / 2.0));
 
         List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
+
+        pp.setGenerator(new ParkourGenerator(pp));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         pp.getGenerator().heading = heading.clone();
         Location to = null;
