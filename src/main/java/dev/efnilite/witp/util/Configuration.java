@@ -49,6 +49,10 @@ public class Configuration {
         structures();
     }
 
+    public void reload() {
+        files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang.yml")));
+    }
+
     /**
      * Downloads the structures
      */

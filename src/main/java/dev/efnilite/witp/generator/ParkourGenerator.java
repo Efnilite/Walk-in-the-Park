@@ -642,29 +642,31 @@ public class ParkourGenerator {
         public static int MAXED_FOUR_BLOCK;
 
         public static void init() {
-            FileConfiguration file = WITP.getConfiguration().getFile("generation");
+            FileConfiguration gen = WITP.getConfiguration().getFile("generation");
             FileConfiguration config = WITP.getConfiguration().getFile("config");
-            NORMAL = file.getInt("generation.normal-jump.chance");
-            STRUCTURES = file.getInt("generation.structures.chance");
-            SPECIAL = file.getInt("generation.normal-jump.special.chance");
+            FileConfiguration lang = WITP.getConfiguration().getFile("lang");
 
-            SPECIAL_ICE = file.getInt("generation.normal-jump.special.ice");
-            SPECIAL_SLAB = file.getInt("generation.normal-jump.special.slab");
-            SPECIAL_PANE = file.getInt("generation.normal-jump.special.pane");
-            SPECIAL_FENCE = file.getInt("generation.normal-jump.special.fence");
+            NORMAL = gen.getInt("generation.normal-jump.chance");
+            STRUCTURES = gen.getInt("generation.structures.chance");
+            SPECIAL = gen.getInt("generation.normal-jump.special.chance");
 
-            NORMAL_ONE_BLOCK = file.getInt("generation.normal-jump.1-block");
-            NORMAL_TWO_BLOCK = file.getInt("generation.normal-jump.2-block");
-            NORMAL_THREE_BLOCK = file.getInt("generation.normal-jump.3-block");
-            NORMAL_FOUR_BLOCK = file.getInt("generation.normal-jump.4-block");
+            SPECIAL_ICE = gen.getInt("generation.normal-jump.special.ice");
+            SPECIAL_SLAB = gen.getInt("generation.normal-jump.special.slab");
+            SPECIAL_PANE = gen.getInt("generation.normal-jump.special.pane");
+            SPECIAL_FENCE = gen.getInt("generation.normal-jump.special.fence");
 
-            NORMAL_UP = file.getInt("generation.normal-jump.up");
-            NORMAL_LEVEL = file.getInt("generation.normal-jump.level");
-            NORMAL_DOWN = file.getInt("generation.normal-jump.down");
-            NORMAL_DOWN2 = file.getInt("generation.normal-jump.down2");
+            NORMAL_ONE_BLOCK = gen.getInt("generation.normal-jump.1-block");
+            NORMAL_TWO_BLOCK = gen.getInt("generation.normal-jump.2-block");
+            NORMAL_THREE_BLOCK = gen.getInt("generation.normal-jump.3-block");
+            NORMAL_FOUR_BLOCK = gen.getInt("generation.normal-jump.4-block");
 
-            MAX_Y = file.getInt("generation.settings.max-y");
-            MIN_Y = file.getInt("generation.settings.min-y");
+            NORMAL_UP = gen.getInt("generation.normal-jump.up");
+            NORMAL_LEVEL = gen.getInt("generation.normal-jump.level");
+            NORMAL_DOWN = gen.getInt("generation.normal-jump.down");
+            NORMAL_DOWN2 = gen.getInt("generation.normal-jump.down2");
+
+            MAX_Y = gen.getInt("generation.settings.max-y");
+            MIN_Y = gen.getInt("generation.settings.min-y");
 
             // Config stuff
             REWARDS = config.getBoolean("rewards.enabled");
@@ -679,9 +681,9 @@ public class ParkourGenerator {
                 REWARDS_MESSAGE = null;
             }
 
-            SCOREBOARD = config.getBoolean("scoreboard.enabled");
-            SCOREBOARD_TITLE = Util.color(config.getString("scoreboard.title"));
-            SCOREBOARD_LINES = Util.color(config.getStringList("scoreboard.lines"));
+            SCOREBOARD = lang.getBoolean("scoreboard.enabled");
+            SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));
+            SCOREBOARD_LINES = Util.color(lang.getStringList("scoreboard.lines"));
             INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
             PERMISSIONS = config.getBoolean("permissions.enabled");
             FOCUS_MODE = config.getBoolean("focus-mode.enabled");
@@ -691,15 +693,22 @@ public class ParkourGenerator {
             PARTICLE_TYPE = Particle.valueOf(config.getString("particles.particle-type").toUpperCase());
 
             // Advanced settings
-            BORDER_SIZE = file.getDouble("advanced.border-size");
-            GENERATOR_CHECK = file.getInt("advanced.generator-check");
-            HEIGHT_GAP = file.getDouble("advanced.height-gap");
-            MULTIPLIER = file.getInt("advanced.maxed-multiplier");
+            BORDER_SIZE = gen.getDouble("advanced.border-size");
+            GENERATOR_CHECK = gen.getInt("advanced.generator-check");
+            HEIGHT_GAP = gen.getDouble("advanced.height-gap");
+            MULTIPLIER = gen.getInt("advanced.maxed-multiplier");
 
-            MAXED_ONE_BLOCK = file.getInt("advanced.maxed-values.1-block");
-            MAXED_TWO_BLOCK = file.getInt("advanced.maxed-values.2-block");
-            MAXED_THREE_BLOCK = file.getInt("advanced.maxed-values.3-block");
-            MAXED_FOUR_BLOCK = file.getInt("advanced.maxed-values.4-block");
+            MAXED_ONE_BLOCK = gen.getInt("advanced.maxed-values.1-block");
+            MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
+            MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
+            MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
+        }
+
+        public static void reload() {
+            FileConfiguration lang = WITP.getConfiguration().getFile("lang");
+            SCOREBOARD = lang.getBoolean("scoreboard.enabled");
+            SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));
+            SCOREBOARD_LINES = Util.color(lang.getStringList("scoreboard.lines"));
         }
     }
 

@@ -75,6 +75,7 @@ public class WITP extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderHook().register();
         }
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         ParkourGenerator.Configurable.init();
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -191,12 +192,13 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         if (ParkourPlayer.getPlayer(event.getPlayer()) != null &&
                 (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
                 event.getHand() == EquipmentSlot.HAND) {
+            event.setCancelled(true);
             String mat = WITP.getConfiguration().getString("config", "options.item");
             if (mat == null) {
                 Verbose.error("Material for options in config is null - defaulting to compass");
@@ -232,7 +234,7 @@ public class WITP extends JavaPlugin implements Listener {
                 }
             }
             try {
-                ParkourPlayer.unregister(player, false);
+                ParkourPlayer.unregister(player, true);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");

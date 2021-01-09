@@ -67,14 +67,26 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "time_preference":
                 return pp.time;
             case "leader":
-            case "rank_one":
             case "record_player":
                 return Bukkit.getOfflinePlayer(ParkourPlayer.getAtPlace(1)).getName();
             case "leader_score":
-            case "rank_one_score":
             case "record_score":
             case "record":
                 return Integer.toString(ParkourPlayer.getHighScore(ParkourPlayer.getAtPlace(1)));
+        }
+        if (params.contains("player_rank_")) {
+            String replaced = params.replaceAll("player_rank_", "");
+            int rank = Integer.parseInt(replaced);
+            if (rank > 0) {
+                String name = Bukkit.getOfflinePlayer(ParkourPlayer.getAtPlace(rank)).getName();
+                return name == null ? "N/A" : name;
+            }
+        } else if (params.contains("score_rank_")) {
+            String replaced = params.replaceAll("score_rank_", "");
+            int rank = Integer.parseInt(replaced);
+            if (rank > 0) {
+                return Integer.toString(ParkourPlayer.getHighScore(ParkourPlayer.getAtPlace(rank)));
+            }
         }
 
         return null;

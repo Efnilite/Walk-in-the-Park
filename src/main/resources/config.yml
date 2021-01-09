@@ -94,19 +94,6 @@ styles:
         ores: [diamond_ore, gold_ore, iron_ore, coal_ore, nether_gold_ore, lapis_ore, redstone_ore, emerald_ore, nether_quartz_ore]
         wood: [oak_planks, spruce_planks, jungle_planks, acacia_planks, birch_planks, dark_oak_planks, oak_log, spruce_log, jungle_log, birch_log, acacia_log, dark_oak_log]
 
-# How the scoreboard looks
-# Placeholders: %score%, %time%
-scoreboard:
-    enabled: true
-
-    title: '&a&lWalk in the Park'
-    lines:
-        - '&a'
-        - '&7Score: &f%score%'
-        - '&7Time: &f%time%'
-        - '&b'
-        - '&6&lserver.ip'
-
 # Options for custom rewards
 rewards:
 

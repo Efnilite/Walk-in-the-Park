@@ -1,5 +1,7 @@
 package dev.efnilite.witp.command;
 
+import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
@@ -26,6 +28,7 @@ public class MainCommand extends BukkitCommand {
         if (args.length == 0) {
             sender.sendMessage(Util.color("&7--------------- &aWITP &7---------------"));
             sender.sendMessage(Util.color("&a/witp &f- &7Main command"));
+            sender.sendMessage(Util.color("&a/witp reload &f- &7Reloads the lang.yml file"));
             sender.sendMessage(Util.color("&a/witp join [player] &f- &7Join the game on this server or make another player join"));
             sender.sendMessage(Util.color("&a/witp leave &f- &7Leave the game on this server"));
             sender.sendMessage(Util.color("&a/witp menu &f- &7Open the customization menu"));
@@ -33,6 +36,11 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp leaderboard &f- &7Open the leaderboard"));
             return true;
         } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                WITP.getConfiguration().reload();
+                ParkourGenerator.Configurable.reload();
+                sender.sendMessage(Util.color("&a&l(!) &7The lang.yml file has been reloaded"));
+            }
             if (player == null) {
                 return true;
             }

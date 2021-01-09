@@ -6,7 +6,7 @@
 
     <groupId>dev.efnilite</groupId>
     <artifactId>witp</artifactId>
-    <version>1.8b</version>
+    <version>1.9</version>
     <build>
         <plugins>
             <plugin>

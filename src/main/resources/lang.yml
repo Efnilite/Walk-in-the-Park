@@ -13,23 +13,23 @@ messages:
     en:
         join: '&7%p has joined the server'
         leave: '&7%p has left the server'
-        joined: '&aYou joined the parkour'
-        left: '&cYou left the parkour'
+        joined: '&a&l(!) &7You joined the parkour'
+        left: '&c&l(!) &7You left the parkour'
 
         next-page: '&aNext page >>'
         previous-page: '&a<< Previous page'
         your-rank: '&7Your rank: &f#%n &7(%h)'
 
-        selected-style: '&7You selected style &c%s&7!'
-        selected-block-lead: '&7You selected a &a%a &7block lead!'
-        selected-time: '&7You changed your time preference to &a%t'
-        selected-difficulty: '&7You changed your usage of difficulty to %v'
-        selected-particles: '&7You changed the showing of particles to %v'
-        selected-scoreboard: '&7You changed the showing of the scoreboard to %v'
-        selected-fall-message: '&7You changed the showing of the fall messages to %v'
-        selected-special-blocks: '&7You changed the usage of special blocks to %v'
-        selected-structures: '&7You changed the usage of structures to %v'
-        cant-do: '&cYou can''t do this right now.'
+        selected-style: '&a&l(!) &7You selected style &c%s&7!'
+        selected-block-lead: '&a&l(!) &7You selected a &a%a &7block lead!'
+        selected-time: '&a&l(!) &7You changed your time preference to &a%t'
+        selected-difficulty: '&a&l(!) &7You changed your usage of difficulty to %v'
+        selected-particles: '&a&l(!) &7You changed the showing of particles to %v'
+        selected-scoreboard: '&a&l(!) &7You changed the showing of the scoreboard to %v'
+        selected-fall-message: '&a&l(!) &7You changed the showing of the fall messages to %v'
+        selected-special-blocks: '&a&l(!) &7You changed the usage of special blocks to %v'
+        selected-structures: '&a&l(!) &7You changed the usage of structures to %v'
+        cant-do: '&c&l(!) &cYou can''t do this right now.'
 
         item-close: '&c&lClose'
         item-quit: '&4&lQuit'
@@ -39,7 +39,7 @@ messages:
         not-there-search: '&7Type the player you want to spectate!'
         click-search: '&c&l&nClick here&r&c&l to enter the player you want to search.'
 
-        spectator: '&cYou are now a spectator. You can use "/witp gm" to leave/change your gamemode.'
+        spectator: '&a&l(!) &7You are now a spectator. You can use "/witp gm" to leave/change your gamemode.'
         divider: '&7----------------------------------------'
         score: '&aYour score: &f%s'
         time: '&aYour time: &f%s'
@@ -48,3 +48,16 @@ messages:
             miss: '&7You missed your high score by %s points!'
             beat: '&7You beat your high score by %s points!'
             tied: '&7You tied your high score!'
+
+# How the scoreboard looks
+# Placeholders: %score%, %time%
+scoreboard:
+    enabled: true
+
+    title: '&a&lWalk in the Park'
+    lines:
+        - '&a'
+        - '&7Score: &f%score%'
+        - '&7Time: &f%time%'
+        - '&b'
+        - '&6&lserver.ip'
