@@ -21,10 +21,13 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
         super(player.getPlayer());
         Verbose.verbose("New ParkourSpectator init " + this.player.getName());
+        this.previousLocation = player.previousLocation;
+        this.previousInventory = player.previousInventory;
+        this.previousGamemode = player.previousGamemode;
 
         if (player instanceof ParkourPlayer) {
             try {
-                ParkourPlayer.unregister((ParkourPlayer) player, false);
+                ParkourPlayer.unregister(player, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister");
@@ -38,10 +41,9 @@ public class ParkourSpectator extends ParkourUser {
         this.watching = watching;
         this.watchingGenerator = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
-        double offset = watching.getGenerator().borderOffset * 2;
-        WITP.getVersionManager().setWorldBorder(this.player, WITP.getDivider().getPoint(watching).getEstimatedCenter(offset), offset);
         watching.addSpectator(this);
         this.player.teleport(watching.getPlayer().getLocation());
+        WITP.getDivider().setBorder(this, WITP.getDivider().getPoint(watching));
         sendTranslated("spectator");
     }
 

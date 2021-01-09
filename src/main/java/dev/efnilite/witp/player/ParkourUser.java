@@ -3,6 +3,7 @@ package dev.efnilite.witp.player;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +55,61 @@ public abstract class ParkourUser {
         this.board = new FastBoard(player);
         // remove duplicates
         users.put(player.getName(), this);
+    }
+
+    /**
+     * Unregisters a ParkourPlayer
+     *
+     * @param   player
+     *          The ParkourPlayer
+     *
+     * @throws  IOException
+     *          When saving the player's file goes wrong
+     */
+    public static void unregister(@NotNull ParkourUser player, boolean sendBack) throws IOException {
+        new PlayerLeaveEvent(player).call();
+        if (!player.getBoard().isDeleted()) {
+            player.getBoard().delete();
+        }
+        if (player instanceof ParkourPlayer) {
+            ParkourPlayer pp = (ParkourPlayer) player;
+            pp.getGenerator().reset(false);
+            pp.save();
+            WITP.getDivider().leave(pp);
+            players.remove(pp.getPlayer());
+            for (ParkourSpectator spectator : pp.spectators.values()) {
+                try {
+                    ParkourPlayer.register(spectator.getPlayer());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    Verbose.error("Error while trying to register player" + player.getPlayer().getName());
+                }
+            }
+            pp.spectators.clear();
+            pp.nullify();
+        } else if (player instanceof ParkourSpectator) {
+            ParkourSpectator spectator = (ParkourSpectator) player;
+            spectator.watching.removeSpectators(spectator);
+        }
+        users.remove(player.getPlayer().getName());
+
+        if (sendBack) {
+            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
+                Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+            } else {
+                Player pl = player.getPlayer();
+                pl.teleport(player.previousLocation);
+                WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
+                pl.setGameMode(player.previousGamemode);
+                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+                    pl.getInventory().clear();
+                    for (int slot : player.previousInventory.keySet()) {
+                        pl.getInventory().setItem(slot, player.previousInventory.get(slot));
+                    }
+                }
+                pl.resetPlayerTime();
+            }
+        }
     }
 
     /**

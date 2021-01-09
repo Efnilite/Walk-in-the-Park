@@ -48,11 +48,11 @@ public class MainCommand extends BukkitCommand {
                     Verbose.error("Error while joining");
                 }
             } else if (args[0].equalsIgnoreCase("leave")) {
-                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                ParkourUser pp = ParkourUser.getUser(player);
                 if (pp != null) {
                     try {
                         pp.sendTranslated("left");
-                        ParkourPlayer.unregister(pp, true);
+                        ParkourUser.unregister(pp, true);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while leaving");

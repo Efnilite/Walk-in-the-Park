@@ -3,6 +3,7 @@ package dev.efnilite.witp.generator.subarea;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -14,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.FileUtil;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -222,9 +222,10 @@ public class SubareaDivider {
         return world;
     }
 
-    public void setBorder(@NotNull ParkourPlayer player, @NotNull SubareaPoint point) {
+    public void setBorder(@NotNull ParkourUser player, @NotNull SubareaPoint point) {
         int size = (int) ParkourGenerator.Configurable.BORDER_SIZE;
         Vector estimated = point.getEstimatedCenter(size);
+        Verbose.info(estimated.toString() + " // " + size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
 
@@ -284,13 +285,6 @@ public class SubareaDivider {
         if (to != null && parkourBegin != null) {
             pp.getGenerator().generateFirst(to.clone(), parkourBegin.clone());
         }
-        BukkitRunnable delay = new BukkitRunnable() {
-            @Override
-            public void run() {
-
-                setBorder(pp, point);
-            }
-        };
-        Tasks.syncRepeat(delay, 5 * 20);
+        setBorder(pp, point);
     }
 }

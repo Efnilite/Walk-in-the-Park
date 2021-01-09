@@ -3,7 +3,6 @@ package dev.efnilite.witp.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.WITPAPI;
-import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -11,12 +10,10 @@ import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import fr.mrmicky.fastboard.FastBoard;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -52,7 +49,7 @@ public class ParkourPlayer extends ParkourUser {
     private ParkourGenerator generator;
     private List<Material> possibleStyle;
     private final File file;
-    private final HashMap<String, ParkourSpectator> spectators;
+    public final HashMap<String, ParkourSpectator> spectators;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -546,53 +543,8 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    /**
-     * Unregisters a ParkourPlayer
-     *
-     * @param   player
-     *          The ParkourPlayer
-     *
-     * @throws  IOException
-     *          When saving the player's file goes wrong
-     */
-    public static void unregister(@NotNull ParkourPlayer player, boolean sendBack) throws IOException {
-        new PlayerLeaveEvent(player).call();
-        player.generator.reset(false);
-        if (!player.getBoard().isDeleted()) {
-            player.getBoard().delete();
-        }
-        player.save();
-        WITP.getDivider().leave(player);
-        players.remove(player.getPlayer());
-        users.remove(player.getPlayer().getName());
-        for (ParkourSpectator spectator : player.spectators.values()) {
-            try {
-                ParkourPlayer.register(spectator.getPlayer());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to register player" + player.getPlayer().getName());
-            }
-        }
-        player.spectators.clear();
-
-        if (sendBack) {
-            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
-                Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
-            } else {
-                Player pl = player.getPlayer();
-                WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
-                pl.setGameMode(player.previousGamemode);
-                pl.teleport(player.previousLocation);
-                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
-                    pl.getInventory().clear();
-                    for (int slot : player.previousInventory.keySet()) {
-                        pl.getInventory().setItem(slot, player.previousInventory.get(slot));
-                    }
-                }
-                pl.resetPlayerTime();
-            }
-        }
-        player.generator = null;
+    public void nullify() {
+        generator = null;
     }
 
     /**
