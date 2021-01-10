@@ -83,6 +83,8 @@ public class WITP extends JavaPlugin implements Listener {
         divider = new SubareaDivider();
 
         checker = new UpdateChecker();
+
+        ParkourUser.initHighScores();
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {

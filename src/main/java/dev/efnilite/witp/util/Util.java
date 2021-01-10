@@ -19,7 +19,6 @@ import org.bukkit.util.Vector;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * General utilities
@@ -328,21 +327,6 @@ public class Util {
             }
         }
         return add;
-    }
-
-    /**
-     * Sorts a HashMap based on value
-     *
-     * @param   unsorted
-     *          The unsorted HashMap
-     *
-     * @return the sorted HashMap
-     */
-    public static LinkedHashMap<String, Integer> sortValue(HashMap<String, Integer> unsorted) {
-        return unsorted.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue())
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                                (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     /**

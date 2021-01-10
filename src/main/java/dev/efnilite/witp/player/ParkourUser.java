@@ -45,6 +45,7 @@ public abstract class ParkourUser {
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
     protected static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
+    protected static HashMap<UUID, String> nameMap = new LinkedHashMap<>();
     protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     public ParkourUser(@NotNull Player player) {
@@ -81,6 +82,7 @@ public abstract class ParkourUser {
                 try {
                     ParkourPlayer.register(spectator.getPlayer());
                 } catch (IOException ex) {
+                    ex.printStackTrace();
                     ex.printStackTrace();
                     Verbose.error("Error while trying to register player" + player.getPlayer().getName());
                 }
@@ -167,7 +169,21 @@ public abstract class ParkourUser {
             FileReader reader = new FileReader(file);
             ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
             String name = file.getName();
-            highScores.put(UUID.fromString(name.substring(0, name.lastIndexOf('.'))), from.highScore);
+            UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+            highScores.put(uuid, from.highScore);
+            nameMap.put(uuid, from.name);
+        }
+    }
+
+    public static void initHighScores() {
+        if (highScores.isEmpty()) {
+            try {
+                fetchHighScores();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to fetch the high scores!");
+            }
+            highScores = Util.sortByValue(highScores);
         }
     }
 
@@ -241,17 +257,10 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Shows the scoreboard (as a chat message)
+     * Shows the leaderboard (as a chat message)
      */
-    public void scoreboard(int page) {
-        if (highScores.size() == 0) {
-            try {
-                fetchHighScores();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to fetch the high scores!");
-            }
-        }
+    public void leaderboard(int page) {
+        initHighScores();
 
         int lowest = page * 10;
         int highest = (page - 1) * 10;
@@ -276,7 +285,13 @@ public abstract class ParkourUser {
             if (uuid == null) {
                 continue;
             }
-            String name = Bukkit.getOfflinePlayer(uuid).getName();
+            String name = nameMap.get(uuid);
+            if (name == null || name.equals("null")) {
+                name = Bukkit.getOfflinePlayer(uuid).getName();
+                if (name == null || name.equals("null")) {
+                    continue;
+                }
+            }
             int rank = i + 1;
             send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid));
         }
@@ -334,9 +349,14 @@ public abstract class ParkourUser {
 
     /**
      * Same as {@link #sendTranslated(String, String...)}, but without sending the text (used in GUIs)
-     * @param path
-     * @param replaceable
-     * @return
+     *
+     * @param   path
+     *          The path
+     *
+     * @param   replaceable
+     *          Things that can be replaced
+     *
+     * @return the coloured and replaced string
      */
     public String getTranslated(String path, String... replaceable) {
         path = "messages.en." + path;

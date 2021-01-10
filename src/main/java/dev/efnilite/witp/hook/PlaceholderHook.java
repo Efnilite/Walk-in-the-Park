@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
@@ -41,52 +43,69 @@ public class PlaceholderHook extends PlaceholderExpansion {
             return "player doesn't exist";
         }
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp == null) {
-            return "player is not registered";
+        if (pp != null) {
+            switch (params) {
+                case "highscore":
+                case "high_score":
+                    return Integer.toString(pp.highScore);
+                case "score":
+                case "current_score":
+                    return Integer.toString(pp.getGenerator().score);
+                case "time":
+                case "current_time":
+                    return pp.getGenerator().time;
+                case "blocklead":
+                case "lead":
+                    return Integer.toString(pp.blockLead);
+                case "style":
+                    return pp.style;
+                case "time_pref":
+                case "time_preference":
+                    return pp.time;
+            }
         }
 
         switch (params) {
-            case "highscore":
-            case "high_score":
-                return Integer.toString(pp.highScore);
-            case "score":
-            case "current_score":
-                return Integer.toString(pp.getGenerator().score);
-            case "time":
-            case "current_time":
-                return pp.getGenerator().time;
             case "version":
             case "ver":
                 return WITP.getInstance().getDescription().getVersion();
-            case "blocklead":
-            case "lead":
-                return Integer.toString(pp.blockLead);
-            case "style":
-                return pp.style;
-            case "time_pref":
-            case "time_preference":
-                return pp.time;
             case "leader":
             case "record_player":
-                return Bukkit.getOfflinePlayer(ParkourPlayer.getAtPlace(1)).getName();
+                UUID recordPlayer = ParkourPlayer.getAtPlace(1);
+                return recordPlayer == null ? "N/A" : Bukkit.getOfflinePlayer(recordPlayer).getName();
             case "leader_score":
             case "record_score":
             case "record":
-                return Integer.toString(ParkourPlayer.getHighScore(ParkourPlayer.getAtPlace(1)));
-        }
-        if (params.contains("player_rank_")) {
-            String replaced = params.replaceAll("player_rank_", "");
-            int rank = Integer.parseInt(replaced);
-            if (rank > 0) {
-                String name = Bukkit.getOfflinePlayer(ParkourPlayer.getAtPlace(rank)).getName();
-                return name == null ? "N/A" : name;
-            }
-        } else if (params.contains("score_rank_")) {
-            String replaced = params.replaceAll("score_rank_", "");
-            int rank = Integer.parseInt(replaced);
-            if (rank > 0) {
-                return Integer.toString(ParkourPlayer.getHighScore(ParkourPlayer.getAtPlace(rank)));
-            }
+                UUID uuid = ParkourPlayer.getAtPlace(1);
+                if (uuid == null) {
+                    return "N/A";
+                }
+                Integer score = ParkourPlayer.getHighScore(uuid);
+                return score == null ? "N/A" : Integer.toString(score);
+            default:
+                if (params.contains("player_rank_")) {
+                    String replaced = params.replaceAll("player_rank_", "");
+                    int rank = Integer.parseInt(replaced);
+                    if (rank > 0) {
+                        UUID uuidRank = ParkourPlayer.getAtPlace(rank);
+                        return uuidRank == null ? "N/A" : Bukkit.getOfflinePlayer(uuidRank).getName();
+                    } else {
+                        return "N/A";
+                    }
+                } else if (params.contains("score_rank_")) {
+                    String replaced = params.replaceAll("score_rank_", "");
+                    int rank = Integer.parseInt(replaced);
+                    if (rank > 0) {
+                        UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
+                        if (uuidRank1 == null) {
+                            return "N/A";
+                        }
+                        Integer score1 = ParkourPlayer.getHighScore(uuidRank1);
+                        return score1 == null ? "N/A" : Integer.toString(score1);
+                    } else {
+                        return "N/A";
+                    }
+                }
         }
 
         return null;

@@ -8,6 +8,7 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,6 +41,10 @@ public class MainCommand extends BukkitCommand {
                 WITP.getConfiguration().reload();
                 ParkourGenerator.Configurable.reload();
                 sender.sendMessage(Util.color("&a&l(!) &7The lang.yml file has been reloaded"));
+            } else if (args[0].equalsIgnoreCase("test")) {
+                for (int i = 1; i <= 5; i++) {
+                    sender.sendMessage(PlaceholderAPI.setPlaceholders(player, "#" + i + " / %witp_player_rank_" + i + "% -- " + "%witp_score_rank_" + i + "%"));
+                }
             }
             if (player == null) {
                 return true;
@@ -79,7 +84,7 @@ public class MainCommand extends BukkitCommand {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
                 ParkourUser user = ParkourUser.getUser(player);
                 if (user != null) {
-                    user.scoreboard(1);
+                    user.leaderboard(1);
                 }
             }
         } else if (args.length == 2) {
@@ -87,7 +92,7 @@ public class MainCommand extends BukkitCommand {
                 int page = Integer.parseInt(args[1]);
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
-                    pp.scoreboard(page);
+                    pp.leaderboard(page);
                 }
             } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {
                 if (sender.isOp()) {

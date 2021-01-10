@@ -45,6 +45,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String time;
     public @Expose String style;
     public @Expose String lang;
+    public @Expose String name; // for fixing null in leaderboard
 
     private ParkourGenerator generator;
     private List<Material> possibleStyle;
@@ -55,7 +56,7 @@ public class ParkourPlayer extends ParkourUser {
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
-    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, int blockLead, boolean useParticles,
+    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, String name, int blockLead, boolean useParticles,
                          boolean useDifficulty, boolean useStructure, boolean useSpecial, boolean showDeathMsg, boolean showScoreboard) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
@@ -70,6 +71,7 @@ public class ParkourPlayer extends ParkourUser {
         this.useStructure = useStructure;
         this.showScoreboard = showScoreboard;
         this.spectators = new HashMap<>();
+        this.name = name;
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
         this.possibleStyle = new ArrayList<>();
@@ -82,15 +84,6 @@ public class ParkourPlayer extends ParkourUser {
         }
         if (player.isOp() && WITP.isOutdated) {
             send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
-        }
-        if (highScores.size() == 0) {
-            try {
-                fetchHighScores();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to fetch the high scores!");
-            }
-            highScores = Util.sortByValue(highScores);
         }
     }
 
@@ -171,6 +164,7 @@ public class ParkourPlayer extends ParkourUser {
     public void setHighScore(int score) {
         this.highScore = score;
         highScores.put(player.getUniqueId(), score);
+        highScores = Util.sortByValue(highScores);
         saveStats();
     }
 
@@ -350,7 +344,7 @@ public class ParkourPlayer extends ParkourUser {
                 .setLore(getTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())), Integer.toString(score == null ? 0 : score)))
                 .build(), (t2, e2) -> {
             if (checkPermission("witp.leaderboard")) {
-                scoreboard(1);
+                leaderboard(1);
                 player.closeInventory();
             }
         });
@@ -439,7 +433,7 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the high score of the player
      */
-    public static int getHighScore(@NotNull UUID player) {
+    public static Integer getHighScore(@NotNull UUID player) {
         return highScores.get(player);
     }
 
@@ -452,8 +446,13 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the player at that place
      */
-    public static UUID getAtPlace(int place) {
-        return new ArrayList<>(highScores.keySet()).get(place);
+    public static @Nullable UUID getAtPlace(int place) {
+        List<UUID> scores = new ArrayList<>(highScores.keySet());
+        place--;
+        if (scores.size() > place) {
+            return scores.get(place);
+        }
+        return null;
     }
 
     /**
@@ -487,17 +486,18 @@ public class ParkourPlayer extends ParkourUser {
                 if (from.showScoreboard == null) {
                     from.showScoreboard = true;
                 }
-                ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.blockLead,
+                if (from.name == null || !from.name.equals(player.getName())) {
+                    from.name = player.getName();
+                }
+                ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.name, from.blockLead,
                         from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
                 pp.save();
                 players.put(player, pp);
                 reader.close();
                 return pp;
             } else {
-                ParkourPlayer pp = new ParkourPlayer(player, 0, "Day",
-                        WITP.getConfiguration().getString("config", "styles.default"),
-                        4, true, true, true, true,
-                        true, true);
+                ParkourPlayer pp = new ParkourPlayer(player, 0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
+                        player.getName(), 4, true, true, true, true, true, true);
                 players.put(player, pp);
                 pp.save();
                 return pp;
