@@ -39,12 +39,8 @@ public class MainCommand extends BukkitCommand {
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 WITP.getConfiguration().reload();
-                ParkourGenerator.Configurable.reload();
+                ParkourGenerator.Configurable.init(false);
                 sender.sendMessage(Util.color("&a&l(!) &7The lang.yml file has been reloaded"));
-            } else if (args[0].equalsIgnoreCase("test")) {
-                for (int i = 1; i <= 5; i++) {
-                    sender.sendMessage(PlaceholderAPI.setPlaceholders(player, "#" + i + " / %witp_player_rank_" + i + "% -- " + "%witp_score_rank_" + i + "%"));
-                }
             }
             if (player == null) {
                 return true;

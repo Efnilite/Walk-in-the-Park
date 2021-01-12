@@ -77,7 +77,7 @@ public class WITP extends JavaPlugin implements Listener {
         }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        ParkourGenerator.Configurable.init();
+        ParkourGenerator.Configurable.init(true);
         this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
@@ -143,6 +143,7 @@ public class WITP extends JavaPlugin implements Listener {
                 Verbose.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(world.getName()))) {
+                        player.sendMessage(Util.color("&cThere was an error while trying to get a world"));
                         player.teleport(last.getSpawnLocation());
                         return;
                     }

@@ -64,7 +64,7 @@ public class InventoryBuilder implements Listener {
     /**
      * Builds the inventory
      */
-    public Inventory build() {
+    public Inventory build() { // todo fix uuid testing?
         Inventory inventory = Bukkit.createInventory(null, rows * 9, ChatColor.translateAlternateColorCodes('&', name));
         for (int slot : items.keySet()) {
             inventory.setItem(slot, items.get(slot));
@@ -87,7 +87,7 @@ public class InventoryBuilder implements Listener {
      * When finished building, should the inventory be opened?
      */
     public InventoryBuilder open() {
-        this.open = Boolean.parseBoolean(Util.reverseBoolean("" + this.open));
+        this.open = !open;
         return this;
     }
 

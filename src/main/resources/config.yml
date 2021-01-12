@@ -32,6 +32,13 @@ bungeecord:
     # The server the players will be returned to after the game is done
     return_server: Lobby
 
+    # If go back is enabled
+    go-back-enabled: false
+
+    # The place players will go back to if they leave, if bungeecord is disabled and the go-back option is enabled
+    # You need to retain this format, or else it won't work: '(x,y,z,world)'
+    go-back: '(0,150,0,world)'
+
 world:
     # The world in which the personal parkours will take place
     name: witp
@@ -103,7 +110,13 @@ rewards:
     # The interval at which they get a reward
     # (so for every 50 blocks the player jumps, they get a reward)
     # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
+    # Setting this to -1 will never result in rewards
     interval: 50
+
+    # The same as interval, but instead at scores.
+    # So when the player reaches, for example, 50 points, the rewards system is triggered.
+    # Setting this to -1 will never result in rewards
+    score: -1
 
     # The command that will be executed if the interval is met
     # 'null' means no command

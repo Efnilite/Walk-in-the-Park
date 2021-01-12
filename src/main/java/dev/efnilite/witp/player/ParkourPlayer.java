@@ -35,6 +35,7 @@ public class ParkourPlayer extends ParkourUser {
      * Player data used in saving
      */
     public @Expose int highScore;
+    public @Expose String highScoreTime;
     public @Expose int blockLead;
     public @Expose boolean useDifficulty;
     public @Expose Boolean useParticles;
@@ -56,10 +57,12 @@ public class ParkourPlayer extends ParkourUser {
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
-    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, String name, int blockLead, boolean useParticles,
-                         boolean useDifficulty, boolean useStructure, boolean useSpecial, boolean showDeathMsg, boolean showScoreboard) {
+    public ParkourPlayer(@NotNull Player player, int highScore, String time, String style, String name, String highScoreTime,
+                         int blockLead, boolean useParticles, boolean useDifficulty, boolean useStructure, boolean useSpecial,
+                         boolean showDeathMsg, boolean showScoreboard) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
+        this.highScoreTime = highScoreTime;
         this.useSpecial = useSpecial;
         this.showDeathMsg = showDeathMsg;
         this.highScore = highScore;
@@ -109,7 +112,9 @@ public class ParkourPlayer extends ParkourUser {
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {
             spectator.checkDistance();
-            spectator.updateScoreboard();
+            if (ParkourGenerator.Configurable.SCOREBOARD) {
+                spectator.updateScoreboard();
+            }
         }
     }
 
@@ -125,10 +130,18 @@ public class ParkourPlayer extends ParkourUser {
             Verbose.error("Scoreboard lines are null! Check your config!");
             return;
         }
+        Integer rank = getHighScore(player.getUniqueId());
+        UUID one = getAtPlace(1);
+        Integer top = 0;
+        if (one != null) {
+            top = getHighScore(one);
+        }
         for (String s : lines) {
             list.add(s
                     .replaceAll("%score%", Integer.toString(generator.score))
-                    .replaceAll("%time%", generator.time));
+                    .replaceAll("%time%", generator.time)
+                    .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
+                    .replaceAll("%topscore%", top != null ? top.toString() : "0"));
         }
 
         board.updateLines(list);
@@ -161,8 +174,10 @@ public class ParkourPlayer extends ParkourUser {
      * @param   score
      *          The score
      */
-    public void setHighScore(int score) {
+    public void setHighScore(int score, String time) {
         this.highScore = score;
+        highScoreTime = time;
+        scoreMap.get(player.getUniqueId()).time = highScoreTime;
         highScores.put(player.getUniqueId(), score);
         highScores = Util.sortByValue(highScores);
         saveStats();
@@ -433,7 +448,7 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the high score of the player
      */
-    public static Integer getHighScore(@NotNull UUID player) {
+    public static @Nullable Integer getHighScore(@NotNull UUID player) {
         return highScores.get(player);
     }
 
@@ -489,7 +504,10 @@ public class ParkourPlayer extends ParkourUser {
                 if (from.name == null || !from.name.equals(player.getName())) {
                     from.name = player.getName();
                 }
-                ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.name, from.blockLead,
+                if (from.highScoreTime == null) {
+                    from.highScoreTime = "0.0s";
+                }
+                ParkourPlayer pp = new ParkourPlayer(player, from.highScore, from.time, from.style, from.name, from.highScoreTime, from.blockLead,
                         from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
                 pp.save();
                 players.put(player, pp);
@@ -497,7 +515,8 @@ public class ParkourPlayer extends ParkourUser {
                 return pp;
             } else {
                 ParkourPlayer pp = new ParkourPlayer(player, 0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                        player.getName(), 4, true, true, true, true, true, true);
+                        player.getName(), "0.0s", 4, true, true, true, true,
+                        true, true);
                 players.put(player, pp);
                 pp.save();
                 return pp;

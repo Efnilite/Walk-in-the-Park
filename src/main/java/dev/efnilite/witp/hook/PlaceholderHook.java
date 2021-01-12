@@ -2,6 +2,8 @@ package dev.efnilite.witp.hook;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourSpectator;
+import dev.efnilite.witp.player.ParkourUser;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,7 +44,14 @@ public class PlaceholderHook extends PlaceholderExpansion {
         if (player == null) {
             return "player doesn't exist";
         }
-        ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+        ParkourUser user = ParkourUser.getUser(player);
+        ParkourPlayer pp = null;
+        if (user instanceof ParkourPlayer) {
+            pp = (ParkourPlayer) user;
+        } else if (user instanceof ParkourSpectator) {
+            pp = ((ParkourSpectator) user).getWatching();
+        }
+
         if (pp != null) {
             switch (params) {
                 case "highscore":

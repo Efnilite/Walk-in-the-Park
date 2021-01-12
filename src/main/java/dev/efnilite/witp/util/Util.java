@@ -455,7 +455,7 @@ public class Util {
      * @return the location from the string
      */
     public static Location parseLocation(String location) {
-        String[] values = location.replaceAll("[()]", "").replaceAll(",", " ").split(" ");
+        String[] values = location.replaceAll("[()]", "").replaceAll(", ", " ").replaceAll(",", " ").split(" ");
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
     }
 

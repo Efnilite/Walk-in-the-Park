@@ -156,14 +156,16 @@ public class ParkourGenerator {
                             totalScore++;
 
                             // Rewards
-                            if (Configurable.REWARDS && totalScore % Configurable.REWARDS_INTERVAL == 0) {
-                                if (Configurable.REWARDS_COMMAND != null) {
-                                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
+                            if (totalScore % Configurable.REWARDS_INTERVAL == 0 || score == Configurable.REWARDS_SCORE) {
+                                if (Configurable.REWARDS) {
+                                    if (Configurable.REWARDS_COMMAND != null) {
+                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configurable.REWARDS_COMMAND);
+                                    }
+                                    if (Configurable.REWARDS_MONEY != 0) {
+                                        Util.depositPlayer(player.getPlayer(), Configurable.REWARDS_MONEY);
+                                    }
+                                    player.send(Configurable.REWARDS_MESSAGE);
                                 }
-                                if (Configurable.REWARDS_MONEY != 0) {
-                                    Util.depositPlayer(player.getPlayer(), Configurable.REWARDS_MONEY);
-                                }
-                                player.send(Configurable.REWARDS_MESSAGE);
                             }
 
                             new PlayerScoreEvent(player).call();
@@ -231,7 +233,7 @@ public class ParkourGenerator {
                 message = "message.miss";
             }
             if (score > player.highScore) {
-                player.setHighScore(score);
+                player.setHighScore(score, time);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
@@ -241,7 +243,7 @@ public class ParkourGenerator {
             player.sendTranslated("divider");
         } else {
             if (score > player.highScore) {
-                player.setHighScore(score);
+                player.setHighScore(score, time);
             }
         }
         score = 0;
@@ -582,7 +584,13 @@ public class ParkourGenerator {
      * @param vector The vector
      */
     public boolean isNearBorder(Vector vector) {
-        return Math.abs(borderOffset - Math.abs(vector.getX())) < 25 || Math.abs(borderOffset - Math.abs(vector.getZ())) < 25;
+        Vector xBorder = vector.clone();
+        Vector zBorder = vector.clone();
+
+        xBorder.setX(borderOffset);
+        zBorder.setZ(borderOffset);
+
+        return vector.distance(xBorder) < 75 || vector.distance(zBorder) < 75;
     }
 
     /**
@@ -615,6 +623,7 @@ public class ParkourGenerator {
         // Config stuff
         public static boolean REWARDS;
         public static int REWARDS_INTERVAL;
+        public static int REWARDS_SCORE;
         public static double REWARDS_MONEY;
         public static String REWARDS_COMMAND;
         public static String REWARDS_MESSAGE;
@@ -629,6 +638,8 @@ public class ParkourGenerator {
         public static List<String> SCOREBOARD_LINES;
         public static boolean PERMISSIONS;
         public static boolean FOCUS_MODE;
+        public static boolean GO_BACK;
+        public static Location GO_BACK_LOC;
 
         // Advanced settings
         public static double BORDER_SIZE;
@@ -641,7 +652,7 @@ public class ParkourGenerator {
         public static int MAXED_THREE_BLOCK;
         public static int MAXED_FOUR_BLOCK;
 
-        public static void init() {
+        public static void init(boolean init) {
             FileConfiguration gen = WITP.getConfiguration().getFile("generation");
             FileConfiguration config = WITP.getConfiguration().getFile("config");
             FileConfiguration lang = WITP.getConfiguration().getFile("lang");
@@ -672,6 +683,7 @@ public class ParkourGenerator {
             REWARDS = config.getBoolean("rewards.enabled");
             REWARDS_INTERVAL = config.getInt("rewards.interval");
             REWARDS_MONEY = config.getInt("rewards.vault-reward");
+            REWARDS_SCORE = config.getInt("rewards.score");
             REWARDS_COMMAND = config.getString("rewards.command").replaceAll("/", "");
             if (REWARDS_COMMAND.equalsIgnoreCase("null")) {
                 REWARDS_COMMAND = null;
@@ -688,12 +700,17 @@ public class ParkourGenerator {
             PERMISSIONS = config.getBoolean("permissions.enabled");
             FOCUS_MODE = config.getBoolean("focus-mode.enabled");
 
+            GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
+            GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));
+
             SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
             SOUND_PITCH = config.getInt("particles.sound-pitch");
             PARTICLE_TYPE = Particle.valueOf(config.getString("particles.particle-type").toUpperCase());
 
             // Advanced settings
-            BORDER_SIZE = gen.getDouble("advanced.border-size");
+            if (init) {
+                BORDER_SIZE = gen.getDouble("advanced.border-size");
+            }
             GENERATOR_CHECK = gen.getInt("advanced.generator-check");
             HEIGHT_GAP = gen.getDouble("advanced.height-gap");
             MULTIPLIER = gen.getInt("advanced.maxed-multiplier");
@@ -702,13 +719,6 @@ public class ParkourGenerator {
             MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
             MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
             MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
-        }
-
-        public static void reload() {
-            FileConfiguration lang = WITP.getConfiguration().getFile("lang");
-            SCOREBOARD = lang.getBoolean("scoreboard.enabled");
-            SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));
-            SCOREBOARD_LINES = Util.color(lang.getStringList("scoreboard.lines"));
         }
     }
 

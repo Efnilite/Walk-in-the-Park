@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class for spectators
@@ -66,12 +67,24 @@ public class ParkourSpectator extends ParkourUser {
             Verbose.error("Scoreboard lines are null! Check your config!");
             return;
         }
+        Integer rank = ParkourPlayer.getHighScore(player.getUniqueId());
+        UUID one = ParkourPlayer.getAtPlace(1);
+        Integer top = 0;
+        if (one != null) {
+            top = ParkourPlayer.getHighScore(one);
+        }
         for (String s : lines) {
             list.add(s
                     .replaceAll("%score%", Integer.toString(watchingGenerator.score))
-                    .replaceAll("%time%", watchingGenerator.time));
+                    .replaceAll("%time%", watchingGenerator.time)
+                    .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
+                    .replaceAll("%topscore%", top != null ? top.toString() : "0"));
         }
 
         board.updateLines(list);
+    }
+
+    public ParkourPlayer getWatching() {
+        return watching;
     }
 }

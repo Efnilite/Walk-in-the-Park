@@ -44,8 +44,8 @@ public abstract class ParkourUser {
 
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
+    protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
-    protected static HashMap<UUID, String> nameMap = new LinkedHashMap<>();
     protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     public ParkourUser(@NotNull Player player) {
@@ -100,7 +100,11 @@ public abstract class ParkourUser {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 Player pl = player.getPlayer();
-                pl.teleport(player.previousLocation);
+                if (ParkourGenerator.Configurable.GO_BACK) {
+                    pl.teleport(ParkourGenerator.Configurable.GO_BACK_LOC);
+                } else {
+                    pl.teleport(player.previousLocation);
+                }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 pl.setGameMode(player.previousGamemode);
                 if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
@@ -171,7 +175,7 @@ public abstract class ParkourUser {
             String name = file.getName();
             UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
             highScores.put(uuid, from.highScore);
-            nameMap.put(uuid, from.name);
+            scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime));
         }
     }
 
@@ -285,17 +289,22 @@ public abstract class ParkourUser {
             if (uuid == null) {
                 continue;
             }
-            String name = nameMap.get(uuid);
+            Highscore highscore = scoreMap.get(uuid);
+            String name = highscore.name;
             if (name == null || name.equals("null")) {
                 name = Bukkit.getOfflinePlayer(uuid).getName();
                 if (name == null || name.equals("null")) {
                     continue;
                 }
             }
+            String time = highscore.time;
+            if (time == null || time.equals("null")) {
+                time = "N/A";
+            }
             int rank = i + 1;
-            send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid));
+            send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) + " &7(" + time + ")");
         }
-        sendTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())), Integer.toString(highScores.get(player.getUniqueId())));
+        sendTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())), highScores.get(player.getUniqueId()).toString());
         send("");
 
         int prevPage = page - 1;
