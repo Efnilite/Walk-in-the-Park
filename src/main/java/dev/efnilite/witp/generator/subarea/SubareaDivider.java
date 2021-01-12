@@ -1,9 +1,10 @@
 package dev.efnilite.witp.generator.subarea;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -28,7 +29,7 @@ import java.util.List;
  *
  * Important notice: tempering with details in this class could result in complete malfunction of code since
  * this class has been meticulously made using a lot of cross-references. Same goes for
- * {@link dev.efnilite.witp.generator.ParkourGenerator}.
+ * {@link DefaultGenerator}.
  *
  * @author Efnilite
  */
@@ -220,7 +221,7 @@ public class SubareaDivider {
     }
 
     public void setBorder(@NotNull ParkourUser player, @NotNull SubareaPoint point) {
-        int size = (int) ParkourGenerator.Configurable.BORDER_SIZE;
+        int size = (int) Configuration.Option.BORDER_SIZE;
         Vector estimated = point.getEstimatedCenter(size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
@@ -228,7 +229,7 @@ public class SubareaDivider {
     private void createIsland(ParkourPlayer pp, SubareaPoint point) {
         Player player = pp.getPlayer();
         collection.put(point, pp);
-        Location spawn = point.getEstimatedCenter((int) ParkourGenerator.Configurable.BORDER_SIZE).toLocation(world).clone();
+        Location spawn = point.getEstimatedCenter((int) Configuration.Option.BORDER_SIZE).toLocation(world).clone();
 
         Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
         spawn.setY(spawn.getY() - dimension.getY());
@@ -239,7 +240,7 @@ public class SubareaDivider {
 
         List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
 
-        pp.setGenerator(new ParkourGenerator(pp));
+        pp.setGenerator(new DefaultGenerator(pp));
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         pp.getGenerator().heading = heading.clone();
         Location to = null;
@@ -258,7 +259,7 @@ public class SubareaDivider {
                 player.teleport(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
-                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+                if (Configuration.Option.INVENTORY_HANDLING) {
                     player.getInventory().clear();
                     String mat = WITP.getConfiguration().getString("config", "options.item");
                     if (mat == null) {

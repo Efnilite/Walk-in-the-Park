@@ -1,6 +1,6 @@
 package dev.efnilite.witp.version;
 
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.DefaultGenerator;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -25,7 +25,7 @@ public interface VersionManager {
      *
      * @return Structure data, including the blocks of the structure and where it ends
      */
-    ParkourGenerator.StructureData placeAt(File file, Location to, Vector heading);
+    DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading);
 
     void pasteStructure(File file, Location to);
 

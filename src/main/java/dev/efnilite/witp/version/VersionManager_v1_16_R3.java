@@ -1,6 +1,6 @@
 package dev.efnilite.witp.version;
 
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import net.minecraft.server.v1_16_R3.*;
@@ -86,7 +86,7 @@ public class VersionManager_v1_16_R3 implements VersionManager {
 
     // todo holy shit please fix this
     @Override
-    public @Nullable ParkourGenerator.StructureData placeAt(File file, Location to, Vector heading) {
+    public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
         try {
             to = to.getBlock().getLocation().clone();
             DefinedStructure structure = new DefinedStructure();
@@ -136,7 +136,7 @@ public class VersionManager_v1_16_R3 implements VersionManager {
                 return null;
             }
 
-            return new ParkourGenerator.StructureData(endPos.clone(), blocks);
+            return new DefaultGenerator.StructureData(endPos.clone(), blocks);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -100,14 +100,14 @@ public abstract class ParkourUser {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 Player pl = player.getPlayer();
-                if (ParkourGenerator.Configurable.GO_BACK) {
-                    pl.teleport(ParkourGenerator.Configurable.GO_BACK_LOC);
+                if (Configuration.Option.GO_BACK) {
+                    pl.teleport(Configuration.Option.GO_BACK_LOC);
                 } else {
                     pl.teleport(player.previousLocation);
                 }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 pl.setGameMode(player.previousGamemode);
-                if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+                if (Configuration.Option.INVENTORY_HANDLING) {
                     pl.getInventory().clear();
                     for (int slot : player.previousInventory.keySet()) {
                         pl.getInventory().setItem(slot, player.previousInventory.get(slot));
@@ -123,7 +123,7 @@ public abstract class ParkourUser {
      */
     protected void saveInventory() {
         this.previousInventory = new HashMap<>();
-        if (ParkourGenerator.Configurable.INVENTORY_HANDLING) {
+        if (Configuration.Option.INVENTORY_HANDLING) {
             int index = 0;
             Inventory inventory = player.getInventory();
             for (ItemStack item : inventory.getContents()) {

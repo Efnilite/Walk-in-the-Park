@@ -3,7 +3,8 @@ package dev.efnilite.witp.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.WITPAPI;
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -48,7 +49,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String lang;
     public @Expose String name; // for fixing null in leaderboard
 
-    private ParkourGenerator generator;
+    private DefaultGenerator generator;
     private List<Material> possibleStyle;
     private final File file;
     public final HashMap<String, ParkourSpectator> spectators;
@@ -82,7 +83,7 @@ public class ParkourPlayer extends ParkourUser {
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
-        if (showScoreboard && ParkourGenerator.Configurable.SCOREBOARD) {
+        if (showScoreboard && Configuration.Option.SCOREBOARD) {
             updateScoreboard();
         }
         if (player.isOp() && WITP.isOutdated) {
@@ -90,7 +91,7 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    public void setGenerator(ParkourGenerator generator) {
+    public void setGenerator(DefaultGenerator generator) {
         this.generator = generator;
     }
 
@@ -112,7 +113,7 @@ public class ParkourPlayer extends ParkourUser {
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {
             spectator.checkDistance();
-            if (ParkourGenerator.Configurable.SCOREBOARD) {
+            if (Configuration.Option.SCOREBOARD) {
                 spectator.updateScoreboard();
             }
         }
@@ -123,9 +124,9 @@ public class ParkourPlayer extends ParkourUser {
      */
     @Override
     public void updateScoreboard() {
-        board.updateTitle(ParkourGenerator.Configurable.SCOREBOARD_TITLE);
+        board.updateTitle(Configuration.Option.SCOREBOARD_TITLE);
         List<String> list = new ArrayList<>();
-        List<String> lines = ParkourGenerator.Configurable.SCOREBOARD_LINES;
+        List<String> lines = Configuration.Option.SCOREBOARD_LINES;
         if (lines == null) {
             Verbose.error("Scoreboard lines are null! Check your config!");
             return;
@@ -149,7 +150,7 @@ public class ParkourPlayer extends ParkourUser {
 
     /**
      * Returns a random material from the possible styles
-     * @see ParkourGenerator#generateNext()
+     * @see DefaultGenerator#generate()
      *
      * @return a random material
      */
@@ -294,7 +295,7 @@ public class ParkourPlayer extends ParkourUser {
                 .setLore("&7If enabled shows the scoreboard", "",
                         "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
             if (checkPermission("witp.scoreboard")) {
-                if (ParkourGenerator.Configurable.SCOREBOARD) {
+                if (Configuration.Option.SCOREBOARD) {
                     showScoreboard = !showScoreboard;
                     if (showScoreboard) {
                         board = new FastBoard(player);
@@ -376,7 +377,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private boolean checkPermission(String perm) {
-        if (ParkourGenerator.Configurable.PERMISSIONS) {
+        if (Configuration.Option.PERMISSIONS) {
             boolean check = player.hasPermission(perm);
             if (!check) {
                 sendTranslated("cant-do");
@@ -570,11 +571,11 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     /**
-     * Gets the player's {@link ParkourGenerator}
+     * Gets the player's {@link DefaultGenerator}
      *
      * @return the ParkourGenerator associated with this player
      */
-    public ParkourGenerator getGenerator() {
+    public DefaultGenerator getGenerator() {
         return generator;
     }
 }
