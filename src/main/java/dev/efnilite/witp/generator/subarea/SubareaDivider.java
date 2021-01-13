@@ -4,7 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -221,7 +221,7 @@ public class SubareaDivider {
     }
 
     public void setBorder(@NotNull ParkourUser player, @NotNull SubareaPoint point) {
-        int size = (int) Configuration.Option.BORDER_SIZE;
+        int size = (int) Option.BORDER_SIZE;
         Vector estimated = point.getEstimatedCenter(size);
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
@@ -229,7 +229,7 @@ public class SubareaDivider {
     private void createIsland(ParkourPlayer pp, SubareaPoint point) {
         Player player = pp.getPlayer();
         collection.put(point, pp);
-        Location spawn = point.getEstimatedCenter((int) Configuration.Option.BORDER_SIZE).toLocation(world).clone();
+        Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
 
         Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
         spawn.setY(spawn.getY() - dimension.getY());
@@ -259,7 +259,7 @@ public class SubareaDivider {
                 player.teleport(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
-                if (Configuration.Option.INVENTORY_HANDLING) {
+                if (Option.INVENTORY_HANDLING) {
                     player.getInventory().clear();
                     String mat = WITP.getConfiguration().getString("config", "options.item");
                     if (mat == null) {

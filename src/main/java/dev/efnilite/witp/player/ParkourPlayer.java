@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -83,7 +83,7 @@ public class ParkourPlayer extends ParkourUser {
 
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
-        if (showScoreboard && Configuration.Option.SCOREBOARD) {
+        if (showScoreboard && Option.SCOREBOARD) {
             updateScoreboard();
         }
         if (player.isOp() && WITP.isOutdated) {
@@ -113,7 +113,7 @@ public class ParkourPlayer extends ParkourUser {
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {
             spectator.checkDistance();
-            if (Configuration.Option.SCOREBOARD) {
+            if (Option.SCOREBOARD) {
                 spectator.updateScoreboard();
             }
         }
@@ -124,9 +124,9 @@ public class ParkourPlayer extends ParkourUser {
      */
     @Override
     public void updateScoreboard() {
-        board.updateTitle(Configuration.Option.SCOREBOARD_TITLE);
+        board.updateTitle(Option.SCOREBOARD_TITLE);
         List<String> list = new ArrayList<>();
-        List<String> lines = Configuration.Option.SCOREBOARD_LINES;
+        List<String> lines = Option.SCOREBOARD_LINES;
         if (lines == null) {
             Verbose.error("Scoreboard lines are null! Check your config!");
             return;
@@ -134,15 +134,18 @@ public class ParkourPlayer extends ParkourUser {
         Integer rank = getHighScore(player.getUniqueId());
         UUID one = getAtPlace(1);
         Integer top = 0;
+        Highscore highscore = null;
         if (one != null) {
             top = getHighScore(one);
+            highscore = scoreMap.get(one);
         }
         for (String s : lines) {
             list.add(s
                     .replaceAll("%score%", Integer.toString(generator.score))
                     .replaceAll("%time%", generator.time)
                     .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                    .replaceAll("%topscore%", top != null ? top.toString() : "0"));
+                    .replaceAll("%topscore%", top != null ? top.toString() : "0")
+                    .replaceAll("%topplayer%", highscore != null ? highscore.name : "N/A"));
         }
 
         board.updateLines(list);
@@ -300,7 +303,7 @@ public class ParkourPlayer extends ParkourUser {
                 .setLore("&7If enabled shows the scoreboard", "",
                         "&7Currently: " + scoreboardValue).build(), (t2, e2) -> {
             if (checkPermission("witp.scoreboard")) {
-                if (Configuration.Option.SCOREBOARD) {
+                if (Option.SCOREBOARD) {
                     showScoreboard = !showScoreboard;
                     if (showScoreboard) {
                         board = new FastBoard(player);
@@ -382,7 +385,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private boolean checkPermission(String perm) {
-        if (Configuration.Option.PERMISSIONS) {
+        if (Option.PERMISSIONS) {
             boolean check = player.hasPermission(perm);
             if (!check) {
                 sendTranslated("cant-do");

@@ -5,10 +5,7 @@ import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Configuration;
-import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.*;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
@@ -77,7 +74,7 @@ public class WITP extends JavaPlugin implements Listener {
         }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        Configuration.Option.init(true);
+        Option.init(true);
         this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
@@ -166,7 +163,7 @@ public class WITP extends JavaPlugin implements Listener {
 
     @EventHandler
     public void command(PlayerCommandPreprocessEvent event) {
-        if (Configuration.Option.FOCUS_MODE) {
+        if (Option.FOCUS_MODE) {
             ParkourUser user = ParkourUser.getUser(event.getPlayer());
             if (user != null && !(event.getMessage().toLowerCase().contains("witp"))) {
                 event.setCancelled(true);

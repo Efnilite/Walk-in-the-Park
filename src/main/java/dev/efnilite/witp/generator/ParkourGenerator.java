@@ -1,7 +1,7 @@
 package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.util.Vector;
 
@@ -18,7 +18,7 @@ public abstract class ParkourGenerator {
     public ParkourGenerator(ParkourPlayer player) {
         this.player = player;
         this.stopwatch = new Stopwatch();
-        this.borderOffset = Configuration.Option.BORDER_SIZE / 2.0;
+        this.borderOffset = Option.BORDER_SIZE / 2.0;
     }
 
     public abstract void generate();

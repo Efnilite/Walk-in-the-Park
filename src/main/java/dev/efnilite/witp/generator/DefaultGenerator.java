@@ -6,7 +6,7 @@ import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -92,11 +92,11 @@ public class DefaultGenerator extends ParkourGenerator {
         this.multiplierDecreases = new HashMap<>();
         this.deleteStructure = false;
 
-        double multiplier = Configuration.Option.MULTIPLIER;
-        multiplierDecreases.put(1, (Configuration.Option.MAXED_ONE_BLOCK - Configuration.Option.NORMAL_ONE_BLOCK) / multiplier);
-        multiplierDecreases.put(2, (Configuration.Option.MAXED_TWO_BLOCK - Configuration.Option.NORMAL_TWO_BLOCK) / multiplier);
-        multiplierDecreases.put(3, (Configuration.Option.MAXED_THREE_BLOCK - Configuration.Option.NORMAL_THREE_BLOCK) / multiplier);
-        multiplierDecreases.put(4, (Configuration.Option.MAXED_FOUR_BLOCK - Configuration.Option.NORMAL_FOUR_BLOCK) / multiplier);
+        double multiplier = Option.MULTIPLIER;
+        multiplierDecreases.put(1, (Option.MAXED_ONE_BLOCK - Option.NORMAL_ONE_BLOCK) / multiplier);
+        multiplierDecreases.put(2, (Option.MAXED_TWO_BLOCK - Option.NORMAL_TWO_BLOCK) / multiplier);
+        multiplierDecreases.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
+        multiplierDecreases.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
 
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
@@ -147,15 +147,15 @@ public class DefaultGenerator extends ParkourGenerator {
                             totalScore++;
 
                             // Rewards
-                            if (totalScore % Configuration.Option.REWARDS_INTERVAL == 0 || score == Configuration.Option.REWARDS_SCORE) {
-                                if (Configuration.Option.REWARDS) {
-                                    if (Configuration.Option.REWARDS_COMMAND != null) {
-                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Configuration.Option.REWARDS_COMMAND);
+                            if (totalScore % Option.REWARDS_INTERVAL == 0 || score == Option.REWARDS_SCORE) {
+                                if (Option.REWARDS) {
+                                    if (Option.REWARDS_COMMAND != null) {
+                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Option.REWARDS_COMMAND);
                                     }
-                                    if (Configuration.Option.REWARDS_MONEY != 0) {
-                                        Util.depositPlayer(player.getPlayer(), Configuration.Option.REWARDS_MONEY);
+                                    if (Option.REWARDS_MONEY != 0) {
+                                        Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
                                     }
-                                    player.send(Configuration.Option.REWARDS_MESSAGE);
+                                    player.send(Option.REWARDS_MESSAGE);
                                 }
                             }
 
@@ -183,12 +183,12 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 time = stopwatch.toString();
                 player.getPlayer().setSaturation(20);
-                if (player.showScoreboard && Configuration.Option.SCOREBOARD) {
+                if (player.showScoreboard && Option.SCOREBOARD) {
                     player.updateScoreboard();
                 }
                 player.updateSpectators();
             }
-        }, Configuration.Option.GENERATOR_CHECK);
+        }, Option.GENERATOR_CHECK);
     }
 
     /**
@@ -259,15 +259,15 @@ public class DefaultGenerator extends ParkourGenerator {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         if (defaultChances.size() == 0) {
             int index = 0;
-            for (int i = 0; i < Configuration.Option.NORMAL; i++) {
+            for (int i = 0; i < Option.NORMAL; i++) {
                 defaultChances.put(index, 0);
                 index++;
             }
-            for (int i = 0; i < Configuration.Option.STRUCTURES; i++) {
+            for (int i = 0; i < Option.STRUCTURES; i++) {
                 defaultChances.put(index, 1);
                 index++;
             }
-            for (int i = 0; i < Configuration.Option.SPECIAL; i++) {
+            for (int i = 0; i < Option.SPECIAL; i++) {
                 defaultChances.put(index, 2);
                 index++;
             }
@@ -292,22 +292,22 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
 
                 if (player.useDifficulty || distanceChances.size() == 0) {
-                    int one = Configuration.Option.MAXED_ONE_BLOCK;
-                    int two = Configuration.Option.MAXED_TWO_BLOCK;
-                    int three = Configuration.Option.MAXED_THREE_BLOCK;
-                    int four = Configuration.Option.MAXED_FOUR_BLOCK;
+                    int one = Option.MAXED_ONE_BLOCK;
+                    int two = Option.MAXED_TWO_BLOCK;
+                    int three = Option.MAXED_THREE_BLOCK;
+                    int four = Option.MAXED_FOUR_BLOCK;
                     if (player.useDifficulty) {
-                        if (score <= Configuration.Option.MULTIPLIER) {
-                            one = (int) (Configuration.Option.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
-                            two = (int) (Configuration.Option.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
-                            three = (int) (Configuration.Option.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
-                            four = (int) (Configuration.Option.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
+                        if (score <= Option.MULTIPLIER) {
+                            one = (int) (Option.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
+                            two = (int) (Option.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
+                            three = (int) (Option.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
+                            four = (int) (Option.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
                         }
                     } else {
-                        one = Configuration.Option.NORMAL_ONE_BLOCK;
-                        two = Configuration.Option.NORMAL_TWO_BLOCK;
-                        three = Configuration.Option.NORMAL_THREE_BLOCK;
-                        four = Configuration.Option.NORMAL_FOUR_BLOCK;
+                        one = Option.NORMAL_ONE_BLOCK;
+                        two = Option.NORMAL_TWO_BLOCK;
+                        three = Option.NORMAL_THREE_BLOCK;
+                        four = Option.NORMAL_FOUR_BLOCK;
                     }
                     distanceChances.clear();
                     int index = 0;
@@ -331,27 +331,27 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 if (heightChances.size() == 0) {
                     int index1 = 0;
-                    for (int i = 0; i < Configuration.Option.NORMAL_UP; i++) {
+                    for (int i = 0; i < Option.NORMAL_UP; i++) {
                         heightChances.put(index1, 1);
                         index1++;
                     }
-                    for (int i = 0; i < Configuration.Option.NORMAL_LEVEL; i++) {
+                    for (int i = 0; i < Option.NORMAL_LEVEL; i++) {
                         heightChances.put(index1, 0);
                         index1++;
                     }
-                    for (int i = 0; i < Configuration.Option.NORMAL_DOWN; i++) {
+                    for (int i = 0; i < Option.NORMAL_DOWN; i++) {
                         heightChances.put(index1, -1);
                         index1++;
                     }
-                    for (int i = 0; i < Configuration.Option.NORMAL_DOWN2; i++) {
+                    for (int i = 0; i < Option.NORMAL_DOWN2; i++) {
                         heightChances.put(index1, -2);
                         index1++;
                     }
                 }
 
                 int height = 0;
-                int deltaYMin = lastSpawn.getBlockY() - Configuration.Option.MIN_Y;
-                int deltaYMax = lastSpawn.getBlockY() - Configuration.Option.MAX_Y;
+                int deltaYMin = lastSpawn.getBlockY() - Option.MIN_Y;
+                int deltaYMax = lastSpawn.getBlockY() - Option.MAX_Y;
                 if (deltaYMin < 20) { // buffer of 20, so the closer to the max/min the more chance of opposite
                     int delta = (deltaYMin - 20) * -1;
                     int chanceRise = delta * 5;
@@ -384,19 +384,19 @@ public class DefaultGenerator extends ParkourGenerator {
                 if (special == 1 && player.useSpecial) {
                     if (specialChances.size() == 0) {
                         int index = 0;
-                        for (int i = 0; i < Configuration.Option.SPECIAL_ICE; i++) {
+                        for (int i = 0; i < Option.SPECIAL_ICE; i++) {
                             specialChances.put(index, 0);
                             index++;
                         }
-                        for (int i = 0; i < Configuration.Option.SPECIAL_SLAB; i++) {
+                        for (int i = 0; i < Option.SPECIAL_SLAB; i++) {
                             specialChances.put(index, 1);
                             index++;
                         }
-                        for (int i = 0; i < Configuration.Option.SPECIAL_PANE; i++) {
+                        for (int i = 0; i < Option.SPECIAL_PANE; i++) {
                             specialChances.put(index, 2);
                             index++;
                         }
-                        for (int i = 0; i < Configuration.Option.SPECIAL_FENCE; i++) {
+                        for (int i = 0; i < Option.SPECIAL_FENCE; i++) {
                             specialChances.put(index, 3);
                             index++;
                         }
@@ -441,9 +441,9 @@ public class DefaultGenerator extends ParkourGenerator {
                 lastSpawn = chosen.getLocation().clone();
 
                 if (player.useParticles) {
-                    particleData.setType(Configuration.Option.PARTICLE_TYPE);
+                    particleData.setType(Option.PARTICLE_TYPE);
                     Particles.draw(lastSpawn.clone().add(0, 1, 0), particleData);
-                    player.getPlayer().playSound(lastSpawn.clone(), Configuration.Option.SOUND_TYPE, 4, Configuration.Option.SOUND_PITCH);
+                    player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
                 }
 
                 if (structureCooldown > 0) {
@@ -539,7 +539,7 @@ public class DefaultGenerator extends ParkourGenerator {
         double detail = (radius * 8);
         double increment = (2 * Math.PI) / detail;
 
-        double heightGap = dy >= 0 ? Configuration.Option.HEIGHT_GAP - dy : Configuration.Option.HEIGHT_GAP - (dy + 1);
+        double heightGap = dy >= 0 ? Option.HEIGHT_GAP - dy : Option.HEIGHT_GAP - (dy + 1);
         // if dy <= 2 set max gap between blocks to default -1,
         // otherwise jump will be impossible
         for (int i = 0; i < detail; i++) {

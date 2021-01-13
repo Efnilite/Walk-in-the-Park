@@ -2,7 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
@@ -61,9 +61,9 @@ public class ParkourSpectator extends ParkourUser {
 
     @Override
     protected void updateScoreboard() {
-        board.updateTitle(Configuration.Option.SCOREBOARD_TITLE);
+        board.updateTitle(Option.SCOREBOARD_TITLE);
         List<String> list = new ArrayList<>();
-        List<String> lines = Configuration.Option.SCOREBOARD_LINES;
+        List<String> lines = Option.SCOREBOARD_LINES;
         if (lines == null) {
             Verbose.error("Scoreboard lines are null! Check your config!");
             return;

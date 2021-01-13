@@ -50,7 +50,7 @@ messages:
             tied: '&7You tied your high score!'
 
 # How the scoreboard looks
-# Placeholders: %score%, %time%, %highscore% and %topscore%
+# Placeholders: %score%, %time%, %highscore%, %topscore% and %topplayer%
 scoreboard:
     enabled: true
 

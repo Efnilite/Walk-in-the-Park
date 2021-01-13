@@ -4,7 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Configuration;
+import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
@@ -38,7 +38,7 @@ public class MainCommand extends BukkitCommand {
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 WITP.getConfiguration().reload();
-                Configuration.Option.init(false);
+                Option.init(false);
                 sender.sendMessage(Util.color("&a&l(!) &7The lang.yml file has been reloaded"));
             }
             if (player == null) {
