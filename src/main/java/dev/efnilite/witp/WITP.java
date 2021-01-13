@@ -9,6 +9,7 @@ import dev.efnilite.witp.util.Configuration;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
@@ -82,6 +83,7 @@ public class WITP extends JavaPlugin implements Listener {
         divider = new SubareaDivider();
 
         checker = new UpdateChecker();
+        new InventoryBuilder.ClickHandler(this);
 
         ParkourUser.initHighScores();
         Tasks.syncRepeat(new BukkitRunnable() {
@@ -217,7 +219,7 @@ public class WITP extends JavaPlugin implements Listener {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null) {
             try {
-                ParkourUser.unregister(user, true);
+                ParkourUser.unregister(user, true, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister player");
@@ -236,7 +238,7 @@ public class WITP extends JavaPlugin implements Listener {
                 }
             }
             try {
-                ParkourPlayer.unregister(player, true);
+                ParkourPlayer.unregister(player, true, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");

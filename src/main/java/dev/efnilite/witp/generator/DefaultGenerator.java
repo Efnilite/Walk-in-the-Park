@@ -211,6 +211,8 @@ public class DefaultGenerator extends ParkourGenerator {
         structureCooldown = 20;
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
+        int score = this.score;
+        String time = this.time;
         if (player.showDeathMsg && regenerate) {
             String message;
             int number = 0;
@@ -237,7 +239,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 player.setHighScore(score, time);
             }
         }
-        score = 0;
+        this.score = 0;
         stopwatch.stop();
         if (regenerate) {
             generateFirst(playerSpawn, blockSpawn);
@@ -418,7 +420,7 @@ public class DefaultGenerator extends ParkourGenerator {
                         case 3:
                             material = Material.OAK_FENCE.createBlockData();
                             height = Math.min(height, 0);
-                            gap -= 0.5;
+                            gap -= 1;
                             break;
                     }
                 }

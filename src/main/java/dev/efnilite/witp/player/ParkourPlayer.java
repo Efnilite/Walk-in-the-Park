@@ -178,7 +178,12 @@ public class ParkourPlayer extends ParkourUser {
     public void setHighScore(int score, String time) {
         this.highScore = score;
         highScoreTime = time;
-        scoreMap.get(player.getUniqueId()).time = highScoreTime;
+        UUID uuid = player.getUniqueId();
+        if (scoreMap.get(uuid) == null) {
+            scoreMap.put(uuid, new Highscore(player.getName(), highScoreTime));
+        } else {
+            scoreMap.get(uuid).time = highScoreTime;
+        }
         highScores.put(player.getUniqueId(), score);
         highScores = Util.sortByValue(highScores);
         saveStats();
@@ -221,7 +226,7 @@ public class ParkourPlayer extends ParkourUser {
                                     saveStats();
                                 });
                                 i++;
-                                styling.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                                styling.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> menu());
                             }
                             styling.build();
                         }
@@ -237,7 +242,7 @@ public class ParkourPlayer extends ParkourUser {
                         saveStats();
                     });
                 }
-                lead.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                lead.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> menu());
                 lead.build();
             }
         });
@@ -258,7 +263,7 @@ public class ParkourPlayer extends ParkourUser {
                     });
                     i++;
                 }
-                timeofday.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> player.closeInventory());
+                timeofday.setItem(26, new ItemBuilder(Material.ARROW, close).build(), (t2, e2) -> menu());
                 timeofday.build();
             }
         });
@@ -272,7 +277,7 @@ public class ParkourPlayer extends ParkourUser {
                 useDifficulty = !useDifficulty;
                 sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
                 saveStats();
-                player.closeInventory();
+                menu();
             }
         });
         Material particles = useParticles ? Material.GREEN_WOOL : Material.RED_WOOL;
@@ -285,7 +290,7 @@ public class ParkourPlayer extends ParkourUser {
                 useParticles = !useParticles;
                 sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
                 saveStats();
-                player.closeInventory();
+                menu();
             }
         });
         Material scoreboard = showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL;
@@ -305,7 +310,7 @@ public class ParkourPlayer extends ParkourUser {
                     }
                     sendTranslated("selected-scoreboard", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
                     saveStats();
-                    player.closeInventory();
+                    menu();
                 } else {
                     sendTranslated("cant-do");
                 }
@@ -321,7 +326,7 @@ public class ParkourPlayer extends ParkourUser {
                 showDeathMsg = !showDeathMsg;
                 sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
                 saveStats();
-                player.closeInventory();
+                menu();
             }
         });
         Material special = useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL;
@@ -334,7 +339,7 @@ public class ParkourPlayer extends ParkourUser {
                 useSpecial = !useSpecial;
                 sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
                 saveStats();
-                player.closeInventory();
+                menu();
             }
         });
         Material structures = useStructure ? Material.GREEN_WOOL : Material.RED_WOOL;
@@ -346,12 +351,11 @@ public class ParkourPlayer extends ParkourUser {
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
                 saveStats();
-                player.closeInventory();
+                menu();
             }
         });
         builder.setItem(18, new ItemBuilder(Material.PAPER, "&c&lGamemode").build(), (t2, e2) -> {
             if (checkPermission("witp.gamemode")) {
-                player.closeInventory();
                 gamemode();
             }
         });
@@ -365,8 +369,9 @@ public class ParkourPlayer extends ParkourUser {
             }
         });
         builder.setItem(26, new ItemBuilder(Material.BARRIER, getTranslated("item-quit")).build(), (t2, e2) -> {
+            player.closeInventory();
             try {
-                ParkourPlayer.unregister(this, true);
+                ParkourPlayer.unregister(this, true, true);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to quit player " + player.getName());

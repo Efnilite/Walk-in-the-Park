@@ -2,7 +2,6 @@ package dev.efnilite.witp.util.inventory;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,24 +13,22 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Builds inventories
  *
  * @author Efnilite
  */
-public class InventoryBuilder implements Listener {
+public class InventoryBuilder {
 
     private int rows;
     private boolean open;
     private String name;
-    private UUID uuid;
     private final ParkourUser player;
-    private final HandlerList handlerList;
     private final HashMap<Integer, ItemStack> items;
     private final HashMap<Integer, InventoryConsumer> onClick;
 
@@ -52,11 +49,9 @@ public class InventoryBuilder implements Listener {
      */
     public InventoryBuilder(@Nullable ParkourUser player, int rows, String name) {
         this.open = false;
-        this.uuid = null;
         this.rows = rows;
         this.name = name;
         this.player = player;
-        this.handlerList = new HandlerList();
         this.items = new HashMap<>();
         this.onClick = new HashMap<>();
     }
@@ -64,22 +59,19 @@ public class InventoryBuilder implements Listener {
     /**
      * Builds the inventory
      */
-    public Inventory build() { // todo fix uuid testing?
+    public Inventory build() {
         Inventory inventory = Bukkit.createInventory(null, rows * 9, ChatColor.translateAlternateColorCodes('&', name));
         for (int slot : items.keySet()) {
             inventory.setItem(slot, items.get(slot));
         }
-        uuid = UUID.randomUUID();
         if (open) {
             if (player == null) {
-                Verbose.error("Tried opening inventory " + uuid.toString() + " but player is null");
+                Verbose.error("Tried opening inventory but player is null");
             } else {
                 player.getPlayer().openInventory(inventory);
-                player.openInventory = uuid;
+                player.openInventory = new OpenInventoryData(name, onClick);
             }
         }
-        unregister();
-        Bukkit.getPluginManager().registerEvents(this, WITP.getInstance());
         return inventory;
     }
 
@@ -98,42 +90,6 @@ public class InventoryBuilder implements Listener {
         this.onClick.put(slot, onClick);
         this.items.put(slot, item);
         return this;
-    }
-
-    @EventHandler
-    public void onClose(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        if (player.getOpenInventory().getTitle().equals(name) && ParkourUser.getUser(player) != null) {
-            this.player.openInventory = null;
-            unregister();
-        }
-    }
-
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack current = event.getCurrentItem();
-        if (player.getOpenInventory().getTitle().equals(name) && ParkourUser.getUser(player) != null && current != null && uuid == this.player.openInventory) {
-            event.setCancelled(true);
-            InventoryConsumer consumer = onClick.get(event.getSlot());
-            if (consumer != null) {
-                consumer.accept(event, current);
-            }
-        }
-    }
-
-    /**
-     * Returns the UUID for this inventory
-     */
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    /**
-     * Unregisters this thing
-     */
-    public void unregister() {
-        handlerList.unregister(this);
     }
 
     /**
@@ -171,5 +127,51 @@ public class InventoryBuilder implements Listener {
      */
     public String getName() {
         return name;
+    }
+
+    public static class OpenInventoryData {
+
+        public final String name;
+        public final HashMap<Integer, InventoryConsumer> itemData;
+
+        public OpenInventoryData(String name, HashMap<Integer, InventoryConsumer> onClick) {
+            this.name = name;
+            this.itemData = onClick;
+        }
+    }
+
+    public static class ClickHandler implements Listener {
+
+        public ClickHandler(Plugin plugin) {
+            Bukkit.getPluginManager().registerEvents(this, plugin);
+        }
+
+        @EventHandler
+        public void onClose(InventoryCloseEvent event) {
+            if (event.getPlayer() instanceof Player) {
+                ParkourUser user = ParkourUser.getUser((Player) event.getPlayer());
+                if (user != null) {
+                    user.openInventory = null;
+                }
+            }
+        }
+
+        @EventHandler
+        public void onClick(InventoryClickEvent event) {
+            if (event.getWhoClicked() instanceof Player) {
+                ParkourUser user = ParkourUser.getUser((Player) event.getWhoClicked());
+                if (user != null) {
+                    OpenInventoryData data = user.openInventory;
+                    if (data != null) {
+                        event.setCancelled(true);
+                        InventoryConsumer consumer = data.itemData.get(event.getSlot());
+                        if (consumer != null) {
+                            consumer.accept(event, event.getCurrentItem());
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }

@@ -35,7 +35,7 @@ import java.util.*;
  */
 public abstract class ParkourUser {
 
-    public UUID openInventory;
+    public InventoryBuilder.OpenInventoryData openInventory;
     protected final Player player;
     protected FastBoard board;
     protected GameMode previousGamemode;
@@ -67,7 +67,7 @@ public abstract class ParkourUser {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(@NotNull ParkourUser player, boolean sendBack) throws IOException {
+    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee) throws IOException {
         new PlayerLeaveEvent(player).call();
         if (!player.getBoard().isDeleted()) {
             player.getBoard().delete();
@@ -96,7 +96,7 @@ public abstract class ParkourUser {
         users.remove(player.getPlayer().getName());
 
         if (sendBack) {
-            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled")) {
+            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled") && kickIfBungee) {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 Player pl = player.getPlayer();
@@ -253,7 +253,7 @@ public abstract class ParkourUser {
                                 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
                         player.spigot().sendMessage(send);
                     });
-            spectatable.setItem(26, new ItemBuilder(Material.ARROW, getTranslated("item-close")).build(), (t2, e2) -> player.closeInventory());
+            spectatable.setItem(26, new ItemBuilder(Material.ARROW, getTranslated("item-close")).build(), (t2, e2) -> gamemode.build());
             spectatable.build();
         });
         gamemode.setItem(26, new ItemBuilder(Material.ARROW, getTranslated("item-close")).build(), (t2, e2) -> player.closeInventory());

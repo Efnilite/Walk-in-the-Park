@@ -60,7 +60,7 @@ public class MainCommand extends BukkitCommand {
                 if (pp != null) {
                     try {
                         pp.sendTranslated("left");
-                        ParkourUser.unregister(pp, true);
+                        ParkourUser.unregister(pp, true, true);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while leaving");
