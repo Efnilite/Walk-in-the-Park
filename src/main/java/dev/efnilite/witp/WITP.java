@@ -91,6 +91,18 @@ public class WITP extends JavaPlugin implements Listener {
         }, 30 * 60 * 20);
     }
 
+    @Override
+    public void onDisable() {
+        for (ParkourUser user : ParkourUser.getUsers()) {
+            try {
+                ParkourUser.unregister(user, true, true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while unregistering");
+            }
+        }
+    }
+
     private void addCommand(String name, BukkitCommand wrapper) {
         PluginCommand command = getCommand(name);
 
@@ -214,7 +226,7 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler
     public void onSwitch(PlayerChangedWorldEvent event) {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
-        if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null) {
+        if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
                 ParkourUser.unregister(user, true, false);
             } catch (IOException ex) {

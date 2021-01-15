@@ -8,6 +8,12 @@ import org.bukkit.util.Vector;
 public abstract class ParkourGenerator {
 
     /**
+     * The time of the player's current session
+     *
+     * @see Stopwatch#toString()
+     */
+    public String time = "0.0s";
+    /**
      * The heading of the parkour
      */
     public Vector heading;
@@ -19,6 +25,10 @@ public abstract class ParkourGenerator {
         this.player = player;
         this.stopwatch = new Stopwatch();
         this.borderOffset = Option.BORDER_SIZE / 2.0;
+    }
+
+    public void updateTime() {
+        time = stopwatch.toString();
     }
 
     public abstract void generate();
@@ -39,5 +49,4 @@ public abstract class ParkourGenerator {
             return false;
         }
     }
-
 }

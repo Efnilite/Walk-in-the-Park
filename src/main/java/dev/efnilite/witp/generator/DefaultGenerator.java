@@ -38,13 +38,6 @@ public class DefaultGenerator extends ParkourGenerator {
      * The score of the player
      */
     public int score;
-
-    /**
-     * The time of the player's current session
-     *
-     * @see Stopwatch#toString()
-     */
-    public String time = "0.0s";
     public SubareaPoint.Data data;
 
     private int totalScore;
@@ -54,6 +47,7 @@ public class DefaultGenerator extends ParkourGenerator {
     private Location lastSpawn;
     private Location lastPlayer;
     private Location previousSpawn;
+    private Location latestLocation; // to disallow 1
 
     private Location playerSpawn;
     private Location blockSpawn;
@@ -83,6 +77,7 @@ public class DefaultGenerator extends ParkourGenerator {
         this.structureCooldown = 20;
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
+        this.latestLocation = lastSpawn.clone();
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();
         this.specialChances = new HashMap<>();
@@ -104,7 +99,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 if (stopped) {
                     this.cancel();
                     return;
-                } // todo check if first location isn't current
+                }
                 Location playerLoc = player.getPlayer().getLocation();
                 if (playerLoc.getWorld().getUID() != lastPlayer.getWorld().getUID()) {
                     Verbose.error("Worlds are not the same (1)");
@@ -124,6 +119,9 @@ public class DefaultGenerator extends ParkourGenerator {
                 Block current = playerLoc.clone().subtract(0, 1, 0).getBlock();
                 if (at.getType() != Material.AIR) {
                     current = at;
+                }
+                if (current.getLocation().equals(latestLocation)) {
+                    return;
                 }
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
@@ -145,6 +143,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             }
                             score++;
                             totalScore++;
+                            latestLocation = current.getLocation();
 
                             // Rewards
                             if (totalScore % Option.REWARDS_INTERVAL == 0 || score == Option.REWARDS_SCORE) {
@@ -181,7 +180,7 @@ public class DefaultGenerator extends ParkourGenerator {
                         }
                     }
                 }
-                time = stopwatch.toString();
+                updateTime();
                 player.getPlayer().setSaturation(20);
                 if (player.showScoreboard && Option.SCOREBOARD) {
                     player.updateScoreboard();

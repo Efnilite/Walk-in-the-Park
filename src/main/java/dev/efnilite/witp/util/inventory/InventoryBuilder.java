@@ -160,13 +160,12 @@ public class InventoryBuilder {
                 ParkourUser user = ParkourUser.getUser((Player) event.getWhoClicked());
                 if (user != null) {
                     OpenInventoryData data = user.openInventory;
-                    if (data != null) {
+                    if (data != null && event.getClickedInventory() == user.getPlayer().getOpenInventory().getTopInventory()) {
                         event.setCancelled(true);
                         InventoryConsumer consumer = data.itemData.get(event.getSlot());
                         if (consumer != null) {
                             consumer.accept(event, event.getCurrentItem());
                         }
-
                     }
                 }
             }
