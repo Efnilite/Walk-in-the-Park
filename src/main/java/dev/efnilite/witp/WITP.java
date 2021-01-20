@@ -78,10 +78,9 @@ public class WITP extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
-
         checker = new UpdateChecker();
-        new InventoryBuilder.ClickHandler(this);
 
+        new InventoryBuilder.ClickHandler(this);
         ParkourUser.initHighScores();
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
@@ -132,14 +131,14 @@ public class WITP extends JavaPlugin implements Listener {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World world = WITP.getDivider().getWorld();
-        if (configuration.getFile("config").getBoolean("bungeecord.enabled")) {
+        if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer.register(player);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
             }
-            if (configuration.getFile("lang").getBoolean("messages.join-leave-enabled")) {
+            if (Option.JOIN_LEAVE) {
                 event.setJoinMessage(null);
                 for (ParkourUser user : ParkourUser.getUsers()) {
                     user.sendTranslated("join", player.getName());

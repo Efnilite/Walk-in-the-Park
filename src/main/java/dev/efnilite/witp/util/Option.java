@@ -54,7 +54,10 @@ public class Option {
     public static boolean PERMISSIONS;
     public static boolean FOCUS_MODE;
     public static boolean GO_BACK;
+    public static boolean BUNGEECORD;
     public static Location GO_BACK_LOC;
+    public static boolean JOIN_LEAVE;
+    public static boolean TIME;
 
     // Advanced settings
     public static double BORDER_SIZE;
@@ -95,6 +98,8 @@ public class Option {
         MIN_Y = gen.getInt("generation.settings.min-y");
 
         // Config stuff
+        JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
+        BUNGEECORD = config.getBoolean("bungeecord.enabled");
         REWARDS = config.getBoolean("rewards.enabled");
         REWARDS_INTERVAL = config.getInt("rewards.interval");
         REWARDS_MONEY = config.getInt("rewards.vault-reward");
@@ -107,6 +112,8 @@ public class Option {
         if (REWARDS_MESSAGE.equalsIgnoreCase("null")) {
             REWARDS_MESSAGE = null;
         }
+
+        TIME = config.getBoolean("time.enabled");
 
         SCOREBOARD = lang.getBoolean("scoreboard.enabled");
         SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));

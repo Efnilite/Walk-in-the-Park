@@ -120,7 +120,11 @@ public class DefaultGenerator extends ParkourGenerator {
                 if (at.getType() != Material.AIR) {
                     current = at;
                 }
+                updateTime();
+                player.getPlayer().setSaturation(20);
+                player.updateSpectators();
                 if (current.getLocation().equals(latestLocation)) {
+                    player.updateScoreboard();
                     return;
                 }
                 if (current.getType() != Material.AIR) {
@@ -166,11 +170,7 @@ public class DefaultGenerator extends ParkourGenerator {
                                 Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
                             }
                             if (deleteStructure) {
-                                deleteStructure = false;
-                                for (Block block : structureBlocks) {
-                                    block.setType(Material.AIR);
-                                }
-                                structureBlocks.clear();
+                                deleteStructure();
                             }
                         }
 
@@ -180,12 +180,7 @@ public class DefaultGenerator extends ParkourGenerator {
                         }
                     }
                 }
-                updateTime();
-                player.getPlayer().setSaturation(20);
-                if (player.showScoreboard && Option.SCOREBOARD) {
-                    player.updateScoreboard();
-                }
-                player.updateSpectators();
+                player.updateScoreboard();
             }
         }, Option.GENERATOR_CHECK);
     }
@@ -200,14 +195,10 @@ public class DefaultGenerator extends ParkourGenerator {
         if (!regenerate) {
             stopped = true;
         }
-        for (Block block : structureBlocks) {
-            block.setType(Material.AIR);
-        }
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
-        structureBlocks.clear();
-        structureCooldown = 20;
+        deleteStructure();
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn);
         int score = this.score;
@@ -243,6 +234,22 @@ public class DefaultGenerator extends ParkourGenerator {
         if (regenerate) {
             generateFirst(playerSpawn, blockSpawn);
         }
+    }
+
+    private void deleteStructure() {
+        for (Block block : structureBlocks) {
+            block.setType(Material.AIR);
+        }
+        // second check, just in case
+        for (Block block : structureBlocks) {
+            if (block.getType() != Material.AIR) {
+                block.setType(Material.AIR);
+            }
+        }
+
+        structureBlocks.clear();
+        deleteStructure = false;
+        structureCooldown = 20;
     }
 
     /**
@@ -475,6 +482,9 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation(), heading);
                 structureBlocks = data.blocks;
+                if (structureBlocks == null || structureBlocks.size() == 0) {
+                    Verbose.error("0 blocks found in structure!");
+                }
                 lastSpawn = data.end.clone();
 
                 // if something during the pasting was set to air

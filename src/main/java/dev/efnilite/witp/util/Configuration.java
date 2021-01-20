@@ -45,7 +45,6 @@ public class Configuration {
         for (String file : defaultFiles) {
             files.put(file.replaceAll("(.+/|.yml)", ""), this.getFile(plugin.getDataFolder() + "/" + file));
         }
-
         structures();
     }
 

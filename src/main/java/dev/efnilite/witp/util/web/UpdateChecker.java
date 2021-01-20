@@ -33,6 +33,11 @@ public class UpdateChecker {
                 } else {
                     Verbose.info("WITP is currently up-to-date!");
                 }
+                // todo change each update
+                if (!WITP.getConfiguration().getFile("config").isSet("time.enabled")) {
+                    Verbose.error("Your config files are outdated. Please delete your current files " +
+                            "(except the player folder and the structures folder).");
+                }
             }
         };
         Tasks.asyncTask(runnable);

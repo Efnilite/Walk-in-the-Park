@@ -72,6 +72,10 @@ options:
     # Enables/disables the inventory handling system
     inventory-handling: true
 
+# If changing time is enabled
+time:
+    enabled: true
+
 # The different styles players can select
 styles:
 

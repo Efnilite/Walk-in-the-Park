@@ -27,6 +27,9 @@ public abstract class ParkourGenerator {
         this.borderOffset = Option.BORDER_SIZE / 2.0;
     }
 
+    /**
+     * Updates the time
+     */
     public void updateTime() {
         time = stopwatch.toString();
     }

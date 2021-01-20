@@ -83,7 +83,6 @@ public abstract class ParkourUser {
                     ParkourPlayer.register(spectator.getPlayer());
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                    ex.printStackTrace();
                     Verbose.error("Error while trying to register player" + player.getPlayer().getName());
                 }
             }
@@ -96,7 +95,7 @@ public abstract class ParkourUser {
         users.remove(player.getPlayer().getName());
 
         if (sendBack) {
-            if (WITP.getConfiguration().getFile("config").getBoolean("bungeecord.enabled") && kickIfBungee) {
+            if (Option.BUNGEECORD && kickIfBungee) {
                 Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 Player pl = player.getPlayer();

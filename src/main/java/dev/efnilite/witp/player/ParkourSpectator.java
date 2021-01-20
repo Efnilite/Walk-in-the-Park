@@ -61,28 +61,31 @@ public class ParkourSpectator extends ParkourUser {
 
     @Override
     protected void updateScoreboard() {
-        board.updateTitle(Option.SCOREBOARD_TITLE);
-        List<String> list = new ArrayList<>();
-        List<String> lines = Option.SCOREBOARD_LINES;
-        if (lines == null) {
-            Verbose.error("Scoreboard lines are null! Check your config!");
-            return;
+        if (Option.SCOREBOARD) {
+            board.updateTitle(Option.SCOREBOARD_TITLE);
+            List<String> list = new ArrayList<>();
+            List<String> lines = Option.SCOREBOARD_LINES;
+            if (lines == null) {
+                Verbose.error("Scoreboard lines are null! Check your config!");
+                return;
+            }
+            Integer rank = ParkourPlayer.getHighScore(watching.player.getUniqueId());
+            UUID one = ParkourPlayer.getAtPlace(1);
+            Integer top = 0;
+            Highscore highscore = null;
+            if (one != null) {
+                top = ParkourPlayer.getHighScore(one);
+                highscore = scoreMap.get(one);
+            }
+            for (String s : lines) {
+                list.add(s.replaceAll("%score%", Integer.toString(watchingGenerator.score))
+                        .replaceAll("%time%", watchingGenerator.time)
+                        .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
+                        .replaceAll("%topscore%", top != null ? top.toString() : "0")
+                        .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+            }
+            board.updateLines(list);
         }
-        Integer rank = ParkourPlayer.getHighScore(player.getUniqueId());
-        UUID one = ParkourPlayer.getAtPlace(1);
-        Integer top = 0;
-        if (one != null) {
-            top = ParkourPlayer.getHighScore(one);
-        }
-        for (String s : lines) {
-            list.add(s
-                    .replaceAll("%score%", Integer.toString(watchingGenerator.score))
-                    .replaceAll("%time%", watchingGenerator.time)
-                    .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                    .replaceAll("%topscore%", top != null ? top.toString() : "0"));
-        }
-
-        board.updateLines(list);
     }
 
     public ParkourPlayer getWatching() {
