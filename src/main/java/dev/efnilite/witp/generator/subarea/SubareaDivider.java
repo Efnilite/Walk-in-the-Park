@@ -131,7 +131,7 @@ public class SubareaDivider {
             if (openSpaces.size() > 0) {
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
                 if (collection.get(last) != null) {
-                    Verbose.verbose("ERROR // Used (cached) island is already assigned. Retrying without this island.");
+                    Verbose.error("Used (cached) island is already assigned. Retrying without this island.");
                     openSpaces.remove(last);
                     amount--;
                     generate(player);
@@ -164,7 +164,7 @@ public class SubareaDivider {
                     point = possibleInLayer.get(0);
                 }
                 if (collection.get(point) != null) {
-                    Verbose.verbose("ERROR // Island is already assigned. Retrying without this island.");
+                    Verbose.error("Island is already assigned. Retrying without this island.");
                     amount--;
                     possibleInLayer.remove(point);
                     generate(player);
