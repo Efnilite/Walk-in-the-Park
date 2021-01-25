@@ -9,6 +9,7 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.sql.SelectStatement;
 import fr.mrmicky.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -162,27 +164,37 @@ public abstract class ParkourUser {
      * @throws  IOException
      *          When creating the file reader goes wrong
      */
-    public static void fetchHighScores() throws IOException {
-        File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
-        if (!(folder.exists())) {
-            folder.mkdirs();
-            return;
-        }
-        for (File file : folder.listFiles()) {
-            FileReader reader = new FileReader(file);
-            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-            String name = file.getName();
-            UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-            highScores.put(uuid, from.highScore);
-            scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime));
+    public static void fetchHighScores() throws IOException, SQLException {
+        if (Option.SQL) {
+//            SelectStatement statement = new SelectStatement(WITP.getDatabase(), "main");
+//            statement.addColumns("uuid", "name", "highscore", "hstime");
+//            HashMap<String, Object> fetched = statement.fetch();
+
+        } else {
+            File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+            if (!(folder.exists())) {
+                folder.mkdirs();
+                return;
+            }
+            for (File file : folder.listFiles()) {
+                FileReader reader = new FileReader(file);
+                ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                String name = file.getName();
+                UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+                highScores.put(uuid, from.highScore);
+                scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime));
+            }
         }
     }
 
+    /**
+     * Initializes the high scores
+     */
     public static void initHighScores() {
         if (highScores.isEmpty()) {
             try {
                 fetchHighScores();
-            } catch (IOException ex) {
+            } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to fetch the high scores!");
             }

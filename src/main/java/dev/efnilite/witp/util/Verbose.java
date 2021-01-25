@@ -9,7 +9,6 @@ import java.util.logging.Logger;
  */
 public class Verbose {
 
-    private static Boolean enabled;
     private static Logger logger;
 
     public static void init() {
@@ -29,10 +28,7 @@ public class Verbose {
     }
 
     public static void verbose(String msg) {
-        if (enabled == null) {
-            enabled = WITP.getConfiguration().getFile("config").getBoolean("verbose");
-        }
-        if (enabled) {
+        if (Option.VERBOSE) {
             logger.info("(Verbose) " + msg);
         }
     }

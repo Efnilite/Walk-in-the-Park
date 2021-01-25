@@ -150,10 +150,12 @@ public class DefaultGenerator extends ParkourGenerator {
                             latestLocation = current.getLocation();
 
                             // Rewards
-                            if (totalScore % Option.REWARDS_INTERVAL == 0 || score == Option.REWARDS_SCORE) {
+                            if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
+                                    || (Option.REWARDS_SCORE > 0 && score % Option.REWARDS_SCORE == 0)) {
                                 if (Option.REWARDS) {
                                     if (Option.REWARDS_COMMAND != null) {
-                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), Option.REWARDS_COMMAND);
+                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                                Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
                                     }
                                     if (Option.REWARDS_MONEY != 0) {
                                         Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);

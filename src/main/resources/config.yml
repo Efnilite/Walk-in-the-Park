@@ -39,6 +39,16 @@ bungeecord:
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
     go-back: '(0,150,0,world)'
 
+# Options for MySQL
+sql:
+    enabled: false
+    url: 'localhost'
+    port: 3306
+    database: 'witp'
+    username: efnilite
+    password: mynamejeff
+
+# Options for the world
 world:
     # The world in which the personal parkours will take place
     name: witp
@@ -122,7 +132,8 @@ rewards:
     # Setting this to -1 will never result in rewards
     score: -1
 
-    # The command that will be executed if the interval is met
+    # The command that will be executed if the interval is met.
+    # Use %player% to get the player
     # 'null' means no command
     command: 'null'
 

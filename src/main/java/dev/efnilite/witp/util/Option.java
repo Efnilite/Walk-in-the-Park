@@ -58,6 +58,15 @@ public class Option {
     public static Location GO_BACK_LOC;
     public static boolean JOIN_LEAVE;
     public static boolean TIME;
+    public static boolean VERBOSE;
+
+    // MySQL
+    public static boolean SQL;
+    public static int SQL_PORT;
+    public static String SQL_URL;
+    public static String SQL_DB;
+    public static String SQL_USERNAME;
+    public static String SQL_PASSWORD;
 
     // Advanced settings
     public static double BORDER_SIZE;
@@ -74,6 +83,15 @@ public class Option {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
+
+        VERBOSE = config.getBoolean("verbose");
+
+        SQL = config.getBoolean("sql.enabled");
+        SQL_PORT = config.getInt("sql.port");
+        SQL_DB = config.getString("sql.database");
+        SQL_URL = config.getString("sql.url");
+        SQL_USERNAME = config.getString("sql.username");
+        SQL_PASSWORD = config.getString("sql.password");
 
         NORMAL = gen.getInt("generation.normal-jump.chance");
         STRUCTURES = gen.getInt("generation.structures.chance");

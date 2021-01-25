@@ -9,11 +9,13 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -128,6 +130,12 @@ public class SubareaDivider {
 
             if (openSpaces.size() > 0) {
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
+                if (collection.get(last) != null) {
+                    Verbose.verbose("ERROR // Used (cached) island is already assigned. Retrying without this island.");
+                    openSpaces.remove(last);
+                    amount--;
+                    generate(player);
+                }
                 createIsland(player, last);
                 openSpaces.remove(last);
                 Verbose.verbose("Used Subarea divided to " + player.getPlayer().getName());
@@ -139,6 +147,7 @@ public class SubareaDivider {
                 layer++;
 
                 fetchPossibleInLayer();
+                Verbose.verbose("Layer increase");
             } else {
                 if (possibleInLayer.size() == 0){
                     fetchPossibleInLayer();
@@ -147,6 +156,18 @@ public class SubareaDivider {
                 if (point == null) {
                     fetchPossibleInLayer();
                     point = possibleInLayer.get(0);
+                }
+                if (point == null) {
+                    Verbose.error("Playing space assignment has gone terribly wrong - adding to layer");
+                    amount++;
+                    fetchPossibleInLayer();
+                    point = possibleInLayer.get(0);
+                }
+                if (collection.get(point) != null) {
+                    Verbose.verbose("ERROR // Island is already assigned. Retrying without this island.");
+                    amount--;
+                    possibleInLayer.remove(point);
+                    generate(player);
                 }
 
                 current = point;
@@ -196,6 +217,7 @@ public class SubareaDivider {
                 }
             }
             possibleInLayer.add(point);
+            Verbose.verbose("Add point " + point.toString() + " to possible");
         }
     }
 
@@ -256,6 +278,7 @@ public class SubareaDivider {
                 to = block.getLocation().clone().add(0.5, 0, 0.5);
                 to.setPitch(spawnPitch);
                 to.setYaw(spawnYaw);
+                to.setWorld(world);
                 player.teleport(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
@@ -284,6 +307,17 @@ public class SubareaDivider {
         if (to != null && parkourBegin != null) {
             pp.getGenerator().generateFirst(to.clone(), parkourBegin.clone());
         }
+        // todo fix this check
+        Location finalTo = to;
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.getWorld().getUID().equals(world.getUID())) {
+                    player.teleport(finalTo);
+                }
+            }
+        };
+        Tasks.syncDelay(runnable, 10);
         setBorder(pp, point);
     }
 }

@@ -6,7 +6,9 @@ import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.*;
+import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
@@ -21,6 +23,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -29,6 +32,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +44,7 @@ public class WITP extends JavaPlugin implements Listener {
 
     public static boolean isOutdated = false;
     private static WITP instance;
+    private static Database database;
     private static Configuration configuration;
     private static VersionManager versionManager;
     private static SubareaDivider divider;
@@ -80,8 +85,13 @@ public class WITP extends JavaPlugin implements Listener {
         divider = new SubareaDivider();
         checker = new UpdateChecker();
 
-        new InventoryBuilder.ClickHandler(this);
+        if (Option.SQL) {
+//            database = new Database();
+//            database.connect(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB, Option.SQL_USERNAME, Option.SQL_PASSWORD);
+        }
         ParkourUser.initHighScores();
+
+        new InventoryBuilder.ClickHandler(this);
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
@@ -92,6 +102,12 @@ public class WITP extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        HandlerList.unregisterAll((Plugin) this);
+        Bukkit.getScheduler().cancelTasks(this);
+        if (database != null) {
+            database.close();
+        }
+
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
                 ParkourUser.unregister(user, true, true);
@@ -148,6 +164,7 @@ public class WITP extends JavaPlugin implements Listener {
             World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall-back"));
             if (fallback != null) {
                 player.teleport(fallback.getSpawnLocation());
+                player.sendMessage("You have been teleported to a backup location");
             } else {
                 Verbose.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
@@ -252,6 +269,10 @@ public class WITP extends JavaPlugin implements Listener {
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");
             }
         }
+    }
+
+    public static Database getDatabase() {
+        return database;
     }
 
     public static SubareaDivider getDivider() {

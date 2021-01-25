@@ -1,5 +1,7 @@
-package dev.efnilite.witp.util;
+package dev.efnilite.witp.util.config;
 
+import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,8 +15,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * An utilities class for the Configuration
@@ -34,7 +35,8 @@ public class Configuration {
 
         defaultFiles = new String[] {"config.yml", "generation.yml", "lang.yml"};
 
-        if (!new File(plugin.getDataFolder() + "/lang.yml").exists()) {
+        File folder = plugin.getDataFolder();
+        if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists()) {
             plugin.getDataFolder().mkdirs();
 
             for (String file : defaultFiles) {
@@ -43,9 +45,12 @@ public class Configuration {
             Verbose.info("Downloaded all config files");
         }
         for (String file : defaultFiles) {
-            files.put(file.replaceAll("(.+/|.yml)", ""), this.getFile(plugin.getDataFolder() + "/" + file));
-        }
+            FileConfiguration configuration = this.getFile(folder + "/" + file);
+//            configuration.options().copyDefaults(true);
+            files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
+        } // todo updated
         structures();
+        Verbose.verbose("Loaded all config files");
     }
 
     public void reload() {
