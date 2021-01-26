@@ -1,6 +1,7 @@
 package dev.efnilite.witp.generator.subarea;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
@@ -180,7 +181,7 @@ public class SubareaDivider {
 
     /**
      * Removes a player from the registry
-     * If you're using the API, please use {@link dev.efnilite.witp.WITPAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
+     * If you're using the API, please use {@link WITPAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
      *
      * @param   player
      *          The player

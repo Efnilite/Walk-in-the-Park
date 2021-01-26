@@ -29,7 +29,7 @@ public class UpdateChecker {
                 if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
                     Verbose.info("A new version of WITP is available to download!");
                     Verbose.info("Newest version: " + latest);
-                    WITP.isOutdated = true;
+                    WITP.OUTDATED = true;
                 } else {
                     Verbose.info("WITP is currently up-to-date!");
                 }

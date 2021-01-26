@@ -1,5 +1,6 @@
-package dev.efnilite.witp;
+package dev.efnilite.witp.api;
 
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.entity.Player;
@@ -12,6 +13,15 @@ public class WITPAPI {
 
     private WITPAPI() throws IllegalAccessException {
         throw new IllegalAccessException("Initializing API class");
+    }
+
+    /**
+     * Gets the registry, used in addons.
+     *
+     * @return the {@link Registry} class
+     */
+    public static Registry getRegistry() {
+        return WITP.getRegistry();
     }
 
     /**

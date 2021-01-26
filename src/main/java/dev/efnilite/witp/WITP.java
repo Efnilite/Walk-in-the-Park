@@ -1,5 +1,6 @@
 package dev.efnilite.witp;
 
+import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -40,20 +41,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WITP extends JavaPlugin implements Listener {
 
-    public static boolean isOutdated = false;
+    public static boolean OUTDATED = false;
     private static WITP instance;
     private static Database database;
     private static Configuration configuration;
     private static VersionManager versionManager;
     private static SubareaDivider divider;
-    private static UpdateChecker checker;
+    private static Registry registry;
 
     @Override
     public void onEnable() {
         instance = this;
+        registry = new Registry();
         Verbose.init();
 
         String version = Util.getVersion();
@@ -84,10 +88,8 @@ public class WITP extends JavaPlugin implements Listener {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         Option.init(true);
-        this.getServer().getPluginManager().registerEvents(this, this);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
-        checker = new UpdateChecker();
 
         if (Option.SQL) {
 //            database = new Database();
@@ -95,7 +97,11 @@ public class WITP extends JavaPlugin implements Listener {
         }
         ParkourUser.initHighScores();
 
+        // Events
+        this.getServer().getPluginManager().registerEvents(this, this);
         new InventoryBuilder.ClickHandler(this);
+
+        UpdateChecker checker = new UpdateChecker();
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
@@ -273,6 +279,10 @@ public class WITP extends JavaPlugin implements Listener {
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");
             }
         }
+    }
+
+    public static Registry getRegistry() {
+        return registry;
     }
 
     public static Database getDatabase() {

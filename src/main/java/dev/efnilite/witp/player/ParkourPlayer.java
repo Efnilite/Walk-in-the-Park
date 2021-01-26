@@ -2,7 +2,7 @@ package dev.efnilite.witp.player;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.WITPAPI;
+import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
@@ -11,7 +11,7 @@ import dev.efnilite.witp.util.inventory.DynamicInventory;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
-import fr.mrmicky.fastboard.FastBoard;
+import dev.efnilite.witp.util.fastboard.FastBoard;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -85,7 +85,7 @@ public class ParkourPlayer extends ParkourUser {
         player.setPlayerTime(getTime(time), false);
         WITP.getDivider().generate(this);
         updateScoreboard();
-        if (player.isOp() && WITP.isOutdated) {
+        if (player.isOp() && WITP.OUTDATED) {
             send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
         }
     }

@@ -1,4 +1,4 @@
-package fr.mrmicky.fastboard;
+package dev.efnilite.witp.util.fastboard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

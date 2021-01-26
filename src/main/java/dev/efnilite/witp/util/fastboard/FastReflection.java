@@ -1,5 +1,5 @@
 
-package fr.mrmicky.fastboard;
+package dev.efnilite.witp.util.fastboard;
 
 import org.bukkit.Bukkit;
 

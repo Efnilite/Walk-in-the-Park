@@ -3,14 +3,16 @@ package dev.efnilite.witp.player;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.inventory.DynamicInventory;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.inventory.InventoryConsumer;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
-import dev.efnilite.witp.util.sql.SelectStatement;
-import fr.mrmicky.fastboard.FastBoard;
+import dev.efnilite.witp.util.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -219,60 +221,12 @@ public abstract class ParkourUser {
      */
     public void gamemode() {
         InventoryBuilder gamemode = new InventoryBuilder(this, 3, "Gamemode").open();
-        InventoryBuilder spectatable = new InventoryBuilder(this, 3, "Select a player").open();
-        gamemode.setItem(12, new ItemBuilder(Material.BARREL, "&c&lNormal").setLore("&7Play the game like normal").build(), (t, e) -> {
-            try {
-                player.closeInventory();
-                if (this instanceof ParkourSpectator) {
-                    ParkourSpectator spectator = (ParkourSpectator) this;
-                    spectator.watching.removeSpectators(spectator);
-                }
-                ParkourPlayer.register(player);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while trying to register player" + player.getName());
-            }
-        });
-        gamemode.setItem(14, new ItemBuilder(Material.GLASS, "&c&lSpectate").setLore("&7Spectate another player").build(), (t, e) -> {
-            int index = 0;
-            player.closeInventory();
-            for (ParkourPlayer pp : getActivePlayers()) {
-                if (pp == null || pp.getGenerator() == null) {
-                    continue;
-                }
-                Player player = pp.getPlayer();
-                if (player.getUniqueId() != this.player.getUniqueId()) {
-                    ItemStack item = new ItemBuilder(Material.PLAYER_HEAD, 1, "&c&l" + player.getName())
-                            .setLore("&7Click to spectate " + player.getName()).build();
-                    SkullMeta meta = (SkullMeta) item.getItemMeta();
-                    if (meta == null) {
-                        continue;
-                    }
-                    meta.setOwningPlayer(player);
-                    item.setItemMeta(meta);
-                    spectatable.setItem(index, item, (t2, e2) -> {
-                        if (players.get(player) != null && pp.getGenerator() != null) {
-                            new ParkourSpectator(this, pp);
-                        }
-                    });
-                    index++;
-                    if (index == 25) {
-                        break;
-                    }
-                }
-            }
-            spectatable.setItem(25, new ItemBuilder(Material.PAPER, getTranslated("item-search")).setLore(getTranslated("item-search-lore")).build(),
-                    (t2, e2) -> {
-                        player.closeInventory();
-                        BaseComponent[] send = new ComponentBuilder().append(getTranslated("click-search"))
-                                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
-                        player.spigot().sendMessage(send);
-                    });
-            spectatable.setItem(26, new ItemBuilder(Material.ARROW, getTranslated("item-close")).build(), (t2, e2) -> gamemode.build());
-            spectatable.build();
-        });
-        gamemode.setItem(26, new ItemBuilder(Material.ARROW, getTranslated("item-close")).build(), (t2, e2) -> player.closeInventory());
-        gamemode.build();
+        List<Gamemode> gamemodes = WITP.getRegistry().getGamemodes();
+
+        DynamicInventory dynamic = new DynamicInventory(gamemodes.size(), 1);
+        for (Gamemode gm : gamemodes) {
+            gamemode.setItem(dynamic.next(), gm.getItem(), (t, e) -> gm.handleItemClick(player, this, gamemode));
+        }
     }
 
     /**

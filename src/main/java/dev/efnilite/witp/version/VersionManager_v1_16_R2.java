@@ -84,7 +84,7 @@ public class VersionManager_v1_16_R2 implements VersionManager {
         return EnumBlockRotation.COUNTERCLOCKWISE_90;
     }
 
-    // todo holy shit please fix this
+    // todo (a lot of) optimizations
     @Override
     public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
         try {

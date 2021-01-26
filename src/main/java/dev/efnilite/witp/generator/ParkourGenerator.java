@@ -1,9 +1,16 @@
 package dev.efnilite.witp.generator;
 
+import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Verbose;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ParkourGenerator {
 
@@ -17,6 +24,11 @@ public abstract class ParkourGenerator {
      * The heading of the parkour
      */
     public Vector heading;
+    /**
+     * The score of the player
+     */
+    public int score;
+    public SubareaPoint.Data data;
     public final double borderOffset;
     protected final Stopwatch stopwatch;
     protected final ParkourPlayer player;
@@ -51,5 +63,20 @@ public abstract class ParkourGenerator {
             Verbose.error("Invalid heading vector: " + heading.toString());
             return false;
         }
+    }
+
+    /**
+     * If the vector is near the border
+     *
+     * @param vector The vector
+     */
+    public boolean isNearBorder(Vector vector) {
+        Vector xBorder = vector.clone();
+        Vector zBorder = vector.clone();
+
+        xBorder.setX(borderOffset);
+        zBorder.setZ(borderOffset);
+
+        return vector.distance(xBorder) < 75 || vector.distance(zBorder) < 75;
     }
 }

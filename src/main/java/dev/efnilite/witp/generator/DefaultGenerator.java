@@ -4,7 +4,6 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
-import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
@@ -17,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.*;
@@ -34,12 +32,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends ParkourGenerator {
 
-    /**
-     * The score of the player
-     */
-    public int score;
-    public SubareaPoint.Data data;
-
     private int totalScore;
     private int structureCooldown;
     private boolean deleteStructure;
@@ -47,7 +39,7 @@ public class DefaultGenerator extends ParkourGenerator {
     private Location lastSpawn;
     private Location lastPlayer;
     private Location previousSpawn;
-    private Location latestLocation; // to disallow 1
+    private Location latestLocation; // to disallow 1 block infinite point glitch
 
     private Location playerSpawn;
     private Location blockSpawn;
@@ -93,6 +85,10 @@ public class DefaultGenerator extends ParkourGenerator {
         multiplierDecreases.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
         multiplierDecreases.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
 
+        runChecker();
+    }
+
+    protected void runChecker() {
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
@@ -517,32 +513,8 @@ public class DefaultGenerator extends ParkourGenerator {
         }
     }
 
-    /**
-     * Generates the first few blocks (which come off the spawn island)
-     *
-     * @param   spawn
-     *          The spawn of the player
-     *
-     * @param   block
-     *          The location used to begin the parkour of off
-     */
-    public void generateFirst(Location spawn, Location block) {
-        playerSpawn = spawn.clone();
-        lastPlayer = spawn.clone();
-        blockSpawn = block.clone();
-        lastSpawn = block.clone();
-        generate(player.blockLead);
-    }
-
-    // Generates in a loop
-    private void generate(int amount) {
-        for (int i = 0; i < amount; i++) {
-            generate();
-        }
-    }
-
     // Gets all possible parkour locations
-    private List<Block> getPossible(double radius, int dy) {
+    protected List<Block> getPossible(double radius, int dy) {
         List<Block> possible = new ArrayList<>();
         World world = lastSpawn.getWorld();
         Location base = lastSpawn.add(0, dy, 0);
@@ -567,18 +539,27 @@ public class DefaultGenerator extends ParkourGenerator {
     }
 
     /**
-     * If the vector is near the border
+     * Generates the first few blocks (which come off the spawn island)
      *
-     * @param vector The vector
+     * @param   spawn
+     *          The spawn of the player
+     *
+     * @param   block
+     *          The location used to begin the parkour of off
      */
-    public boolean isNearBorder(Vector vector) {
-        Vector xBorder = vector.clone();
-        Vector zBorder = vector.clone();
+    public void generateFirst(Location spawn, Location block) {
+        playerSpawn = spawn.clone();
+        lastPlayer = spawn.clone();
+        blockSpawn = block.clone();
+        lastSpawn = block.clone();
+        generate(player.blockLead);
+    }
 
-        xBorder.setX(borderOffset);
-        zBorder.setZ(borderOffset);
-
-        return vector.distance(xBorder) < 75 || vector.distance(zBorder) < 75;
+    // Generates in a loop
+    private void generate(int amount) {
+        for (int i = 0; i < amount; i++) {
+            generate();
+        }
     }
 
     public static class StructureData {
