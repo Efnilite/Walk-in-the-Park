@@ -27,6 +27,15 @@ public interface VersionManager {
      */
     DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading);
 
+    /**
+     * Pastes a structure at a location
+     *
+     * @param   file
+     *          The file
+     *
+     * @param   to
+     *          The paste location.
+     */
     void pasteStructure(File file, Location to);
 
     /**
@@ -37,7 +46,7 @@ public interface VersionManager {
      *
      * @param   to
      *          A location (which is somehow required to determine the sizes). It is recommended you put the coords of
-     *          where you want to paste this structure.
+     *          where you want to paste this structure. (that's what I do, at least)
      *
      * @return  the 3D dimensions (all positive)
      */
