@@ -250,7 +250,11 @@ public abstract class ParkourUser {
                     }
                     meta.setOwningPlayer(player);
                     item.setItemMeta(meta);
-                    spectatable.setItem(index, item, (t2, e2) -> new ParkourSpectator(this, pp));
+                    spectatable.setItem(index, item, (t2, e2) -> {
+                        if (players.get(player) != null && pp.getGenerator() != null) {
+                            new ParkourSpectator(this, pp);
+                        }
+                    });
                     index++;
                     if (index == 25) {
                         break;

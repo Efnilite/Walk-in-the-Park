@@ -45,10 +45,16 @@ public class Configuration {
             Verbose.info("Downloaded all config files");
         }
         for (String file : defaultFiles) {
+            try {
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to update config");
+            }
             FileConfiguration configuration = this.getFile(folder + "/" + file);
 //            configuration.options().copyDefaults(true);
             files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
-        } // todo updated
+        }
         structures();
         Verbose.verbose("Loaded all config files");
     }

@@ -39,7 +39,7 @@ public class MainCommand extends BukkitCommand {
             if (args[0].equalsIgnoreCase("reload")) {
                 WITP.getConfiguration().reload();
                 Option.init(false);
-                sender.sendMessage(Util.color("&a&l(!) &7The lang.yml file has been reloaded"));
+                sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
             }
             if (player == null) {
                 return true;
