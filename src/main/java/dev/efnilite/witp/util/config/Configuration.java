@@ -46,7 +46,8 @@ public class Configuration {
         }
         for (String file : defaultFiles) {
             try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file));
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), new ArrayList<>());
+                // todo add exception to styles using own system, this one doesn't work with exceptions
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to update config");
