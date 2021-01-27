@@ -31,11 +31,6 @@ messages:
         selected-structures: '&a&l(!) &7You changed the usage of structures to %v'
         cant-do: '&c&l(!) &cYou can''t do this right now.'
 
-        item-close: '&c&lClose'
-        item-quit: '&4&lQuit'
-
-        item-search: '&a&lSearch'
-        item-search-lore: '&7Search for a player to spectate'
         not-there-search: '&7Type the player you want to spectate!'
         click-search: '&c&l&nClick here&r&c&l to enter the player you want to search.'
 

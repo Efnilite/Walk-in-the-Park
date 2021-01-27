@@ -5,10 +5,10 @@ import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
@@ -263,7 +263,9 @@ public class SubareaDivider {
 
         List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
 
-        pp.setGenerator(new DefaultGenerator(pp));
+        if (pp.getGenerator() == null) {
+            pp.setGenerator(new DefaultGenerator(pp));
+        }
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         pp.getGenerator().heading = heading.clone();
         Location to = null;
@@ -305,9 +307,12 @@ public class SubareaDivider {
         if (!parkourDetected) {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
         }
-        if (to != null && parkourBegin != null) {
-            pp.getGenerator().generateFirst(to.clone(), parkourBegin.clone());
+        if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
+            ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
+
+        pp.getGenerator().start();
+
         // todo fix this check
         Location finalTo = to;
         BukkitRunnable runnable = new BukkitRunnable() {

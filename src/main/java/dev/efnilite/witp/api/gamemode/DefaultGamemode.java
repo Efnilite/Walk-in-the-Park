@@ -1,12 +1,11 @@
 package dev.efnilite.witp.api.gamemode;
 
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,7 +20,7 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public ItemStack getItem() {
-        return new ItemBuilder(Material.BARREL, "&c&lNormal").setLore("&7Play the game like normal").build();
+        return WITP.getConfiguration().getFromItemData("gamemodes.default");
     }
 
     @Override

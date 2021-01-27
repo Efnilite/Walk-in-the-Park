@@ -56,6 +56,22 @@ world:
     # The world players will be teleported to if they accidentally join the WITP world without being a player
     fall-back: world
 
+# Options for lead
+lead:
+    # If the choosing of the lead can be changed
+    enabled: true
+
+    # The amounts of the lead
+    # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
+    amount:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+
 # Options for permissions
 # These permissions are used to determine which things the player can change.
 # List: https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions

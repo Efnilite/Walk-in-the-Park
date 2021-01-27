@@ -2,15 +2,9 @@ package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Verbose;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
+import dev.efnilite.witp.util.config.Option;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ParkourGenerator {
 
@@ -29,7 +23,7 @@ public abstract class ParkourGenerator {
      */
     public int score;
     public SubareaPoint.Data data;
-    public final double borderOffset;
+    protected final double borderOffset;
     protected final Stopwatch stopwatch;
     protected final ParkourPlayer player;
 
@@ -39,14 +33,18 @@ public abstract class ParkourGenerator {
         this.borderOffset = Option.BORDER_SIZE / 2.0;
     }
 
+    public abstract void reset(boolean regenerateBack);
+
+    public abstract void start();
+
+    public abstract void generate();
+
     /**
      * Updates the time
      */
     public void updateTime() {
         time = stopwatch.toString();
     }
-
-    public abstract void generate();
 
     /**
      * Checks if a vector is following the assigned heading

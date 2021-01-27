@@ -5,9 +5,9 @@ import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.task.Tasks;
@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
@@ -41,16 +42,16 @@ public class DefaultGenerator extends ParkourGenerator {
     private Location previousSpawn;
     private Location latestLocation; // to disallow 1 block infinite point glitch
 
-    private Location playerSpawn;
-    private Location blockSpawn;
+    protected Location playerSpawn;
+    protected Location blockSpawn;
     private List<Block> structureBlocks;
 
-    private final LinkedHashMap<String, Integer> buildLog;
-    private final HashMap<Integer, Integer> distanceChances;
-    private final HashMap<Integer, Integer> specialChances;
-    private final HashMap<Integer, Integer> heightChances;
-    private final HashMap<Integer, Integer> defaultChances;
-    private final HashMap<Integer, Double> multiplierDecreases;
+    protected final LinkedHashMap<String, Integer> buildLog;
+    protected final HashMap<Integer, Integer> distanceChances;
+    protected final HashMap<Integer, Integer> specialChances;
+    protected final HashMap<Integer, Integer> heightChances;
+    protected final HashMap<Integer, Integer> defaultChances;
+    protected final HashMap<Integer, Double> multiplierDecreases;
 
     private static final ParticleData<?> particleData = new ParticleData<>(Particle.SPELL_INSTANT, null, 20, 0.4,
             0.5, 1, 0.5);
@@ -60,7 +61,7 @@ public class DefaultGenerator extends ParkourGenerator {
      *
      * @param player The player associated with this generator
      */
-    public DefaultGenerator(ParkourPlayer player) {
+    public DefaultGenerator(@NotNull ParkourPlayer player) {
         super(player);
         Verbose.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
         this.score = 0;
@@ -84,11 +85,13 @@ public class DefaultGenerator extends ParkourGenerator {
         multiplierDecreases.put(2, (Option.MAXED_TWO_BLOCK - Option.NORMAL_TWO_BLOCK) / multiplier);
         multiplierDecreases.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
         multiplierDecreases.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
-
-        runChecker();
     }
 
-    protected void runChecker() {
+    /**
+     * Starts the check
+     */
+    @Override
+    public void start() {
         Tasks.syncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
@@ -189,6 +192,7 @@ public class DefaultGenerator extends ParkourGenerator {
      * @param   regenerate
      *          false if this is the last reset (when the player leaves), true for resets by falling
      */
+    @Override
     public void reset(boolean regenerate) {
         if (!regenerate) {
             stopped = true;

@@ -1,6 +1,7 @@
 package dev.efnilite.witp.util;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.util.config.Option;
 
 import java.util.logging.Logger;
 

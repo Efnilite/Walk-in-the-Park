@@ -2,9 +2,12 @@ package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -15,7 +18,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * An utilities class for the Configuration
@@ -23,7 +29,6 @@ import java.util.*;
 public class Configuration {
 
     private final Plugin plugin;
-    private final String[] defaultFiles;
     private final HashMap<String, FileConfiguration> files;
 
     /**
@@ -33,10 +38,11 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        defaultFiles = new String[] {"config.yml", "generation.yml", "lang.yml"};
+        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml"};
 
         File folder = plugin.getDataFolder();
-        if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists()) {
+        if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
+                !new File(folder, defaultFiles[3]).exists()) {
             plugin.getDataFolder().mkdirs();
 
             for (String file : defaultFiles) {
@@ -127,7 +133,7 @@ public class Configuration {
      * @return a coloured string
      */
     public @Nullable List<String> getStringList(String file, String path) {
-        List<String> string = this.getFile(file).getStringList(path);
+        List<String> string = getFile(file).getStringList(path);
         if (string.size() == 0) {
             return null;
         }
@@ -145,10 +151,69 @@ public class Configuration {
      * @return a coloured string
      */
     public @Nullable String getString(String file, String path) {
-        String string = this.getFile(file).getString(path);
+        String string = getFile(file).getString(path);
         if (string == null) {
             return null;
         }
         return Util.color(string);
+    }
+
+    /**
+     * Gets an item from the items.yml file and automatically creates it.
+     *
+     * @param   path
+     *          The path of the item (excluding the parameters and 'items.')
+     *
+     * @param   replace
+     *          What should be replaced in the lore/name
+     *
+     * @return the item based on the data from items.yml
+     */
+    public ItemStack getFromItemData(String path, @Nullable String... replace) {
+        ItemData data = getItemData(path, replace);
+        return new ItemBuilder(data.material, data.name).setLore(data.lore).build();
+    }
+
+    public ItemData getItemData(String path, @Nullable String... replace) {
+        path = "items." + path;
+        FileConfiguration config = getFile("items");
+        String name = config.getString(path + ".name");
+        if (name != null && replace != null && replace.length > 0) {
+            name = name.replaceFirst("%[a-z]", replace[0]);
+        }
+        List<String> lore = Arrays.asList(config.getString(path + ".lore").split("\\|\\|"));
+        if (lore.size() != 0 && replace != null && replace.length > 0) {
+            List<String> copy = new ArrayList<>();
+            int index = 0;
+            for (String s : lore) {
+                copy.add(s.replaceFirst("%[a-z]", replace[index]));
+            }
+            lore = copy;
+        } else {
+            lore = null;
+        }
+
+        Material material = null;
+        String configMaterial = config.getString(path + ".item");
+        if (configMaterial != null) {
+            material = Material.getMaterial(configMaterial.toUpperCase());
+        }
+        return new ItemData(name, lore, material);
+    }
+
+    /**
+     * Class to make gathering data (items.yml) easier
+     */
+    public static class ItemData {
+
+        public String name;
+        public List<String> lore;
+        public @Nullable Material material;
+
+        public ItemData(String name, List<String> lore, @Nullable Material material) {
+            this.name = name;
+            this.lore = lore;
+            this.material = material;
+        }
     }
 }

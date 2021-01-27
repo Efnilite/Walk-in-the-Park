@@ -1,0 +1,72 @@
+# Options to change all the items
+# In lores, || is used to create a new line
+# Colour codes can be created using '&'
+# Items need be from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+items:
+    general:
+        quit:
+            name: '&4&lQuit'
+            lore: ''
+            item: barrier
+        close:
+            name: '&c&lClose'
+            lore: ''
+            item: arrow
+
+    gamemodes:
+        default:
+            name: '&c&lNormal'
+            lore: '&7Play the game like normal'
+            item: barrel
+        spectator:
+            name: '&c&lSpectate'
+            lore: '&7Spectate another player'
+            item: glass
+        spectator-head:
+            name: '&c&l%p'
+            lore: '&7Click to spectate %p'
+        search:
+            name: '&a&lSearch'
+            lore: '&7Search for a player to spectate.'
+            item: paper
+
+    options:
+        styles:
+            name: '&a&lParkour style'
+            lore: '&7The style of your parkour||&7(which blocks will be used)||||&7Currently: &a%s'
+            item: end_stone
+        lead:
+            name: '&a&lLead'
+            lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
+            item: glass
+        time:
+            name: '&a&lTime'
+            lore: '&7The time of day.||||&7Currently: &a%s'
+            item: clock
+        difficulty:
+            name: '&a&lUse difficulty'
+            lore: '&7If enabled having a higher score will mean||&7the parkour becomes more difficult.||||&7Currently: %s'
+        particles:
+            name: '&a&lUse particles and sounds'
+            lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
+        scoreboard:
+            name: '&a&lShow scoreboard'
+            lore: '&7If enabled shows the scoreboard.||||&7Currently: %s'
+        death-msg:
+            name: '&a&lShow fall message'
+            lore: '&7If enabled shows a message when you fall||&7with extra info.||||&7Currently: %s'
+        special:
+            name: '&a&lUse special blocks'
+            lore: '&7If enabled uses special blocks like ice and slabs.||||&7Currently: %s'
+        structure:
+            name: '&a&lUse structures'
+            lore: '&7If enabled static structures||&7will appear throughout the parkour.||||&7Currently: %s'
+        gamemode:
+            name: '&c&lGamemode'
+            lore: ''
+            item: paper
+        leaderboard:
+            name: '&6&lLeaderboard'
+            lore: '&7%s'
+            item: gold_block

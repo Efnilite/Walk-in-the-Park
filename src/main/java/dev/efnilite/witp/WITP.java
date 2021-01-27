@@ -6,8 +6,11 @@ import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.*;
+import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Configuration;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.task.Tasks;
@@ -41,8 +44,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WITP extends JavaPlugin implements Listener {
 

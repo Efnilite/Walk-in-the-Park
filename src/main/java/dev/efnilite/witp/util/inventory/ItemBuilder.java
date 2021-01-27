@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -65,7 +66,11 @@ public class ItemBuilder {
      */
     public ItemBuilder(Material material, int amount, String name) {
         this.amount = amount;
-        this.durability = material.getMaxDurability();
+        if (material != null) {
+            this.durability = material.getMaxDurability();
+        } else {
+            material = Material.GRASS_BLOCK;
+        }
         this.name = name;
         this.lore = new ArrayList<>();
         this.data = new HashMap<>();
@@ -178,8 +183,8 @@ public class ItemBuilder {
      *
      * @return  the instance
      */
-    public ItemBuilder setLore(List<String> lore) {
-        if (lore.size() == 0) {
+    public ItemBuilder setLore(@Nullable List<String> lore) {
+        if (lore == null || lore.size() == 0) {
             return this;
         }
         for (String l : lore) {

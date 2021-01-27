@@ -1,9 +1,9 @@
 package dev.efnilite.witp.player;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.util.Option;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ParkourSpectator extends ParkourUser {
 
     protected final ParkourPlayer watching;
-    protected final DefaultGenerator watchingGenerator;
+    protected final ParkourGenerator watchingGenerator;
 
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
         super(player.getPlayer());

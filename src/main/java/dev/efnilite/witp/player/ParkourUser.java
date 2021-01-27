@@ -5,25 +5,20 @@ import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
-import dev.efnilite.witp.util.Option;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.inventory.DynamicInventory;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.InventoryConsumer;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
+import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -220,13 +215,22 @@ public abstract class ParkourUser {
      * Opens the gamemode menu
      */
     public void gamemode() {
+        WITP.getRegistry().close();
         InventoryBuilder gamemode = new InventoryBuilder(this, 3, "Gamemode").open();
         List<Gamemode> gamemodes = WITP.getRegistry().getGamemodes();
 
-        DynamicInventory dynamic = new DynamicInventory(gamemodes.size(), 1);
+        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(gamemodes.size(), 1);
         for (Gamemode gm : gamemodes) {
             gamemode.setItem(dynamic.next(), gm.getItem(), (t, e) -> gm.handleItemClick(player, this, gamemode));
         }
+        gamemode.setItem(25, WITP.getConfiguration().getFromItemData("gamemodes.search"), (t2, e2) -> {
+            player.closeInventory();
+            BaseComponent[] send = new ComponentBuilder().append(getTranslated("click-search"))
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
+            player.spigot().sendMessage(send);
+        });
+        gamemode.setItem(26, WITP.getConfiguration().getFromItemData("general.close"), (t2, e2) -> player.closeInventory());
+        gamemode.build();
     }
 
     /**
@@ -320,7 +324,7 @@ public abstract class ParkourUser {
             return;
         }
         for (String s : replaceable) {
-            string = string.replaceAll("%[a-z]", s);
+            string = string.replaceFirst("%[a-z]", s);
         }
         send(string);
     }
@@ -344,7 +348,7 @@ public abstract class ParkourUser {
             return "";
         }
         for (String s : replaceable) {
-            string = string.replaceAll("%[a-z]", s);
+            string = string.replaceFirst("%[a-z]", s);
         }
         return string;
     }
