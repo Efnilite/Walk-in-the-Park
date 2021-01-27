@@ -58,6 +58,9 @@ public class Option {
     public static boolean BUNGEECORD;
     public static Location GO_BACK_LOC;
     public static boolean JOIN_LEAVE;
+
+    public static boolean LEAD;
+    public static List<Integer> POSSIBLE_LEADS;
     public static boolean TIME;
     public static boolean VERBOSE;
 
@@ -132,6 +135,8 @@ public class Option {
             REWARDS_MESSAGE = null;
         }
 
+        LEAD = config.getBoolean("lead.enabled");
+        POSSIBLE_LEADS = config.getIntegerList("lead.amount");
         TIME = config.getBoolean("time.enabled");
 
         SCOREBOARD = lang.getBoolean("scoreboard.enabled");

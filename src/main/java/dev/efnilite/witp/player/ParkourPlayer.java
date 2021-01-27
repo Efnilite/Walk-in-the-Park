@@ -95,6 +95,9 @@ public class ParkourPlayer extends ParkourUser {
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
+        if (generator instanceof DefaultGenerator) {
+            ((DefaultGenerator) generator).generate(blockLead);
+        }
     }
 
     public void setGenerator(DefaultGenerator generator) {
@@ -207,7 +210,8 @@ public class ParkourPlayer extends ParkourUser {
         InventoryBuilder timeofday = new InventoryBuilder(this, 3, "Time").open();
         Configuration config = WITP.getConfiguration();
         boolean styles = config.getFile("config").getBoolean("styles.enabled");
-        boolean times = config.getFile("config").getBoolean("time.enabled");
+        boolean times = Option.TIME;
+        boolean leadEnabled = Option.LEAD;
         ItemStack close = config.getFromItemData("general.close");
 
         int amount = 9;
@@ -215,6 +219,9 @@ public class ParkourPlayer extends ParkourUser {
             amount--;
         }
         if (!times) {
+            amount--;
+        }
+        if (!leadEnabled) {
             amount--;
         }
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(amount, 1);
@@ -251,19 +258,25 @@ public class ParkourPlayer extends ParkourUser {
                 }
             });
         }
-        builder.setItem(dynamic.next(), config.getFromItemData("options.lead", blockLead + " blocks"), (t, e) -> {
-            if (checkPermission("witp.lead")) {
-                for (int i = 10; i < 17; i++) {
-                    lead.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + (i - 9) + " block(s)").build(), (t2, e2) -> {
-                        blockLead = t2.getSlot() - 9;
-                        sendTranslated("selected-block-lead", Integer.toString(blockLead));
-                        saveStats();
-                    });
+        if (leadEnabled) {
+            List<Integer> possible = Option.POSSIBLE_LEADS;
+            InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
+            builder.setItem(dynamic.next(), config.getFromItemData("options.lead", Integer.toString(blockLead)), (t, e) -> {
+                if (checkPermission("witp.lead")) {
+                    for (Integer integer : possible) {
+                        lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
+                            if (e2.getItemMeta() != null) {
+                                blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
+                                sendTranslated("selected-block-lead", Integer.toString(blockLead));
+                                saveStats();
+                            }
+                        });
+                    }
+                    lead.setItem(26, close, (t2, e2) -> menu());
+                    lead.build();
                 }
-                lead.setItem(26, close, (t2, e2) -> menu());
-                lead.build();
-            }
-        });
+            });
+        }
         if (times) {
             builder.setItem(dynamic.next(), config.getFromItemData("options.time", time.toLowerCase()), (t, e) -> {
                 if (checkPermission("witp.time")) {

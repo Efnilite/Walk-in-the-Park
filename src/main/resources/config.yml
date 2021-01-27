@@ -39,15 +39,6 @@ bungeecord:
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
     go-back: '(0,150,0,world)'
 
-# Options for MySQL
-sql:
-    enabled: false
-    url: 'localhost'
-    port: 3306
-    database: 'witp'
-    username: efnilite
-    password: mynamejeff
-
 # Options for the world
 world:
     # The world in which the personal parkours will take place
@@ -70,7 +61,7 @@ lead:
         - 4
         - 5
         - 6
-        - 7
+        - 10
 
 # Options for permissions
 # These permissions are used to determine which things the player can change.

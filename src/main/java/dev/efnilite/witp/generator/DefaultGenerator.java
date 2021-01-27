@@ -560,7 +560,7 @@ public class DefaultGenerator extends ParkourGenerator {
     }
 
     // Generates in a loop
-    private void generate(int amount) {
+    public void generate(int amount) {
         for (int i = 0; i < amount; i++) {
             generate();
         }

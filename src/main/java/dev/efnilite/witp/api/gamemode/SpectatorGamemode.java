@@ -37,8 +37,8 @@ public class SpectatorGamemode implements Gamemode {
             }
             Player pl = pp.getPlayer();
             if (pl.getUniqueId() != player.getUniqueId()) {
-                ItemStack item = new ItemBuilder(Material.PLAYER_HEAD, 1, "&c&l" + pl.getName())
-                        .setLore("&7Click to spectate " + pl.getName()).build();
+                ItemStack item = WITP.getConfiguration().getFromItemData("gamemodes.spectator-head", pl.getName(), pl.getName());
+                item.setType(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 if (meta == null) {
                     continue;

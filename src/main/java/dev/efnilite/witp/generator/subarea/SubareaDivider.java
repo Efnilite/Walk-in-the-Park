@@ -307,8 +307,10 @@ public class SubareaDivider {
         if (!parkourDetected) {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
         }
-        if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
-            ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
+        if (to != null && parkourBegin != null) {
+            if (pp.getGenerator() instanceof DefaultGenerator) {
+                ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
+            }
         }
 
         pp.getGenerator().start();
@@ -318,9 +320,9 @@ public class SubareaDivider {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!player.getWorld().getUID().equals(world.getUID())) {
-                    player.teleport(finalTo);
-                }
+            if (!player.getWorld().getUID().equals(world.getUID())) {
+                player.teleport(finalTo);
+            }
             }
         };
         Tasks.syncDelay(runnable, 10);

@@ -8,6 +8,18 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * # Options for MySQL
+ * sql:
+ *     enabled: false
+ *     url: 'localhost'
+ *     port: 3306
+ *     database: 'witp'
+ *     username: efnilite
+ *     password: mynamejeff
+ *  // todo add to config
+ */
+
 public class Database {
 
     private Connection connection;
