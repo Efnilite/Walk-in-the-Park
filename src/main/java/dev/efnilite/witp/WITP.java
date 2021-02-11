@@ -82,9 +82,7 @@ public class WITP extends JavaPlugin implements Listener {
         }
 
         configuration = new Configuration(this);
-        if (configuration.getFile("config").getBoolean("metrics")) {
-            new Metrics(this, 9272);
-        }
+        new Metrics(this, 9272);
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderHook().register();
         }
@@ -213,7 +211,7 @@ public class WITP extends JavaPlugin implements Listener {
                         return;                                     // yes, so let event go through
                     }
                 }
-                if (!command.contains("witp")) {
+                if (!command.split(" ")[0].contains("witp") || !command.split(" ")[0].contains("parkour")) {
                     event.setCancelled(true);
                     user.sendTranslated("cant-do");
                 }

@@ -268,19 +268,22 @@ public abstract class ParkourUser {
             if (i == uuids.size()) {
                 break;
             }
-            UUID uuid = uuids.get(i);
+            @Nullable UUID uuid = uuids.get(i);
             if (uuid == null) {
                 continue;
             }
-            Highscore highscore = scoreMap.get(uuid);
-            String name = highscore.name;
+            @Nullable Highscore highscore = scoreMap.get(uuid);
+            if (highscore == null) {
+                continue;
+            }
+            @Nullable String name = highscore.name;
             if (name == null || name.equals("null")) {
                 name = Bukkit.getOfflinePlayer(uuid).getName();
                 if (name == null || name.equals("null")) {
                     continue;
                 }
             }
-            String time = highscore.time;
+            @Nullable String time = highscore.time;
             if (time == null || time.equals("null")) {
                 time = "N/A";
             }

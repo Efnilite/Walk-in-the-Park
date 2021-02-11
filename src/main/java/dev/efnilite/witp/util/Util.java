@@ -426,7 +426,7 @@ public class Util {
      * @return the Vector
      */
     public static Vector parseVector(String vector) {
-        String[] split = vector.replaceAll("[() ]", "").split(",");
+        String[] split = vector.replaceAll("[()]", "").split(",");
         return new Vector(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
     }
 

@@ -14,10 +14,6 @@
 #                                                                               #
 #===============================================================================#
 
-# Enable metrics
-# Metrics is for collecting anonymous server data (about the plugin)
-metrics: true
-
 # Verbosing
 # If this is set to true it will display extra data when stuff happens (useful for developers)
 verbose: false
