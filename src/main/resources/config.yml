@@ -74,7 +74,7 @@ lead:
         - 6
         - 10
 
-# Options for permissions
+# Options for permissions.
 # These permissions are used to determine which things the player can change.
 # List: https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions
 permissions:
@@ -82,11 +82,21 @@ permissions:
     # If permissions are enabled
     enabled: false
 
-# Options for focus mode
+# Options for focus mode.
 focus-mode:
 
-    # If focus mode is enabled players can't use commands while in parkour
+    # If focus mode is enabled players can't use commands while in parkour.
     enabled: false
+
+    # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
+    # If you want to disable the default whitelisted commands you can remove every item in the list below.
+    whitelist:
+        - "msg"
+        - "r"
+        - "w"
+        - "whisper"
+        - "reply"
+        - "message"
 
 # Options for the option menu
 options:

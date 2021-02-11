@@ -54,6 +54,7 @@ public class Option {
     public static List<String> SCOREBOARD_LINES;
     public static boolean PERMISSIONS;
     public static boolean FOCUS_MODE;
+    public static List<String> FOCUS_MODE_WHITELIST;
     public static boolean GO_BACK;
     public static boolean BUNGEECORD;
     public static Location GO_BACK_LOC;
@@ -145,6 +146,7 @@ public class Option {
         INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
         PERMISSIONS = config.getBoolean("permissions.enabled");
         FOCUS_MODE = config.getBoolean("focus-mode.enabled");
+        FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
 
         GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
         GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));

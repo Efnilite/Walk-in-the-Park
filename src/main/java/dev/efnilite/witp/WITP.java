@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -205,9 +206,17 @@ public class WITP extends JavaPlugin implements Listener {
     public void command(PlayerCommandPreprocessEvent event) {
         if (Option.FOCUS_MODE) {
             ParkourUser user = ParkourUser.getUser(event.getPlayer());
-            if (user != null && !(event.getMessage().toLowerCase().contains("witp"))) {
-                event.setCancelled(true);
-                user.sendTranslated("cant-do");
+            if (user != null) {
+                String command = event.getMessage().toLowerCase();
+                for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
+                    if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
+                        return;                                     // yes, so let event go through
+                    }
+                }
+                if (!command.contains("witp")) {
+                    event.setCancelled(true);
+                    user.sendTranslated("cant-do");
+                }
             }
         }
     }
