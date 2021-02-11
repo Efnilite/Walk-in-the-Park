@@ -10,6 +10,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.sql.SelectStatement;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -80,7 +81,7 @@ public abstract class ParkourUser {
             for (ParkourSpectator spectator : pp.spectators.values()) {
                 try {
                     ParkourPlayer.register(spectator.getPlayer());
-                } catch (IOException ex) {
+                } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                     Verbose.error("Error while trying to register player" + player.getPlayer().getName());
                 }
@@ -163,10 +164,19 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL) {
-//            SelectStatement statement = new SelectStatement(WITP.getDatabase(), "main");
-//            statement.addColumns("uuid", "name", "highscore", "hstime");
-//            HashMap<String, Object> fetched = statement.fetch();
-
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), "players").addColumns("uuid", "name", "highscore", "hstime");
+            HashMap<String, List<Object>> stats = per.fetch();
+            if (stats != null && stats.size() > 0) {
+                for (String string : stats.keySet()) {
+                    List<Object> values = stats.get(string);
+                    UUID uuid = UUID.fromString(string);
+                    String name = (String) values.get(0);
+                    int highScore = (int) values.get(1);
+                    String highScoreTime = (String) values.get(2);
+                    highScores.put(uuid, highScore);
+                    scoreMap.put(uuid, new Highscore(name, highScoreTime));
+                }
+            }
         } else {
             File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
             if (!(folder.exists())) {

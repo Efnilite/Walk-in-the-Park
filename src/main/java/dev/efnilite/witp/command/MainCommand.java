@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +52,7 @@ public class MainCommand extends BukkitCommand {
                     if (pp != null) {
                         pp.sendTranslated("joined");
                     }
-                } catch (IOException ex) {
+                } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                     Verbose.error("Error while joining");
                 }
@@ -102,7 +103,7 @@ public class MainCommand extends BukkitCommand {
                         if (pp != null) {
                             pp.sendTranslated("joined");
                         }
-                    } catch (IOException ex) {
+                    } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while joining");
                     }

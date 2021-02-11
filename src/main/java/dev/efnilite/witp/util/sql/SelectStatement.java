@@ -12,14 +12,16 @@ import java.util.List;
 public class SelectStatement extends Statement {
 
     private final List<String> columns;
+    private String condition;
 
     public SelectStatement(Database database, String table) {
         super(database, table);
         this.columns = new ArrayList<>();
+        this.condition = null;
     }
 
-    public SelectStatement addColumn(String column) {
-        columns.add(column);
+    public SelectStatement addCondition(String condition) {
+        this.condition = condition;
         return this;
     }
 
@@ -33,7 +35,14 @@ public class SelectStatement extends Statement {
         throw new IllegalStateException("Wrong method usage in SelectStatement");
     }
 
-    public @Nullable HashMap<String, Object> fetch() throws SQLException {
+    /**
+     * Fetches data from a table and sorts it based on the first table column.
+     *
+     * @return a map with key as first table column
+     *
+     * @throws SQLException if something goes wrong
+     */
+    public @Nullable HashMap<String, List<Object>> fetch() throws SQLException {
         if (columns.size() == 0) {
             throw new InvalidStatementException("Invalid SelectStatement");
         }
@@ -41,22 +50,33 @@ public class SelectStatement extends Statement {
         int i = 0;
         int im = columns.size();
         for (String column : columns) {
-            statement.append("`").append(column).append("`");
+            statement.append(column);
             i++;
-            if (i != im) {
+            if (i != im && columns.size() > 1) {
                 statement.append(", ");
             }
         }
-        statement.append(" FROM `").append(table).append("`;");
+        statement.append(" FROM ").append(table);
+        if (condition != null) {
+            statement.append(" WHERE ").append(condition);
+        }
+        statement.append(";");
         ResultSet set = database.resultQuery(statement.toString());
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, List<Object>> map = new HashMap<>();
         if (set == null) {
             return null;
         }
-        for (String column : columns) {
-            if (set.next()) {
-                map.put(column, set.getString(column));
+        while (set.next()) {
+            String key = set.getString(1);
+            List<Object> values = new ArrayList<>();
+            if (columns.size() > 1) {
+                for (int j = 0; j < columns.size(); j++) {
+                    values.add(set.getString(j + 2));
+                }
+            } else {
+                values.add(key);
             }
+            map.put(key, values);
         }
         return map;
     }

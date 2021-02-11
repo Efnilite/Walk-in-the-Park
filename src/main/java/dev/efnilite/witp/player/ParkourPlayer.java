@@ -12,6 +12,7 @@ import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -64,6 +66,7 @@ public class ParkourPlayer extends ParkourUser {
     public ParkourPlayer(@NotNull Player player, @Nullable ParkourGenerator generator) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
+        this.name = player.getName();
         this.spectators = new HashMap<>();
         this.generator = generator;
 
@@ -76,7 +79,7 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    public void setDefaults(int highScore, String time, String style, String name, String highScoreTime,
+    public void setDefaults(int highScore, String time, String style, String highScoreTime,
                             int blockLead, boolean useParticles, boolean useDifficulty, boolean useStructure, boolean useSpecial,
                             boolean showDeathMsg, boolean showScoreboard) {
         this.highScoreTime = highScoreTime;
@@ -90,7 +93,6 @@ public class ParkourPlayer extends ParkourUser {
         this.useDifficulty = useDifficulty;
         this.useStructure = useStructure;
         this.showScoreboard = showScoreboard;
-        this.name = name;
 
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
@@ -456,17 +458,21 @@ public class ParkourPlayer extends ParkourUser {
      *          Thrown if creation of file, new FileWriter fails or writing to the file fails
      */
     public void save() throws IOException {
-        if (!file.exists()) {
-            File folder = new File(WITP.getInstance().getDataFolder() + "/players");
-            if (!folder.exists()) {
-                folder.mkdirs();
+        if (Option.SQL) {
+
+        } else {
+            if (!file.exists()) {
+                File folder = new File(WITP.getInstance().getDataFolder() + "/players");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                file.createNewFile();
             }
-            file.createNewFile();
+            FileWriter writer = new FileWriter(file);
+            gson.toJson(this, writer);
+            writer.flush();
+            writer.close();
         }
-        FileWriter writer = new FileWriter(file);
-        gson.toJson(this, writer);
-        writer.flush();
-        writer.close();
     }
 
     /**
@@ -508,49 +514,78 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @NotNull ParkourPlayer register(Player player) throws IOException {
+    public static @NotNull ParkourPlayer register(Player player) throws IOException, SQLException {
         if (players.get(player) == null) {
             UUID uuid = player.getUniqueId();
-            File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
-            if (data.exists()) {
-                FileReader reader = new FileReader(data);
-                ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-                if (from.useParticles == null) { // outdated file format
-                    from.useParticles = true;
+            if (Option.SQL) {
+                File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                if (data.exists()) {
+                    FileReader reader = new FileReader(data);
+                    ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                    if (from.useParticles == null) { // outdated file format
+                        from.useParticles = true;
+                    }
+                    if (from.showDeathMsg == null) {
+                        from.showDeathMsg = true;
+                    }
+                    if (from.useSpecial == null) {
+                        from.useSpecial = true;
+                    }
+                    if (from.useStructure == null) {
+                        from.useStructure = true;
+                    }
+                    if (from.showScoreboard == null) {
+                        from.showScoreboard = true;
+                    }
+                    if (from.highScoreTime == null) {
+                        from.highScoreTime = "0.0s";
+                    }
+                    ParkourPlayer pp = new ParkourPlayer(player, null);
+                    pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.blockLead,
+                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
+                    pp.save();
+                    players.put(player, pp);
+                    reader.close();
+                    return pp;
+                } else {
+                    ParkourPlayer pp = new ParkourPlayer(player, null);
+                    pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
+                            "0.0s", 4, true, true, true,
+                            true, true, true);
+                    players.put(player, pp);
+                    pp.save();
+                    return pp;
                 }
-                if (from.showDeathMsg == null) {
-                    from.showDeathMsg = true;
-                }
-                if (from.useSpecial == null) {
-                    from.useSpecial = true;
-                }
-                if (from.useStructure == null) {
-                    from.useStructure = true;
-                }
-                if (from.showScoreboard == null) {
-                    from.showScoreboard = true;
-                }
-                if (from.name == null || !from.name.equals(player.getName())) {
-                    from.name = player.getName();
-                }
-                if (from.highScoreTime == null) {
-                    from.highScoreTime = "0.0s";
-                }
-                ParkourPlayer pp = new ParkourPlayer(player, null);
-                pp.setDefaults(from.highScore, from.time, from.style, from.name, from.highScoreTime, from.blockLead,
-                        from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
-                pp.save();
-                players.put(player, pp);
-                reader.close();
-                return pp;
             } else {
+                SelectStatement playerTable = new SelectStatement(WITP.getDatabase(),"players")
+                        .addColumns("uuid", "name", "highscore", "hstime").addCondition("uuid = '" + uuid.toString() + "'");
+                HashMap<String, List<Object>> map = playerTable.fetch();
                 ParkourPlayer pp = new ParkourPlayer(player, null);
-                pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                        player.getName(), "0.0s", 4, true, true, true, true,
-                        true, true);
-                players.put(player, pp);
-                pp.save();
-                return pp;
+                String highScoreTime;
+                int highscore;
+                if (map != null && map.size() > 0) {
+                    List<Object> objects = map.get(uuid.toString());
+                    highscore = (int) objects.get(2);
+                    highScoreTime = (String) objects.get(3);
+                } else {
+                    pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
+                            "0.0s", 4, true, true, true,
+                            true, true, true);
+                    players.put(player, pp);
+                    pp.save();
+                    return pp;
+                }
+
+                SelectStatement options = new SelectStatement(WITP.getDatabase(),"options")
+                        .addColumns("uuid", "time", "style", "blockLead", "useParticles", "useDifficulty", "useStructure",
+                                "useSpecial", "showFallMsg", "showScoreboard").addCondition("uuid = '" + uuid.toString() + "'");
+                map = options.fetch();
+                if (map != null && map.size() > 0) {
+                    List<Object> objects = map.get(uuid.toString());
+                    pp.setDefaults(highscore, (String) objects.get(1), (String) objects.get(2), highScoreTime,
+                            (int) objects.get(3), (boolean) objects.get(4), (boolean) objects.get(5), (boolean) objects.get(6),
+                            (boolean) objects.get(7), (boolean) objects.get(8), (boolean) objects.get(9));
+                }
             }
         }
         return players.get(player);

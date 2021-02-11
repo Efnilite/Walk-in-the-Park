@@ -39,6 +39,17 @@ bungeecord:
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
     go-back: '(0,150,0,world)'
 
+# Options for MySQL
+sql:
+    enabled: true # todo change
+    url: 'localhost'
+    port: 3306
+    username: efnilite
+    password: mynamejeff
+
+    # Using an existing database might overwrite data. Be cautious!
+    database: 'witp'
+
 # Options for the world
 world:
     # The world in which the personal parkours will take place

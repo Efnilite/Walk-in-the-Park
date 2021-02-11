@@ -44,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -93,8 +94,8 @@ public class WITP extends JavaPlugin implements Listener {
         divider = new SubareaDivider();
 
         if (Option.SQL) {
-//            database = new Database();
-//            database.connect(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB, Option.SQL_USERNAME, Option.SQL_PASSWORD);
+            database = new Database();
+            database.connect(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB, Option.SQL_USERNAME, Option.SQL_PASSWORD);
         }
         ParkourUser.initHighScores();
 
@@ -161,7 +162,7 @@ public class WITP extends JavaPlugin implements Listener {
         if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer.register(player);
-            } catch (IOException ex) {
+            } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
             }
@@ -265,7 +266,7 @@ public class WITP extends JavaPlugin implements Listener {
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {
-        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+        ParkourUser player = ParkourUser.getUser(event.getPlayer());
         if (player != null) {
             if (configuration.getFile("lang").getBoolean("messages.join-leave-enabled")) {
                 event.setQuitMessage(null);
@@ -277,7 +278,7 @@ public class WITP extends JavaPlugin implements Listener {
                 ParkourPlayer.unregister(player, true, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!s");
+                Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
             }
         }
     }

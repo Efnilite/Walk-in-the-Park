@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class DefaultGamemode implements Gamemode {
 
@@ -32,7 +33,7 @@ public class DefaultGamemode implements Gamemode {
                 spectator.getWatching().removeSpectators(spectator);
             }
             ParkourPlayer.register(player);
-        } catch (IOException ex) {
+        } catch (IOException | SQLException ex) {
             ex.printStackTrace();
             Verbose.error("Error while trying to register player" + player.getName());
         }
