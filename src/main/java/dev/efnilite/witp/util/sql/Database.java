@@ -1,6 +1,5 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Verbose;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,15 +10,7 @@ import java.sql.SQLException;
 
 /**
  * # Options for MySQL
- * sql:
- *     enabled: false
- *     url: 'localhost'
- *     port: 3306
- *     database: 'witp'
- *     username: efnilite
- *     password: mynamejeff
- *  // todo add to config
- */
+ **/
 
 public class Database {
 

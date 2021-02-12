@@ -3,6 +3,7 @@ package dev.efnilite.witp.api;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +51,7 @@ public class WITPAPI {
      *          
      * @throws IOException If saving the file of the player goes wrong
      */
-    public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException {
+    public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException, InvalidStatementException {
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp == null) {
             Verbose.error("Player " + player.getName() + " isn't registered!");
@@ -70,7 +71,7 @@ public class WITPAPI {
      *
      * @throws IOException If saving the file of the player goes wrong
      */
-    public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException {
+    public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException, InvalidStatementException {
         ParkourPlayer.unregister(player, sendBack, false);
     }
 

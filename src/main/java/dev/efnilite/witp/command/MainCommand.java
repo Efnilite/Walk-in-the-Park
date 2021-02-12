@@ -7,6 +7,7 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -62,7 +63,7 @@ public class MainCommand extends BukkitCommand {
                     try {
                         pp.sendTranslated("left");
                         ParkourUser.unregister(pp, true, true);
-                    } catch (IOException ex) {
+                    } catch (IOException | InvalidStatementException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while leaving");
                     }

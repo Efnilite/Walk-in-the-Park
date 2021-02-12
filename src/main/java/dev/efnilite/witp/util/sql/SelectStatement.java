@@ -4,10 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SelectStatement extends Statement {
 
@@ -42,7 +39,7 @@ public class SelectStatement extends Statement {
      *
      * @throws SQLException if something goes wrong
      */
-    public @Nullable HashMap<String, List<Object>> fetch() throws SQLException {
+    public @Nullable LinkedHashMap<String, List<Object>> fetch() throws SQLException {
         if (columns.size() == 0) {
             throw new InvalidStatementException("Invalid SelectStatement");
         }
@@ -62,7 +59,7 @@ public class SelectStatement extends Statement {
         }
         statement.append(";");
         ResultSet set = database.resultQuery(statement.toString());
-        HashMap<String, List<Object>> map = new HashMap<>();
+        LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
         if (set == null) {
             return null;
         }
@@ -71,6 +68,10 @@ public class SelectStatement extends Statement {
             List<Object> values = new ArrayList<>();
             if (columns.size() > 1) {
                 for (int j = 0; j < columns.size(); j++) {
+                    if (j == columns.size() - 1) {
+                        values.add(set.getString(j + 1));
+                        continue;
+                    }
                     values.add(set.getString(j + 2));
                 }
             } else {

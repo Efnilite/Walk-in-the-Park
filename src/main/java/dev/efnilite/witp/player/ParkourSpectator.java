@@ -4,6 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ public class ParkourSpectator extends ParkourUser {
         if (player instanceof ParkourPlayer) {
             try {
                 ParkourPlayer.unregister(player, false, false);
-            } catch (IOException ex) {
+            } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister");
             }

@@ -10,6 +10,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -67,7 +68,7 @@ public abstract class ParkourUser {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee) throws IOException {
+    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee) throws IOException, InvalidStatementException {
         new PlayerLeaveEvent(player).call();
         if (!player.getBoard().isDeleted()) {
             player.getBoard().delete();
@@ -171,7 +172,7 @@ public abstract class ParkourUser {
                     List<Object> values = stats.get(string);
                     UUID uuid = UUID.fromString(string);
                     String name = (String) values.get(0);
-                    int highScore = (int) values.get(1);
+                    int highScore = Integer.parseInt((String) values.get(1));
                     String highScoreTime = (String) values.get(2);
                     highScores.put(uuid, highScore);
                     scoreMap.put(uuid, new Highscore(name, highScoreTime));

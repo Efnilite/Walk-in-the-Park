@@ -13,6 +13,7 @@ import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.Database;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
@@ -122,7 +123,7 @@ public class WITP extends JavaPlugin implements Listener {
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
                 ParkourUser.unregister(user, true, true);
-            } catch (IOException ex) {
+            } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while unregistering");
             }
@@ -211,10 +212,8 @@ public class WITP extends JavaPlugin implements Listener {
                         return;                                     // yes, so let event go through
                     }
                 }
-                if (!command.split(" ")[0].contains("witp") || !command.split(" ")[0].contains("parkour")) {
-                    event.setCancelled(true);
-                    user.sendTranslated("cant-do");
-                }
+                event.setCancelled(true);
+                user.sendTranslated("cant-do");
             }
         }
     }
@@ -264,7 +263,7 @@ public class WITP extends JavaPlugin implements Listener {
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
                 ParkourUser.unregister(user, true, false);
-            } catch (IOException ex) {
+            } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister player");
             }
@@ -283,7 +282,7 @@ public class WITP extends JavaPlugin implements Listener {
             }
             try {
                 ParkourPlayer.unregister(player, true, false);
-            } catch (IOException ex) {
+            } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
             }

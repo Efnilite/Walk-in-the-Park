@@ -82,11 +82,13 @@ permissions:
 focus-mode:
 
     # If focus mode is enabled players can't use commands while in parkour.
-    enabled: false
+    enabled: true
 
     # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
     # If you want to disable the default whitelisted commands you can remove every item in the list below.
     whitelist:
+        - "witp"
+        - "parkour"
         - "msg"
         - "r"
         - "w"
