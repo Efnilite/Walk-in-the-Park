@@ -37,14 +37,13 @@ bungeecord:
 
 # Options for MySQL
 sql:
-    enabled: false
+    enabled: true
     url: 'localhost'
     port: 3306
     username: efnilite
-    password: password
+    password: mynamejeff
 
     # Using an existing database might overwrite data. Be cautious!
-    database: "witp"
     database: "witp"
 
 # Options for the world

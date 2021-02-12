@@ -45,8 +45,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -83,7 +85,8 @@ public class WITP extends JavaPlugin implements Listener {
         }
 
         configuration = new Configuration(this);
-        new Metrics(this, 9272);
+        Metrics metrics = new Metrics(this, 9272);
+        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderHook().register();
         }
@@ -242,9 +245,10 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-        if (ParkourPlayer.getPlayer(event.getPlayer()) != null &&
-                (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
+        Verbose.info("interact call");
+        if (player != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
                 event.getHand() == EquipmentSlot.HAND) {
+            Verbose.info("interact call");
             event.setCancelled(true);
             String mat = WITP.getConfiguration().getString("config", "options.item");
             if (mat == null) {
@@ -252,6 +256,7 @@ public class WITP extends JavaPlugin implements Listener {
                 mat = "COMPASS";
             }
             if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
+                Verbose.info("menu call");
                 player.menu();
             }
         }

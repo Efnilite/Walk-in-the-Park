@@ -202,7 +202,6 @@ public class ParkourPlayer extends ParkourUser {
         }
         highScores.put(uuid, score);
         highScores = Util.sortByValue(highScores);
-        saveStats();
     }
 
     /**
@@ -254,7 +253,6 @@ public class ParkourPlayer extends ParkourUser {
                             String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
                             setStyle(selected);
                             sendTranslated("selected-style", selected);
-                            saveStats();
                         });
                         i++;
                         styling.setItem(26, close, (t2, e2) -> menu());
@@ -273,7 +271,6 @@ public class ParkourPlayer extends ParkourUser {
                             if (e2.getItemMeta() != null) {
                                 blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
                                 sendTranslated("selected-block-lead", Integer.toString(blockLead));
-                                saveStats();
                             }
                         });
                     }
@@ -294,7 +291,6 @@ public class ParkourPlayer extends ParkourUser {
                                 this.time = name;
                                 sendTranslated("selected-time", time.toLowerCase());
                                 player.setPlayerTime(getTime(name), false);
-                                saveStats();
                             }
                         });
                         i++;
@@ -304,7 +300,6 @@ public class ParkourPlayer extends ParkourUser {
                 }
             });
         }
-
         String difficultyString = Boolean.toString(useDifficulty);
         ItemStack item = config.getFromItemData("options.difficulty", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
         item.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
@@ -312,11 +307,9 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.difficulty")) {
                 useDifficulty = !useDifficulty;
                 sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
-                saveStats();
                 menu();
             }
         });
-
         String particlesString = Boolean.toString(useParticles);
         item = config.getFromItemData("options.particles", Util.normalizeBoolean(Util.colorBoolean(particlesString)));
         item.setType(useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
@@ -324,7 +317,6 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.particles")) {
                 useParticles = !useParticles;
                 sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
-                saveStats();
                 menu();
             }
         });
@@ -342,7 +334,6 @@ public class ParkourPlayer extends ParkourUser {
                         board.delete();
                     }
                     sendTranslated("selected-scoreboard", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
-                    saveStats();
                     menu();
                 } else {
                     sendTranslated("cant-do");
@@ -356,7 +347,6 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.fall")) {
                 showDeathMsg = !showDeathMsg;
                 sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
-                saveStats();
                 menu();
             }
         });
@@ -367,7 +357,6 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.special")) {
                 useSpecial = !useSpecial;
                 sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
-                saveStats();
                 menu();
             }
         });
@@ -378,7 +367,6 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.structures")) {
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-                saveStats();
                 menu();
             }
         });
@@ -441,13 +429,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private void saveStats() {
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                save();
-            }
-        };
-        Tasks.asyncTask(runnable);
+        save();
     }
 
     /**
@@ -456,6 +438,7 @@ public class ParkourPlayer extends ParkourUser {
     public void save() {
         try {
             if (Option.SQL) {
+                Verbose.verbose("Writing player's data to SQL server");
                 UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
                         .setDefault("uuid", uuid.toString()).setDefault("name", name)
                         .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
@@ -572,7 +555,7 @@ public class ParkourPlayer extends ParkourUser {
                 }
             } else {
                 SelectStatement select = new SelectStatement(WITP.getDatabase(),"players")
-                        .addColumns("uuid", "name", "highscore", "hstime").addCondition("uuid = '" + uuid.toString() + "'");
+                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`").addCondition("`uuid` = '" + uuid.toString() + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 ParkourPlayer pp = new ParkourPlayer(player, null);
@@ -596,24 +579,26 @@ public class ParkourPlayer extends ParkourUser {
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    for (Object object : objects) {
-                        System.out.println((String) object);
-                    }
-
-                    pp.setDefaults(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime, (int) objects.get(2),
-                            (boolean) objects.get(3), (boolean) objects.get(4), (boolean) objects.get(5), (boolean) objects.get(6),
-                            (boolean) objects.get(7), (boolean) objects.get(8));
+                    pp.setDefaults(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
+                            Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
+                            translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
+                            translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
+                            translateSqlBoolean((String) objects.get(8)));
                 } else {
                     pp.setDefaults(highscore, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             highScoreTime, 4, true, true, true,
                             true, true, true);
-                    players.put(player, pp);
                     pp.saveStats();
                 }
+                players.put(player, pp);
                 return pp;
             }
         }
         return players.get(player);
+    }
+
+    private static boolean translateSqlBoolean(String string) {
+        return string.equals("1");
     }
 
     /**

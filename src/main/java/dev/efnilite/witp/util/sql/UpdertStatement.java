@@ -38,8 +38,10 @@ public class UpdertStatement extends Statement {
         SelectStatement statement = new SelectStatement(database, table);
         statement.addColumns("*").addCondition(condition);
         try {
-            HashMap<String, List<Object>> fetch = statement.fetch();
-            if (fetch == null) {
+            HashMap<String, List<Object>> map = statement.fetch();
+            String key = condition.split("=")[1].replaceAll("[' ]", "");
+            List<Object> objects = map != null ? map.get(key) : null;
+            if (objects == null) {
                 InsertStatement insert = new InsertStatement(database, table);
                 for (String skey : defaults.keySet()) {
                     insert.setValue(skey, defaults.get(skey));
