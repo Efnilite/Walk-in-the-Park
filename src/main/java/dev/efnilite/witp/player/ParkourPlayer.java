@@ -56,6 +56,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String lang;
     public @Expose String name; // for fixing null in leaderboard
 
+    public UUID uuid;
     private ParkourGenerator generator;
     private List<Material> possibleStyle;
     private final File file;
@@ -68,11 +69,12 @@ public class ParkourPlayer extends ParkourUser {
     public ParkourPlayer(@NotNull Player player, @Nullable ParkourGenerator generator) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
+        this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.spectators = new HashMap<>();
         this.generator = generator;
 
-        this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + player.getUniqueId().toString() + ".json");
+        this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.possibleStyle = new ArrayList<>();
 
         WITP.getDivider().generate(this);
@@ -143,7 +145,7 @@ public class ParkourPlayer extends ParkourUser {
                 Verbose.error("Scoreboard lines are null! Check your config!");
                 return;
             }
-            Integer rank = getHighScore(player.getUniqueId());
+            Integer rank = getHighScore(uuid);
             UUID one = getAtPlace(1);
             Integer top = 0;
             Highscore highscore = null;
@@ -193,13 +195,12 @@ public class ParkourPlayer extends ParkourUser {
     public void setHighScore(int score, String time) {
         this.highScore = score;
         highScoreTime = time;
-        UUID uuid = player.getUniqueId();
         if (scoreMap.get(uuid) == null) {
             scoreMap.put(uuid, new Highscore(player.getName(), highScoreTime));
         } else {
             scoreMap.get(uuid).time = highScoreTime;
         }
-        highScores.put(player.getUniqueId(), score);
+        highScores.put(uuid, score);
         highScores = Util.sortByValue(highScores);
         save();
     }
@@ -386,9 +387,9 @@ public class ParkourPlayer extends ParkourUser {
                 gamemode();
             }
         });
-        Integer score = highScores.get(player.getUniqueId());
+        Integer score = highScores.get(uuid);
         builder.setItem(19, WITP.getConfiguration().getFromItemData("options.leaderboard",
-                getTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())),
+                getTranslated("your-rank", Integer.toString(getRank(uuid)),
                 Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
             if (checkPermission("witp.leaderboard")) {
                 leaderboard(1);
@@ -448,17 +449,17 @@ public class ParkourPlayer extends ParkourUser {
                 try {
                     if (Option.SQL) {
                         UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
-                                .setDefault("uuid", player.getUniqueId()).setDefault("name", player.getName())
+                                .setDefault("uuid", uuid.toString()).setDefault("name", name)
                                 .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
-                                .setCondition("`uuid` = '" + player.getUniqueId().toString() + "'");
+                                .setCondition("`uuid` = '" + uuid.toString() + "'");
                         statement.query();
                         statement = new UpdertStatement(WITP.getDatabase(), "options")
-                                .setDefault("uuid", player.getUniqueId()).setDefault("time", time)
+                                .setDefault("uuid", uuid.toString()).setDefault("time", time)
                                 .setDefault("style", style).setDefault("blockLead", blockLead)
                                 .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
                                 .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
                                 .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
-                                .setCondition("`uuid` = '" + player.getUniqueId().toString() + "'"); // saves all options
+                                .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                         statement.query();
                     } else {
                         if (!file.exists()) {

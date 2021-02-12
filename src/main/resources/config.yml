@@ -29,19 +29,19 @@ bungeecord:
     return_server: Lobby
 
     # If go back is enabled
-    go-back-enabled: false
+    go-back-enabled: true
 
     # The place players will go back to if they leave, if bungeecord is disabled and the go-back option is enabled
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
-    go-back: '(0,150,0,world)'
+    go-back: '(0,100,0,world)'
 
 # Options for MySQL
 sql:
-    enabled: true # todo change
+    enabled: false
     url: 'localhost'
     port: 3306
     username: efnilite
-    password: mynamejeff
+    password: password
 
     # Using an existing database might overwrite data. Be cautious!
     database: 'witp'

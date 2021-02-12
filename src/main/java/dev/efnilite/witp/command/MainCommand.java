@@ -1,6 +1,9 @@
 package dev.efnilite.witp.command;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.player.Highscore;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
@@ -13,11 +16,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class MainCommand extends BukkitCommand {
 
@@ -36,23 +43,47 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp menu &f- &7Open the customization menu"));
             sender.sendMessage(Util.color("&a/witp gamemode &f- &7Open the gamemode menu"));
             sender.sendMessage(Util.color("&a/witp leaderboard &f- &7Open the leaderboard"));
+            sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
             return true;
         } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("reload")) {
+            if (sender.isOp() && args[0].equalsIgnoreCase("reload")) {
                 WITP.getConfiguration().reload();
                 Option.init(false);
                 sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
+            } else if (sender.isOp() && args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
+                if (Option.SQL) {
+                    File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+                    if (!folder.exists()) {
+                        folder.mkdirs();
+                        return true;
+                    }
+                    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
+                    for (File file : folder.listFiles()) {
+                        FileReader reader;
+                        try {
+                            reader = new FileReader(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            sender.sendMessage(Util.color("&a&l(!) &cError while trying to read file, check your console"));
+                            return true;
+                        }
+                        ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                        String name = file.getName();
+                        from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+                        from.save();
+                    }
+                    sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated!"));
+                } else {
+                    sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
+                }
             }
             if (player == null) {
                 return true;
             }
             if (args[0].equalsIgnoreCase("join")) {
                 try {
-                    ParkourPlayer.register(player);
-                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                    if (pp != null) {
-                        pp.sendTranslated("joined");
-                    }
+                    ParkourPlayer pp = ParkourPlayer.register(player);
+                    pp.sendTranslated("joined");
                 } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                     Verbose.error("Error while joining");
@@ -147,6 +178,6 @@ public class MainCommand extends BukkitCommand {
                 return names;
             }
         }
-        return Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode");
+        return Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode", "migrate");
     }
 }
