@@ -202,7 +202,7 @@ public class ParkourPlayer extends ParkourUser {
         }
         highScores.put(uuid, score);
         highScores = Util.sortByValue(highScores);
-        save();
+        saveStats();
     }
 
     /**
@@ -254,7 +254,7 @@ public class ParkourPlayer extends ParkourUser {
                             String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
                             setStyle(selected);
                             sendTranslated("selected-style", selected);
-                            save();
+                            saveStats();
                         });
                         i++;
                         styling.setItem(26, close, (t2, e2) -> menu());
@@ -273,7 +273,7 @@ public class ParkourPlayer extends ParkourUser {
                             if (e2.getItemMeta() != null) {
                                 blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
                                 sendTranslated("selected-block-lead", Integer.toString(blockLead));
-                                save();
+                                saveStats();
                             }
                         });
                     }
@@ -294,7 +294,7 @@ public class ParkourPlayer extends ParkourUser {
                                 this.time = name;
                                 sendTranslated("selected-time", time.toLowerCase());
                                 player.setPlayerTime(getTime(name), false);
-                                save();
+                                saveStats();
                             }
                         });
                         i++;
@@ -312,7 +312,7 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.difficulty")) {
                 useDifficulty = !useDifficulty;
                 sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
-                save();
+                saveStats();
                 menu();
             }
         });
@@ -324,7 +324,7 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.particles")) {
                 useParticles = !useParticles;
                 sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
-                save();
+                saveStats();
                 menu();
             }
         });
@@ -342,7 +342,7 @@ public class ParkourPlayer extends ParkourUser {
                         board.delete();
                     }
                     sendTranslated("selected-scoreboard", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
-                    save();
+                    saveStats();
                     menu();
                 } else {
                     sendTranslated("cant-do");
@@ -356,7 +356,7 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.fall")) {
                 showDeathMsg = !showDeathMsg;
                 sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
-                save();
+                saveStats();
                 menu();
             }
         });
@@ -367,7 +367,7 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.special")) {
                 useSpecial = !useSpecial;
                 sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
-                save();
+                saveStats();
                 menu();
             }
         });
@@ -378,7 +378,7 @@ public class ParkourPlayer extends ParkourUser {
             if (checkPermission("witp.structures")) {
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-                save();
+                saveStats();
                 menu();
             }
         });
@@ -399,6 +399,7 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(26, WITP.getConfiguration().getFromItemData("general.quit"), (t2, e2) -> {
             player.closeInventory();
             try {
+                sendTranslated("left");
                 ParkourPlayer.unregister(this, true, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
@@ -439,49 +440,52 @@ public class ParkourPlayer extends ParkourUser {
         return possibleStyles;
     }
 
+    private void saveStats() {
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                save();
+            }
+        };
+        Tasks.asyncTask(runnable);
+    }
+
     /**
      * Saves the player's data to their file
      */
     public void save() {
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    if (Option.SQL) {
-                        UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
-                                .setDefault("uuid", uuid.toString()).setDefault("name", name)
-                                .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
-                                .setCondition("`uuid` = '" + uuid.toString() + "'");
-                        statement.query();
-                        statement = new UpdertStatement(WITP.getDatabase(), "options")
-                                .setDefault("uuid", uuid.toString()).setDefault("time", time)
-                                .setDefault("style", style).setDefault("blockLead", blockLead)
-                                .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
-                                .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
-                                .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
-                                .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
-                        statement.query();
-                    } else {
-                        if (!file.exists()) {
-                            File folder = new File(WITP.getInstance().getDataFolder() + "/players");
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-                            file.createNewFile();
-                        }
-                        FileWriter writer = new FileWriter(file);
-                        gson.toJson(this, writer);
-                        writer.flush();
-                        writer.close();
-
+        try {
+            if (Option.SQL) {
+                UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
+                        .setDefault("uuid", uuid.toString()).setDefault("name", name)
+                        .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
+                        .setCondition("`uuid` = '" + uuid.toString() + "'");
+                statement.query();
+                statement = new UpdertStatement(WITP.getDatabase(), "options")
+                        .setDefault("uuid", uuid.toString()).setDefault("time", time)
+                        .setDefault("style", style).setDefault("blockLead", blockLead)
+                        .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
+                        .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
+                        .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
+                        .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
+                statement.query();
+            } else {
+                if (!file.exists()) {
+                    File folder = new File(WITP.getInstance().getDataFolder() + "/players");
+                    if (!folder.exists()) {
+                        folder.mkdirs();
                     }
-                } catch (IOException | InvalidStatementException ex) {
-                    ex.printStackTrace();
-                    Verbose.error("Error while trying to save the player's data..");
+                    file.createNewFile();
                 }
+                FileWriter writer = new FileWriter(file);
+                gson.toJson(this, writer);
+                writer.flush();
+                writer.close();
             }
-        };
-        Tasks.asyncTask(runnable);
+        } catch (IOException | InvalidStatementException ex) {
+            ex.printStackTrace();
+            Verbose.error("Error while trying to save the player's data..");
+        }
     }
 
     /**
@@ -553,7 +557,7 @@ public class ParkourPlayer extends ParkourUser {
                     ParkourPlayer pp = new ParkourPlayer(player, null);
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.blockLead,
                             from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
-                    pp.save();
+                    pp.saveStats();
                     players.put(player, pp);
                     reader.close();
                     return pp;
@@ -563,7 +567,7 @@ public class ParkourPlayer extends ParkourUser {
                             "0.0s", 4, true, true, true,
                             true, true, true);
                     players.put(player, pp);
-                    pp.save();
+                    pp.saveStats();
                     return pp;
                 }
             } else {
@@ -582,7 +586,7 @@ public class ParkourPlayer extends ParkourUser {
                             "0.0s", 4, true, true, true,
                             true, true, true);
                     players.put(player, pp);
-                    pp.save();
+                    pp.saveStats();
                     return pp;
                 }
 
@@ -604,7 +608,7 @@ public class ParkourPlayer extends ParkourUser {
                             highScoreTime, 4, true, true, true,
                             true, true, true);
                     players.put(player, pp);
-                    pp.save();
+                    pp.saveStats();
                 }
                 return pp;
             }

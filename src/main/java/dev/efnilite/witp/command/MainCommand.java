@@ -46,35 +46,39 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
             return true;
         } else if (args.length == 1) {
-            if (sender.isOp() && args[0].equalsIgnoreCase("reload")) {
-                WITP.getConfiguration().reload();
-                Option.init(false);
-                sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
-            } else if (sender.isOp() && args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
-                if (Option.SQL) {
-                    File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                        return true;
-                    }
-                    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
-                    for (File file : folder.listFiles()) {
-                        FileReader reader;
-                        try {
-                            reader = new FileReader(file);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                            sender.sendMessage(Util.color("&a&l(!) &cError while trying to read file, check your console"));
+            if (sender.isOp()) {
+                if (args[0].equalsIgnoreCase("reload")) {
+                    WITP.getConfiguration().reload();
+                    Option.init(false);
+                    sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
+                    return true;
+                } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
+                    if (Option.SQL) {
+                        File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+                        if (!folder.exists()) {
+                            folder.mkdirs();
                             return true;
                         }
-                        ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-                        String name = file.getName();
-                        from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-                        from.save();
+                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
+                        for (File file : folder.listFiles()) {
+                            FileReader reader;
+                            try {
+                                reader = new FileReader(file);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                sender.sendMessage(Util.color("&a&l(!) &cError while trying to read file, check your console"));
+                                return true;
+                            }
+                            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                            String name = file.getName();
+                            from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+                            from.save();
+                        }
+                        sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated!"));
+                    } else {
+                        sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
                     }
-                    sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated!"));
-                } else {
-                    sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
+                    return true;
                 }
             }
             if (player == null) {

@@ -33,7 +33,7 @@ bungeecord:
 
     # The place players will go back to if they leave, if bungeecord is disabled and the go-back option is enabled
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
-    go-back: '(0,100,0,world)'
+    go-back: "(0,100,0,world)"
 
 # Options for MySQL
 sql:
@@ -44,7 +44,8 @@ sql:
     password: password
 
     # Using an existing database might overwrite data. Be cautious!
-    database: 'witp'
+    database: "witp"
+    database: "witp"
 
 # Options for the world
 world:
@@ -161,7 +162,7 @@ rewards:
     # The command that will be executed if the interval is met.
     # Use %player% to get the player
     # 'null' means no command
-    command: 'null'
+    command: "null"
 
     # The amount of money players will receive as Vault currency
     vault-reward: 5
@@ -175,11 +176,11 @@ particles:
 
     # The particle type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
-    particle-type: 'SPELL_INSTANT'
+    particle-type: "SPELL_INSTANT"
 
     # The sound type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
-    sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
+    sound-type: "BLOCK_NOTE_BLOCK_GUITAR"
 
     # The pitch of the sound
     sound-pitch: 3

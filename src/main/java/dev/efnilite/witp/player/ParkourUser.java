@@ -291,7 +291,10 @@ public abstract class ParkourUser {
             int rank = i + 1;
             send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) + " &7(" + time + ")");
         }
-        sendTranslated("your-rank", Integer.toString(getRank(player.getUniqueId())), highScores.get(player.getUniqueId()).toString());
+
+        UUID uuid = player.getUniqueId();
+        Integer person = highScores.get(uuid);
+        sendTranslated("your-rank", Integer.toString(getRank(uuid)), person != null ? person.toString() : "0");
         send("");
 
         int prevPage = page - 1;
