@@ -204,7 +204,7 @@ public class WITP extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void command(PlayerCommandPreprocessEvent event) {
         if (Option.FOCUS_MODE) {
             ParkourUser user = ParkourUser.getUser(event.getPlayer());
@@ -245,10 +245,8 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-        Verbose.info("interact call");
         if (player != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
                 event.getHand() == EquipmentSlot.HAND) {
-            Verbose.info("interact call");
             event.setCancelled(true);
             String mat = WITP.getConfiguration().getString("config", "options.item");
             if (mat == null) {
@@ -256,7 +254,6 @@ public class WITP extends JavaPlugin implements Listener {
                 mat = "COMPASS";
             }
             if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
-                Verbose.info("menu call");
                 player.menu();
             }
         }

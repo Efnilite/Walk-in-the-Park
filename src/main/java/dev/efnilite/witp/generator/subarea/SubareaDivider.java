@@ -313,6 +313,7 @@ public class SubareaDivider {
             }
         }
 
+        player.closeInventory();
         pp.getGenerator().start();
 
         // todo fix this check

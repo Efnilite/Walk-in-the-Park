@@ -85,12 +85,14 @@ public class MainCommand extends BukkitCommand {
                 return true;
             }
             if (args[0].equalsIgnoreCase("join")) {
-                try {
-                    ParkourPlayer pp = ParkourPlayer.register(player);
-                    pp.sendTranslated("joined");
-                } catch (IOException | SQLException ex) {
-                    ex.printStackTrace();
-                    Verbose.error("Error while joining");
+                ParkourUser pp = ParkourUser.getUser(player);
+                if (pp == null) {
+                    try {
+                        ParkourPlayer.register(player).sendTranslated("joined");
+                    } catch (IOException | SQLException ex) {
+                        ex.printStackTrace();
+                        Verbose.error("Error while joining");
+                    }
                 }
             } else if (args[0].equalsIgnoreCase("leave")) {
                 ParkourUser pp = ParkourUser.getUser(player);
