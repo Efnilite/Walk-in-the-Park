@@ -20,7 +20,6 @@ verbose: false
 
 # Options about Bungeecord/autojoining
 bungeecord:
-
     # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
     # !! If this is disabled, you have to use /witp join to join and /witp leave to leave. !!
     enabled: true
@@ -80,7 +79,6 @@ permissions:
 
 # Options for focus mode.
 focus-mode:
-
     # If focus mode is enabled players can't use commands while in parkour.
     enabled: true
 
@@ -98,7 +96,6 @@ focus-mode:
 
 # Options for the option menu
 options:
-
     # If options are enabled
     enabled: true
 
@@ -114,7 +111,6 @@ time:
 
 # The different styles players can select
 styles:
-
     # If styles are enabled
     enabled: true
 
@@ -143,7 +139,6 @@ styles:
 
 # Options for custom rewards
 rewards:
-
     # If rewards are enabled
     enabled: false
 
@@ -172,7 +167,6 @@ rewards:
 
 # Options for particles/sounds
 particles:
-
     # The particle type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
     particle-type: "SPELL_INSTANT"

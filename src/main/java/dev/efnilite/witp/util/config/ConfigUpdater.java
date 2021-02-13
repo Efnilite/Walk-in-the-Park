@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.witp.util.Verbose;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
  * Read and write each line of the new config, if the old config has value for the given key it writes that value in the new config.
  * If a key has an attached comment above it, it is written first.
  * @author tchristofferson
+ *
+ * Fixed ignored sections by
+ * @author Efnilite
  */
 public class ConfigUpdater {
 
@@ -55,11 +59,7 @@ public class ConfigUpdater {
             String[] keys = key.split("\\.");
             String actualKey = keys[keys.length - 1];
             String comment = comments.remove(key);
-
-            StringBuilder prefixBuilder = new StringBuilder();
             int indents = keys.length - 1;
-            appendPrefixSpaces(prefixBuilder, indents);
-            String prefixSpaces = prefixBuilder.toString();
 
             if (comment != null) {
                 writer.write(comment);//No \n character necessary, new line is automatically at end of comment
@@ -67,9 +67,14 @@ public class ConfigUpdater {
 
             for (String ignoredSection : ignoredSections) {
                 if (key.startsWith(ignoredSection)) {
+                    Verbose.info("ignore section " + key + " // " + ignoredSection);
                     continue outer;
                 }
             }
+
+            StringBuilder prefixBuilder = new StringBuilder();
+            appendPrefixSpaces(prefixBuilder, indents);
+            String prefixSpaces = prefixBuilder.toString();
 
             Object newObj = newConfig.get(key);
             Object oldObj = oldConfig.get(key);
@@ -183,8 +188,8 @@ public class ConfigUpdater {
                     if (keyBuilder.toString().equals(ignoredSection)) {
                         Object value = oldConfig.get(keyBuilder.toString());
 
-                        if (value instanceof ConfigurationSection)
-                            appendSection(builder, (ConfigurationSection) value, new StringBuilder(getPrefixSpaces(lastLineIndentCount)), yaml);
+                        if (value instanceof ConfigurationSection) // where ignored gets written
+                            appendSection(builder, (ConfigurationSection) value, new StringBuilder(getPrefixSpaces(lastLineIndentCount - 1)), yaml);
 
                         continue outer;
                     }
@@ -214,7 +219,7 @@ public class ConfigUpdater {
         }
 
         builder.append("\n");
-        prefixSpaces.append("    ");
+        prefixSpaces.append("  ");
 
         for (String key : keys) {
             Object value = section.get(key);
@@ -243,7 +248,7 @@ public class ConfigUpdater {
             }
         }
 
-        return spaces;
+        return spaces / 2;
     }
 
     //Ex. keyBuilder = key1.key2.key3 --> key1.key2
@@ -305,7 +310,7 @@ public class ConfigUpdater {
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < indents; i++) {
-            builder.append("    ");
+            builder.append("  ");
         }
 
         return builder.toString();
