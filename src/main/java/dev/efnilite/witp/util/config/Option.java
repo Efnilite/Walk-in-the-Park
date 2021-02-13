@@ -84,11 +84,17 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
+    // Lang
+    public static String TRUE;
+    public static String FALSE;
+
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
 
+        TRUE = lang.getString("messages.en.true");
+        FALSE = lang.getString("messages.en.false");
         VERBOSE = config.getBoolean("verbose");
 
         SQL = config.getBoolean("sql.enabled");

@@ -34,6 +34,8 @@ messages:
         not-there-search: '&7Type the player you want to spectate!'
         click-search: '&c&l&nClick here&r&c&l to enter the player you want to search.'
 
+        true: "yes"
+        false: "no"
         spectator: '&a&l(!) &7You are now a spectator. You can use "/witp gm" to leave/change your gamemode.'
         divider: '&7----------------------------------------'
         score: '&aYour score: &f%s'
