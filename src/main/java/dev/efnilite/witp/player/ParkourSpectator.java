@@ -6,6 +6,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.GameMode;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class ParkourSpectator extends ParkourUser {
         this.watchingGenerator = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
         watching.addSpectator(this);
-        this.player.teleport(watching.getPlayer().getLocation());
+        this.player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         WITP.getDivider().setBorder(this, WITP.getDivider().getPoint(watching));
         sendTranslated("spectator");
     }
@@ -56,7 +57,7 @@ public class ParkourSpectator extends ParkourUser {
      */
     public void checkDistance() {
         if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
-            player.teleport(watching.getPlayer().getLocation());
+            player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
     }
 

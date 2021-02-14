@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -282,7 +283,7 @@ public class SubareaDivider {
                 to.setPitch(spawnPitch);
                 to.setYaw(spawnYaw);
                 to.setWorld(world);
-                player.teleport(to);
+                pp.teleportAsync(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
                 if (Option.INVENTORY_HANDLING) {
@@ -313,6 +314,9 @@ public class SubareaDivider {
             }
         }
 
+        if (!Option.INVENTORY_HANDLING) {
+            pp.sendTranslated("customize-menu");
+        }
         pp.getGenerator().start();
 
         // todo fix this check
@@ -321,7 +325,7 @@ public class SubareaDivider {
             @Override
             public void run() {
             if (!player.getWorld().getUID().equals(world.getUID())) {
-                player.teleport(finalTo);
+                player.teleport(finalTo, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
             }
         };

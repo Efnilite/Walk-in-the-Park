@@ -162,6 +162,10 @@ public class WITP extends JavaPlugin implements Listener {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World world = WITP.getDivider().getWorld();
+        if (player.isOp() && WITP.OUTDATED) {
+            player.sendMessage(Util.color("&c&l(!) &7The WITP plugin you are using is outdated. " +
+                    "Updates usually fix a variety of bugs. Check the Spigot page for more info."));
+        }
         if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer.register(player);
@@ -178,14 +182,14 @@ public class WITP extends JavaPlugin implements Listener {
         } else if (player.getWorld() == WITP.getDivider().getWorld()) {
             World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall-back"));
             if (fallback != null) {
-                player.teleport(fallback.getSpawnLocation());
+                player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 player.sendMessage("You have been teleported to a backup location");
             } else {
                 Verbose.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(world.getName()))) {
                         player.sendMessage(Util.color("&cThere was an error while trying to get a world"));
-                        player.teleport(last.getSpawnLocation());
+                        player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
                     }
                 }

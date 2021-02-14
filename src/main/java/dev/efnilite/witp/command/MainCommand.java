@@ -47,7 +47,7 @@ public class MainCommand extends BukkitCommand {
             return true;
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (sender.isOp()) {
+                if (sender.hasPermission("witp.reload")) {
                     WITP.getConfiguration().reload();
                     Option.init(false);
                     sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
@@ -56,7 +56,7 @@ public class MainCommand extends BukkitCommand {
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
-                if (sender.isOp()) {
+                if (sender.hasPermission("witp.reload")) {
                     if (Option.SQL) {
                         File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
                         if (!folder.exists()) {

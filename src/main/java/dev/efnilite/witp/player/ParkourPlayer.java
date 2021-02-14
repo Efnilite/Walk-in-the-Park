@@ -78,9 +78,6 @@ public class ParkourPlayer extends ParkourUser {
         this.possibleStyle = new ArrayList<>();
 
         WITP.getDivider().generate(this);
-        if (player.isOp() && WITP.OUTDATED) {
-            send("&4&l!!! &fThe WITP plugin version you are using is outdated. Please check the Spigot page for updates.");
-        }
     }
 
     public void setDefaults(int highScore, String time, String style, String highScoreTime,

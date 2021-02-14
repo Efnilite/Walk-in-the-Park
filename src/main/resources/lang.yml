@@ -30,13 +30,14 @@ messages:
         selected-special-blocks: '&a&l(!) &7You changed the usage of special blocks to %v'
         selected-structures: '&a&l(!) &7You changed the usage of structures to %v'
         cant-do: '&c&l(!) &cYou can''t do this right now.'
+        customize-menu: '&a&l(!) &7You can customize your parkour experience by using /parkour menu.'
 
         not-there-search: '&7Type the player you want to spectate!'
         click-search: '&c&l&nClick here&r&c&l to enter the player you want to search.'
 
         true: "yes"
         false: "no"
-        spectator: '&a&l(!) &7You are now a spectator. You can use "/witp gm" to leave/change your gamemode.'
+        spectator: '&a&l(!) &7You are now a spectator. You can use "/parkour gm" to leave/change your gamemode.'
         divider: '&7----------------------------------------'
         score: '&aYour score: &f%s'
         time: '&aYour time: &f%s'

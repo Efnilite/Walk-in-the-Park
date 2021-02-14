@@ -15,6 +15,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -202,7 +203,7 @@ public class DefaultGenerator extends ParkourGenerator {
         }
         deleteStructure();
         buildLog.clear();
-        player.getPlayer().teleport(playerSpawn);
+        player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         int score = this.score;
         String time = this.time;
         if (player.showDeathMsg && regenerate) {

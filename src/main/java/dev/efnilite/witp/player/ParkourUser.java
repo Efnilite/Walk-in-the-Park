@@ -12,6 +12,7 @@ import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
+import io.papermc.lib.PaperLib;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -19,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -101,9 +103,9 @@ public abstract class ParkourUser {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 if (Option.GO_BACK) {
-                    pl.teleport(Option.GO_BACK_LOC);
+                    player.teleportAsync(Option.GO_BACK_LOC);
                 } else {
-                    pl.teleport(player.previousLocation);
+                    player.teleportAsync(player.previousLocation);
                 }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 pl.setGameMode(player.previousGamemode);
@@ -116,6 +118,18 @@ public abstract class ParkourUser {
                 pl.resetPlayerTime();
             }
         }
+    }
+
+    /**
+     * Teleports the player asynchronously, which helps with unloaded chunks (?)
+     *
+     * @param   to
+     *          Where the player will be teleported to
+     */
+    public void teleportAsync(Location to) {
+        PaperLib.getChunkAtAsync(to).thenAccept(chunk -> {
+            PaperLib.teleportAsync(player, to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        });
     }
 
     /**
