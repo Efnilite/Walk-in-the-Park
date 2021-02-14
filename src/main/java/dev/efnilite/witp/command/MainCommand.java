@@ -46,13 +46,17 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
             return true;
         } else if (args.length == 1) {
-            if (sender.isOp()) {
-                if (args[0].equalsIgnoreCase("reload")) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (sender.isOp()) {
                     WITP.getConfiguration().reload();
                     Option.init(false);
                     sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
-                    return true;
-                } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
+                } else {
+                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
+                }
+                return true;
+            } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
+                if (sender.isOp()) {
                     if (Option.SQL) {
                         File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
                         if (!folder.exists()) {
@@ -78,8 +82,10 @@ public class MainCommand extends BukkitCommand {
                     } else {
                         sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
                     }
-                    return true;
+                } else {
+                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
                 }
+                return true;
             }
             if (player == null) {
                 return true;

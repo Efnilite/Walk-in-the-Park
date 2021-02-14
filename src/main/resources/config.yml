@@ -36,11 +36,11 @@ bungeecord:
 
 # Options for MySQL
 sql:
-    enabled: true
+    enabled: false
     url: 'localhost'
     port: 3306
     username: efnilite
-    password: mynamejeff
+    password: password
 
     # Using an existing database might overwrite data. Be cautious!
     database: "witp"
@@ -80,6 +80,7 @@ permissions:
 # Options for focus mode.
 focus-mode:
     # If focus mode is enabled players can't use commands while in parkour.
+    # Note: this might not work on all commands because.. Minecraft.
     enabled: true
 
     # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).

@@ -70,6 +70,7 @@ public abstract class ParkourUser {
      */
     public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee) throws IOException, InvalidStatementException {
         new PlayerLeaveEvent(player).call();
+        Player pl = player.getPlayer();
         if (!player.getBoard().isDeleted()) {
             player.getBoard().delete();
         }
@@ -78,7 +79,7 @@ public abstract class ParkourUser {
             pp.getGenerator().reset(false);
             pp.save();
             WITP.getDivider().leave(pp);
-            players.remove(pp.getPlayer());
+            players.remove(pl);
             for (ParkourSpectator spectator : pp.spectators.values()) {
                 try {
                     ParkourPlayer.register(spectator.getPlayer());
@@ -93,13 +94,12 @@ public abstract class ParkourUser {
             ParkourSpectator spectator = (ParkourSpectator) player;
             spectator.watching.removeSpectators(spectator);
         }
-        users.remove(player.getPlayer().getName());
+        users.remove(pl.getName());
 
         if (sendBack) {
             if (Option.BUNGEECORD && kickIfBungee) {
-                Util.sendPlayer(player.getPlayer(), WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+                Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
-                Player pl = player.getPlayer();
                 if (Option.GO_BACK) {
                     pl.teleport(Option.GO_BACK_LOC);
                 } else {

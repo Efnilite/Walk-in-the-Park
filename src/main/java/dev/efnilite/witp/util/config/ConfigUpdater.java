@@ -67,7 +67,6 @@ public class ConfigUpdater {
 
             for (String ignoredSection : ignoredSections) {
                 if (key.startsWith(ignoredSection)) {
-                    Verbose.info("ignore section " + key + " // " + ignoredSection);
                     continue outer;
                 }
             }
