@@ -119,6 +119,17 @@ public abstract class ParkourUser {
         }
     }
 
+    public boolean checkPermission(String perm) {
+        if (Option.PERMISSIONS) {
+            boolean check = player.hasPermission(perm);
+            if (!check) {
+                sendTranslated("cant-do");
+            }
+            return check;
+        }
+        return true;
+    }
+
     /**
      * Teleports the player asynchronously, which helps with unloaded chunks (?)
      *

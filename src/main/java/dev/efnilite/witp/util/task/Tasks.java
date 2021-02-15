@@ -1,8 +1,10 @@
 package dev.efnilite.witp.util.task;
 
 import dev.efnilite.witp.WITP;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Utilities for Runnables
@@ -15,27 +17,31 @@ public class Tasks {
         plugin = WITP.getInstance();
     }
 
-    public static int syncRepeat(BukkitRunnable runnable, int interval) {
-        return runnable.runTaskTimer(plugin, 0L, interval).getTaskId();
+    public static BukkitTask defaultSyncRepeat(BukkitRunnable runnable, int interval) {
+        return runnable.runTaskTimer(plugin, 0L, interval);
     }
 
-    public static int asyncRepeat(BukkitRunnable runnable, int interval) {
-        return runnable.runTaskTimerAsynchronously(plugin, 0L, interval).getTaskId();
+    public static BukkitTask syncRepeat(Runnable runnable, int interval) {
+        return Bukkit.getScheduler().runTaskTimer(plugin, runnable, 0L, interval);
     }
 
-    public static int syncTask(BukkitRunnable runnable) {
-        return runnable.runTask(plugin).getTaskId();
+    public static BukkitTask asyncRepeat(Runnable runnable, int interval) {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, 0L, interval);
     }
 
-    public static int asyncTask(BukkitRunnable runnable) {
-        return runnable.runTaskAsynchronously(plugin).getTaskId();
+    public static BukkitTask syncTask(Runnable runnable) {
+        return Bukkit.getScheduler().runTask(plugin, runnable);
     }
 
-    public static int asyncDelay(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLaterAsynchronously(plugin, delay).getTaskId();
+    public static BukkitTask asyncTask(Runnable runnable) {
+        return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
-    public static int syncDelay(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLater(plugin, delay).getTaskId();
+    public static BukkitTask asyncDelay(Runnable runnable, int delay) {
+        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
+    }
+
+    public static BukkitTask syncDelay(Runnable runnable, int delay) {
+        return Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
     }
 }

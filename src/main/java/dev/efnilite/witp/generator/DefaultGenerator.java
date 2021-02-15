@@ -93,7 +93,7 @@ public class DefaultGenerator extends ParkourGenerator {
      */
     @Override
     public void start() {
-        Tasks.syncRepeat(new BukkitRunnable() {
+        Tasks.defaultSyncRepeat(new BukkitRunnable() {
             @Override
             public void run() {
                 if (stopped) {

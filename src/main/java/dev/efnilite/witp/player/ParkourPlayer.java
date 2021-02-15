@@ -15,10 +15,12 @@ import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
+import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -28,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -393,17 +396,6 @@ public class ParkourPlayer extends ParkourUser {
         builder.build();
     }
 
-    private boolean checkPermission(String perm) {
-        if (Option.PERMISSIONS) {
-            boolean check = player.hasPermission(perm);
-            if (!check) {
-                sendTranslated("cant-do");
-            }
-            return check;
-        }
-        return true;
-    }
-
     private @Nullable List<Material> getPossibleMaterials(String style) {
         List<Material> possibleStyles = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
@@ -431,39 +423,41 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the player's data to their file
      */
     public void save() {
-        try {
-            if (Option.SQL) {
-                Verbose.verbose("Writing player's data to SQL server");
-                UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
-                        .setDefault("uuid", uuid.toString()).setDefault("name", name)
-                        .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
-                        .setCondition("`uuid` = '" + uuid.toString() + "'");
-                statement.query();
-                statement = new UpdertStatement(WITP.getDatabase(), "options")
-                        .setDefault("uuid", uuid.toString()).setDefault("time", time)
-                        .setDefault("style", style).setDefault("blockLead", blockLead)
-                        .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
-                        .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
-                        .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
-                        .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
-                statement.query();
-            } else {
-                if (!file.exists()) {
-                    File folder = new File(WITP.getInstance().getDataFolder() + "/players");
-                    if (!folder.exists()) {
-                        folder.mkdirs();
+        Tasks.asyncTask(() -> {
+            try {
+                if (Option.SQL) {
+                    Verbose.verbose("Writing player's data to SQL server");
+                    UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
+                            .setDefault("uuid", uuid.toString()).setDefault("name", name)
+                            .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
+                            .setCondition("`uuid` = '" + uuid.toString() + "'");
+                    statement.query();
+                    statement = new UpdertStatement(WITP.getDatabase(), "options")
+                            .setDefault("uuid", uuid.toString()).setDefault("time", time)
+                            .setDefault("style", style).setDefault("blockLead", blockLead)
+                            .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
+                            .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
+                            .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
+                            .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
+                    statement.query();
+                } else {
+                    if (!file.exists()) {
+                        File folder = new File(WITP.getInstance().getDataFolder() + "/players");
+                        if (!folder.exists()) {
+                            folder.mkdirs();
+                        }
+                        file.createNewFile();
                     }
-                    file.createNewFile();
+                    FileWriter writer = new FileWriter(file);
+                    gson.toJson(this, writer);
+                    writer.flush();
+                    writer.close();
                 }
-                FileWriter writer = new FileWriter(file);
-                gson.toJson(this, writer);
-                writer.flush();
-                writer.close();
+            } catch (IOException | InvalidStatementException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to save the player's data..");
             }
-        } catch (IOException | InvalidStatementException ex) {
-            ex.printStackTrace();
-            Verbose.error("Error while trying to save the player's data..");
-        }
+        });
     }
 
     /**
@@ -660,3 +654,4 @@ public class ParkourPlayer extends ParkourUser {
         return generator;
     }
 }
+

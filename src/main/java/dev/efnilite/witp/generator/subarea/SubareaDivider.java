@@ -321,15 +321,11 @@ public class SubareaDivider {
 
         // todo fix this check
         Location finalTo = to;
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
+        Tasks.syncDelay(() -> {
             if (!player.getWorld().getUID().equals(world.getUID())) {
                 player.teleport(finalTo, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
-            }
-        };
-        Tasks.syncDelay(runnable, 10);
+        }, 10);
         setBorder(pp, point);
     }
 }

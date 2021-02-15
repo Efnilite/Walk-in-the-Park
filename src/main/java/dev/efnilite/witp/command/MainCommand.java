@@ -118,19 +118,15 @@ public class MainCommand extends BukkitCommand {
             } else if (args[0].equalsIgnoreCase("gamemode") || args[0].equalsIgnoreCase("gm")) {
                 ParkourUser user = ParkourUser.getUser(player);
                 if (user != null) {
-                    if (player.hasPermission("witp.gamemode")) {
+                    if (user.checkPermission("witp.gamemode")) {
                         user.gamemode();
-                    } else {
-                        user.sendTranslated("cant-do");
                     }
                 }
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
                 ParkourUser user = ParkourUser.getUser(player);
                 if (user != null) {
-                    if (player.hasPermission("witp.leaderboard")) {
+                    if (user.checkPermission("witp.leaderboard")) {
                         user.leaderboard(1);
-                    } else {
-                        user.sendTranslated("cant-do");
                     }
                 }
             }
@@ -139,10 +135,8 @@ public class MainCommand extends BukkitCommand {
                 int page = Integer.parseInt(args[1]);
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
-                    if (player.hasPermission("witp.leaderboard")) {
+                    if (pp.checkPermission("witp.leaderboard")) {
                         pp.leaderboard(page);
-                    } else {
-                        pp.sendTranslated("cant-do");
                     }
                 }
             } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {

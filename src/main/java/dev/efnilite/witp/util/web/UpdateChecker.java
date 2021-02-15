@@ -15,27 +15,23 @@ import java.util.stream.Collectors;
 public class UpdateChecker {
 
     public void check() {
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                String latest;
-                try {
-                    latest = getLatestVersion();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    Verbose.error("Error while trying to fetch latest version!");
-                    return;
-                }
-                if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
-                    Verbose.info("A new version of WITP is available to download!");
-                    Verbose.info("Newest version: " + latest);
-                    WITP.OUTDATED = true;
-                } else {
-                    Verbose.info("WITP is currently up-to-date!");
-                }
+        Tasks.asyncTask(() -> {
+            String latest;
+            try {
+                latest = getLatestVersion();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while trying to fetch latest version!");
+                return;
             }
-        };
-        Tasks.asyncTask(runnable);
+            if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
+                Verbose.info("A new version of WITP is available to download!");
+                Verbose.info("Newest version: " + latest);
+                WITP.OUTDATED = true;
+            } else {
+                Verbose.info("WITP is currently up-to-date!");
+            }
+        });
     }
 
     private String getLatestVersion() throws IOException {

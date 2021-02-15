@@ -104,12 +104,7 @@ public class WITP extends JavaPlugin implements Listener {
         new InventoryBuilder.ClickHandler(this);
 
         UpdateChecker checker = new UpdateChecker();
-        Tasks.syncRepeat(new BukkitRunnable() {
-            @Override
-            public void run() {
-                checker.check();
-            }
-        }, 30 * 60 * 20);
+        Tasks.syncRepeat(checker::check, 30 * 60 * 20);
     }
 
     @Override
