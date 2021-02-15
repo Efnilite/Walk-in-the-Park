@@ -127,6 +127,7 @@ public class DefaultGenerator extends ParkourGenerator {
                     player.updateScoreboard();
                     return;
                 }
+                tick();
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();
@@ -148,6 +149,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             score++;
                             totalScore++;
                             latestLocation = current.getLocation();
+                            score();
 
                             // Rewards
                             if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
@@ -186,6 +188,10 @@ public class DefaultGenerator extends ParkourGenerator {
             }
         }, Option.GENERATOR_CHECK);
     }
+
+    public void score() { }
+
+    public void tick() { }
 
     /**
      * Resets the parkour

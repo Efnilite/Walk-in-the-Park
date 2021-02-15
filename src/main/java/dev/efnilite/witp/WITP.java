@@ -45,10 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 public class WITP extends JavaPlugin implements Listener {
 

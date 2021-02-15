@@ -15,12 +15,10 @@ import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -508,9 +506,23 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @NotNull ParkourPlayer register(Player player) throws IOException, SQLException {
-        if (players.get(player) == null) {
-            UUID uuid = player.getUniqueId();
+    public static @NotNull ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
+        return register(new ParkourPlayer(player, null));
+    }
+
+    /**
+     * Registers a player
+     * Doesn't use async reading because the system immediately needs the data.
+     *
+     * @param   pp
+     *          The player
+     *
+     * @throws  IOException
+     *          Thrown if the reader fails or the getting fails
+     */
+    public static @NotNull ParkourPlayer register(@NotNull ParkourPlayer pp) throws IOException, SQLException {
+        if (players.get(pp.player) == null) {
+            UUID uuid = pp.getPlayer().getUniqueId();
             if (!Option.SQL) {
                 File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
                 if (data.exists()) {
@@ -534,19 +546,17 @@ public class ParkourPlayer extends ParkourUser {
                     if (from.highScoreTime == null) {
                         from.highScoreTime = "0.0s";
                     }
-                    ParkourPlayer pp = new ParkourPlayer(player, null);
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.blockLead,
                             from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
                     pp.saveStats();
-                    players.put(player, pp);
+                    players.put(pp.player, pp);
                     reader.close();
                     return pp;
                 } else {
-                    ParkourPlayer pp = new ParkourPlayer(player, null);
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             "0.0s", 4, true, true, true,
                             true, true, true);
-                    players.put(player, pp);
+                    players.put(pp.player, pp);
                     pp.saveStats();
                     return pp;
                 }
@@ -555,7 +565,6 @@ public class ParkourPlayer extends ParkourUser {
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`").addCondition("`uuid` = '" + uuid.toString() + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
-                ParkourPlayer pp = new ParkourPlayer(player, null);
                 String highScoreTime;
                 int highscore;
                 if (objects != null) {
@@ -565,7 +574,7 @@ public class ParkourPlayer extends ParkourUser {
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             "0.0s", 4, true, true, true,
                             true, true, true);
-                    players.put(player, pp);
+                    players.put(pp.player, pp);
                     pp.saveStats();
                     return pp;
                 }
@@ -587,11 +596,11 @@ public class ParkourPlayer extends ParkourUser {
                             true, true, true);
                     pp.saveStats();
                 }
-                players.put(player, pp);
+                players.put(pp.player, pp);
                 return pp;
             }
         }
-        return players.get(player);
+        return pp;
     }
 
     private static boolean translateSqlBoolean(String string) {

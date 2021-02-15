@@ -12,7 +12,6 @@ import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
-import io.papermc.lib.PaperLib;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -103,9 +102,9 @@ public abstract class ParkourUser {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 if (Option.GO_BACK) {
-                    player.teleportAsync(Option.GO_BACK_LOC);
+                    player.teleport(Option.GO_BACK_LOC);
                 } else {
-                    player.teleportAsync(player.previousLocation);
+                    player.teleport(player.previousLocation);
                 }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 pl.setGameMode(player.previousGamemode);
@@ -126,10 +125,11 @@ public abstract class ParkourUser {
      * @param   to
      *          Where the player will be teleported to
      */
-    public void teleportAsync(Location to) {
-        PaperLib.getChunkAtAsync(to).thenAccept(chunk -> {
-            PaperLib.teleportAsync(player, to, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        });
+    public void teleport(@NotNull Location to) {
+        if (to.getWorld() != null) {
+            to.getWorld().getChunkAt(to);
+        }
+        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     /**

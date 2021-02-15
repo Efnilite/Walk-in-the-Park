@@ -283,7 +283,7 @@ public class SubareaDivider {
                 to.setPitch(spawnPitch);
                 to.setYaw(spawnYaw);
                 to.setWorld(world);
-                pp.teleportAsync(to);
+                pp.teleport(to);
                 block.setType(Material.AIR);
                 player.setGameMode(GameMode.ADVENTURE);
                 if (Option.INVENTORY_HANDLING) {

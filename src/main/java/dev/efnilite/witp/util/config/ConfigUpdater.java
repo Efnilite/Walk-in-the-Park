@@ -1,6 +1,5 @@
 package dev.efnilite.witp.util.config;
 
-import dev.efnilite.witp.util.Verbose;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
