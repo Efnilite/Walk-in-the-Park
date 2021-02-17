@@ -31,7 +31,7 @@ public class ParkourSpectator extends ParkourUser {
 
         if (player instanceof ParkourPlayer) {
             try {
-                ParkourPlayer.unregister(player, false, false);
+                ParkourPlayer.unregister(player, false, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister");

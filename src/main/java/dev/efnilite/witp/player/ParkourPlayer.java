@@ -386,7 +386,7 @@ public class ParkourPlayer extends ParkourUser {
             player.closeInventory();
             try {
                 sendTranslated("left");
-                ParkourPlayer.unregister(this, true, true);
+                ParkourPlayer.unregister(this, true, true, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to quit player " + player.getName());
@@ -416,14 +416,14 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private void saveStats() {
-        save();
+        save(true);
     }
 
     /**
      * Saves the player's data to their file
      */
-    public void save() {
-        Tasks.asyncTask(() -> {
+    public void save(boolean async) {
+        Runnable runnable = () -> {
             try {
                 if (Option.SQL) {
                     Verbose.verbose("Writing player's data to SQL server");
@@ -449,7 +449,7 @@ public class ParkourPlayer extends ParkourUser {
                         file.createNewFile();
                     }
                     FileWriter writer = new FileWriter(file);
-                    gson.toJson(this, writer);
+                    gson.toJson(ParkourPlayer.this, writer);
                     writer.flush();
                     writer.close();
                 }
@@ -457,7 +457,12 @@ public class ParkourPlayer extends ParkourUser {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to save the player's data..");
             }
-        });
+        };
+        if (async) {
+            Tasks.asyncTask(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     /**
@@ -639,10 +644,6 @@ public class ParkourPlayer extends ParkourUser {
             default:
                 return 1000;
         }
-    }
-
-    public void nullify() {
-        generator = null;
     }
 
     /**

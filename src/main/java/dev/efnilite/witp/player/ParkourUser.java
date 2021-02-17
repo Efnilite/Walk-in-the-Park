@@ -69,7 +69,7 @@ public abstract class ParkourUser {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee) throws IOException, InvalidStatementException {
+    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) throws IOException, InvalidStatementException {
         new PlayerLeaveEvent(player).call();
         Player pl = player.getPlayer();
         if (!player.getBoard().isDeleted()) {
@@ -77,8 +77,12 @@ public abstract class ParkourUser {
         }
         if (player instanceof ParkourPlayer) {
             ParkourPlayer pp = (ParkourPlayer) player;
-            pp.getGenerator().reset(false);
-            pp.save();
+            if (pp.getGenerator() != null) {
+                pp.getGenerator().reset(false);
+            } else {
+                Verbose.error("Generator of player is null while trying to unregister!");
+            }
+            pp.save(saveAsync);
             WITP.getDivider().leave(pp);
             players.remove(pl);
             for (ParkourSpectator spectator : pp.spectators.values()) {
@@ -90,7 +94,6 @@ public abstract class ParkourUser {
                 }
             }
             pp.spectators.clear();
-            pp.nullify();
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
             spectator.watching.removeSpectators(spectator);
@@ -102,7 +105,8 @@ public abstract class ParkourUser {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 if (Option.GO_BACK) {
-                    player.teleport(Option.GO_BACK_LOC);
+                    Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
+                    player.teleport(to);
                 } else {
                     player.teleport(player.previousLocation);
                 }

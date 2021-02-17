@@ -57,7 +57,7 @@ public class WITPAPI {
             Verbose.error("Player " + player.getName() + " isn't registered!");
             return;
         }
-        ParkourPlayer.unregister(pp, sendBack, false);
+        ParkourPlayer.unregister(pp, sendBack, false, true);
     }
 
     /**
@@ -72,7 +72,7 @@ public class WITPAPI {
      * @throws IOException If saving the file of the player goes wrong
      */
     public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException, InvalidStatementException {
-        ParkourPlayer.unregister(player, sendBack, false);
+        ParkourPlayer.unregister(player, sendBack, false, true);
     }
 
     /**

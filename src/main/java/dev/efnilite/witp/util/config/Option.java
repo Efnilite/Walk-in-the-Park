@@ -57,7 +57,6 @@ public class Option {
     public static List<String> FOCUS_MODE_WHITELIST;
     public static boolean GO_BACK;
     public static boolean BUNGEECORD;
-    public static Location GO_BACK_LOC;
     public static boolean JOIN_LEAVE;
 
     public static boolean LEAD;
@@ -155,7 +154,6 @@ public class Option {
         FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
 
         GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
-        GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));
 
         SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
         SOUND_PITCH = config.getInt("particles.sound-pitch");

@@ -75,7 +75,7 @@ public class MainCommand extends BukkitCommand {
                             ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
                             String name = file.getName();
                             from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-                            from.save();
+                            from.save(true);
                         }
                         sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated!"));
                     } else {
@@ -104,7 +104,7 @@ public class MainCommand extends BukkitCommand {
                 if (pp != null) {
                     try {
                         pp.sendTranslated("left");
-                        ParkourUser.unregister(pp, true, true);
+                        ParkourUser.unregister(pp, true, true, true);
                     } catch (IOException | InvalidStatementException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while leaving");

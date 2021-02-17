@@ -117,7 +117,7 @@ public class WITP extends JavaPlugin implements Listener {
 
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
-                ParkourUser.unregister(user, true, true);
+                ParkourUser.unregister(user, true, true, false);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while unregistering");
@@ -260,7 +260,7 @@ public class WITP extends JavaPlugin implements Listener {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
-                ParkourUser.unregister(user, true, false);
+                ParkourUser.unregister(user, true, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister player");
@@ -279,7 +279,7 @@ public class WITP extends JavaPlugin implements Listener {
                 }
             }
             try {
-                ParkourPlayer.unregister(player, true, false);
+                ParkourPlayer.unregister(player, true, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");

@@ -457,6 +457,11 @@ public class Util {
      */
     public static Location parseLocation(String location) {
         String[] values = location.replaceAll("[()]", "").replaceAll(", ", " ").replaceAll(",", " ").split(" ");
+        World world = Bukkit.getWorld(values[3]);
+        if (world == null) {
+            Verbose.error("Detected an invalid world: " + values[3]);
+            return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+        }
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
     }
 

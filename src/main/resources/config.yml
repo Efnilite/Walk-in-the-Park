@@ -22,7 +22,7 @@ verbose: false
 bungeecord:
     # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
     # !! If this is disabled, you have to use /witp join to join and /witp leave to leave. !!
-    enabled: true
+    enabled: false
 
     # The server the players will be returned to after the game is done
     return_server: Lobby
