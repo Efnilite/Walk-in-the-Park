@@ -40,12 +40,13 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 
 public class WITP extends JavaPlugin implements Listener {
 
@@ -241,8 +242,8 @@ public class WITP extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
-        if (player != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) &&
-                event.getHand() == EquipmentSlot.HAND) {
+        boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
+        if (player != null && action && Duration.between(player.joinTime, Instant.now()).getSeconds() > 1) {
             event.setCancelled(true);
             String mat = WITP.getConfiguration().getString("config", "options.item");
             if (mat == null) {

@@ -2,7 +2,6 @@ package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
-import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -20,7 +20,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -29,8 +28,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -57,6 +57,8 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String lang;
     public @Expose String name; // for fixing null in leaderboard
 
+    public final Instant joinTime;
+
     public UUID uuid;
     private ParkourGenerator generator;
     private List<Material> possibleStyle;
@@ -74,6 +76,7 @@ public class ParkourPlayer extends ParkourUser {
         this.name = player.getName();
         this.spectators = new HashMap<>();
         this.generator = generator;
+        this.joinTime = Instant.now();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.possibleStyle = new ArrayList<>();
