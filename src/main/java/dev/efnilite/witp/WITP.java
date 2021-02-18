@@ -245,7 +245,7 @@ public class WITP extends JavaPlugin implements Listener {
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
-        if (player != null && action && Duration.between(player.joinTime, Instant.now()).getSeconds() > 4) {
+        if (player != null && action && Duration.between(player.joinTime, Instant.now()).getSeconds() > 1) {
             event.setCancelled(true);
             String mat = WITP.getConfiguration().getString("config", "options.item");
             if (mat == null) {
