@@ -36,6 +36,7 @@ public class Option {
     public static int MIN_Y;
 
     // Config stuff
+    public static boolean UPDATER;
     public static boolean REWARDS;
     public static int REWARDS_INTERVAL;
     public static int REWARDS_SCORE;
@@ -94,6 +95,7 @@ public class Option {
         TRUE = lang.getString("messages.en.true");
         FALSE = lang.getString("messages.en.false");
         VERBOSE = config.getBoolean("verbose");
+        UPDATER = config.getBoolean("updater");
 
         SQL = config.getBoolean("sql.enabled");
         SQL_PORT = config.getInt("sql.port");

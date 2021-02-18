@@ -14,6 +14,10 @@
 #                                                                               #
 #===============================================================================#
 
+# Updater
+# Checks if there are any updates available. It's highly recommended that you keep this on.
+updater: true
+
 # Verbosing
 # If this is set to true it will display extra data when stuff happens (useful for developers)
 verbose: false

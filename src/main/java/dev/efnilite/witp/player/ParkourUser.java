@@ -141,6 +141,7 @@ public abstract class ParkourUser {
      *          Where the player will be teleported to
      */
     public void teleport(@NotNull Location to) {
+        player.leaveVehicle();
         if (to.getWorld() != null) {
             to.getWorld().getChunkAt(to);
         }
