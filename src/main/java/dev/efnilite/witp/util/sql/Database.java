@@ -1,6 +1,7 @@
 package dev.efnilite.witp.util.sql;
 
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.config.Option;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
@@ -59,9 +60,9 @@ public class Database {
         query("CREATE DATABASE IF NOT EXISTS `" + database + "`;");
         query("USE `" + database + "`;");
 
-        query("CREATE TABLE IF NOT EXISTS `players` (`uuid` CHAR(36) NOT NULL, `name` VARCHAR(20) NULL, `highscore` INT NOT NULL, " +
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "players` (`uuid` CHAR(36) NOT NULL, `name` VARCHAR(20) NULL, `highscore` INT NOT NULL, " +
                 "`hstime` VARCHAR(13) NULL, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
-        query("CREATE TABLE IF NOT EXISTS `options` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10)," +
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10)," +
                 " `blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
         Verbose.info("Initialized database");

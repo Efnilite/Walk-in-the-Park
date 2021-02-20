@@ -234,7 +234,7 @@ public class DefaultGenerator extends ParkourGenerator {
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
-            if (score > player.highScore) {
+            if (score >= player.highScore) {
                 player.setHighScore(score, time);
             }
         }

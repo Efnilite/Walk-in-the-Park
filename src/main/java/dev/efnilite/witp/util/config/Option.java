@@ -71,6 +71,7 @@ public class Option {
     public static String SQL_DB;
     public static String SQL_USERNAME;
     public static String SQL_PASSWORD;
+    public static String SQL_PREFIX;
 
     // Advanced settings
     public static double BORDER_SIZE;
@@ -103,6 +104,7 @@ public class Option {
         SQL_URL = config.getString("sql.url");
         SQL_USERNAME = config.getString("sql.username");
         SQL_PASSWORD = config.getString("sql.password");
+        SQL_PREFIX = config.getString("sql.prefix");
 
         NORMAL = gen.getInt("generation.normal-jump.chance");
         STRUCTURES = gen.getInt("generation.structures.chance");

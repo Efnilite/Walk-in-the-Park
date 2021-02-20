@@ -49,6 +49,9 @@ sql:
     # Using an existing database might overwrite data. Be cautious!
     database: "witp"
 
+    # The prefix given to any table names (default "", so nothing)
+    prefix: ""
+
 # Options for the world
 world:
     # The world in which the personal parkours will take place

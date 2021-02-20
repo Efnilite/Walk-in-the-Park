@@ -430,12 +430,12 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 if (Option.SQL) {
                     Verbose.verbose("Writing player's data to SQL server");
-                    UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), "players")
+                    UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players")
                             .setDefault("uuid", uuid.toString()).setDefault("name", name)
                             .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
-                    statement = new UpdertStatement(WITP.getDatabase(), "options")
+                    statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "options")
                             .setDefault("uuid", uuid.toString()).setDefault("time", time)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
@@ -563,7 +563,7 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
             } else {
-                SelectStatement select = new SelectStatement(WITP.getDatabase(),"players")
+                SelectStatement select = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX + "players")
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`").addCondition("`uuid` = '" + uuid.toString() + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
@@ -581,7 +581,7 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
 
-                SelectStatement options = new SelectStatement(WITP.getDatabase(),"options")
+                SelectStatement options = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX + "options")
                         .addColumns("uuid", "time", "style", "blockLead", "useParticles", "useDifficulty", "useStructure",
                                 "useSpecial", "showFallMsg", "showScoreboard").addCondition("uuid = '" + uuid.toString() + "'");
                 map = options.fetch();

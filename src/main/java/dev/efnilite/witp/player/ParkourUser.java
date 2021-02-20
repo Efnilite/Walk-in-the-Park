@@ -195,7 +195,7 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), "players").addColumns("uuid", "name", "highscore", "hstime");
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
                 for (String string : stats.keySet()) {
