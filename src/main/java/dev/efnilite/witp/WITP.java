@@ -118,6 +118,7 @@ public class WITP extends JavaPlugin implements Listener {
             database.close();
         }
 
+
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
                 ParkourUser.unregister(user, true, true, false);
@@ -126,6 +127,10 @@ public class WITP extends JavaPlugin implements Listener {
                 Verbose.error("Error while unregistering");
             }
         }
+        for (Player player : divider.getWorld().getPlayers()) {
+            player.kickPlayer("Server is restarting");
+        }
+        Bukkit.unloadWorld(divider.getWorld(), false);
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {

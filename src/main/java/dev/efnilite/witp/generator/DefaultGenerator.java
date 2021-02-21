@@ -152,9 +152,17 @@ public class DefaultGenerator extends ParkourGenerator {
                             score();
 
                             // Rewards
+                            HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
                             if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
-                                    || (Option.REWARDS_SCORE > 0 && score % Option.REWARDS_SCORE == 0)) {
+                                    || (scores.size() > 0 && scores.containsKey(score))) {
                                 if (Option.REWARDS) {
+                                    if (scores.containsKey(score) && scores.get(score) != null) {
+                                        List<String> commands = scores.get(score);
+                                        for (String command : commands) {
+                                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                                    command.replaceAll("%player%", player.getPlayer().getName()));
+                                        }
+                                    }
                                     if (Option.REWARDS_COMMAND != null) {
                                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
                                                 Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));

@@ -150,7 +150,7 @@ rewards:
     # If rewards are enabled
     enabled: false
 
-    # The interval at which they get a reward
+    # The intervals at which they get a reward
     # (so for every 50 blocks the player jumps, they get a reward)
     # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
     # Setting this to -1 will never result in rewards
@@ -158,8 +158,15 @@ rewards:
 
     # The same as interval, but instead at scores.
     # So when the player reaches, for example, 50 points, the rewards system is triggered.
-    # Setting this to -1 will never result in rewards
-    score: -1
+    # In the string you add executable commands when they reach this score
+    scores:
+        50:
+            - "tellraw @a \"hey there\""
+            - "second command"
+        100:
+            - "give %player% golden_apple"
+        200: # nothing means it only does the command and vault reward.
+        500:
 
     # The command that will be executed if the interval is met.
     # Use %player% to get the player

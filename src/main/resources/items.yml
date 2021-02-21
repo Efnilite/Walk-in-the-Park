@@ -36,32 +36,42 @@ items:
             name: '&a&lParkour style'
             lore: '&7The style of your parkour||&7(which blocks will be used)||||&7Currently: &a%s'
             item: end_stone
+            # Changing enabled always overwrites the permission system
+            enabled: true
         lead:
             name: '&a&lLead'
             lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
             item: glass
+            enabled: true
         time:
             name: '&a&lTime'
             lore: '&7The time of day.||||&7Currently: &a%s'
             item: clock
+            enabled: true
         difficulty:
             name: '&a&lUse difficulty'
             lore: '&7If enabled having a higher score will mean||&7the parkour becomes more difficult.||||&7Currently: %s'
+            enabled: true
         particles:
             name: '&a&lUse particles and sounds'
             lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
+            enabled: true
         scoreboard:
             name: '&a&lShow scoreboard'
             lore: '&7If enabled shows the scoreboard.||||&7Currently: %s'
+            enabled: true
         death-msg:
             name: '&a&lShow fall message'
             lore: '&7If enabled shows a message when you fall||&7with extra info.||||&7Currently: %s'
+            enabled: true
         special:
             name: '&a&lUse special blocks'
             lore: '&7If enabled uses special blocks like ice and slabs.||||&7Currently: %s'
+            enabled: true
         structure:
             name: '&a&lUse structures'
             lore: '&7If enabled static structures||&7will appear throughout the parkour.||||&7Currently: %s'
+            enabled: true
         gamemode:
             name: '&c&lGamemode'
             lore: ''

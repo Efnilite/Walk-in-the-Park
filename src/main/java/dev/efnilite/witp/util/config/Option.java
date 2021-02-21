@@ -6,7 +6,9 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class for variables required in generating without accessing the file a lot (constants)
@@ -38,8 +40,8 @@ public class Option {
     // Config stuff
     public static boolean UPDATER;
     public static boolean REWARDS;
+    public static HashMap<Integer, List<String>> REWARDS_SCORES;
     public static int REWARDS_INTERVAL;
-    public static int REWARDS_SCORE;
     public static double REWARDS_MONEY;
     public static String REWARDS_COMMAND;
     public static String REWARDS_MESSAGE;
@@ -129,12 +131,17 @@ public class Option {
         MIN_Y = gen.getInt("generation.settings.min-y");
 
         // Config stuff
+        Set<String> intervals = config.getConfigurationSection("rewards.scores").getKeys(false);
+        REWARDS_SCORES = new HashMap<>();
+        for (String key : intervals) {
+            REWARDS_SCORES.put(Integer.parseInt(key), config.getStringList("rewards.scores." + key));
+        }
+
         JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
         BUNGEECORD = config.getBoolean("bungeecord.enabled");
         REWARDS = config.getBoolean("rewards.enabled");
-        REWARDS_INTERVAL = config.getInt("rewards.interval");
         REWARDS_MONEY = config.getInt("rewards.vault-reward");
-        REWARDS_SCORE = config.getInt("rewards.score");
+        REWARDS_INTERVAL = config.getInt("rewards.interval");
         REWARDS_COMMAND = config.getString("rewards.command").replaceAll("/", "");
         if (REWARDS_COMMAND.equalsIgnoreCase("null")) {
             REWARDS_COMMAND = null;
