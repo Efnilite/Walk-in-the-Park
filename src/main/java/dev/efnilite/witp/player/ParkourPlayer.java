@@ -215,26 +215,11 @@ public class ParkourPlayer extends ParkourUser {
         InventoryBuilder styling = new InventoryBuilder(this, 3, "Parkour style").open();
         InventoryBuilder timeofday = new InventoryBuilder(this, 3, "Time").open();
         Configuration config = WITP.getConfiguration();
-        boolean styles = config.getFile("config").getBoolean("styles.enabled");
-        boolean times = Option.TIME;
-        boolean leadEnabled = Option.LEAD;
         ItemStack close = config.getFromItemData("general.close");
 
-        int amount = 9;
-        if (!styles) {
-            amount--;
-        }
-        if (!times) {
-            amount--;
-        }
-        if (!leadEnabled) {
-            amount--;
-        }
-        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(amount, 1);
-
-        if (styles) {
+        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(9, 1);
             builder.setItem(dynamic.next(), config.getFromItemData("options.styles", style), (t, e) -> {
-                if (checkPermission("witp.style")) {
+                if (checkOptions("lead", "witp.style")) {
                     List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                     if (pos == null) {
                         Verbose.error("Error while trying to fetch possible styles from config.yml");
@@ -262,51 +247,46 @@ public class ParkourPlayer extends ParkourUser {
                     styling.build();
                 }
             });
-        }
-        if (leadEnabled) {
-            List<Integer> possible = Option.POSSIBLE_LEADS;
-            InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
-            builder.setItem(dynamic.next(), config.getFromItemData("options.lead", Integer.toString(blockLead)), (t, e) -> {
-                if (checkPermission("witp.lead")) {
-                    for (Integer integer : possible) {
-                        lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
-                            if (e2.getItemMeta() != null) {
-                                blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
-                                sendTranslated("selected-block-lead", Integer.toString(blockLead));
-                            }
-                        });
-                    }
-                    lead.setItem(26, close, (t2, e2) -> menu());
-                    lead.build();
+        List<Integer> possible = Option.POSSIBLE_LEADS;
+        InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
+        builder.setItem(dynamic.next(), config.getFromItemData("options.lead", Integer.toString(blockLead)), (t, e) -> {
+            if (checkOptions("lead", "witp.lead")) {
+                for (Integer integer : possible) {
+                    lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
+                        if (e2.getItemMeta() != null) {
+                            blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
+                            sendTranslated("selected-block-lead", Integer.toString(blockLead));
+                        }
+                    });
                 }
-            });
-        }
-        if (times) {
-            builder.setItem(dynamic.next(), config.getFromItemData("options.time", time.toLowerCase()), (t, e) -> {
-                if (checkPermission("witp.time")) {
-                    List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
-                    int i = 11;
-                    for (String time : pos) {
-                        timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
-                            if (e2.getItemMeta() != null) {
-                                String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
-                                this.time = name;
-                                sendTranslated("selected-time", time.toLowerCase());
-                                player.setPlayerTime(getTime(name), false);
-                            }
-                        });
-                        i++;
-                    }
-                    timeofday.setItem(26, close, (t2, e2) -> menu());
-                    timeofday.build();
+                lead.setItem(26, close, (t2, e2) -> menu());
+                lead.build();
+            }
+        });
+        builder.setItem(dynamic.next(), config.getFromItemData("options.time", time.toLowerCase()), (t, e) -> {
+            if (checkOptions("time", "witp.time")) {
+                List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
+                int i = 11;
+                for (String time : pos) {
+                    timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
+                        if (e2.getItemMeta() != null) {
+                            String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
+                            this.time = name;
+                            sendTranslated("selected-time", time.toLowerCase());
+                            player.setPlayerTime(getTime(name), false);
+                        }
+                    });
+                    i++;
                 }
-            });
-        }
+                timeofday.setItem(26, close, (t2, e2) -> menu());
+                timeofday.build();
+            }
+        });
         String difficultyString = Boolean.toString(useDifficulty);
         ItemStack item = config.getFromItemData("options.difficulty", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
         item.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.difficulty")) {
+            if (checkOptions("difficulty", "witp.difficulty")) {
                 useDifficulty = !useDifficulty;
                 sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
                 menu();
@@ -316,7 +296,7 @@ public class ParkourPlayer extends ParkourUser {
         item = config.getFromItemData("options.particles", Util.normalizeBoolean(Util.colorBoolean(particlesString)));
         item.setType(useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.particles")) {
+            if (checkOptions("particles", "witp.particles")) {
                 useParticles = !useParticles;
                 sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
                 menu();
@@ -326,7 +306,7 @@ public class ParkourPlayer extends ParkourUser {
         item = config.getFromItemData("options.scoreboard", Util.normalizeBoolean(Util.colorBoolean(scoreboardString)));
         item.setType(showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.scoreboard")) {
+            if (checkOptions("scoreboard", "witp.scoreboard")) {
                 if (Option.SCOREBOARD) {
                     showScoreboard = !showScoreboard;
                     if (showScoreboard) {
@@ -346,7 +326,7 @@ public class ParkourPlayer extends ParkourUser {
         item = config.getFromItemData("options.death-msg", Util.normalizeBoolean(Util.colorBoolean(deathString)));
         item.setType(showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.fall")) {
+            if (checkOptions("death-msg", "witp.fall")) {
                 showDeathMsg = !showDeathMsg;
                 sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
                 menu();
@@ -356,7 +336,7 @@ public class ParkourPlayer extends ParkourUser {
         item = config.getFromItemData("options.special", Util.normalizeBoolean(Util.colorBoolean(specialString)));
         item.setType(useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.special")) {
+            if (checkOptions("special", "witp.special")) {
                 useSpecial = !useSpecial;
                 sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
                 menu();
@@ -366,14 +346,14 @@ public class ParkourPlayer extends ParkourUser {
         item = config.getFromItemData("options.structure", Util.normalizeBoolean(Util.colorBoolean(structuresString)));
         item.setType(useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkPermission("witp.structures")) {
+            if (checkOptions("structure", "witp.structures")) {
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
                 menu();
             }
         });
         builder.setItem(18, WITP.getConfiguration().getFromItemData("options.gamemode"), (t2, e2) -> {
-            if (checkPermission("witp.gamemode")) {
+            if (checkOptions("gamemode", "witp.gamemode")) {
                 gamemode();
             }
         });
@@ -381,7 +361,7 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(19, WITP.getConfiguration().getFromItemData("options.leaderboard",
                 getTranslated("your-rank", Integer.toString(getRank(uuid)),
                 Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
-            if (checkPermission("witp.leaderboard")) {
+            if (checkOptions("leaderboard", "witp.leaderboard")) {
                 leaderboard(1);
                 player.closeInventory();
             }
@@ -417,6 +397,15 @@ public class ParkourPlayer extends ParkourUser {
         }
 
         return possibleStyles;
+    }
+
+    private boolean checkOptions(String option, String perm) {
+        boolean enabled = WITP.getConfiguration().getFile("items.yml").getBoolean("items.options." + option + ".enabled");
+        if (!enabled) {
+            return false;
+        } else {
+            return checkPermission(perm);
+        }
     }
 
     private void saveStats() {

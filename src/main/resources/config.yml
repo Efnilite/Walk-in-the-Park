@@ -62,8 +62,6 @@ world:
 
 # Options for lead
 lead:
-    # If the choosing of the lead can be changed
-    enabled: true
 
     # The amounts of the lead
     # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
@@ -113,14 +111,8 @@ options:
     # Enables/disables the inventory handling system
     inventory-handling: true
 
-# If changing time is enabled
-time:
-    enabled: true
-
 # The different styles players can select
 styles:
-    # If styles are enabled
-    enabled: true
 
     # The default style
     default: red
