@@ -31,6 +31,9 @@ public class DefaultGamemode implements Gamemode {
             if (user instanceof ParkourSpectator) {
                 ParkourSpectator spectator = (ParkourSpectator) user;
                 spectator.getWatching().removeSpectators(spectator);
+            } else if (user instanceof ParkourPlayer) {
+                user.sendTranslated("cant-do");
+                return;
             }
             ParkourPlayer.register(player);
         } catch (IOException | SQLException ex) {

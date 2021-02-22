@@ -218,35 +218,35 @@ public class ParkourPlayer extends ParkourUser {
         ItemStack close = config.getFromItemData("general.close");
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(9, 1);
-            builder.setItem(dynamic.next(), config.getFromItemData("options.styles", style), (t, e) -> {
-                if (checkOptions("lead", "witp.style")) {
-                    List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
-                    if (pos == null) {
-                        Verbose.error("Error while trying to fetch possible styles from config.yml");
+        builder.setItem(dynamic.next(), config.getFromItemData("options.styles", style), (t, e) -> {
+            if (checkOptions("lead", "witp.style")) {
+                List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
+                if (pos == null) {
+                    Verbose.error("Error while trying to fetch possible styles from config.yml");
+                    return;
+                }
+                int i = 0;
+                for (String style : pos) {
+                    if (i == 26) {
+                        Verbose.error("There are too many styles to display!");
                         return;
                     }
-                    int i = 0;
-                    for (String style : pos) {
-                        if (i == 26) {
-                            Verbose.error("There are too many styles to display!");
-                            return;
-                        }
-                        List<Material> possible = this.getPossibleMaterials(style);
-                        if (possible == null) {
-                            continue;
-                        }
-                        Material material = possible.get(possible.size() - 1);
-                        styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
-                            String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
-                            setStyle(selected);
-                            sendTranslated("selected-style", selected);
-                        });
-                        i++;
-                        styling.setItem(26, close, (t2, e2) -> menu());
+                    List<Material> possible = this.getPossibleMaterials(style);
+                    if (possible == null) {
+                        continue;
                     }
-                    styling.build();
+                    Material material = possible.get(possible.size() - 1);
+                    styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
+                        String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
+                        setStyle(selected);
+                        sendTranslated("selected-style", selected);
+                    });
+                    i++;
+                    styling.setItem(26, close, (t2, e2) -> menu());
                 }
-            });
+                styling.build();
+            }
+        });
         List<Integer> possible = Option.POSSIBLE_LEADS;
         InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
         builder.setItem(dynamic.next(), config.getFromItemData("options.lead", Integer.toString(blockLead)), (t, e) -> {
@@ -400,8 +400,9 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private boolean checkOptions(String option, String perm) {
-        boolean enabled = WITP.getConfiguration().getFile("items.yml").getBoolean("items.options." + option + ".enabled");
+        boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
         if (!enabled) {
+            sendTranslated("cant-do");
             return false;
         } else {
             return checkPermission(perm);

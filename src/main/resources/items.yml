@@ -76,7 +76,9 @@ items:
             name: '&c&lGamemode'
             lore: ''
             item: paper
+            enabled: true
         leaderboard:
             name: '&6&lLeaderboard'
             lore: '&7%s'
             item: gold_block
+            enabled: true
