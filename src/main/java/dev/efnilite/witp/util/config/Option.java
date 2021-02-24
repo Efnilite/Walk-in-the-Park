@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -129,10 +130,17 @@ public class Option {
         MIN_Y = gen.getInt("generation.settings.min-y");
 
         // Config stuff
-        Set<String> intervals = config.getConfigurationSection("rewards.scores").getKeys(false);
+        List<String> intervals = config.getStringList("rewards.scores");
         REWARDS_SCORES = new HashMap<>();
         for (String key : intervals) {
-            REWARDS_SCORES.put(Integer.parseInt(key), config.getStringList("rewards.scores." + key));
+            String[] values = key.split(";;");
+            if (values.length > 2) {
+                List<String> commands = Arrays.asList(values);
+//                commands.remove(0);
+                REWARDS_SCORES.put(Integer.parseInt(values[0]), commands);
+            } else {
+                REWARDS_SCORES.put(Integer.parseInt(values[0]), null);
+            }
         }
 
         JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");

@@ -34,11 +34,11 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml"};
+        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml", "structures.yml"};
 
         File folder = plugin.getDataFolder();
         if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
-                !new File(folder, defaultFiles[3]).exists()) {
+                !new File(folder, defaultFiles[3]).exists() || !new File(folder, defaultFiles[4]).exists()) {
             plugin.getDataFolder().mkdirs();
 
             for (String file : defaultFiles) {
@@ -65,6 +65,7 @@ public class Configuration {
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items.yml")));
+        files.put("structures", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/structures.yml")));
     }
 
     /**

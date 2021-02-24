@@ -57,6 +57,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String style;
     public @Expose String lang;
     public @Expose String name; // for fixing null in leaderboard
+    public @Expose double difficulty;
 
     public final Instant joinTime;
 
@@ -214,6 +215,7 @@ public class ParkourPlayer extends ParkourUser {
         InventoryBuilder lead = new InventoryBuilder(this, 3, "Lead").open();
         InventoryBuilder styling = new InventoryBuilder(this, 3, "Parkour style").open();
         InventoryBuilder timeofday = new InventoryBuilder(this, 3, "Time").open();
+        InventoryBuilder diff = new InventoryBuilder(this, 3, "Difficulty").open();
         Configuration config = WITP.getConfiguration();
         ItemStack close = config.getFromItemData("general.close");
 
@@ -242,8 +244,8 @@ public class ParkourPlayer extends ParkourUser {
                         sendTranslated("selected-style", selected);
                     });
                     i++;
-                    styling.setItem(26, close, (t2, e2) -> menu());
                 }
+                styling.setItem(26, close, (t2, e2) -> menu());
                 styling.build();
             }
         });
@@ -282,14 +284,37 @@ public class ParkourPlayer extends ParkourUser {
                 timeofday.build();
             }
         });
-        String difficultyString = Boolean.toString(useDifficulty);
-        ItemStack item = config.getFromItemData("options.difficulty", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
-        item.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
+        ItemStack item;
+        builder.setItem(dynamic.next(), config.getFromItemData("options.difficulty", "&a" + Util.parseDifficulty(difficulty)), (t2, e2) -> {
             if (checkOptions("difficulty", "witp.difficulty")) {
-                useDifficulty = !useDifficulty;
-                sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
-                menu();
+                InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
+                String difficultyString = Boolean.toString(useDifficulty);
+                ItemStack item1 = config.getFromItemData("options.difficulty-switch", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
+                item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+                diff.setItem(dynamic1.next(), item1, (t3, e3) -> {
+                    useDifficulty = !useDifficulty;
+                    sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
+                    diff.build();
+                });
+                diff.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> {
+                    difficulty = 0.3;
+                    sendTranslated("selected-structure-difficulty", "&a" + Util.parseDifficulty(0.3));
+                });
+                diff.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> {
+                    difficulty = 0.5;
+                    sendTranslated("selected-structure-difficulty", "&2" + Util.parseDifficulty(0.5));
+                });
+                diff.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> {
+                    difficulty = 0.7;
+                    sendTranslated("selected-structure-difficulty", "&6" + Util.parseDifficulty(0.7));
+                });
+                diff.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> {
+                    difficulty = 0.8;
+                    sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(0.8));
+                });
+
+                diff.setItem(26, close, (t3, e3) -> menu());
+                diff.build();
             }
         });
         String particlesString = Boolean.toString(useParticles);
@@ -538,6 +563,9 @@ public class ParkourPlayer extends ParkourUser {
                     }
                     if (from.highScoreTime == null) {
                         from.highScoreTime = "0.0s";
+                    }
+                    if (from.difficulty == 0) {
+                        from.difficulty = 0.5;
                     }
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.blockLead,
                             from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);

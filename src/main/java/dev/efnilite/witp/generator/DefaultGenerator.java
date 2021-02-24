@@ -477,10 +477,15 @@ public class DefaultGenerator extends ParkourGenerator {
                 File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File structure;
-                if (files.size() > 1) {
+                if (files.size() > 0) {
+                    boolean passed = true;
+                    while (passed) {
+                        structure = files.get(random.nextInt(files.size()));
+                        if (Util.getDifficulty(structure.getName()) <= player.difficulty) {
+                            passed = false;
+                        }
+                    }
                     structure = files.get(random.nextInt(files.size()));
-                } else if (files.size() == 1) {
-                    structure = files.get(0);
                 } else {
                     Verbose.error("No structures to choose from!");
                     return;

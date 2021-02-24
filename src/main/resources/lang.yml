@@ -24,6 +24,7 @@ messages:
         selected-block-lead: '&a&l(!) &7You selected a &a%a &7block lead!'
         selected-time: '&a&l(!) &7You changed your time preference to &a%t'
         selected-difficulty: '&a&l(!) &7You changed your usage of difficulty to %v'
+        selected-structure-difficulty: '&a&l(!) &7You changed your structure difficulty to %v'
         selected-particles: '&a&l(!) &7You changed the showing of particles to %v'
         selected-scoreboard: '&a&l(!) &7You changed the showing of the scoreboard to %v'
         selected-fall-message: '&a&l(!) &7You changed the showing of the fall messages to %v'

@@ -49,9 +49,13 @@ items:
             item: clock
             enabled: true
         difficulty:
-            name: '&a&lUse difficulty'
-            lore: '&7If enabled having a higher score will mean||&7the parkour becomes more difficult.||||&7Currently: %s'
+            name: '&a&lDifficulty'
+            lore: '&7Change your difficuly settings||||&7Currently: %s'
+            item: anvil
             enabled: true
+        difficulty-switch:
+            name: '&a&lScore difficulty'
+            lore: '&7When enabled, the higher score you have||&7the more difficult it gets.||||&7Currently: %s'
         particles:
             name: '&a&lUse particles and sounds'
             lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'

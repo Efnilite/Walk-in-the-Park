@@ -30,6 +30,29 @@ public class Util {
 
     private static Economy economy;
 
+    public static double getDifficulty(String fileName) {
+        int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".nbt", ""));
+        return WITP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
+    }
+
+    public static String parseDifficulty(double difficulty) {
+        if (difficulty > 1) {
+            Verbose.error("Invalid difficuly, above 1: " + difficulty);
+            return "unknown";
+        }
+        if (difficulty <= 0.3) {
+            return "easy";
+        } else if (difficulty <= 0.5) {
+            return "medium";
+        } else if (difficulty <= 0.7) {
+            return "hard";
+        } else if (difficulty >= 0.8) {
+            return "very hard";
+        } else {
+            return "unknown";
+        }
+    }
+
     /**
      * Sorts a HashMap by value
      * Source: https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values

@@ -1,0 +1,32 @@
+# The difficulty of schematics
+# These are represented by a number below or equal to 1.
+# 1 = the most difficult
+# 0.5 = medium
+# 0 = super easy
+
+# Difficulties are also represented by an easy word, which is nice for users.
+# Players who pick i.e. "hard" will get every schematic below difficulty 0.7, so sometimes they will get easy.
+# >0.8 = very hard
+# <0.7 = hard
+# <0.5 = medium
+# <0.3 = easy
+
+difficulty:
+    1: 0.25
+    2: 0.25
+    3: 0.35
+    4: 0.3
+    5: 0.6
+    6: 0.2
+    7: 0.3
+    8: 0.3
+    9: 0.4
+    10: 0.7
+    11: 0.7
+    12: 0.8
+    13: 0.4
+    14: 0.85
+    15: 0.8
+    16: 0.6
+    17: 0.95
+    18: 0.6
