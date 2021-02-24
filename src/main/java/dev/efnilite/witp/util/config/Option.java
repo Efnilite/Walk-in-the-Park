@@ -6,10 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class for variables required in generating without accessing the file a lot (constants)
@@ -134,9 +131,9 @@ public class Option {
         REWARDS_SCORES = new HashMap<>();
         for (String key : intervals) {
             String[] values = key.split(";;");
-            if (values.length > 2) {
-                List<String> commands = Arrays.asList(values);
-//                commands.remove(0);
+            if (values.length > 1) {
+                List<String> commands = new ArrayList<>(Arrays.asList(values));
+                commands.remove(0);
                 REWARDS_SCORES.put(Integer.parseInt(values[0]), commands);
             } else {
                 REWARDS_SCORES.put(Integer.parseInt(values[0]), null);

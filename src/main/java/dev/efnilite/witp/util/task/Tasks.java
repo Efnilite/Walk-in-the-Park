@@ -6,15 +6,29 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashMap;
+
 /**
  * Utilities for Runnables
  */
 public class Tasks {
 
     private static final Plugin plugin;
+    private static final HashMap<String, Long> timingKeys;
 
     static {
         plugin = WITP.getInstance();
+        timingKeys = new HashMap<>();
+    }
+
+    public static void time(String key) {
+        timingKeys.put(key, System.currentTimeMillis());
+    }
+
+    public static long end(String key) {
+        long then = timingKeys.get(key);
+        timingKeys.remove(key);
+        return System.currentTimeMillis() - then;
     }
 
     public static BukkitTask defaultSyncRepeat(BukkitRunnable runnable, int interval) {

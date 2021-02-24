@@ -151,6 +151,7 @@ rewards:
     # The same as interval, but instead at scores.
     # So when the player reaches, for example, 50 points, the rewards system is triggered.
     # In the string you add executable commands when they reach this score
+    # ;; is used for seperating commands
     scores:
         - "50;;tellraw @a \"hey there\";;second command"
         - "100;;give %player% golden_apple"
@@ -158,6 +159,7 @@ rewards:
         - "500"
 
     # The same as scores, but players can only achieve this once
+    # Work in progress // not added yet.
     one-time-scores:
         - "1000;;say \"Well done!\""
 

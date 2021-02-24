@@ -10,6 +10,7 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
+import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -47,9 +48,12 @@ public class MainCommand extends BukkitCommand {
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("witp.reload")) {
+                    Tasks.time("reload");
+                    sender.sendMessage(Util.color("&a&l(!) &7Reloading config files.."));
                     WITP.getConfiguration().reload();
                     Option.init(false);
-                    sender.sendMessage(Util.color("&a&l(!) &7The configuration file has been reloaded"));
+                    long time = Tasks.end("reload");
+                    sender.sendMessage(Util.color("&a&l(!) &7Reloaded all config files in " + time + "ms!"));
                 } else {
                     sender.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
                 }
