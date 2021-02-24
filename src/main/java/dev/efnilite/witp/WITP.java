@@ -61,6 +61,7 @@ public class WITP extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+        Tasks.time("load");
         registry = new Registry();
         Verbose.init();
 
@@ -108,6 +109,8 @@ public class WITP extends JavaPlugin implements Listener {
             UpdateChecker checker = new UpdateChecker();
             Tasks.syncRepeat(checker::check, 30 * 60 * 20);
         }
+        long time = Tasks.end("load");
+        Verbose.info("Loaded WITP in " + time + "ms!");
     }
 
     @Override

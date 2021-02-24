@@ -86,7 +86,7 @@ permissions:
 focus-mode:
     # If focus mode is enabled players can't use commands while in parkour.
     # Note: this might not work on all commands because.. Minecraft.
-    enabled: true
+    enabled: false
 
     # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
     # If you want to disable the default whitelisted commands you can remove every item in the list below.
@@ -159,7 +159,7 @@ rewards:
         - "500"
 
     # The same as scores, but players can only achieve this once
-    # Work in progress // not added yet.
+    # (!!!) Work in progress // not added yet.
     one-time-scores:
         - "1000;;say \"Well done!\""
 

@@ -158,14 +158,16 @@ public class DefaultGenerator extends ParkourGenerator {
                                 if (Option.REWARDS) {
                                     if (scores.containsKey(score) && scores.get(score) != null) {
                                         List<String> commands = scores.get(score);
-                                        for (String command : commands) {
-                                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                                    command.replaceAll("%player%", player.getPlayer().getName()));
+                                        if (commands != null) {
+                                            for (String command : commands) {
+                                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                                command.replaceAll("%player%", player.getPlayer().getName()));
+                                            }
                                         }
                                     }
                                     if (Option.REWARDS_COMMAND != null) {
                                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                                Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
+                                        Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
                                     }
                                     if (Option.REWARDS_MONEY != 0) {
                                         Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
@@ -481,6 +483,9 @@ public class DefaultGenerator extends ParkourGenerator {
                     boolean passed = true;
                     while (passed) {
                         structure = files.get(random.nextInt(files.size()));
+                        if (player.difficulty == 0) {
+                            player.difficulty = 0.3;
+                        }
                         if (Util.getDifficulty(structure.getName()) <= player.difficulty) {
                             passed = false;
                         }

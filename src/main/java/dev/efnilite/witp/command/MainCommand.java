@@ -61,6 +61,7 @@ public class MainCommand extends BukkitCommand {
             } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
                 if (sender.hasPermission("witp.reload")) {
                     if (Option.SQL) {
+                        Tasks.time("migrate");
                         File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
                         if (!folder.exists()) {
                             folder.mkdirs();
@@ -81,7 +82,8 @@ public class MainCommand extends BukkitCommand {
                             from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                             from.save(true);
                         }
-                        sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated!"));
+                        long time = Tasks.end("migrate");
+                        sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated in " + time + "ms!"));
                     } else {
                         sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
                     }
