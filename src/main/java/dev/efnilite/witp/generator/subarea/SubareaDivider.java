@@ -263,11 +263,6 @@ public class SubareaDivider {
 
         List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
 
-        if (pp.getGenerator() == null) {
-            pp.setGenerator(new DefaultGenerator(pp));
-        }
-        pp.getGenerator().data = new SubareaPoint.Data(blocks);
-        pp.getGenerator().heading = heading.clone();
         Location to = null;
         Location parkourBegin = null;
         boolean playerDetected = false;
@@ -307,6 +302,11 @@ public class SubareaDivider {
         if (!parkourDetected) {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
         }
+        if (pp.getGenerator() == null) {
+            pp.setGenerator(new DefaultGenerator(pp));
+        }
+        pp.getGenerator().data = new SubareaPoint.Data(blocks);
+        pp.getGenerator().heading = heading.clone();
         if (to != null && parkourBegin != null) {
             if (pp.getGenerator() instanceof DefaultGenerator) {
                 ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());

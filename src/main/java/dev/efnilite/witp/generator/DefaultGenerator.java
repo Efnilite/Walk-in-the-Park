@@ -102,11 +102,13 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 Location playerLoc = player.getPlayer().getLocation();
                 if (playerLoc.getWorld().getUID() != lastPlayer.getWorld().getUID()) {
-                    Verbose.error("Worlds are not the same (1)");
+                    Verbose.error("Worlds are not the same (#1)");
+                    lastPlayer = playerLoc;
                     return;
                 }
                 if (playerLoc.getWorld().getUID() != playerSpawn.getWorld().getUID()) {
-                    Verbose.error("Worlds are not the same (2)");
+                    Verbose.error("Worlds are not the same (#2)");
+                    playerSpawn = playerLoc;
                     return;
                 }
                 // Fall check
