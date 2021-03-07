@@ -1,4 +1,4 @@
-package dev.efnilite.witp.player;
+package dev.efnilite.witp.player.data;
 
 public class Highscore {
 

@@ -162,19 +162,20 @@ public class Configuration {
      *
      * @return the item based on the data from items.yml
      */
-    public ItemStack getFromItemData(String path, @Nullable String... replace) {
-        ItemData data = getItemData(path, replace);
+    public ItemStack getFromItemData(String locale, String path, @Nullable String... replace) {
+        ItemData data = getItemData(path, locale, replace);
         return new ItemBuilder(data.material, data.name).setLore(data.lore).build();
     }
 
-    public ItemData getItemData(String path, @Nullable String... replace) {
-        path = "items." + path;
+    private ItemData getItemData(String path, String locale, @Nullable String... replace) {
+        String namePath = "locale." + locale + "." + path;
+        String matPath = "items." + path;
         FileConfiguration config = getFile("items");
-        String name = config.getString(path + ".name");
+        String name = config.getString(namePath + ".name");
         if (name != null && replace != null && replace.length > 0) {
             name = name.replaceFirst("%[a-z]", replace[0]);
         }
-        List<String> lore = Arrays.asList(config.getString(path + ".lore").split("\\|\\|"));
+        List<String> lore = Arrays.asList(config.getString(namePath + ".lore").split("\\|\\|"));
         if (lore.size() != 0 && replace != null && replace.length > 0) {
             List<String> copy = new ArrayList<>();
             int index = 0;
@@ -187,7 +188,7 @@ public class Configuration {
         }
 
         Material material = null;
-        String configMaterial = config.getString(path + ".item");
+        String configMaterial = config.getString(matPath + ".item");
         if (configMaterial != null) {
             material = Material.getMaterial(configMaterial.toUpperCase());
         }

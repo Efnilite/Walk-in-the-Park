@@ -3,13 +3,9 @@
 # %[a-z] is the value that can get replaced
 messages:
 
-    # If the scoreboard is enabled
-    scoreboard-enabled: true
-    # If join/leave messages should be shown
-    join-leave-enabled: true
+    default: en
 
-    # English
-    # Currently (v1.8) you can't add any other language, this will be added later
+    # English (English)
     en:
         join: '&7%p has joined the server'
         leave: '&7%p has left the server'
@@ -30,6 +26,7 @@ messages:
         selected-fall-message: '&a&l(!) &7You changed the showing of the fall messages to %v'
         selected-special-blocks: '&a&l(!) &7You changed the usage of special blocks to %v'
         selected-structures: '&a&l(!) &7You changed the usage of structures to %v'
+        selected-language: '&a&l(!) &7You selected language %v'
         cant-do: '&c&l(!) &cYou can''t do this right now.'
         customize-menu: '&a&l(!) &7You can customize your parkour experience by using /parkour menu.'
 
@@ -47,9 +44,95 @@ messages:
             miss: '&7You missed your high score by %s points!'
             beat: '&7You beat your high score by %s points!'
             tied: '&7You tied your high score!'
+    # Nederlands (Dutch)
+    nl:
+        join: '&7%p is de server gejoined'
+        leave: '&7%p is de server verlaten'
+        joined: '&a&l(!) &7Je bent het parkour gejoined'
+        left: '&c&l(!) &7Je bent het parkour verlaten'
+
+        next-page: '&aVolgende pagina >>'
+        previous-page: '&a<< Vorige pagina'
+        your-rank: '&7Jouw plaats: &f#%n &7(%h)'
+
+        selected-style: '&a&l(!) &7Je hebt de stijl &c%s&7 geselecteerd!'
+        selected-block-lead: '&a&l(!) &7Je hebt een blokvoorsprong van &a%a &7geselecteerd!'
+        selected-time: '&a&l(!) &7Je hebt de tijd naar &a%t &7veranderd'
+        selected-difficulty: '&a&l(!) &7Je hebt het gebruik van moeilijkheid naar %v veranderd'
+        selected-structure-difficulty: '&a&l(!) &7Je hebt het gebruik van gebouwmoeilijkheid naar %v veranderd'
+        selected-particles: '&a&l(!) &7Je hebt gebruik van particles naar %v veranderd'
+        selected-scoreboard: '&a&l(!) &7Je hebt gebruik van het scoreboard naar %v veranderd'
+        selected-fall-message: '&a&l(!) &7Je hebt het gebruik van het valbericht naar %v veranderd'
+        selected-special-blocks: '&a&l(!) &7Je hebt het gebruik van speciale blokken naar %v veranderd'
+        selected-structures: '&a&l(!) &7Je hebt het gebruik van gebouwen naar %v veranderd'
+        selected-language: '&a&l(!) &7Je hebt de taal %v geselecteerd'
+        cant-do: '&c&l(!) &cJe kan dit nu niet doen.'
+        customize-menu: '&a&l(!) &7Je kan de parkourervaring veranderen met /parkour menu.'
+
+        not-there-search: '&7Type de speler die je wil toekijken!'
+        click-search: '&c&l&nKlik hier&r&c&l om de speler die je wil opzoeken in te voegen.'
+
+        true: "ja"
+        false: "nee"
+        spectator: '&a&l(!) &7Je bent nu een toekijker. Je kan "/parkour gm" gebruiken om je gamemode te veranderen.'
+        divider: '&7----------------------------------------'
+        score: '&aDe score die je hebt gehaald: &f%s'
+        time: '&aHoelang je erover hebt gedaan: &f%s'
+        highscore: '&aDe hoogste score die je hebt gehaald: &f%s'
+        message:
+            miss: '&cJe was %s punten van je highscore af!'
+            beat: '&aJe hebt je highscore met %s punten verslagen!'
+            tied: '&7Je hebt hetzelfde als je vorige highscore gehaald!'
+
+    # Español (Spanish)
+    es:
+        join: '&7%p se ha unido al servidor'
+        leave: '&7%p se ha unido al servidor'
+        joined: '&c&l(!) &7Te has unido al parkour'
+        left: '&c&l(!) &7Has abandonado el parkour'
+
+        next-page: '&aSiguiente página >>'
+        previous-page: '&a<< Página anterior'
+        your-rank: '&7Tu rango: &f#%n &7(%h)'
+
+        selected-style: '&a&l(!) &7Has seleccionado el estilo &c%s&7!'
+        selected-block-lead: '&a&l(!) &Seleccionaste visibilidad de &a%a &7bloques!'
+        selected-time: '&a&l(!) &7Cambiaste tu tiempo a &a%t'
+        selected-difficulty: '&a&l(!) &7Cambiaste el uso de dificultad a %v'
+        selected-structure-difficulty: '&a&l(!) &7Cambiaste la dificultad de estructuras a %v'
+        selected-particles: '&a&l(!) &7Cambiaste la visibilidad de partículas a %v'
+        selected-scoreboard: '&a&l(!) &7Cambiaste la visibilidad de la scoreboard a %v'
+        selected-fall-message: '&a&l(!) &7Cambiaste la visibilidad de los mensajes de caída a %v'
+        selected-special-blocks: '&a&l(!) &7Cambiaste el uso de bloques especiales a %v'
+        selected-structures: '&a&l(!) &7Cambiaste el de estructuras a %v'
+        selected-language: '&a&l(!) &7Has seleccionado el lenguaje %v'
+        cant-do: '&c&l(!) &cNo puedes hacer eso ahora.'
+        customize-menu: '&c&l(!) &7Puedes personalizar tu parkour con /parkour menu.'
+
+        not-there-search: '&7Escribe el nick del jugador que quieras observar!'
+        click-search: '&c&l&nClick aquí&r&c&l para escribir el jugador que quieras observar.'
+
+        true: 'Sí'
+        false: 'No'
+        spectator: '&c&l(!) &7Ahora eres un espectador. Puedes usar "/parkour gm" para salir/cambiar tu modo de juego.'
+        divider: '&7----------------------------------------'
+        score: '&aPuntuación: &f%s'
+        time: '&aTiempo: &f%s'
+        highscore: '&aPuntuación más alta: &f%s'
+        message:
+            miss: '&7Te faltaron &f%s&7 puntos para alcanzar tu puntuación más alta!'
+            beat: '&7Superaste tu puntuación más alta por &f%s&7 puntos!'
+            tied: '&7Alcanzaste tu puntuación más alta!'
+
+options:
+
+    # If the scoreboard is enabled
+    scoreboard-enabled: true
+    # If join/leave messages should be shown
+    join-leave-enabled: true
 
 # How the scoreboard looks
-# Placeholders: %score%, %time%, %highscore%, %topscore% and %topplayer%
+# Placeholders: %score%, %time%, %highscore%, %topscore% and %topplayer% (in title and lines)
 scoreboard:
     enabled: true
 

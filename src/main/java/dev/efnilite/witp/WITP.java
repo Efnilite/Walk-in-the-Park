@@ -12,6 +12,7 @@ import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
@@ -38,6 +39,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +50,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 
-public class WITP extends JavaPlugin implements Listener {
+public final class WITP extends JavaPlugin implements Listener {
 
     public static boolean OUTDATED = false;
     private static WITP instance;
@@ -121,7 +123,6 @@ public class WITP extends JavaPlugin implements Listener {
             database.close();
         }
 
-
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
                 ParkourUser.unregister(user, true, true, false);
@@ -134,6 +135,7 @@ public class WITP extends JavaPlugin implements Listener {
             player.kickPlayer("Server is restarting");
         }
         Bukkit.unloadWorld(divider.getWorld(), false);
+        divider.getWorld().getWorldFolder().delete();
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {
@@ -255,12 +257,12 @@ public class WITP extends JavaPlugin implements Listener {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && Duration.between(player.joinTime, Instant.now()).getSeconds() > 1) {
             event.setCancelled(true);
-            String mat = WITP.getConfiguration().getString("config", "options.item");
+            ItemStack mat = WITP.getConfiguration().getFromItemData(player.locale, "general.menu");
             if (mat == null) {
                 Verbose.error("Material for options in config is null - defaulting to compass");
-                mat = "COMPASS";
+                mat = new ItemBuilder(Material.COMPASS, "&c&lOptions").build();
             }
-            if (Util.getHeldItem(player.getPlayer()).getType() == Material.getMaterial(mat.toUpperCase())) {
+            if (Util.getHeldItem(player.getPlayer()).getType() == mat.getType()) {
                 player.menu();
             }
         }

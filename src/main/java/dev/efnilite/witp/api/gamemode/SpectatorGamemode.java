@@ -12,17 +12,18 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 public class SpectatorGamemode implements Gamemode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "spectator";
     }
 
     @Override
-    public ItemStack getItem() {
-        return WITP.getConfiguration().getFromItemData("gamemodes.spectator");
+    public @NotNull ItemStack getItem(String locale) {
+        return WITP.getConfiguration().getFromItemData(locale, "gamemodes.spectator");
     }
 
     @Override
@@ -36,7 +37,7 @@ public class SpectatorGamemode implements Gamemode {
             }
             Player pl = pp.getPlayer();
             if (pl.getUniqueId() != player.getUniqueId() && !player.getName().equals(pl.getName())) {
-                ItemStack item = WITP.getConfiguration().getFromItemData("gamemodes.spectator-head", pl.getName(), pl.getName());
+                ItemStack item = WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.spectator-head", pl.getName(), pl.getName());
                 item.setType(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 if (meta == null) {
@@ -55,14 +56,14 @@ public class SpectatorGamemode implements Gamemode {
                 }
             }
         }
-        spectatable.setItem(25, WITP.getConfiguration().getFromItemData("gamemodes.search"),
+        spectatable.setItem(25, WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.search"),
                 (t2, e2) -> {
                     player.closeInventory();
                     BaseComponent[] send = new ComponentBuilder().append(user.getTranslated("click-search"))
                             .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
                     player.spigot().sendMessage(send);
                 });
-        spectatable.setItem(26, WITP.getConfiguration().getFromItemData("general.close"), (t2, e2) -> previousInventory.build());
+        spectatable.setItem(26, WITP.getConfiguration().getFromItemData(user.locale, "general.close"), (t2, e2) -> previousInventory.build());
         spectatable.build();
     }
 }

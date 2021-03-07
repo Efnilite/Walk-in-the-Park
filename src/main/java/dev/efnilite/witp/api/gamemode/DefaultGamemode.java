@@ -8,6 +8,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,13 +16,13 @@ import java.sql.SQLException;
 public class DefaultGamemode implements Gamemode {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "default";
     }
 
     @Override
-    public ItemStack getItem() {
-        return WITP.getConfiguration().getFromItemData("gamemodes.default");
+    public @NotNull ItemStack getItem(String locale) {
+        return WITP.getConfiguration().getFromItemData(locale, "gamemodes.default");
     }
 
     @Override
@@ -35,7 +36,7 @@ public class DefaultGamemode implements Gamemode {
                 user.sendTranslated("cant-do");
                 return;
             }
-            ParkourPlayer.register(player);
+            ParkourPlayer pp = ParkourPlayer.register(player);
         } catch (IOException | SQLException ex) {
             ex.printStackTrace();
             Verbose.error("Error while trying to register player" + player.getName());

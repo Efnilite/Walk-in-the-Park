@@ -45,6 +45,14 @@ public class Database {
         }
     }
 
+    public void suppressedQuery(String query) {
+        try {
+            connection.prepareStatement(query).executeUpdate();
+        } catch (SQLException ex) {
+            // lol
+        }
+    }
+
     public @Nullable ResultSet resultQuery(String query) {
         try {
             return connection.prepareStatement(query).executeQuery();
@@ -65,6 +73,9 @@ public class Database {
         query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10)," +
                 " `blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "game-history` (`code` CHAR(9) NOT NULL, `uuid` VARCHAR(36), " +
+                "`name` VARCHAR(20), `score` VARCHAR(10), `hstime` VARCHAR(13) NULL, `difficultyScore` DECIMAL, PRIMARY KEY (`code`)) ENGINE = InnoDB CHARSET = utf8;");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `lang` VARCHAR(2)");
         Verbose.info("Initialized database");
     }
 

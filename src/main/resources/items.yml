@@ -6,83 +6,258 @@
 items:
     general:
         quit:
-            name: '&4&lQuit'
-            lore: ''
             item: barrier
         close:
-            name: '&c&lClose'
-            lore: ''
             item: arrow
+        menu:
+            item: compass
 
     gamemodes:
         default:
-            name: '&c&lNormal'
-            lore: '&7Play the game like normal'
             item: barrel
         spectator:
-            name: '&c&lSpectate'
-            lore: '&7Spectate another player'
             item: glass
-        spectator-head:
-            name: '&c&l%p'
-            lore: '&7Click to spectate %p'
         search:
-            name: '&a&lSearch'
-            lore: '&7Search for a player to spectate.'
             item: paper
 
     options:
         styles:
-            name: '&a&lParkour style'
-            lore: '&7The style of your parkour||&7(which blocks will be used)||||&7Currently: &a%s'
             item: end_stone
             # Changing enabled always overwrites the permission system
             enabled: true
         lead:
-            name: '&a&lLead'
-            lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
             item: glass
             enabled: true
         time:
-            name: '&a&lTime'
-            lore: '&7The time of day.||||&7Currently: &a%s'
             item: clock
             enabled: true
         difficulty:
-            name: '&a&lDifficulty'
-            lore: '&7Change your difficuly settings||||&7Currently: %s'
             item: anvil
             enabled: true
         difficulty-switch:
-            name: '&a&lScore difficulty'
-            lore: '&7When enabled, the higher score you have||&7the more difficult it gets.||||&7Currently: %s'
+            enabled: true
         particles:
-            name: '&a&lUse particles and sounds'
-            lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
             enabled: true
         scoreboard:
-            name: '&a&lShow scoreboard'
-            lore: '&7If enabled shows the scoreboard.||||&7Currently: %s'
             enabled: true
         death-msg:
-            name: '&a&lShow fall message'
-            lore: '&7If enabled shows a message when you fall||&7with extra info.||||&7Currently: %s'
             enabled: true
         special:
-            name: '&a&lUse special blocks'
-            lore: '&7If enabled uses special blocks like ice and slabs.||||&7Currently: %s'
             enabled: true
         structure:
-            name: '&a&lUse structures'
-            lore: '&7If enabled static structures||&7will appear throughout the parkour.||||&7Currently: %s'
             enabled: true
         gamemode:
-            name: '&c&lGamemode'
-            lore: ''
             item: paper
             enabled: true
         leaderboard:
-            name: '&6&lLeaderboard'
-            lore: '&7%s'
             item: gold_block
             enabled: true
+        language:
+            item: book
+            enabled: true
+
+locale:
+
+    # English (English)
+    en:
+        general:
+            quit:
+                name: '&4&lQuit'
+                lore: ''
+            close:
+                name: '&c&lClose'
+                lore: ''
+            menu:
+                name: '&c&lOptions'
+                lore: ''
+
+        gamemodes:
+            default:
+                name: '&c&lNormal'
+                lore: '&7Play the game like normal'
+            spectator:
+                name: '&c&lSpectate'
+                lore: '&7Spectate another player'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7Click to spectate %p'
+            search:
+                name: '&a&lSearch'
+                lore: '&7Search for a player to spectate.'
+
+        options:
+            styles:
+                name: '&a&lParkour style'
+                lore: '&7The style of your parkour||&7(which blocks will be used)||||&7Currently: &a%s'
+            lead:
+                name: '&a&lLead'
+                lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
+            time:
+                name: '&a&lTime'
+                lore: '&7The time of day.||||&7Currently: &a%s'
+            difficulty:
+                name: '&a&lDifficulty'
+                lore: '&7Change your difficuly settings||||&7Currently: %s'
+            difficulty-switch:
+                name: '&a&lScore difficulty'
+                lore: '&7When enabled, the higher score you have||&7the more difficult it gets.||||&7Currently: %s'
+            particles:
+                name: '&a&lUse particles and sounds'
+                lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
+            scoreboard:
+                name: '&a&lShow scoreboard'
+                lore: '&7If enabled shows the scoreboard.||||&7Currently: %s'
+            death-msg:
+                name: '&a&lShow fall message'
+                lore: '&7If enabled shows a message when you fall||&7with extra info.||||&7Currently: %s'
+            special:
+                name: '&a&lUse special blocks'
+                lore: '&7If enabled uses special blocks like ice and slabs.||||&7Currently: %s'
+            structure:
+                name: '&a&lUse structures'
+                lore: '&7If enabled static structures||&7will appear throughout the parkour.||||&7Currently: %s'
+            gamemode:
+                name: '&c&lGamemode'
+                lore: ''
+            leaderboard:
+                name: '&6&lLeaderboard'
+                lore: '&7%s'
+            language:
+                name: '&e&lLanguage'
+                lore: '&7Currently: &a%s'
+
+    # Nederlands (Dutch)
+    nl:
+        general:
+            quit:
+                name: '&4&lAfsluiten'
+                lore: ''
+            close:
+                name: '&c&lSluiten'
+                lore: ''
+            menu:
+                name: '&c&lOpties'
+                lore: ''
+
+        gamemodes:
+            default:
+                name: '&c&lNormaal'
+                lore: '&7Speel het parkour zoals normaal'
+            spectator:
+                name: '&c&lToekijken'
+                lore: '&7Kijk een andere speler toe'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7Klik om %p toe te kijken'
+            search:
+                name: '&a&lZoeken'
+                lore: '&7Zoek een speler op die je wil toekijken.'
+
+        options:
+            styles:
+                name: '&a&lParkourstijl'
+                lore: '&7De stijl van het parkour||&7(welke blokken worden gebruikt)||||&7Huidige waarde: &a%s'
+            lead:
+                name: '&a&lVoorsprong'
+                lore: '&7De voorsprong van blokken.||||&7Huidige waarde: &a%s blokken'
+            time:
+                name: '&a&lTijd'
+                lore: '&7De tijd.||||&7Huidige waarde: &a%s'
+            difficulty:
+                name: '&a&lMoeilijkheid'
+                lore: '&7Verander je moeilijkheidsinstellingen||||&7Huidige waarde: %s'
+            difficulty-switch:
+                name: '&a&Gebruik van puntenmoeilijkheid'
+                lore: '&7Als dit aanstaat dan wordt het parkour||&7moeilijker, naarmate je meer score hebt.||||&7Huidige waarde: %s'
+            particles:
+                name: '&a&lGebruik van particles en geluiden'
+                lore: '&Als dit aanstaat dan krijg je bij||&7elk nieuw blok particles en geluiden.||||&7Huidige waarde: %s'
+            scoreboard:
+                name: '&a&lGebruik van scoreboard'
+                lore: '&7Als dit aanstaat kan je het scoreboard zien.||||&7Huidige waarde: %s'
+            death-msg:
+                name: '&a&lGebruik van valbericht'
+                lore: '&7Als dit aanstaat komt er een bericht||&7met extra info, als je valt.||||&7Huidige waarde: %s'
+            special:
+                name: '&a&lGebruik van speciale blokken'
+                lore: '&7If enabled uses special blocks like ice and slabs.||||&7Huidige waarde: %s'
+            structure:
+                name: '&a&lGebruik van gebouwen'
+                lore: '&7Als dit aanstaat spawnen er||&7gebouwen tijdens het parkour.||||&7Huidige waarde: %s'
+            gamemode:
+                name: '&c&lGamemode'
+                lore: ''
+            leaderboard:
+                name: '&6&lScorebord'
+                lore: '&7%s'
+            language:
+                name: '&e&lTaal'
+                lore: '&7Huidige waarde: &a%s'
+
+    # Español (Spanish), provided by !Фитуу．
+    es:
+        general:
+            quit:
+                name: '&4&lSalir'
+                lore: ''
+            close:
+                name: '&c&lCerrar'
+                lore: ''
+            menu:
+                name: '&c&lOpciones'
+                lore: ''
+
+        gamemodes:
+            default:
+                name: '&c&lNormal'
+                lore: '&7Juega normalmente'
+            spectator:
+                name: '&c&lEspectador'
+                lore: '&7Observa a otro jugador'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7Click para observar a %p'
+            search:
+                name: '&a&lSearch'
+                lore: '&7Busca a un jugador para observar.'
+
+        options:
+            styles:
+                name: '&a&lEstilo de parkour'
+                lore: '&7El estilo de tu parkour||&7(Qué bloques se usarán)||||&7Actualmente: &a%s'
+            lead:
+                name: '&a&lVisibilidad de bloques'
+                lore: '&7Cuántos bloques serán||&7generados delante de tí.||||&7Actualmente: &a%s bloques'
+            time:
+                name: '&a&lHora'
+                lore: '&7Hora del día.||||&7Actualmente: &a%s'
+            difficulty:
+                name: '&a&lDificultad'
+                lore: '&7Cambia tu configuración de dificultad||||&7Actualmente: %s'
+            difficulty-switch:
+                name: '&a&lDificultad por puntuación'
+                lore: '&7Cuando se habilita, entre más puntos tengas||&7más difícil se vuelve.||||&7Actualmente: %s'
+            particles:
+                name: '&a&lUsar partículas y sonidos'
+                lore: '&7Si se habilita cada bloque generado||&7mostrará partículas y sonará un sonido.||||&7Actualmente:%s'
+            scoreboard:
+                name: '&a&lMostrar scoreboard'
+                lore: '&7Si se habilita muestra la scoreboard.||||&7Actualmente: %s'
+            death-msg:
+                name: '&a&lMostrar mensaje al caer'
+                lore: '&7Si se habilita muestra un mensaje al caer||&7con información extra.||||&7Actualmente: %s'
+            special:
+                name: '&a&lUsar bloques especiales'
+                lore: '&7Si se habilita, se usarán bloques especiales, como losas y hielo.||||&7Actualmente: %s'
+            structure:
+                name: '&a&lUsar estructuras'
+                lore: '&7Si está habilitado aparecerán||&7estructuras a lo largo del parkour.||||&7Actualmente: %s'
+            gamemode:
+                name: '&c&lModo de juego'
+                lore: ''
+            leaderboard:
+                name: '&6&lMejores puntuaciones'
+                lore: '&7%s'
+            language:
+                name: '&e&lLenguaje'
+                lore: '&7Actualmente: &a%s'

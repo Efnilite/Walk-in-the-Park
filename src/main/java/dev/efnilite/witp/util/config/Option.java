@@ -64,6 +64,8 @@ public class Option {
 
     public static List<Integer> POSSIBLE_LEADS;
     public static boolean VERBOSE;
+    public static List<String> LANGUAGES;
+    public static boolean GAMELOGS;
 
     // MySQL
     public static boolean SQL;
@@ -94,12 +96,15 @@ public class Option {
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
 
+        GAMELOGS = config.getBoolean("sql.game-logs");
+        LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
+        LANGUAGES.remove("default");
+
         TRUE = lang.getString("messages.en.true");
         FALSE = lang.getString("messages.en.false");
         VERBOSE = config.getBoolean("verbose");
         UPDATER = config.getBoolean("updater");
 
-        SQL = config.getBoolean("sql.enabled");
         SQL_PORT = config.getInt("sql.port");
         SQL_DB = config.getString("sql.database");
         SQL_URL = config.getString("sql.url");
@@ -176,6 +181,7 @@ public class Option {
         // Advanced settings
         if (init) {
             BORDER_SIZE = gen.getDouble("advanced.border-size");
+            SQL = config.getBoolean("sql.enabled");
         }
         GENERATOR_CHECK = gen.getInt("advanced.generator-check");
         HEIGHT_GAP = gen.getDouble("advanced.height-gap");

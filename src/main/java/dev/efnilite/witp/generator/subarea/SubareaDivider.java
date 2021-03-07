@@ -17,6 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,6 +96,10 @@ public class SubareaDivider {
         this.collection = new HashMap<>();
         this.openSpaces = new ArrayList<>();
         this.possibleInLayer = new ArrayList<>();
+    }
+
+    public void setHeading(Vector heading) {
+        this.heading = heading;
     }
 
     public World getWorld() {
@@ -191,7 +196,7 @@ public class SubareaDivider {
         collection.remove(point);
         openSpaces.add(point);
         for (Block block : player.getGenerator().data.blocks) {
-            block.setType(Material.AIR);
+            block.setType(Material.AIR, false);
         }
     }
 
@@ -249,7 +254,12 @@ public class SubareaDivider {
         WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
     }
 
-    private void createIsland(ParkourPlayer pp, SubareaPoint point) {
+    private void createIsland(@NotNull ParkourPlayer pp, SubareaPoint point) {
+        if (point == null) { // something has gone TERRIBLY WRONG, just in case
+            Verbose.error("Point assignment after confirmation has gone terribly wrong - regenerating..");
+            generate(pp);
+            return;
+        }
         Player player = pp.getPlayer();
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
@@ -282,12 +292,13 @@ public class SubareaDivider {
                 player.setGameMode(GameMode.ADVENTURE);
                 if (Option.INVENTORY_HANDLING) {
                     player.getInventory().clear();
-                    String mat = WITP.getConfiguration().getString("config", "options.item");
+                    ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
                     if (mat == null) {
                         Verbose.error("Material for options in config is null - defaulting to compass");
-                        mat = "COMPASS";
+                        player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&lOptions").build());
+                    } else {
+                        player.getInventory().setItem(8, mat);
                     }
-                    player.getInventory().setItem(8, new ItemBuilder(Material.getMaterial(mat.toUpperCase()), "&c&lOptions").build());
                 }
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
@@ -326,5 +337,9 @@ public class SubareaDivider {
             }
         }, 10);
         setBorder(pp, point);
+    }
+
+    public Vector getHeading() {
+        return heading;
     }
 }

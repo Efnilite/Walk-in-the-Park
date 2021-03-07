@@ -10,6 +10,8 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
+import dev.efnilite.witp.util.sql.UpdertStatement;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -34,18 +36,20 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends ParkourGenerator {
 
-    private int totalScore;
-    private int structureCooldown;
-    private boolean deleteStructure;
-    private boolean stopped;
-    private Location lastSpawn;
-    private Location lastPlayer;
-    private Location previousSpawn;
-    private Location latestLocation; // to disallow 1 block infinite point glitch
+    private BukkitRunnable task;
+
+    protected int totalScore;
+    protected int structureCooldown;
+    protected boolean deleteStructure;
+    protected boolean stopped;
+    protected Location lastSpawn;
+    protected Location lastPlayer;
+    protected Location previousSpawn;
+    protected Location latestLocation; // to disallow 1 block infinite point glitch
 
     protected Location playerSpawn;
     protected Location blockSpawn;
-    private List<Block> structureBlocks;
+    protected List<Block> structureBlocks;
 
     protected final LinkedHashMap<String, Integer> buildLog;
     protected final HashMap<Integer, Integer> distanceChances;
@@ -54,7 +58,7 @@ public class DefaultGenerator extends ParkourGenerator {
     protected final HashMap<Integer, Integer> defaultChances;
     protected final HashMap<Integer, Double> multiplierDecreases;
 
-    private static final ParticleData<?> particleData = new ParticleData<>(Particle.SPELL_INSTANT, null, 20, 0.4,
+    private static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 20, 0.4,
             0.5, 1, 0.5);
 
     /**
@@ -93,7 +97,7 @@ public class DefaultGenerator extends ParkourGenerator {
      */
     @Override
     public void start() {
-        Tasks.defaultSyncRepeat(new BukkitRunnable() {
+        task = new BukkitRunnable() {
             @Override
             public void run() {
                 if (stopped) {
@@ -135,7 +139,10 @@ public class DefaultGenerator extends ParkourGenerator {
                     lastPlayer = current.getLocation();
                     // Structure deletion check
                     if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
-                        score += 10;
+                        for (int i = 0; i < 10; i++) {
+                            score++;
+                            checkRewards();
+                        }
                         structureCooldown = 20;
                         generate(player.blockLead);
                         deleteStructure = true;
@@ -153,31 +160,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             latestLocation = current.getLocation();
                             score();
 
-                            // Rewards
-                            HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
-                            if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
-                                    || (scores.size() > 0 && scores.containsKey(score))) {
-                                if (Option.REWARDS) {
-                                    if (scores.containsKey(score) && scores.get(score) != null) {
-                                        List<String> commands = scores.get(score);
-                                        if (commands != null) {
-                                            for (String command : commands) {
-                                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                                command.replaceAll("%player%", player.getPlayer().getName()));
-                                            }
-                                        }
-                                    }
-                                    if (Option.REWARDS_COMMAND != null) {
-                                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                        Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
-                                    }
-                                    if (Option.REWARDS_MONEY != 0) {
-                                        Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
-                                    }
-                                    player.send(Option.REWARDS_MESSAGE);
-                                }
-                            }
-
+                            checkRewards();
                             new PlayerScoreEvent(player).call();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last) + 1;
@@ -198,7 +181,35 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 player.updateScoreboard();
             }
-        }, Option.GENERATOR_CHECK);
+        };
+        Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK);
+    }
+
+    private void checkRewards() {
+        // Rewards
+        HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
+        if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
+                || (scores.size() > 0 && scores.containsKey(score))) {
+            if (Option.REWARDS) {
+                if (scores.containsKey(score) && scores.get(score) != null) {
+                    List<String> commands = scores.get(score);
+                    if (commands != null) {
+                        for (String command : commands) {
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                    command.replaceAll("%player%", player.getPlayer().getName()));
+                        }
+                    }
+                }
+                if (Option.REWARDS_COMMAND != null) {
+                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                            Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
+                }
+                if (Option.REWARDS_MONEY != 0) {
+                    Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
+                }
+                player.send(Option.REWARDS_MESSAGE);
+            }
+        }
     }
 
     public void score() { }
@@ -215,10 +226,15 @@ public class DefaultGenerator extends ParkourGenerator {
     public void reset(boolean regenerate) {
         if (!regenerate) {
             stopped = true;
+            task.cancel();
         }
         for (String s : buildLog.keySet()) {
             Util.parseLocation(s).getBlock().setType(Material.AIR);
         }
+        for (String s : buildLog.keySet()) { // just in case
+            Util.parseLocation(s).getBlock().setType(Material.AIR);
+        }
+        player.saveGame();
         deleteStructure();
         buildLog.clear();
         player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -257,7 +273,7 @@ public class DefaultGenerator extends ParkourGenerator {
         }
     }
 
-    private void deleteStructure() {
+    protected void deleteStructure() {
         for (Block block : structureBlocks) {
             block.setType(Material.AIR);
         }
@@ -468,8 +484,8 @@ public class DefaultGenerator extends ParkourGenerator {
                 lastSpawn = chosen.getLocation().clone();
 
                 if (player.useParticles) {
-                    particleData.setType(Option.PARTICLE_TYPE);
-                    Particles.draw(lastSpawn.clone().add(0, 1, 0), particleData);
+                    PARTICLE_DATA.setType(Option.PARTICLE_TYPE);
+                    Particles.draw(lastSpawn.clone().add(0, 1, 0), PARTICLE_DATA);
                     player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
                 }
 

@@ -2,6 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
@@ -25,9 +26,7 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
         super(player.getPlayer());
         Verbose.verbose("New ParkourSpectator init " + this.player.getName());
-        this.previousLocation = player.previousLocation;
-        this.previousInventory = player.previousInventory;
-        this.previousGamemode = player.previousGamemode;
+        this.locale = player.locale;
 
         if (player instanceof ParkourPlayer) {
             try {

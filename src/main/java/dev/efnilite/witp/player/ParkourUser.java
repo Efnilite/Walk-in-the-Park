@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
+import dev.efnilite.witp.player.data.Highscore;
+import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
@@ -16,12 +18,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,12 +37,11 @@ import java.util.*;
 public abstract class ParkourUser {
 
     public InventoryBuilder.OpenInventoryData openInventory;
+    public String locale;
     protected final Player player;
     protected FastBoard board;
-    protected GameMode previousGamemode;
-    protected Location previousLocation;
-    protected HashMap<Integer, ItemStack> previousInventory;
 
+    private static final HashMap<String, PreviousData> previousData = new HashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
     protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
@@ -52,9 +50,9 @@ public abstract class ParkourUser {
 
     public ParkourUser(@NotNull Player player) {
         this.player = player;
-        saveInventory();
-        this.previousLocation = player.getLocation().clone();
-        this.previousGamemode = player.getGameMode();
+        if (!previousData.containsKey(player.getName())) {
+            previousData.put(player.getName(), new PreviousData(player));
+        }
         this.board = new FastBoard(player);
         // remove duplicates
         users.put(player.getName(), this);
@@ -104,18 +102,19 @@ public abstract class ParkourUser {
             if (Option.BUNGEECORD && kickIfBungee) {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
+                PreviousData data = previousData.get(pl.getName());
                 if (Option.GO_BACK) {
                     Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
                     player.teleport(to);
                 } else {
-                    player.teleport(player.previousLocation);
+                    player.teleport(data.previousLocation);
                 }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
-                pl.setGameMode(player.previousGamemode);
+                pl.setGameMode(data.previousGamemode);
                 if (Option.INVENTORY_HANDLING) {
                     pl.getInventory().clear();
-                    for (int slot : player.previousInventory.keySet()) {
-                        pl.getInventory().setItem(slot, player.previousInventory.get(slot));
+                    for (int slot : data.previousInventory.keySet()) {
+                        pl.getInventory().setItem(slot, data.previousInventory.get(slot));
                     }
                 }
                 pl.resetPlayerTime();
@@ -146,23 +145,6 @@ public abstract class ParkourUser {
             to.getWorld().getChunkAt(to);
         }
         player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
-    }
-
-    /**
-     * Saves the inventory to cache, so if the player leaves the player gets their items back
-     */
-    protected void saveInventory() {
-        this.previousInventory = new HashMap<>();
-        if (Option.INVENTORY_HANDLING) {
-            int index = 0;
-            Inventory inventory = player.getInventory();
-            for (ItemStack item : inventory.getContents()) {
-                if (item != null) {
-                    previousInventory.put(index, item);
-                }
-                index++;
-            }
-        }
     }
 
     /**
@@ -262,15 +244,15 @@ public abstract class ParkourUser {
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(gamemodes.size(), 1);
         for (Gamemode gm : gamemodes) {
-            gamemode.setItem(dynamic.next(), gm.getItem(), (t, e) -> gm.handleItemClick(player, this, gamemode));
+            gamemode.setItem(dynamic.next(), gm.getItem(locale), (t, e) -> gm.handleItemClick(player, this, gamemode));
         }
-        gamemode.setItem(25, WITP.getConfiguration().getFromItemData("gamemodes.search"), (t2, e2) -> {
+        gamemode.setItem(25, WITP.getConfiguration().getFromItemData(locale, "gamemodes.search"), (t2, e2) -> {
             player.closeInventory();
             BaseComponent[] send = new ComponentBuilder().append(getTranslated("click-search"))
                     .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
             player.spigot().sendMessage(send);
         });
-        gamemode.setItem(26, WITP.getConfiguration().getFromItemData("general.close"), (t2, e2) -> player.closeInventory());
+        gamemode.setItem(26, WITP.getConfiguration().getFromItemData(locale, "general.close"), (t2, e2) -> player.closeInventory());
         gamemode.build();
     }
 
@@ -364,7 +346,7 @@ public abstract class ParkourUser {
      *          What can be replaced (for example: %s to yes)
      */
     public void sendTranslated(String path, String... replaceable) {
-        path = "messages.en." + path;
+        path = "messages." + this.locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
             Verbose.error("Unknown path: " + path + " - try deleting the config");
@@ -388,7 +370,7 @@ public abstract class ParkourUser {
      * @return the coloured and replaced string
      */
     public String getTranslated(String path, String... replaceable) {
-        path = "messages.en." + path;
+        path = "messages." + locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
             Verbose.error("Unknown path: " + path + " - try deleting the config");

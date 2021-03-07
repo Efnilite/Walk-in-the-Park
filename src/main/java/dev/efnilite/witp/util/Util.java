@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * General utilities
@@ -29,6 +30,15 @@ import java.util.*;
 public class Util {
 
     private static Economy economy;
+    private static char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
+
+    public static String randomOID() {
+        StringBuilder random = new StringBuilder();
+        for (int i = 0; i < 9; i++) {
+            random.append(OID[ThreadLocalRandom.current().nextInt(OID.length - 1)]);
+        }
+        return random.toString();
+    }
 
     public static double getDifficulty(String fileName) {
         int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".nbt", ""));

@@ -32,7 +32,7 @@ bungeecord:
     return_server: Lobby
 
     # If go back is enabled
-    go-back-enabled: true
+    go-back-enabled: false
 
     # The place players will go back to if they leave, if bungeecord is disabled and the go-back option is enabled
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
@@ -46,10 +46,15 @@ sql:
     username: efnilite
     password: password
 
+    # Logs games
+    # !! Warning: Might take up a lot of storage
+    # Does not count games with a score of 0
+    game-logs: false
+
     # Using an existing database might overwrite data. Be cautious!
     database: "witp"
 
-    # The prefix given to any table names (default "", so nothing)
+    # The prefix given to any table names (default "", so nothing, example: "witp-player", the prefix would be "witp-")
     prefix: ""
 
 # Options for the world
@@ -105,9 +110,6 @@ options:
     # If options are enabled
     enabled: true
 
-    # The item
-    item: compass
-
     # Enables/disables the inventory handling system
     inventory-handling: true
 
@@ -152,15 +154,20 @@ rewards:
     # So when the player reaches, for example, 50 points, the rewards system is triggered.
     # In the string you add executable commands when they reach this score
     # ;; is used for seperating commands
+    # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
     scores:
         - "50;;tellraw @a \"hey there\";;second command"
         - "100;;give %player% golden_apple"
         - "200" # no command means it only does the command and vault reward.
-        - "500"
 
     # The same as scores, but players can only achieve this once
     # (!!!) Work in progress // not added yet.
     one-time-scores:
+        - "1000;;say \"Well done!\""
+
+    # The same as scores, but executed on leave
+    # (!!!) Work in progress // not added yet.
+    on-leave-scores:
         - "1000;;say \"Well done!\""
 
     # The command that will be executed if the interval is met.
