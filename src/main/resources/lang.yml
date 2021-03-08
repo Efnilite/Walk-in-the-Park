@@ -124,6 +124,46 @@ messages:
             beat: '&7Superaste tu puntuación más alta por &f%s&7 puntos!'
             tied: '&7Alcanzaste tu puntuación más alta!'
 
+    # 简体中文 (中国大陆)
+    zh_CN:
+        join: '&7%p 加入了服务器'
+        leave: '&7%p 离开了服务器'
+        joined: '&a&l(!) &7您参与了一场跑酷'
+        left: '&c&l(!) &7您从跑酷当中离开'
+
+        next-page: '&a下一页 >>'
+        previous-page: '&a<< 上一页'
+        your-rank: '&7您的排名: &f#%n &7(%h)'
+
+        selected-style: '&a&l(!) &7您选择了跑酷类型 &c%s&7!'
+        selected-block-lead: '&a&l(!) &7您选择了一个 &a%a &7方块作为引领作用!'
+        selected-time: '&a&l(!) &7您更改了您的跑酷的偏好时间为 &a%t'
+        selected-difficulty: '&a&l(!) &7您更改了您的跑酷难度为 %v'
+        selected-structure-difficulty: '&a&l(!) &7您更改了您的跑酷结构难度为 %v'
+        selected-particles: '&a&l(!) &7您更改了您的跑酷粒子效果为 %v'
+        selected-scoreboard: '&a&l(!) &7您将计分板显示与否切换为 %v'
+        selected-fall-message: '&a&l(!) &7您将失败信息显示与否切换为 %v'
+        selected-special-blocks: '&a&l(!) &7您更改了您的特殊方块为 %v'
+        selected-structures: '&a&l(!) &7您更改了您使用的结构为 %v'
+        selected-language: '&a&l(!) &7您更改您选择的语言为 %v'
+        cant-do: '&c&l(!) &c您目前不能那么做。'
+        customize-menu: '&a&l(!) &7您可以通过运行命令 /parkour menu 来客制化您的跑酷体验。'
+
+        not-there-search: '&7请输入您想指定的玩家!'
+        click-search: '&c&l&n点击这里&r&c&l 来输入您想要寻找的玩家。'
+
+        true: "是"
+        false: "否"
+        spectator: '&a&l(!) &7您现在作为观察者来参与跑酷。使用命令 "/parkour gm" 以离开/更改您的游戏模式。'
+        divider: '&7----------------------------------------'
+        score: '&a您的得分: &f%s'
+        time: '&a所耗时间: &f%s'
+        highscore: '&a您的个人历史最高分: &f%s'
+        message:
+            miss: '&7您还差 %s 分就能突破您的最高记录了，继续加油!'
+            beat: '&7较您的个人历史最高分，您成功超过 %s 分，干得漂亮!'
+            tied: '&7您本次得分与历史最高分持平，加把劲突破自己的极限吧!'
+
 options:
 
     # If the scoreboard is enabled
