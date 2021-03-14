@@ -124,7 +124,7 @@ messages:
             beat: '&7Superaste tu puntuación más alta por &f%s&7 puntos!'
             tied: '&7Alcanzaste tu puntuación más alta!'
 
-    # 简体中文 (中国大陆)
+    # 简体中文 (中国大陆, Simplified Chinese)
     zh_CN:
         join: '&7%p 加入了服务器'
         leave: '&7%p 离开了服务器'

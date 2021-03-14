@@ -49,6 +49,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class WITP extends JavaPlugin implements Listener {
 
@@ -86,8 +88,6 @@ public final class WITP extends JavaPlugin implements Listener {
         }
 
         configuration = new Configuration(this);
-        Metrics metrics = new Metrics(this, 9272);
-        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderHook().register();
         }
@@ -102,6 +102,24 @@ public final class WITP extends JavaPlugin implements Listener {
             database.connect(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB, Option.SQL_USERNAME, Option.SQL_PASSWORD);
         }
         ParkourUser.initHighScores();
+
+        Metrics metrics = new Metrics(this, 9272);
+        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
+        metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
+        metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
+        metrics.addCustomChart(new Metrics.AdvancedPie("locale_distribution", () -> {
+            Map<String, Integer> map = new HashMap<>();
+            for (ParkourPlayer player : ParkourUser.getActivePlayers()) {
+                String locale = player.locale;
+                if (!map.containsKey(locale)) {
+                    map.put(locale, 0);
+                }
+                int count = map.get(locale);
+                count++;
+                map.put(locale, count);
+            }
+            return map;
+        }));
 
         // Events
         this.getServer().getPluginManager().registerEvents(this, this);

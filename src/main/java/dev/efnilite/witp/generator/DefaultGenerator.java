@@ -207,7 +207,9 @@ public class DefaultGenerator extends ParkourGenerator {
                 if (Option.REWARDS_MONEY != 0) {
                     Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
                 }
-                player.send(Option.REWARDS_MESSAGE);
+                if (Option.REWARDS_MESSAGE != null) {
+                    player.send(Option.REWARDS_MESSAGE);
+                }
             }
         }
     }
@@ -240,7 +242,7 @@ public class DefaultGenerator extends ParkourGenerator {
         player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         int score = this.score;
         String time = this.time;
-        if (player.showDeathMsg && regenerate) {
+        if (player.showDeathMsg && regenerate && time != null) {
             String message;
             int number = 0;
             if (score == player.highScore) {

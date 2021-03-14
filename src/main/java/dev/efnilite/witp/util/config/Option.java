@@ -87,6 +87,8 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
+    public static boolean JOINING;
+
     // Lang
     public static String TRUE;
     public static String FALSE;
@@ -99,6 +101,8 @@ public class Option {
         GAMELOGS = config.getBoolean("sql.game-logs");
         LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
         LANGUAGES.remove("default");
+
+        JOINING = config.getBoolean("joining");
 
         TRUE = lang.getString("messages.en.true");
         FALSE = lang.getString("messages.en.false");

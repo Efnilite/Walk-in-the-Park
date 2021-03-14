@@ -175,8 +175,8 @@ public class InventoryBuilder {
 
     public static class DynamicInventory {
 
-        private final int row;
-        private final ArrayList<Integer> slots;
+        public final int row;
+        public final ArrayList<Integer> slots;
 
         // row from 0
         public DynamicInventory(int amountRow, int row) {

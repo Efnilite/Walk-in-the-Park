@@ -103,6 +103,7 @@ public abstract class ParkourUser {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 PreviousData data = previousData.get(pl.getName());
+                previousData.remove(pl.getName());
                 if (Option.GO_BACK) {
                     Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
                     player.teleport(to);

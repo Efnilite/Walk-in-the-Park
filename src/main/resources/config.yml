@@ -15,12 +15,16 @@
 #===============================================================================#
 
 # Updater
-# Checks if there are any updates available. It's highly recommended that you keep this on.
+# Checks if there are any updates available. It's *highly* recommended that you keep this on.
 updater: true
 
 # Verbosing
 # If this is set to true it will display extra data when stuff happens (useful for developers)
 verbose: false
+
+# Player joining
+# Whether players can join
+joining: true
 
 # Options about Bungeecord/autojoining
 bungeecord:
@@ -34,7 +38,7 @@ bungeecord:
     # If go back is enabled
     go-back-enabled: false
 
-    # The place players will go back to if they leave, if bungeecord is disabled and the go-back option is enabled
+    # The place players will go back to if they leave, if Bungeecord is disabled and the go-back option is enabled
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
     go-back: "(0,100,0,world)"
 
@@ -179,7 +183,7 @@ rewards:
     vault-reward: 5
 
     # The message you get after the interval is met
-    # 'null' means no message
+    # null means no message
     message: '&6+5 coins'
 
 # Options for particles/sounds

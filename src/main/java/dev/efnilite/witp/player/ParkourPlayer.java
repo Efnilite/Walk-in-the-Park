@@ -197,6 +197,10 @@ public class ParkourPlayer extends ParkourUser {
      *          The style as listed in config.yml
      */
     public void setStyle(String style) {
+        if (style == null) {
+            Verbose.error("Style is null, defaulting to default style");
+            style = WITP.getConfiguration().getString("config", "styles.default");
+        }
         this.style = style;
         possibleStyle = getPossibleMaterials(style);
     }
@@ -234,7 +238,7 @@ public class ParkourPlayer extends ParkourUser {
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(9, 1);
         builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.styles", style), (t, e) -> {
-            if (checkOptions("lead", "witp.style")) {
+            if (checkOptions("style", "witp.style")) {
                 List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                 if (pos == null) {
                     Verbose.error("Error while trying to fetch possible styles from config.yml");
@@ -392,6 +396,7 @@ public class ParkourPlayer extends ParkourUser {
                 menu();
             }
         });
+
         builder.setItem(18, WITP.getConfiguration().getFromItemData(locale, "options.gamemode"), (t2, e2) -> {
             if (checkOptions("gamemode", "witp.gamemode")) {
                 gamemode();
@@ -452,7 +457,7 @@ public class ParkourPlayer extends ParkourUser {
         return possibleStyles;
     }
 
-    private boolean checkOptions(String option, String perm) {
+    private boolean checkOptions(String option, @Nullable String perm) {
         boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
         if (!enabled) {
             sendTranslated("cant-do");
@@ -720,6 +725,11 @@ public class ParkourPlayer extends ParkourUser {
      * @return the int value used to set the time
      */
     public int getTime(String time) {
+        if (time == null) {
+            Verbose.error("Time is null, defaulting to daytime");
+            this.time = "day";
+            return 1000;
+        }
         switch (time.toLowerCase()) {
             case "noon":
                 return 6000;
