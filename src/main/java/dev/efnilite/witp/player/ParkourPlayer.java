@@ -238,7 +238,7 @@ public class ParkourPlayer extends ParkourUser {
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(9, 1);
         builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.styles", style), (t, e) -> {
-            if (checkOptions("style", "witp.style")) {
+            if (checkOptions("styles", "witp.style")) {
                 List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                 if (pos == null) {
                     Verbose.error("Error while trying to fetch possible styles from config.yml");
@@ -307,10 +307,12 @@ public class ParkourPlayer extends ParkourUser {
                 InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
                 String difficultyString = Boolean.toString(useDifficulty);
                 ItemStack item1 = config.getFromItemData(locale, "options.difficulty-switch", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
-                diff.setItem(dynamic1.next(), item1, (t3, e3) -> {
-                    if (checkOptions("difficulty", "difficulty-switch")) {
+                item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+                int diffSlot = dynamic1.next();
+                diff.setItem(diffSlot, item1, (t3, e3) -> {
+                    if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
                         useDifficulty = !useDifficulty;
-                        sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(difficultyString))));
+                        sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
                         item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
                         diff.build();
                     }
