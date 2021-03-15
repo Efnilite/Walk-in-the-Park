@@ -594,7 +594,11 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @NotNull ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
+    public static ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
+        if (!Option.JOINING) {
+            player.sendMessage(Util.color("&c&l(!) &7Parkour is currently disabled. Try again later."));
+            return null;
+        }
         return register(new ParkourPlayer(player, null));
     }
 
@@ -608,12 +612,13 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @NotNull ParkourPlayer register(@NotNull ParkourPlayer pp) throws IOException, SQLException {
+    public static ParkourPlayer register(@NotNull ParkourPlayer pp) throws IOException, SQLException {
         if (players.get(pp.player) == null) {
             UUID uuid = pp.getPlayer().getUniqueId();
             if (!Option.SQL) {
                 File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
                 if (data.exists()) {
+                    Verbose.verbose("Reading player data..");
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
                     if (from.useParticles == null) { // outdated file format
@@ -637,6 +642,9 @@ public class ParkourPlayer extends ParkourUser {
                     if (from.difficulty == 0) {
                         from.difficulty = 0.5;
                     }
+                    if (from.blockLead < 1) {
+                        from.blockLead = 4;
+                    }
                     if (from.lang == null) {
                         from.lang = WITP.getConfiguration().getString("lang", "messages.default");
                     }
@@ -645,14 +653,13 @@ public class ParkourPlayer extends ParkourUser {
                     pp.saveStats();
                     players.put(pp.player, pp);
                     reader.close();
-                    return pp;
                 } else {
+                    Verbose.verbose("Setting new player data..");
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             "0.0s", WITP.getConfiguration().getString("lang", "messages.default"),
                             4, true, true, true, true, true, true);
                     players.put(pp.player, pp);
                     pp.saveStats();
-                    return pp;
                 }
             } else {
                 SelectStatement select = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX + "players")
@@ -692,8 +699,8 @@ public class ParkourPlayer extends ParkourUser {
                     pp.saveStats();
                 }
                 players.put(pp.player, pp);
-                return pp;
             }
+            return pp;
         }
         return pp;
     }

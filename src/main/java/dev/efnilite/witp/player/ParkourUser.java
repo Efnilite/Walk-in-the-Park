@@ -104,20 +104,8 @@ public abstract class ParkourUser {
             } else {
                 PreviousData data = previousData.get(pl.getName());
                 previousData.remove(pl.getName());
-                if (Option.GO_BACK) {
-                    Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
-                    player.teleport(to);
-                } else {
-                    player.teleport(data.previousLocation);
-                }
                 WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
-                pl.setGameMode(data.previousGamemode);
-                if (Option.INVENTORY_HANDLING) {
-                    pl.getInventory().clear();
-                    for (int slot : data.previousInventory.keySet()) {
-                        pl.getInventory().setItem(slot, data.previousInventory.get(slot));
-                    }
-                }
+                data.apply();
                 pl.resetPlayerTime();
             }
         }

@@ -10,6 +10,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -257,7 +258,12 @@ public class SubareaDivider {
     private void createIsland(@NotNull ParkourPlayer pp, SubareaPoint point) {
         if (point == null) { // something has gone TERRIBLY WRONG, just in case
             Verbose.error("Point assignment after confirmation has gone terribly wrong - regenerating..");
-            generate(pp);
+            pp.send("There was an error while trying to assign your island, please rejoin!");
+            try {
+                ParkourUser.unregister(pp, true, false, true);
+            } catch (IOException | InvalidStatementException ex) {
+                ex.printStackTrace();
+            }
             return;
         }
         Player player = pp.getPlayer();

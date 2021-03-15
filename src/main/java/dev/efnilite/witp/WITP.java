@@ -103,24 +103,6 @@ public final class WITP extends JavaPlugin implements Listener {
         }
         ParkourUser.initHighScores();
 
-        Metrics metrics = new Metrics(this, 9272);
-        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
-        metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
-        metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
-        metrics.addCustomChart(new Metrics.AdvancedPie("locale_distribution", () -> {
-            Map<String, Integer> map = new HashMap<>();
-            for (ParkourPlayer player : ParkourUser.getActivePlayers()) {
-                String locale = player.locale;
-                if (!map.containsKey(locale)) {
-                    map.put(locale, 0);
-                }
-                int count = map.get(locale);
-                count++;
-                map.put(locale, count);
-            }
-            return map;
-        }));
-
         // Events
         this.getServer().getPluginManager().registerEvents(this, this);
         new InventoryBuilder.ClickHandler(this);
@@ -129,6 +111,11 @@ public final class WITP extends JavaPlugin implements Listener {
             UpdateChecker checker = new UpdateChecker();
             Tasks.syncRepeat(checker::check, 30 * 60 * 20);
         }
+        Metrics metrics = new Metrics(this, 9272);
+        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
+        metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
+        metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
+        metrics.addCustomChart(new Metrics.SingleLineChart("active_players", () -> ParkourUser.getActivePlayers().size()));
         long time = Tasks.end("load");
         Verbose.info("Loaded WITP in " + time + "ms!");
     }

@@ -74,6 +74,7 @@ lead:
 
     # The amounts of the lead
     # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
+    # Also must be above 1
     amount:
         - 1
         - 2

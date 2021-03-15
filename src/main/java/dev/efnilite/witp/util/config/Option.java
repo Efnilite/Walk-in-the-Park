@@ -2,6 +2,7 @@ package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -167,6 +168,12 @@ public class Option {
         }
 
         POSSIBLE_LEADS = config.getIntegerList("lead.amount");
+        for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
+            if (lead < 1) {
+                Verbose.error("Invalid lead in config: found " + lead + ", should be >1");
+                POSSIBLE_LEADS.remove((Object) lead);
+            }
+        }
 
         SCOREBOARD = lang.getBoolean("scoreboard.enabled");
         SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));
