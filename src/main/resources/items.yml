@@ -261,3 +261,70 @@ locale:
             language:
                 name: '&e&lLenguaje'
                 lore: '&7Actualmente: &a%s'
+    # 简体中文 (中国大陆 ,Simplified Chinese)
+    zh_CN:
+        general:
+            quit:
+                name: '&4&l退出'
+                lore: ''
+            close:
+                name: '&c&l关闭'
+                lore: ''
+            menu:
+                name: '&c&l设置'
+                lore: ''
+
+        gamemodes:
+            default:
+                name: '&c&l普通模式'
+                lore: '&7在普通的跑酷中展现自我'
+            spectator:
+                name: '&c&l观赏模式'
+                lore: '&7观赏另一名玩家的精彩操作'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7点击以观赏玩家 %p 的跑酷'
+            search:
+                name: '&a&l搜索'
+                lore: '&7搜索您要观赏的玩家。'
+
+        options:
+            styles:
+                name: '&a&l跑酷风格'
+                lore: '&7选择您的跑酷风格||&7(指定您要使用的方块)||||&7当前值为: &a%s'
+            lead:
+                name: '&a&l预备跳台'
+                lore: '&7有多少方块会在您落地前||&7在您前方预先生成。||||&7当前值为: &a%s 个方块'
+            time:
+                name: '&a&l跑酷时令'
+                lore: '&7喜欢在日出或黄昏时跑酷？||&7自定义您喜欢的跑酷时间吧||&7当前值为: &a%s'
+            difficulty:
+                name: '&a&l难度'
+                lore: '&7跑酷对您来说太难或太简单？||调整您的跑酷难度！||&7当前值为: %s'
+            difficulty-switch:
+                name: '&a&l难度加分'
+                lore: '&7当该项开启时，您选择的难度越高，||&7您每次成功地跳跃的得分越高。||||&7当前值: %s'
+            particles:
+                name: '&a&l粒子效果与音效'
+                lore: '&7当该项开启时，每生成一个新跳台||&7将会产生粒子效果并播放音效。||||&7当前值: %s'
+            scoreboard:
+                name: '&a&l显示计分板'
+                lore: '&7当该项开启时，将显示计分板。||||&7当前值: %s'
+            death-msg:
+                name: '&a&l显示失足信息'
+                lore: '&7当该项开启时，将会在您掉落的时候显示信息||&7并附带额外参数。||||&7当前值: %s'
+            special:
+                name: '&a&l使用特殊方块'
+                lore: '&7当该项开启时，将在跑酷中使用像冰或台阶等特殊方块。||||&7当前值: %s'
+            structure:
+                name: '&a&l使用预制结构'
+                lore: '&7如果该项启用，将在整个跑酷过程中||&7将出现预制的跑酷地图模板，并贯穿整个跑酷。||||&7当前值: %s'
+            gamemode:
+                name: '&c&l跑酷模式'
+                lore: ''
+            leaderboard:
+                name: '&6&l排行榜'
+                lore: '&7%s'
+            language:
+                name: '&e&l语言文件'
+                lore: '&7当前使用: &a%s'
