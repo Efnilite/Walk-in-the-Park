@@ -48,7 +48,7 @@ public class Configuration {
         }
         for (String file : defaultFiles) {
             try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Arrays.asList("styles.list", "messages"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to update config");

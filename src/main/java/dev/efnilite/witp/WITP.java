@@ -115,7 +115,7 @@ public final class WITP extends JavaPlugin implements Listener {
         metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
         metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
-        metrics.addCustomChart(new Metrics.SingleLineChart("active_players", () -> ParkourUser.getActivePlayers().size()));
+        metrics.addCustomChart(new Metrics.SingleLineChart("player_joins", () -> ParkourUser.getActivePlayers().size()));
         long time = Tasks.end("load");
         Verbose.info("Loaded WITP in " + time + "ms!");
     }
