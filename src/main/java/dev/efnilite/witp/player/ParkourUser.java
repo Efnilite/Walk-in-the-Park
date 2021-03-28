@@ -105,9 +105,10 @@ public abstract class ParkourUser {
             } else {
                 PreviousData data = previousData.get(pl.getName());
                 previousData.remove(pl.getName());
-                WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 data.apply();
+                WITP.getVersionManager().setWorldBorder(player.player, new Vector().zero(), 29999984);
                 pl.resetPlayerTime();
+                pl.resetPlayerWeather();
             }
         }
     }

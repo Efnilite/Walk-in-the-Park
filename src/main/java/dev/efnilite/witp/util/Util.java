@@ -131,18 +131,6 @@ public class Util {
     }
 
     /**
-     * Makes a boolean readable for normal players
-     *
-     * @param   value
-     *          The value
-     *
-     * @return true -> yes, false -> no
-     */
-    public static String normalizeBoolean(String value) {
-        return value.replaceAll("true", Option.TRUE).replaceAll("false", Option.FALSE);
-    }
-
-    /**
      * Gets the chunks from a BoundingBox
      *
      * @param   box

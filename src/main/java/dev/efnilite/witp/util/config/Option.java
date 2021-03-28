@@ -90,10 +90,6 @@ public class Option {
 
     public static boolean JOINING;
 
-    // Lang
-    public static String TRUE;
-    public static String FALSE;
-
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
@@ -105,8 +101,6 @@ public class Option {
 
         JOINING = config.getBoolean("joining");
 
-        TRUE = lang.getString("messages.en.true");
-        FALSE = lang.getString("messages.en.false");
         VERBOSE = config.getBoolean("verbose");
         UPDATER = config.getBoolean("updater");
 
@@ -163,7 +157,7 @@ public class Option {
             REWARDS_COMMAND = null;
         }
         REWARDS_MESSAGE = config.getString("rewards.message");
-        if (REWARDS_MESSAGE.equalsIgnoreCase("null")) {
+        if (REWARDS_MESSAGE.equalsIgnoreCase("null") || REWARDS_MESSAGE.equals("''") || REWARDS_MESSAGE.equals("")) {
             REWARDS_MESSAGE = null;
         }
 

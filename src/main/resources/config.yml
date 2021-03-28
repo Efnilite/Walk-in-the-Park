@@ -184,7 +184,7 @@ rewards:
     vault-reward: 5
 
     # The message you get after the interval is met
-    # null means no message
+    # '' means no message
     message: '&6+5 coins'
 
 # Options for particles/sounds

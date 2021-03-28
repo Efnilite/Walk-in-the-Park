@@ -170,7 +170,7 @@ public class MainCommand extends BukkitCommand {
                         user.sendTranslated("not-there-search");
                     } else {
                         Player search = Bukkit.getPlayer(args[1]);
-                        if (search != null) {
+                        if (search != null && !search.getName().equals(player.getName())) {
                             ParkourUser searchUser = ParkourUser.getUser(search);
                             if (searchUser instanceof ParkourPlayer) {
                                 ParkourPlayer searchPp = (ParkourPlayer) searchUser;

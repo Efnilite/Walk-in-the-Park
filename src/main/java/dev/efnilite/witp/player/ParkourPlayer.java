@@ -148,7 +148,7 @@ public class ParkourPlayer extends ParkourUser {
         if (showScoreboard == null) {
             showScoreboard = true;
         }
-        if (showScoreboard && Option.SCOREBOARD) {
+        if (showScoreboard && Option.SCOREBOARD && board != null) {
             String title = Option.SCOREBOARD_TITLE;
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
@@ -306,13 +306,13 @@ public class ParkourPlayer extends ParkourUser {
             if (checkOptions("difficulty", "witp.difficulty")) {
                 InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
                 String difficultyString = Boolean.toString(useDifficulty);
-                ItemStack item1 = config.getFromItemData(locale, "options.difficulty-switch", Util.normalizeBoolean(Util.colorBoolean(difficultyString)));
+                ItemStack item1 = config.getFromItemData(locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
                 item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
                 int diffSlot = dynamic1.next();
                 diff.setItem(diffSlot, item1, (t3, e3) -> {
                     if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
                         useDifficulty = !useDifficulty;
-                        sendTranslated("selected-difficulty", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
+                        sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
                         item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
                         diff.build();
                     }
@@ -339,17 +339,17 @@ public class ParkourPlayer extends ParkourUser {
             }
         });
         String particlesString = Boolean.toString(useParticles);
-        item = config.getFromItemData(locale, "options.particles", Util.normalizeBoolean(Util.colorBoolean(particlesString)));
+        item = config.getFromItemData(locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
         item.setType(useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("particles", "witp.particles")) {
                 useParticles = !useParticles;
-                sendTranslated("selected-particles", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
+                sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
                 menu();
             }
         });
         String scoreboardString = Boolean.toString(showScoreboard);
-        item = config.getFromItemData(locale, "options.scoreboard", Util.normalizeBoolean(Util.colorBoolean(scoreboardString)));
+        item = config.getFromItemData(locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
         item.setType(showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("scoreboard", "witp.scoreboard")) {
@@ -361,7 +361,7 @@ public class ParkourPlayer extends ParkourUser {
                     } else {
                         board.delete();
                     }
-                    sendTranslated("selected-scoreboard", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+                    sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
                     menu();
                 } else {
                     sendTranslated("cant-do");
@@ -369,32 +369,32 @@ public class ParkourPlayer extends ParkourUser {
             }
         });
         String deathString = Boolean.toString(showDeathMsg);
-        item = config.getFromItemData(locale, "options.death-msg", Util.normalizeBoolean(Util.colorBoolean(deathString)));
+        item = config.getFromItemData(locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
         item.setType(showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("death-msg", "witp.fall")) {
                 showDeathMsg = !showDeathMsg;
-                sendTranslated("selected-fall-message", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
+                sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
                 menu();
             }
         });
         String specialString = Boolean.toString(useSpecial);
-        item = config.getFromItemData(locale, "options.special", Util.normalizeBoolean(Util.colorBoolean(specialString)));
+        item = config.getFromItemData(locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
         item.setType(useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("special", "witp.special")) {
                 useSpecial = !useSpecial;
-                sendTranslated("selected-special-blocks", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
+                sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
                 menu();
             }
         });
         String structuresString = Boolean.toString(useStructure);
-        item = config.getFromItemData(locale, "options.structure", Util.normalizeBoolean(Util.colorBoolean(structuresString)));
+        item = config.getFromItemData(locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
         item.setType(useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("structure", "witp.structures")) {
                 useStructure = !useStructure;
-                sendTranslated("selected-structures", Util.normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
+                sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
                 menu();
             }
         });
@@ -761,6 +761,18 @@ public class ParkourPlayer extends ParkourUser {
      */
     public ParkourGenerator getGenerator() {
         return generator;
+    }
+
+    /**
+     * Makes a boolean readable for normal players
+     *
+     * @param   value
+     *          The value
+     *
+     * @return true -> yes, false -> no
+     */
+    public String normalizeBoolean(String value) {
+        return value.replaceAll("true", getTranslated("true")).replaceAll("false", getTranslated("false"));
     }
 }
 

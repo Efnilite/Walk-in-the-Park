@@ -10,8 +10,6 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
-import dev.efnilite.witp.util.sql.UpdertStatement;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -51,6 +49,7 @@ public class DefaultGenerator extends ParkourGenerator {
     protected Location blockSpawn;
     protected List<Block> structureBlocks;
 
+    protected final Queue<Block> generatedHistory;
     protected final LinkedHashMap<String, Integer> buildLog;
     protected final HashMap<Integer, Integer> distanceChances;
     protected final HashMap<Integer, Integer> specialChances;
@@ -76,6 +75,7 @@ public class DefaultGenerator extends ParkourGenerator {
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
         this.latestLocation = lastSpawn.clone();
+        this.generatedHistory = new LinkedList<>();
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();
         this.specialChances = new HashMap<>();
@@ -230,12 +230,11 @@ public class DefaultGenerator extends ParkourGenerator {
             stopped = true;
             task.cancel();
         }
-        for (String s : buildLog.keySet()) {
-            Util.parseLocation(s).getBlock().setType(Material.AIR);
+        for (Block block : generatedHistory) {
+            block.setType(Material.AIR);
         }
-        for (String s : buildLog.keySet()) { // just in case
-            Util.parseLocation(s).getBlock().setType(Material.AIR);
-        }
+        generatedHistory.clear();
+
         player.saveGame();
         deleteStructure();
         buildLog.clear();
@@ -281,9 +280,7 @@ public class DefaultGenerator extends ParkourGenerator {
         }
         // second check, just in case
         for (Block block : structureBlocks) {
-            if (block.getType() != Material.AIR) {
-                block.setType(Material.AIR);
-            }
+            block.setType(Material.AIR);
         }
 
         structureBlocks.clear();
@@ -482,6 +479,10 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 Block chosen = possible.get(random.nextInt(possible.size()));
                 chosen.setBlockData(material);
+                generatedHistory.add(chosen);
+                if (generatedHistory.size() > player.blockLead + 5) {
+                    generatedHistory.remove();
+                }
                 new BlockGenerateEvent(chosen, this, player).call();
                 lastSpawn = chosen.getLocation().clone();
 
@@ -546,7 +547,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 break;
         }
 
-        int listSize = player.blockLead + 10; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 5; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
