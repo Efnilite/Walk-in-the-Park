@@ -190,8 +190,8 @@ public final class WITP extends JavaPlugin implements Listener {
         } else if (player.getWorld() == WITP.getDivider().getWorld()) {
             World fallback = Bukkit.getWorld(configuration.getString("config", "world.fall-back"));
             if (fallback != null) {
+                // If players who left in the world end up in the world itself while not being a player
                 player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                player.sendMessage("You have been teleported to a backup location");
             } else {
                 Verbose.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
