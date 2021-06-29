@@ -15,7 +15,7 @@ import java.io.File;
 public interface VersionManager {
 
     /**
-     * Places a schematic
+     * Places a schematic and adjusts for the red/green blocks.
      *
      * @param   file
      *          The file

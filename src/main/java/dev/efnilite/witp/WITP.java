@@ -19,10 +19,7 @@ import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
-import dev.efnilite.witp.version.VersionManager;
-import dev.efnilite.witp.version.VersionManager_v1_16_R1;
-import dev.efnilite.witp.version.VersionManager_v1_16_R2;
-import dev.efnilite.witp.version.VersionManager_v1_16_R3;
+import dev.efnilite.witp.version.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -49,8 +46,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class WITP extends JavaPlugin implements Listener {
 
@@ -71,6 +66,9 @@ public final class WITP extends JavaPlugin implements Listener {
 
         String version = Util.getVersion();
         switch (version) {
+            case "v1_17_R1":
+                versionManager = new VersionManager_v1_17_R1();
+                break;
             case "v1_16_R3":
                 versionManager = new VersionManager_v1_16_R3();
                 break;
@@ -82,7 +80,7 @@ public final class WITP extends JavaPlugin implements Listener {
                 break;
             default:
                 Verbose.error("You are trying to start this plugin using an invalid server version");
-                Verbose.error("This plugin only works in version 1.16.4, 1.16.3, 1.16.2 or 1.16.1");
+                Verbose.error("This plugin only works in version 1.17 or 1.16.x!");
                 this.getServer().getPluginManager().disablePlugin(this);
                 return;
         }

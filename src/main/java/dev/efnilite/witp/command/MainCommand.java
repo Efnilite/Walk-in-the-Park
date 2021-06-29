@@ -99,7 +99,10 @@ public class MainCommand extends BukkitCommand {
                 ParkourUser pp = ParkourUser.getUser(player);
                 if (pp == null) {
                     try {
-                        ParkourPlayer.register(player).sendTranslated("joined");
+                        pp = ParkourPlayer.register(player);
+                        if (pp != null) {
+                            pp.sendTranslated("joined");
+                        }
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while joining");

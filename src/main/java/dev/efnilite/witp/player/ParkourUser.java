@@ -79,8 +79,6 @@ public abstract class ParkourUser {
             if (pp.getGenerator() != null) {
                 pp.getGenerator().reset(false);
                 WITP.getDivider().leave(pp);
-            } else {
-                Verbose.error("Generator of player is null while trying to unregister!");
             }
             pp.save(saveAsync);
             players.remove(pl);

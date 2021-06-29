@@ -109,7 +109,7 @@ public class ParkourPlayer extends ParkourUser {
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
-        if (generator instanceof DefaultGenerator) {
+        if (generator != null && generator instanceof DefaultGenerator) {
             ((DefaultGenerator) generator).generate(blockLead);
         }
     }
@@ -148,7 +148,7 @@ public class ParkourPlayer extends ParkourUser {
         if (showScoreboard == null) {
             showScoreboard = true;
         }
-        if (showScoreboard && Option.SCOREBOARD && board != null) {
+        if (showScoreboard && Option.SCOREBOARD && board != null && generator != null) {
             String title = Option.SCOREBOARD_TITLE;
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
@@ -414,17 +414,19 @@ public class ParkourPlayer extends ParkourUser {
             }
         });
         builder.setItem(22, WITP.getConfiguration().getFromItemData(locale, "options.language", locale), (t2, e2) -> {
-            List<String> langs = Option.LANGUAGES;
-            InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
-            for (String langName : langs) {
-                language.setItem(dynamic1.next(), new ItemBuilder(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
-                    lang = langName;
-                    locale = langName;
-                    sendTranslated("selected-language", langName);
-                });
+            if (checkOptions("language", "witp.language")) {
+                List<String> langs = Option.LANGUAGES;
+                InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
+                for (String langName : langs) {
+                    language.setItem(dynamic1.next(), new ItemBuilder(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
+                        lang = langName;
+                        locale = langName;
+                        sendTranslated("selected-language", langName);
+                    });
+                }
+                language.setItem(26, close, (t3, e3) -> menu());
+                language.build();
             }
-            language.setItem(26, close, (t3, e3) -> menu());
-            language.build();
         });
         builder.setItem(26, WITP.getConfiguration().getFromItemData(locale, "general.quit"), (t2, e2) -> {
             player.closeInventory();

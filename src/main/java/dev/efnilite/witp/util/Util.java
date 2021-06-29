@@ -3,7 +3,6 @@ package dev.efnilite.witp.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;

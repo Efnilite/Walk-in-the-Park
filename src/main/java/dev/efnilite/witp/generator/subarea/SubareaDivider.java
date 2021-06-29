@@ -257,8 +257,8 @@ public class SubareaDivider {
 
     private void createIsland(@NotNull ParkourPlayer pp, SubareaPoint point) {
         if (point == null) { // something has gone TERRIBLY WRONG, just in case
-            Verbose.error("Point assignment after confirmation has gone terribly wrong - regenerating..");
-            pp.send("There was an error while trying to assign your island, please rejoin!");
+            Verbose.error("Point assignment after confirmation has gone terribly wrong, kicking player: " + pp.getPlayer().getName());
+            pp.send("&cThere was an error while trying to assign your island, please rejoin!");
             try {
                 ParkourUser.unregister(pp, true, false, true);
             } catch (IOException | InvalidStatementException ex) {

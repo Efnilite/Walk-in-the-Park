@@ -17,7 +17,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * An utilities class for the Configuration
@@ -175,16 +178,18 @@ public class Configuration {
         if (name != null && replace != null && replace.length > 0) {
             name = name.replaceFirst("%[a-z]", replace[0]);
         }
-        List<String> lore = Arrays.asList(config.getString(namePath + ".lore").split("\\|\\|"));
-        if (lore.size() != 0 && replace != null && replace.length > 0) {
-            List<String> copy = new ArrayList<>();
-            int index = 0;
-            for (String s : lore) {
-                copy.add(s.replaceFirst("%[a-z]", replace[index]));
+        String l = config.getString(namePath + ".lore");
+        List<String> lore = null;
+        if (l != null) {
+            lore = Arrays.asList(l.split("\\|\\|"));
+            if (lore.size() != 0 && replace != null && replace.length > 0) {
+                List<String> copy = new ArrayList<>();
+                int index = 0;
+                for (String s : lore) {
+                    copy.add(s.replaceFirst("%[a-z]", replace[index]));
+                }
+                lore = copy;
             }
-            lore = copy;
-        } else {
-            lore = null;
         }
 
         Material material = null;

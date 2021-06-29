@@ -23,7 +23,11 @@ public class Database {
 
         try {
             Verbose.info("Connecting to SQL...");
-            Class.forName("com.mysql.jdbc.Driver");
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver"); // For newer versions
+            } catch (ClassNotFoundException ignored) {
+                Class.forName("com.mysql.jdbc.Driver"); // For older versions
+            }
             connection = DriverManager.getConnection("jdbc:mysql://" + url + ":" + port + "/" + database
                     + "?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=utf-8"
                     + "&autoReconnect=true", username, password);

@@ -532,6 +532,8 @@ public class DefaultGenerator extends ParkourGenerator {
                 structureBlocks = data.blocks;
                 if (structureBlocks == null || structureBlocks.size() == 0) {
                     Verbose.error("0 blocks found in structure!");
+                    player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
+                    reset(true);
                 }
                 lastSpawn = data.end.clone();
 
@@ -547,7 +549,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 break;
         }
 
-        int listSize = player.blockLead + 5; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 15; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
