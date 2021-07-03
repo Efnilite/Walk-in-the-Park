@@ -27,8 +27,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
     public boolean canRegister(){
         return true;
     }
-
-
+    
     @Override
     public boolean persist(){
         return true;
@@ -111,6 +110,19 @@ public class PlaceholderHook extends PlaceholderExpansion {
                         }
                         Integer score1 = ParkourPlayer.getHighScore(uuidRank1);
                         return score1 == null ? "N/A" : Integer.toString(score1);
+                    } else {
+                        return "N/A";
+                    }
+                } else if (params.contains("time_rank_")) {
+                    String replaced = params.replaceAll("time_rank_", "");
+                    int rank = Integer.parseInt(replaced);
+                    if (rank > 0) {
+                        UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
+                        if (uuidRank1 == null) {
+                            return "N/A";
+                        }
+                        String time = ParkourPlayer.getHighScoreTime(uuidRank1);
+                        return time == null ? "N/A" : time;
                     } else {
                         return "N/A";
                     }

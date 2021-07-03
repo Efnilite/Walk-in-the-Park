@@ -123,7 +123,7 @@ messages:
             miss: '&7Te faltaron &f%s&7 puntos para alcanzar tu puntuación más alta!'
             beat: '&7Superaste tu puntuación más alta por &f%s&7 puntos!'
             tied: '&7Alcanzaste tu puntuación más alta!'
-
+    # Polski (Polish)
     pl:
         join: '&7%p dołączył do serwera.'
         leave: '&7%p opuścił serwer.'
@@ -149,8 +149,8 @@ messages:
         customize-menu: '&a&l(!) &7Możesz zmodyfikować swój parkour używając komendy /witp menu.'
         not-there-search: '&7Napisz jakiego gracza chcesz obserwować!'
         click-search: '&c&l&nNaciśnij tutaj&r&c&l aby wpisac jakiego gracza chcesz wyszukać.'
-        true: tak
-        false: nie
+        true: 'tak'
+        false: 'nie'
         spectator: '&a&l(!) &7Jesteś teraz obserwatorem. Możesz użyć "/parkour gm" aby opuścić lub zmienić swój tryb gry.'
         divider: '&7----------------------------------------'
         score: '&aTwój wynik: &f%s'
@@ -200,7 +200,7 @@ messages:
             miss: '&7您还差 %s 分就能突破您的最高记录了，继续加油!'
             beat: '&7较您的个人历史最高分，您成功超过 %s 分，干得漂亮!'
             tied: '&7您本次得分与历史最高分持平，加把劲突破自己的极限吧!'
-
+    # Francais (French)
     fr:
         join: '&7%p a rejoint le serveur'
         leave: '&7%p a quitté le serveur'

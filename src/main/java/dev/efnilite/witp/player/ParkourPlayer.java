@@ -548,10 +548,10 @@ public class ParkourPlayer extends ParkourUser {
         if (useSpecial) score += 0.3;      // sum:      0.3
         if (useDifficulty) score += 0.2;   //           0.5
         if (useStructure) {
-            if (difficulty == 0.3) score += 0.10; //    0.6
-            if (difficulty == 0.5) score += 0.30; //    0.8
-            if (difficulty == 0.7) score += 0.40; //    0.9
-            if (difficulty == 0.8) score += 0.50; //    1.0
+            if (difficulty == 0.3) score += 0.1; //    0.6
+            if (difficulty == 0.5) score += 0.3; //    0.8
+            if (difficulty == 0.7) score += 0.4; //    0.9
+            if (difficulty == 0.8) score += 0.5; //    1.0
         }
         return score;
     }
@@ -567,6 +567,11 @@ public class ParkourPlayer extends ParkourUser {
     public static @Nullable Integer getHighScore(@NotNull UUID player) {
         return highScores.get(player);
     }
+
+    public static @Nullable String getHighScoreTime(@NotNull UUID player) {
+        return scoreMap.get(player).time;
+    }
+
 
     /**
      * Gets the player at a certain place
