@@ -192,7 +192,7 @@ particles:
 
     # Particle shape
     # The shape of the particle that will appear
-    # Possible options: dot, box, circle
+    # Possible options: dot (this is the original shape), box, circle
     particle-shape: "box"
 
     # The particle type
