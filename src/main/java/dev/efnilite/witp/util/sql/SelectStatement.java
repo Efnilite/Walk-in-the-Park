@@ -56,7 +56,7 @@ public class SelectStatement extends Statement {
                 statement.append(", ");
             }
         }
-        statement.append(" FROM ").append(table);
+        statement.append(" FROM ").append("`").append(table).append("`");
         if (condition != null) {
             statement.append(" WHERE ").append(condition);
         }

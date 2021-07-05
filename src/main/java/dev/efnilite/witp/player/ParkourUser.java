@@ -166,7 +166,7 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime");
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
                 for (String string : stats.keySet()) {
@@ -175,8 +175,9 @@ public abstract class ParkourUser {
                     String name = (String) values.get(0);
                     int highScore = Integer.parseInt((String) values.get(1));
                     String highScoreTime = (String) values.get(2);
+                    String highScoreDiff = (String) values.get(3);
                     highScores.put(uuid, highScore);
-                    scoreMap.put(uuid, new Highscore(name, highScoreTime));
+                    scoreMap.put(uuid, new Highscore(name, highScoreTime, highScoreDiff));
                 }
             }
         } else {
@@ -190,8 +191,11 @@ public abstract class ParkourUser {
                 ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
                 String name = file.getName();
                 UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+                if (from.highScoreDifficulty == null) {
+                    from.highScoreDifficulty = "?";
+                }
                 highScores.put(uuid, from.highScore);
-                scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime));
+                scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime, from.highScoreDifficulty));
             }
         }
     }
@@ -264,7 +268,6 @@ public abstract class ParkourUser {
         highScores = sorted;
         List<UUID> uuids = new ArrayList<>(sorted.keySet());
 
-        send("", "", "", "", "", "", "", "");
         sendTranslated("divider");
         for (int i = highest; i < lowest; i++) {
             if (i == uuids.size()) {
@@ -289,8 +292,12 @@ public abstract class ParkourUser {
             if (time == null || time.equals("null")) {
                 time = "N/A";
             }
+            @Nullable String diff = highscore.diff;
+            if (diff == null || diff.equals("null")) {
+                diff = "?";
+            }
             int rank = i + 1;
-            send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) + " &7(" + time + ")");
+            send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) + " &7(" + time + ", " + getTranslated("difficulty") + ": " + diff + "/1.0)");
         }
 
         UUID uuid = player.getUniqueId();

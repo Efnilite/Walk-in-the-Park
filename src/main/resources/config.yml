@@ -193,7 +193,7 @@ particles:
     # Particle shape
     # The shape of the particle that will appear
     # Possible options: dot, box, circle
-    particle-shape: "circle"
+    particle-shape: "box"
 
     # The particle type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work

@@ -48,7 +48,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String highScoreTime;
     public @Expose int blockLead;
     public @Expose boolean useDifficulty;
-    public double highScoreDifficulty; // todo add to json
+    public @Expose String highScoreDifficulty;
     public @Expose Boolean useParticles;
     public @Expose Boolean useSpecial;
     public @Expose Boolean showDeathMsg;
@@ -91,7 +91,7 @@ public class ParkourPlayer extends ParkourUser {
 
     public void setDefaults(int highScore, String time, String style, String highScoreTime, String lang,
                             int blockLead, boolean useParticles, boolean useDifficulty, boolean useStructure, boolean useSpecial,
-                            boolean showDeathMsg, boolean showScoreboard) {
+                            boolean showDeathMsg, boolean showScoreboard, String highScoreDifficulty) {
         this.highScoreTime = highScoreTime;
         this.useSpecial = useSpecial;
         this.showDeathMsg = showDeathMsg;
@@ -105,6 +105,7 @@ public class ParkourPlayer extends ParkourUser {
         this.showScoreboard = showScoreboard;
         this.locale = lang;
         this.lang = lang;
+        this.highScoreDifficulty = highScoreDifficulty;
 
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
@@ -211,13 +212,18 @@ public class ParkourPlayer extends ParkourUser {
      * @param   score
      *          The score
      */
-    public void setHighScore(int score, String time) {
+    public void setHighScore(int score, String time, String diff) {
         this.highScore = score;
         highScoreTime = time;
+        if (diff.length() > 3) {
+            diff = diff.substring(0, 3);
+        }
+        highScoreDifficulty = diff;
         if (scoreMap.get(uuid) == null) {
-            scoreMap.put(uuid, new Highscore(player.getName(), highScoreTime));
+            scoreMap.put(uuid, new Highscore(player.getName(), highScoreTime, diff));
         } else {
             scoreMap.get(uuid).time = highScoreTime;
+            scoreMap.get(uuid).diff = diff;
         }
         highScores.put(uuid, score);
         highScores = Util.sortByValue(highScores);
@@ -486,7 +492,7 @@ public class ParkourPlayer extends ParkourUser {
                     UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players")
                             .setDefault("uuid", uuid.toString()).setDefault("name", name)
                             .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
-                            .setDefault("lang" , locale)
+                            .setDefault("lang" , locale).setDefault("hsdiff", highScoreDifficulty)
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
                     statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "options")
@@ -527,7 +533,7 @@ public class ParkourPlayer extends ParkourUser {
             InsertStatement statement = new InsertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "game-history")
                     .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
                     .setValue("name", player.getName()).setValue("score", generator.score)
-                    .setValue("hstime", generator.time).setValue("difficultyScore", calculateDifficultyScore());
+                    .setValue("hstime", generator.time).setValue("scoreDiff", calculateDifficultyScore());
             try {
                 statement.query();
             } catch (InvalidStatementException ex) {
@@ -543,7 +549,7 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return a number from 0 -> 1 (both inclusive)
      */
-    public double calculateDifficultyScore() {
+    public String calculateDifficultyScore() {
         double score = 0.0;
         if (useSpecial) score += 0.3;      // sum:      0.3
         if (useDifficulty) score += 0.2;   //           0.5
@@ -553,7 +559,7 @@ public class ParkourPlayer extends ParkourUser {
             if (difficulty == 0.7) score += 0.4; //    0.9
             if (difficulty == 0.8) score += 0.5; //    1.0
         }
-        return score;
+        return Double.toString(score);
     }
 
     /**
@@ -655,8 +661,11 @@ public class ParkourPlayer extends ParkourUser {
                     if (from.lang == null) {
                         from.lang = WITP.getConfiguration().getString("lang", "messages.default");
                     }
+                    if (from.highScoreDifficulty == null) {
+                        from.highScoreDifficulty = "?";
+                    }
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard);
+                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard, from.highScoreDifficulty);
                     pp.saveStats();
                     players.put(pp.player, pp);
                     reader.close();
@@ -664,24 +673,26 @@ public class ParkourPlayer extends ParkourUser {
                     Verbose.verbose("Setting new player data..");
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             "0.0s", WITP.getConfiguration().getString("lang", "messages.default"),
-                            4, true, true, true, true, true, true);
+                            4, true, true, true, true, true, true, "?");
                     players.put(pp.player, pp);
                     pp.saveStats();
                 }
             } else {
                 SelectStatement select = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX + "players")
-                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`").addCondition("`uuid` = '" + uuid.toString() + "'");
+                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 String highScoreTime;
+                String highScoreDifficulty;
                 int highscore;
                 if (objects != null) {
                     highscore = Integer.parseInt((String) objects.get(1));
                     highScoreTime = (String) objects.get(2);
+                    highScoreDifficulty = (String) objects.get(3);
                 } else {
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             "0.0s", WITP.getConfiguration().getString("lang", "messages.default"), 4,
-                            true, true, true, true, true, true);
+                            true, true, true, true, true, true, "?");
                     players.put(pp.player, pp);
                     pp.saveStats();
                     return pp;
@@ -689,7 +700,7 @@ public class ParkourPlayer extends ParkourUser {
 
                 SelectStatement options = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX + "options")
                         .addColumns("uuid", "time", "style", "blockLead", "useParticles", "useDifficulty", "useStructure",
-                                "useSpecial", "showFallMsg", "showScoreboard").addCondition("uuid = '" + uuid.toString() + "'");
+                                "useSpecial", "showFallMsg", "showScoreboard").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
@@ -698,11 +709,11 @@ public class ParkourPlayer extends ParkourUser {
                             Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
                             translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
                             translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
-                            translateSqlBoolean((String) objects.get(8)));
+                            translateSqlBoolean((String) objects.get(8)), highScoreDifficulty);
                 } else {
                     pp.setDefaults(highscore, "Day", WITP.getConfiguration().getString("config", "styles.default"),
                             highScoreTime, WITP.getConfiguration().getString("lang", "messages.default"),4,
-                            true, true, true, true, true, true);
+                            true, true, true, true, true, true, "?");
                     pp.saveStats();
                 }
                 players.put(pp.player, pp);

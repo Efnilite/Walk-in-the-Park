@@ -80,6 +80,8 @@ public class Database {
         query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "game-history` (`code` CHAR(9) NOT NULL, `uuid` VARCHAR(36), " +
                 "`name` VARCHAR(20), `score` VARCHAR(10), `hstime` VARCHAR(13) NULL, `difficultyScore` DECIMAL, PRIMARY KEY (`code`)) ENGINE = InnoDB CHARSET = utf8;");
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `lang` VARCHAR(2)");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `hsdiff` VARCHAR(3)");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "game-history` ADD `scoreDiff` VARCHAR(3)");
         Verbose.info("Initialized database");
     }
 

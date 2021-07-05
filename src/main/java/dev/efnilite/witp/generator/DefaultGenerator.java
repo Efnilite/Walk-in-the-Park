@@ -243,6 +243,7 @@ public class DefaultGenerator extends ParkourGenerator {
         player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         int score = this.score;
         String time = this.time;
+        String diff = player.calculateDifficultyScore();
         if (player.showDeathMsg && regenerate && time != null) {
             String message;
             int number = 0;
@@ -256,7 +257,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 message = "message.miss";
             }
             if (score > player.highScore) {
-                player.setHighScore(score, time);
+                player.setHighScore(score, time, diff);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
@@ -266,7 +267,7 @@ public class DefaultGenerator extends ParkourGenerator {
             player.sendTranslated("divider");
         } else {
             if (score >= player.highScore) {
-                player.setHighScore(score, time);
+                player.setHighScore(score, time, diff);
             }
         }
         this.score = 0;

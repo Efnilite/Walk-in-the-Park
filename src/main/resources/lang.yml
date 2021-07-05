@@ -7,236 +7,243 @@ messages:
 
     # English (English)
     en:
-        join: '&7%p has joined the server'
-        leave: '&7%p has left the server'
-        joined: '&a&l(!) &7You joined the parkour'
-        left: '&c&l(!) &7You left the parkour'
+        join: "&7%p has joined the server"
+        leave: "&7%p has left the server"
+        joined: "&a&l(!) &7You joined the parkour"
+        left: "&c&l(!) &7You left the parkour"
 
-        next-page: '&aNext page >>'
-        previous-page: '&a<< Previous page'
-        your-rank: '&7Your rank: &f#%n &7(%h)'
+        next-page: "&aNext page >>"
+        previous-page: "&a<< Previous page"
+        your-rank: "&7Your rank: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7You selected style &c%s&7!'
-        selected-block-lead: '&a&l(!) &7You selected a &a%a &7block lead!'
-        selected-time: '&a&l(!) &7You changed your time preference to &a%t'
-        selected-difficulty: '&a&l(!) &7You changed your usage of difficulty to %v'
-        selected-structure-difficulty: '&a&l(!) &7You changed your structure difficulty to %v'
-        selected-particles: '&a&l(!) &7You changed the showing of particles to %v'
-        selected-scoreboard: '&a&l(!) &7You changed the showing of the scoreboard to %v'
-        selected-fall-message: '&a&l(!) &7You changed the showing of the fall messages to %v'
-        selected-special-blocks: '&a&l(!) &7You changed the usage of special blocks to %v'
-        selected-structures: '&a&l(!) &7You changed the usage of structures to %v'
-        selected-language: '&a&l(!) &7You selected language %v'
-        cant-do: '&c&l(!) &cYou can''t do this right now.'
-        customize-menu: '&a&l(!) &7You can customize your parkour experience by using /parkour menu.'
+        selected-style: "&a&l(!) &7You selected style &c%s&7!"
+        selected-block-lead: "&a&l(!) &7You selected a &a%a &7block lead!"
+        selected-time: "&a&l(!) &7You changed your time preference to &a%t"
+        selected-difficulty: "&a&l(!) &7You changed your usage of difficulty to %v"
+        selected-structure-difficulty: "&a&l(!) &7You changed your structure difficulty to %v"
+        selected-particles: "&a&l(!) &7You changed the showing of particles to %v"
+        selected-scoreboard: "&a&l(!) &7You changed the showing of the scoreboard to %v"
+        selected-fall-message: "&a&l(!) &7You changed the showing of the fall messages to %v"
+        selected-special-blocks: "&a&l(!) &7You changed the usage of special blocks to %v"
+        selected-structures: "&a&l(!) &7You changed the usage of structures to %v"
+        selected-language: "&a&l(!) &7You selected language %v"
+        cant-do: "&c&l(!) &cYou can't do this right now."
+        customize-menu: "&a&l(!) &7You can customize your parkour experience by using /parkour menu."
 
-        not-there-search: '&7Type the player you want to spectate!'
-        click-search: '&c&l&nClick here&r&c&l to enter the player you want to search.'
+        not-there-search: "&7Type the player you want to spectate!"
+        click-search: "&c&l&nClick here&r&c&l to enter the player you want to search."
 
         true: "yes"
         false: "no"
-        spectator: '&a&l(!) &7You are now a spectator. You can use "/parkour gm" to leave/change your gamemode.'
-        divider: '&7----------------------------------------'
-        score: '&aYour score: &f%s'
-        time: '&aYour time: &f%s'
-        highscore: '&aYour highscore: &f%s'
+        spectator: "&a&l(!) &7You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
+        divider: "&7----------------------------------------"
+        score: "&aYour score: &f%s"
+        time: "&aYour time: &f%s"
+        highscore: "&aYour highscore: &f%s"
+        difficulty: "difficulty"
         message:
-            miss: '&7You missed your high score by %s points!'
-            beat: '&7You beat your high score by %s points!'
-            tied: '&7You tied your high score!'
+            miss: "&7You missed your high score by %s points!"
+            beat: "&7You beat your high score by %s points!"
+            tied: "&7You tied your high score!"
+
     # Nederlands (Dutch)
     nl:
-        join: '&7%p is de server gejoined'
-        leave: '&7%p is de server verlaten'
-        joined: '&a&l(!) &7Je bent het parkour gejoined'
-        left: '&c&l(!) &7Je bent het parkour verlaten'
+        join: "&7%p is de server gejoined"
+        leave: "&7%p is de server verlaten"
+        joined: "&a&l(!) &7Je bent het parkour gejoined"
+        left: "&c&l(!) &7Je bent het parkour verlaten"
 
-        next-page: '&aVolgende pagina >>'
-        previous-page: '&a<< Vorige pagina'
-        your-rank: '&7Jouw plaats: &f#%n &7(%h)'
+        next-page: "&aVolgende pagina >>"
+        previous-page: "&a<< Vorige pagina"
+        your-rank: "&7Jouw plaats: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7Je hebt de stijl &c%s&7 geselecteerd!'
-        selected-block-lead: '&a&l(!) &7Je hebt een blokvoorsprong van &a%a &7geselecteerd!'
-        selected-time: '&a&l(!) &7Je hebt de tijd naar &a%t &7veranderd'
-        selected-difficulty: '&a&l(!) &7Je hebt het gebruik van moeilijkheid naar %v veranderd'
-        selected-structure-difficulty: '&a&l(!) &7Je hebt het gebruik van gebouwmoeilijkheid naar %v veranderd'
-        selected-particles: '&a&l(!) &7Je hebt gebruik van particles naar %v veranderd'
-        selected-scoreboard: '&a&l(!) &7Je hebt gebruik van het scoreboard naar %v veranderd'
-        selected-fall-message: '&a&l(!) &7Je hebt het gebruik van het valbericht naar %v veranderd'
-        selected-special-blocks: '&a&l(!) &7Je hebt het gebruik van speciale blokken naar %v veranderd'
-        selected-structures: '&a&l(!) &7Je hebt het gebruik van gebouwen naar %v veranderd'
-        selected-language: '&a&l(!) &7Je hebt de taal %v geselecteerd'
-        cant-do: '&c&l(!) &cJe kan dit nu niet doen.'
-        customize-menu: '&a&l(!) &7Je kan de parkourervaring veranderen met /parkour menu.'
+        selected-style: "&a&l(!) &7Je hebt de stijl &c%s&7 geselecteerd!"
+        selected-block-lead: "&a&l(!) &7Je hebt een blokvoorsprong van &a%a &7geselecteerd!"
+        selected-time: "&a&l(!) &7Je hebt de tijd naar &a%t &7veranderd"
+        selected-difficulty: "&a&l(!) &7Je hebt het gebruik van moeilijkheid naar %v veranderd"
+        selected-structure-difficulty: "&a&l(!) &7Je hebt het gebruik van gebouwmoeilijkheid naar %v veranderd"
+        selected-particles: "&a&l(!) &7Je hebt gebruik van particles naar %v veranderd"
+        selected-scoreboard: "&a&l(!) &7Je hebt gebruik van het scoreboard naar %v veranderd"
+        selected-fall-message: "&a&l(!) &7Je hebt het gebruik van het valbericht naar %v veranderd"
+        selected-special-blocks: "&a&l(!) &7Je hebt het gebruik van speciale blokken naar %v veranderd"
+        selected-structures: "&a&l(!) &7Je hebt het gebruik van gebouwen naar %v veranderd"
+        selected-language: "&a&l(!) &7Je hebt de taal %v geselecteerd"
+        cant-do: "&c&l(!) &cJe kan dit nu niet doen."
+        customize-menu: "&a&l(!) &7Je kan de parkourervaring veranderen met /parkour menu."
 
-        not-there-search: '&7Type de speler die je wil toekijken!'
-        click-search: '&c&l&nKlik hier&r&c&l om de speler die je wil opzoeken in te voegen.'
+        not-there-search: "&7Type de speler die je wil toekijken!"
+        click-search: "&c&l&nKlik hier&r&c&l om de speler die je wil opzoeken in te voegen."
 
         true: "ja"
         false: "nee"
-        spectator: '&a&l(!) &7Je bent nu een toekijker. Je kan "/parkour gm" gebruiken om je gamemode te veranderen.'
-        divider: '&7----------------------------------------'
-        score: '&aDe score die je hebt gehaald: &f%s'
-        time: '&aHoelang je erover hebt gedaan: &f%s'
-        highscore: '&aDe hoogste score die je hebt gehaald: &f%s'
+        spectator: "&a&l(!) &7Je bent nu een toekijker. Je kan \"/parkour gm\" gebruiken om je gamemode te veranderen."
+        divider: "&7----------------------------------------"
+        score: "&aDe score die je hebt gehaald: &f%s"
+        time: "&aHoelang je erover hebt gedaan: &f%s"
+        highscore: "&aDe hoogste score die je hebt gehaald: &f%s"
+        difficulty: "moeilijkheid"
         message:
-            miss: '&cJe was %s punten van je highscore af!'
-            beat: '&aJe hebt je highscore met %s punten verslagen!'
-            tied: '&7Je hebt hetzelfde als je vorige highscore gehaald!'
+            miss: "&cJe was %s punten van je highscore af!"
+            beat: "&aJe hebt je highscore met %s punten verslagen!"
+            tied: "&7Je hebt hetzelfde als je vorige highscore gehaald!"
 
     # Español (Spanish)
     es:
-        join: '&7%p se ha unido al servidor'
-        leave: '&7%p se ha unido al servidor'
-        joined: '&c&l(!) &7Te has unido al parkour'
-        left: '&c&l(!) &7Has abandonado el parkour'
+        join: "&7%p se ha unido al servidor"
+        leave: "&7%p se ha unido al servidor"
+        joined: "&c&l(!) &7Te has unido al parkour"
+        left: "&c&l(!) &7Has abandonado el parkour"
 
-        next-page: '&aSiguiente página >>'
-        previous-page: '&a<< Página anterior'
-        your-rank: '&7Tu rango: &f#%n &7(%h)'
+        next-page: "&aSiguiente página >>"
+        previous-page: "&a<< Página anterior"
+        your-rank: "&7Tu rango: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7Has seleccionado el estilo &c%s&7!'
-        selected-block-lead: '&a&l(!) &Seleccionaste visibilidad de &a%a &7bloques!'
-        selected-time: '&a&l(!) &7Cambiaste tu tiempo a &a%t'
-        selected-difficulty: '&a&l(!) &7Cambiaste el uso de dificultad a %v'
-        selected-structure-difficulty: '&a&l(!) &7Cambiaste la dificultad de estructuras a %v'
-        selected-particles: '&a&l(!) &7Cambiaste la visibilidad de partículas a %v'
-        selected-scoreboard: '&a&l(!) &7Cambiaste la visibilidad de la scoreboard a %v'
-        selected-fall-message: '&a&l(!) &7Cambiaste la visibilidad de los mensajes de caída a %v'
-        selected-special-blocks: '&a&l(!) &7Cambiaste el uso de bloques especiales a %v'
-        selected-structures: '&a&l(!) &7Cambiaste el de estructuras a %v'
-        selected-language: '&a&l(!) &7Has seleccionado el lenguaje %v'
-        cant-do: '&c&l(!) &cNo puedes hacer eso ahora.'
-        customize-menu: '&c&l(!) &7Puedes personalizar tu parkour con /parkour menu.'
+        selected-style: "&a&l(!) &7Has seleccionado el estilo &c%s&7!"
+        selected-block-lead: "&a&l(!) &Seleccionaste visibilidad de &a%a &7bloques!"
+        selected-time: "&a&l(!) &7Cambiaste tu tiempo a &a%t"
+        selected-difficulty: "&a&l(!) &7Cambiaste el uso de dificultad a %v"
+        selected-structure-difficulty: "&a&l(!) &7Cambiaste la dificultad de estructuras a %v"
+        selected-particles: "&a&l(!) &7Cambiaste la visibilidad de partículas a %v"
+        selected-scoreboard: "&a&l(!) &7Cambiaste la visibilidad de la scoreboard a %v"
+        selected-fall-message: "&a&l(!) &7Cambiaste la visibilidad de los mensajes de caída a %v"
+        selected-special-blocks: "&a&l(!) &7Cambiaste el uso de bloques especiales a %v"
+        selected-structures: "&a&l(!) &7Cambiaste el de estructuras a %v"
+        selected-language: "&a&l(!) &7Has seleccionado el lenguaje %v"
+        cant-do: "&c&l(!) &cNo puedes hacer eso ahora."
+        customize-menu: "&c&l(!) &7Puedes personalizar tu parkour con /parkour menu."
 
-        not-there-search: '&7Escribe el nick del jugador que quieras observar!'
-        click-search: '&c&l&nClick aquí&r&c&l para escribir el jugador que quieras observar.'
+        not-there-search: "&7Escribe el nick del jugador que quieras observar!"
+        click-search: "&c&l&nClick aquí&r&c&l para escribir el jugador que quieras observar."
 
-        true: 'Sí'
-        false: 'No'
-        spectator: '&c&l(!) &7Ahora eres un espectador. Puedes usar "/parkour gm" para salir/cambiar tu modo de juego.'
-        divider: '&7----------------------------------------'
-        score: '&aPuntuación: &f%s'
-        time: '&aTiempo: &f%s'
-        highscore: '&aPuntuación más alta: &f%s'
+        true: "Sí"
+        false: "No"
+        spectator: "&c&l(!) &7Ahora eres un espectador. Puedes usar \"/parkour gm\" para salir/cambiar tu modo de juego."
+        divider: "&7----------------------------------------"
+        score: "&aPuntuación: &f%s"
+        time: "&aTiempo: &f%s"
+        highscore: "&aPuntuación más alta: &f%s"
+        difficulty: "dificultad"
         message:
-            miss: '&7Te faltaron &f%s&7 puntos para alcanzar tu puntuación más alta!'
-            beat: '&7Superaste tu puntuación más alta por &f%s&7 puntos!'
-            tied: '&7Alcanzaste tu puntuación más alta!'
+            miss: "&7Te faltaron &f%s&7 puntos para alcanzar tu puntuación más alta!"
+            beat: "&7Superaste tu puntuación más alta por &f%s&7 puntos!"
+            tied: "&7Alcanzaste tu puntuación más alta!"
     # Polski (Polish)
     pl:
-        join: '&7%p dołączył do serwera.'
-        leave: '&7%p opuścił serwer.'
-        joined: '&a&l(!) &7Dołączyłeś do parkouru.'
-        left: '&c&l(!) &7Opuściłeś parkour.'
+        join: "&7%p dołączył do serwera."
+        leave: "&7%p opuścił serwer."
+        joined: "&a&l(!) &7Dołączyłeś do parkouru."
+        left: "&c&l(!) &7Opuściłeś parkour."
 
-        next-page: '&aNastępna strona >>'
-        previous-page: '&a<< Poprzednia strona'
-        your-rank: '&7Twoja ranga: &f#%n &7(%h)'
+        next-page: "&aNastępna strona >>"
+        previous-page: "&a<< Poprzednia strona"
+        your-rank: "&7Twoja ranga: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7Wybrałeś styl &c%s&7!'
-        selected-block-lead: '&a&l(!) &7Wybrałeś wyprzedzenie na &a%a &7bloki.'
-        selected-time: '&a&l(!) &7Zmieniłeś swoją pore dnia na &a%t&7.'
-        selected-difficulty: '&a&l(!) &7Zmieniłeś swój poziom trudności na %v&7.'
-        selected-structure-difficulty: '&a&l(!) &7Zmieniłeś poziom trudności struktur na %v&7.'
-        selected-particles: '&a&l(!) &7Zmieniłes wyświetlanie cząsteczek na %v&7.'
-        selected-scoreboard: '&a&l(!) &7Zmieniłes widoczność tablicy wyników na %v&7.'
-        selected-fall-message: '&a&l(!) &7Zmieniłes wyświetlanie wiadomości po spadnięciu na %v&7.'
-        selected-special-blocks: '&a&l(!) &7Zmieniłeś występowanie bloków specjalnych na %v&7.'
-        selected-structures: '&a&l(!) &7Zmieniłęs używanie struktur na %v&7.'
-        selected-language: '&a&l(!) &7Zmieniłes język na: %v&7.'
-        cant-do: '&c&l(!) &cNie możesz tego zrobić w tym momencie.'
-        customize-menu: '&a&l(!) &7Możesz zmodyfikować swój parkour używając komendy /witp menu.'
-        not-there-search: '&7Napisz jakiego gracza chcesz obserwować!'
-        click-search: '&c&l&nNaciśnij tutaj&r&c&l aby wpisac jakiego gracza chcesz wyszukać.'
-        true: 'tak'
-        false: 'nie'
-        spectator: '&a&l(!) &7Jesteś teraz obserwatorem. Możesz użyć "/parkour gm" aby opuścić lub zmienić swój tryb gry.'
-        divider: '&7----------------------------------------'
-        score: '&aTwój wynik: &f%s'
-        time: '&aTwój czas: &f%s'
-        highscore: '&aTwój najlepszy wynik: &f%s'
+        selected-style: "&a&l(!) &7Wybrałeś styl &c%s&7!"
+        selected-block-lead: "&a&l(!) &7Wybrałeś wyprzedzenie na &a%a &7bloki."
+        selected-time: "&a&l(!) &7Zmieniłeś swoją pore dnia na &a%t&7."
+        selected-difficulty: "&a&l(!) &7Zmieniłeś swój poziom trudności na %v&7."
+        selected-structure-difficulty: "&a&l(!) &7Zmieniłeś poziom trudności struktur na %v&7."
+        selected-particles: "&a&l(!) &7Zmieniłes wyświetlanie cząsteczek na %v&7."
+        selected-scoreboard: "&a&l(!) &7Zmieniłes widoczność tablicy wyników na %v&7."
+        selected-fall-message: "&a&l(!) &7Zmieniłes wyświetlanie wiadomości po spadnięciu na %v&7."
+        selected-special-blocks: "&a&l(!) &7Zmieniłeś występowanie bloków specjalnych na %v&7."
+        selected-structures: "&a&l(!) &7Zmieniłęs używanie struktur na %v&7."
+        selected-language: "&a&l(!) &7Zmieniłes język na: %v&7."
+        cant-do: "&c&l(!) &cNie możesz tego zrobić w tym momencie."
+        customize-menu: "&a&l(!) &7Możesz zmodyfikować swój parkour używając komendy /witp menu."
+        not-there-search: "&7Napisz jakiego gracza chcesz obserwować!"
+        click-search: "&c&l&nNaciśnij tutaj&r&c&l aby wpisac jakiego gracza chcesz wyszukać."
+        true: "tak"
+        false: "nie"
+        spectator: "&a&l(!) &7Jesteś teraz obserwatorem. Możesz użyć \"/parkour gm\" aby opuścić lub zmienić swój tryb gry."
+        divider: "&7----------------------------------------"
+        score: "&aTwój wynik: &f%s"
+        time: "&aTwój czas: &f%s"
+        highscore: "&aTwój najlepszy wynik: &f%s"
+        difficulty: "trudność"
         message:
-            miss: '&7Zabrakło ci %s punktów do swojego rekordu!'
-            beat: '&7Przebiłeś swój rekord o %s punktów!'
-            tied: '&7Zrobiłes taki sam wynik jak twój rekord osobisty!'
+            miss: "&7Zabrakło ci %s punktów do swojego rekordu!"
+            beat: "&7Przebiłeś swój rekord o %s punktów!"
+            tied: "&7Zrobiłes taki sam wynik jak twój rekord osobisty!"
 
     # 简体中文 (中国大陆, Simplified Chinese)
     zh_CN:
-        join: '&7%p 加入了服务器'
-        leave: '&7%p 离开了服务器'
-        joined: '&a&l(!) &7您参与了一场跑酷'
-        left: '&c&l(!) &7您从跑酷当中离开'
+        join: "&7%p 加入了服务器"
+        leave: "&7%p 离开了服务器"
+        joined: "&a&l(!) &7您参与了一场跑酷"
+        left: "&c&l(!) &7您从跑酷当中离开"
 
-        next-page: '&a下一页 >>'
-        previous-page: '&a<< 上一页'
-        your-rank: '&7您的排名: &f#%n &7(%h)'
+        next-page: "&a下一页 >>"
+        previous-page: "&a<< 上一页"
+        your-rank: "&7您的排名: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7您选择了跑酷类型 &c%s&7!'
-        selected-block-lead: '&a&l(!) &7您选择了一个 &a%a &7方块作为引领作用!'
-        selected-time: '&a&l(!) &7您更改了您的跑酷的偏好时间为 &a%t'
-        selected-difficulty: '&a&l(!) &7您更改了您的跑酷难度为 %v'
-        selected-structure-difficulty: '&a&l(!) &7您更改了您的跑酷结构难度为 %v'
-        selected-particles: '&a&l(!) &7您更改了您的跑酷粒子效果为 %v'
-        selected-scoreboard: '&a&l(!) &7您将计分板显示与否切换为 %v'
-        selected-fall-message: '&a&l(!) &7您将失败信息显示与否切换为 %v'
-        selected-special-blocks: '&a&l(!) &7您更改了您的特殊方块为 %v'
-        selected-structures: '&a&l(!) &7您更改了您使用的结构为 %v'
-        selected-language: '&a&l(!) &7您更改您选择的语言为 %v'
-        cant-do: '&c&l(!) &c您目前不能那么做。'
-        customize-menu: '&a&l(!) &7您可以通过运行命令 /parkour menu 来客制化您的跑酷体验。'
+        selected-style: "&a&l(!) &7您选择了跑酷类型 &c%s&7!"
+        selected-block-lead: "&a&l(!) &7您选择了一个 &a%a &7方块作为引领作用!"
+        selected-time: "&a&l(!) &7您更改了您的跑酷的偏好时间为 &a%t"
+        selected-difficulty: "&a&l(!) &7您更改了您的跑酷难度为 %v"
+        selected-structure-difficulty: "&a&l(!) &7您更改了您的跑酷结构难度为 %v"
+        selected-particles: "&a&l(!) &7您更改了您的跑酷粒子效果为 %v"
+        selected-scoreboard: "&a&l(!) &7您将计分板显示与否切换为 %v"
+        selected-fall-message: "&a&l(!) &7您将失败信息显示与否切换为 %v"
+        selected-special-blocks: "&a&l(!) &7您更改了您的特殊方块为 %v"
+        selected-structures: "&a&l(!) &7您更改了您使用的结构为 %v"
+        selected-language: "&a&l(!) &7您更改您选择的语言为 %v"
+        cant-do: "&c&l(!) &c您目前不能那么做。"
+        customize-menu: "&a&l(!) &7您可以通过运行命令 /parkour menu 来客制化您的跑酷体验。"
 
-        not-there-search: '&7请输入您想指定的玩家!'
-        click-search: '&c&l&n点击这里&r&c&l 来输入您想要寻找的玩家。'
+        not-there-search: "&7请输入您想指定的玩家!"
+        click-search: "&c&l&n点击这里&r&c&l 来输入您想要寻找的玩家。"
 
         true: "是"
         false: "否"
-        spectator: '&a&l(!) &7您现在作为观察者来参与跑酷。使用命令 "/parkour gm" 以离开/更改您的游戏模式。'
-        divider: '&7----------------------------------------'
-        score: '&a您的得分: &f%s'
-        time: '&a所耗时间: &f%s'
-        highscore: '&a您的个人历史最高分: &f%s'
+        spectator: "&a&l(!) &7您现在作为观察者来参与跑酷。使用命令 \"/parkour gm\" 以离开/更改您的游戏模式。"
+        divider: "&7----------------------------------------"
+        score: "&a您的得分: &f%s"
+        time: "&a所耗时间: &f%s"
+        highscore: "&a您的个人历史最高分: &f%s"
+        difficulty: "难度"
         message:
-            miss: '&7您还差 %s 分就能突破您的最高记录了，继续加油!'
-            beat: '&7较您的个人历史最高分，您成功超过 %s 分，干得漂亮!'
-            tied: '&7您本次得分与历史最高分持平，加把劲突破自己的极限吧!'
+            miss: "&7您还差 %s 分就能突破您的最高记录了，继续加油!"
+            beat: "&7较您的个人历史最高分，您成功超过 %s 分，干得漂亮!"
+            tied: "&7您本次得分与历史最高分持平，加把劲突破自己的极限吧!"
     # Francais (French)
     fr:
-        join: '&7%p a rejoint le serveur'
-        leave: '&7%p a quitté le serveur'
-        joined: '&a&l(!) &7Vous avez rejoint le parkour'
-        left: '&c&l(!) &7Tu as quitté le parkour'
+        join: "&7%p a rejoint le serveur"
+        leave: "&7%p a quitté le serveur"
+        joined: "&a&l(!) &7Vous avez rejoint le parkour"
+        left: "&c&l(!) &7Tu as quitté le parkour"
 
-        next-page: '&aPage suivante >>'
-        previous-page: '&a<< Page précédente'
-        your-rank: '&7Votre rang: &f#%n &7(%h)'
+        next-page: "&aPage suivante >>"
+        previous-page: "&a<< Page précédente"
+        your-rank: "&7Votre rang: &f#%n &7(%h)"
 
-        selected-style: '&a&l(!) &7Vous avez choisi le style &c%s&7!'
-        selected-block-lead: '&a&l(!) &7Vous avez sélectionné &a%a &7comme bloc de préférence!'
-        selected-time: '&a&l(!) &7Vous avez changé votre préférence de temps pour &a%t'
-        selected-difficulty: '&a&l(!) &7Vous avez changé votre usage de la difficulté en %v'
-        selected-structure-difficulty: '&a&l(!) &7Vous avez changé votre difficulté de structure en %v'
-        selected-particles: '&a&l(!) &7Vous avez changé l''affichage des particules en %v'
-        selected-scoreboard: '&a&l(!) &7Vous avez changé l''affichage du tableau d''affichage en %v'
-        selected-fall-message: '&a&l(!) &7Vous avez changer l''affichage de tout les messages en %v'
-        selected-special-blocks: '&a&l(!) &7Vous avez changé l''utilisation des blocs spéciaux en %v'
-        selected-structures: '&a&l(!) &7Vous avez changé l''utilisation des structures en %v'
-        selected-language: '&a&l(!) &7Vous avez choisi la langue %v'
-        cant-do: '&c&l(!) &cTu ne peux pas faire ça maintenant..'
-        customize-menu: '&a&l(!) &7Vous pouvez personnaliser votre expérience de parkour en utilisant /parkour menu.'
-        not-there-search: '&7Cliquer sur le joueur que vous voulez observer!'
-        click-search: '&c&l&nCliquez ici&r&c&l pour trouve se que vous voulez rechercher.'
-        true: 'oui'
-        false: 'non'
-        spectator: '&a&l(!) &7Tu es maintenant un spectateur. Vous pouvez utiliser "/parkour gm" pour leave/change ton mode de jeu.'
-        divider: '&7----------------------------------------'
-        score: '&aVotre score: &f%s'
-        time: '&aVotre temps: &f%s'
-        highscore: '&aVotre highscore: &f%s'
+        selected-style: "&a&l(!) &7Vous avez choisi le style &c%s&7!"
+        selected-block-lead: "&a&l(!) &7Vous avez sélectionné &a%a &7comme bloc de préférence!"
+        selected-time: "&a&l(!) &7Vous avez changé votre préférence de temps pour &a%t"
+        selected-difficulty: "&a&l(!) &7Vous avez changé votre usage de la difficulté en %v"
+        selected-structure-difficulty: "&a&l(!) &7Vous avez changé votre difficulté de structure en %v"
+        selected-particles: "&a&l(!) &7Vous avez changé l'affichage des particules en %v"
+        selected-scoreboard: "&a&l(!) &7Vous avez changé l'affichage du tableau d'affichage en %v"
+        selected-fall-message: "&a&l(!) &7Vous avez changer l'affichage de tout les messages en %v"
+        selected-special-blocks: "&a&l(!) &7Vous avez changé l'utilisation des blocs spéciaux en %v"
+        selected-structures: "&a&l(!) &7Vous avez changé l'utilisation des structures en %v"
+        selected-language: "&a&l(!) &7Vous avez choisi la langue %v"
+        cant-do: "&c&l(!) &cTu ne peux pas faire ça maintenant.."
+        customize-menu: "&a&l(!) &7Vous pouvez personnaliser votre expérience de parkour en utilisant /parkour menu."
+        not-there-search: "&7Cliquer sur le joueur que vous voulez observer!"
+        click-search: "&c&l&nCliquez ici&r&c&l pour trouve se que vous voulez rechercher."
+        true: "oui"
+        false: "non"
+        spectator: "&a&l(!) &7Tu es maintenant un spectateur. Vous pouvez utiliser \"/parkour gm\" pour leave/change ton mode de jeu."
+        divider: "&7----------------------------------------"
+        score: "&aVotre score: &f%s"
+        time: "&aVotre temps: &f%s"
+        highscore: "&aVotre highscore: &f%s"
+        difficulty: "difficulté"
         message:
-            miss: '&7Vous avez raté votre meilleur score de %s points!'
-            beat: '&7Vous avez battu votre meilleur score en %s points!'
-            tied: '&7Vous avez égalé votre meilleur score!'
+            miss: "&7Vous avez raté votre meilleur score de %s points!"
+            beat: "&7Vous avez battu votre meilleur score en %s points!"
+            tied: "&7Vous avez égalé votre meilleur score!"
 
 options:
 
@@ -250,11 +257,11 @@ options:
 scoreboard:
     enabled: true
 
-    title: '&a&lWalk in the Park'
+    title: "&a&lWalk in the Park"
     lines:
-        - '&a'
-        - '&7Score: &f%score%'
-        - '&7Time: &f%time%'
-        - '&7Highscore: &f%highscore%'
-        - '&b'
-        - '&6&lserver.ip'
+        - "&a"
+        - "&7Score: &f%score%"
+        - "&7Time: &f%time%"
+        - "&7Highscore: &f%highscore%"
+        - "&b"
+        - "&6&lserver.ip"
