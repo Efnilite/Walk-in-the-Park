@@ -15,8 +15,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -57,8 +59,8 @@ public class DefaultGenerator extends ParkourGenerator {
     protected final HashMap<Integer, Integer> defaultChances;
     protected final HashMap<Integer, Double> multiplierDecreases;
 
-    private static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 20, 0.4,
-            0.5, 1, 0.5);
+    private static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0,
+            0, 0, 0);
 
     /**
      * Creates a new ParkourGenerator instance
@@ -329,7 +331,7 @@ public class DefaultGenerator extends ParkourGenerator {
                     reset(true);
                     score = copy;
                     player.send("&cSorry for the inconvenience, but you have been teleported back to spawn");
-                    player.send("&cYou can continue adding to your score");
+                    player.send("&cYou can continue adding to your score.");
                     return;
                 }
 
@@ -353,7 +355,7 @@ public class DefaultGenerator extends ParkourGenerator {
                     }
                     distanceChances.clear();
                     int index = 0;
-                    for (int i = 0; i < one; i++) {
+                    for (int i = 0; i < one; i++) { // regenerate the chances for distance
                         distanceChances.put(index, 1);
                         index++;
                     }
@@ -371,7 +373,7 @@ public class DefaultGenerator extends ParkourGenerator {
                     }
                 }
 
-                if (heightChances.size() == 0) {
+                if (heightChances.size() == 0) { // regenerate the chances for height
                     int index1 = 0;
                     for (int i = 0; i < Option.NORMAL_UP; i++) {
                         heightChances.put(index1, 1);
@@ -471,6 +473,12 @@ public class DefaultGenerator extends ParkourGenerator {
                 if (local.getBlock().getType() == Material.SMOOTH_QUARTZ_SLAB) {
                     height = Math.min(height, 0);
                 }
+                if (height > 1) {
+                    height = 1;
+                }
+                if (gap > 4) {
+                    gap = 4;
+                }
                 List<Block> possible = getPossible(gap - height, height);
                 if (possible.size() == 0) {
                     lastSpawn = local.clone();
@@ -488,7 +496,26 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 if (player.useParticles) {
                     PARTICLE_DATA.setType(Option.PARTICLE_TYPE);
-                    Particles.draw(lastSpawn.clone().add(0, 1, 0), PARTICLE_DATA);
+
+                    Player bukkitPlayer = player.getPlayer();
+                    switch (Option.PARTICLE_SHAPE) {
+                        case DOT:
+                            PARTICLE_DATA.setSpeed(0.4);
+                            PARTICLE_DATA.setSize(20);
+                            PARTICLE_DATA.setOffsetX(0.5);
+                            PARTICLE_DATA.setOffsetY(1);
+                            PARTICLE_DATA.setOffsetZ(0.5);
+                            Particles.draw(lastSpawn.clone().add(0.5, 1, 0.5), PARTICLE_DATA, bukkitPlayer);
+                            break;
+                        case CIRCLE:
+                            PARTICLE_DATA.setSize(5);
+                            Particles.circle(lastSpawn.clone().add(0.5, 0, 0.5), PARTICLE_DATA, bukkitPlayer, 1, 25);
+                            break;
+                        case BOX:
+                            PARTICLE_DATA.setSize(1);
+                            Particles.box(BoundingBox.of(chosen), player.getPlayer().getWorld(), PARTICLE_DATA, bukkitPlayer, 0.1);
+                            break;
+                    }
                     player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
                 }
 

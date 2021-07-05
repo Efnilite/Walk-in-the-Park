@@ -623,7 +623,7 @@ public class ParkourPlayer extends ParkourUser {
         if (players.get(pp.player) == null) {
             UUID uuid = pp.getPlayer().getUniqueId();
             if (!Option.SQL) {
-                File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
                 if (data.exists()) {
                     Verbose.verbose("Reading player data..");
                     FileReader reader = new FileReader(data);
@@ -709,6 +709,7 @@ public class ParkourPlayer extends ParkourUser {
             }
             return pp;
         }
+        JOIN_COUNT++;
         return pp;
     }
 

@@ -40,7 +40,7 @@ public abstract class ParkourUser {
     public String locale;
     protected final Player player;
     protected FastBoard board;
-    protected int joins;
+    public static int JOIN_COUNT;
 
     private static final HashMap<String, PreviousData> previousData = new HashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();

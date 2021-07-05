@@ -57,19 +57,19 @@ public class ParticleData<D> {
         this.size = size;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    public void setOffsetX(int offsetX) {
+    public void setOffsetX(double offsetX) {
         this.offsetX = offsetX;
     }
 
-    public void setOffsetY(int offsetY) {
+    public void setOffsetY(double offsetY) {
         this.offsetY = offsetY;
     }
 
-    public void setOffsetZ(int offsetZ) {
+    public void setOffsetZ(double offsetZ) {
         this.offsetZ = offsetZ;
     }
 

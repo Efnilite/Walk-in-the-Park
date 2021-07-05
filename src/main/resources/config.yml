@@ -45,12 +45,12 @@ bungeecord:
 # Options for MySQL
 sql:
     enabled: false
-    url: 'localhost'
+    url: "localhost"
     port: 3306
     username: efnilite
     password: password
 
-    # Logs games
+    # Logs all games
     # !! Warning: Might take up a lot of storage
     # Does not count games with a score of 0
     game-logs: false
@@ -122,7 +122,7 @@ options:
 styles:
 
     # The default style
-    default: red
+    default: "red"
 
     # The list of all available styles, which you can add to if you want
     list:
@@ -152,7 +152,7 @@ rewards:
     # The intervals at which they get a reward
     # (so for every 50 blocks the player jumps, they get a reward)
     # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
-    # Setting this to -1 will never result in rewards
+    # Setting this to -1 will never result in rewards for Vault/commands
     interval: 50
 
     # The same as interval, but instead at scores.
@@ -163,7 +163,7 @@ rewards:
     scores:
         - "50;;tellraw @a \"hey there\";;second command"
         - "100;;give %player% golden_apple"
-        - "200" # no command means it only does the command and vault reward.
+        - "200" # no command means it only does the command and Vault reward.
 
     # The same as scores, but players can only achieve this once
     # (!!!) Work in progress // not added yet.
@@ -185,10 +185,16 @@ rewards:
 
     # The message you get after the interval is met
     # '' means no message
-    message: '&6+5 coins'
+    message: "&6+5 coins"
 
 # Options for particles/sounds
 particles:
+
+    # Particle shape
+    # The shape of the particle that will appear
+    # Possible options: dot, box, circle
+    particle-shape: "circle"
+
     # The particle type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
     particle-type: "SPELL_INSTANT"

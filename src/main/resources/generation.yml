@@ -81,7 +81,7 @@ advanced:
     height-gap: 4.5
 
     # From which score the difficulty multiplier is maxed (so from e.g.
-    # 1000 score you get more 4 block jumps than at 200 score)
+    # 750 score you get more 4 block jumps than at 200 score)
     maxed-multiplier: 750
 
     # The values of all jumps when the multiplier is maxed

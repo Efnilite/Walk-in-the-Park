@@ -133,6 +133,9 @@ public class VersionManager_v1_16_R1 implements VersionManager {
             }
             if (endPos == null) {
                 Verbose.error("There is no red wool (end of parkour) in structure " + file.getName());
+                for (Block block : blocks) {
+                    block.setType(org.bukkit.Material.AIR);
+                }
                 return null;
             }
 

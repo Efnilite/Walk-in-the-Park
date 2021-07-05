@@ -48,6 +48,7 @@ public class Option {
     public static String REWARDS_COMMAND;
     public static String REWARDS_MESSAGE;
 
+    public static Option.ParticleShape PARTICLE_SHAPE;
     public static Sound SOUND_TYPE;
     public static int SOUND_PITCH;
     public static Particle PARTICLE_TYPE;
@@ -182,6 +183,7 @@ public class Option {
         SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
         SOUND_PITCH = config.getInt("particles.sound-pitch");
         PARTICLE_TYPE = Particle.valueOf(config.getString("particles.particle-type").toUpperCase());
+        PARTICLE_SHAPE = Option.ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
 
         // Advanced settings
         if (init) {
@@ -196,5 +198,11 @@ public class Option {
         MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
+    }
+
+    public enum ParticleShape {
+        DOT,
+        CIRCLE,
+        BOX
     }
 }
