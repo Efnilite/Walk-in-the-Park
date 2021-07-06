@@ -18,6 +18,9 @@ import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
 import dev.efnilite.witp.util.task.Tasks;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -318,6 +321,7 @@ public class ParkourPlayer extends ParkourUser {
                 diff.setItem(diffSlot, item1, (t3, e3) -> {
                     if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
                         useDifficulty = !useDifficulty;
+                        generator.reset(true);
                         sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
                         item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
                         diff.build();
@@ -325,18 +329,22 @@ public class ParkourPlayer extends ParkourUser {
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> {
                     difficulty = 0.3;
+                    generator.reset(true);
                     sendTranslated("selected-structure-difficulty", "&a" + Util.parseDifficulty(0.3));
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> {
                     difficulty = 0.5;
+                    generator.reset(true);
                     sendTranslated("selected-structure-difficulty", "&2" + Util.parseDifficulty(0.5));
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> {
                     difficulty = 0.7;
+                    generator.reset(true);
                     sendTranslated("selected-structure-difficulty", "&6" + Util.parseDifficulty(0.7));
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> {
                     difficulty = 0.8;
+                    generator.reset(true);
                     sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(0.8));
                 });
 
@@ -390,6 +398,7 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("special", "witp.special")) {
                 useSpecial = !useSpecial;
+                generator.reset(true);
                 sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
                 menu();
             }
@@ -399,9 +408,7 @@ public class ParkourPlayer extends ParkourUser {
         item.setType(useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("structure", "witp.structures")) {
-                useStructure = !useStructure;
-                sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(structuresString))));
-                menu();
+                askReset("structure");
             }
         });
 
@@ -446,6 +453,30 @@ public class ParkourPlayer extends ParkourUser {
         });
         builder.setItem(25, close, (t2, e2) -> player.closeInventory());
         builder.build();
+    }
+
+    private void askReset(String item) {
+        if (generator.score < 25) {
+            confirmReset(item);
+            return;
+        }
+        sendTranslated("confirm");
+        ComponentBuilder builder = new ComponentBuilder()
+                .append(Util.color("&a&l" + getTranslated("true").toUpperCase()))
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp askreset " + item + " true"))
+                .append(Util.color(" &8| Click to confirm"));
+        player.spigot().sendMessage(builder.create());
+        player.closeInventory();
+    }
+
+    public void confirmReset(String item) {
+        switch (item) {
+            case "structure":
+                useStructure = !useStructure;
+                sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(useStructure))));
+                menu();
+                break;
+        }
     }
 
     private @Nullable List<Material> getPossibleMaterials(String style) {

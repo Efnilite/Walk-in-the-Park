@@ -185,6 +185,18 @@ public class MainCommand extends BukkitCommand {
                     }
                 }
             }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("askreset") && player != null && args[2] != null) {
+                ParkourPlayer user = ParkourPlayer.getPlayer(player);
+                if (user != null) {
+                    boolean option = Boolean.parseBoolean(args[2]);
+                    if (option) {
+                        user.send("");
+                        user.confirmReset(args[1]);
+                        user.getGenerator().reset(true);
+                    }
+                }
+            }
         }
         return true;
     }

@@ -29,6 +29,7 @@ messages:
         selected-language: "&a&l(!) &7You selected language %v"
         cant-do: "&c&l(!) &cYou can't do this right now."
         customize-menu: "&a&l(!) &7You can customize your parkour experience by using /parkour menu."
+        confirm: "&7Are you sure you want to reset?"
 
         not-there-search: "&7Type the player you want to spectate!"
         click-search: "&c&l&nClick here&r&c&l to enter the player you want to search."
@@ -70,6 +71,7 @@ messages:
         selected-language: "&a&l(!) &7Je hebt de taal %v geselecteerd"
         cant-do: "&c&l(!) &cJe kan dit nu niet doen."
         customize-menu: "&a&l(!) &7Je kan de parkourervaring veranderen met /parkour menu."
+        confirm: "&7Weet je zeker dat je wil resetten?"
 
         not-there-search: "&7Type de speler die je wil toekijken!"
         click-search: "&c&l&nKlik hier&r&c&l om de speler die je wil opzoeken in te voegen."
@@ -111,6 +113,7 @@ messages:
         selected-language: "&a&l(!) &7Has seleccionado el lenguaje %v"
         cant-do: "&c&l(!) &cNo puedes hacer eso ahora."
         customize-menu: "&c&l(!) &7Puedes personalizar tu parkour con /parkour menu."
+        confirm: "&7¿Está seguro que quiere reiniciar?"
 
         not-there-search: "&7Escribe el nick del jugador que quieras observar!"
         click-search: "&c&l&nClick aquí&r&c&l para escribir el jugador que quieras observar."
@@ -127,6 +130,7 @@ messages:
             miss: "&7Te faltaron &f%s&7 puntos para alcanzar tu puntuación más alta!"
             beat: "&7Superaste tu puntuación más alta por &f%s&7 puntos!"
             tied: "&7Alcanzaste tu puntuación más alta!"
+
     # Polski (Polish)
     pl:
         join: "&7%p dołączył do serwera."
@@ -150,6 +154,8 @@ messages:
         selected-structures: "&a&l(!) &7Zmieniłęs używanie struktur na %v&7."
         selected-language: "&a&l(!) &7Zmieniłes język na: %v&7."
         cant-do: "&c&l(!) &cNie możesz tego zrobić w tym momencie."
+        confirm: "&7Czy na pewno chcesz zresetować?"
+
         customize-menu: "&a&l(!) &7Możesz zmodyfikować swój parkour używając komendy /witp menu."
         not-there-search: "&7Napisz jakiego gracza chcesz obserwować!"
         click-search: "&c&l&nNaciśnij tutaj&r&c&l aby wpisac jakiego gracza chcesz wyszukać."
@@ -190,6 +196,7 @@ messages:
         selected-language: "&a&l(!) &7您更改您选择的语言为 %v"
         cant-do: "&c&l(!) &c您目前不能那么做。"
         customize-menu: "&a&l(!) &7您可以通过运行命令 /parkour menu 来客制化您的跑酷体验。"
+        confirm: "&7您确定要重置吗？"
 
         not-there-search: "&7请输入您想指定的玩家!"
         click-search: "&c&l&n点击这里&r&c&l 来输入您想要寻找的玩家。"
@@ -206,6 +213,7 @@ messages:
             miss: "&7您还差 %s 分就能突破您的最高记录了，继续加油!"
             beat: "&7较您的个人历史最高分，您成功超过 %s 分，干得漂亮!"
             tied: "&7您本次得分与历史最高分持平，加把劲突破自己的极限吧!"
+
     # Francais (French)
     fr:
         join: "&7%p a rejoint le serveur"
@@ -230,8 +238,11 @@ messages:
         selected-language: "&a&l(!) &7Vous avez choisi la langue %v"
         cant-do: "&c&l(!) &cTu ne peux pas faire ça maintenant.."
         customize-menu: "&a&l(!) &7Vous pouvez personnaliser votre expérience de parkour en utilisant /parkour menu."
+        confirm: "&7Êtes-vous sûr vous voulez redémarrer?"
+
         not-there-search: "&7Cliquer sur le joueur que vous voulez observer!"
         click-search: "&c&l&nCliquez ici&r&c&l pour trouve se que vous voulez rechercher."
+
         true: "oui"
         false: "non"
         spectator: "&a&l(!) &7Tu es maintenant un spectateur. Vous pouvez utiliser \"/parkour gm\" pour leave/change ton mode de jeu."
