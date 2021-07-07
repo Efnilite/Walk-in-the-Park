@@ -18,7 +18,6 @@ import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
 import dev.efnilite.witp.util.task.Tasks;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.ChatColor;
@@ -320,32 +319,23 @@ public class ParkourPlayer extends ParkourUser {
                 int diffSlot = dynamic1.next();
                 diff.setItem(diffSlot, item1, (t3, e3) -> {
                     if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
-                        useDifficulty = !useDifficulty;
-                        generator.reset(true);
-                        sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
-                        item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
-                        diff.build();
+                        if (askReset("difficulty")) {
+                            item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+                            diff.build();
+                        }
                     }
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> {
-                    difficulty = 0.3;
-                    generator.reset(true);
-                    sendTranslated("selected-structure-difficulty", "&a" + Util.parseDifficulty(0.3));
+                    askReset("e-difficulty");
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> {
-                    difficulty = 0.5;
-                    generator.reset(true);
-                    sendTranslated("selected-structure-difficulty", "&2" + Util.parseDifficulty(0.5));
+                    askReset("m-difficulty");
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> {
-                    difficulty = 0.7;
-                    generator.reset(true);
-                    sendTranslated("selected-structure-difficulty", "&6" + Util.parseDifficulty(0.7));
+                    askReset("h-difficulty");
                 });
                 diff.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> {
-                    difficulty = 0.8;
-                    generator.reset(true);
-                    sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(0.8));
+                    askReset("vh-difficulty");
                 });
 
                 diff.setItem(26, close, (t3, e3) -> menu());
@@ -397,10 +387,7 @@ public class ParkourPlayer extends ParkourUser {
         item.setType(useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
         builder.setItem(dynamic.next(), item, (t2, e2) -> {
             if (checkOptions("special", "witp.special")) {
-                useSpecial = !useSpecial;
-                generator.reset(true);
-                sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(specialString))));
-                menu();
+                askReset("special");
             }
         });
         String structuresString = Boolean.toString(useStructure);
@@ -455,18 +442,19 @@ public class ParkourPlayer extends ParkourUser {
         builder.build();
     }
 
-    private void askReset(String item) {
+    private boolean askReset(String item) {
         if (generator.score < 25) {
             confirmReset(item);
-            return;
+            return true;
         }
         sendTranslated("confirm");
         ComponentBuilder builder = new ComponentBuilder()
                 .append(Util.color("&a&l" + getTranslated("true").toUpperCase()))
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp askreset " + item + " true"))
-                .append(Util.color(" &8| Click to confirm"));
+                .append(Util.color(" &8| " + getTranslated("confirm-click")));
         player.spigot().sendMessage(builder.create());
         player.closeInventory();
+        return false;
     }
 
     public void confirmReset(String item) {
@@ -474,7 +462,30 @@ public class ParkourPlayer extends ParkourUser {
             case "structure":
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(useStructure))));
-                menu();
+                break;
+            case "special":
+                useSpecial = !useSpecial;
+                sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(useSpecial))));
+                break;
+            case "e-difficulty":
+                difficulty = 0.3;
+                sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(difficulty));
+                break;
+            case "m-difficulty":
+                difficulty = 0.5;
+                sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(difficulty));
+                break;
+            case "h-difficulty":
+                difficulty = 0.7;
+                sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(difficulty));
+                break;
+            case "vh-difficulty":
+                difficulty = 0.8;
+                sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(difficulty));
+                break;
+            case "difficulty":
+                useDifficulty = !useDifficulty;
+                sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
                 break;
         }
     }

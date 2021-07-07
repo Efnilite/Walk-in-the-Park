@@ -67,4 +67,10 @@ public interface VersionManager {
      */
     void setWorldBorder(Player player, Vector vector, double size);
 
+    enum LightType {
+        OVERWORLD,
+        NETHER,
+        END
+    }
+
 }

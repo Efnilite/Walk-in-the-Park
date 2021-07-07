@@ -30,6 +30,7 @@ messages:
         cant-do: "&c&l(!) &cYou can't do this right now."
         customize-menu: "&a&l(!) &7You can customize your parkour experience by using /parkour menu."
         confirm: "&7Are you sure you want to reset?"
+        confirm-click: "&8Click to confirm"
 
         not-there-search: "&7Type the player you want to spectate!"
         click-search: "&c&l&nClick here&r&c&l to enter the player you want to search."
@@ -72,6 +73,7 @@ messages:
         cant-do: "&c&l(!) &cJe kan dit nu niet doen."
         customize-menu: "&a&l(!) &7Je kan de parkourervaring veranderen met /parkour menu."
         confirm: "&7Weet je zeker dat je wil resetten?"
+        confirm-click: "&8Klik om te resetten"
 
         not-there-search: "&7Type de speler die je wil toekijken!"
         click-search: "&c&l&nKlik hier&r&c&l om de speler die je wil opzoeken in te voegen."
@@ -114,6 +116,7 @@ messages:
         cant-do: "&c&l(!) &cNo puedes hacer eso ahora."
         customize-menu: "&c&l(!) &7Puedes personalizar tu parkour con /parkour menu."
         confirm: "&7¿Está seguro que quiere reiniciar?"
+        confirm-click: "&8Haga clic para confirmar"
 
         not-there-search: "&7Escribe el nick del jugador que quieras observar!"
         click-search: "&c&l&nClick aquí&r&c&l para escribir el jugador que quieras observar."
@@ -155,6 +158,7 @@ messages:
         selected-language: "&a&l(!) &7Zmieniłes język na: %v&7."
         cant-do: "&c&l(!) &cNie możesz tego zrobić w tym momencie."
         confirm: "&7Czy na pewno chcesz zresetować?"
+        confirm-click: "&8Kliknij, aby potwierdzić"
 
         customize-menu: "&a&l(!) &7Możesz zmodyfikować swój parkour używając komendy /witp menu."
         not-there-search: "&7Napisz jakiego gracza chcesz obserwować!"
@@ -197,6 +201,7 @@ messages:
         cant-do: "&c&l(!) &c您目前不能那么做。"
         customize-menu: "&a&l(!) &7您可以通过运行命令 /parkour menu 来客制化您的跑酷体验。"
         confirm: "&7您确定要重置吗？"
+        confirm-click: "&8点击确认"
 
         not-there-search: "&7请输入您想指定的玩家!"
         click-search: "&c&l&n点击这里&r&c&l 来输入您想要寻找的玩家。"
@@ -239,6 +244,7 @@ messages:
         cant-do: "&c&l(!) &cTu ne peux pas faire ça maintenant.."
         customize-menu: "&a&l(!) &7Vous pouvez personnaliser votre expérience de parkour en utilisant /parkour menu."
         confirm: "&7Êtes-vous sûr vous voulez redémarrer?"
+        confirm-click: "&8Cliquez pour confirmer"
 
         not-there-search: "&7Cliquer sur le joueur que vous voulez observer!"
         click-search: "&c&l&nCliquez ici&r&c&l pour trouve se que vous voulez rechercher."
