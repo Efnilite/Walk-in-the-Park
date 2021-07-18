@@ -4,7 +4,7 @@ author: Efnilite, Ice_Pancake
 version: 2.4c
 api-version: 1.16
 main: dev.efnilite.witp.WITP
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, ProtocolAPI, Multiverse-Core]
 commands:
     witp:
         aliases: [parkour]

@@ -3,12 +3,14 @@ package dev.efnilite.witp;
 import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
+import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
+import dev.efnilite.witp.hook.ProtocolHook;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.WVoidGen;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -56,6 +58,8 @@ public final class WITP extends JavaPlugin implements Listener {
     private static VersionManager versionManager;
     private static SubareaDivider divider;
     private static Registry registry;
+    private static @Nullable MultiverseHook multiverseHook;
+    private static @Nullable ProtocolHook protocolHook;
 
     @Override
     public void onEnable() {
@@ -64,6 +68,7 @@ public final class WITP extends JavaPlugin implements Listener {
         registry = new Registry();
         Verbose.init();
 
+        // Get correct VersionManager
         String version = Util.getVersion();
         switch (version) {
             case "v1_17_R1":
@@ -85,11 +90,19 @@ public final class WITP extends JavaPlugin implements Listener {
                 return;
         }
 
-        configuration = new Configuration(this);
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderHook().register();
         }
+        if (getServer().getPluginManager().getPlugin("Multiverse-Core") != null) {
+            multiverseHook = new MultiverseHook();
+        }
+        if (getServer().getPluginManager().getPlugin("ProtocolAPI") != null) {
+            protocolHook = new ProtocolHook();
+        }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+        // Init config
+        configuration = new Configuration(this);
 
         Option.init(true);
         addCommand("witp", new MainCommand());
@@ -155,19 +168,12 @@ public final class WITP extends JavaPlugin implements Listener {
         command.setTabCompleter(wrapper);
     }
 
-    @Nullable
     @Override
-    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
-        String config = WITP.getConfiguration().getString("config", "world.name");
-        if (config == null) {
-            Verbose.error("World name is null");
-            config = "witp";
-        }
-        if (worldName.equalsIgnoreCase(config)) {
-            return new VoidGenerator();
-        }
-        return super.getDefaultWorldGenerator(worldName, id);
+    public @NotNull ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
+        return new WVoidGen();
     }
+
+    // Events
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
@@ -304,6 +310,16 @@ public final class WITP extends JavaPlugin implements Listener {
                 Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
             }
         }
+    }
+
+    // Static stuff
+
+    public static @Nullable MultiverseHook getMultiverseHook() {
+        return multiverseHook;
+    }
+
+    public static @Nullable ProtocolHook getProtocolHook() {
+        return protocolHook;
     }
 
     public static Registry getRegistry() {

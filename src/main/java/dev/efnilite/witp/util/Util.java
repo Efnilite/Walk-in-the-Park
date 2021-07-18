@@ -3,6 +3,7 @@ package dev.efnilite.witp.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
@@ -20,6 +21,7 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 /**
  * General utilities
@@ -348,6 +350,10 @@ public class Util {
             }
         }
         return add;
+    }
+
+    public static void getBlocksAsync(Location pos1, Location pos2, Consumer<List<Block>> consumer) {
+        Tasks.asyncTask(() -> consumer.accept(getBlocks(pos1, pos2)));
     }
 
     /**

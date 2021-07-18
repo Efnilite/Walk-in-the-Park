@@ -13,6 +13,7 @@ import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -46,7 +47,9 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
             return true;
         } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("reload")) {
+            if (args[0].equalsIgnoreCase("speed")) {
+                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(2);
+            } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("witp.reload")) {
                     Tasks.time("reload");
                     sender.sendMessage(Util.color("&a&l(!) &7Reloading config files.."));
@@ -96,6 +99,10 @@ public class MainCommand extends BukkitCommand {
                 return true;
             }
             if (args[0].equalsIgnoreCase("join")) {
+                if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
+                    player.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
+                    return false;
+                }
                 ParkourUser pp = ParkourUser.getUser(player);
                 if (pp == null) {
                     try {

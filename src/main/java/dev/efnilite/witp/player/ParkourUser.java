@@ -369,7 +369,7 @@ public abstract class ParkourUser {
         path = "messages." + locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
-            Verbose.error("Unknown path: " + path + " - try deleting the config");
+            Verbose.error("Unknown path: " + path + " - try deleting the lang.yml file");
             return "";
         }
         for (String s : replaceable) {

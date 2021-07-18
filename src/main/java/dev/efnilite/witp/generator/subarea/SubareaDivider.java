@@ -7,7 +7,7 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.VoidGenerator;
+import dev.efnilite.witp.util.WVoidGen;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
@@ -75,14 +75,21 @@ public class SubareaDivider {
             Verbose.error("Name of world is null in config");
             return;
         }
-        File folder = new File(worldName);
-        if (folder.exists() && folder.isDirectory()) {
-            try {
-                FileUtils.deleteDirectory(folder);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                Verbose.error("Error while deleting the playing world");
+        if (WITP.getMultiverseHook() == null) {
+            Bukkit.unloadWorld(worldName, false);
+            File folder = new File(worldName);
+            if (folder.exists() && folder.isDirectory()) {
+                try {
+                    FileUtils.deleteDirectory(folder);
+                    Verbose.verbose("Deleted world " + worldName);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    Verbose.error("Error while deleting the playing world");
+                }
             }
+        } else {
+            WITP.getMultiverseHook().deleteWorld(worldName);
+            Verbose.verbose("Deleted world " + worldName);
         }
         this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
@@ -229,13 +236,23 @@ public class SubareaDivider {
     }
 
     private @Nullable World createWorld(String name) {
-        WorldCreator creator = new WorldCreator(name).generateStructures(false).hardcore(false).type(WorldType.FLAT)
-                .generator(new VoidGenerator()).environment(World.Environment.NORMAL);
-        World world = Bukkit.createWorld(creator);
-        if (world == null) {
-            Verbose.error("Error while trying to create the parkour world - please restart and delete the folder");
-            return null;
+        World world;
+        if (WITP.getMultiverseHook() == null) {
+            WorldCreator creator = new WorldCreator(name)
+                    .generateStructures(false)
+                    .hardcore(false)
+                    .type(WorldType.FLAT)
+                    .generator(new WVoidGen())
+                    .environment(World.Environment.NORMAL);
+            world = Bukkit.createWorld(creator);
+            if (world == null) {
+                Verbose.error("Error while trying to create the parkour world - please restart and delete the folder");
+                return null;
+            }
+        } else {
+            world = WITP.getMultiverseHook().createWorld(name);
         }
+        Verbose.verbose("Created world " + name);
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
@@ -243,8 +260,8 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        world.setWeatherDuration(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
+        world.setWeatherDuration(1000);
         world.setAutoSave(false);
         return world;
     }
