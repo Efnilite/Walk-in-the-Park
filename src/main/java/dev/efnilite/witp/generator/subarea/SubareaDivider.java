@@ -7,7 +7,6 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.WVoidGen;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
@@ -242,7 +241,7 @@ public class SubareaDivider {
                     .generateStructures(false)
                     .hardcore(false)
                     .type(WorldType.FLAT)
-                    .generator(new WVoidGen())
+                    .generator("WVoidGen")
                     .environment(World.Environment.NORMAL);
             world = Bukkit.createWorld(creator);
             if (world == null) {

@@ -6,7 +6,6 @@ import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +33,7 @@ public class PreviousData {
         saveInventory();
         speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
         
-        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2);
+        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
         for (PotionEffectType value : PotionEffectType.values()) {
             player.removePotionEffect(value);
         }
