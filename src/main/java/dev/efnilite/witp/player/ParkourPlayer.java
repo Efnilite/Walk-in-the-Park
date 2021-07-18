@@ -604,7 +604,7 @@ public class ParkourPlayer extends ParkourUser {
             }
             return Double.toString(score);
         } catch (NullPointerException ex) {
-            return "N/A";
+            return "?";
         }
     }
 
