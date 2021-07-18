@@ -175,6 +175,10 @@ public final class WITP extends JavaPlugin implements Listener {
             player.sendMessage(Util.color("&c&l(!) &7The WITP plugin you are using is outdated. " +
                     "Updates usually fix a variety of bugs. Check the Spigot page for more info."));
         }
+        if (player.isOp() && multiverseHook != null && Bukkit.getPluginManager().getPlugin("WVoidGen") == null) {
+            player.sendMessage(Util.color("&c&l(!) &7You're running Multiverse without support for creating void worlds." +
+                    "Go to the wiki to add support for this."));
+        }
         if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer.register(player);

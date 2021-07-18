@@ -47,9 +47,7 @@ public class MainCommand extends BukkitCommand {
             sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
             return true;
         } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("speed")) {
-                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(2);
-            } else if (args[0].equalsIgnoreCase("reload")) {
+            if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("witp.reload")) {
                     Tasks.time("reload");
                     sender.sendMessage(Util.color("&a&l(!) &7Reloading config files.."));
