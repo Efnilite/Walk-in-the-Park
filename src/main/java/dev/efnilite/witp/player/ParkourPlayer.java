@@ -592,16 +592,20 @@ public class ParkourPlayer extends ParkourUser {
      * @return a number from 0 -> 1 (both inclusive)
      */
     public String calculateDifficultyScore() {
-        double score = 0.0;
-        if (useSpecial) score += 0.3;      // sum:      0.3
-        if (useDifficulty) score += 0.2;   //           0.5
-        if (useStructure) {
-            if (difficulty == 0.3) score += 0.1; //    0.6
-            if (difficulty == 0.5) score += 0.3; //    0.8
-            if (difficulty == 0.7) score += 0.4; //    0.9
-            if (difficulty == 0.8) score += 0.5; //    1.0
+        try {
+            double score = 0.0;
+            if (useSpecial) score += 0.3;          // sum:      0.3
+            if (useDifficulty) score += 0.2;       //           0.5
+            if (useStructure) {
+                if (difficulty == 0.3) score += 0.1;      //    0.6
+                else if (difficulty == 0.5) score += 0.3; //    0.8
+                else if (difficulty == 0.7) score += 0.4; //    0.9
+                else if (difficulty == 0.8) score += 0.5; //    1.0
+            }
+            return Double.toString(score);
+        } catch (NullPointerException ex) {
+            return "N/A";
         }
-        return Double.toString(score);
     }
 
     /**
