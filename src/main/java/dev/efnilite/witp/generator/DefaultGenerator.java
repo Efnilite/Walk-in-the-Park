@@ -513,7 +513,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             break;
                         case CIRCLE:
                             PARTICLE_DATA.setSize(5);
-                            Particles.circle(lastSpawn.clone().add(0.5, 0, 0.5), PARTICLE_DATA, bukkitPlayer, 1, 25);
+                            Particles.circle(lastSpawn.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, bukkitPlayer, 1, 25);
                             break;
                         case BOX:
                             PARTICLE_DATA.setSize(1);

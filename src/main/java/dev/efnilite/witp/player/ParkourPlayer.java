@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -239,7 +240,6 @@ public class ParkourPlayer extends ParkourUser {
         InventoryBuilder lead = new InventoryBuilder(this, 3, "Lead").open();
         InventoryBuilder styling = new InventoryBuilder(this, 3, "Parkour style").open();
         InventoryBuilder timeofday = new InventoryBuilder(this, 3, "Time").open();
-        InventoryBuilder diff = new InventoryBuilder(this, 3, "Difficulty").open();
         InventoryBuilder language = new InventoryBuilder(this, 3, "Language").open();
         Configuration config = WITP.getConfiguration();
         ItemStack close = config.getFromItemData(locale, "general.close");
@@ -310,36 +310,9 @@ public class ParkourPlayer extends ParkourUser {
             }
         });
         ItemStack item;
-        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.difficulty", "&a" + Util.parseDifficulty(difficulty)), (t2, e2) -> {
+        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.difficulty", "&a" + Util.parseDifficulty(difficulty) + " &7(" + calculateDifficultyScore() + "/1.0)"), (t2, e2) -> {
             if (checkOptions("difficulty", "witp.difficulty")) {
-                InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
-                String difficultyString = Boolean.toString(useDifficulty);
-                ItemStack item1 = config.getFromItemData(locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
-                item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
-                int diffSlot = dynamic1.next();
-                diff.setItem(diffSlot, item1, (t3, e3) -> {
-                    if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
-                        if (askReset("difficulty")) {
-                            item1.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
-                            diff.build();
-                        }
-                    }
-                });
-                diff.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> {
-                    askReset("e-difficulty");
-                });
-                diff.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> {
-                    askReset("m-difficulty");
-                });
-                diff.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> {
-                    askReset("h-difficulty");
-                });
-                diff.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> {
-                    askReset("vh-difficulty");
-                });
-
-                diff.setItem(26, close, (t3, e3) -> menu());
-                diff.build();
+                difficultyMenu();
             }
         });
         String particlesString = Boolean.toString(useParticles);
@@ -442,6 +415,30 @@ public class ParkourPlayer extends ParkourUser {
         builder.build();
     }
 
+    private void difficultyMenu() {
+        Configuration config = WITP.getConfiguration();
+        InventoryBuilder difficulty = new InventoryBuilder(this, 3, "Difficulty").open();
+        ItemStack close = config.getFromItemData(locale, "general.close");
+
+        InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
+        String difficultyString = Boolean.toString(useDifficulty);
+        ItemStack diffSwitchItem = config.getFromItemData(locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
+        diffSwitchItem.setType(useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+        int diffSlot = dynamic1.next();
+        difficulty.setItem(diffSlot, diffSwitchItem, (t3, e3) -> {
+            if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
+                askReset("difficulty");
+            }
+        });
+        difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> askReset("e-difficulty"));
+        difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> askReset("m-difficulty"));
+        difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> askReset("h-difficulty"));
+        difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> askReset("vh-difficulty"));
+
+        difficulty.setItem(26, close, (t3, e3) -> menu());
+        difficulty.build();
+    }
+
     private boolean askReset(String item) {
         if (generator.score < 25) {
             confirmReset(item);
@@ -462,10 +459,12 @@ public class ParkourPlayer extends ParkourUser {
             case "structure":
                 useStructure = !useStructure;
                 sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(useStructure))));
+                menu();
                 break;
             case "special":
                 useSpecial = !useSpecial;
                 sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(useSpecial))));
+                menu();
                 break;
             case "e-difficulty":
                 difficulty = 0.3;
@@ -486,6 +485,7 @@ public class ParkourPlayer extends ParkourUser {
             case "difficulty":
                 useDifficulty = !useDifficulty;
                 sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(useDifficulty)))));
+                difficultyMenu();
                 break;
         }
     }

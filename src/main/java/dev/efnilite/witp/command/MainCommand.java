@@ -221,6 +221,6 @@ public class MainCommand extends BukkitCommand {
                 return names;
             }
         }
-        return Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode", "migrate");
+        return Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode", "migrate", "reload");
     }
 }

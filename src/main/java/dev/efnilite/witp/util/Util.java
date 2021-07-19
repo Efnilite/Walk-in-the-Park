@@ -33,6 +33,16 @@ public class Util {
     private static Economy economy;
     private static char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
 
+    public static @Nullable String getVoidGenerator() {
+        if (Bukkit.getPluginManager().getPlugin("WVoidGen") != null) {
+            return "WVoidGen";
+        } else if (Bukkit.getPluginManager().getPlugin("VoidGen") != null) {
+            return "VoidGen";
+        } else {
+            return null;
+        }
+    }
+
     public static String randomOID() {
         StringBuilder random = new StringBuilder();
         for (int i = 0; i < 9; i++) {
