@@ -147,11 +147,19 @@ public final class WITP extends JavaPlugin implements Listener {
                 Verbose.error("Error while unregistering");
             }
         }
-        for (Player player : divider.getWorld().getPlayers()) {
-            player.kickPlayer("Server is restarting");
+        if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
+            for (Player player : divider.getWorld().getPlayers()) {
+                player.kickPlayer("Server is restarting");
+            }
+            Bukkit.unloadWorld(divider.getWorld(), false);
+        } else {
+            String name = configuration.getString("config", "world.name");
+            World world = Bukkit.getWorld(name);
+            for (Player player : world.getPlayers()) {
+                player.kickPlayer("Server is restarting");
+            }
+            Bukkit.unloadWorld(world, false);
         }
-        Bukkit.unloadWorld(divider.getWorld(), false);
-        divider.getWorld().getWorldFolder().delete();
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {
