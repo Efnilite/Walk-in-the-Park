@@ -24,7 +24,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -86,7 +85,7 @@ public class ParkourPlayer extends ParkourUser {
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.possibleStyle = new ArrayList<>();
-        this.locale = WITP.getConfiguration().getString("lang", "messages.default");
+        this.locale = Option.DEFAULT_LANG;
         this.lang = locale;
 
         WITP.getDivider().generate(this);
@@ -191,6 +190,10 @@ public class ParkourPlayer extends ParkourUser {
      * @return a random material
      */
     public Material randomMaterial() {
+        if (possibleStyle == null) {
+            setStyle(Option.DEFAULT_STYLE);
+            return randomMaterial();
+        }
         return possibleStyle.get(ThreadLocalRandom.current().nextInt(possibleStyle.size()));
     }
 
@@ -494,7 +497,7 @@ public class ParkourPlayer extends ParkourUser {
         List<Material> possibleStyles = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
         if (possible == null) {
-            Verbose.error("Style selected (" + style + ") doesn't exist in config.yml!");
+            Verbose.error("Style selected (" + style + ") doesn't exist in config.yml, defaulting to ");
             return null;
         }
         String[] materials = possible.replaceAll("[\\[\\]]", "").split(", ");
@@ -570,6 +573,9 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
+    /**
+     * Saves the current game of the player
+     */
     public void saveGame() {
         if (Option.GAMELOGS && Option.SQL && generator.score > 0) {
             InsertStatement statement = new InsertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "game-history")
@@ -653,7 +659,7 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
+    public static @Nullable ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
         if (!Option.JOINING) {
             player.sendMessage(Util.color("&c&l(!) &7Parkour is currently disabled. Try again later."));
             return null;
@@ -705,7 +711,7 @@ public class ParkourPlayer extends ParkourUser {
                         from.blockLead = 4;
                     }
                     if (from.lang == null) {
-                        from.lang = WITP.getConfiguration().getString("lang", "messages.default");
+                        from.lang = Option.DEFAULT_LANG;
                     }
                     if (from.highScoreDifficulty == null) {
                         from.highScoreDifficulty = "?";
@@ -718,7 +724,7 @@ public class ParkourPlayer extends ParkourUser {
                 } else {
                     Verbose.verbose("Setting new player data..");
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            "0.0s", WITP.getConfiguration().getString("lang", "messages.default"),
+                            "0.0s", Option.DEFAULT_LANG,
                             4, true, true, true, true, true, true, "?");
                     players.put(pp.player, pp);
                     pp.saveStats();
@@ -737,7 +743,7 @@ public class ParkourPlayer extends ParkourUser {
                     highScoreDifficulty = (String) objects.get(3);
                 } else {
                     pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            "0.0s", WITP.getConfiguration().getString("lang", "messages.default"), 4,
+                            "0.0s", Option.DEFAULT_LANG, 4,
                             true, true, true, true, true, true, "?");
                     players.put(pp.player, pp);
                     pp.saveStats();
@@ -751,14 +757,14 @@ public class ParkourPlayer extends ParkourUser {
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
                     pp.setDefaults(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
-                            WITP.getConfiguration().getString("lang", "messages.default"),
+                            Option.DEFAULT_LANG,
                             Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
                             translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
                             translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
                             translateSqlBoolean((String) objects.get(8)), highScoreDifficulty);
                 } else {
                     pp.setDefaults(highscore, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            highScoreTime, WITP.getConfiguration().getString("lang", "messages.default"),4,
+                            highScoreTime, Option.DEFAULT_LANG, 4,
                             true, true, true, true, true, true, "?");
                     pp.saveStats();
                 }

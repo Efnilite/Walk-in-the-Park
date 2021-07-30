@@ -6,6 +6,8 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
@@ -13,7 +15,6 @@ import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,13 +22,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.channels.Selector;
+import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class MainCommand extends BukkitCommand {
+
+    private final HashMap<Player, Selection> selections = new HashMap<>();
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -56,7 +58,7 @@ public class MainCommand extends BukkitCommand {
                     long time = Tasks.end("reload");
                     sender.sendMessage(Util.color("&a&l(!) &7Reloaded all config files in " + time + "ms!"));
                 } else {
-                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
+                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
@@ -143,6 +145,34 @@ public class MainCommand extends BukkitCommand {
                         user.leaderboard(1);
                     }
                 }
+            } else if (args[0].equalsIgnoreCase("pos1")) {
+                if (player.hasPermission("witp.schematic")) {
+                    if (selections.get(player) == null) {
+                        selections.put(player, new Selection(player.getLocation(), null, player.getWorld()));
+                    } else {
+                        selections.put(player, new Selection(player.getLocation(), selections.get(player).getPos2(), player.getWorld()));
+                    }
+                    player.sendMessage("Set position 1");
+                }
+            } else if (args[0].equalsIgnoreCase("pos2")) {
+                if (player.hasPermission("witp.schematic")) {
+                    if (selections.get(player) == null) {
+                        selections.put(player, new Selection(null, player.getLocation(), player.getWorld()));
+                    } else {
+                        selections.put(player, new Selection(selections.get(player).getPos1(), player.getLocation(), player.getWorld()));
+                    }
+                    player.sendMessage("Set position 2");
+                }
+            } else if (args[0].equalsIgnoreCase("createschematic")) {
+                if (player.hasPermission("witp.schematic")) {
+                    Selection selection = selections.get(player);
+                    if (selection != null && selection.isComplete()) {
+                        Schematic schematic = new Schematic(selection);
+                        new File(WITP.getInstance().getDataFolder(), "schematics").mkdirs();
+                        schematic.save("plugins/WITP/schematics/parkour-" + Util.randomDigits(6) + ".witp");
+                        player.sendMessage("Creating schematic..");
+                    }
+                }
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
@@ -188,6 +218,12 @@ public class MainCommand extends BukkitCommand {
                             }
                         }
                     }
+                }
+            } else if (args[0].equalsIgnoreCase("pasteschematic")) {
+                try {
+                    new Schematic("plugins/WITP/schematics/" + args[1]).paste(player.getLocation(), 0);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         } else if (args.length == 3) {

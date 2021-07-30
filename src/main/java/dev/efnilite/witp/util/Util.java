@@ -31,8 +31,23 @@ import java.util.function.Consumer;
 public class Util {
 
     private static Economy economy;
-    private static char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
+    private static final char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
+    private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
+    /**
+     * Returns a zero'd location.
+     *
+     * @return a location where everything is 0
+     */
+    public static Location zero() {
+        return new Location(null, 0, 0, 0);
+    }
+
+    /**
+     * Returns the active void generator plugin
+     *
+     * @return the void generator currently in use
+     */
     public static @Nullable String getVoidGenerator() {
         if (Bukkit.getPluginManager().getPlugin("WVoidGen") != null) {
             return "WVoidGen";
@@ -43,6 +58,11 @@ public class Util {
         }
     }
 
+    /**
+     * Random ID for game logging
+     *
+     * @return a string with a random ID
+     */
     public static String randomOID() {
         StringBuilder random = new StringBuilder();
         for (int i = 0; i < 9; i++) {
@@ -51,6 +71,27 @@ public class Util {
         return random.toString();
     }
 
+    /**
+     * Random digits
+     *
+     * @return a string with an amount of random digits
+     */
+    public static String randomDigits(int amount) {
+        StringBuilder random = new StringBuilder();
+        for (int i = 0; i < (amount - 1); i++) {
+            random.append(RANDOM_DIGITS[ThreadLocalRandom.current().nextInt(RANDOM_DIGITS.length - 1)]);
+        }
+        return random.toString();
+    }
+
+    /**
+     * Gets the difficulty of a schematic according to structures.yml
+     *
+     * @param   fileName
+     *          The name of the file (parkour-x.nbt)
+     *
+     * @return the difficulty, ranging from 0 to 1
+     */
     public static double getDifficulty(String fileName) {
         int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".nbt", ""));
         return WITP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
@@ -221,7 +262,7 @@ public class Util {
     }
 
     /**
-     * Colors strings
+     * Colors strings (uses & as color marker)
      *
      * @param   strings
      *          The strings
@@ -237,6 +278,14 @@ public class Util {
         return ret;
     }
 
+    /**
+     * Color a list of strings (uses & as color marker)
+     *
+     * @param   strings
+     *          The string to be colored
+     *
+     * @return the strings, but colored
+     */
     public static List<String> color(List<String> strings) {
         List<String> ret = new ArrayList<>();
         for (String string : strings) {
@@ -367,7 +416,7 @@ public class Util {
     }
 
     /**
-     * Reverses a boolean
+     * Reverses a boolean in a string
      */
     public static String reverseBoolean(String first) {
         if (first.contains("true")) {
@@ -380,7 +429,7 @@ public class Util {
     }
 
     /**
-     * Color a boolean
+     * Color a boolean (true = green, false = red)
      */
     public static String colorBoolean(String string) {
         if (string.contains("true")) {

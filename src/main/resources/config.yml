@@ -26,6 +26,12 @@ verbose: false
 # Whether players can join
 joining: true
 
+# World border
+# Use a world border to indicate where the player's border of their area is.
+# If you're having problems with this, you can disable it, since it's very unlikely a player will
+# even ever reach this border.
+use-world-border: true
+
 # Options about Bungeecord/autojoining
 bungeecord:
     # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server

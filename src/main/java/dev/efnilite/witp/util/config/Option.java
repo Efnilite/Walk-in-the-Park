@@ -89,6 +89,9 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
+    public static String DEFAULT_LANG;
+    public static String DEFAULT_STYLE;
+
     public static boolean JOINING;
 
     public static void init(boolean init) {
@@ -99,6 +102,8 @@ public class Option {
         GAMELOGS = config.getBoolean("sql.game-logs");
         LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
         LANGUAGES.remove("default");
+        DEFAULT_LANG = lang.getString("messages.default");
+        DEFAULT_STYLE = config.getString("styles.default");
 
         JOINING = config.getBoolean("joining");
 

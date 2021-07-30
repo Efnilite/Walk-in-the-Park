@@ -5,7 +5,6 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
