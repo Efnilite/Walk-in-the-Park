@@ -70,6 +70,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 case "time_pref":
                 case "time_preference":
                     return pp.time;
+                case "scoreboard":
+                    return pp.showScoreboard.toString();
             }
         }
 
