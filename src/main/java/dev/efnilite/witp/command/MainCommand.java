@@ -91,7 +91,7 @@ public class MainCommand extends BukkitCommand {
                         sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
                     }
                 } else {
-                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
+                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
                 }
                 return true;
             }
@@ -100,7 +100,7 @@ public class MainCommand extends BukkitCommand {
             }
             if (args[0].equalsIgnoreCase("join")) {
                 if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
-                    player.sendMessage(WITP.getConfiguration().getString("lang", "messages.en.cant-do"));
+                    player.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
                     return false;
                 }
                 ParkourUser pp = ParkourUser.getUser(player);
@@ -220,10 +220,12 @@ public class MainCommand extends BukkitCommand {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("pasteschematic")) {
-                try {
-                    new Schematic("plugins/WITP/schematics/" + args[1]).paste(player.getLocation(), 0);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                if (player.hasPermission("witp.schematic")) {
+                    try {
+                        new Schematic("plugins/WITP/schematics/" + args[1]).paste(player.getLocation(), 0);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         } else if (args.length == 3) {

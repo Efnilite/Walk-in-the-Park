@@ -40,7 +40,6 @@ public class Option {
     public static int MIN_Y;
 
     // Config stuff
-    public static boolean UPDATER;
     public static boolean REWARDS;
     public static HashMap<Integer, List<String>> REWARDS_SCORES;
     public static int REWARDS_INTERVAL;
@@ -108,7 +107,6 @@ public class Option {
         JOINING = config.getBoolean("joining");
 
         VERBOSE = config.getBoolean("verbose");
-        UPDATER = config.getBoolean("updater");
 
         SQL_PORT = config.getInt("sql.port");
         SQL_DB = config.getString("sql.database");

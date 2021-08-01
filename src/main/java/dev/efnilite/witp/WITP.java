@@ -115,10 +115,9 @@ public final class WITP extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         new InventoryBuilder.ClickHandler(this);
 
-        if (Option.UPDATER) {
-            UpdateChecker checker = new UpdateChecker();
-            Tasks.syncRepeat(checker::check, 30 * 60 * 20);
-        }
+        UpdateChecker checker = new UpdateChecker();
+        Tasks.syncRepeat(checker::check, 4 * 72000); // 4 hours
+
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
