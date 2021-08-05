@@ -89,13 +89,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>dev.efnilite.wvoidgen</groupId>
-            <artifactId>WVoidGen</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/WVoidGen.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>

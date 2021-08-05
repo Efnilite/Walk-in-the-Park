@@ -35,6 +35,7 @@ public class SchematicQueue implements EditQueue<SchematicReader.ReaderReturn> {
 
     @Override
     public void build(SchematicReader.ReaderReturn readerReturn) {
+        System.out.println("Building...");
         Dimensions dimensions = readerReturn.getDimensions();
         List<BlockData> data = readerReturn.getData();
 
@@ -45,6 +46,7 @@ public class SchematicQueue implements EditQueue<SchematicReader.ReaderReturn> {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
+                System.out.println("Running...");
                 int index = 0;
                 for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
                     for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
@@ -67,5 +69,6 @@ public class SchematicQueue implements EditQueue<SchematicReader.ReaderReturn> {
     public void asyncDone(List<BlockMap> map) {
         CopyQueue queue = new CopyQueue();
         queue.build(map);
+        System.out.println("Done!");
     }
 }
