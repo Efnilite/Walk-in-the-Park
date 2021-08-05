@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -262,6 +263,16 @@ public class Util {
     }
 
     /**
+     * Color something
+     */
+    public static String color(String string) {
+        if (!string.equals("")) {
+            return ChatColor.translateAlternateColorCodes('&', HexColours.translate(string));
+        }
+        return string;
+    }
+
+    /**
      * Colors strings (uses & as color marker)
      *
      * @param   strings
@@ -439,16 +450,6 @@ public class Util {
         } else {
             throw new IllegalStateException("Boolean value is not false or true (Util#colorBoolean)");
         }
-    }
-
-    /**
-     * Color something
-     */
-    public static String color(String string) {
-        if (!string.equals("")) {
-            return ChatColor.translateAlternateColorCodes('&', string);
-        }
-        return string;
     }
 
     /**

@@ -1,6 +1,11 @@
-# Options for the messages
+# -------------- Placeholders ----------------
 # %p is the player.
 # %[a-z] is the value that can get replaced
+
+# ---------------- Colours -------------------
+# &a, &b, &1, &2 - Regular colours
+# &#123456 - Hex colours
+
 messages:
 
     default: en
@@ -262,6 +267,7 @@ messages:
             beat: "&7Vous avez battu votre meilleur score en %s points!"
             tied: "&7Vous avez égalé votre meilleur score!"
 
+# Options for lang
 options:
 
     # If the scoreboard is enabled
