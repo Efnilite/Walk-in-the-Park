@@ -111,7 +111,7 @@ public class Selection {
      * @return the dimensions
      */
     public Dimensions getDimensions() {
-        return new Dimensions(this);
+        return new Dimensions(pos1, pos2);
     }
 
     public Location getPos1() {

@@ -79,7 +79,7 @@ public class Util {
      */
     public static String randomDigits(int amount) {
         StringBuilder random = new StringBuilder();
-        for (int i = 0; i < (amount - 1); i++) {
+        for (int i = 0; i < amount; i++) {
             random.append(RANDOM_DIGITS[ThreadLocalRandom.current().nextInt(RANDOM_DIGITS.length - 1)]);
         }
         return random.toString();
@@ -530,6 +530,22 @@ public class Util {
             return "(" + location.getX() + "," + location.getY() + "," + location.getZ() + "," + location.getWorld().getName() + ")";
         } else {
             return "(" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+        }
+    }
+
+    /**
+     * Creates a string version of a Location.
+     *
+     * @param   vector
+     *          The location
+     *
+     * @return string version
+     */
+    public static String toString(Vector vector, boolean formatted) {
+        if (!formatted) {
+            return "(" + vector.getX() + "," + vector.getY() + "," + vector.getZ() + ")";
+        } else {
+            return "(" + vector.getBlockX() + ", " + vector.getBlockY() + ", " + vector.getBlockZ() + ")";
         }
     }
 

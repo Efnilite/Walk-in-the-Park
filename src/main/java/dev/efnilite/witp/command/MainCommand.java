@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.channels.Selector;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -168,8 +166,12 @@ public class MainCommand extends BukkitCommand {
                     Selection selection = selections.get(player);
                     if (selection != null && selection.isComplete()) {
                         Schematic schematic = new Schematic(selection);
-                        new File(WITP.getInstance().getDataFolder(), "schematics").mkdirs();
-                        schematic.save("plugins/WITP/schematics/parkour-" + Util.randomDigits(6) + ".witp");
+                        try {
+                            schematic.file("parkour-" + Util.randomDigits(6)).save(Schematic.SaveOptions.SKIP_AIR);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            player.sendMessage("There was an error!");
+                        }
                         player.sendMessage("Creating schematic..");
                     }
                 }
@@ -222,7 +224,7 @@ public class MainCommand extends BukkitCommand {
             } else if (args[0].equalsIgnoreCase("pasteschematic")) {
                 if (player.hasPermission("witp.schematic")) {
                     try {
-                        new Schematic("plugins/WITP/schematics/" + args[1]).paste(player.getLocation(), 0);
+                        new Schematic().file(args[1]).paste(player.getLocation(), 0);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

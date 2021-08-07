@@ -2,6 +2,7 @@ package dev.efnilite.witp.schematic.selection;
 
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 /**
  * The dimensions of a CuboidSelection.
@@ -15,17 +16,17 @@ public class Dimensions {
     /**
      * The width
      */
-    private int width;
+    private final int width;
 
     /**
      * The height
      */
-    private int height;
+    private final int height;
 
     /**
      * The length
      */
-    private int length;
+    private final int length;
 
     /**
      * The max location
@@ -38,20 +39,11 @@ public class Dimensions {
     private Location minumum;
 
     /**
-     * The selection
-     */
-    private Selection selection;
-
-    /**
      * Creates a new instance
-     *
-     * @param   selection
-     *          The cuboid
      */
-    public Dimensions(Selection selection) {
-        this.selection = selection;
-        this.maximum = selection.getMaximumPoint();
-        this.minumum = selection.getMinimumPoint();
+    public Dimensions(Location pos1, Location pos2) {
+        this.maximum = Util.max(pos1, pos2);
+        this.minumum = Util.min(pos1, pos2);
 
         Location max = this.maximum;
         Location min = this.minumum;
@@ -59,6 +51,12 @@ public class Dimensions {
         this.width = max.getBlockX() - min.getBlockX() + 1;
         this.height = max.getBlockY() - min.getBlockY() + 1;
         this.length = max.getBlockZ() - min.getBlockZ() + 1;
+    }
+
+    public Dimensions(int width, int length, int height) {
+        this.width = width;
+        this.length = length;
+        this.height = height;
     }
 
     /**
@@ -115,17 +113,20 @@ public class Dimensions {
         return minumum;
     }
 
-    /**
-     * Gets the selection
-     *
-     * @return the selection
-     */
-    public Selection getSelection() {
-        return selection;
+    public void setMinumum(Location minumum) {
+        this.minumum = minumum;
+    }
+
+    public void setMaximum(Location maximum) {
+        this.maximum = maximum;
+    }
+
+    public Vector getDimensions() {
+        return new Vector(width, length, height);
     }
 
     @Override
     public String toString() {
-        return Util.toString(maximum, false) + "/" + Util.toString(minumum, false);
+        return "(" + width + "," + length + "," + height + ")"; // x, y, z
     }
 }
