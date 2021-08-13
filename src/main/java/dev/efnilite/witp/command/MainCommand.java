@@ -7,6 +7,7 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -224,7 +225,7 @@ public class MainCommand extends BukkitCommand {
             } else if (args[0].equalsIgnoreCase("pasteschematic")) {
                 if (player.hasPermission("witp.schematic")) {
                     try {
-                        new Schematic().file(args[1]).paste(player.getLocation(), 0);
+                        SchematicAdjuster.pasteAdjusted(new Schematic().file(args[1]), player.getLocation());
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

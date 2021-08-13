@@ -4,6 +4,8 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.util.Util;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,6 +38,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
     @Override
     public @NotNull String getVersion() {
         return WITP.getInstance().getDescription().getVersion();
+    }
+
+    public static String translate(Player player, String string) {
+        if (WITP.getPlaceholderHook() != null) {
+            return PlaceholderAPI.setPlaceholders(player, string);
+        }
+        return string;
     }
 
     @Override
@@ -72,6 +81,10 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return pp.time;
                 case "scoreboard":
                     return pp.showScoreboard.toString();
+                case "difficulty":
+                    return Double.toString(pp.difficulty);
+                case "difficulty_string":
+                    return Util.parseDifficulty(pp.difficulty);
             }
         }
 

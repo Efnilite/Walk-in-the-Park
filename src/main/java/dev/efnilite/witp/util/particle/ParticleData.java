@@ -1,8 +1,7 @@
 package dev.efnilite.witp.util.particle;
 
 import org.bukkit.Particle;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Wrapper for data used in {@link Particles}

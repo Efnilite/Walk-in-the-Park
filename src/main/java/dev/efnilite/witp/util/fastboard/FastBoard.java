@@ -399,7 +399,6 @@ public class FastBoard {
             for (int i = 0; i < this.lines.size(); i++) {
                 sendTeamPacket(i, TeamMode.REMOVE);
             }
-
             sendObjectivePacket(ObjectiveMode.REMOVE);
         } catch (Throwable t) {
             throw new RuntimeException("Unable to delete scoreboard", t);

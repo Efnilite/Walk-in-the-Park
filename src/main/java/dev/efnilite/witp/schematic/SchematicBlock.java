@@ -6,8 +6,8 @@ import org.bukkit.util.Vector;
 
 public class SchematicBlock {
 
-    private final Vector relativePosition;
-    private final BlockData data;
+    private Vector relativePosition;
+    private BlockData data;
 
     public SchematicBlock(Block block, Vector relativePosition) {
         this.relativePosition = relativePosition;
@@ -21,6 +21,10 @@ public class SchematicBlock {
 
     public Vector getRelativePosition() {
         return relativePosition;
+    }
+
+    public void setRelativePosition(Vector relativePosition) {
+        this.relativePosition = relativePosition;
     }
 
     public BlockData getData() {

@@ -53,10 +53,10 @@ public class Dimensions {
         this.length = max.getBlockZ() - min.getBlockZ() + 1;
     }
 
-    public Dimensions(int width, int length, int height) {
+    public Dimensions(int width, int height, int length) {
         this.width = width;
-        this.length = length;
         this.height = height;
+        this.length = length;
     }
 
     /**
@@ -113,20 +113,12 @@ public class Dimensions {
         return minumum;
     }
 
-    public void setMinumum(Location minumum) {
-        this.minumum = minumum;
-    }
-
-    public void setMaximum(Location maximum) {
-        this.maximum = maximum;
-    }
-
     public Vector getDimensions() {
-        return new Vector(width, length, height);
+        return new Vector(width, height, length);
     }
 
     @Override
     public String toString() {
-        return "(" + width + "," + length + "," + height + ")"; // x, y, z
+        return "(" + width + "," + height + "," + length + ")"; // x, y, z
     }
 }

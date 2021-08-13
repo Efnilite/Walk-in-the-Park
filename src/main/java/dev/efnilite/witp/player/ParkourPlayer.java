@@ -5,6 +5,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -25,8 +26,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -168,12 +169,14 @@ public class ParkourPlayer extends ParkourUser {
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
+                s = PlaceholderHook.translate(player, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replaceAll("%score%", Integer.toString(generator.score))
                         .replaceAll("%time%", generator.time)
                         .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
                         .replaceAll("%topscore%", top != null ? top.toString() : "0")
                         .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
+            title = PlaceholderHook.translate(player, title);
             board.updateTitle(title.replaceAll("%score%", Integer.toString(generator.score))
                     .replaceAll("%time%", generator.time)
                     .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
@@ -534,6 +537,14 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 if (Option.SQL) {
                     Verbose.verbose("Writing player's data to SQL server");
+
+                    if (highScoreDifficulty == null) {
+                        calculateDifficultyScore();
+                    }
+                    if (highScoreDifficulty.length() > 3) {
+                        highScoreDifficulty = highScoreDifficulty.substring(0, 3);
+                    }
+
                     UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players")
                             .setDefault("uuid", uuid.toString()).setDefault("name", name)
                             .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
@@ -608,7 +619,7 @@ public class ParkourPlayer extends ParkourUser {
                 else if (difficulty == 0.7) score += 0.4; //    0.9
                 else if (difficulty == 0.8) score += 0.5; //    1.0
             }
-            return Double.toString(score);
+            return Double.toString(score).substring(0, 3);
         } catch (NullPointerException ex) {
             return "?";
         }

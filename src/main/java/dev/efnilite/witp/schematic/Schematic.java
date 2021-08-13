@@ -16,13 +16,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Custom schematic type
+ *
+ * @author Efnilite
  */
 public class Schematic {
+
+    private boolean read;
 
     /**
      * Stores values of location
@@ -51,23 +56,29 @@ public class Schematic {
     public Schematic(@NotNull Location pos1, @NotNull Location pos2) {
         this.dimensions = new Dimensions(pos1, pos2);
         this.blocks = new ArrayList<>();
+        this.read = false;
     }
 
     public Schematic(@NotNull Selection selection) {
         this.dimensions = new Dimensions(selection.getPos1(), selection.getPos2());
         this.blocks = new ArrayList<>();
+        this.read = false;
     }
 
     public Schematic() {
-
+        this.read = false;
     }
 
     public Schematic file(@NotNull String fileName) {
         File folder = new File(WITP.getInstance().getDataFolder(), "schematics");
         folder.mkdirs();
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";
-        file = new File(folder, fileName + ".witp");
+        file = new File(folder, fileName);
         return this;
+    }
+
+    public boolean hasFile() {
+        return file != null;
     }
 
     /**
@@ -102,7 +113,7 @@ public class Schematic {
         writer.write("*");
         writer.write(separator);
 
-        List<String> filtered = new ArrayList<>();
+        HashSet<String> filtered = new HashSet<>();
         Map<String, Integer> palette = new HashMap<>();
         blocks.forEach(block -> filtered.add(block.getData().getAsString())); // get each of the block types
 
@@ -117,12 +128,12 @@ public class Schematic {
         writer.write("~");
         writer.write(separator);
 
-        StringJoiner joiner = new StringJoiner("-");
+        StringJoiner joiner = new StringJoiner("/");
         for (SchematicBlock block : blocks) {
             String current = block.getData().getAsString();
             String id = Integer.toString(palette.get(current));
 
-            joiner.add(id + Util.toString(block.getRelativePosition(), true)); // id(x,y,z) -> 3(2,3,-3)
+            joiner.add(id + Util.toString(block.getRelativePosition())); // id(x,y,z) -> 3(2,3,-3)
         }
 
         writer.write(joiner.toString());
@@ -133,10 +144,20 @@ public class Schematic {
     /**
      * Reads a Schematic from a file
      *
-     * @return the blocks present in the Schematic
      */
-    public Schematic read() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+    private void read() {
+        if (read) {
+            return;
+        }
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            Verbose.error("File doesn't exist!");
+            return;
+        }
+        this.read = true;
         List<String> lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
 
         HashMap<Integer, BlockData> palette = new HashMap<>();
@@ -149,29 +170,37 @@ public class Schematic {
                 break;
             }
             if (readingPalette) {
-                String[] elements = string.split(" > ");
+                String[] elements = string.split(">");
                 palette.put(Integer.parseInt(elements[0]), Bukkit.createBlockData(elements[1]));
             }
         }
 
         String fileBlocks = lines.get(lines.size() - 1);
-        String[] splitBlocks = fileBlocks.split("-");
-        Pattern idPattern = Pattern.compile("^\\d+"); // matches the id
-        Pattern vectorPattern = Pattern.compile("\\(-?\\d+,-?\\d+,-?\\d+\\)"); // matches the vector
+        String[] splitBlocks = fileBlocks.split("/");
+        Pattern idPattern = Pattern.compile("^\\d+");
+        Pattern vectorPattern = Pattern.compile("\\(-?\\d+,-?\\d+,-?\\d+\\)");
 
         List<SchematicBlock> blocks = new ArrayList<>();
         for (String block : splitBlocks) { // parse the SchematicBlocks
-            Integer readId = Integer.parseInt(idPattern.matcher(block).group());
-            BlockData blockData = palette.get(readId);
-            Vector readVector = Util.parseVector(vectorPattern.matcher(block).group());
 
-            blocks.add(new SchematicBlock(blockData, readVector));
+            Matcher idMatcher = idPattern.matcher(block); // finds the id
+            int id = 0;
+            while (idMatcher.find()) {
+                id = Integer.parseInt(idMatcher.group());
+            }
+
+            Matcher vectorMatcher = vectorPattern.matcher(block);
+            Vector vector = null;
+            while (vectorMatcher.find()) {
+                vector = Util.parseVector(vectorMatcher.group());
+            }
+
+            blocks.add(new SchematicBlock(palette.get(id), vector));
         }
         this.blocks = blocks;
 
         Vector readDimensions = Util.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.getBlockX(), readDimensions.getBlockY(), readDimensions.getBlockZ());
-        return this;
     }
 
     /**
@@ -185,9 +214,8 @@ public class Schematic {
      *
      * @return  A list of the affected blocks during the pasting
      *
-     * @throws IOException When something goes wrong during the reading of the file.
      */
-    public List<Block> paste(Location at, int angle) throws IOException {
+    public List<Block> paste(Location at, RotationAngle angle) {
         read();
         this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions())); // update dimensions to match min location, giving you an idea where it will be pasted
 
@@ -195,7 +223,7 @@ public class Schematic {
         List<Block> affectedBlocks = new ArrayList<>();
         for (SchematicBlock block : blocks) {
             Vector relativeOffset = block.getRelativePosition();
-            relativeOffset.rotateAroundY(angle);
+            relativeOffset = rotate(relativeOffset, angle);
 
             Location pasteLocation = min.clone().add(relativeOffset); // all positions are saved to be relative to the minimum location
             Block affectedBlock = pasteLocation.getBlock();
@@ -205,7 +233,41 @@ public class Schematic {
         return affectedBlocks;
     }
 
+    private Vector rotate(Vector vector, RotationAngle rotation) {
+        Vector multiply = new Vector(1, 1, 1);
+        switch (rotation) {
+            case ANGLE_0:
+                return vector;
+            case ANGLE_90:
+                multiply.setX(-1);
+            case ANGLE_180:
+                multiply.setX(-1).setZ(-1);
+            case ANGLE_270:
+                multiply.setZ(-1);
+        }
+        return vector.multiply(multiply);
+    }
+
+    /**
+     * Finds a Material in a schematic
+     *
+     * @param   material
+     *          The material
+     *
+     * @return the {@link SchematicBlock} with this material
+     */
+    public SchematicBlock findFromMaterial(Material material) {
+        read();
+        for (SchematicBlock block : blocks) {
+            if (block.getData().getMaterial() == material) {
+                return block;
+            }
+        }
+        return null;
+    }
+
     public Dimensions getDimensions() {
+        read();
         return dimensions;
     }
 
@@ -220,5 +282,13 @@ public class Schematic {
          */
         SKIP_AIR
 
+    }
+
+    public enum RotationAngle {
+
+        ANGLE_0,
+        ANGLE_90,
+        ANGLE_180,
+        ANGLE_270
     }
 }

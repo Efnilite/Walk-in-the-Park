@@ -280,6 +280,7 @@ options:
 scoreboard:
     enabled: true
 
+    # You can use PlaceholderAPI placeholders with this scoreboard!
     title: "&a&lWalk in the Park"
     lines:
         - "&a"

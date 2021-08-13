@@ -114,9 +114,11 @@ public class VersionManager_v1_17_R1 implements VersionManager {
         Location pos1 = new Location(to.getWorld(), box.g(), box.h(), box.i()); // box coords to bukkit
         Location pos2 = new Location(to.getWorld(), box.j(), box.k(), box.l()); // box coords to bukkit
 
+        // get min and max
         Location min = Util.min(pos1, pos2);
         Location max = Util.max(pos1, pos2);
 
+        //
         int deltaX = (max.getBlockX() - min.getBlockX()) / 2; // gets the X dimension
         int deltaZ = (max.getBlockZ() - min.getBlockZ()) / 2; // gets the Z dimension
 

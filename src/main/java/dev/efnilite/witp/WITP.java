@@ -57,6 +57,7 @@ public final class WITP extends JavaPlugin implements Listener {
     private static Registry registry;
     private static @Nullable MultiverseHook multiverseHook;
     private static @Nullable ProtocolHook protocolHook;
+    private static @Nullable PlaceholderHook placeholderHook;
 
     @Override
     public void onEnable() {
@@ -82,18 +83,22 @@ public final class WITP extends JavaPlugin implements Listener {
                 break;
             default:
                 Verbose.error("You are trying to start this plugin using an invalid server version");
-                Verbose.error("This plugin only works in version 1.17 or 1.16.x!");
+                Verbose.error("This plugin only works in version 1.17 or 1.16!");
                 this.getServer().getPluginManager().disablePlugin(this);
                 return;
         }
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderHook().register();
+            Verbose.info("Connecting with PlaceholderAPI..");
+            placeholderHook = new PlaceholderHook();
+            placeholderHook.register();
         }
         if (getServer().getPluginManager().getPlugin("Multiverse-Core") != null) {
+            Verbose.info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
         }
         if (getServer().getPluginManager().getPlugin("ProtocolAPI") != null) {
+            Verbose.info("Connecting with ProtocolAPI..");
             protocolHook = new ProtocolHook();
         }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -324,6 +329,10 @@ public final class WITP extends JavaPlugin implements Listener {
 
     public static @Nullable ProtocolHook getProtocolHook() {
         return protocolHook;
+    }
+
+    public static @Nullable PlaceholderHook getPlaceholderHook() {
+        return placeholderHook;
     }
 
     public static Registry getRegistry() {

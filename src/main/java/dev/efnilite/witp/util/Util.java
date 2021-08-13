@@ -18,8 +18,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
@@ -541,12 +541,8 @@ public class Util {
      *
      * @return string version
      */
-    public static String toString(Vector vector, boolean formatted) {
-        if (!formatted) {
-            return "(" + vector.getX() + "," + vector.getY() + "," + vector.getZ() + ")";
-        } else {
-            return "(" + vector.getBlockX() + ", " + vector.getBlockY() + ", " + vector.getBlockZ() + ")";
-        }
+    public static String toString(Vector vector) {
+        return "(" + vector.getBlockX() + "," + vector.getBlockY() + "," + vector.getBlockZ() + ")";
     }
 
     /**
