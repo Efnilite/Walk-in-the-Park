@@ -1,5 +1,6 @@
 package dev.efnilite.witp.schematic;
 
+import dev.efnilite.witp.WITP;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
@@ -19,7 +20,7 @@ public class SchematicAdjuster {
      *
      * @throws IOException if something goes wrong with pasting
      */
-    public static void pasteAdjusted(Schematic schematic, Location adjustTo, Vector3D.RotationAngle angle) throws IOException {
+    public static void pasteAdjusted(Schematic schematic, Location adjustTo) throws IOException {
         if (!schematic.hasFile() && adjustTo == null) {
             return;
         }
@@ -27,7 +28,7 @@ public class SchematicAdjuster {
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
-        schematic.pasteAdjusted(adjustTo, angle);
+        schematic.pasteAdjusted(adjustTo, getAngle(WITP.getDivider().getHeading()));
     }
 
     /**

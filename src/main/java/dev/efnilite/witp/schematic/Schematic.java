@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
  */
 public class Schematic {
 
+    /**
+     * If the schematic has been read already
+     */
     private boolean read;
 
     /**
@@ -75,6 +78,10 @@ public class Schematic {
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";
         file = new File(folder, fileName);
         return this;
+    }
+
+    public String getName() {
+        return file.getName();
     }
 
     public boolean hasFile() {
@@ -139,9 +146,8 @@ public class Schematic {
 
     /**
      * Reads a Schematic from a file
-     *
      */
-    private void read() {
+    public void read() {
         if (read) {
             return;
         }
@@ -199,7 +205,7 @@ public class Schematic {
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
     }
 
-    public List<Block> paste(Location at, int angle) throws IOException {
+    public List<Block> paste(Location at, Vector3D.RotationAngle angle) {
         read();
         this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
 
@@ -207,9 +213,9 @@ public class Schematic {
         List<Block> affectedBlocks = new ArrayList<>();
         for (SchematicBlock block : blocks) {
             Vector3D relativeOffset = block.getRelativePosition();
-            relativeOffset = relativeOffset.rotateAround(Vector3D.RotationAngle angle);
+            relativeOffset = relativeOffset.rotateAround(angle);
 
-            Location pasteLocation = min.clone().add(relativeOffset); // all positions are saved to be relative to the minimum location
+            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector()); // all positions are saved to be relative to the minimum location
             Block affectedBlock = pasteLocation.getBlock();
             affectedBlock.setBlockData(block.getData());
             affectedBlocks.add(affectedBlock);
@@ -218,7 +224,7 @@ public class Schematic {
     }
 
     /**
-     * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour
+     * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour.
      * Todo -> optimize and clean up
      *
      * @param   at
@@ -234,35 +240,43 @@ public class Schematic {
         read();
         this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
 
+        // -- Preparing for paste --
+
         Location min = dimensions.getMinimumPoint();
         Location other = null;
         Map<Location, BlockData> rotated = new HashMap<>();
-        for (SchematicBlock block : blocks) {
+        for (SchematicBlock block : blocks) { // go through blocks
             Vector3D relativeOffset = block.getRelativePosition();
             relativeOffset = relativeOffset.rotateAround(angle);
 
-            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector()); // all positions are saved to be relative to the minimum location
+            // all positions are saved to be relative to the minimum location
+            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
 
-            if (block.getData().getMaterial() == Material.LIME_WOOL) {
+            if (block.getData().getMaterial() == Material.LIME_WOOL) { // finds the lime wool pasting location
                 other = pasteLocation.clone();
-                System.out.println(other);
             }
-            rotated.put(pasteLocation.clone(), block.getData());
+            rotated.put(pasteLocation.clone(), block.getData()); // put the final locations back
         }
-        if (other == null) {
+        if (other == null) { // if no lime wool
             Verbose.error("No lime wool found in file " + file.getName());
             return null;
         }
 
-        System.out.println(at);
+        // -- Pasting with angle --
 
+        // the difference between the location of lime wool and `at` so lime wools of angles matches
         Vector difference = other.clone().subtract(at).toVector();
+
+        // get the opposite angle of the one being pasted at
         Vector3D.RotationAngle opposite = Vector3D.RotationAngle.getFromInteger(angle.getOpposite());
+        // turn it in a specific way
         Vector3D turn = Vector3D.fromBukkit(difference).defaultRotate(opposite);
+        // add it to the difference
         difference.add(turn.toBukkitVector());
-        System.out.println(difference);
+
         List<Block> affectedBlocks = new ArrayList<>();
         for (Location location : rotated.keySet()) {
+            // align block to where it will actually be set (final step)
             Block block = location.clone().subtract(difference).getBlock();
             block.setBlockData(rotated.get(location));
             affectedBlocks.add(block);

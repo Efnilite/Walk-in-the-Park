@@ -5,6 +5,9 @@ import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.schematic.SchematicAdjuster;
+import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
@@ -22,6 +25,7 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -530,23 +534,24 @@ public class DefaultGenerator extends ParkourGenerator {
             case 1:
                 File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-                File structure;
+                File file;
                 if (files.size() > 0) {
                     boolean passed = true;
                     while (passed) {
-                        structure = files.get(random.nextInt(files.size()));
+                        file = files.get(random.nextInt(files.size()));
                         if (player.difficulty == 0) {
                             player.difficulty = 0.3;
                         }
-                        if (Util.getDifficulty(structure.getName()) <= player.difficulty) {
+                        if (Util.getDifficulty(file.getName()) < player.difficulty) {
                             passed = false;
                         }
                     }
-                    structure = files.get(random.nextInt(files.size()));
+                    file = files.get(random.nextInt(files.size()));
                 } else {
                     Verbose.error("No structures to choose from!");
                     return;
                 }
+                Schematic schematic = SchematicCache.getSchematic(file.getName());
 
                 structureCooldown = 20;
                 int gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
@@ -559,7 +564,11 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
 
-                StructureData data = WITP.getVersionManager().placeAt(structure, chosenStructure.getLocation(), heading);
+                try {
+                    SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 structureBlocks = data.blocks;
                 if (structureBlocks == null || structureBlocks.size() == 0) {
                     Verbose.error("0 blocks found in structure!");

@@ -235,14 +235,6 @@ public class MainCommand extends BukkitCommand {
                         user.getGenerator().reset(true);
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("pasteschematic")) {
-                if (player.hasPermission("witp.schematic")) {
-                    try {
-                        SchematicAdjuster.pasteAdjusted(new Schematic().file(args[1]), player.getLocation(), Vector3D.RotationAngle.valueOf("ANGLE_" + args[2]));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
             }
         }
         return true;

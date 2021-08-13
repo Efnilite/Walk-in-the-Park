@@ -8,6 +8,7 @@ import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.hook.ProtocolHook;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Configuration;
@@ -65,6 +66,7 @@ public final class WITP extends JavaPlugin implements Listener {
         Tasks.time("load");
         registry = new Registry();
         Verbose.init();
+        SchematicCache.read();
 
         // Get correct VersionManager
         String version = Util.getVersion();
