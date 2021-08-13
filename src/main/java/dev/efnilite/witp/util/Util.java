@@ -3,6 +3,7 @@ package dev.efnilite.witp.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import net.md_5.bungee.api.ChatColor;
@@ -491,6 +492,32 @@ public class Util {
         return new Location(world, Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
     }
 
+    public static Location min(List<Location> positions) {
+        Location min = new Location(null, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        for (Location position : positions) {
+            if (position.getWorld() != null) {
+                min.setWorld(position.getWorld());
+            }
+            min.setX(Math.min(position.getX(), min.getX()));
+            min.setY(Math.min(position.getY(), min.getY()));
+            min.setZ(Math.min(position.getZ(), min.getZ()));
+        }
+        return min;
+    }
+
+    public static Location max(List<Location> positions) {
+        Location max = new Location(null, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
+        for (Location position : positions) {
+            if (position.getWorld() != null) {
+                max.setWorld(position.getWorld());
+            }
+            max.setX(Math.max(position.getX(), max.getX()));
+            max.setY(Math.max(position.getY(), max.getY()));
+            max.setZ(Math.max(position.getZ(), max.getZ()));
+        }
+        return max;
+    }
+
     /**
      * Gets the player's held item
      *
@@ -512,9 +539,9 @@ public class Util {
      *
      * @return the Vector
      */
-    public static Vector parseVector(String vector) {
+    public static Vector3D parseVector(String vector) {
         String[] split = vector.replaceAll("[()]", "").split(",");
-        return new Vector(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        return new Vector3D(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
     }
 
     /**

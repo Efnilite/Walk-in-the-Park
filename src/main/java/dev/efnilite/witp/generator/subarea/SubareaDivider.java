@@ -1,5 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
+import com.onarandombox.MultiverseCore.utils.FileUtils;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -14,12 +15,13 @@ import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.FileUtil;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,13 +79,8 @@ public class SubareaDivider {
             Bukkit.unloadWorld(worldName, false);
             File folder = new File(worldName);
             if (folder.exists() && folder.isDirectory()) {
-                try {
-                    FileUtils.deleteDirectory(folder);
-                    Verbose.verbose("Deleted world " + worldName);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    Verbose.error("Error while deleting the playing world");
-                }
+                folder.delete();
+                Verbose.verbose("Deleted world " + worldName);
             }
         } else {
             WITP.getMultiverseHook().deleteWorld(worldName);

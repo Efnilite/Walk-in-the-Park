@@ -8,6 +8,7 @@ import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
+import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -168,7 +169,7 @@ public class MainCommand extends BukkitCommand {
                     if (selection != null && selection.isComplete()) {
                         Schematic schematic = new Schematic(selection);
                         try {
-                            schematic.file("parkour-" + Util.randomDigits(6)).save(Schematic.SaveOptions.SKIP_AIR);
+                            schematic.file("parkour-" + Util.randomDigits(6)).save();
                         } catch (IOException ex) {
                             ex.printStackTrace();
                             player.sendMessage("There was an error!");
@@ -222,14 +223,6 @@ public class MainCommand extends BukkitCommand {
                         }
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("pasteschematic")) {
-                if (player.hasPermission("witp.schematic")) {
-                    try {
-                        SchematicAdjuster.pasteAdjusted(new Schematic().file(args[1]), player.getLocation());
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
             }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("askreset") && player != null && args[2] != null) {
@@ -240,6 +233,14 @@ public class MainCommand extends BukkitCommand {
                         user.send("");
                         user.confirmReset(args[1]);
                         user.getGenerator().reset(true);
+                    }
+                }
+            } else if (args[0].equalsIgnoreCase("pasteschematic")) {
+                if (player.hasPermission("witp.schematic")) {
+                    try {
+                        SchematicAdjuster.pasteAdjusted(new Schematic().file(args[1]), player.getLocation(), Vector3D.RotationAngle.valueOf("ANGLE_" + args[2]));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package dev.efnilite.witp.schematic.selection;
 
+import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
@@ -113,8 +114,8 @@ public class Dimensions {
         return minumum;
     }
 
-    public Vector getDimensions() {
-        return new Vector(width, height, length);
+    public Vector3D getDimensions() {
+        return new Vector3D(width, height, length);
     }
 
     @Override

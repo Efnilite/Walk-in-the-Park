@@ -70,16 +70,16 @@ public final class WITP extends JavaPlugin implements Listener {
         String version = Util.getVersion();
         switch (version) {
             case "v1_17_R1":
-                versionManager = new VersionManager_v1_17_R1();
+//                versionManager = new VersionManager_v1_17_R1();
                 break;
             case "v1_16_R3":
-                versionManager = new VersionManager_v1_16_R3();
+//                versionManager = new VersionManager_v1_16_R3();
                 break;
             case "v1_16_R2":
-                versionManager = new VersionManager_v1_16_R2();
+//                versionManager = new VersionManager_v1_16_R2();
                 break;
             case "v1_16_R1":
-                versionManager = new VersionManager_v1_16_R1();
+//                versionManager = new VersionManager_v1_16_R1();
                 break;
             default:
                 Verbose.error("You are trying to start this plugin using an invalid server version");

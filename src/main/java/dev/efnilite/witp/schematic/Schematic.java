@@ -83,22 +83,18 @@ public class Schematic {
 
     /**
      * Saves a schematic file
-     *
-     * @param   saveOptions
-     *          The options while saving
      */
-    public void save(@Nullable SaveOptions... saveOptions) throws IOException {
+    public void save() throws IOException {
         if (dimensions == null || blocks == null) {
             Verbose.error("Data of schematic is null while trying to save!");
             return;
         }
-        List<SaveOptions> options = Arrays.asList(saveOptions);
 
         for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
-            if (options.contains(SaveOptions.SKIP_AIR) && currentBlock.getType() == Material.AIR) { // skip air if enabled
+            if (currentBlock.getType() == Material.AIR) { // skip air if enabled
                 continue;
             }
-            Vector relativeOffset = currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector();
+            Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
             blocks.add(new SchematicBlock(currentBlock, relativeOffset));
         }
 
@@ -133,7 +129,7 @@ public class Schematic {
             String current = block.getData().getAsString();
             String id = Integer.toString(palette.get(current));
 
-            joiner.add(id + Util.toString(block.getRelativePosition())); // id(x,y,z) -> 3(2,3,-3)
+            joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
         }
 
         writer.write(joiner.toString());
@@ -190,7 +186,7 @@ public class Schematic {
             }
 
             Matcher vectorMatcher = vectorPattern.matcher(block);
-            Vector vector = null;
+            Vector3D vector = null;
             while (vectorMatcher.find()) {
                 vector = Util.parseVector(vectorMatcher.group());
             }
@@ -199,12 +195,31 @@ public class Schematic {
         }
         this.blocks = blocks;
 
-        Vector readDimensions = Util.parseVector(lines.get(0));
-        this.dimensions = new Dimensions(readDimensions.getBlockX(), readDimensions.getBlockY(), readDimensions.getBlockZ());
+        Vector3D readDimensions = Util.parseVector(lines.get(0));
+        this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
+    }
+
+    public List<Block> paste(Location at, int angle) throws IOException {
+        read();
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
+
+        Location min = dimensions.getMinimumPoint();
+        List<Block> affectedBlocks = new ArrayList<>();
+        for (SchematicBlock block : blocks) {
+            Vector3D relativeOffset = block.getRelativePosition();
+            relativeOffset = relativeOffset.rotateAround(Vector3D.RotationAngle angle);
+
+            Location pasteLocation = min.clone().add(relativeOffset); // all positions are saved to be relative to the minimum location
+            Block affectedBlock = pasteLocation.getBlock();
+            affectedBlock.setBlockData(block.getData());
+            affectedBlocks.add(affectedBlock);
+        }
+        return affectedBlocks;
     }
 
     /**
-     * Pastes a Schematic at a location and with a certain angle.
+     * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour
+     * Todo -> optimize and clean up
      *
      * @param   at
      *          The location at which the Schematic will be pasted
@@ -215,37 +230,45 @@ public class Schematic {
      * @return  A list of the affected blocks during the pasting
      *
      */
-    public List<Block> paste(Location at, RotationAngle angle) {
+    public @Nullable List<Block> pasteAdjusted(Location at, Vector3D.RotationAngle angle) {
         read();
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions())); // update dimensions to match min location, giving you an idea where it will be pasted
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
 
         Location min = dimensions.getMinimumPoint();
-        List<Block> affectedBlocks = new ArrayList<>();
+        Location other = null;
+        Map<Location, BlockData> rotated = new HashMap<>();
         for (SchematicBlock block : blocks) {
-            Vector relativeOffset = block.getRelativePosition();
-            relativeOffset = rotate(relativeOffset, angle);
+            Vector3D relativeOffset = block.getRelativePosition();
+            relativeOffset = relativeOffset.rotateAround(angle);
 
-            Location pasteLocation = min.clone().add(relativeOffset); // all positions are saved to be relative to the minimum location
-            Block affectedBlock = pasteLocation.getBlock();
-            affectedBlock.setBlockData(block.getData());
-            affectedBlocks.add(affectedBlock);
+            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector()); // all positions are saved to be relative to the minimum location
+
+            if (block.getData().getMaterial() == Material.LIME_WOOL) {
+                other = pasteLocation.clone();
+                System.out.println(other);
+            }
+            rotated.put(pasteLocation.clone(), block.getData());
         }
+        if (other == null) {
+            Verbose.error("No lime wool found in file " + file.getName());
+            return null;
+        }
+
+        System.out.println(at);
+
+        Vector difference = other.clone().subtract(at).toVector();
+        Vector3D.RotationAngle opposite = Vector3D.RotationAngle.getFromInteger(angle.getOpposite());
+        Vector3D turn = Vector3D.fromBukkit(difference).defaultRotate(opposite);
+        difference.add(turn.toBukkitVector());
+        System.out.println(difference);
+        List<Block> affectedBlocks = new ArrayList<>();
+        for (Location location : rotated.keySet()) {
+            Block block = location.clone().subtract(difference).getBlock();
+            block.setBlockData(rotated.get(location));
+            affectedBlocks.add(block);
+        }
+
         return affectedBlocks;
-    }
-
-    private Vector rotate(Vector vector, RotationAngle rotation) {
-        Vector multiply = new Vector(1, 1, 1);
-        switch (rotation) {
-            case ANGLE_0:
-                return vector;
-            case ANGLE_90:
-                multiply.setX(-1);
-            case ANGLE_180:
-                multiply.setX(-1).setZ(-1);
-            case ANGLE_270:
-                multiply.setZ(-1);
-        }
-        return vector.multiply(multiply);
     }
 
     /**
@@ -273,22 +296,5 @@ public class Schematic {
 
     public File getFile() {
         return file;
-    }
-
-    public enum SaveOptions {
-
-        /**
-         * Skips air in saving to massively reduce file size
-         */
-        SKIP_AIR
-
-    }
-
-    public enum RotationAngle {
-
-        ANGLE_0,
-        ANGLE_90,
-        ANGLE_180,
-        ANGLE_270
     }
 }
