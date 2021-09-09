@@ -90,8 +90,8 @@ public class Configuration {
                         stream.close();
                     }
                     for (int i = 1; i <= structureCount; i++) {
-                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".nbt").openStream();
-                        Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".nbt"));
+                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
+                        Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
                         Verbose.verbose("Downloaded parkour-" + i);
                         stream.close();
                     }
