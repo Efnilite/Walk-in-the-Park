@@ -46,7 +46,6 @@ public class ParkourSpectator extends ParkourUser {
         this.player.setGameMode(GameMode.SPECTATOR);
         watching.addSpectator(this);
         this.player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        WITP.getDivider().setBorder(this, WITP.getDivider().getPoint(watching));
         sendTranslated("spectator");
     }
 
@@ -70,12 +69,12 @@ public class ParkourSpectator extends ParkourUser {
                 Verbose.error("Scoreboard lines are null! Check your config!");
                 return;
             }
-            Integer rank = ParkourPlayer.getHighScore(watching.player.getUniqueId());
+            Integer rank = ParkourPlayer.getHighScoreValue(watching.player.getUniqueId());
             UUID one = ParkourPlayer.getAtPlace(1);
             Integer top = 0;
             Highscore highscore = null;
             if (one != null) {
-                top = ParkourPlayer.getHighScore(one);
+                top = ParkourPlayer.getHighScoreValue(one);
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {

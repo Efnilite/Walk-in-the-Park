@@ -12,6 +12,7 @@ import java.io.File;
  *
  * @author Efnilite
  */
+@Deprecated
 public interface VersionManager {
 
     /**

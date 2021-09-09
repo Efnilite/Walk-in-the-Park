@@ -118,7 +118,7 @@ public class Schematic {
 
         HashSet<String> filtered = new HashSet<>();
         Map<String, Integer> palette = new HashMap<>();
-        blocks.forEach(block -> filtered.add(block.getData().getAsString())); // get each of the block types
+        blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
 
         int index = 0;
         for (String data : filtered) {
@@ -162,6 +162,8 @@ public class Schematic {
         this.read = true;
         List<String> lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
 
+        // -- Makes palette --
+
         HashMap<Integer, BlockData> palette = new HashMap<>();
         boolean readingPalette = false; // palette is ? lines long
         for (String string : lines) { // reads the palette
@@ -181,6 +183,8 @@ public class Schematic {
         String[] splitBlocks = fileBlocks.split("/");
         Pattern idPattern = Pattern.compile("^\\d+");
         Pattern vectorPattern = Pattern.compile("\\(-?\\d+,-?\\d+,-?\\d+\\)");
+
+        // -- Writes it to the file and adds it to the blocks --
 
         List<SchematicBlock> blocks = new ArrayList<>();
         for (String block : splitBlocks) { // parse the SchematicBlocks
@@ -205,9 +209,10 @@ public class Schematic {
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
     }
 
-    public List<Block> paste(Location at, Vector3D.RotationAngle angle) {
+    public List<Block> paste(Location at, RotationAngle angle) {
         read();
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
+        // update dimensions to match min location, giving you an idea where it will be pasted
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector()));
 
         Location min = dimensions.getMinimumPoint();
         List<Block> affectedBlocks = new ArrayList<>();
@@ -215,7 +220,8 @@ public class Schematic {
             Vector3D relativeOffset = block.getRelativePosition();
             relativeOffset = relativeOffset.rotateAround(angle);
 
-            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector()); // all positions are saved to be relative to the minimum location
+            // all positions are saved to be relative to the minimum location
+            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
             Block affectedBlock = pasteLocation.getBlock();
             affectedBlock.setBlockData(block.getData());
             affectedBlocks.add(affectedBlock);
@@ -236,7 +242,7 @@ public class Schematic {
      * @return  A list of the affected blocks during the pasting
      *
      */
-    public @Nullable List<Block> pasteAdjusted(Location at, Vector3D.RotationAngle angle) {
+    public @Nullable List<Block> pasteAdjusted(Location at, RotationAngle angle) {
         read();
         this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
 
@@ -268,17 +274,28 @@ public class Schematic {
         Vector difference = other.clone().subtract(at).toVector();
 
         // get the opposite angle of the one being pasted at
-        Vector3D.RotationAngle opposite = Vector3D.RotationAngle.getFromInteger(angle.getOpposite());
+        RotationAngle opposite = RotationAngle.getFromInteger(angle.getOpposite());
         // turn it in a specific way
         Vector3D turn = Vector3D.fromBukkit(difference).defaultRotate(opposite);
         // add it to the difference
         difference.add(turn.toBukkitVector());
 
         List<Block> affectedBlocks = new ArrayList<>();
+        Pattern pattern = Pattern.compile("facing=(\\w+)");
         for (Location location : rotated.keySet()) {
             // align block to where it will actually be set (final step)
             Block block = location.clone().subtract(difference).getBlock();
-            block.setBlockData(rotated.get(location));
+            // sets the block data
+
+            String finalBlockData = rotated.get(location).getAsString();
+            Matcher matcher = pattern.matcher(finalBlockData);
+            while (matcher.find()) {
+                String facing = matcher.group().replaceAll("facing=", "");
+                String updated = getFaceFromAngle(facing, angle);
+                finalBlockData = finalBlockData.replaceAll(pattern.toString(), "facing=" + updated);
+            }
+
+            block.setBlockData(Bukkit.createBlockData(finalBlockData));
             affectedBlocks.add(block);
         }
 
@@ -301,6 +318,54 @@ public class Schematic {
             }
         }
         return null;
+    }
+
+    private String getFaceFromAngle(String original, RotationAngle rotationAngle) {
+        int angle = rotationAngle.getAngle();
+        switch (original) {
+            case "north":
+                if (angle % 270 == 0) {
+                    return "east";
+                } else if (angle % 180 == 0) {
+                    return "south";
+                } else if (angle % 90 == 0) {
+                    return "west";
+                } else {
+                    return "north";
+                }
+            case "west":
+                if (angle % 270 == 0) {
+                    return "north";
+                } else if (angle % 180 == 0) {
+                    return "east";
+                } else if (angle % 90 == 0) {
+                    return "south";
+                } else {
+                    return "west";
+                }
+            case "south":
+                if (angle % 270 == 0) {
+                    return "west";
+                } else if (angle % 180 == 0) {
+                    return "north";
+                } else if (angle % 90 == 0) {
+                    return "east";
+                } else {
+                    return "south";
+                }
+            case "east":
+                if (angle % 270 == 0) {
+                    return "south";
+                } else if (angle % 180 == 0) {
+                    return "west";
+                } else if (angle % 90 == 0) {
+                    return "north";
+                } else {
+                    return "east";
+                }
+            default:
+                return "north";
+        }
     }
 
     public Dimensions getDimensions() {

@@ -1,44 +1,24 @@
-//package dev.efnilite.witp.version;
-//
-//import dev.efnilite.witp.generator.DefaultGenerator;
-//import dev.efnilite.witp.util.Util;
-//import dev.efnilite.witp.util.Verbose;
-//import net.minecraft.core.BlockPosition;
-//import net.minecraft.nbt.NBTCompressedStreamTools;
-//import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
-//import net.minecraft.world.level.WorldAccess;
-//import net.minecraft.world.level.block.Blocks;
-//import net.minecraft.world.level.block.EnumBlockMirror;
-//import net.minecraft.world.level.block.EnumBlockRotation;
-//import net.minecraft.world.level.border.WorldBorder;
-//import net.minecraft.world.level.levelgen.structure.StructureBoundingBox;
-//import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructure;
-//import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructureInfo;
-//import org.bukkit.Location;
-//import org.bukkit.Material;
-//import org.bukkit.block.Block;
-//import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-//import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-//import org.bukkit.entity.Player;
-//import org.bukkit.util.Vector;
-//import org.jetbrains.annotations.NotNull;
-//import org.jetbrains.annotations.Nullable;
-//
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//import java.util.List;
-//import java.util.Random;
-//import java.util.concurrent.ThreadLocalRandom;
-//
-///**
-// * Main source used: https://github.com/Shynixn/StructureBlockLib/blob/master/structureblocklib-bukkit-core/bukkit-nms-117R1/src/main/java/com/github/shynixn/structureblocklib/bukkit/v1_17_R1/StructureWorldServiceImpl.java
-// * @author Efnilite
-// */
-//public class VersionManager_v1_17_R1 implements VersionManager {
-//
-//    @Override
-//    public void setWorldBorder(Player player, Vector vector, double size) {
+package dev.efnilite.witp.version;
+
+import dev.efnilite.witp.generator.DefaultGenerator;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+
+/**
+ * Main source used: https://github.com/Shynixn/StructureBlockLib/blob/master/structureblocklib-bukkit-core/bukkit-nms-117R1/src/main/java/com/github/shynixn/structureblocklib/bukkit/v1_17_R1/StructureWorldServiceImpl.java
+ * @author Efnilite
+ */
+@Deprecated
+public class VersionManager_v1_17_R1 implements VersionManager {
+
+    @Override
+    @Deprecated
+    public void setWorldBorder(Player player, Vector vector, double size) {
 //        WorldBorder border = new WorldBorder();
 //        border.world = ((CraftWorld) player.getWorld()).getHandle();
 //        border.setCenter(vector.getX(), vector.getZ());
@@ -47,10 +27,11 @@
 //        border.setWarningTime(0);
 //        ClientboundInitializeBorderPacket packet = new ClientboundInitializeBorderPacket(border);
 //        ((CraftPlayer) player).getHandle().b.sendPacket(packet);
-//    }
-//
-//    @Override
-//    public void pasteStructure(File file, Location to) {
+    }
+
+    @Override
+    @Deprecated
+    public void pasteStructure(File file, Location to) {
 //        try {
 //            DefinedStructure structure = new DefinedStructure();
 //            structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -74,10 +55,11 @@
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//    }
-//
-//    // gets the appropriate rotation fo the schematic for the heading
-//    private EnumBlockRotation getRotation(@NotNull Vector heading) {
+    }
+
+    // gets the appropriate rotation fo the schematic for the heading
+    @Deprecated
+    private void getRotation(@NotNull Vector heading) {
 //        if (heading.getBlockZ() != 0) { // north/south
 //            switch (heading.getBlockZ()) {
 //                case 1: // south
@@ -94,11 +76,12 @@
 //            }
 //        }
 //        return EnumBlockRotation.d;
-//    }
-//
-//    // todo (a lot of) optimizations
-//    @Override
-//    public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
+    }
+
+    // todo (a lot of) optimizations
+    @Override
+    @Deprecated
+    public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
 //        DefinedStructure structure = new DefinedStructure();
 //        try {
 //            structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -157,10 +140,12 @@
 //        }
 //
 //        return new DefaultGenerator.StructureData(endPos.clone(), blocks);
-//    }
-//
-//    @Override
-//    public Vector getDimensions(File file, Location to) {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public Vector getDimensions(File file, Location to) {
 //        try {
 //            DefinedStructure structure = new DefinedStructure();
 //            structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -182,5 +167,6 @@
 //            e.printStackTrace();
 //            return null;
 //        }
-//    }
-//}
+        return null;
+    }
+}

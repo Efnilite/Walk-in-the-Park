@@ -3,9 +3,12 @@ package dev.efnilite.witp.schematic;
 import dev.efnilite.witp.WITP;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SchematicAdjuster {
 
@@ -20,15 +23,15 @@ public class SchematicAdjuster {
      *
      * @throws IOException if something goes wrong with pasting
      */
-    public static void pasteAdjusted(Schematic schematic, Location adjustTo) throws IOException {
+    public static @Nullable List<Block> pasteAdjusted(Schematic schematic, Location adjustTo) throws IOException {
         if (!schematic.hasFile() && adjustTo == null) {
-            return;
+            return null;
         }
         SchematicBlock start = schematic.findFromMaterial(Material.LIME_WOOL);
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
-        schematic.pasteAdjusted(adjustTo, getAngle(WITP.getDivider().getHeading()));
+        return schematic.pasteAdjusted(adjustTo, getAngle(WITP.getDivider().getHeading()));
     }
 
     /**
@@ -39,22 +42,22 @@ public class SchematicAdjuster {
      *
      * @return the associated angle
      */
-    private static Vector3D.RotationAngle getAngle(Vector heading) {
+    private static RotationAngle getAngle(Vector heading) {
         if (heading.getBlockZ() != 0) { // north/south
             switch (heading.getBlockZ()) {
                 case 1: // south
-                    return Vector3D.RotationAngle.ANGLE_180;
+                    return RotationAngle.ANGLE_0;
                 case -1: // north
-                    return Vector3D.RotationAngle.ANGLE_0;
+                    return RotationAngle.ANGLE_180;
             }
         } else if (heading.getBlockX() != 0) { // east/west
             switch (heading.getBlockX()) {
                 case 1: // east
-                    return Vector3D.RotationAngle.ANGLE_90;
+                    return RotationAngle.ANGLE_270;
                 case -1: // west
-                    return Vector3D.RotationAngle.ANGLE_270;
+                    return RotationAngle.ANGLE_90;
             }
         }
-        return Vector3D.RotationAngle.ANGLE_0;
+        return RotationAngle.ANGLE_0;
     }
 }

@@ -92,36 +92,8 @@ public class Vector3D {
         return this;
     }
 
-    public Vector3D abs() {
-        this.x = Math.abs(x);
-        this.y = Math.abs(y);
-        this.z = Math.abs(z);
-        return this;
-    }
-
     @Override
     public String toString() {
         return "(" + x + "," + y + "," + z + ")";
-    }
-
-    public enum RotationAngle {
-        ANGLE_0(180),
-        ANGLE_90(270),
-        ANGLE_180(0),
-        ANGLE_270(90);
-
-        private final int opposite;
-
-        RotationAngle(int opposite) {
-            this.opposite = opposite;
-        }
-
-        public static RotationAngle getFromInteger(int angle) {
-            return valueOf("ANGLE_" + angle);
-        }
-
-        public int getOpposite() {
-            return opposite;
-        }
     }
 }

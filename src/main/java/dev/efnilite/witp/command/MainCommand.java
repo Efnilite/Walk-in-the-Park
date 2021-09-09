@@ -6,6 +6,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.Vector3D;
@@ -234,6 +235,10 @@ public class MainCommand extends BukkitCommand {
                         user.confirmReset(args[1]);
                         user.getGenerator().reset(true);
                     }
+                }
+            } else if (args[0].equalsIgnoreCase("paste")) {
+                if (player.hasPermission("witp.schematic")) {
+                    new Schematic().file(args[1]).paste(player.getLocation(), RotationAngle.valueOf("ANGLE_" + args[2]));
                 }
             }
         }

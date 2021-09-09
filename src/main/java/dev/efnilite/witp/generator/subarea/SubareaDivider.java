@@ -6,6 +6,10 @@ import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.schematic.RotationAngle;
+import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.schematic.Vector3D;
+import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -44,7 +48,7 @@ public class SubareaDivider {
     private int layer = 0;
     private SubareaPoint current;
     private World world;
-    private File spawnIsland;
+    private Schematic spawnIsland;
 
     private int spawnYaw;
     private int spawnPitch;
@@ -95,7 +99,7 @@ public class SubareaDivider {
         this.heading = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
 
         this.current = new SubareaPoint(0, 0);
-        this.spawnIsland = new File(WITP.getInstance().getDataFolder() + "/structures/spawn-island.nbt");
+        this.spawnIsland = new Schematic().file("spawn-island.witp");
         this.collection = new HashMap<>();
         this.openSpaces = new ArrayList<>();
         this.possibleInLayer = new ArrayList<>();
@@ -261,12 +265,6 @@ public class SubareaDivider {
         return world;
     }
 
-    public void setBorder(@NotNull ParkourUser player, @NotNull SubareaPoint point) {
-        int size = (int) Option.BORDER_SIZE;
-        Vector estimated = point.getEstimatedCenter(size);
-        WITP.getVersionManager().setWorldBorder(player.getPlayer(), estimated, size);
-    }
-
     private void createIsland(@NotNull ParkourPlayer pp, SubareaPoint point) {
         if (point == null) { // something has gone TERRIBLY WRONG, just in case
             Verbose.error("Point assignment after confirmation has gone terribly wrong, retrying..");
@@ -277,14 +275,12 @@ public class SubareaDivider {
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
 
-        Vector dimension = WITP.getVersionManager().getDimensions(spawnIsland, spawn);
-        spawn.setY(spawn.getY() - dimension.getY());
-        WITP.getVersionManager().pasteStructure(spawnIsland, spawn);
+        Vector3D dimension = spawnIsland.getDimensions().getDimensions();
+        spawn.setY(spawn.getY() - dimension.y);
+        List<Block> blocks = spawnIsland.paste(spawn, RotationAngle.ANGLE_0);
         Location min = spawn.clone();
-        min.setX(min.getX() - (dimension.getX() / 2.0));
-        min.setZ(min.getZ() - (dimension.getZ() / 2.0));
-
-        List<Block> blocks = Util.getBlocks(min, min.clone().add(dimension));
+        min.setX(min.getX() - (dimension.x / 2.0));
+        min.setZ(min.getZ() - (dimension.z / 2.0));
 
         Location to = null;
         Location parkourBegin = null;
@@ -321,10 +317,10 @@ public class SubareaDivider {
             }
         }
         if (!playerDetected) {
-            Verbose.error("Couldn't find the spawn of a player - please check your block types and structures");
+            Verbose.error("Couldn't find the spawn of a player - please check your block types and schematics");
         }
         if (!parkourDetected) {
-            Verbose.error("Couldn't find the spawn of the parkour - please check your block types and structures");
+            Verbose.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
         }
         if (pp.getGenerator() == null) {
             pp.setGenerator(new DefaultGenerator(pp));
@@ -349,7 +345,6 @@ public class SubareaDivider {
                 player.teleport(finalTo, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
         }, 10);
-        setBorder(pp, point);
     }
 
     public Vector getHeading() {

@@ -1,0 +1,12 @@
+(10,10,10)
+*
+0>minecraft:ladder[facing=west,waterlogged=false]
+1>minecraft:ladder[facing=east,waterlogged=false]
+2>minecraft:ladder[facing=south,waterlogged=false]
+3>minecraft:white_concrete
+4>minecraft:slime_block
+5>minecraft:lime_wool
+6>minecraft:ladder[facing=north,waterlogged=false]
+7>minecraft:red_wool
+~
+5(-1,2,4)/3(2,6,0)/0(2,6,7)/4(3,0,4)/6(3,5,6)/3(3,5,7)/1(3,6,0)/3(3,6,7)/3(3,7,7)/2(3,7,8)/3(5,2,4)/3(6,4,-1)/7(6,8,4)/3(8,3,2)

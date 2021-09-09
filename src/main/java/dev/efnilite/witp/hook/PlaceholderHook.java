@@ -4,6 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Util;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -41,10 +42,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     public static String translate(Player player, String string) {
-        if (WITP.getPlaceholderHook() != null) {
-            return PlaceholderAPI.setPlaceholders(player, string);
-        }
-        return string;
+        return PlaceholderAPI.setPlaceholders(player, string);
     }
 
     @Override
@@ -103,7 +101,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 if (uuid == null) {
                     return "N/A";
                 }
-                Integer score = ParkourPlayer.getHighScore(uuid);
+                Integer score = ParkourPlayer.getHighScoreValue(uuid);
                 return score == null ? "N/A" : Integer.toString(score);
             default:
                 if (params.contains("player_rank_")) {
@@ -111,7 +109,14 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
                         UUID uuidRank = ParkourPlayer.getAtPlace(rank);
-                        return uuidRank == null ? "N/A" : Bukkit.getOfflinePlayer(uuidRank).getName();
+                        if (uuidRank == null) {
+                            return "N/A";
+                        }
+                        Highscore highscore = ParkourPlayer.getHighScore(uuidRank);
+                        if (highscore == null) {
+                            return "N/A";
+                        }
+                        return highscore.name == null ? "N/A" : highscore.name;
                     } else {
                         return "N/A";
                     }
@@ -123,7 +128,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                         if (uuidRank1 == null) {
                             return "N/A";
                         }
-                        Integer score1 = ParkourPlayer.getHighScore(uuidRank1);
+                        Integer score1 = ParkourPlayer.getHighScoreValue(uuidRank1);
                         return score1 == null ? "N/A" : Integer.toString(score1);
                     } else {
                         return "N/A";

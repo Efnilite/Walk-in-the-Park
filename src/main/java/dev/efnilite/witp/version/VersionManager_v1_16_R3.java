@@ -1,32 +1,23 @@
-//package dev.efnilite.witp.version;
-//
-//import dev.efnilite.witp.generator.DefaultGenerator;
-//import dev.efnilite.witp.util.Util;
-//import dev.efnilite.witp.util.Verbose;
-//import net.minecraft.server.v1_16_R3.*;
-//import org.bukkit.Location;
-//import org.bukkit.block.Block;
-//import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-//import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-//import org.bukkit.entity.Player;
-//import org.bukkit.util.Vector;
-//import org.jetbrains.annotations.NotNull;
-//import org.jetbrains.annotations.Nullable;
-//
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//import java.util.List;
-//import java.util.Random;
-//import java.util.concurrent.ThreadLocalRandom;
-//
-///**
-// * @author Efnilite
-// */
-//public class VersionManager_v1_16_R3 implements VersionManager {
-//
-//    @Override
-//    public void setWorldBorder(Player player, Vector vector, double size) {
+package dev.efnilite.witp.version;
+
+import dev.efnilite.witp.generator.DefaultGenerator;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+
+/**
+ * @author Efnilite
+ */
+@Deprecated
+public class VersionManager_v1_16_R3 implements VersionManager {
+
+    @Override
+    @Deprecated
+    public void setWorldBorder(Player player, Vector vector, double size) {
 //        WorldBorder border = new WorldBorder();
 //        border.world = ((CraftWorld) player.getWorld()).getHandle();
 //        border.setCenter(vector.getX(), vector.getZ());
@@ -35,10 +26,11 @@
 //        border.setWarningTime(0);
 //        PacketPlayOutWorldBorder packet = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE);
 //        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-//    }
-//
-//    @Override
-//    public void pasteStructure(File file, Location to) {
+    }
+
+    @Override
+    @Deprecated
+    public void pasteStructure(File file, Location to) {
 //        try {
 //            DefinedStructure structure = new DefinedStructure();
 //            structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -62,10 +54,11 @@
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//    }
-//
-//    // gets the appropriate rotation fo the schematic for the heading
-//    private EnumBlockRotation getRotation(@NotNull Vector heading) {
+    }
+
+    // gets the appropriate rotation fo the schematic for the heading
+    @Deprecated
+    private void getRotation(@NotNull Vector heading) {
 //        if (heading.getBlockZ() != 0) { // north/south
 //            switch (heading.getBlockZ()) {
 //                case 1: // south
@@ -82,11 +75,12 @@
 //            }
 //        }
 //        return EnumBlockRotation.COUNTERCLOCKWISE_90;
-//    }
-//
-//    // todo (a lot of) optimizations
-//    @Override
-//    public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
+    }
+
+    // todo (a lot of) optimizations
+    @Override
+    @Deprecated
+    public @Nullable DefaultGenerator.StructureData placeAt(File file, Location to, Vector heading) {
 //        try {
 //            to = to.getBlock().getLocation().clone();
 //            DefinedStructure structure = new DefinedStructure();
@@ -144,10 +138,12 @@
 //            e.printStackTrace();
 //            return null;
 //        }
-//    }
-//
-//    @Override
-//    public Vector getDimensions(File file, Location to) {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public Vector getDimensions(File file, Location to) {
 //        try {
 //            DefinedStructure structure = new DefinedStructure();
 //            structure.b(NBTCompressedStreamTools.a(new FileInputStream(file)));
@@ -169,5 +165,6 @@
 //            e.printStackTrace();
 //            return null;
 //        }
-//    }
-//}
+        return null;
+    }
+}

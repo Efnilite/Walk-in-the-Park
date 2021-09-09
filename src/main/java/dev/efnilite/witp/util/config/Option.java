@@ -1,6 +1,7 @@
 package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import org.bukkit.Particle;
@@ -94,6 +95,8 @@ public class Option {
     public static boolean JOINING;
 
     public static void init(boolean init) {
+        SchematicCache.read();
+
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");

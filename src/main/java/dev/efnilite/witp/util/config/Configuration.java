@@ -59,7 +59,7 @@ public class Configuration {
             FileConfiguration configuration = this.getFile(folder + "/" + file);
             files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
         }
-        structures();
+        schematics();
         Verbose.verbose("Loaded all config files");
     }
 
@@ -74,28 +74,28 @@ public class Configuration {
     /**
      * Downloads the structures
      */
-    private void structures() {
-        if (!(new File(plugin.getDataFolder().toString() + "/structures/parkour-1.nbt").exists())) {
-            String[] schematics = new String[]{"spawn-island.nbt"};
-            File folder = new File(plugin.getDataFolder().toString() + "/structures");
+    private void schematics() {
+        if (!(new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists())) {
+            String[] schematics = new String[]{"spawn-island.witp"};
+            File folder = new File(plugin.getDataFolder(), "schematics");
             folder.mkdirs();
-            Verbose.info("Downloading all structures...");
+            Verbose.info("Downloading all schematics...");
             int structureCount = 18;
             Tasks.asyncTask(() -> {
                 try {
                     for (String schematic : schematics) {
-                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/structures/" + schematic).openStream();
+                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
                         Files.copy(stream, Paths.get(folder + "/" + schematic));
                         Verbose.verbose("Downloaded " + schematic);
                         stream.close();
                     }
                     for (int i = 1; i <= structureCount; i++) {
-                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/structures/parkour-" + i + ".nbt").openStream();
+                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".nbt").openStream();
                         Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".nbt"));
                         Verbose.verbose("Downloaded parkour-" + i);
                         stream.close();
                     }
-                    Verbose.info("Downloaded all structures");
+                    Verbose.info("Downloaded all schematics");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");

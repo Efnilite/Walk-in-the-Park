@@ -15,6 +15,9 @@ public class HexColours {
     private static final char COLOR_CHAR = '\u00A7';
 
     public static String translate(String message) {
+        if (!Version.isHigherOrEqual(Version.V1_16)) {
+            return message;
+        }
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {

@@ -532,11 +532,11 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 break;
             case 1:
-                File folder = new File(WITP.getInstance().getDataFolder() + "/structures/");
+                File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File file;
                 if (files.size() > 0) {
-                    boolean passed = true;
+/*                    boolean passed = true;
                     while (passed) {
                         file = files.get(random.nextInt(files.size()));
                         if (player.difficulty == 0) {
@@ -545,7 +545,7 @@ public class DefaultGenerator extends ParkourGenerator {
                         if (Util.getDifficulty(file.getName()) < player.difficulty) {
                             passed = false;
                         }
-                    }
+                    }*/
                     file = files.get(random.nextInt(files.size()));
                 } else {
                     Verbose.error("No structures to choose from!");
@@ -565,17 +565,22 @@ public class DefaultGenerator extends ParkourGenerator {
                 Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
 
                 try {
-                    SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
+                    structureBlocks = SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                structureBlocks = data.blocks;
                 if (structureBlocks == null || structureBlocks.size() == 0) {
                     Verbose.error("0 blocks found in structure!");
                     player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                     reset(true);
                 }
-                lastSpawn = data.end.clone();
+
+                for (Block block : structureBlocks) {
+                    if (block.getType() == Material.RED_WOOL) {
+                        lastSpawn = block.getLocation();
+                        break;
+                    }
+                }
 
                 // if something during the pasting was set to air
                 List<String> locations = new ArrayList<>(buildLog.keySet());
@@ -656,12 +661,5 @@ public class DefaultGenerator extends ParkourGenerator {
 
     public static class StructureData {
 
-        public Location end;
-        public List<Block> blocks;
-
-        public StructureData(Location location, List<Block> blocks) {
-            this.end = location;
-            this.blocks = blocks;
-        }
     }
 }

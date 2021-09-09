@@ -160,23 +160,23 @@ public class ParkourPlayer extends ParkourUser {
                 Verbose.error("Scoreboard lines are null! Check your config!");
                 return;
             }
-            Integer rank = getHighScore(uuid);
+            Integer rank = getHighScoreValue(uuid);
             UUID one = getAtPlace(1);
             Integer top = 0;
             Highscore highscore = null;
             if (one != null) {
-                top = getHighScore(one);
+                top = getHighScoreValue(one);
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
-                s = PlaceholderHook.translate(player, s); // add support for PAPI placeholders in scoreboard
+                s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replaceAll("%score%", Integer.toString(generator.score))
                         .replaceAll("%time%", generator.time)
                         .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
                         .replaceAll("%topscore%", top != null ? top.toString() : "0")
                         .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
-            title = PlaceholderHook.translate(player, title);
+            title = translatePlaceholders(player, title);
             board.updateTitle(title.replaceAll("%score%", Integer.toString(generator.score))
                     .replaceAll("%time%", generator.time)
                     .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
@@ -184,6 +184,13 @@ public class ParkourPlayer extends ParkourUser {
                     .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             board.updateLines(list);
         }
+    }
+
+    private String translatePlaceholders(Player player, String string) {
+        if (WITP.getPlaceholderHook() == null) {
+            return string;
+        }
+        return PlaceholderHook.translate(player, string);
     }
 
     /**
@@ -500,14 +507,14 @@ public class ParkourPlayer extends ParkourUser {
         List<Material> possibleStyles = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
         if (possible == null) {
-            Verbose.error("Style selected (" + style + ") doesn't exist in config.yml, defaulting to ");
+            Verbose.warn("Style selected (" + style + ") doesn't exist in config.yml, defaulting to ");
             return null;
         }
         String[] materials = possible.replaceAll("[\\[\\]]", "").split(", ");
         for (String material : materials) {
             Material mat = Material.getMaterial(material.toUpperCase());
             if (mat == null) {
-                return null;
+                continue;
             }
             possibleStyles.add(mat);
         }
@@ -633,12 +640,16 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the high score of the player
      */
-    public static @Nullable Integer getHighScore(@NotNull UUID player) {
+    public static @Nullable Integer getHighScoreValue(@NotNull UUID player) {
         return highScores.get(player);
     }
 
     public static @Nullable String getHighScoreTime(@NotNull UUID player) {
         return scoreMap.get(player).time;
+    }
+
+    public static @Nullable Highscore getHighScore(@NotNull UUID player) {
+        return scoreMap.get(player);
     }
 
 
