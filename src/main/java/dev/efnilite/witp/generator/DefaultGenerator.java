@@ -285,13 +285,6 @@ public class DefaultGenerator extends ParkourGenerator {
         for (Block block : structureBlocks) {
             block.setType(Material.AIR);
         }
-        // second check, just in case
-//        Location center = lastPlayer.clone();
-//        Util.getBlocksAsync(center.subtract(48, 48, 48), center.add(48, 48, 48), blocks -> {
-//            for (Block block : blocks) {
-//                block.setType(Material.AIR);
-//            }
-//        });
 
         structureBlocks.clear();
         deleteStructure = false;

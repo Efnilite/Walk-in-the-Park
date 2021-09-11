@@ -263,6 +263,7 @@ public class Schematic {
             }
             rotated.put(pasteLocation.clone(), block.getData()); // put the final locations back
         }
+
         if (other == null) { // if no lime wool
             Verbose.error("No lime wool found in file " + file.getName());
             return null;
@@ -284,18 +285,21 @@ public class Schematic {
         Pattern pattern = Pattern.compile("facing=(\\w+)");
         for (Location location : rotated.keySet()) {
             // align block to where it will actually be set (final step)
-            Block block = location.clone().subtract(difference).getBlock();
+            Block block = location.clone().add(0, difference.getBlockY(),0).subtract(difference).getBlock();
             // sets the block data
 
             String finalBlockData = rotated.get(location).getAsString();
             Matcher matcher = pattern.matcher(finalBlockData);
             while (matcher.find()) {
                 String facing = matcher.group().replaceAll("facing=", "");
+                if (facing.equals("up") || facing.equals("down")) {
+                    break;
+                }
                 String updated = getFaceFromAngle(facing, angle);
                 finalBlockData = finalBlockData.replaceAll(pattern.toString(), "facing=" + updated);
             }
 
-            block.setBlockData(Bukkit.createBlockData(finalBlockData));
+            block.setBlockData(Bukkit.createBlockData(finalBlockData), true);
             affectedBlocks.add(block);
         }
 
