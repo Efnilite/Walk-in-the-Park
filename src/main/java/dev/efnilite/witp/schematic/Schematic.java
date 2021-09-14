@@ -156,11 +156,11 @@ public class Schematic {
      * Reads a Schematic from a file
      */
     public void read() {
-        Verbose.verbose("Reading schematic " + file.getName() + "...");
-        Tasks.time("individualSchemRead");
         if (read) {
             return;
         }
+        Verbose.verbose("Reading schematic " + file.getName() + "...");
+        Tasks.time("individualSchemRead");
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
