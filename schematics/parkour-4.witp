@@ -2,7 +2,7 @@
 *
 0>minecraft:end_rod[facing=down]
 1>minecraft:lime_wool
-2>minecraft:quartz_bricks
+2>minecraft:white_concrete
 3>minecraft:glass_pane[east=false,north=false,south=false,waterlogged=false,west=false]
 4>minecraft:red_wool
 ~

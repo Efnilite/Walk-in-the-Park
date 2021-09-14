@@ -169,12 +169,7 @@ public class MainCommand extends BukkitCommand {
                     Selection selection = selections.get(player);
                     if (selection != null && selection.isComplete()) {
                         Schematic schematic = new Schematic(selection);
-                        try {
-                            schematic.file("parkour-" + Util.randomDigits(6)).save();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            player.sendMessage("There was an error!");
-                        }
+                        schematic.file("parkour-" + Util.randomDigits(6)).save();
                         player.sendMessage("Creating schematic..");
                     }
                 }

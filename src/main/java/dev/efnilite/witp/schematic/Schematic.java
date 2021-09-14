@@ -5,6 +5,7 @@ import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,63 +92,72 @@ public class Schematic {
     /**
      * Saves a schematic file
      */
-    public void save() throws IOException {
-        if (dimensions == null || blocks == null) {
-            Verbose.error("Data of schematic is null while trying to save!");
-            return;
-        }
+    public void save() {
+        Tasks.asyncTask(() -> {
+            try {
+                if (dimensions == null || blocks == null) {
+                    Verbose.error("Data of schematic is null while trying to save!");
+                    return;
+                }
 
-        for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
-            if (currentBlock.getType() == Material.AIR) { // skip air if enabled
-                continue;
+                for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
+                    if (currentBlock.getType() == Material.AIR) { // skip air if enabled
+                        continue;
+                    }
+                    Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
+                    blocks.add(new SchematicBlock(currentBlock, relativeOffset));
+                }
+
+                file.createNewFile();
+
+                FileWriter writer = new FileWriter(file);
+                String separator = System.lineSeparator();
+
+                writer.write(dimensions.toString()); // write dimensions to first line
+                writer.write(separator); // is basically an enter
+
+                writer.write("*");
+                writer.write(separator);
+
+                HashSet<String> filtered = new HashSet<>();
+                Map<String, Integer> palette = new HashMap<>();
+                blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
+
+                int index = 0;
+                for (String data : filtered) {
+                    palette.put(data, index);
+                    writer.write(index + ">" + data);
+                    writer.write(separator);
+                    index++;
+                }
+
+                writer.write("~");
+                writer.write(separator);
+
+                StringJoiner joiner = new StringJoiner("/");
+                for (SchematicBlock block : blocks) {
+                    String current = block.getData().getAsString();
+                    String id = Integer.toString(palette.get(current));
+
+                    joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
+                }
+
+                writer.write(joiner.toString());
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Error while saving");
             }
-            Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
-            blocks.add(new SchematicBlock(currentBlock, relativeOffset));
-        }
-
-        file.createNewFile();
-
-        FileWriter writer = new FileWriter(file);
-        String separator = System.lineSeparator();
-
-        writer.write(dimensions.toString()); // write dimensions to first line
-        writer.write(separator); // is basically an enter
-
-        writer.write("*");
-        writer.write(separator);
-
-        HashSet<String> filtered = new HashSet<>();
-        Map<String, Integer> palette = new HashMap<>();
-        blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
-
-        int index = 0;
-        for (String data : filtered) {
-            palette.put(data, index);
-            writer.write(index + ">" + data);
-            writer.write(separator);
-            index++;
-        }
-
-        writer.write("~");
-        writer.write(separator);
-
-        StringJoiner joiner = new StringJoiner("/");
-        for (SchematicBlock block : blocks) {
-            String current = block.getData().getAsString();
-            String id = Integer.toString(palette.get(current));
-
-            joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
-        }
-
-        writer.write(joiner.toString());
-        writer.flush();
-        writer.close();
+        });
     }
 
     /**
      * Reads a Schematic from a file
      */
     public void read() {
+        Verbose.verbose("Reading schematic " + file.getName() + "...");
+        Tasks.time("individualSchemRead");
         if (read) {
             return;
         }
@@ -207,6 +217,7 @@ public class Schematic {
 
         Vector3D readDimensions = Util.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
+        Verbose.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
     }
 
     public List<Block> paste(Location at, RotationAngle angle) {
@@ -252,7 +263,7 @@ public class Schematic {
         Location other = null;
         Map<Location, BlockData> rotated = new HashMap<>();
         for (SchematicBlock block : blocks) { // go through blocks
-            Vector3D relativeOffset = block.getRelativePosition();
+            Vector3D relativeOffset = block.getRelativePosition().clone();
             relativeOffset = relativeOffset.rotateAround(angle);
 
             // all positions are saved to be relative to the minimum location

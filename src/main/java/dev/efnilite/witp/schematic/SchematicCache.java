@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class SchematicCache {
 
-    public static Map<String, Schematic> cache = new HashMap<>();
+    public static volatile Map<String, Schematic> cache = new HashMap<>();
 
     public static void read() {
         Tasks.time("schematicsLoad");

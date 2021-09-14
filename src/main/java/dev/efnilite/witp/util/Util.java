@@ -87,7 +87,7 @@ public class Util {
     }
 
     /**
-     * Gets the difficulty of a schematic according to structures.yml
+     * Gets the difficulty of a schematic according to schematics.yml
      *
      * @param   fileName
      *          The name of the file (parkour-x.nbt)
@@ -95,7 +95,7 @@ public class Util {
      * @return the difficulty, ranging from 0 to 1
      */
     public static double getDifficulty(String fileName) {
-        int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".nbt", ""));
+        int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".witp", ""));
         return WITP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
     }
 

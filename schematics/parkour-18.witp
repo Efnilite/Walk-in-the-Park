@@ -1,8 +1,10 @@
-(6,5,4)
+(6,7,4)
 *
 0>minecraft:oak_fence[east=false,north=false,south=false,waterlogged=false,west=false]
 1>minecraft:ladder[facing=west,waterlogged=false]
-2>minecraft:white_concrete
-3>minecraft:lime_wool
+2>minecraft:ladder[facing=east,waterlogged=false]
+3>minecraft:white_concrete
+4>minecraft:lime_wool
+5>minecraft:red_wool
 ~
-2(-1,2,1)/3(1,0,2)/2(2,1,-1)/0(2,2,-1)/0(2,3,-1)/0(2,4,-1)/1(3,3,1)/2(4,3,1)
+3(-1,1,1)/4(1,-1,2)/3(2,0,-1)/0(2,1,-1)/0(2,2,-1)/0(2,3,-1)/5(2,4,-1)/1(3,2,1)/2(3,4,-1)/3(4,2,1)

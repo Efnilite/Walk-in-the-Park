@@ -73,6 +73,7 @@ public class SubareaDivider {
      */
     @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
+        Verbose.verbose("Initializing SubareaDivider");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         String worldName = config.getString("world.name");
         if (worldName == null) {

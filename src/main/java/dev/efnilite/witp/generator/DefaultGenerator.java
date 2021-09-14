@@ -46,6 +46,8 @@ public class DefaultGenerator extends ParkourGenerator {
     protected int structureCooldown;
     protected boolean deleteStructure;
     protected boolean stopped;
+    protected boolean waitForSchematicCompletion;
+
     protected Location lastSpawn;
     protected Location lastPlayer;
     protected Location previousSpawn;
@@ -77,6 +79,7 @@ public class DefaultGenerator extends ParkourGenerator {
         this.score = 0;
         this.totalScore = 0;
         this.stopped = false;
+        this.waitForSchematicCompletion = false;
         this.structureCooldown = 20;
         this.lastSpawn = player.getPlayer().getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
@@ -149,6 +152,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             score++;
                             checkRewards();
                         }
+                        waitForSchematicCompletion = false;
                         structureCooldown = 20;
                         generate(player.blockLead);
                         deleteStructure = true;
@@ -241,6 +245,7 @@ public class DefaultGenerator extends ParkourGenerator {
         }
         generatedHistory.clear();
 
+        waitForSchematicCompletion = false;
         player.saveGame();
         deleteStructure();
         buildLog.clear();
@@ -301,6 +306,10 @@ public class DefaultGenerator extends ParkourGenerator {
      */
     @Override
     public void generate() {
+        if (waitForSchematicCompletion) {
+            return;
+        }
+
         ThreadLocalRandom random = ThreadLocalRandom.current();
         if (defaultChances.size() == 0) {
             int index = 0;
@@ -527,9 +536,9 @@ public class DefaultGenerator extends ParkourGenerator {
             case 1:
                 File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-                File file;
+                File file = null;
                 if (files.size() > 0) {
-/*                    boolean passed = true;
+                    boolean passed = true;
                     while (passed) {
                         file = files.get(random.nextInt(files.size()));
                         if (player.difficulty == 0) {
@@ -538,8 +547,7 @@ public class DefaultGenerator extends ParkourGenerator {
                         if (Util.getDifficulty(file.getName()) < player.difficulty) {
                             passed = false;
                         }
-                    }*/
-                    file = files.get(random.nextInt(files.size()));
+                    }
                 } else {
                     Verbose.error("No structures to choose from!");
                     return;
@@ -559,8 +567,10 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 try {
                     structureBlocks = SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
+                    waitForSchematicCompletion = true;
                 } catch (IOException ex) {
                     ex.printStackTrace();
+                    reset(true);
                 }
                 if (structureBlocks == null || structureBlocks.size() == 0) {
                     Verbose.error("0 blocks found in structure!");
@@ -572,16 +582,6 @@ public class DefaultGenerator extends ParkourGenerator {
                     if (block.getType() == Material.RED_WOOL) {
                         lastSpawn = block.getLocation();
                         break;
-                    }
-                }
-
-                // if something during the pasting was set to air
-                List<String> locations = new ArrayList<>(buildLog.keySet());
-                int index = buildLog.get(Util.toString(lastPlayer, false));
-                for (int i = 0; i < index; i++) {
-                    Block block = Util.parseLocation(locations.get(i)).getBlock();
-                    if (!structureBlocks.contains(block) && block.getType() == Material.AIR) {
-                        block.setType(player.randomMaterial());
                     }
                 }
                 break;

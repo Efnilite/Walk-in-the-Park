@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
@@ -37,7 +38,7 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml", "structures.yml"};
+        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml", "schematics.yml"};
 
         File folder = plugin.getDataFolder();
         if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
@@ -68,7 +69,7 @@ public class Configuration {
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items.yml")));
-        files.put("structures", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/structures.yml")));
+        files.put("structures", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
     }
 
     /**
@@ -80,7 +81,7 @@ public class Configuration {
             File folder = new File(plugin.getDataFolder(), "schematics");
             folder.mkdirs();
             Verbose.info("Downloading all schematics...");
-            int structureCount = 18;
+            int structureCount = 21;
             Tasks.asyncTask(() -> {
                 try {
                     for (String schematic : schematics) {
@@ -95,6 +96,7 @@ public class Configuration {
                         Verbose.verbose("Downloaded parkour-" + i);
                         stream.close();
                     }
+                    SchematicCache.read();
                     Verbose.info("Downloaded all schematics");
                 } catch (IOException ex) {
                     ex.printStackTrace();

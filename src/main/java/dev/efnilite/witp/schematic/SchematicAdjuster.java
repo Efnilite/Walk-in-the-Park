@@ -46,9 +46,9 @@ public class SchematicAdjuster {
         if (heading.getBlockZ() != 0) { // north/south
             switch (heading.getBlockZ()) {
                 case 1: // south
-                    return RotationAngle.ANGLE_0;
-                case -1: // north
                     return RotationAngle.ANGLE_180;
+                case -1: // north
+                    return RotationAngle.ANGLE_0;
             }
         } else if (heading.getBlockX() != 0) { // east/west
             switch (heading.getBlockX()) {
@@ -58,6 +58,6 @@ public class SchematicAdjuster {
                     return RotationAngle.ANGLE_90;
             }
         }
-        return RotationAngle.ANGLE_0;
+        return RotationAngle.ANGLE_270;
     }
 }

@@ -24,7 +24,7 @@ public class MultiverseHook {
     }
 
     public void deleteWorld(String worldName) {
-        manager.deleteWorld(worldName);
+        manager.deleteWorld(worldName, false);
     }
 
     public World createWorld(String worldName) {

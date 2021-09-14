@@ -1,7 +1,7 @@
 (13,11,36)
 *
 0>minecraft:end_rod[facing=down]
-1>minecraft:quartz_bricks
+1>minecraft:white_concrete
 2>minecraft:lime_wool
 3>minecraft:glass_pane[east=false,north=false,south=false,waterlogged=false,west=false]
 5>minecraft:red_wool
