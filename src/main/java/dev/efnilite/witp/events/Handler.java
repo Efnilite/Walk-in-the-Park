@@ -1,16 +1,19 @@
 package dev.efnilite.witp.events;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.inventory.PersistentUtil;
+import dev.efnilite.witp.util.particle.ParticleData;
+import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,6 +25,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.BoundingBox;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -119,6 +124,41 @@ public class Handler implements Listener {
     public void onBreak(BlockBreakEvent event) {
         if (ParkourUser.getUser(event.getPlayer()) != null) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void interactWand(PlayerInteractEvent event) {
+        Action action = event.getAction();
+        Player player = event.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "witp", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+        Location location = event.getClickedBlock().getLocation();
+        switch (action) {
+            case LEFT_CLICK_BLOCK:
+                event.setCancelled(true);
+                if (MainCommand.selections.get(player) == null) {
+                    MainCommand.selections.put(player, new Selection(location, null, player.getWorld()));
+                } else {
+                    Location pos2 = MainCommand.selections.get(player).getPos2();
+                    MainCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
+                    Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                }
+                MainCommand.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
+                break;
+            case RIGHT_CLICK_BLOCK:
+                event.setCancelled(true);
+                if (MainCommand.selections.get(player) == null) {
+                    MainCommand.selections.put(player, new Selection(null, location, player.getWorld()));
+                } else {
+                    Location pos1 = MainCommand.selections.get(player).getPos1();
+                    MainCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
+                    Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                }
+                MainCommand.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
+                break;
         }
     }
 

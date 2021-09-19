@@ -8,18 +8,24 @@ import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
-import dev.efnilite.witp.schematic.SchematicAdjuster;
-import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.particle.ParticleData;
+import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +36,11 @@ import java.util.*;
 
 public class MainCommand extends BukkitCommand {
 
-    private final HashMap<Player, Selection> selections = new HashMap<>();
+    public static final HashMap<Player, Selection> selections = new HashMap<>();
+    private final ItemStack wand = new ItemBuilder(Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")
+            .setLore("&7Left click: first position", "&7Right click: second position")
+            .setPersistentData("witp", "true")
+            .buildPersistent(WITP.getInstance());
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -39,15 +49,26 @@ public class MainCommand extends BukkitCommand {
             player = (Player) sender;
         }
         if (args.length == 0) {
-            sender.sendMessage(Util.color("&7--------------- &aWITP &7---------------"));
-            sender.sendMessage(Util.color("&a/witp &f- &7Main command"));
-            sender.sendMessage(Util.color("&a/witp reload &f- &7Reloads the lang.yml file"));
-            sender.sendMessage(Util.color("&a/witp join [player] &f- &7Join the game on this server or make another player join"));
-            sender.sendMessage(Util.color("&a/witp leave &f- &7Leave the game on this server"));
-            sender.sendMessage(Util.color("&a/witp menu &f- &7Open the customization menu"));
-            sender.sendMessage(Util.color("&a/witp gamemode &f- &7Open the gamemode menu"));
-            sender.sendMessage(Util.color("&a/witp leaderboard &f- &7Open the leaderboard"));
-            sender.sendMessage(Util.color("&a/witp migrate &f- &7Migrate your json files to MySQL"));
+            // Help menu
+            send(sender, "&7--------------- &aWITP &7---------------");
+            send(sender, "&a/witp &f- &7Main command");
+            send(sender, "&a/witp join [player] &f- &7Join the game on this server or make another player join");
+            send(sender, "&a/witp leave &f- &7Leave the game on this server");
+            send(sender, "&a/witp menu &f- &7Open the customization menu");
+            send(sender, "&a/witp gamemode &f- &7Open the gamemode menu");
+            send(sender, "&a/witp leaderboard &f- &7Open the leaderboard");
+
+            // Advanced settings based per permission
+            if (sender.hasPermission("witp.reload") || sender.hasPermission("witp.schematic") || sender.isOp()) {
+                send(sender, "&7------------ &aAdvanced &7------------)");
+            }
+            if (sender.hasPermission("witp.schematic")) {
+                send(sender, "&a/witp schematic &f- &7Create a schematic");
+            }
+            if (sender.hasPermission("witp.reload")) {
+                send(sender, "&a/witp reload &f- &7Reloads the lang.yml file");
+                send(sender, "&a/witp migrate &f- &7Migrate your Json files to MySQL");
+            }
             return true;
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
@@ -146,36 +167,75 @@ public class MainCommand extends BukkitCommand {
                         user.leaderboard(1);
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("pos1")) {
+            } else if (args[0].equalsIgnoreCase("schematic")) {
                 if (player.hasPermission("witp.schematic")) {
-                    if (selections.get(player) == null) {
-                        selections.put(player, new Selection(player.getLocation(), null, player.getWorld()));
-                    } else {
-                        selections.put(player, new Selection(player.getLocation(), selections.get(player).getPos2(), player.getWorld()));
-                    }
-                    player.sendMessage("Set position 1");
-                }
-            } else if (args[0].equalsIgnoreCase("pos2")) {
-                if (player.hasPermission("witp.schematic")) {
-                    if (selections.get(player) == null) {
-                        selections.put(player, new Selection(null, player.getLocation(), player.getWorld()));
-                    } else {
-                        selections.put(player, new Selection(selections.get(player).getPos1(), player.getLocation(), player.getWorld()));
-                    }
-                    player.sendMessage("Set position 2");
-                }
-            } else if (args[0].equalsIgnoreCase("createschematic")) {
-                if (player.hasPermission("witp.schematic")) {
-                    Selection selection = selections.get(player);
-                    if (selection != null && selection.isComplete()) {
-                        Schematic schematic = new Schematic(selection);
-                        schematic.file("parkour-" + Util.randomDigits(6)).save();
-                        player.sendMessage("Creating schematic..");
-                    }
+                    send(player, "&8----------- &4&lSchematics &8-----------");
+                    send(player, "");
+                    send(player, "&7Welcome to the schematic creating section.");
+                    send(player, "&7You can use the following commands:");
+                    send(player, "&c/witp schematic wand &8- &7Get the schematic wand");
+                    send(player, "&c/witp schematic pos1 &8- &7Set the first position of your selection");
+                    send(player, "&c/witp schematic pos2 &8- &7Set the second position of your selection");
+                    send(player, "&c/witp schematic save &8- &7Save your selection to a schematic file");
+                    send(player, "");
+                    send(player, "&8&nHave any questions or need help? Join the Discord!");
                 }
             }
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
+            if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
+                Selection selection = selections.get(player);
+                switch (args[1].toLowerCase()) {
+                    case "wand":
+                        player.getInventory().addItem(wand);
+
+                        send(player, "&8----------- &4&lSchematics &8-----------");
+                        send(player, "&7Use your WITP Schematic Wand to easily select schematics.");
+                        send(player, "&7Use &8left click&7 to set the first position, and &8right click &7for the second!");
+                        send(player, "&7If you can't place a block and need to set a position mid-air, use &8the pos commands &7instead.");
+                        return true;
+                    case "pos1":
+                        if (selections.get(player) == null) {
+                            selections.put(player, new Selection(player.getLocation(), null, player.getWorld()));
+                        } else {
+                            Location pos1 = player.getLocation();
+                            Location pos2 = selections.get(player).getPos2();
+                            selections.put(player, new Selection(pos1, pos2, player.getWorld()));
+                            Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        }
+                        send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(player.getLocation(), true));
+                        return true;
+                    case "pos2":
+                        if (selections.get(player) == null) {
+                            selections.put(player, new Selection(null, player.getLocation(), player.getWorld()));
+                        } else {
+                            Location pos1 = selections.get(player).getPos1();
+                            Location pos2 = player.getLocation();
+                            selections.put(player, new Selection(pos1, pos2, player.getWorld()));
+                            Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        }
+                        send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(player.getLocation(), true));
+                        return true;
+                    case "save":
+                        if (selection == null || !selection.isComplete()) {
+                            send(player, "&8----------- &4&lSchematics &8-----------");
+                            send(player, "&7Your schematic isn't complete yet.");
+                            send(player, "&7Be sure to set the first and second position!");
+                            return false;
+                        }
+
+                        String code = Util.randomDigits(6);
+
+                        send(player, "&8----------- &4&lSchematics &8-----------");
+                        send(player, "&7Your schematic is being saved..");
+                        send(player, "&7Your schematic will be generated with random number code &c'" + code + "'&7!");
+                        send(player, "&7You can change the file name to whatever number you like.");
+                        send(player, "&8Be sure to add this schematic to &r&8schematics.yml!");
+
+                        Schematic schematic = new Schematic(selection);
+                        schematic.file("parkour-" + code).save(player);
+                        return true;
+                }
+            } else if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
                 int page = Integer.parseInt(args[1]);
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
@@ -231,13 +291,13 @@ public class MainCommand extends BukkitCommand {
                         user.getGenerator().reset(true);
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("paste")) {
-                if (player.hasPermission("witp.schematic")) {
-                    new Schematic().file(args[1]).paste(player.getLocation(), RotationAngle.valueOf("ANGLE_" + args[2]));
-                }
             }
         }
         return true;
+    }
+
+    public static void send(CommandSender sender, String message) {
+        sender.sendMessage(Util.color(message));
     }
 
     @Override
@@ -253,8 +313,18 @@ public class MainCommand extends BukkitCommand {
                     names.add(name);
                 }
                 return names;
+            } else if (args[0].equalsIgnoreCase("schematic") && player.hasPermission("witp.schematic")) {
+                return Arrays.asList("wand", "pos1", "pos2", "save");
             }
         }
-        return Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode", "migrate", "reload");
+        List<String> suggestions = new ArrayList<>(Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode"));
+        if (player.hasPermission("witp.reload")) {
+            suggestions.add("reload");
+            suggestions.add("migrate");
+        }
+        if (player.hasPermission("witp.schematic")) {
+            suggestions.add("schematic");
+        }
+        return suggestions;
     }
 }

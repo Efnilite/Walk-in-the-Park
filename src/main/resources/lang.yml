@@ -6,6 +6,8 @@
 # &a, &b, &1, &2 - Regular colours
 # &#123456 - Hex colours
 
+# !!! Currently adding custom languages isn't supported !!!
+# !!! This will be in a future update !!!
 messages:
 
     default: en
@@ -43,6 +45,7 @@ messages:
         true: "yes"
         false: "no"
         spectator: "&a&l(!) &7You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
+        spectator-bar: "&cYou are a spectator. &7Use \"/parkour gm\" to leave."
         divider: "&7----------------------------------------"
         score: "&aYour score: &f%s"
         time: "&aYour time: &f%s"
@@ -86,6 +89,7 @@ messages:
         true: "ja"
         false: "nee"
         spectator: "&a&l(!) &7Je bent nu een toekijker. Je kan \"/parkour gm\" gebruiken om je gamemode te veranderen."
+        spectator-bar: "&cJe bent een toekijker. &7Gebruik \"/parkour gm\" om weg te gaan."
         divider: "&7----------------------------------------"
         score: "&aDe score die je hebt gehaald: &f%s"
         time: "&aHoelang je erover hebt gedaan: &f%s"
@@ -129,6 +133,7 @@ messages:
         true: "Sí"
         false: "No"
         spectator: "&c&l(!) &7Ahora eres un espectador. Puedes usar \"/parkour gm\" para salir/cambiar tu modo de juego."
+        spectator-bar: "&cEres un espectador. &7Usa \"/ parkour gm\" para salir."
         divider: "&7----------------------------------------"
         score: "&aPuntuación: &f%s"
         time: "&aTiempo: &f%s"
@@ -171,6 +176,7 @@ messages:
         true: "tak"
         false: "nie"
         spectator: "&a&l(!) &7Jesteś teraz obserwatorem. Możesz użyć \"/parkour gm\" aby opuścić lub zmienić swój tryb gry."
+        spectator-bar: "&cJesteś widzem. &7Użyj \"/parkour gm\", aby wyjść."
         divider: "&7----------------------------------------"
         score: "&aTwój wynik: &f%s"
         time: "&aTwój czas: &f%s"
@@ -214,6 +220,7 @@ messages:
         true: "是"
         false: "否"
         spectator: "&a&l(!) &7您现在作为观察者来参与跑酷。使用命令 \"/parkour gm\" 以离开/更改您的游戏模式。"
+        spectator-bar: '&c你是旁观者。 &7使用 \"/parkour gm\" 离开。'
         divider: "&7----------------------------------------"
         score: "&a您的得分: &f%s"
         time: "&a所耗时间: &f%s"
@@ -256,7 +263,8 @@ messages:
 
         true: "oui"
         false: "non"
-        spectator: "&a&l(!) &7Tu es maintenant un spectateur. Vous pouvez utiliser \"/parkour gm\" pour leave/change ton mode de jeu."
+        spectator: "&a&l(!) &7Vous êtes maintenant un spectateur. Vous pouvez utiliser \"/parkour gm\" pour leave/change ton mode de jeu."
+        spectator-bar: "&cVous êtes un spectateur. &7Utilisez \"/parkour gm\" pour quitter."
         divider: "&7----------------------------------------"
         score: "&aVotre score: &f%s"
         time: "&aVotre temps: &f%s"

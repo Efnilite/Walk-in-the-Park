@@ -11,6 +11,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Fence;
+import org.bukkit.block.data.type.Wall;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,11 +93,19 @@ public class Schematic {
     }
 
     /**
-     * Saves a schematic file
+     * Saves without a player
      */
     public void save() {
+        this.save(null);
+    }
+
+    /**
+     * Saves a schematic file
+     */
+    public void save(@Nullable Player player) {
         Tasks.asyncTask(() -> {
             try {
+                Tasks.time("saveSchematic-" + file.getName());
                 if (dimensions == null || blocks == null) {
                     Verbose.error("Data of schematic is null while trying to save!");
                     return;
@@ -145,6 +156,10 @@ public class Schematic {
                 writer.write(joiner.toString());
                 writer.flush();
                 writer.close();
+                if (player == null) {
+                    return;
+                }
+                player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Tasks.end("saveSchematic-" + file.getName()) + "ms&7!"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while saving");
@@ -185,7 +200,20 @@ public class Schematic {
             }
             if (readingPalette) {
                 String[] elements = string.split(">");
-                palette.put(Integer.parseInt(elements[0]), Bukkit.createBlockData(elements[1]));
+
+                BlockData data;
+                try {
+                    data = Bukkit.createBlockData(elements[1]);
+                } catch (IllegalArgumentException ex) {
+                    data = checkLegacyMaterials(elements[1]);
+                }
+                if (data == null) {
+                    Verbose.error("Unknown material: " + elements[1]);
+                    Verbose.error("Defaulting to material stone");
+                    data = Material.STONE.createBlockData();
+                }
+
+                palette.put(Integer.parseInt(elements[0]), data);
             }
         }
 
@@ -218,6 +246,21 @@ public class Schematic {
         Vector3D readDimensions = Util.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
         Verbose.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
+    }
+
+    private @Nullable BlockData checkLegacyMaterials(String full) {
+        Verbose.info("Checking legacy materials for " + full);
+        String[] split = full.split("\\[");
+        String material = split[0];
+        Material legacy = Material.matchMaterial(material, true);
+        if (legacy == null) {
+            Verbose.error("Unknown material: " + material);
+            return null;
+        }
+        if (split.length > 1) {
+            return Bukkit.createBlockData(legacy, "[" + split[1]);
+        }
+        return Bukkit.createBlockData(legacy);
     }
 
     public List<Block> paste(Location at, RotationAngle angle) {
@@ -310,7 +353,14 @@ public class Schematic {
                 finalBlockData = finalBlockData.replaceAll(pattern.toString(), "facing=" + updated);
             }
 
-            block.setBlockData(Bukkit.createBlockData(finalBlockData), true);
+            BlockData blockData = Bukkit.createBlockData(finalBlockData);
+
+            if (blockData instanceof Fence || blockData instanceof Wall) {
+                block.setType(blockData.getMaterial(), true);
+            } else {
+                block.setBlockData(blockData);
+            }
+
             affectedBlocks.add(block);
         }
 

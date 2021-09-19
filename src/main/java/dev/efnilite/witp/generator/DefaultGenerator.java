@@ -210,9 +210,11 @@ public class DefaultGenerator extends ParkourGenerator {
                         }
                     }
                 }
-                if (Option.REWARDS_COMMAND != null) {
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                            Option.REWARDS_COMMAND.replaceAll("%player%", player.getPlayer().getName()));
+                if (Option.INTERVAL_REWARDS_SCORES != null) {
+                    for (String command : Option.INTERVAL_REWARDS_SCORES) {
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                command.replaceAll("%player%", player.getPlayer().getName()));
+                    }
                 }
                 if (Option.REWARDS_MONEY != 0) {
                     Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);

@@ -60,9 +60,6 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
         if (pp != null) {
             switch (params) {
-                case "highscore":
-                case "high_score":
-                    return Integer.toString(pp.highScore);
                 case "score":
                 case "current_score":
                     return Integer.toString(pp.getGenerator().score);
@@ -87,6 +84,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
 
         switch (params) {
+            case "highscore":
+            case "high_score":
+                Integer value = ParkourPlayer.getHighScoreValue(player.getUniqueId());
+                if (value == null) {
+                    value = 0;
+                }
+                return Integer.toString(value);
             case "version":
             case "ver":
                 return WITP.getInstance().getDescription().getVersion();

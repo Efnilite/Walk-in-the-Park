@@ -3,9 +3,12 @@ package dev.efnilite.witp.player;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
+import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +60,7 @@ public class ParkourSpectator extends ParkourUser {
         if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
             player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
+        this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
     @Override

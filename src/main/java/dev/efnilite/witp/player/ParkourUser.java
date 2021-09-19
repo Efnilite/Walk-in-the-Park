@@ -368,7 +368,7 @@ public abstract class ParkourUser {
         path = "messages." + locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
-            Verbose.error("Unknown path: " + path + " - try deleting the lang.yml file");
+            Verbose.error("Custom language '" + locale + "' is missing a path: '" + path + "'. Please add this path to the language in lang.yml!");
             return "";
         }
         for (String s : replaceable) {

@@ -1,4 +1,9 @@
-# The difficulty of schematics
+# -------- Add your schematics here --------
+# Add your schematic random number code or custom name here, followed by the difficulty.
+# If your file is named parkour-658391, then you can either rename the file to parkour-22 ('22: 0.6') or
+# just add '658391: 0.6'. Any questions? Join the Discord.
+
+# -------- The difficulty of schematics --------
 # These are represented by a number below or equal to 1.
 # 1 = the most difficult
 # 0.5 = medium

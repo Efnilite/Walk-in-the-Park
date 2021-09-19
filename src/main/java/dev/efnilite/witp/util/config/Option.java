@@ -43,6 +43,8 @@ public class Option {
     // Config stuff
     public static boolean REWARDS;
     public static HashMap<Integer, List<String>> REWARDS_SCORES;
+    public static HashMap<Integer, List<String>> ON_LEAVE_REWARDS_SCORES;
+    public static List<String> INTERVAL_REWARDS_SCORES;
     public static int REWARDS_INTERVAL;
     public static double REWARDS_MONEY;
     public static String REWARDS_COMMAND;
@@ -153,6 +155,23 @@ public class Option {
                 REWARDS_SCORES.put(Integer.parseInt(values[0]), null);
             }
         }
+
+        List<String> intervals1 = config.getStringList("rewards.on-leave-scores");
+        ON_LEAVE_REWARDS_SCORES = new HashMap<>();
+        for (String key : intervals1) {
+            String[] values = key.split(";;");
+            if (values.length > 1) {
+                List<String> commands = new ArrayList<>(Arrays.asList(values));
+                commands.remove(0);
+                ON_LEAVE_REWARDS_SCORES.put(Integer.parseInt(values[0]), commands);
+            } else {
+                ON_LEAVE_REWARDS_SCORES.put(Integer.parseInt(values[0]), null);
+            }
+        }
+
+        List<String> intervals2 = config.getStringList("rewards.command");
+        INTERVAL_REWARDS_SCORES = new ArrayList<>();
+        INTERVAL_REWARDS_SCORES.addAll(intervals2);
 
         JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
         BUNGEECORD = config.getBoolean("bungeecord.enabled");

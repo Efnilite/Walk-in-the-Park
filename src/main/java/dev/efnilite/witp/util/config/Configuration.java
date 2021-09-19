@@ -16,12 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * An utilities class for the Configuration
@@ -52,7 +50,7 @@ public class Configuration {
         }
         for (String file : defaultFiles) {
             try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Arrays.asList("styles.list", "messages"));
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Arrays.asList("styles.list", "messages.bruh"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to update config");
@@ -98,6 +96,8 @@ public class Configuration {
                     }
                     SchematicCache.read();
                     Verbose.info("Downloaded all schematics");
+                } catch (FileAlreadyExistsException ex) {
+                    // do nothing
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");

@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.witp.util.Util;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,7 +45,14 @@ public class ConfigUpdater {
 
         List<String> ignoredSectionsArrayList = new ArrayList<>(ignoredSections);
         //ignoredSections can ONLY contain configurations sections
+//        if (resourceName.contains("lang")) {
+//            List<String> strings = Arrays.asList("en", "pl", "fr", "zh_CN", "es", "nl", "default");
+//            List<String> dontUpdateLangs = Util.getNode(oldConfig, "messages");
+//            dontUpdateLangs.removeIf(strings::contains);
+//            ignoredSectionsArrayList.addAll(dontUpdateLangs);
+//        } else {
         ignoredSectionsArrayList.removeIf(ignoredSection -> !newConfig.isConfigurationSection(ignoredSection));
+//        }
 
         Yaml yaml = new Yaml();
         Map<String, String> comments = parseComments(newLines, ignoredSectionsArrayList, oldConfig, yaml);
@@ -54,7 +62,8 @@ public class ConfigUpdater {
     //Write method doing the work.
     //It checks if key has a comment associated with it and writes comment then the key and value
     private static void write(FileConfiguration newConfig, FileConfiguration oldConfig, Map<String, String> comments, List<String> ignoredSections, BufferedWriter writer, Yaml yaml) throws IOException {
-        outer: for (String key : newConfig.getKeys(true)) {
+        outer:
+        for (String key : newConfig.getKeys(true)) {
             String[] keys = key.split("\\.");
             String actualKey = keys[keys.length - 1];
             String comment = comments.remove(key);
