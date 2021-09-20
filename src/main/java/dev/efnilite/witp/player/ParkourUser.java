@@ -21,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +81,7 @@ public abstract class ParkourUser {
             }
             pp.save(saveAsync);
             players.remove(pl);
-            for (ParkourSpectator spectator : pp.spectators.values()) {
+            for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
                 try {
                     ParkourPlayer.register(spectator.getPlayer());
                 } catch (IOException | SQLException ex) {
@@ -90,7 +89,7 @@ public abstract class ParkourUser {
                     Verbose.error("Error while trying to register player" + player.getPlayer().getName());
                 }
             }
-            pp.spectators.clear();
+            pp.getGenerator().spectators.clear();
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
             spectator.watching.removeSpectators(spectator);
@@ -155,7 +154,7 @@ public abstract class ParkourUser {
     /**
      * Updates the scoreboard
      */
-    protected abstract void updateScoreboard();
+    public abstract void updateScoreboard();
 
     /**
      * Gets the highscores of all player
@@ -392,6 +391,10 @@ public abstract class ParkourUser {
      */
     public FastBoard getBoard() {
         return board;
+    }
+
+    public Location getLocation() {
+        return player.getLocation();
     }
 
     /**

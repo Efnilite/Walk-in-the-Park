@@ -81,7 +81,7 @@ public class DefaultGenerator extends ParkourGenerator {
         this.stopped = false;
         this.waitForSchematicCompletion = false;
         this.structureCooldown = 20;
-        this.lastSpawn = player.getPlayer().getLocation().clone();
+        this.lastSpawn = player.getLocation().clone();
         this.lastPlayer = lastSpawn.clone();
         this.latestLocation = lastSpawn.clone();
         this.generatedHistory = new LinkedList<>();
@@ -106,6 +106,7 @@ public class DefaultGenerator extends ParkourGenerator {
      */
     @Override
     public void start() {
+        Verbose.verbose("Starting generator of " + player.getPlayer().getName());
         task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -113,35 +114,31 @@ public class DefaultGenerator extends ParkourGenerator {
                     this.cancel();
                     return;
                 }
-                Location playerLoc = player.getPlayer().getLocation();
-                if (playerLoc.getWorld().getUID() != lastPlayer.getWorld().getUID()) {
-                    Verbose.error("Worlds are not the same (#1)");
-                    lastPlayer = playerLoc;
-                    return;
-                }
-                if (playerLoc.getWorld().getUID() != playerSpawn.getWorld().getUID()) {
-                    Verbose.error("Worlds are not the same (#2)");
-                    playerSpawn = playerLoc;
-                    return;
-                }
+                Location playerLoc = player.getLocation();
+
                 // Fall check
                 if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
                     new PlayerFallEvent(player).call();
                     reset(true);
                     return;
                 }
+
+                // If the block below
                 Block at = playerLoc.getBlock();
                 Block current = playerLoc.clone().subtract(0, 1, 0).getBlock();
                 if (at.getType() != Material.AIR) {
                     current = at;
                 }
+
                 updateTime();
                 player.getPlayer().setSaturation(20);
-                player.updateSpectators();
+                updateSpectators();
+
                 if (current.getLocation().equals(latestLocation)) {
                     player.updateScoreboard();
                     return;
                 }
+
                 tick();
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
@@ -652,9 +649,5 @@ public class DefaultGenerator extends ParkourGenerator {
         for (int i = 0; i < amount; i++) {
             generate();
         }
-    }
-
-    public static class StructureData {
-
     }
 }

@@ -1,15 +1,13 @@
 package dev.efnilite.witp.generator.subarea;
 
-import com.onarandombox.MultiverseCore.utils.FileUtils;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.Vector3D;
-import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.VoidGenerator;
@@ -22,13 +20,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.FileUtil;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,7 +133,7 @@ public class SubareaDivider {
      * @param   player
      *          The player of who the generator belongs to
      */
-    public synchronized void generate(@NotNull ParkourPlayer player) {
+    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator) {
         if (getPoint(player) == null) {
             amount++;
             int copy = amount - 1;
@@ -148,15 +144,15 @@ public class SubareaDivider {
                     Verbose.error("Used (cached) island is already assigned. Retrying without this island.");
                     openSpaces.remove(last);
                     amount--;
-                    generate(player);
+                    generate(player, generator);
                 }
-                createIsland(player, last);
+                createIsland(player, generator,  last);
                 openSpaces.remove(last);
                 Verbose.verbose("Used Subarea divided to " + player.getPlayer().getName());
                 return;
             }
             if (copy % 8 == 0) { // every new layer has +8 area points
-                createIsland(player, current);
+                createIsland(player, generator, current);
                 current = current.zero();
                 layer++;
 
@@ -181,12 +177,12 @@ public class SubareaDivider {
                     Verbose.error("Island is already assigned. Retrying without this island.");
                     amount--;
                     possibleInLayer.remove(point);
-                    generate(player);
+                    generate(player, generator);
                 }
 
                 current = point;
                 possibleInLayer.remove(point);
-                createIsland(player, current);
+                createIsland(player, generator, current);
             }
             Verbose.verbose("New Subarea divided to " + player.getPlayer().getName());
         }
@@ -266,10 +262,10 @@ public class SubareaDivider {
         return world;
     }
 
-    private void createIsland(@NotNull ParkourPlayer pp, SubareaPoint point) {
+    private void createIsland(@NotNull ParkourPlayer pp, ParkourGenerator generator, SubareaPoint point) {
         if (point == null) { // something has gone TERRIBLY WRONG, just in case
             Verbose.error("Point assignment after confirmation has gone terribly wrong, retrying..");
-            generate(pp);
+            generate(pp, generator);
             return;
         }
         Player player = pp.getPlayer();
@@ -323,15 +319,15 @@ public class SubareaDivider {
         if (!parkourDetected) {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
         }
+
         if (pp.getGenerator() == null) {
             pp.setGenerator(new DefaultGenerator(pp));
         }
+
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
         pp.getGenerator().heading = heading.clone();
-        if (to != null && parkourBegin != null) {
-            if (pp.getGenerator() instanceof DefaultGenerator) {
-                ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
-            }
+        if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
+            ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
 
         if (!Option.INVENTORY_HANDLING) {

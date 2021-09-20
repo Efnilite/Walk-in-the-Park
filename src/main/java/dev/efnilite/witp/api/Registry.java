@@ -3,6 +3,7 @@ package dev.efnilite.witp.api;
 import dev.efnilite.witp.api.gamemode.DefaultGamemode;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
+import dev.efnilite.witp.util.Verbose;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public class Registry {
     public void register(Gamemode gamemode) {
         if (!closed) {
             this.gamemodes.put(gamemode.getName(), gamemode);
+            Verbose.info("Registered gamemode " + gamemode.getName() + "!");
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }

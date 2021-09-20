@@ -49,7 +49,7 @@ public class Handler implements Listener {
         }
         if (Option.BUNGEECORD) {
             try {
-                ParkourPlayer.register(player);
+                ParkourPlayer.register(player); // todo update joining
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");

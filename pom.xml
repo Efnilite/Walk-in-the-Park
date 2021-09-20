@@ -33,7 +33,7 @@
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
             <id>spigot-repo</id>
@@ -41,7 +41,7 @@
         </repository>
         <repository>
             <id>mv-repo</id>
-            <url>http://repo.onarandombox.com/content/groups/public/</url>
+            <url>https://repo.onarandombox.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>18.0.0</version>
+            <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

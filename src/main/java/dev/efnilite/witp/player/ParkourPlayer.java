@@ -69,27 +69,22 @@ public class ParkourPlayer extends ParkourUser {
     private ParkourGenerator generator;
     private List<Material> possibleStyle;
     private final File file;
-    public final HashMap<String, ParkourSpectator> spectators;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
-    public ParkourPlayer(@NotNull Player player, @Nullable ParkourGenerator generator) {
+    public ParkourPlayer(@NotNull Player player) {
         super(player);
         Verbose.verbose("Init of Player " + player.getName());
         this.uuid = player.getUniqueId();
         this.name = player.getName();
-        this.spectators = new HashMap<>();
-        this.generator = generator;
         this.joinTime = Instant.now();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.possibleStyle = new ArrayList<>();
         this.locale = Option.DEFAULT_LANG;
         this.lang = locale;
-
-        WITP.getDivider().generate(this);
     }
 
     public void setDefaults(int highScore, String time, String style, String highScoreTime, String lang,
@@ -118,30 +113,8 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    public void setGenerator(DefaultGenerator generator) {
+    public void setGenerator(ParkourGenerator generator) {
         this.generator = generator;
-    }
-
-    public void removeSpectators(ParkourSpectator... spectators) {
-        for (ParkourSpectator spectator : spectators) {
-            this.spectators.remove(spectator.getPlayer().getName());
-        }
-    }
-
-    public void addSpectator(ParkourSpectator... spectators) {
-        for (ParkourSpectator spectator : spectators) {
-            this.spectators.put(spectator.getPlayer().getName(), spectator);
-        }
-    }
-
-    /**
-     * Updates the stats for spectators
-     */
-    public void updateSpectators() {
-        for (ParkourSpectator spectator : spectators.values()) {
-            spectator.checkDistance();
-            spectator.updateScoreboard();
-        }
     }
 
     /**
@@ -452,10 +425,10 @@ public class ParkourPlayer extends ParkourUser {
         difficulty.build();
     }
 
-    private boolean askReset(String item) {
+    private void askReset(String item) {
         if (generator.score < 25) {
             confirmReset(item);
-            return true;
+            return;
         }
         sendTranslated("confirm");
         ComponentBuilder builder = new ComponentBuilder()
@@ -464,7 +437,6 @@ public class ParkourPlayer extends ParkourUser {
                 .append(Util.color(" &8| " + getTranslated("confirm-click")));
         player.spigot().sendMessage(builder.create());
         player.closeInventory();
-        return false;
     }
 
     public void confirmReset(String item) {
@@ -686,7 +658,7 @@ public class ParkourPlayer extends ParkourUser {
             player.sendMessage(Util.color("&c&l(!) &7Parkour is currently disabled. Try again later."));
             return null;
         }
-        return register(new ParkourPlayer(player, null));
+        return register(new ParkourPlayer(player));
     }
 
     /**

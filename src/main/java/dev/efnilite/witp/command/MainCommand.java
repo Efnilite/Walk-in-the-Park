@@ -3,10 +3,11 @@ package dev.efnilite.witp.command;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
@@ -125,13 +126,13 @@ public class MainCommand extends BukkitCommand {
                     player.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
                     return false;
                 }
-                ParkourUser pp = ParkourUser.getUser(player);
-                if (pp == null) {
+                ParkourUser user = ParkourUser.getUser(player);
+                if (user == null) {
                     try {
-                        pp = ParkourPlayer.register(player);
-                        if (pp != null) {
-                            pp.sendTranslated("joined");
-                        }
+                        ParkourPlayer pp = ParkourPlayer.register(player);
+                        ParkourGenerator generator = new DefaultGenerator(pp);
+                        WITP.getDivider().generate(pp, generator);
+                        pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while joining");

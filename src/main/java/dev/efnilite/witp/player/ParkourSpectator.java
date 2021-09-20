@@ -1,9 +1,7 @@
 package dev.efnilite.witp.player;
 
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
-import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
@@ -23,8 +21,7 @@ import java.util.UUID;
  */
 public class ParkourSpectator extends ParkourUser {
 
-    protected final ParkourPlayer watching;
-    protected final ParkourGenerator watchingGenerator;
+    protected final ParkourGenerator watching;
 
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
         super(player.getPlayer());
@@ -44,11 +41,10 @@ public class ParkourSpectator extends ParkourUser {
         }
         users.put(this.player.getName(), this);
 
-        this.watching = watching;
-        this.watchingGenerator = watching.getGenerator();
+        this.watching = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
-        watching.addSpectator(this);
-        this.player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        watching.getGenerator().addSpectator(this);
+        this.player.teleport(watching.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         sendTranslated("spectator");
     }
 
@@ -64,7 +60,7 @@ public class ParkourSpectator extends ParkourUser {
     }
 
     @Override
-    protected void updateScoreboard() {
+    public void updateScoreboard() {
         if (Option.SCOREBOARD) {
             board.updateTitle(Option.SCOREBOARD_TITLE);
             List<String> list = new ArrayList<>();
@@ -73,7 +69,7 @@ public class ParkourSpectator extends ParkourUser {
                 Verbose.error("Scoreboard lines are null! Check your config!");
                 return;
             }
-            Integer rank = ParkourPlayer.getHighScoreValue(watching.player.getUniqueId());
+            Integer rank = ParkourPlayer.getHighScoreValue(watching.getPlayer().uuid);
             UUID one = ParkourPlayer.getAtPlace(1);
             Integer top = 0;
             Highscore highscore = null;
@@ -82,8 +78,8 @@ public class ParkourSpectator extends ParkourUser {
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
-                list.add(s.replaceAll("%score%", Integer.toString(watchingGenerator.score))
-                        .replaceAll("%time%", watchingGenerator.time)
+                list.add(s.replaceAll("%score%", Integer.toString(watching.score))
+                        .replaceAll("%time%", watching.time)
                         .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
                         .replaceAll("%topscore%", top != null ? top.toString() : "0")
                         .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
@@ -92,7 +88,7 @@ public class ParkourSpectator extends ParkourUser {
         }
     }
 
-    public ParkourPlayer getWatching() {
+    public ParkourGenerator getWatching() {
         return watching;
     }
 }

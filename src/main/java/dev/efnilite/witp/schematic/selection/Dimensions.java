@@ -3,7 +3,6 @@ package dev.efnilite.witp.schematic.selection;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
 /**
  * The dimensions of a CuboidSelection.
