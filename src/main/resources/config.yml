@@ -22,6 +22,10 @@ verbose: false
 # Whether players can join
 joining: true
 
+# Whether the plugin should check for updates
+# !! Highly recommended to be enabled !!
+update-checker: true
+
 # World border
 # Use a world border to indicate where the player's border of their area is.
 # If you're having problems with this, you can disable it, since it's very unlikely a player will

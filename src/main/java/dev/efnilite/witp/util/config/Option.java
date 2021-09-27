@@ -71,6 +71,8 @@ public class Option {
     public static List<String> LANGUAGES;
     public static boolean GAMELOGS;
 
+    public static boolean UPDATER;
+
     // MySQL
     public static boolean SQL;
     public static int SQL_PORT;
@@ -108,6 +110,8 @@ public class Option {
         LANGUAGES.remove("default");
         DEFAULT_LANG = lang.getString("messages.default");
         DEFAULT_STYLE = config.getString("styles.default");
+
+        UPDATER = config.getBoolean("update-checker");
 
         JOINING = config.getBoolean("joining");
 

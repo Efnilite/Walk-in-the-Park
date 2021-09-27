@@ -121,8 +121,10 @@ public final class WITP extends JavaPlugin {
 
         // ----- Update checker -----
 
-        UpdateChecker checker = new UpdateChecker();
-        Tasks.syncRepeat(checker::check, 4 * 72000); // 4 hours
+        if (Option.UPDATER) {
+            UpdateChecker checker = new UpdateChecker();
+            Tasks.syncRepeat(checker::check, 8 * 72000); // 8 hours
+        }
 
         // ----- Metrics -----
 
