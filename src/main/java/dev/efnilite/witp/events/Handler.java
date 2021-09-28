@@ -143,6 +143,10 @@ public class Handler implements Listener {
                     MainCommand.selections.put(player, new Selection(location, null, player.getWorld()));
                 } else {
                     Location pos2 = MainCommand.selections.get(player).getPos2();
+                    if (pos2 == null) {
+                        MainCommand.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
+                        return;
+                    }
                     MainCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
                     Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
@@ -154,6 +158,10 @@ public class Handler implements Listener {
                     MainCommand.selections.put(player, new Selection(null, location, player.getWorld()));
                 } else {
                     Location pos1 = MainCommand.selections.get(player).getPos1();
+                    if (pos1 == null) {
+                        MainCommand.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
+                        return;
+                    }
                     MainCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
                     Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }

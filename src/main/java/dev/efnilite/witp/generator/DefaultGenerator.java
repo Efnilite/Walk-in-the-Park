@@ -17,7 +17,9 @@ import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Wall;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -162,12 +164,14 @@ public class DefaultGenerator extends ParkourGenerator {
                             if (!stopwatch.hasStarted()) {
                                 stopwatch.start();
                             }
+                            // update scores
                             score++;
                             totalScore++;
-                            latestLocation = current.getLocation();
                             score();
-
                             checkRewards();
+
+                            latestLocation = current.getLocation();
+
                             new PlayerScoreEvent(player).call();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last) + 1;
@@ -495,7 +499,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
 
                 Block chosen = possible.get(random.nextInt(possible.size()));
-                chosen.setBlockData(material);
+                setBlock(chosen, material);
                 generatedHistory.add(chosen);
                 if (generatedHistory.size() > player.blockLead + 5) {
                     generatedHistory.remove();
@@ -522,7 +526,7 @@ public class DefaultGenerator extends ParkourGenerator {
                             break;
                         case BOX:
                             PARTICLE_DATA.setSize(1);
-                            Particles.box(BoundingBox.of(chosen), player.getPlayer().getWorld(), PARTICLE_DATA, bukkitPlayer, 0.1);
+                            Particles.box(BoundingBox.of(chosen), player.getPlayer().getWorld(), PARTICLE_DATA, bukkitPlayer, 0.15);
                             break;
                     }
                     player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
@@ -586,7 +590,7 @@ public class DefaultGenerator extends ParkourGenerator {
                 break;
         }
 
-        int listSize = player.blockLead + 15; // the size of the queue of parkour blocks
+        int listSize = player.blockLead + 7; // the size of the queue of parkour blocks
         listSize--;
         List<String> locations = new ArrayList<>(buildLog.keySet());
         if (locations.size() > listSize) {
@@ -599,6 +603,18 @@ public class DefaultGenerator extends ParkourGenerator {
             if (location != null) {
                 buildLog.put(location, i + 1);
             }
+        }
+    }
+
+    private void setType(Block block, Material material) {
+        block.setType(material);
+    }
+
+    private void setBlock(Block block, BlockData data) {
+        if (data instanceof Fence || data instanceof Wall) {
+            block.setType(data.getMaterial(), true);
+        } else {
+            block.setBlockData(data);
         }
     }
 
