@@ -237,7 +237,13 @@ public class MainCommand extends BukkitCommand {
                         return true;
                 }
             } else if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
-                int page = Integer.parseInt(args[1]);
+                int page = 0;
+                try {
+                    Integer.parseInt(args[1]);
+                } catch (NumberFormatException ex) {
+                    send(player, "&c&l(!) &7" + args[1] + " is not a number! Please enter a page.");
+                    return false;
+                }
                 ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                 if (pp != null) {
                     if (pp.checkPermission("witp.leaderboard")) {

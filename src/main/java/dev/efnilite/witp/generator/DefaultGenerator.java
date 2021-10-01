@@ -606,10 +606,6 @@ public class DefaultGenerator extends ParkourGenerator {
         }
     }
 
-    private void setType(Block block, Material material) {
-        block.setType(material);
-    }
-
     private void setBlock(Block block, BlockData data) {
         if (data instanceof Fence || data instanceof Wall) {
             block.setType(data.getMaterial(), true);
