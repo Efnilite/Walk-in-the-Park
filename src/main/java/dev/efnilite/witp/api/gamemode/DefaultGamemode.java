@@ -4,7 +4,6 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;

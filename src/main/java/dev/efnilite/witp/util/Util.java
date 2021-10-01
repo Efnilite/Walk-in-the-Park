@@ -4,6 +4,8 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.Vector3D;
+import dev.efnilite.witp.util.config.Configuration;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.wrapper.EventWrapper;
 import net.md_5.bungee.api.ChatColor;
@@ -558,6 +560,37 @@ public class Util {
         } else {
             return "(" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
         }
+    }
+
+    /**
+     * Send a text to a player from the lang.yml file in the default language
+     * (if the player isn't a {@link dev.efnilite.witp.player.ParkourUser}, knowing their preferred language is impossible)
+     *
+     * @param   player
+     *          The player
+     *
+     * @param   path
+     *          The path
+     */
+    public static void sendDefaultLang(Player player, String path, String... replaceable) {
+        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
+        if (message == null) {
+            Verbose.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            return;
+        }
+        for (String s : replaceable) {
+            message = message.replaceFirst("%[a-z]", s);
+        }
+        player.sendMessage(message);
+    }
+
+    public static String getDefaultLang(String path) {
+        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
+        if (message == null) {
+            Verbose.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            return "";
+        }
+        return message;
     }
 
     /**

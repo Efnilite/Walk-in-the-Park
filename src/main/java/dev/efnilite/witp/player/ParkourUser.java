@@ -250,7 +250,7 @@ public abstract class ParkourUser {
     /**
      * Shows the leaderboard (as a chat message)
      */
-    public void leaderboard(int page) {
+    public static void leaderboard(@Nullable ParkourUser user, Player player, int page) {
         initHighScores();
 
         int lowest = page * 10;
@@ -266,7 +266,7 @@ public abstract class ParkourUser {
         highScores = sorted;
         List<UUID> uuids = new ArrayList<>(sorted.keySet());
 
-        sendTranslated("divider");
+        sendLeaderboard(user, player, "divider");
         for (int i = highest; i < lowest; i++) {
             if (i == uuids.size()) {
                 break;
@@ -295,27 +295,46 @@ public abstract class ParkourUser {
                 diff = "?";
             }
             int rank = i + 1;
-            send("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) + " &7(" + time + ", " + getTranslated("difficulty") + ": " + diff + "/1.0)");
+            player.sendMessage(Util.color("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) +
+                    " &7(" + time + ", " + getLeaderboard(user, "difficulty") + ": " + diff + "/1.0)"));
+            // #1. Efnilite - 354 (3m 12s, difficulty: 0.6/1.0)
         }
 
         UUID uuid = player.getUniqueId();
         Integer person = highScores.get(uuid);
-        sendTranslated("your-rank", Integer.toString(getRank(uuid)), person != null ? person.toString() : "0");
-        send("");
+        sendLeaderboard(user, player, "your-rank", Integer.toString(ParkourUser.getRank(uuid)), person != null ? person.toString() : "0");
+        player.sendMessage("");
 
         int prevPage = page - 1;
         int nextPage = page + 1;
         BaseComponent[] previous = new ComponentBuilder()
-                .append(getTranslated("previous-page"))
+                .append(getLeaderboard(user, "previous-page"))
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + prevPage))
                 .append(" | ").color(net.md_5.bungee.api.ChatColor.GRAY)
                 .event((ClickEvent) null)
-                .append(getTranslated("next-page"))
+                .append(getLeaderboard(user, "next-page"))
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + nextPage))
                 .create();
 
         player.spigot().sendMessage(previous);
-        sendTranslated("divider");
+        sendLeaderboard(user, player, "divider");
+    }
+
+    // to avoid repeating the same code every time
+    private static String getLeaderboard(@Nullable ParkourUser user, String path) {
+        if (user == null) {
+            return Util.getDefaultLang(path);
+        }
+        return user.getTranslated(path);
+    }
+
+    // to avoid repeating the same code every time
+    private static void sendLeaderboard(@Nullable ParkourUser user, Player player, String path, String... replaceable) {
+        if (user == null) {
+            Util.sendDefaultLang(player, path, replaceable);
+            return;
+        }
+        user.sendTranslated(path, replaceable);
     }
 
     /**
@@ -326,7 +345,7 @@ public abstract class ParkourUser {
      *
      * @return the rank (starts at 1.)
      */
-    protected int getRank(UUID player) {
+    protected static int getRank(UUID player) {
         return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
     }
 
@@ -346,10 +365,14 @@ public abstract class ParkourUser {
             Verbose.error("Unknown path: " + path + " - try deleting the config");
             return;
         }
+        send(replace(string, replaceable));
+    }
+
+    public String replace(String string, String... replaceable) {
         for (String s : replaceable) {
             string = string.replaceFirst("%[a-z]", s);
         }
-        send(string);
+        return string;
     }
 
     /**
@@ -370,10 +393,7 @@ public abstract class ParkourUser {
             Verbose.error("Custom language '" + locale + "' is missing a path: '" + path + "'. Please add this path to the language in lang.yml!");
             return "";
         }
-        for (String s : replaceable) {
-            string = string.replaceFirst("%[a-z]", s);
-        }
-        return string;
+        return replace(string, replaceable);
     }
 
     public static List<ParkourUser> getUsers() {

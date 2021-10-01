@@ -368,7 +368,7 @@ public class ParkourPlayer extends ParkourUser {
                 getTranslated("your-rank", Integer.toString(getRank(uuid)),
                 Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
             if (checkOptions("leaderboard", "witp.leaderboard")) {
-                leaderboard(1);
+                leaderboard(this, player, 1);
                 player.closeInventory();
             }
         });

@@ -48,13 +48,13 @@ messages:
         spectator-bar: "&cYou are a spectator. &7Use \"/parkour gm\" to leave."
         divider: "&7----------------------------------------"
         score: "&aYour score: &f%s"
-        time: "&aYour time: &f%s"
-        highscore: "&aYour highscore: &f%s"
+        time: "&bYour time: &f%s"
+        highscore: "&eYour highscore: &f%s"
         difficulty: "difficulty"
         message:
-            miss: "&7You missed your high score by %s points!"
-            beat: "&7You beat your high score by %s points!"
-            tied: "&7You tied your high score!"
+            miss: "&cYou missed your high score by %s points!"
+            beat: "&aYou beat your high score by %s points!"
+            tied: "&fYou tied your high score!"
 
     # Nederlands (Dutch)
     nl:

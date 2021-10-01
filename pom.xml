@@ -6,7 +6,7 @@
 
     <groupId>dev.efnilite</groupId>
     <artifactId>WITP</artifactId>
-    <version>2.6a</version>
+    <version>2.6b</version>
     <build>
         <plugins>
             <plugin>

@@ -72,62 +72,66 @@ public class MainCommand extends BukkitCommand {
             }
             return true;
         } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("reload")) {
-                if (sender.hasPermission("witp.reload")) {
+            switch (args[0].toLowerCase()) {
+                case "reload":
+                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return false;
+                    }
+
                     Tasks.time("reload");
-                    sender.sendMessage(Util.color("&a&l(!) &7Reloading config files.."));
+                    send(sender, "&a&l(!) &7Reloading config files..");
                     WITP.getConfiguration().reload();
                     Option.init(false);
                     long time = Tasks.end("reload");
-                    sender.sendMessage(Util.color("&a&l(!) &7Reloaded all config files in " + time + "ms!"));
-                } else {
-                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
-                }
-                return true;
-            } else if (args[0].equalsIgnoreCase("migrate")) { // borrowed from ParkourUser
-                if (sender.hasPermission("witp.reload")) {
-                    if (Option.SQL) {
-                        Tasks.time("migrate");
-                        File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
-                        if (!folder.exists()) {
-                            folder.mkdirs();
+                    send(sender, "&a&l(!) &7Reloaded all config files in " + time + "ms!");
+                    return true;
+                case "migrate":
+                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return false;
+                    } else if (!Option.SQL) {
+                        send(sender, "&a&l(!) &7You have disabled SQL support in the config");
+                        return false;
+                    }
+
+                    Tasks.time("migrate");
+                    File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+                    if (!folder.exists()) {
+                        folder.mkdirs();
+                        return true;
+                    }
+                    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
+                    for (File file : folder.listFiles()) {
+                        FileReader reader;
+                        try {
+                            reader = new FileReader(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            send(sender, "&a&l(!) &cError while trying to read file, check your console");
                             return true;
                         }
-                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
-                        for (File file : folder.listFiles()) {
-                            FileReader reader;
-                            try {
-                                reader = new FileReader(file);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                                sender.sendMessage(Util.color("&a&l(!) &cError while trying to read file, check your console"));
-                                return true;
-                            }
-                            ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-                            String name = file.getName();
-                            from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-                            from.save(true);
-                        }
-                        long time = Tasks.end("migrate");
-                        sender.sendMessage(Util.color("&a&l(!) &7Your players' data has been migrated in " + time + "ms!"));
-                    } else {
-                        sender.sendMessage(Util.color("&a&l(!) &7You have disabled SQL support in the config"));
+                        ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                        String name = file.getName();
+                        from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
+                        from.save(true);
                     }
-                } else {
-                    sender.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
-                }
-                return true;
+                    send(sender, "&a&l(!) &7Your players' data has been migrated in " + Tasks.end("migrate") + "ms!");
+                    return true;
             }
             if (player == null) {
                 return true;
             }
-            if (args[0].equalsIgnoreCase("join")) {
-                if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
-                    player.sendMessage(WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + ".cant-do"));
-                    return false;
-                }
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user == null) {
+            switch (args[0]) {
+                case "join": {
+                    if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return false;
+                    }
+                    ParkourUser user = ParkourUser.getUser(player);
+                    if (user != null) {
+                        return false;
+                    }
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player);
                         ParkourGenerator generator = new DefaultGenerator(pp);
@@ -137,10 +141,13 @@ public class MainCommand extends BukkitCommand {
                         ex.printStackTrace();
                         Verbose.error("Error while joining");
                     }
+                    return true;
                 }
-            } else if (args[0].equalsIgnoreCase("leave")) {
-                ParkourUser pp = ParkourUser.getUser(player);
-                if (pp != null) {
+                case "leave": {
+                    ParkourUser pp = ParkourUser.getUser(player);
+                    if (pp == null) {
+                        return false;
+                    }
                     try {
                         pp.sendTranslated("left");
                         ParkourUser.unregister(pp, true, true, true);
@@ -148,28 +155,37 @@ public class MainCommand extends BukkitCommand {
                         ex.printStackTrace();
                         Verbose.error("Error while leaving");
                     }
+                    return true;
                 }
-            } else if (args[0].equalsIgnoreCase("menu")) {
-                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                if (pp != null) {
-                    pp.menu();
+                case "menu": {
+                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                    if (pp != null) {
+                        pp.menu();
+                        return true;
+                    }
+                    return false;
                 }
-            } else if (args[0].equalsIgnoreCase("gamemode") || args[0].equalsIgnoreCase("gm")) {
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user != null) {
-                    if (user.checkPermission("witp.gamemode")) {
+                case "gamemode":
+                case "gm": {
+                    ParkourUser user = ParkourUser.getUser(player);
+                    if (user != null && user.checkPermission("witp.gamemode")) {
                         user.gamemode();
+                        return true;
                     }
+                    return false;
                 }
-            } else if (args[0].equalsIgnoreCase("leaderboard")) {
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user != null) {
-                    if (user.checkPermission("witp.leaderboard")) {
-                        user.leaderboard(1);
+                case "leaderboard":
+                    if (Option.PERMISSIONS && !player.hasPermission("witp.leaderboard")) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return false;
                     }
-                }
-            } else if (args[0].equalsIgnoreCase("schematic")) {
-                if (player.hasPermission("witp.schematic")) {
+                    ParkourUser.leaderboard(ParkourUser.getUser(player), player, 1);
+                    break;
+                case "schematic":
+                    if (Option.PERMISSIONS && !player.hasPermission("witp.schematic")) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return false;
+                    }
                     send(player, "&8----------- &4&lSchematics &8-----------");
                     send(player, "");
                     send(player, "&7Welcome to the schematic creating section.");
@@ -180,7 +196,7 @@ public class MainCommand extends BukkitCommand {
                     send(player, "&c/witp schematic save &8- &7Save your selection to a schematic file");
                     send(player, "");
                     send(player, "&8&nHave any questions or need help? Join the Discord!");
-                }
+                    return true;
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
@@ -244,10 +260,10 @@ public class MainCommand extends BukkitCommand {
                     send(player, "&c&l(!) &7" + args[1] + " is not a number! Please enter a page.");
                     return false;
                 }
-                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                if (pp != null) {
-                    if (pp.checkPermission("witp.leaderboard")) {
-                        pp.leaderboard(page);
+                ParkourUser user = ParkourUser.getUser(player);
+                if (user != null) {
+                    if (user.checkPermission("witp.leaderboard")) {
+                        ParkourUser.leaderboard(user, player, page);
                     }
                 }
             } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {
