@@ -260,12 +260,7 @@ public class MainCommand extends BukkitCommand {
                     send(player, "&c&l(!) &7" + args[1] + " is not a number! Please enter a page.");
                     return false;
                 }
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user != null) {
-                    if (user.checkPermission("witp.leaderboard")) {
-                        ParkourUser.leaderboard(user, player, page);
-                    }
-                }
+                ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
             } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {
                 if (sender.isOp()) {
                     Player join = Bukkit.getPlayer(args[1]);
