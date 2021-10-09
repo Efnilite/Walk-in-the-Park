@@ -155,6 +155,12 @@ styles:
         rainbow: [red_wool, blue_wool, brown_wool, orange_wool, magenta_wool, lime_wool, purple_wool, black_concrete, yellow_concrete, orange_concrete, lime_concrete, light_blue_concrete, yellow_stained_glass, white_stained_glass, magenta_stained_glass, light_blue_stained_glass, light_gray_stained_glass]
         glow: [glowstone, jack_o_lantern, beacon, sea_lantern, crying_obsidian, shroomlight]
 
+# Options for scoring
+scoring:
+
+    # Gives the player a point when a block is set to air, not when a player jumps on it
+    all-points: false
+
 # Options for custom rewards
 rewards:
     # If rewards are enabled

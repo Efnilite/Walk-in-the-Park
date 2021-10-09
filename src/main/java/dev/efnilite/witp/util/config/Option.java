@@ -41,6 +41,7 @@ public class Option {
     public static int MIN_Y;
 
     // Config stuff
+    public static boolean ALL_POINTS;
     public static boolean REWARDS;
     public static HashMap<Integer, List<String>> REWARDS_SCORES;
     public static HashMap<Integer, List<String>> ON_LEAVE_REWARDS_SCORES;
@@ -111,10 +112,9 @@ public class Option {
         DEFAULT_LANG = lang.getString("messages.default");
         DEFAULT_STYLE = config.getString("styles.default");
 
+        ALL_POINTS = config.getBoolean("scoring.all-points");
         UPDATER = config.getBoolean("update-checker");
-
         JOINING = config.getBoolean("joining");
-
         VERBOSE = config.getBoolean("verbose");
 
         SQL_PORT = config.getInt("sql.port");

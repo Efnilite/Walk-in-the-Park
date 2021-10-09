@@ -177,7 +177,11 @@ public class DefaultGenerator extends ParkourGenerator {
                             int lastIndex = locations.indexOf(last) + 1;
                             int size = locations.size();
                             for (int i = lastIndex; i < size; i++) {
-                                Util.parseLocation(locations.get(i)).getBlock().setType(Material.AIR);
+                                Block block = Util.parseLocation(locations.get(i)).getBlock();
+                                if (block.getType() != Material.AIR) {
+                                    score++;
+                                    block.setType(Material.AIR);
+                                }
                             }
                             if (deleteStructure) {
                                 deleteStructure();
