@@ -365,7 +365,7 @@ public class ParkourPlayer extends ParkourUser {
         }
 
         builder.setItem(18, WITP.getConfiguration().getFromItemData(locale, "options.gamemode"), (t2, e2) -> {
-            if (checkOptions("gamemode", "witp.gamemode")) {
+            if (alertCheckOptions("gamemode", "witp.gamemode")) {
                 gamemode();
             }
         });
@@ -373,13 +373,13 @@ public class ParkourPlayer extends ParkourUser {
         builder.setItem(19, WITP.getConfiguration().getFromItemData(locale, "options.leaderboard",
                 getTranslated("your-rank", Integer.toString(getRank(uuid)),
                 Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
-            if (checkOptions("leaderboard", "witp.leaderboard")) {
+            if (alertCheckOptions("leaderboard", "witp.leaderboard")) {
                 leaderboard(this, player, 1);
                 player.closeInventory();
             }
         });
         builder.setItem(22, WITP.getConfiguration().getFromItemData(locale, "options.language", locale), (t2, e2) -> {
-            if (checkOptions("language", "witp.language")) {
+            if (alertCheckOptions("language", "witp.language")) {
                 List<String> langs = Option.LANGUAGES;
                 InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
                 for (String langName : langs) {
@@ -500,10 +500,19 @@ public class ParkourPlayer extends ParkourUser {
         return possibleStyles;
     }
 
-    private boolean checkOptions(String option, @Nullable String perm) {
+    private boolean alertCheckOptions(String option, @Nullable String perm) {
         boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
         if (!enabled) {
             sendTranslated("cant-do");
+            return false;
+        } else {
+            return checkPermission(perm);
+        }
+    }
+
+    private boolean checkOptions(String option, @Nullable String perm) {
+        boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
+        if (!enabled) {
             return false;
         } else {
             return checkPermission(perm);

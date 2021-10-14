@@ -165,25 +165,37 @@ public class DefaultGenerator extends ParkourGenerator {
                             if (!stopwatch.hasStarted()) {
                                 stopwatch.start();
                             }
-                            // update scores
-                            score++;
-                            totalScore++;
-                            score();
-                            checkRewards();
 
                             latestLocation = current.getLocation();
 
-                            new PlayerScoreEvent(player).call();
                             List<String> locations = new ArrayList<>(buildLog.keySet());
                             int lastIndex = locations.indexOf(last) + 1;
                             int size = locations.size();
-                            for (int i = lastIndex; i < size; i++) {
-                                Block block = Util.parseLocation(locations.get(i)).getBlock();
-                                if (block.getType() != Material.AIR) {
+                            if (Option.ALL_POINTS) {
+                                if (score == 0) {
                                     score++;
-                                    block.setType(Material.AIR);
+                                    totalScore++;
+                                    score();
+                                    checkRewards();
                                 }
+                                for (int i = lastIndex; i < size; i++) {
+                                    Block block = Util.parseLocation(locations.get(i)).getBlock();
+                                    if (block.getType() != Material.AIR) {
+                                        score++;
+                                        totalScore++;
+                                        score();
+                                        checkRewards();
+                                        block.setType(Material.AIR);
+                                    }
+                                }
+                            } else {
+                                score++;
+                                totalScore++;
+                                score();
+                                checkRewards();
                             }
+
+                            new PlayerScoreEvent(player).call();
                             if (deleteStructure) {
                                 deleteStructure();
                             }
