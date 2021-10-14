@@ -230,9 +230,23 @@ public class ParkourPlayer extends ParkourUser {
         Configuration config = WITP.getConfiguration();
         ItemStack close = config.getFromItemData(locale, "general.close");
 
-        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(9, 1);
-        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.styles", style), (t, e) -> {
-            if (checkOptions("styles", "witp.style")) {
+        // Check which items should be displayed, out of all available (this is how DynamicInventory works, and too lazy to change it)
+        // Doesn't use if/else because every value needs to be checked
+        int itemCount = 9;
+        if (!checkOptions("styles", "witp.style")) itemCount--;             // 1
+        if (!checkOptions("lead", "witp.lead")) itemCount--;                // 2
+        if (!checkOptions("time", "witp.time")) itemCount--;                // 3
+        if (!checkOptions("difficulty", "witp.difficulty")) itemCount--;    // 4
+        if (!checkOptions("particles", "witp.particles")) itemCount--;      // 5
+        if (!checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) itemCount--; // 6
+        if (!checkOptions("death-msg", "witp.fall")) itemCount--;           // 7
+        if (!checkOptions("special", "witp.special")) itemCount--;          // 8
+        if (!checkOptions("structure", "witp.structures")) itemCount--;     // 9
+
+
+        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(itemCount, 1);
+        if (checkOptions("styles", "witp.style")) {
+            builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.styles", style), (t, e) -> {
                 List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                 if (pos == null) {
                     Verbose.error("Error while trying to fetch possible styles from config.yml");
@@ -258,12 +272,12 @@ public class ParkourPlayer extends ParkourUser {
                 }
                 styling.setItem(26, close, (t2, e2) -> menu());
                 styling.build();
-            }
-        });
-        List<Integer> possible = Option.POSSIBLE_LEADS;
-        InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
-        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.lead", Integer.toString(blockLead)), (t, e) -> {
-            if (checkOptions("lead", "witp.lead")) {
+            });
+        }
+        if (checkOptions("lead", "witp.lead")) {
+            List<Integer> possible = Option.POSSIBLE_LEADS;
+            InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
+            builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.lead", Integer.toString(blockLead)), (t, e) -> {
                 for (Integer integer : possible) {
                     lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
                         if (e2.getItemMeta() != null) {
@@ -274,10 +288,10 @@ public class ParkourPlayer extends ParkourUser {
                 }
                 lead.setItem(26, close, (t2, e2) -> menu());
                 lead.build();
-            }
-        });
-        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.time", time.toLowerCase()), (t, e) -> {
-            if (checkOptions("time", "witp.time")) {
+            });
+        }
+        if (checkOptions("time", "witp.time")) {
+            builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.time", time.toLowerCase()), (t, e) -> {
                 List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
                 int i = 11;
                 for (String time : pos) {
@@ -293,70 +307,62 @@ public class ParkourPlayer extends ParkourUser {
                 }
                 timeofday.setItem(26, close, (t2, e2) -> menu());
                 timeofday.build();
-            }
-        });
+            });
+        }
         ItemStack item;
-        builder.setItem(dynamic.next(), config.getFromItemData(locale, "options.difficulty", "&a" + Util.parseDifficulty(difficulty) + " &7(" + calculateDifficultyScore() + "/1.0)"), (t2, e2) -> {
-            if (checkOptions("difficulty", "witp.difficulty")) {
-                difficultyMenu();
-            }
-        });
-        String particlesString = Boolean.toString(useParticles);
-        item = config.getFromItemData(locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
-        item.setType(useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkOptions("particles", "witp.particles")) {
+        if (checkOptions("difficulty", "witp.difficulty")) {
+            builder.setItem(dynamic.next(),
+                    config.getFromItemData(locale, "options.difficulty", "&a" + Util.parseDifficulty(difficulty) + " &7(" + calculateDifficultyScore() + "/1.0)"),
+                    (t2, e2) -> difficultyMenu());
+        }
+        if (checkOptions("particles", "witp.particles")) {
+            String particlesString = Boolean.toString(useParticles);
+            item = config.getFromItemData(locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
+            item.setType(useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
+            builder.setItem(dynamic.next(), item, (t2, e2) -> {
                 useParticles = !useParticles;
                 sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
                 menu();
-            }
-        });
-        String scoreboardString = Boolean.toString(showScoreboard);
-        item = config.getFromItemData(locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
-        item.setType(showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkOptions("scoreboard", "witp.scoreboard")) {
-                if (Option.SCOREBOARD) {
-                    showScoreboard = !showScoreboard;
-                    if (showScoreboard) {
-                        board = new FastBoard(player);
-                        updateScoreboard();
-                    } else {
-                        board.delete();
-                    }
-                    sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
-                    menu();
+            });
+        }
+        if (checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) {
+            String scoreboardString = Boolean.toString(showScoreboard);
+            item = config.getFromItemData(locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
+            item.setType(showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
+            builder.setItem(dynamic.next(), item, (t2, e2) -> {
+                showScoreboard = !showScoreboard;
+                if (showScoreboard) {
+                    board = new FastBoard(player);
+                    updateScoreboard();
                 } else {
-                    sendTranslated("cant-do");
+                    board.delete();
                 }
-            }
-        });
-        String deathString = Boolean.toString(showDeathMsg);
-        item = config.getFromItemData(locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
-        item.setType(showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkOptions("death-msg", "witp.fall")) {
+                sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+                menu();
+            });
+        }
+        if (checkOptions("death-msg", "witp.fall")) {
+            String deathString = Boolean.toString(showDeathMsg);
+            item = config.getFromItemData(locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
+            item.setType(showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
+            builder.setItem(dynamic.next(), item, (t2, e2) -> {
                 showDeathMsg = !showDeathMsg;
                 sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
                 menu();
-            }
-        });
-        String specialString = Boolean.toString(useSpecial);
-        item = config.getFromItemData(locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
-        item.setType(useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkOptions("special", "witp.special")) {
-                askReset("special");
-            }
-        });
-        String structuresString = Boolean.toString(useStructure);
-        item = config.getFromItemData(locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
-        item.setType(useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
-        builder.setItem(dynamic.next(), item, (t2, e2) -> {
-            if (checkOptions("structure", "witp.structures")) {
-                askReset("structure");
-            }
-        });
+            });
+        }
+        if (checkOptions("special", "witp.special")) {
+            String specialString = Boolean.toString(useSpecial);
+            item = config.getFromItemData(locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
+            item.setType(useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
+            builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special"));
+        }
+        if (checkOptions("structure", "witp.structures")) {
+            String structuresString = Boolean.toString(useStructure);
+            item = config.getFromItemData(locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
+            item.setType(useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
+            builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure"));
+        }
 
         builder.setItem(18, WITP.getConfiguration().getFromItemData(locale, "options.gamemode"), (t2, e2) -> {
             if (checkOptions("gamemode", "witp.gamemode")) {

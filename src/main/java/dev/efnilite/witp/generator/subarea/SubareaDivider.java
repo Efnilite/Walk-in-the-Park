@@ -50,7 +50,7 @@ public class SubareaDivider {
     private int spawnPitch;
     private Material playerSpawn;
     private Material parkourSpawn;
-    private Vector heading;
+    private Vector3D heading;
 
     /**
      * The SubareaPoints available in the current layer
@@ -102,7 +102,7 @@ public class SubareaDivider {
         this.possibleInLayer = new ArrayList<>();
     }
 
-    public void setHeading(Vector heading) {
+    public void setHeading(Vector3D heading) {
         this.heading = heading;
     }
 
@@ -308,7 +308,7 @@ public class SubareaDivider {
                 }
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1)); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1).toBukkitVector()); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }
@@ -344,7 +344,7 @@ public class SubareaDivider {
         }, 10);
     }
 
-    public Vector getHeading() {
+    public Vector3D getHeading() {
         return heading;
     }
 }

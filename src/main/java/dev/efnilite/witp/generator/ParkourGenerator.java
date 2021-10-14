@@ -4,6 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
+import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.util.Vector;
@@ -21,11 +22,15 @@ public abstract class ParkourGenerator {
     /**
      * The heading of the parkour
      */
-    public Vector heading;
+    public Vector3D heading;
     /**
      * The score of the player
      */
     public int score;
+    /**
+     * At which range the direction of the parkour will change for players.
+     */
+    protected int borderWarning = 50;
     public SubareaPoint.Data data;
     public final HashMap<String, ParkourSpectator> spectators;
     protected final double borderOffset;
@@ -87,12 +92,12 @@ public abstract class ParkourGenerator {
      * @return true if the vector is following the heading assigned to param heading
      */
     public boolean isFollowing(Vector vector) {
-        if (heading.getBlockZ() != 0) { // north/south
-            return vector.getZ() * heading.getZ() > 0;
-        } else if (heading.getBlockX() != 0) { // east/west
-            return vector.getX() * heading.getX() < 0;
+        if (heading.z != 0) { // north/south
+            return vector.getZ() * heading.z > 0;
+        } else if (heading.x != 0) { // east/west
+            return vector.getX() * heading.x < 0;
         } else {
-            Verbose.error("Invalid heading vector: " + heading.toString());
+            Verbose.error("Invalid heading vector: " + heading);
             return false;
         }
     }
@@ -109,6 +114,6 @@ public abstract class ParkourGenerator {
         xBorder.setX(borderOffset);
         zBorder.setZ(borderOffset);
 
-        return vector.distance(xBorder) < 75 || vector.distance(zBorder) < 75;
+        return vector.distance(xBorder) < borderWarning || vector.distance(zBorder) < borderWarning;
     }
 }

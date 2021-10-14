@@ -5,6 +5,7 @@ import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
@@ -344,12 +345,7 @@ public class DefaultGenerator extends ParkourGenerator {
         switch (def) {
             case 0:
                 if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
-                    int copy = score;
-                    reset(true);
-                    score = copy;
-                    player.send("&cSorry for the inconvenience, but you have been teleported back to spawn");
-                    player.send("&cYou can continue adding to your score.");
-                    return;
+                    heading.rotateUnitRight(); // reverse heading
                 }
 
                 if (player.useDifficulty || distanceChances.size() == 0) {

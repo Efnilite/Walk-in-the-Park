@@ -45,6 +45,19 @@ public class Vector3D {
         }
     }
 
+    public Vector3D rotateUnitRight() {
+        if (x == 0) {
+            return this.swapXZ();
+        } else {
+            if (x == -1) {
+                return this.add(1, 1);
+            } else {
+                return this.subtract(1, 1);
+            }
+        }
+    }
+
+
     public Vector toBukkitVector() {
         return new Vector(x, y, z);
     }
@@ -74,6 +87,25 @@ public class Vector3D {
     public Vector3D multiply(double x, double z) {
         this.x *= x;
         this.z *= z;
+        return this;
+    }
+
+    public Vector3D subtract(double x, double z) {
+        this.x -= x;
+        this.z -= z;
+        return this;
+    }
+
+    public Vector3D add(double x, double z) {
+        this.x += x;
+        this.z += z;
+        return this;
+    }
+
+    public Vector3D multiply(double modifier) {
+        this.x *= modifier;
+        this.y *= modifier;
+        this.z *= modifier;
         return this;
     }
 

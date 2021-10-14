@@ -42,16 +42,16 @@ public class SchematicAdjuster {
      *
      * @return the associated angle
      */
-    private static RotationAngle getAngle(Vector heading) {
-        if (heading.getBlockZ() != 0) { // north/south
-            switch (heading.getBlockZ()) {
+    private static RotationAngle getAngle(Vector3D heading) {
+        if (heading.z != 0) { // north/south
+            switch (heading.z) {
                 case 1: // south
                     return RotationAngle.ANGLE_180;
                 case -1: // north
                     return RotationAngle.ANGLE_0;
             }
-        } else if (heading.getBlockX() != 0) { // east/west
-            switch (heading.getBlockX()) {
+        } else if (heading.x != 0) { // east/west
+            switch (heading.x) {
                 case 1: // east
                     return RotationAngle.ANGLE_270;
                 case -1: // west
