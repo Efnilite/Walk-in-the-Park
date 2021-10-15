@@ -168,31 +168,23 @@ public class DefaultGenerator extends ParkourGenerator {
 
                             latestLocation = current.getLocation();
 
-                            List<String> locations = new ArrayList<>(buildLog.keySet());
+                            if (!Option.ALL_POINTS) {
+                                addPoint();
+                            } else if (score == 0) {
+                                addPoint();
+                            }
+
+                            List<String> locations = new ArrayList<>(buildLog.keySet()); // delete blocks
                             int lastIndex = locations.indexOf(last) + 1;
                             int size = locations.size();
-                            if (Option.ALL_POINTS) {
-                                if (score == 0) {
-                                    score++;
-                                    totalScore++;
-                                    score();
-                                    checkRewards();
-                                }
-                                for (int i = lastIndex; i < size; i++) {
-                                    Block block = Util.parseLocation(locations.get(i)).getBlock();
-                                    if (block.getType() != Material.AIR) {
-                                        score++;
-                                        totalScore++;
-                                        score();
-                                        checkRewards();
-                                        block.setType(Material.AIR);
+                            for (int i = lastIndex; i < size; i++) {
+                                Block block = Util.parseLocation(locations.get(i)).getBlock();
+                                if (block.getType() != Material.AIR) {
+                                    if (Option.ALL_POINTS) {
+                                        addPoint();
                                     }
+                                    block.setType(Material.AIR);
                                 }
-                            } else {
-                                score++;
-                                totalScore++;
-                                score();
-                                checkRewards();
                             }
 
                             new PlayerScoreEvent(player).call();
@@ -211,6 +203,13 @@ public class DefaultGenerator extends ParkourGenerator {
             }
         };
         Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK);
+    }
+
+    private void addPoint() {
+        score++;
+        totalScore++;
+        score();
+        checkRewards();
     }
 
     private void checkRewards() {
