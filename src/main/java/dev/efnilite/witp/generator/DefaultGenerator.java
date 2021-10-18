@@ -68,7 +68,7 @@ public class DefaultGenerator extends ParkourGenerator {
     protected final HashMap<Integer, Integer> defaultChances;
     protected final HashMap<Integer, Double> multiplierDecreases;
 
-    private static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0,
+    protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0,
             0, 0, 0);
 
     /**
@@ -548,6 +548,11 @@ public class DefaultGenerator extends ParkourGenerator {
                 }
                 break;
             case 1:
+                if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
+                    generate(); // generate a normal block
+                    return;
+                }
+
                 File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File file = null;

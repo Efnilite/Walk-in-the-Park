@@ -1,7 +1,6 @@
 Walk in the Park TODO
 
 High priority:
-- Remove structures and add custom data type
 - Add one-time rewards
 
 Medium priority:

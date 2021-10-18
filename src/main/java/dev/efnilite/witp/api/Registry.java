@@ -4,6 +4,7 @@ import dev.efnilite.witp.api.gamemode.DefaultGamemode;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
 import dev.efnilite.witp.util.Verbose;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,10 @@ public class Registry {
 
         gamemodes.put("default", new DefaultGamemode());
         gamemodes.put("spectator", new SpectatorGamemode());
+    }
+
+    public @Nullable Gamemode getGamemode(String name) {
+        return gamemodes.get(name);
     }
 
     public void register(Gamemode gamemode) {

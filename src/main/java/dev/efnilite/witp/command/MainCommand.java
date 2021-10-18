@@ -168,7 +168,7 @@ public class MainCommand extends BukkitCommand {
                 case "gamemode":
                 case "gm": {
                     ParkourUser user = ParkourUser.getUser(player);
-                    if (user != null && user.checkPermission("witp.gamemode")) {
+                    if (user != null && user.alertCheckPermission("witp.gamemode")) {
                         user.gamemode();
                         return true;
                     }
