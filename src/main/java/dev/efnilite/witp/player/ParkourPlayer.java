@@ -369,7 +369,7 @@ public class ParkourPlayer extends ParkourUser {
                 gamemode();
             });
         }
-        if (checkOptions("language", "witp.language")) {
+        if (checkOptions("leaderboard", "witp.leaderboard")) {
             Integer score = highScores.get(uuid);
             builder.setItem(19, WITP.getConfiguration().getFromItemData(locale, "options.leaderboard",
                     getTranslated("your-rank", Integer.toString(getRank(uuid)), Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
