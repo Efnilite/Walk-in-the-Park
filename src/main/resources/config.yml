@@ -98,6 +98,10 @@ permissions:
     # If permissions are enabled
     enabled: false
 
+    # Gives every style a permission. The permission is the name of the style:
+    # witp.styles.<style> - example: witp.styles.red
+    per-style: false
+
 # Options for focus mode.
 focus-mode:
 

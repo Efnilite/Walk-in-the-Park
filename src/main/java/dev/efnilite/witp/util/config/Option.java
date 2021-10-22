@@ -98,6 +98,7 @@ public class Option {
     public static String DEFAULT_STYLE;
 
     public static boolean JOINING;
+    public static boolean PERMISSIONS_STYLES;
 
     public static void init(boolean init) {
         SchematicCache.read();
@@ -106,6 +107,7 @@ public class Option {
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
 
+        PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
         GAMELOGS = config.getBoolean("sql.game-logs");
         LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
         LANGUAGES.remove("default");

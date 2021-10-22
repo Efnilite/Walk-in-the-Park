@@ -1,10 +1,12 @@
+Changelog:
+- Added option to enable permissions per style
+
 Walk in the Park TODO
 
 High priority:
-- Add one-time rewards
-
-Medium priority:
 - Add usability in a non-seperate world (bounding box)
 
+Medium priority:
+- Add one-time rewards
+
 Low priority:
--

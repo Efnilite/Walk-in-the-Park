@@ -253,16 +253,20 @@ public class ParkourPlayer extends ParkourUser {
                     return;
                 }
                 int i = 0;
+                Random random = ThreadLocalRandom.current();
                 for (String style : pos) {
                     if (i == 26) {
                         Verbose.error("There are too many styles to display!");
                         return;
                     }
+                    if (Option.PERMISSIONS_STYLES && checkPermission("witp.styles." + style.toLowerCase())) {
+                        continue;
+                    }
                     List<Material> possible = this.getPossibleMaterials(style);
                     if (possible == null) {
                         continue;
                     }
-                    Material material = possible.get(possible.size() - 1);
+                    Material material = possible.get(random.nextInt(possible.size() - 1));
                     styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
                         String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
                         setStyle(selected);
