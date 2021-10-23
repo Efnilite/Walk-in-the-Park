@@ -1,5 +1,7 @@
 Changelog:
 - Added option to enable permissions per style
+- Updated schematic 15
+- Fixed health above 20 not returning anything
 
 Walk in the Park TODO
 

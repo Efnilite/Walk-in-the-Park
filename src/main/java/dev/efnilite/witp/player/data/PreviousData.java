@@ -2,9 +2,11 @@ package dev.efnilite.witp.player.data;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +23,7 @@ public class PreviousData {
     public final Location location;
     public int hunger;
     public double health;
+    public double maxHealth;
     public Player player;
 
     public PreviousData(@NotNull Player player) {
@@ -29,6 +32,7 @@ public class PreviousData {
         this.location = player.getLocation();
         this.hunger = player.getFoodLevel();
         this.health = player.getHealth();
+        this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         saveInventory();
 //        speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
         
@@ -39,16 +43,24 @@ public class PreviousData {
     }
 
     public void apply() {
-        if (Option.GO_BACK) {
-            Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
-            player.teleport(to);
-        } else {
-            player.teleport(location);
+        try {
+            if (Option.GO_BACK) {
+                Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
+                player.teleport(to);
+            } else {
+                player.teleport(location);
+            }
+            player.setFoodLevel(hunger);
+            player.setGameMode(gamemode);
+
+            // -= Attributes =-
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+            player.setHealth(health);
+            //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+        } catch (Exception ex) {// not optimal but there isn't another way
+            ex.printStackTrace();
+            Verbose.error("Error while giving the stats of player " + player.getName() + " back! The inventory will still be restored.");
         }
-        player.setHealth(health);
-        player.setFoodLevel(hunger);
-        player.setGameMode(gamemode);
-//        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
         if (Option.INVENTORY_HANDLING) {
             player.getInventory().clear();
             for (int slot : inventory.keySet()) {

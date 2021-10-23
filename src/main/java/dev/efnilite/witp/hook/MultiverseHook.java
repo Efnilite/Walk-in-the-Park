@@ -2,6 +2,7 @@ package dev.efnilite.witp.hook;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -24,11 +25,18 @@ public class MultiverseHook {
     }
 
     public void deleteWorld(String worldName) {
-        manager.deleteWorld(worldName, false);
+        manager.deleteWorld(worldName, false); // deleteFromConfig
     }
 
     public World createWorld(String worldName) {
         manager.addWorld(worldName, World.Environment.NORMAL, null, WorldType.FLAT, false, Util.getVoidGenerator());
-        return manager.getMVWorld(worldName).getCBWorld();
+        MultiverseWorld world = manager.getMVWorld(worldName);
+
+        // -= Optimizations to reduce memory usage =-
+        world.setAllowAnimalSpawn(false);
+        world.setAllowMonsterSpawn(false);
+        world.setKeepSpawnInMemory(false);
+
+        return world.getCBWorld();
     }
 }

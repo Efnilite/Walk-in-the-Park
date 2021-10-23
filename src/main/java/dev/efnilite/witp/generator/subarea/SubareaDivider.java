@@ -233,22 +233,28 @@ public class SubareaDivider {
 
     private @Nullable World createWorld(String name) {
         World world;
-        if (WITP.getMultiverseHook() == null) {
+        if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
             WorldCreator creator = new WorldCreator(name)
                     .generateStructures(false)
                     .hardcore(false)
                     .type(WorldType.FLAT)
                     .generator(new VoidGenerator())
                     .environment(World.Environment.NORMAL);
+
             world = Bukkit.createWorld(creator);
             if (world == null) {
                 Verbose.error("Error while trying to create the parkour world - please restart and delete the folder");
                 return null;
             }
-        } else {
+            // -= Optimizations =-
+            world.setKeepSpawnInMemory(false);
+
+        } else { // if multiverse is detected
             world = WITP.getMultiverseHook().createWorld(name);
         }
         Verbose.verbose("Created world " + name);
+
+        // -= World gamerules & options =-
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
@@ -256,9 +262,11 @@ public class SubareaDivider {
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setWeatherDuration(1000);
         world.setAutoSave(false);
+
         return world;
     }
 
