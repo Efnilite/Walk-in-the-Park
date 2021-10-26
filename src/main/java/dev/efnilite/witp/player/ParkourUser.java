@@ -42,10 +42,10 @@ public abstract class ParkourUser {
     public static int JOIN_COUNT;
 
     private static final HashMap<String, PreviousData> previousData = new HashMap<>();
+    public static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
     protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
-    protected static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
     protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     public ParkourUser(@NotNull Player player) {
@@ -356,7 +356,7 @@ public abstract class ParkourUser {
      *
      * @return the rank (starts at 1.)
      */
-    protected static int getRank(UUID player) {
+    public static int getRank(UUID player) {
         return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
     }
 

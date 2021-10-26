@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * Class which features registration for custom modes/addons
  */
-public class Registry {
+public final class Registry {
 
-    private boolean closed;
+    private volatile boolean closed;
     private final HashMap<String, Gamemode> gamemodes;
 
     public Registry() {

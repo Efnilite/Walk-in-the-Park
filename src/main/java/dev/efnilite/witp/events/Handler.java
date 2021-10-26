@@ -182,7 +182,7 @@ public class Handler implements Listener {
                 mat = new ItemBuilder(Material.COMPASS, "&c&lOptions").build();
             }
             if (Util.getHeldItem(player.getPlayer()).getType() == mat.getType()) {
-                player.menu();
+                player.getGenerator().menu();
             }
         }
     }

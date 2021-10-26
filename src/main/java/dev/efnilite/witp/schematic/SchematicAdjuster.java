@@ -4,7 +4,6 @@ import dev.efnilite.witp.WITP;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;

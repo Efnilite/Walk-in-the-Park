@@ -20,7 +20,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -276,7 +275,6 @@ public class SubareaDivider {
             generate(pp, generator);
             return;
         }
-        Player player = pp.getPlayer();
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
 
@@ -301,19 +299,7 @@ public class SubareaDivider {
                 to.setPitch(spawnPitch);
                 to.setYaw(spawnYaw);
                 to.setWorld(world);
-                pp.teleport(to);
                 block.setType(Material.AIR);
-                player.setGameMode(GameMode.ADVENTURE);
-                if (Option.INVENTORY_HANDLING) {
-                    player.getInventory().clear();
-                    ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
-                    if (mat == null) {
-                        Verbose.error("Material for options in config is null - defaulting to compass");
-                        player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&lOptions").build());
-                    } else {
-                        player.getInventory().setItem(8, mat);
-                    }
-                }
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
                 parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1).toBukkitVector()); // remove an extra block of jumping space
@@ -338,16 +324,37 @@ public class SubareaDivider {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
 
+        setup(to, pp);
+    }
+
+    public void setup(Location to, ParkourPlayer pp) {
+        Player player = pp.getPlayer();
+
+        pp.teleport(to);
+
+        // -= Inventory =-
+        player.setGameMode(GameMode.ADVENTURE);
+        if (Option.INVENTORY_HANDLING) {
+            player.getInventory().clear();
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
+            if (mat == null) {
+                Verbose.error("Material for options in config is null - defaulting to compass");
+                player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&lOptions").build());
+            } else {
+                player.getInventory().setItem(8, mat);
+            }
+        }
+
         if (!Option.INVENTORY_HANDLING) {
             pp.sendTranslated("customize-menu");
         }
         pp.getGenerator().start();
 
-        // todo fix this check
-        Location finalTo = to;
+        // Make sure the player is in the correct world
+        // Used to be a problem, don't know if it still is, too scared to remove it now :)
         Tasks.syncDelay(() -> {
             if (!player.getWorld().getUID().equals(world.getUID())) {
-                player.teleport(finalTo, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
         }, 10);
     }

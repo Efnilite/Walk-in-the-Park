@@ -20,7 +20,7 @@ public class Option {
 
     public static int NORMAL;
     public static int SPECIAL;
-    public static int STRUCTURES;
+    public static int SCHEMATICS;
 
     public static int SPECIAL_ICE;
     public static int SPECIAL_SLAB;
@@ -127,7 +127,7 @@ public class Option {
         SQL_PREFIX = config.getString("sql.prefix");
 
         NORMAL = gen.getInt("generation.normal-jump.chance");
-        STRUCTURES = gen.getInt("generation.structures.chance");
+        SCHEMATICS = gen.getInt("generation.structures.chance");
         SPECIAL = gen.getInt("generation.normal-jump.special.chance");
 
         SPECIAL_ICE = gen.getInt("generation.normal-jump.special.ice");

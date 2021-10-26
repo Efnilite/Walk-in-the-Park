@@ -7,11 +7,19 @@ import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class ParkourGenerator {
+
+    // -= Generator Options =-
+    public List<GeneratorOption> generatorOptions = new ArrayList<>();
 
     /**
      * The time of the player's current session
@@ -19,26 +27,31 @@ public abstract class ParkourGenerator {
      * @see Stopwatch#toString()
      */
     public String time = "0.0s";
+
     /**
      * The heading of the parkour
      */
     public Vector3D heading;
+
     /**
      * The score of the player
      */
     public int score;
+
     /**
      * At which range the direction of the parkour will change for players.
      */
     protected int borderWarning = 50;
+
     public SubareaPoint.Data data;
     public final HashMap<String, ParkourSpectator> spectators;
     protected final double borderOffset;
     protected final Stopwatch stopwatch;
     protected final ParkourPlayer player;
 
-    public ParkourGenerator(ParkourPlayer player) {
+    public ParkourGenerator(ParkourPlayer player, GeneratorOption... options) {
         this.player = player;
+        this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
         this.borderOffset = Option.BORDER_SIZE / 2.0;
@@ -51,6 +64,24 @@ public abstract class ParkourGenerator {
     public abstract void start();
 
     public abstract void generate();
+
+    public abstract void menu();
+
+    protected abstract static class InventoryHandler {
+
+        protected final ParkourPlayer pp;
+        protected final Player player;
+
+        public InventoryHandler(ParkourPlayer pp) {
+            this.pp = pp;
+            this.player = pp.getPlayer();
+        }
+    }
+
+    // whether the option is present but simplified
+    protected boolean option(GeneratorOption option) {
+        return generatorOptions.contains(option);
+    }
 
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {

@@ -5,16 +5,23 @@ import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.schematic.RotationAngle;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
+import dev.efnilite.witp.util.fastboard.FastBoard;
+import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
+import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -23,9 +30,11 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Wall;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +50,10 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Efnilite
  */
-public class DefaultGenerator extends ParkourGenerator {
+public class DefaultGenerator extends DefaultGeneratorBase {
 
     private BukkitRunnable task;
+    public DefaultGenerator.InventoryHandler handler;
 
     protected int totalScore;
     protected int structureCooldown;
@@ -62,23 +72,21 @@ public class DefaultGenerator extends ParkourGenerator {
 
     protected final Queue<Block> generatedHistory;
     protected final LinkedHashMap<String, Integer> buildLog;
-    protected final HashMap<Integer, Integer> distanceChances;
-    protected final HashMap<Integer, Integer> specialChances;
-    protected final HashMap<Integer, Integer> heightChances;
-    protected final HashMap<Integer, Integer> defaultChances;
-    protected final HashMap<Integer, Double> multiplierDecreases;
 
-    protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0,
-            0, 0, 0);
+    protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0, 0, 0, 0);
 
     /**
      * Creates a new ParkourGenerator instance
      *
      * @param player The player associated with this generator
      */
-    public DefaultGenerator(@NotNull ParkourPlayer player) {
-        super(player);
+    public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
+        super(player, generatorOptions);
         Verbose.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
+        calculateChances();
+
+        this.handler = new InventoryHandler(player);
+
         this.score = 0;
         this.totalScore = 0;
         this.stopped = false;
@@ -88,20 +96,9 @@ public class DefaultGenerator extends ParkourGenerator {
         this.lastPlayer = lastSpawn.clone();
         this.latestLocation = lastSpawn.clone();
         this.generatedHistory = new LinkedList<>();
-        this.distanceChances = new HashMap<>();
-        this.heightChances = new HashMap<>();
-        this.specialChances = new HashMap<>();
         this.buildLog = new LinkedHashMap<>();
-        this.defaultChances = new HashMap<>();
         this.structureBlocks = new ArrayList<>();
-        this.multiplierDecreases = new HashMap<>();
         this.deleteStructure = false;
-
-        double multiplier = Option.MULTIPLIER;
-        multiplierDecreases.put(1, (Option.MAXED_ONE_BLOCK - Option.NORMAL_ONE_BLOCK) / multiplier);
-        multiplierDecreases.put(2, (Option.MAXED_TWO_BLOCK - Option.NORMAL_TWO_BLOCK) / multiplier);
-        multiplierDecreases.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
-        multiplierDecreases.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
     }
 
     /**
@@ -205,44 +202,6 @@ public class DefaultGenerator extends ParkourGenerator {
         Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK);
     }
 
-    private void addPoint() {
-        score++;
-        totalScore++;
-        score();
-        checkRewards();
-    }
-
-    private void checkRewards() {
-        // Rewards
-        HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
-        if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
-                || (scores.size() > 0 && scores.containsKey(score))) {
-            if (Option.REWARDS) {
-                if (scores.containsKey(score) && scores.get(score) != null) {
-                    List<String> commands = scores.get(score);
-                    if (commands != null) {
-                        for (String command : commands) {
-                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                    command.replaceAll("%player%", player.getPlayer().getName()));
-                        }
-                    }
-                }
-                if (Option.INTERVAL_REWARDS_SCORES != null) {
-                    for (String command : Option.INTERVAL_REWARDS_SCORES) {
-                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                command.replaceAll("%player%", player.getPlayer().getName()));
-                    }
-                }
-                if (Option.REWARDS_MONEY != 0) {
-                    Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
-                }
-                if (Option.REWARDS_MESSAGE != null) {
-                    player.send(Option.REWARDS_MESSAGE);
-                }
-            }
-        }
-    }
-
     public void score() { }
 
     public void tick() { }
@@ -305,16 +264,6 @@ public class DefaultGenerator extends ParkourGenerator {
         }
     }
 
-    protected void deleteStructure() {
-        for (Block block : structureBlocks) {
-            block.setType(Material.AIR);
-        }
-
-        structureBlocks.clear();
-        deleteStructure = false;
-        structureCooldown = 20;
-    }
-
     /**
      * Generates the next parkour block, choosing between structures and normal jumps.
      * If it's a normal jump, it will get a random distance between them and whether it
@@ -330,22 +279,6 @@ public class DefaultGenerator extends ParkourGenerator {
         }
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        if (defaultChances.size() == 0) {
-            int index = 0;
-            for (int i = 0; i < Option.NORMAL; i++) {
-                defaultChances.put(index, 0);
-                index++;
-            }
-            for (int i = 0; i < Option.STRUCTURES; i++) {
-                defaultChances.put(index, 1);
-                index++;
-            }
-            for (int i = 0; i < Option.SPECIAL; i++) {
-                defaultChances.put(index, 2);
-                index++;
-            }
-        }
-
         int def = defaultChances.get(random.nextInt(defaultChances.size())); // 0 = normal, 1 = structures, 2 = special
         int special = def == 2 ? 1 : 0; // 1 = yes, 0 = no
         if (special == 1) {
@@ -357,64 +290,6 @@ public class DefaultGenerator extends ParkourGenerator {
             case 0:
                 if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
                     heading.rotateUnitRight(); // reverse heading
-                }
-
-                if (player.useDifficulty || distanceChances.size() == 0) {
-                    int one = Option.MAXED_ONE_BLOCK;
-                    int two = Option.MAXED_TWO_BLOCK;
-                    int three = Option.MAXED_THREE_BLOCK;
-                    int four = Option.MAXED_FOUR_BLOCK;
-                    if (player.useDifficulty) {
-                        if (score <= Option.MULTIPLIER) {
-                            one = (int) (Option.NORMAL_ONE_BLOCK + (multiplierDecreases.get(1) * score));
-                            two = (int) (Option.NORMAL_TWO_BLOCK + (multiplierDecreases.get(2) * score));
-                            three = (int) (Option.NORMAL_THREE_BLOCK + (multiplierDecreases.get(3) * score));
-                            four = (int) (Option.NORMAL_FOUR_BLOCK + (multiplierDecreases.get(4) * score));
-                        }
-                    } else {
-                        one = Option.NORMAL_ONE_BLOCK;
-                        two = Option.NORMAL_TWO_BLOCK;
-                        three = Option.NORMAL_THREE_BLOCK;
-                        four = Option.NORMAL_FOUR_BLOCK;
-                    }
-                    distanceChances.clear();
-                    int index = 0;
-                    for (int i = 0; i < one; i++) { // regenerate the chances for distance
-                        distanceChances.put(index, 1);
-                        index++;
-                    }
-                    for (int i = 0; i < two; i++) {
-                        distanceChances.put(index, 2);
-                        index++;
-                    }
-                    for (int i = 0; i < three; i++) {
-                        distanceChances.put(index, 3);
-                        index++;
-                    }
-                    for (int i = 0; i < four; i++) {
-                        distanceChances.put(index, 4);
-                        index++;
-                    }
-                }
-
-                if (heightChances.size() == 0) { // regenerate the chances for height
-                    int index1 = 0;
-                    for (int i = 0; i < Option.NORMAL_UP; i++) {
-                        heightChances.put(index1, 1);
-                        index1++;
-                    }
-                    for (int i = 0; i < Option.NORMAL_LEVEL; i++) {
-                        heightChances.put(index1, 0);
-                        index1++;
-                    }
-                    for (int i = 0; i < Option.NORMAL_DOWN; i++) {
-                        heightChances.put(index1, -1);
-                        index1++;
-                    }
-                    for (int i = 0; i < Option.NORMAL_DOWN2; i++) {
-                        heightChances.put(index1, -2);
-                        index1++;
-                    }
                 }
 
                 int height = 0;
@@ -450,26 +325,6 @@ public class DefaultGenerator extends ParkourGenerator {
 
                 BlockData material = player.randomMaterial().createBlockData();
                 if (special == 1 && player.useSpecial) {
-                    if (specialChances.size() == 0) {
-                        int index = 0;
-                        for (int i = 0; i < Option.SPECIAL_ICE; i++) {
-                            specialChances.put(index, 0);
-                            index++;
-                        }
-                        for (int i = 0; i < Option.SPECIAL_SLAB; i++) {
-                            specialChances.put(index, 1);
-                            index++;
-                        }
-                        for (int i = 0; i < Option.SPECIAL_PANE; i++) {
-                            specialChances.put(index, 2);
-                            index++;
-                        }
-                        for (int i = 0; i < Option.SPECIAL_FENCE; i++) {
-                            specialChances.put(index, 3);
-                            index++;
-                        }
-                    }
-
                     int spec = specialChances.get(random.nextInt(specialChances.size()));
                     switch (spec) {
                         case 0: // ice
@@ -622,7 +477,60 @@ public class DefaultGenerator extends ParkourGenerator {
         }
     }
 
-    private void setBlock(Block block, BlockData data) {
+    @Override
+    public void menu() {
+        handler.menu();
+    }
+
+    private void addPoint() {
+        score++;
+        totalScore++;
+        score();
+        checkRewards();
+    }
+
+    private void checkRewards() {
+        // Rewards
+        HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
+        if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
+                || (scores.size() > 0 && scores.containsKey(score))) {
+            if (Option.REWARDS) {
+                if (scores.containsKey(score) && scores.get(score) != null) {
+                    List<String> commands = scores.get(score);
+                    if (commands != null) {
+                        for (String command : commands) {
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                    command.replaceAll("%player%", player.getPlayer().getName()));
+                        }
+                    }
+                }
+                if (Option.INTERVAL_REWARDS_SCORES != null) {
+                    for (String command : Option.INTERVAL_REWARDS_SCORES) {
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                command.replaceAll("%player%", player.getPlayer().getName()));
+                    }
+                }
+                if (Option.REWARDS_MONEY != 0) {
+                    Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
+                }
+                if (Option.REWARDS_MESSAGE != null) {
+                    player.send(Option.REWARDS_MESSAGE);
+                }
+            }
+        }
+    }
+
+    protected void deleteStructure() {
+        for (Block block : structureBlocks) {
+            block.setType(Material.AIR);
+        }
+
+        structureBlocks.clear();
+        deleteStructure = false;
+        structureCooldown = 20;
+    }
+
+    protected void setBlock(Block block, BlockData data) {
         if (data instanceof Fence || data instanceof Wall) {
             block.setType(data.getMaterial(), true);
         } else {
@@ -676,6 +584,297 @@ public class DefaultGenerator extends ParkourGenerator {
     public void generate(int amount) {
         for (int i = 0; i < amount; i++) {
             generate();
+        }
+    }
+
+    public static class InventoryHandler extends ParkourGenerator.InventoryHandler {
+
+        public InventoryHandler(ParkourPlayer pp) {
+            super(pp);
+        }
+
+        public void menu() {
+            InventoryBuilder builder = new InventoryBuilder(pp, 3, "Customize").open();
+            InventoryBuilder lead = new InventoryBuilder(pp, 3, "Lead").open();
+            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
+            InventoryBuilder timeofday = new InventoryBuilder(pp, 3, "Time").open();
+            InventoryBuilder language = new InventoryBuilder(pp, 3, "Language").open();
+            Configuration config = WITP.getConfiguration();
+            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+
+            // Check which items should be displayed, out of all available (this is how DynamicInventory works, and too lazy to change it)
+            // Doesn't use if/else because every value needs to be checked
+            int itemCount = 9;
+            if (!checkOptions("styles", "witp.style")) itemCount--;             // 1
+            if (!checkOptions("lead", "witp.lead")) itemCount--;                // 2
+            if (!checkOptions("time", "witp.time")) itemCount--;                // 3
+            if (!checkOptions("difficulty", "witp.difficulty")) itemCount--;    // 4
+            if (!checkOptions("particles", "witp.particles")) itemCount--;      // 5
+            if (!checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) itemCount--; // 6
+            if (!checkOptions("death-msg", "witp.fall")) itemCount--;           // 7
+            if (!checkOptions("special", "witp.special")) itemCount--;          // 8
+            if (!checkOptions("structure", "witp.structures")) itemCount--;     // 9
+
+
+            InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(itemCount, 1);
+            if (checkOptions("styles", "witp.style")) {
+                builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.styles", pp.style), (t, e) -> {
+                    List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
+                    if (pos == null) {
+                        Verbose.error("Error while trying to fetch possible styles from config.yml");
+                        return;
+                    }
+                    int i = 0;
+                    Random random = ThreadLocalRandom.current();
+                    for (String style : pos) {
+                        if (i == 26) {
+                            Verbose.error("There are too many styles to display!");
+                            return;
+                        }
+                        if (Option.PERMISSIONS_STYLES && pp.checkPermission("witp.styles." + style.toLowerCase())) {
+                            continue;
+                        }
+                        List<Material> possible = pp.getPossibleMaterials(style);
+                        if (possible == null) {
+                            continue;
+                        }
+                        Material material = possible.get(random.nextInt(possible.size() - 1));
+                        styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
+                            String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
+                            pp.setStyle(selected);
+                            pp.sendTranslated("selected-style", selected);
+                        });
+                        i++;
+                    }
+                    styling.setItem(26, close, (t2, e2) -> menu());
+                    styling.build();
+                });
+            }
+            if (checkOptions("lead", "witp.lead")) {
+                List<Integer> possible = Option.POSSIBLE_LEADS;
+                InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
+                builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.lead", Integer.toString(pp.blockLead)), (t, e) -> {
+                    for (Integer integer : possible) {
+                        lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
+                            if (e2.getItemMeta() != null) {
+                                pp.blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
+                                pp.sendTranslated("selected-block-lead", Integer.toString(pp.blockLead));
+                            }
+                        });
+                    }
+                    lead.setItem(26, close, (t2, e2) -> menu());
+                    lead.build();
+                });
+            }
+            if (checkOptions("time", "witp.time")) {
+                builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.time", pp.time.toLowerCase()), (t, e) -> {
+                    List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
+                    int i = 11;
+                    for (String time : pos) {
+                        timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
+                            if (e2.getItemMeta() != null) {
+                                String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
+                                pp.time = name;
+                                pp.sendTranslated("selected-time", time.toLowerCase());
+                                pp.getPlayer().setPlayerTime(pp.getTime(name), false);
+                            }
+                        });
+                        i++;
+                    }
+                    timeofday.setItem(26, close, (t2, e2) -> menu());
+                    timeofday.build();
+                });
+            }
+            ItemStack item;
+            if (checkOptions("difficulty", "witp.difficulty")) {
+                builder.setItem(dynamic.next(),
+                        config.getFromItemData(pp.locale, "options.difficulty", "&a" + Util.parseDifficulty(pp.difficulty) + " &7(" + pp.calculateDifficultyScore() + "/1.0)"),
+                        (t2, e2) -> difficultyMenu());
+            }
+            if (checkOptions("particles", "witp.particles")) {
+                String particlesString = Boolean.toString(pp.useParticles);
+                item = config.getFromItemData(pp.locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
+                item.setType(pp.useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
+                builder.setItem(dynamic.next(), item, (t2, e2) -> {
+                    pp.useParticles = !pp.useParticles;
+                    pp.sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
+                    menu();
+                });
+            }
+            if (checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) {
+                String scoreboardString = Boolean.toString(pp.showScoreboard);
+                item = config.getFromItemData(pp.locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
+                item.setType(pp.showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
+                builder.setItem(dynamic.next(), item, (t2, e2) -> {
+                    pp.showScoreboard = !pp.showScoreboard;
+                    if (pp.showScoreboard) {
+                        pp.setBoard(new FastBoard(player));
+                        pp.updateScoreboard();
+                    } else {
+                        pp.getBoard().delete();
+                    }
+                    pp.sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
+                    menu();
+                });
+            }
+            if (checkOptions("death-msg", "witp.fall")) {
+                String deathString = Boolean.toString(pp.showDeathMsg);
+                item = config.getFromItemData(pp.locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
+                item.setType(pp.showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
+                builder.setItem(dynamic.next(), item, (t2, e2) -> {
+                    pp.showDeathMsg = !pp.showDeathMsg;
+                    pp.sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
+                    menu();
+                });
+            }
+            if (checkOptions("special", "witp.special")) {
+                String specialString = Boolean.toString(pp.useSpecial);
+                item = config.getFromItemData(pp.locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
+                item.setType(pp.useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
+                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special"));
+            }
+            if (checkOptions("structure", "witp.structures")) {
+                String structuresString = Boolean.toString(pp.useStructure);
+                item = config.getFromItemData(pp.locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
+                item.setType(pp.useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
+                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure"));
+            }
+
+            if (checkOptions("gamemode", "witp.gamemode")) {
+                builder.setItem(18, WITP.getConfiguration().getFromItemData(pp.locale, "options.gamemode"), (t2, e2) -> {
+                    pp.gamemode();
+                });
+            }
+            if (checkOptions("leaderboard", "witp.leaderboard")) {
+                Integer score = ParkourUser.highScores.get(pp.uuid);
+                builder.setItem(19, WITP.getConfiguration().getFromItemData(pp.locale, "options.leaderboard",
+                        pp.getTranslated("your-rank", Integer.toString(ParkourUser.getRank(pp.uuid)), Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
+                    ParkourPlayer.leaderboard(pp, player, 1);
+                    player.closeInventory();
+                });
+            }
+            if (checkOptions("language", "witp.language")) {
+                builder.setItem(22, WITP.getConfiguration().getFromItemData(pp.locale, "options.language", pp.locale), (t2, e2) -> {
+                    List<String> langs = Option.LANGUAGES;
+                    InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
+                    for (String langName : langs) {
+                        language.setItem(dynamic1.next(), new ItemBuilder(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
+                            pp.lang = langName;
+                            pp.locale = langName;
+                            pp.sendTranslated("selected-language", langName);
+                        });
+                    }
+                    language.setItem(26, close, (t3, e3) -> menu());
+                    language.build();
+                });
+            }
+            builder.setItem(26, WITP.getConfiguration().getFromItemData(pp.locale, "general.quit"), (t2, e2) -> {
+                player.closeInventory();
+                try {
+                    pp.sendTranslated("left");
+                    ParkourPlayer.unregister(pp, true, true, true);
+                } catch (IOException | InvalidStatementException ex) {
+                    ex.printStackTrace();
+                    Verbose.error("Error while trying to quit player " + player.getName());
+                }
+            });
+            builder.setItem(25, close, (t2, e2) -> player.closeInventory());
+            builder.build();
+        }
+
+        private void difficultyMenu() {
+            Configuration config = WITP.getConfiguration();
+            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Difficulty").open();
+            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+
+            InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
+            String difficultyString = Boolean.toString(pp.useDifficulty);
+            ItemStack diffSwitchItem = config.getFromItemData(pp.locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
+            diffSwitchItem.setType(pp.useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+            int diffSlot = dynamic1.next();
+            difficulty.setItem(diffSlot, diffSwitchItem, (t3, e3) -> {
+                if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
+                    askReset("difficulty");
+                }
+            });
+            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> askReset("e-difficulty"));
+            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> askReset("m-difficulty"));
+            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> askReset("h-difficulty"));
+            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> askReset("vh-difficulty"));
+
+            difficulty.setItem(26, close, (t3, e3) -> pp.getGenerator().menu());
+            difficulty.build();
+        }
+
+        private void askReset(String item) {
+            if (pp.getGenerator().score < 25) {
+                confirmReset(item);
+                return;
+            }
+            pp.sendTranslated("confirm");
+            ComponentBuilder builder = new ComponentBuilder()
+                    .append(Util.color("&a&l" + pp.getTranslated("true").toUpperCase()))
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp askreset " + item + " true"))
+                    .append(Util.color(" &8| " + pp.getTranslated("confirm-click")));
+            player.spigot().sendMessage(builder.create());
+            player.closeInventory();
+        }
+
+        private boolean checkOptions(String option, @Nullable String perm) {
+            boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
+            if (!enabled) {
+                return false;
+            } else {
+                return pp.checkPermission(perm);
+            }
+        }
+
+        public void confirmReset(String item) {
+            switch (item) {
+                case "structure":
+                    pp.useStructure = !pp.useStructure;
+                    pp.sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useStructure))));
+                    pp.getGenerator().menu();
+                    break;
+                case "special":
+                    pp.useSpecial = !pp.useSpecial;
+                    pp.sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useSpecial))));
+                    pp.getGenerator().menu();
+                    break;
+                case "e-difficulty":
+                    pp.difficulty = 0.3;
+                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    break;
+                case "m-difficulty":
+                    pp.difficulty = 0.5;
+                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    break;
+                case "h-difficulty":
+                    pp.difficulty = 0.7;
+                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    break;
+                case "vh-difficulty":
+                    pp.difficulty = 0.8;
+                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    break;
+                case "difficulty":
+                    pp.useDifficulty = !pp.useDifficulty;
+                    pp.sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(pp.useDifficulty)))));
+                    difficultyMenu();
+                    break;
+            }
+        }
+
+        /**
+         * Makes a boolean readable for normal players
+         *
+         * @param   value
+         *          The value
+         *
+         * @return true -> yes, false -> no
+         */
+        private String normalizeBoolean(String value) {
+            return value.replaceAll("true", pp.getTranslated("true")).replaceAll("false", pp.getTranslated("false"));
         }
     }
 }

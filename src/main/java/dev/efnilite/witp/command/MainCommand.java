@@ -160,7 +160,7 @@ public class MainCommand extends BukkitCommand {
                 case "menu": {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                     if (pp != null) {
-                        pp.menu();
+                        pp.getGenerator().menu();
                         return true;
                     }
                     return false;
@@ -301,12 +301,12 @@ public class MainCommand extends BukkitCommand {
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("askreset") && player != null && args[2] != null) {
                 ParkourPlayer user = ParkourPlayer.getPlayer(player);
-                if (user != null) {
-                    boolean option = Boolean.parseBoolean(args[2]);
-                    if (option) {
+                if (user != null && Boolean.parseBoolean(args[2])) {
+                    if (user.getGenerator() instanceof DefaultGenerator) {
                         user.send("");
-                        user.confirmReset(args[1]);
-                        user.getGenerator().reset(true);
+                        DefaultGenerator defaultGenerator = (DefaultGenerator) user.getGenerator();
+                        defaultGenerator.handler.confirmReset(args[1]);
+                        defaultGenerator.reset(true);
                     }
                 }
             }

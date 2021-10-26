@@ -12,6 +12,18 @@ public interface Gamemode {
 
     @NotNull ItemStack getItem(String locale);
 
+    /**
+     * When this gamemode gets clicked in the inventory screen
+     *
+     * @param   player
+     *          The player who clicked
+     *
+     * @param   user
+     *          The {@link ParkourUser} who clicked
+     *
+     * @param   previousInventory
+     *          The inventory
+     */
     void handleItemClick(Player player, ParkourUser user, InventoryBuilder previousInventory);
 
 }
