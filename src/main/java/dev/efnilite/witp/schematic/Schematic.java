@@ -324,6 +324,7 @@ public class Schematic {
         }
 
         // -- Pasting with angle --
+        // todo optimize
 
         // the difference between the location of lime wool and `at` so lime wools of angles matches
         Vector difference = other.clone().subtract(at).toVector();
@@ -343,14 +344,16 @@ public class Schematic {
             // sets the block data
 
             String finalBlockData = rotated.get(location).getAsString();
-            Matcher matcher = pattern.matcher(finalBlockData);
-            while (matcher.find()) {
-                String facing = matcher.group().replaceAll("facing=", "");
-                if (facing.equals("up") || facing.equals("down")) {
-                    break;
+            if (finalBlockData.contains("facing")) {
+                Matcher matcher = pattern.matcher(finalBlockData);
+                while (matcher.find()) {
+                    String facing = matcher.group().replaceAll("facing=", "");
+                    if (facing.equals("up") || facing.equals("down")) {
+                        break;
+                    }
+                    String updated = getFaceFromAngle(facing, angle);
+                    finalBlockData = finalBlockData.replaceAll(pattern.toString(), "facing=" + updated);
                 }
-                String updated = getFaceFromAngle(facing, angle);
-                finalBlockData = finalBlockData.replaceAll(pattern.toString(), "facing=" + updated);
             }
 
             BlockData blockData = Bukkit.createBlockData(finalBlockData);

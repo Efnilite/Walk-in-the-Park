@@ -1,12 +1,10 @@
 Changelog:
-- Added option to enable permissions per style
-- Updated schematic 15
-- Fixed health above 20 not returning anything
+
 
 Walk in the Park TODO
 
 High priority:
-- Add usability in a non-seperate world (bounding box)
+- Optimize ram with schematics
 
 Medium priority:
 - Add one-time rewards

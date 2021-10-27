@@ -101,8 +101,6 @@ public class Option {
     public static boolean PERMISSIONS_STYLES;
 
     public static void init(boolean init) {
-        SchematicCache.read();
-
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
@@ -229,6 +227,8 @@ public class Option {
         MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
+
+        SchematicCache.read();
     }
 
     public enum ParticleShape {

@@ -477,6 +477,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
     }
 
+    public void altMenu() {
+
+    }
+
     @Override
     public void menu() {
         handler.menu();
@@ -593,7 +597,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             super(pp);
         }
 
-        public void menu() {
+        public void menu(String... optDisabled) {
             InventoryBuilder builder = new InventoryBuilder(pp, 3, "Customize").open();
             InventoryBuilder lead = new InventoryBuilder(pp, 3, "Lead").open();
             InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
@@ -602,22 +606,24 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             Configuration config = WITP.getConfiguration();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
+            List<String> disabled = Arrays.asList(optDisabled);
+
             // Check which items should be displayed, out of all available (this is how DynamicInventory works, and too lazy to change it)
             // Doesn't use if/else because every value needs to be checked
             int itemCount = 9;
-            if (!checkOptions("styles", "witp.style")) itemCount--;             // 1
-            if (!checkOptions("lead", "witp.lead")) itemCount--;                // 2
-            if (!checkOptions("time", "witp.time")) itemCount--;                // 3
-            if (!checkOptions("difficulty", "witp.difficulty")) itemCount--;    // 4
-            if (!checkOptions("particles", "witp.particles")) itemCount--;      // 5
-            if (!checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) itemCount--; // 6
-            if (!checkOptions("death-msg", "witp.fall")) itemCount--;           // 7
-            if (!checkOptions("special", "witp.special")) itemCount--;          // 8
-            if (!checkOptions("structure", "witp.structures")) itemCount--;     // 9
+            if (!checkOptions("styles", "witp.style", disabled)) itemCount--;             // 1
+            if (!checkOptions("lead", "witp.lead", disabled)) itemCount--;                // 2
+            if (!checkOptions("time", "witp.time", disabled)) itemCount--;                // 3
+            if (!checkOptions("difficulty", "witp.difficulty", disabled)) itemCount--;    // 4
+            if (!checkOptions("particles", "witp.particles", disabled)) itemCount--;      // 5
+            if (!checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) itemCount--; // 6
+            if (!checkOptions("death-msg", "witp.fall", disabled)) itemCount--;           // 7
+            if (!checkOptions("special", "witp.special", disabled)) itemCount--;          // 8
+            if (!checkOptions("structure", "witp.structures", disabled)) itemCount--;     // 9
 
 
             InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(itemCount, 1);
-            if (checkOptions("styles", "witp.style")) {
+            if (checkOptions("styles", "witp.style", disabled)) {
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.styles", pp.style), (t, e) -> {
                     List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
                     if (pos == null) {
@@ -650,7 +656,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     styling.build();
                 });
             }
-            if (checkOptions("lead", "witp.lead")) {
+            if (checkOptions("lead", "witp.lead", disabled)) {
                 List<Integer> possible = Option.POSSIBLE_LEADS;
                 InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.lead", Integer.toString(pp.blockLead)), (t, e) -> {
@@ -666,7 +672,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     lead.build();
                 });
             }
-            if (checkOptions("time", "witp.time")) {
+            if (checkOptions("time", "witp.time", disabled)) {
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.time", pp.time.toLowerCase()), (t, e) -> {
                     List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
                     int i = 11;
@@ -686,12 +692,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 });
             }
             ItemStack item;
-            if (checkOptions("difficulty", "witp.difficulty")) {
+            if (checkOptions("difficulty", "witp.difficulty", disabled)) {
                 builder.setItem(dynamic.next(),
                         config.getFromItemData(pp.locale, "options.difficulty", "&a" + Util.parseDifficulty(pp.difficulty) + " &7(" + pp.calculateDifficultyScore() + "/1.0)"),
                         (t2, e2) -> difficultyMenu());
             }
-            if (checkOptions("particles", "witp.particles")) {
+            if (checkOptions("particles", "witp.particles", disabled)) {
                 String particlesString = Boolean.toString(pp.useParticles);
                 item = config.getFromItemData(pp.locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
                 item.setType(pp.useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
@@ -701,7 +707,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     menu();
                 });
             }
-            if (checkOptions("scoreboard", "witp.scoreboard") && Option.SCOREBOARD) {
+            if (checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) {
                 String scoreboardString = Boolean.toString(pp.showScoreboard);
                 item = config.getFromItemData(pp.locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
                 item.setType(pp.showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
@@ -717,7 +723,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     menu();
                 });
             }
-            if (checkOptions("death-msg", "witp.fall")) {
+            if (checkOptions("death-msg", "witp.fall", disabled)) {
                 String deathString = Boolean.toString(pp.showDeathMsg);
                 item = config.getFromItemData(pp.locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
                 item.setType(pp.showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
@@ -727,25 +733,25 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     menu();
                 });
             }
-            if (checkOptions("special", "witp.special")) {
+            if (checkOptions("special", "witp.special", disabled)) {
                 String specialString = Boolean.toString(pp.useSpecial);
                 item = config.getFromItemData(pp.locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
                 item.setType(pp.useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special"));
             }
-            if (checkOptions("structure", "witp.structures")) {
+            if (checkOptions("structure", "witp.structures", disabled)) {
                 String structuresString = Boolean.toString(pp.useStructure);
                 item = config.getFromItemData(pp.locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
                 item.setType(pp.useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure"));
             }
 
-            if (checkOptions("gamemode", "witp.gamemode")) {
+            if (checkOptions("gamemode", "witp.gamemode", disabled)) {
                 builder.setItem(18, WITP.getConfiguration().getFromItemData(pp.locale, "options.gamemode"), (t2, e2) -> {
                     pp.gamemode();
                 });
             }
-            if (checkOptions("leaderboard", "witp.leaderboard")) {
+            if (checkOptions("leaderboard", "witp.leaderboard", disabled)) {
                 Integer score = ParkourUser.highScores.get(pp.uuid);
                 builder.setItem(19, WITP.getConfiguration().getFromItemData(pp.locale, "options.leaderboard",
                         pp.getTranslated("your-rank", Integer.toString(ParkourUser.getRank(pp.uuid)), Integer.toString(score == null ? 0 : score))), (t2, e2) -> {
@@ -753,7 +759,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     player.closeInventory();
                 });
             }
-            if (checkOptions("language", "witp.language")) {
+            if (checkOptions("language", "witp.language", disabled)) {
                 builder.setItem(22, WITP.getConfiguration().getFromItemData(pp.locale, "options.language", pp.locale), (t2, e2) -> {
                     List<String> langs = Option.LANGUAGES;
                     InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
@@ -793,7 +799,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             diffSwitchItem.setType(pp.useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
             int diffSlot = dynamic1.next();
             difficulty.setItem(diffSlot, diffSwitchItem, (t3, e3) -> {
-                if (checkOptions("difficulty-switch", "witp.difficulty-switch")) {
+                if (checkOptions("difficulty-switch", "witp.difficulty-switch", new ArrayList<>())) {
                     askReset("difficulty");
                 }
             });
@@ -820,9 +826,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.closeInventory();
         }
 
-        private boolean checkOptions(String option, @Nullable String perm) {
+        private boolean checkOptions(String option, @Nullable String perm, List<String> disabled) {
             boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option + ".enabled");
-            if (!enabled) {
+            if (!enabled || disabled.contains(option)) {
                 return false;
             } else {
                 return pp.checkPermission(perm);

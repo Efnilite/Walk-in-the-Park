@@ -61,7 +61,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * Calculates the chances of which type of special jump
      */
-    private void calculateSpecial() {
+    protected void calculateSpecial() {
         specialChances.clear();
 
         int percentage = 0;
@@ -86,7 +86,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * Calculates chances for adaptive distances
      */
-    private void calculateAdaptiveDistance() {
+    protected void calculateAdaptiveDistance() {
         adaptiveDistanceChances.clear();
 
         double multiplier = Option.MULTIPLIER;
@@ -99,21 +99,21 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * Calculates the chances of default jump types
      */
-    private void calculateDefault() {
+    protected void calculateDefault() {
         defaultChances.clear();
 
         int percentage = 0;
-        for (int i = 0; i < Option.NORMAL; i++) {
+        for (int i = 0; i < Option.NORMAL; i++) { // normal
             defaultChances.put(percentage, 0);
             percentage++;
         }
-        if (!option(GeneratorOption.DISABLE_SCHEMATICS)) {
+        if (!option(GeneratorOption.DISABLE_SCHEMATICS)) { // schematics
             for (int i = 0; i < Option.SCHEMATICS; i++) {
                 defaultChances.put(percentage, 1);
                 percentage++;
             }
         }
-        if (!option(GeneratorOption.DISABLE_SPECIAL)) {
+        if (!option(GeneratorOption.DISABLE_SPECIAL)) { // special
             for (int i = 0; i < Option.SPECIAL; i++) {
                 defaultChances.put(percentage, 2);
                 percentage++;
@@ -124,7 +124,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * Calculates the chances of height
      */
-    private void calculateHeight() {
+    protected void calculateHeight() {
         heightChances.clear();
 
         int percentage = 0;
@@ -149,7 +149,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * Calculates the chances of distance, factoring in if the player uses adaptive difficulty
      */
-    private void calculateDistance() {
+    protected void calculateDistance() {
         distanceChances.clear();
 
         // The max percentages
