@@ -2,6 +2,8 @@ package dev.efnilite.witp.events;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.command.MainCommand;
+import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.selection.Selection;
@@ -49,7 +51,9 @@ public class Handler implements Listener {
         }
         if (Option.BUNGEECORD) {
             try {
-                ParkourPlayer.register(player); // todo update joining
+                ParkourPlayer pp = ParkourPlayer.register(player);
+                ParkourGenerator generator = new DefaultGenerator(pp);
+                WITP.getDivider().generate(pp, generator);
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
                 Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
