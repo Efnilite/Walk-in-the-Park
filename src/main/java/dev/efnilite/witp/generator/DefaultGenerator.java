@@ -478,7 +478,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     public void altMenu() {
+        // to be inherited
+    }
 
+    public boolean hasAltMenu() {
+        return false;
     }
 
     @Override
@@ -652,7 +656,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         });
                         i++;
                     }
-                    styling.setItem(26, close, (t2, e2) -> menu());
+                    styling.setItem(26, close, (t2, e2) -> menu(optDisabled));
                     styling.build();
                 });
             }
@@ -668,7 +672,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             }
                         });
                     }
-                    lead.setItem(26, close, (t2, e2) -> menu());
+                    lead.setItem(26, close, (t2, e2) -> menu(optDisabled));
                     lead.build();
                 });
             }
@@ -687,7 +691,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         });
                         i++;
                     }
-                    timeofday.setItem(26, close, (t2, e2) -> menu());
+                    timeofday.setItem(26, close, (t2, e2) -> menu(optDisabled));
                     timeofday.build();
                 });
             }
@@ -704,7 +708,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
                     pp.useParticles = !pp.useParticles;
                     pp.sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
-                    menu();
+                    menu(optDisabled);
                 });
             }
             if (checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) {
@@ -720,7 +724,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         pp.getBoard().delete();
                     }
                     pp.sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
-                    menu();
+                    menu(optDisabled);
                 });
             }
             if (checkOptions("death-msg", "witp.fall", disabled)) {
@@ -730,20 +734,20 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
                     pp.showDeathMsg = !pp.showDeathMsg;
                     pp.sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
-                    menu();
+                    menu(optDisabled);
                 });
             }
             if (checkOptions("special", "witp.special", disabled)) {
                 String specialString = Boolean.toString(pp.useSpecial);
                 item = config.getFromItemData(pp.locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
                 item.setType(pp.useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
-                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special"));
+                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special", optDisabled));
             }
             if (checkOptions("structure", "witp.structures", disabled)) {
                 String structuresString = Boolean.toString(pp.useStructure);
                 item = config.getFromItemData(pp.locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
                 item.setType(pp.useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
-                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure"));
+                builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure", optDisabled));
             }
 
             if (checkOptions("gamemode", "witp.gamemode", disabled)) {
@@ -770,7 +774,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             pp.sendTranslated("selected-language", langName);
                         });
                     }
-                    language.setItem(26, close, (t3, e3) -> menu());
+                    language.setItem(26, close, (t3, e3) -> menu(optDisabled));
                     language.build();
                 });
             }
@@ -812,9 +816,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             difficulty.build();
         }
 
-        private void askReset(String item) {
+        private void askReset(String item, String... optDisabled) {
             if (pp.getGenerator().score < 25) {
-                confirmReset(item);
+                confirmReset(item, optDisabled);
                 return;
             }
             pp.sendTranslated("confirm");
@@ -835,17 +839,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         }
 
-        public void confirmReset(String item) {
+        public void confirmReset(String item, String... optDisabled) {
             switch (item) {
                 case "structure":
                     pp.useStructure = !pp.useStructure;
                     pp.sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useStructure))));
-                    pp.getGenerator().menu();
+                    menu(optDisabled);
                     break;
                 case "special":
                     pp.useSpecial = !pp.useSpecial;
                     pp.sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useSpecial))));
-                    pp.getGenerator().menu();
+                    menu(optDisabled);
                     break;
                 case "e-difficulty":
                     pp.difficulty = 0.3;

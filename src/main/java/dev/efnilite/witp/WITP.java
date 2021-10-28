@@ -14,6 +14,7 @@ import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
+import dev.efnilite.witp.util.inventory.enchantment.GlowEnchant;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
@@ -138,17 +139,21 @@ public final class WITP extends JavaPlugin {
             return joins;
         }));
         long time = Tasks.end("load");
+
+        // ----- Enchantments -----
+        try {
+            new GlowEnchant();
+        } catch (IllegalArgumentException ex) {
+            Verbose.warn("Reload detected!");
+            Verbose.warn("Reloading this plugin might cause issues!");
+            return;
+        }
+
         Verbose.info("Loaded WITP in " + time + "ms!");
     }
 
     @Override
     public void onDisable() {
-        HandlerList.unregisterAll(this);
-        Bukkit.getScheduler().cancelTasks(this);
-        if (database != null) {
-            database.close();
-        }
-
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
                 ParkourUser.unregister(user, true, false, false);
@@ -157,6 +162,13 @@ public final class WITP extends JavaPlugin {
                 Verbose.error("Error while unregistering");
             }
         }
+
+        HandlerList.unregisterAll(this);
+        Bukkit.getScheduler().cancelTasks(this);
+        if (database != null) {
+            database.close();
+        }
+
         if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
             for (Player player : divider.getWorld().getPlayers()) {
                 player.kickPlayer("Server is restarting");

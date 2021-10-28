@@ -1,7 +1,7 @@
 # Options to change all the items
 # In lores, || is used to create a new line
-# Colour codes can be created using '&'
-# Items need be from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Colour codes can be created using '&' or hex '&#abcdef'
+# Item materials need be from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 
 items:
     general:
@@ -68,7 +68,7 @@ locale:
                 name: '&c&lClose'
                 lore: ''
             menu:
-                name: '&c&lOptions'
+                name: '&c&l-= Options =-'
                 lore: ''
 
         gamemodes:
