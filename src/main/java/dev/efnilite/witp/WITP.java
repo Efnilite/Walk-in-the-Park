@@ -151,7 +151,7 @@ public final class WITP extends JavaPlugin {
 
         for (ParkourUser user : ParkourUser.getUsers()) {
             try {
-                ParkourUser.unregister(user, true, true, false);
+                ParkourUser.unregister(user, true, false, false);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while unregistering");
