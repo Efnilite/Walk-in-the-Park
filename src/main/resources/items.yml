@@ -460,3 +460,69 @@ locale:
             language:
                 name: '&e&lLangage'
                 lore: '&7Actuellement: &a%s'
+
+    # Vietnamese
+    vi:
+        general:
+            quit:
+                name: '&4&lThoát'
+                lore: ''
+            close:
+                name: '&c&lĐóng'
+                lore: ''
+            menu:
+                name: '&c&lTuỳ Chọn'
+                lore: ''
+        gamemodes:
+            default:
+                name: '&c&lBình thường'
+                lore: '&7Chơi như bình thường'
+            spectator:
+                name: '&c&lKhán giả'
+                lore: '&7Theo dõi người chơi khác'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7Nhấp để theo dõi %p'
+            search:
+                name: '&a&lTìm kiếm'
+                lore: '&7Tìm kiếm người chơi để theo dõi.'
+        options:
+            styles:
+                name: '&a&lKiểu Parkour'
+                lore: '&7Kiểu Parkour của bạn||&7(khối nào được dùng)||||&7Hiện tại: &a%s'
+            lead:
+                name: '&a&lTạo khối'
+                lore: '&7Bao nhiêu khối||&7được tạo trước bạn.||||&7Hiện tại: &a%s khối'
+            time:
+                name: '&a&lThời gian'
+                lore: '&7Thời gian trong ngày.||||&7Hiện tại: &a%s'
+            difficulty:
+                name: '&a&lĐộ khó'
+                lore: '&7Chỉnh độ khó của bạn||||&7Hiện tại: %s'
+            difficulty-switch:
+                name: '&a&lĐộ khó theo điểm'
+                lore: '&7Khi bật, điểm càng cao||&7độ khó càng tăng.||||&7Hiện tại: %s'
+            particles:
+                name: '&a&lDùng hiệu ứng và âm thanh'
+                lore: '&7Khi bật, những khối đã tạo||&7sẽ hiện hiệu ứng và âm thanh.||||&7Hiện tại: %s'
+            scoreboard:
+                name: '&a&lXem bảng'
+                lore: '&7Bật để hiện bảng bên phải.||||&7Hiện tại: %s'
+            death-msg:
+                name: '&a&lThông báo khi rơi'
+                lore: '&7Khi bật, một thông báo sẽ hiện lên||&7khi bạn rơi với thông tin chi tiết.||||&7Hiện tại: %s'
+            special:
+                name: '&a&lDùng khối đặc biệt'
+                lore: '&7Khi bật sẽ tạo khối đặc biệt như băng và bậc thang.||||&7Hiện tại: %s'
+            structure:
+                name: '&a&lDùng kiến trúc'
+                lore: '&7Khi bật sẽ tạo các kiến trúc||&7trong quá trình parkour.||||&7Hiện tại: %s'
+            gamemode:
+                name: '&c&lChế độ chơi'
+                lore: ''
+            leaderboard:
+                name: '&6&lBảng xếp hạng'
+                lore: '&7%s'
+            language:
+                name: '&e&lNgôn ngữ'
+                lore: '&7Hiện tại: &a%s'

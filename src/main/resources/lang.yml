@@ -275,6 +275,50 @@ messages:
             beat: "&7Vous avez battu votre meilleur score en %s points!"
             tied: "&7Vous avez égalé votre meilleur score!"
 
+    # Vietnamese
+    vi:
+        join: '&7%p đã vào máy chủ'
+        leave: '&7%p đã thoát máy chủ'
+        joined: '&a&l(!) &7Bạn đã tham gia parkour'
+        left: '&c&l(!) &7Bạn đã thoát parkour'
+
+        next-page: '&aTrang kế >>'
+        previous-page: '&a<< Trang trước'
+        your-rank: '&7Xếp hạng của bạn: &f#%n &7(%h)'
+
+        selected-style: '&a&l(!) &7Bạn đã chọn kiểu &c%s&7!'
+        selected-block-lead: '&a&l(!) &7Bạn đã chọn tạo &a%a &7khối trước!'
+        selected-time: '&a&l(!) &7Bạn đã chỉnh thời gian thành &a%t'
+        selected-difficulty: '&a&l(!) &7Bạn đã chỉnh độ khó thành %v'
+        selected-structure-difficulty: '&a&l(!) &7Bạn đã chỉnh độ khó kiến trúc thành %v'
+        selected-particles: '&a&l(!) &7Bạn đã chỉnh xem hiệu ứng thành %v'
+        selected-scoreboard: '&a&l(!) &7Bạn đã chỉnh bảng bên phải thành %v'
+        selected-fall-message: '&a&l(!) &7Bạn đã chỉnh thông báo khi rơi thành %v'
+        selected-special-blocks: '&a&l(!) &7Bạn đã chỉnh khối đặc biệt thành %v'
+        selected-structures: '&a&l(!) &7Bạn đã chỉnh kiến trúc thành %v'
+        selected-language: '&a&l(!) &7Bạn đã chọn ngôn ngữ %v'
+        cant-do: '&c&l(!) &cBạn không thể làm điều này.'
+        customize-menu: '&a&l(!) &7Bạn có thể chỉnh trải nghiệm parkour của bạn với /parkour menu.'
+        confirm: '&7Bạn có muốn chơi lại?'
+        confirm-click: '&8Nhấp để xác nhận'
+
+        not-there-search: '&7Chọn người chơi bạn muốn theo dõi!'
+        click-search: '&c&l&nNhấp vào đẩy&r&c&l để nhập người chơi để tìm kiếm.'
+
+        true: 'có'
+        false: 'không'
+        spectator: '&a&l(!) &7Bạn giờ là khán giả. Bạn có thể dùng "/parkour gm" để thoát/chỉnh chế độ chơi.'
+        spectator-bar: '&cBạn giờ là khán giả. &7Dùng "/parkour gm" để thoát.'
+        divider: '&7----------------------------------------'
+        score: '&aĐiểm: &f%s'
+        time: '&bThời gian: &f%s'
+        highscore: '&eĐiểm cao nhất: &f%s'
+        difficulty: độ khó
+        message:
+            miss: '&cBạn còn thiếu %s điểm để qua điểm cao nhất!'
+            beat: '&aBạn đã đạt kỉ lục hơn %s điểm!'
+            tied: '&fBạn đã đạt điểm cao nhất!'
+
 # Options for lang
 options:
 
