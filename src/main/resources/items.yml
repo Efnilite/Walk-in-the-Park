@@ -460,6 +460,7 @@ locale:
             language:
                 name: '&e&lLangage'
                 lore: '&7Actuellement: &a%s'
+
     # Vietnamese
     vi:
         general:
