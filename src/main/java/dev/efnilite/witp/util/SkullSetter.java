@@ -25,9 +25,7 @@ public class SkullSetter {
     }
 
     public static void setPlayerHead(Player player, SkullMeta meta) {
-        if (!Version.isHigherOrEqual(Version.V1_12)) {
-            meta.setOwner(player.getName());
-        } else if (isPaper) {
+        if (isPaper) {
             try {
                 Object playerProfile = getPlayerProfileMethod.invoke(player);
                 boolean hasTexture = (boolean) hasTexturesMethod.invoke(playerProfile);
