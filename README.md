@@ -1,6 +1,6 @@
-![](https://i.imgur.com/muzq2bk.png)
+![](https://i.imgur.com/76OHsNA.png)
 
-## Welcome to the Walk in the Park Github page!
+## Welcome to the Walk in the Park GitHub page!
 
 **Looking to work with the API?**
 
