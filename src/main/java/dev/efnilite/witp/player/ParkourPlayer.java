@@ -104,7 +104,7 @@ public class ParkourPlayer extends ParkourUser {
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
-        if (generator != null && generator instanceof DefaultGenerator) {
+        if (generator instanceof DefaultGenerator) {
             ((DefaultGenerator) generator).generate(blockLead);
         }
     }
@@ -139,18 +139,18 @@ public class ParkourPlayer extends ParkourUser {
             }
             for (String s : lines) {
                 s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
-                list.add(s.replaceAll("%score%", Integer.toString(generator.score))
-                        .replaceAll("%time%", generator.time)
-                        .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                        .replaceAll("%topscore%", top != null ? top.toString() : "0")
-                        .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                list.add(s.replace("%score%", Integer.toString(generator.score))
+                        .replace("%time%", generator.time)
+                        .replace("%highscore%", rank != null ? rank.toString() : "0")
+                        .replace("%topscore%", top != null ? top.toString() : "0")
+                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
             title = translatePlaceholders(player, title);
-            board.updateTitle(title.replaceAll("%score%", Integer.toString(generator.score))
-                    .replaceAll("%time%", generator.time)
-                    .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                    .replaceAll("%topscore%", top != null ? top.toString() : "0")
-                    .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+            board.updateTitle(title.replace("%score%", Integer.toString(generator.score))
+                    .replace("%time%", generator.time)
+                    .replace("%highscore%", rank != null ? rank.toString() : "0")
+                    .replace("%topscore%", top != null ? top.toString() : "0")
+                    .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             board.updateLines(list);
         }
     }

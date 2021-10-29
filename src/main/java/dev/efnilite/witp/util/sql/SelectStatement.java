@@ -43,7 +43,7 @@ public class SelectStatement extends Statement {
      * @throws SQLException if something goes wrong
      */
     public @Nullable LinkedHashMap<String, List<Object>> fetch() throws SQLException {
-        if (columns.size() == 0) {
+        if (columns.isEmpty()) {
             throw new InvalidStatementException("Invalid SelectStatement");
         }
         StringBuilder statement = new StringBuilder("SELECT ");

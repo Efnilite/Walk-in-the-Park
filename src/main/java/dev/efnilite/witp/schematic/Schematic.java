@@ -176,16 +176,20 @@ public class Schematic {
         }
         Verbose.verbose("Reading schematic " + file.getName() + "...");
         Tasks.time("individualSchemRead");
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(file));
+        List<String> lines;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
             Verbose.error("File doesn't exist!");
             return;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Verbose.error("I/O error!");
+            return;
         }
         this.read = true;
-        List<String> lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
+
 
         // -- Makes palette --
 
@@ -347,7 +351,7 @@ public class Schematic {
             if (finalBlockData.contains("facing")) {
                 Matcher matcher = pattern.matcher(finalBlockData);
                 while (matcher.find()) {
-                    String facing = matcher.group().replaceAll("facing=", "");
+                    String facing = matcher.group().replace("facing=", "");
                     if (facing.equals("up") || facing.equals("down")) {
                         break;
                     }

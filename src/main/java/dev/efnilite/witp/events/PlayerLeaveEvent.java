@@ -8,7 +8,7 @@ import dev.efnilite.witp.util.wrapper.EventWrapper;
  */
 public class PlayerLeaveEvent extends EventWrapper {
 
-    public ParkourUser player;
+    public final ParkourUser player;
 
     public PlayerLeaveEvent(ParkourUser player) {
         this.player = player;

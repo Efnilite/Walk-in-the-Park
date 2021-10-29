@@ -137,7 +137,7 @@ public class SubareaDivider {
             amount++;
             int copy = amount - 1;
 
-            if (openSpaces.size() > 0) {
+            if (!openSpaces.isEmpty()) {
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
                 if (collection.get(last) != null) {
                     Verbose.error("Used (cached) island is already assigned. Retrying without this island.");
@@ -158,7 +158,7 @@ public class SubareaDivider {
                 fetchPossibleInLayer();
                 Verbose.verbose("Layer increase");
             } else {
-                if (possibleInLayer.size() == 0){
+                if (possibleInLayer.isEmpty()){
                     fetchPossibleInLayer();
                 }
                 SubareaPoint point = possibleInLayer.get(0);

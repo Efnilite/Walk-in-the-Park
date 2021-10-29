@@ -359,7 +359,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     gap = 4;
                 }
                 List<Block> possible = getPossible(gap - height, height);
-                if (possible.size() == 0) {
+                if (possible.isEmpty()) {
                     lastSpawn = local.clone();
                     return;
                 }
@@ -411,7 +411,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File file = null;
-                if (files.size() > 0) {
+                if (!files.isEmpty()) {
                     boolean passed = true;
                     while (passed) {
                         file = files.get(random.nextInt(files.size()));
@@ -433,7 +433,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
                 Location local2 = lastSpawn.clone();
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
-                if (possibleStructure.size() == 0) {
+                if (possibleStructure.isEmpty()) {
                     lastSpawn = local2.clone();
                     return;
                 }
@@ -446,7 +446,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     ex.printStackTrace();
                     reset(true);
                 }
-                if (structureBlocks == null || structureBlocks.size() == 0) {
+                if (structureBlocks == null || structureBlocks.isEmpty()) {
                     Verbose.error("0 blocks found in structure!");
                     player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                     reset(true);
@@ -508,14 +508,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     if (commands != null) {
                         for (String command : commands) {
                             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                    command.replaceAll("%player%", player.getPlayer().getName()));
+                                    command.replace("%player%", player.getPlayer().getName()));
                         }
                     }
                 }
                 if (Option.INTERVAL_REWARDS_SCORES != null) {
                     for (String command : Option.INTERVAL_REWARDS_SCORES) {
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                command.replaceAll("%player%", player.getPlayer().getName()));
+                                command.replace("%player%", player.getPlayer().getName()));
                     }
                 }
                 if (Option.REWARDS_MONEY != 0) {
@@ -884,7 +884,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
          * @return true -> yes, false -> no
          */
         private String normalizeBoolean(String value) {
-            return value.replaceAll("true", pp.getTranslated("true")).replaceAll("false", pp.getTranslated("false"));
+            return value.replace("true", pp.getTranslated("true")).replace("false", pp.getTranslated("false"));
         }
     }
 }

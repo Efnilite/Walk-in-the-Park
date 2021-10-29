@@ -78,11 +78,11 @@ public class ParkourSpectator extends ParkourUser {
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
-                list.add(s.replaceAll("%score%", Integer.toString(watching.score))
-                        .replaceAll("%time%", watching.time)
-                        .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                        .replaceAll("%topscore%", top != null ? top.toString() : "0")
-                        .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                list.add(s.replace("%score%", Integer.toString(watching.score))
+                        .replace("%time%", watching.time)
+                        .replace("%highscore%", rank != null ? rank.toString() : "0")
+                        .replace("%topscore%", top != null ? top.toString() : "0")
+                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
             board.updateLines(list);
         }

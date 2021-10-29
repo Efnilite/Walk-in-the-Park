@@ -5,9 +5,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.task.Tasks;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +20,7 @@ public class SchematicCache {
         Verbose.info("Initializing schematics...");
         cache.clear();
         File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
-        List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island")));
+        File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
         for (File file : files) {
             String fileName = file.getName();
             Schematic schematic = new Schematic().file(fileName);
