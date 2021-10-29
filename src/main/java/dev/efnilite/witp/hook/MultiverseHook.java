@@ -13,11 +13,10 @@ import org.bukkit.WorldType;
  */
 public class MultiverseHook {
 
-    private final MultiverseCore core;
     private final MVWorldManager manager;
 
     public MultiverseHook() {
-        core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         if (core == null) {
             throw new IllegalStateException("Initialized without plugin");
         }

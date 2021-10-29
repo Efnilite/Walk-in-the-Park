@@ -9,7 +9,6 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

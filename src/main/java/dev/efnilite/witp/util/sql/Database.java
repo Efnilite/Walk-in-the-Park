@@ -4,10 +4,7 @@ import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * # Options for MySQL
@@ -40,8 +37,8 @@ public class Database {
     }
 
     public void query(String query) {
-        try {
-            connection.prepareStatement(query).executeUpdate();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
             Verbose.error("Error while trying to update MySQL database!");
@@ -50,16 +47,16 @@ public class Database {
     }
 
     public void suppressedQuery(String query) {
-        try {
-            connection.prepareStatement(query).executeUpdate();
+        try (PreparedStatement statement = connection.prepareStatement(query)){
+            statement.executeUpdate();
         } catch (SQLException ex) {
             // lol
         }
     }
 
     public @Nullable ResultSet resultQuery(String query) {
-        try {
-            return connection.prepareStatement(query).executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            return statement.executeQuery();
         } catch (SQLException ex) {
             ex.printStackTrace();
             Verbose.error("Error while trying to fetch from MySQL database!");

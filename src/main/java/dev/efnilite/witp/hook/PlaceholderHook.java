@@ -1,6 +1,7 @@
 package dev.efnilite.witp.hook;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
@@ -59,13 +60,14 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
 
         if (pp != null) {
+            ParkourGenerator generator = pp.getGenerator();
             switch (params) {
                 case "score":
                 case "current_score":
-                    return Integer.toString(pp.getGenerator().score);
+                    return Integer.toString(generator == null ? 0 : generator.score);
                 case "time":
                 case "current_time":
-                    return pp.getGenerator().time;
+                    return generator == null ? "0.0s" : generator.time;
                 case "blocklead":
                 case "lead":
                     return Integer.toString(pp.blockLead);
@@ -80,6 +82,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return Double.toString(pp.difficulty);
                 case "difficulty_string":
                     return Util.parseDifficulty(pp.difficulty);
+                default:
+                    break;
             }
         }
 
@@ -109,7 +113,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 return score == null ? "N/A" : Integer.toString(score);
             default:
                 if (params.contains("player_rank_")) {
-                    String replaced = params.replaceAll("player_rank_", "");
+                    String replaced = params.replace("player_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
                         UUID uuidRank = ParkourPlayer.getAtPlace(rank);
@@ -125,7 +129,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                         return "N/A";
                     }
                 } else if (params.contains("score_rank_")) {
-                    String replaced = params.replaceAll("score_rank_", "");
+                    String replaced = params.replace("score_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
                         UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
@@ -138,7 +142,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                         return "N/A";
                     }
                 } else if (params.contains("time_rank_")) {
-                    String replaced = params.replaceAll("time_rank_", "");
+                    String replaced = params.replace("time_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
                         UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);

@@ -9,22 +9,15 @@ import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
-import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.fastboard.FastBoard;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InsertStatement;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
 import dev.efnilite.witp.util.task.Tasks;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.ChatColor;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +27,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -108,7 +104,7 @@ public class ParkourPlayer extends ParkourUser {
         setStyle(style);
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
-        if (generator != null && generator instanceof DefaultGenerator) {
+        if (generator instanceof DefaultGenerator) {
             ((DefaultGenerator) generator).generate(blockLead);
         }
     }
@@ -143,18 +139,18 @@ public class ParkourPlayer extends ParkourUser {
             }
             for (String s : lines) {
                 s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
-                list.add(s.replaceAll("%score%", Integer.toString(generator.score))
-                        .replaceAll("%time%", generator.time)
-                        .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                        .replaceAll("%topscore%", top != null ? top.toString() : "0")
-                        .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                list.add(s.replace("%score%", Integer.toString(generator.score))
+                        .replace("%time%", generator.time)
+                        .replace("%highscore%", rank != null ? rank.toString() : "0")
+                        .replace("%topscore%", top != null ? top.toString() : "0")
+                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
             title = translatePlaceholders(player, title);
-            board.updateTitle(title.replaceAll("%score%", Integer.toString(generator.score))
-                    .replaceAll("%time%", generator.time)
-                    .replaceAll("%highscore%", rank != null ? rank.toString() : "0")
-                    .replaceAll("%topscore%", top != null ? top.toString() : "0")
-                    .replaceAll("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+            board.updateTitle(title.replace("%score%", Integer.toString(generator.score))
+                    .replace("%time%", generator.time)
+                    .replace("%highscore%", rank != null ? rank.toString() : "0")
+                    .replace("%topscore%", top != null ? top.toString() : "0")
+                    .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             board.updateLines(list);
         }
     }

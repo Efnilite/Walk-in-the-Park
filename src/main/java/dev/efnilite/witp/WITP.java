@@ -14,13 +14,14 @@ import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.enchantment.GlowEnchant;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
-import dev.efnilite.witp.util.web.Metrics;
 import dev.efnilite.witp.util.web.UpdateChecker;
 import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
@@ -130,24 +131,15 @@ public final class WITP extends JavaPlugin {
         // ----- Metrics -----
 
         Metrics metrics = new Metrics(this, 9272);
-        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
-        metrics.addCustomChart(new Metrics.SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
-        metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
-        metrics.addCustomChart(new Metrics.SingleLineChart("player_joins", () -> {
+        metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
+        metrics.addCustomChart(new SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
+        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
+        metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;
             ParkourUser.JOIN_COUNT = 0;
             return joins;
         }));
         long time = Tasks.end("load");
-
-        // ----- Enchantments -----
-        try {
-            new GlowEnchant();
-        } catch (IllegalArgumentException ex) {
-            Verbose.warn("Reload detected!");
-            Verbose.warn("Reloading this plugin might cause issues!");
-            return;
-        }
 
         Verbose.info("Loaded WITP in " + time + "ms!");
     }

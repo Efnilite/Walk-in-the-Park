@@ -182,7 +182,7 @@ public class Option {
         REWARDS = config.getBoolean("rewards.enabled");
         REWARDS_MONEY = config.getInt("rewards.vault-reward");
         REWARDS_INTERVAL = config.getInt("rewards.interval");
-        REWARDS_COMMAND = config.getString("rewards.command").replaceAll("/", "");
+        REWARDS_COMMAND = config.getString("rewards.command").replace("/", "");
         if (REWARDS_COMMAND.equalsIgnoreCase("null")) {
             REWARDS_COMMAND = null;
         }

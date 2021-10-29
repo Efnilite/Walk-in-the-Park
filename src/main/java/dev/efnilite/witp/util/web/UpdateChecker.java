@@ -43,14 +43,12 @@ public class UpdateChecker {
             return "";
         }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        String version = reader.lines()
-                .filter(s -> s.contains("version: ") && !s.contains("api"))
-                .collect(Collectors.toList())
-                .get(0)
-                .replace("version: ", "");
-        stream.close();
-        reader.close();
-        return version;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            return reader.lines()
+                    .filter(s -> s.contains("version: ") && !s.contains("api"))
+                    .collect(Collectors.toList())
+                    .get(0)
+                    .replace("version: ", "");
+        }
     }
 }

@@ -135,7 +135,7 @@ public class Configuration {
      */
     public @Nullable List<String> getStringList(String file, String path) {
         List<String> string = getFile(file).getStringList(path);
-        if (string.size() == 0) {
+        if (string.isEmpty()) {
             return null;
         }
         return Util.color(string);

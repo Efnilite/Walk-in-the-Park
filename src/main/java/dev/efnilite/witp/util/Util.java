@@ -96,7 +96,7 @@ public class Util {
      * @return the difficulty, ranging from 0 to 1
      */
     public static double getDifficulty(String fileName) {
-        int index = Integer.parseInt(fileName.split("-")[1].replaceAll(".witp", ""));
+        int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
         return WITP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
     }
 
@@ -613,7 +613,7 @@ public class Util {
      * @return the location from the string
      */
     public static Location parseLocation(String location) {
-        String[] values = location.replaceAll("[()]", "").replaceAll(", ", " ").replaceAll(",", " ").split(" ");
+        String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
         World world = Bukkit.getWorld(values[3]);
         if (world == null) {
             Verbose.error("Detected an invalid world: " + values[3]);

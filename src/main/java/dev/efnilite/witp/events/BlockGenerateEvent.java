@@ -10,9 +10,9 @@ import org.bukkit.block.Block;
  */
 public class BlockGenerateEvent extends EventWrapper {
 
-    public Block block;
-    public DefaultGenerator generator;
-    public ParkourPlayer player;
+    public final Block block;
+    public final DefaultGenerator generator;
+    public final ParkourPlayer player;
 
     public BlockGenerateEvent(Block block, DefaultGenerator generator, ParkourPlayer player) {
         this.block = block;

@@ -8,7 +8,7 @@ import dev.efnilite.witp.util.wrapper.EventWrapper;
  */
 public class PlayerFallEvent extends EventWrapper {
 
-    public ParkourPlayer player;
+    public final ParkourPlayer player;
 
     public PlayerFallEvent(ParkourPlayer player) {
         this.player = player;
