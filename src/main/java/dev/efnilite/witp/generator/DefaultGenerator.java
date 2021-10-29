@@ -114,6 +114,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     this.cancel();
                     return;
                 }
+                tick();
+
                 Location playerLoc = player.getLocation();
 
                 // Fall check
@@ -139,7 +141,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     return;
                 }
 
-                tick();
                 if (current.getType() != Material.AIR) {
                     previousSpawn = lastPlayer.clone();
                     lastPlayer = current.getLocation();

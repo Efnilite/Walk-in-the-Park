@@ -178,7 +178,7 @@ public class Handler implements Listener {
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
-        if (player != null && action && Duration.between(player.joinTime, Instant.now()).getSeconds() > 1) {
+        if (player != null && action && Duration.between(player.joinTime, Instant.now()).toMillis() > 100) {
             event.setCancelled(true);
             ItemStack mat = WITP.getConfiguration().getFromItemData(player.locale, "general.menu");
             if (mat == null) {
