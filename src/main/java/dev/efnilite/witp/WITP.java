@@ -14,7 +14,6 @@ import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.enchantment.GlowEnchant;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
@@ -139,15 +138,6 @@ public final class WITP extends JavaPlugin {
             return joins;
         }));
         long time = Tasks.end("load");
-
-        // ----- Enchantments -----
-        try {
-            new GlowEnchant();
-        } catch (IllegalArgumentException ex) {
-            Verbose.warn("Reload detected!");
-            Verbose.warn("Reloading this plugin might cause issues!");
-            return;
-        }
 
         Verbose.info("Loaded WITP in " + time + "ms!");
     }
