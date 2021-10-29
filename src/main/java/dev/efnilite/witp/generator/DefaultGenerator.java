@@ -752,9 +752,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
 
             if (checkOptions("gamemode", "witp.gamemode", disabled)) {
-                builder.setItem(18, WITP.getConfiguration().getFromItemData(pp.locale, "options.gamemode"), (t2, e2) -> {
-                    pp.gamemode();
-                });
+                builder.setItem(18, WITP.getConfiguration().getFromItemData(pp.locale, "options.gamemode"), (t2, e2) -> pp.gamemode());
             }
             if (checkOptions("leaderboard", "witp.leaderboard", disabled)) {
                 Integer score = ParkourUser.highScores.get(pp.uuid);

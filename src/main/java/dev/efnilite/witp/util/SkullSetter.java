@@ -6,6 +6,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Method;
 
 public class SkullSetter {
+
     private static boolean isPaper;
     private static Method getPlayerProfileMethod;
     private static Method hasTexturesMethod;
@@ -23,7 +24,6 @@ public class SkullSetter {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static void setPlayerHead(Player player, SkullMeta meta) {
         if (!Version.isHigherOrEqual(Version.V1_12)) {
             meta.setOwner(player.getName());
@@ -37,8 +37,6 @@ public class SkullSetter {
             } catch (Exception e) {
                 // EMPTY
             }
-        } else {
-            meta.setOwningPlayer(player);
         }
     }
 }
