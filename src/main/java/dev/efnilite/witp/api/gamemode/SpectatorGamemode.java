@@ -4,6 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.util.SkullSetter;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -43,7 +44,7 @@ public class SpectatorGamemode implements Gamemode {
                 if (meta == null) {
                     continue;
                 }
-                meta.setOwningPlayer(pl);
+                SkullSetter.setPlayerHead(pl, meta);
                 item.setItemMeta(meta);
                 spectatable.setItem(index, item, (t2, e2) -> {
                     if (ParkourUser.getActivePlayers().contains(pp) && pp.getGenerator() != null) {
