@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
+import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
@@ -80,7 +82,9 @@ public abstract class ParkourUser {
                 // remove spectators
                 for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
                     try {
-                        ParkourPlayer.register(spectator.getPlayer());
+                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                        ParkourGenerator generator = new DefaultGenerator(spp);
+                        WITP.getDivider().generate(spp, generator);
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
                         Verbose.error("Error while trying to register player" + player.getPlayer().getName());
