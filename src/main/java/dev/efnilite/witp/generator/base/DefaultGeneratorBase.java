@@ -1,5 +1,6 @@
-package dev.efnilite.witp.generator;
+package dev.efnilite.witp.generator.base;
 
+import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.config.Option;
 
@@ -16,9 +17,9 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     protected final HashMap<Integer, Integer> distanceChances;
 
     /**
-     * The chances of which type of special jump
+     * Variable to determine how much the chance should be of a jump type, depending on the player's score
      */
-    protected final HashMap<Integer, Integer> specialChances;
+    protected final HashMap<Integer, Double> adaptiveDistanceChances;
 
     /**
      * The chances of which height the jump should have
@@ -26,14 +27,14 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     protected final HashMap<Integer, Integer> heightChances;
 
     /**
+     * The chances of which type of special jump
+     */
+    protected final HashMap<Integer, Integer> specialChances;
+
+    /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
     protected final HashMap<Integer, Integer> defaultChances;
-
-    /**
-     * Variable to determine how much the chance should be of a jump type, depending on the player's score
-     */
-    protected final HashMap<Integer, Double> adaptiveDistanceChances;
 
     public DefaultGeneratorBase(ParkourPlayer player, GeneratorOption... generatorOptions) {
         super(player, generatorOptions);

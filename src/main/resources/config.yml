@@ -10,7 +10,7 @@
 
 #===============================================================================#
 #                                                                               #
-#                        (c) Efnilite 2020-2021                                 #
+#                              (c) Efnilite 2020-2021                           #
 #                                                                               #
 #===============================================================================#
 
@@ -25,12 +25,6 @@ joining: true
 # Whether the plugin should check for updates
 # !! Highly recommended to be enabled !!
 update-checker: true
-
-# World border
-# Use a world border to indicate where the player's border of their area is.
-# If you're having problems with this, you can disable it, since it's very unlikely a player will
-# even ever reach this border.
-use-world-border: true
 
 # Options about Bungeecord/autojoining
 bungeecord:
@@ -128,6 +122,14 @@ options:
 
     # Enables/disables the inventory handling system
     inventory-handling: true
+
+    # Saves stats
+    save-stats: true
+
+commands: # todo this
+    restricted-in:
+        join:
+            - "Example World"
 
 # The different styles players can select
 styles:

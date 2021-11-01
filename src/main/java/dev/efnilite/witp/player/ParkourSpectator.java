@@ -1,6 +1,6 @@
 package dev.efnilite.witp.player;
 
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;

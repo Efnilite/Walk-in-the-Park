@@ -31,8 +31,11 @@ public class PreviousData {
         this.gamemode = player.getGameMode();
         this.location = player.getLocation();
         this.hunger = player.getFoodLevel();
-        this.health = player.getHealth();
-        this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+        if (Option.SAVE_STATS) {
+            this.health = player.getHealth();
+            this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        }
         saveInventory();
 //        speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
         
@@ -54,8 +57,10 @@ public class PreviousData {
             player.setGameMode(gamemode);
 
             // -= Attributes =-
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-            player.setHealth(health);
+            if (Option.SAVE_STATS) {
+                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+                player.setHealth(health);
+            }
             //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
         } catch (Exception ex) {// not optimal but there isn't another way
             ex.printStackTrace();

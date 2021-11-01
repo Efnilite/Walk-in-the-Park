@@ -3,7 +3,7 @@ package dev.efnilite.witp.generator.subarea;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
@@ -49,7 +49,6 @@ public class SubareaDivider {
     private int spawnPitch;
     private Material playerSpawn;
     private Material parkourSpawn;
-    private Vector3D heading;
 
     /**
      * The SubareaPoints available in the current layer
@@ -92,17 +91,12 @@ public class SubareaDivider {
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
         this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
-        this.heading = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
 
         this.current = new SubareaPoint(0, 0);
         this.spawnIsland = new Schematic().file("spawn-island.witp");
         this.collection = new HashMap<>();
         this.openSpaces = new ArrayList<>();
         this.possibleInLayer = new ArrayList<>();
-    }
-
-    public void setHeading(Vector3D heading) {
-        this.heading = heading;
     }
 
     public World getWorld() {
@@ -302,7 +296,7 @@ public class SubareaDivider {
                 block.setType(Material.AIR);
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(heading.clone().multiply(-1).toBukkitVector()); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING).multiply(-1).toBukkitVector()); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }
@@ -319,7 +313,6 @@ public class SubareaDivider {
         }
 
         pp.getGenerator().data = new SubareaPoint.Data(blocks);
-        pp.getGenerator().heading = heading.clone();
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
@@ -357,9 +350,5 @@ public class SubareaDivider {
                 player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
         }, 10);
-    }
-
-    public Vector3D getHeading() {
-        return heading;
     }
 }

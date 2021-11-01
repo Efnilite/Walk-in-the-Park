@@ -52,32 +52,39 @@ public class ParticleData<D> {
         this(type, data, size, 0, 0, 0, 0);
     }
 
-    public void setSize(int size) {
+    public ParticleData setSize(int size) {
         this.size = size;
+        return this;
     }
 
-    public void setSpeed(double speed) {
+    public ParticleData setSpeed(double speed) {
         this.speed = speed;
+        return this;
     }
 
-    public void setOffsetX(double offsetX) {
+    public ParticleData setOffsetX(double offsetX) {
         this.offsetX = offsetX;
+        return this;
     }
 
-    public void setOffsetY(double offsetY) {
+    public ParticleData setOffsetY(double offsetY) {
         this.offsetY = offsetY;
+        return this;
     }
 
-    public void setOffsetZ(double offsetZ) {
+    public ParticleData setOffsetZ(double offsetZ) {
         this.offsetZ = offsetZ;
+        return this;
     }
 
-    public void setData(@Nullable D data) {
+    public ParticleData setData(@Nullable D data) {
         this.data = data;
+        return this;
     }
 
-    public void setType(Particle type) {
+    public ParticleData setType(Particle type) {
         this.type = type;
+        return this;
     }
 
     public int getSize() {

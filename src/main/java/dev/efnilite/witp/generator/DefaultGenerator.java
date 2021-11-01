@@ -4,6 +4,10 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
+import dev.efnilite.witp.generator.base.DefaultGeneratorBase;
+import dev.efnilite.witp.generator.base.GeneratorOption;
+import dev.efnilite.witp.generator.base.ParkourGenerator;
+import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
@@ -60,6 +64,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     protected boolean deleteStructure;
     protected boolean stopped;
     protected boolean waitForSchematicCompletion;
+    protected Direction heading;
 
     protected Location lastSpawn;
     protected Location lastPlayer;
@@ -86,6 +91,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         calculateChances();
 
         this.handler = new InventoryHandler(player);
+        this.heading = Option.HEADING;
 
         this.score = 0;
         this.totalScore = 0;
@@ -290,7 +296,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         switch (def) {
             case 0:
                 if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
-                    heading.rotateUnitRight(); // reverse heading
+                    heading = heading.turnRight(); // reverse heading
                 }
 
                 int height = 0;
@@ -322,7 +328,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 } else {
                     height = heightChances.get(random.nextInt(heightChances.size()));
                 }
-                double gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
 
                 BlockData material = player.randomMaterial().createBlockData();
                 if (special == 1 && player.useSpecial) {
@@ -380,11 +386,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     Player bukkitPlayer = player.getPlayer();
                     switch (Option.PARTICLE_SHAPE) {
                         case DOT:
-                            PARTICLE_DATA.setSpeed(0.4);
-                            PARTICLE_DATA.setSize(20);
-                            PARTICLE_DATA.setOffsetX(0.5);
-                            PARTICLE_DATA.setOffsetY(1);
-                            PARTICLE_DATA.setOffsetZ(0.5);
+                            PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
                             Particles.draw(lastSpawn.clone().add(0.5, 1, 0.5), PARTICLE_DATA, bukkitPlayer);
                             break;
                         case CIRCLE:
@@ -430,7 +432,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Schematic schematic = SchematicCache.getSchematic(file.getName());
 
                 structureCooldown = 20;
-                int gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                double gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
 
                 Location local2 = lastSpawn.clone();
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
@@ -547,29 +549,83 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
     }
 
-    // Gets all possible parkour locations
-    protected List<Block> getPossible(double radius, int dy) {
+    /**
+     * Gets all possible locations from a point with a specific radius and delta y value.
+     *
+     * How it works with example radius of 2 and example delta y of -1:
+     * - last spawn location gets lowered by 1 block
+     * - detail becomes 2 * 8 = 16, so it should go around the entire of the circle in 16 steps
+     * - increment using radians, depends on the detail (2pi / 16)
+     *
+     * @param   radius
+     *          The radius
+     *
+     * @param   dy
+     *          The y that should be added to the last spawned block to update the searching position
+     *
+     * @return a list of possible blocks (contains copies of the same block)
+     */
+    protected List<Block> getPossible(double radius, double dy) {
         List<Block> possible = new ArrayList<>();
-        World world = lastSpawn.getWorld();
-        Location base = lastSpawn.add(0, dy, 0);
-        int y = base.getBlockY();
-        double detail = (radius * 8);
-        double increment = (2 * Math.PI) / detail;
 
+        World world = lastSpawn.getWorld();
+        Location base = lastSpawn.add(0, dy, 0); // adds y to the last spawned block
+
+        int y = base.getBlockY();
+
+        // the distance, adjusted to the height (dy)
         double heightGap = dy >= 0 ? Option.HEIGHT_GAP - dy : Option.HEIGHT_GAP - (dy + 1);
-        // if dy <= 2 set max gap between blocks to default -1,
-        // otherwise jump will be impossible
-        for (int i = 0; i < detail; i++) {
-            double angle = i * increment;
+
+        // the range in which it should check for blocks (max 180 degrees, min 90 degrees)
+        double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;
+
+        double[] bounds = getBounds(heading, range);
+        double startBound = bounds[0];
+        double limitBound = bounds[1];
+
+        double detail = radius * 4; // how many times it should check
+        double increment = range / detail; // 180 degrees / amount of times it should check = the increment
+
+        if (radius > 1) { // if the radius is 1, adding extra to the bounds might cause blocks to spawn on top of each other
+            startBound += 1.5 * increment; // remove blocks on the same axis
+            limitBound -= 1.5 * increment;
+        } else if (radius < 1) {
+            return getPossible(1, 0); // invalid radius, can't be below 1
+        }
+
+        for (int progress = 0; progress < detail; progress++) {
+            double angle = startBound + progress * increment;
+            if (angle > limitBound) {
+                break;
+            }
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, y, z).getBlock();
-            if (isFollowing(base.clone().subtract(block.getLocation()).toVector()) // direction change
-                    && block.getLocation().distance(base) <= heightGap) {
+
+            if (block.getLocation().distance(base) <= heightGap
+                    && !possible.contains(block)) { // prevents duplicates
                 possible.add(block);
             }
         }
+
         return possible;
+    }
+
+    private double[] getBounds(Direction direction, double range) {
+        switch (direction) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
+            default: // east
+                // - 1/2 pi to 1/2 pi
+                return new double[] { -0.5 * range, 0.5 * range };
+            case WEST:
+                // 1/2 pi to -1/2 pi
+                return new double[] { 0.5 * range, -0.5 * range };
+            case NORTH:
+                // pi to 0
+                return new double[] { range, 0 };
+            case SOUTH:
+                // 0 to pi
+                return new double[] { 0, range };
+        }
     }
 
     /**

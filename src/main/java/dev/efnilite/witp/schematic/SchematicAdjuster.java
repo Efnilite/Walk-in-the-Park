@@ -1,6 +1,8 @@
 package dev.efnilite.witp.schematic;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +32,7 @@ public class SchematicAdjuster {
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
-        return schematic.pasteAdjusted(adjustTo, getAngle(WITP.getDivider().getHeading()));
+        return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING)); // todo player based
     }
 
     /**
@@ -41,21 +43,16 @@ public class SchematicAdjuster {
      *
      * @return the associated angle
      */
-    private static RotationAngle getAngle(Vector3D heading) {
-        if (heading.z != 0) { // north/south
-            switch (heading.z) {
-                case 1: // south
-                    return RotationAngle.ANGLE_180;
-                case -1: // north
-                    return RotationAngle.ANGLE_0;
-            }
-        } else if (heading.x != 0) { // east/west
-            switch (heading.x) {
-                case 1: // east
-                    return RotationAngle.ANGLE_270;
-                case -1: // west
-                    return RotationAngle.ANGLE_90;
-            }
+    private static RotationAngle getAngle(Direction heading) {
+        switch (heading) {
+            case SOUTH: // south
+                return RotationAngle.ANGLE_180;
+            case NORTH: // north
+                return RotationAngle.ANGLE_0;
+            case EAST: // east
+                return RotationAngle.ANGLE_270;
+            case WEST: // west
+                return RotationAngle.ANGLE_90;
         }
         return RotationAngle.ANGLE_270;
     }

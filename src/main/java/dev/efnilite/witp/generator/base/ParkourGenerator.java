@@ -1,6 +1,7 @@
-package dev.efnilite.witp.generator;
+package dev.efnilite.witp.generator.base;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.Stopwatch;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
@@ -10,7 +11,6 @@ import dev.efnilite.witp.util.config.Option;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class ParkourGenerator {
 
     // -= Generator Options =-
-    public List<GeneratorOption> generatorOptions = new ArrayList<>();
+    public List<GeneratorOption> generatorOptions;
 
     /**
      * The time of the player's current session
@@ -54,7 +54,6 @@ public abstract class ParkourGenerator {
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
         this.borderOffset = Option.BORDER_SIZE / 2.0;
-        this.heading = WITP.getDivider().getHeading();
         player.setGenerator(this);
     }
 
@@ -113,23 +112,6 @@ public abstract class ParkourGenerator {
      */
     public void updateTime() {
         time = stopwatch.toString();
-    }
-
-    /**
-     * Checks if a vector is following the assigned heading
-     *
-     * @param vector The direction vector between the latest spawned parkour block and a new possible block
-     * @return true if the vector is following the heading assigned to param heading
-     */
-    public boolean isFollowing(Vector vector) {
-        if (heading.z != 0) { // north/south
-            return vector.getZ() * heading.z > 0;
-        } else if (heading.x != 0) { // east/west
-            return vector.getX() * heading.x < 0;
-        } else {
-            Verbose.error("Invalid heading vector: " + heading);
-            return false;
-        }
     }
 
     /**

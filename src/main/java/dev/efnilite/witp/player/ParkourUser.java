@@ -6,7 +6,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.generator.ParkourGenerator;
+import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;

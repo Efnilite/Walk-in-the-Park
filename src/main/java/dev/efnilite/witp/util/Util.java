@@ -3,6 +3,7 @@ package dev.efnilite.witp.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.task.Tasks;
@@ -169,18 +170,27 @@ public class Util {
      *
      * @return a vector that indicates the direction
      */
-    public static Vector3D getDirection(String face) {
-        switch (face.toLowerCase()) {
-            case "north":
+    public static Direction getDirection(String face) {
+        try {
+            return Direction.valueOf(face.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            Verbose.error(face + " is not a direction! Defaulting to east.");
+            return Direction.EAST;
+        }
+    }
+
+    public static Vector3D getDirectionVector(Direction direction) {
+        switch (direction) {
+            case NORTH:
                 return new Vector3D(0, 0, -1);
-            case "south":
+            case SOUTH:
                 return new Vector3D(0, 0, 1);
-            case "east":
+            case EAST:
                 return new Vector3D(1, 0, 0);
-            case "west":
+            case WEST:
                 return new Vector3D(-1, 0, 0);
             default:
-                Verbose.error("Invalid direction (direction used: " + face + ")");
+                Verbose.error("Invalid direction (direction used: " + direction.name() + ")");
                 return new Vector3D(1, 0, 0);
         }
     }

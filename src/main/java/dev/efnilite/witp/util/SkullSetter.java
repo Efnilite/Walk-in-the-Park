@@ -3,6 +3,7 @@ package dev.efnilite.witp.util;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SkullSetter {
@@ -33,8 +34,10 @@ public class SkullSetter {
                     setPlayerProfileMethod.invoke(meta, playerProfile);
                 }
             } catch (Exception e) {
-                // EMPTY
+                meta.setOwningPlayer(player); // if the paper version doesn't work, try the default one
             }
+        } else {
+            meta.setOwningPlayer(player);
         }
     }
 }

@@ -1,6 +1,7 @@
 package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -99,18 +100,22 @@ public class Option {
 
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
+    public static Direction HEADING;
+    public static boolean SAVE_STATS;
 
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
 
+        HEADING = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
         PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
         GAMELOGS = config.getBoolean("sql.game-logs");
         LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
         LANGUAGES.remove("default");
         DEFAULT_LANG = lang.getString("messages.default");
         DEFAULT_STYLE = config.getString("styles.default");
+        SAVE_STATS = config.getBoolean("options.save-stats");
 
         ALL_POINTS = config.getBoolean("scoring.all-points");
         UPDATER = config.getBoolean("update-checker");
