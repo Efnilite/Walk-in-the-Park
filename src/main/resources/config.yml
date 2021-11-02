@@ -183,6 +183,7 @@ rewards:
     # In the string you add executable commands when they reach this score
     # ;; is used for seperating commands
     # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
+    # If inventory handling is ENABLED, it will give the rewards when the player leaves.
     scores:
         - "50;;tellraw @a \"hey there\";;second command"
         - "100;;give %player% golden_apple"
@@ -191,12 +192,6 @@ rewards:
     # The same as scores, but players can only achieve this once
     # (!!!) Work in progress // not added yet.
     one-time-scores:
-        - "1000;;say \"Well done!\""
-
-    # The same as scores, but executed on leave.
-    # Note: these scores are repeatable (so every time you get X score, you get rewards)
-    # (!!!) Work in progress // not added yet.
-    on-leave-scores:
         - "1000;;say \"Well done!\""
 
     # The commands that will be executed if the interval is met.

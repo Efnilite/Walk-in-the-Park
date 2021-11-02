@@ -13,18 +13,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PreviousData {
 
-    public HashMap<Integer, ItemStack> inventory = new HashMap<>();
-    public double speed;
-    public final GameMode gamemode;
-    public final Location location;
-    public int hunger;
-    public double health;
-    public double maxHealth;
-    public Player player;
+    private double speed;
+    private double health;
+    private double maxHealth;
+    private final int hunger;
+    private final GameMode gamemode;
+    private final Location location;
+    private final Player player;
+    private final HashMap<Integer, ItemStack> inventory = new HashMap<>();
 
     public PreviousData(@NotNull Player player) {
         this.player = player;

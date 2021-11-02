@@ -113,6 +113,16 @@ public abstract class ParkourUser {
                 data.apply();
                 pl.resetPlayerTime();
                 pl.resetPlayerWeather();
+
+                if (Option.INVENTORY_HANDLING && Option.REWARDS && player instanceof ParkourPlayer) {
+                    ParkourPlayer pp = (ParkourPlayer) player;
+                    if (pp.getGenerator() instanceof DefaultGenerator) {
+                        for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                                    command.replace("%player%", player.getPlayer().getName()));
+                        }
+                    }
+                }
             }
         }
     }

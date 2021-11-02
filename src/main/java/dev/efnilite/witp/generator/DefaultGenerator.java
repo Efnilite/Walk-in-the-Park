@@ -501,32 +501,38 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     private void checkRewards() {
+        if (!Option.REWARDS) {
+            return;
+        }
+
         // Rewards
         HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
-        if ((Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0)
-                || (scores.size() > 0 && scores.containsKey(score))) {
-            if (Option.REWARDS) {
-                if (scores.containsKey(score) && scores.get(score) != null) {
-                    List<String> commands = scores.get(score);
-                    if (commands != null) {
-                        for (String command : commands) {
-                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                    command.replace("%player%", player.getPlayer().getName()));
-                        }
+        if (!scores.isEmpty() && scores.containsKey(score) && scores.get(score) != null) {
+            List<String> commands = scores.get(score);
+            if (commands != null) {
+                if (Option.INVENTORY_HANDLING) {
+                    rewardsLeaveList.addAll(commands);
+                } else {
+                    for (String command : commands) {
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getPlayer().getName()));
                     }
                 }
-                if (Option.INTERVAL_REWARDS_SCORES != null) {
-                    for (String command : Option.INTERVAL_REWARDS_SCORES) {
-                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                command.replace("%player%", player.getPlayer().getName()));
-                    }
+            }
+        }
+
+        // Interval rewards
+        if (Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0) {
+            if (Option.INTERVAL_REWARDS_SCORES != null) {
+                for (String command : Option.INTERVAL_REWARDS_SCORES) {
+                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                            command.replace("%player%", player.getPlayer().getName()));
                 }
-                if (Option.REWARDS_MONEY != 0) {
-                    Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
-                }
-                if (Option.REWARDS_MESSAGE != null) {
-                    player.send(Option.REWARDS_MESSAGE);
-                }
+            }
+            if (Option.REWARDS_MONEY != 0) {
+                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
+            }
+            if (Option.REWARDS_MESSAGE != null) {
+                player.send(Option.REWARDS_MESSAGE);
             }
         }
     }
