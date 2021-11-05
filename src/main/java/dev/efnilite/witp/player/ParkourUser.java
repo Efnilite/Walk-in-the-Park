@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,23 +38,26 @@ import java.util.*;
  */
 public abstract class ParkourUser {
 
-    public InventoryBuilder.OpenInventoryData openInventory;
     public String locale;
-    protected final Player player;
+    public InventoryBuilder.OpenInventoryData openInventory;
     protected FastBoard board;
+    protected final Player player;
     public static int JOIN_COUNT;
 
-    private static final HashMap<String, PreviousData> previousData = new HashMap<>();
     public static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
+    private static final HashMap<String, PreviousData> previousData = new HashMap<>();
+    protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
-    protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
 
     public ParkourUser(@NotNull Player player) {
         this.player = player;
         if (!previousData.containsKey(player.getName())) {
             previousData.put(player.getName(), new PreviousData(player));
+        }
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType()); // clear player effects
         }
         this.board = new FastBoard(player);
         // remove duplicates
@@ -114,7 +118,7 @@ public abstract class ParkourUser {
                 pl.resetPlayerTime();
                 pl.resetPlayerWeather();
 
-                if (Option.INVENTORY_HANDLING && Option.REWARDS && player instanceof ParkourPlayer) {
+                if (Option.REWARDS && Option.LEAVE_REWARDS && player instanceof ParkourPlayer) {
                     ParkourPlayer pp = (ParkourPlayer) player;
                     if (pp.getGenerator() instanceof DefaultGenerator) {
                         for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
@@ -189,7 +193,8 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players")
+                    .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
                 for (String string : stats.keySet()) {

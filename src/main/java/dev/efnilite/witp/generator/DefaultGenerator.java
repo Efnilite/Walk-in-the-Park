@@ -510,7 +510,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (!scores.isEmpty() && scores.containsKey(score) && scores.get(score) != null) {
             List<String> commands = scores.get(score);
             if (commands != null) {
-                if (Option.INVENTORY_HANDLING) {
+                if (Option.LEAVE_REWARDS) {
                     rewardsLeaveList.addAll(commands);
                 } else {
                     for (String command : commands) {
@@ -576,6 +576,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         World world = lastSpawn.getWorld();
         Location base = lastSpawn.add(0, dy, 0); // adds y to the last spawned block
+        base.add(0.5, 0, 0.5); // offset location to center of block, removing 0.5 from radius
+        radius += 0.5; // recover 0.5 from radius
 
         int y = base.getBlockY();
 
@@ -592,11 +594,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double detail = radius * 4; // how many times it should check
         double increment = range / detail; // 180 degrees / amount of times it should check = the increment
 
-        if (radius > 1) { // if the radius is 1, adding extra to the bounds might cause blocks to spawn on top of each other
+        if (radius > 1) {
             startBound += 1.5 * increment; // remove blocks on the same axis
             limitBound -= 1.5 * increment;
-        } else if (radius < 1) {
-            return getPossible(1, 0); // invalid radius, can't be below 1
         }
 
         for (int progress = 0; progress < detail; progress++) {
@@ -607,7 +607,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, y, z).getBlock();
-
+            
             if (block.getLocation().distance(base) <= heightGap
                     && !possible.contains(block)) { // prevents duplicates
                 possible.add(block);

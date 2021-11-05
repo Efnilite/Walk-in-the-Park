@@ -1,5 +1,15 @@
 Changelog:
-
+- Fixed jump lengths:
+    > 4-block jumps are now actually 4 blocks, same for other lengths
+    > This removes blocks spawning right next to each other
+- Added rewards after leaving
+    > Option is 'leave-rewards' at the rewards section in config.yml
+- Optimize block searching algorithm
+    > Less lag when blocks spawn
+- Other optimizations (thanks HSGamer)
+    > Optimized string replace function
+    > Optimized applying skins to skulls
+- Added Vietnamese language to lang.yml (thanks HSGamer)
 
 Walk in the Park TODO
 

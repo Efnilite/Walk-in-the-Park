@@ -102,6 +102,7 @@ public class Option {
     public static boolean PERMISSIONS_STYLES;
     public static Direction HEADING;
     public static boolean SAVE_STATS;
+    public static boolean LEAVE_REWARDS;
 
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
@@ -116,6 +117,7 @@ public class Option {
         DEFAULT_LANG = lang.getString("messages.default");
         DEFAULT_STYLE = config.getString("styles.default");
         SAVE_STATS = config.getBoolean("options.save-stats");
+        LEAVE_REWARDS = config.getBoolean("rewards.leave-rewards");
 
         ALL_POINTS = config.getBoolean("scoring.all-points");
         UPDATER = config.getBoolean("update-checker");

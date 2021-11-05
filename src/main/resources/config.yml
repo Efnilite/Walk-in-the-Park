@@ -181,13 +181,15 @@ rewards:
     # The same as interval, but instead at scores.
     # So when the player reaches, for example, 50 points, the rewards system is triggered.
     # In the string you add executable commands when they reach this score
-    # ;; is used for seperating commands
+    # ;; is used for separating commands
     # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
-    # If inventory handling is ENABLED, it will give the rewards when the player leaves.
     scores:
         - "50;;tellraw @a \"hey there\";;second command"
         - "100;;give %player% golden_apple"
         - "200" # no command means it only does the command and Vault reward.
+
+    # If the player gets the rewards in the 'scores' section AFTER leaving the parkour (true is afterwards)
+    leave-rewards: false
 
     # The same as scores, but players can only achieve this once
     # (!!!) Work in progress // not added yet.
