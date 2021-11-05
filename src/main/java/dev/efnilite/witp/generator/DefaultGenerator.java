@@ -576,8 +576,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         World world = lastSpawn.getWorld();
         Location base = lastSpawn.add(0, dy, 0); // adds y to the last spawned block
-        base.add(0.5, 0, 0.5); // offset location to center of block, removing 0.5 from radius
-        radius += 0.5; // recover 0.5 from radius
+        base.add(0.5, 0, 0.5);
+        radius -= 0.5;
 
         int y = base.getBlockY();
 
@@ -597,6 +597,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (radius > 1) {
             startBound += 1.5 * increment; // remove blocks on the same axis
             limitBound -= 1.5 * increment;
+        } else if (radius < 1) {
+            radius = 1;
         }
 
         for (int progress = 0; progress < detail; progress++) {
@@ -607,7 +609,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             double x = base.getX() + (radius * Math.cos(angle));
             double z = base.getZ() + (radius * Math.sin(angle));
             Block block = new Location(world, x, y, z).getBlock();
-            
+
             if (block.getLocation().distance(base) <= heightGap
                     && !possible.contains(block)) { // prevents duplicates
                 possible.add(block);
