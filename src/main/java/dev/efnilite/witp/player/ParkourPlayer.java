@@ -29,10 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -184,12 +181,17 @@ public class ParkourPlayer extends ParkourUser {
      *          The style as listed in config.yml
      */
     public void setStyle(String style) {
-        if (style == null) {
-            Verbose.error("Style is null, defaulting to default style");
-            style = Option.DEFAULT_STYLE;
+        List<Material> materials = getPossibleMaterials(style);
+        if (materials == null || materials.isEmpty()) {
+            materials = getPossibleMaterials(Option.DEFAULT_STYLE);
+            if (materials == null || materials.isEmpty()) {
+                Verbose.error("Default style " + Option.DEFAULT_STYLE + " and style " + style + " are both invalid/empty!");
+                send("&c(!) There was an error selecting this style.");
+                materials = Collections.singletonList(Material.STONE);
+            }
         }
         this.style = style;
-        possibleStyle = new DefaultStyle(getPossibleMaterials(style));
+        this.possibleStyle = new DefaultStyle(materials);
     }
 
     /**
@@ -219,7 +221,7 @@ public class ParkourPlayer extends ParkourUser {
         List<Material> possibleStyles = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
         if (possible == null) {
-            Verbose.warn("Style selected (" + style + ") doesn't exist in config.yml, defaulting to ");
+            Verbose.warn("Style selected (" + style + ") doesn't exist in config.yml, defaulting to " + Option.DEFAULT_STYLE);
             return null;
         }
         String[] materials = possible.replaceAll("[\\[\\]]", "").split(", ");

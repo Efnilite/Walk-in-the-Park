@@ -61,9 +61,9 @@ public class SelectStatement extends Statement {
             statement.append(" WHERE ").append(condition);
         }
         statement.append(";");
-        ResultSet set = database.resultQuery(statement.toString());
         LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
-        if (set == null) {
+        ResultSet set = database.resultQuery(statement.toString());
+        if (set == null || set.isClosed()) {
             return null;
         }
         while (set.next()) {

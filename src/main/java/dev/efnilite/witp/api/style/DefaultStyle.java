@@ -13,6 +13,6 @@ public class DefaultStyle extends Style {
 
     @Override
     public Material get() {
-        return possible.get(ThreadLocalRandom.current().nextInt(possible.size() - 1));
+        return possible.get(ThreadLocalRandom.current().nextInt(possible.size()));
     }
 }
