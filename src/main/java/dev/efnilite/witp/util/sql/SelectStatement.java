@@ -82,6 +82,7 @@ public class SelectStatement extends Statement {
             }
             map.put(key, values);
         }
+        set.close();
         return map;
     }
 }
