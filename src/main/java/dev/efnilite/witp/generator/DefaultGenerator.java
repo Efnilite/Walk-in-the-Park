@@ -286,7 +286,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int def = defaultChances.get(random.nextInt(defaultChances.size())); // 0 = normal, 1 = structures, 2 = special
+        int def = getRandom(defaultChances); // 0 = normal, 1 = structures, 2 = special
         int special = def == 2 ? 1 : 0; // 1 = yes, 0 = no
         if (special == 1) {
             def = 0;
@@ -308,7 +308,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     if (chanceRise >= random.nextInt(100) + 1) {
                         height = 1;
                     } else {
-                        height = heightChances.get(random.nextInt(heightChances.size()));
+                        height = getRandom(heightChances);
                     }
                 } else if (deltaYMax > -20) {
                     int delta = deltaYMax + 20;
@@ -323,16 +323,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                                 break;
                         }
                     } else {
-                        height = heightChances.get(random.nextInt(heightChances.size()));
+                        height = getRandom(heightChances);
                     }
                 } else {
-                    height = heightChances.get(random.nextInt(heightChances.size()));
+                    height = getRandom(heightChances);
                 }
-                int gap = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                int gap = getRandom(distanceChances) + 1;
 
                 BlockData material = player.randomMaterial().createBlockData();
                 if (special == 1 && player.useSpecial) {
-                    int spec = specialChances.get(random.nextInt(specialChances.size()));
+                    int spec = getRandom(specialChances);
                     switch (spec) {
                         case 0: // ice
                             material = Material.PACKED_ICE.createBlockData();
@@ -432,7 +432,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Schematic schematic = SchematicCache.getSchematic(file.getName());
 
                 structureCooldown = 20;
-                double gapStructure = distanceChances.get(random.nextInt(distanceChances.size())) + 1;
+                double gapStructure = getRandom(distanceChances) + 1;
 
                 Location local2 = lastSpawn.clone();
                 List<Block> possibleStructure = getPossible(gapStructure, 0);
@@ -478,6 +478,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 buildLog.put(location, i + 1);
             }
         }
+    }
+
+    protected int getRandom(HashMap<Integer, Integer> map) {
+        List<Integer> keys = new ArrayList<>(map.keySet());
+        int index = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
+        return map.get(index);
     }
 
     public void altMenu() {
@@ -769,7 +775,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (checkOptions("particles", "witp.particles", disabled)) {
                 String particlesString = Boolean.toString(pp.useParticles);
                 item = config.getFromItemData(pp.locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
-                item.setType(pp.useParticles ? Material.GREEN_WOOL : Material.RED_WOOL);
+                item.setType(pp.useParticles ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
                     pp.useParticles = !pp.useParticles;
                     pp.sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
@@ -779,7 +785,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) {
                 String scoreboardString = Boolean.toString(pp.showScoreboard);
                 item = config.getFromItemData(pp.locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
-                item.setType(pp.showScoreboard ? Material.GREEN_WOOL : Material.RED_WOOL);
+                item.setType(pp.showScoreboard ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
                     pp.showScoreboard = !pp.showScoreboard;
                     if (pp.showScoreboard) {
@@ -795,7 +801,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (checkOptions("death-msg", "witp.fall", disabled)) {
                 String deathString = Boolean.toString(pp.showDeathMsg);
                 item = config.getFromItemData(pp.locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
-                item.setType(pp.showDeathMsg ? Material.GREEN_WOOL : Material.RED_WOOL);
+                item.setType(pp.showDeathMsg ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
                     pp.showDeathMsg = !pp.showDeathMsg;
                     pp.sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
@@ -805,13 +811,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (checkOptions("special", "witp.special", disabled)) {
                 String specialString = Boolean.toString(pp.useSpecial);
                 item = config.getFromItemData(pp.locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
-                item.setType(pp.useSpecial ? Material.GREEN_WOOL : Material.RED_WOOL);
+                item.setType(pp.useSpecial ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special", optDisabled));
             }
             if (checkOptions("structure", "witp.structures", disabled)) {
                 String structuresString = Boolean.toString(pp.useStructure);
                 item = config.getFromItemData(pp.locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
-                item.setType(pp.useStructure ? Material.GREEN_WOOL : Material.RED_WOOL);
+                item.setType(pp.useStructure ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure", optDisabled));
             }
 

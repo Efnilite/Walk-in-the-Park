@@ -3,6 +3,8 @@ package dev.efnilite.witp.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
+import dev.efnilite.witp.api.style.DefaultStyle;
+import dev.efnilite.witp.api.style.Style;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -62,8 +64,8 @@ public class ParkourPlayer extends ParkourUser {
     public final Instant joinTime;
 
     public UUID uuid;
+    private Style possibleStyle;
     private ParkourGenerator generator;
-    private List<Material> possibleStyle;
     private final File file;
 
     /**
@@ -78,7 +80,6 @@ public class ParkourPlayer extends ParkourUser {
         this.joinTime = Instant.now();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
-        this.possibleStyle = new ArrayList<>();
         this.locale = Option.DEFAULT_LANG;
         this.lang = locale;
     }
@@ -173,7 +174,7 @@ public class ParkourPlayer extends ParkourUser {
             setStyle(Option.DEFAULT_STYLE);
             return randomMaterial();
         }
-        return possibleStyle.get(ThreadLocalRandom.current().nextInt(possibleStyle.size()));
+        return possibleStyle.get();
     }
 
     /**
@@ -185,10 +186,10 @@ public class ParkourPlayer extends ParkourUser {
     public void setStyle(String style) {
         if (style == null) {
             Verbose.error("Style is null, defaulting to default style");
-            style = WITP.getConfiguration().getString("config", "styles.default");
+            style = Option.DEFAULT_STYLE;
         }
         this.style = style;
-        possibleStyle = getPossibleMaterials(style);
+        possibleStyle = new DefaultStyle(getPossibleMaterials(style));
     }
 
     /**
