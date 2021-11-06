@@ -54,9 +54,9 @@ public class Database {
         }
     }
 
-    public @Nullable ResultSet resultQuery(String query) {
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            return statement.executeQuery();
+    public @Nullable PreparedStatement resultQuery(String query) {
+        try {
+            return connection.prepareStatement(query);
         } catch (SQLException ex) {
             ex.printStackTrace();
             Verbose.error("Error while trying to fetch from MySQL database!");

@@ -33,22 +33,22 @@ bungeecord:
     enabled: false
 
     # The server the players will be returned to after the game is done
-    return_server: Lobby
+    return_server: 'Lobby'
 
     # If go back is enabled
     go-back-enabled: false
 
     # The place players will go back to if they leave, if Bungeecord is disabled and the go-back option is enabled
     # You need to retain this format, or else it won't work: '(x,y,z,world)'
-    go-back: "(0,100,0,world)"
+    go-back: '(0,100,0,world)'
 
 # Options for MySQL
 sql:
     enabled: false
-    url: "localhost"
+    url: 'localhost'
     port: 3306
-    username: efnilite
-    password: password
+    username: 'efnilite'
+    password: 'password'
 
     # Logs all games
     # !! Warning: Might take up a lot of storage
@@ -56,18 +56,18 @@ sql:
     game-logs: false
 
     # Using an existing database might overwrite data. Be cautious!
-    database: "witp"
+    database: 'witp'
 
-    # The prefix given to any table names (default "", so nothing, example: "witp-player", the prefix would be "witp-")
-    prefix: ""
+    # The prefix given to any table names (default '', so nothing, example: 'witp-player', the prefix would be 'witp-')
+    prefix: ''
 
 # Options for the world
 world:
     # The world in which the personal parkours will take place
-    name: witp
+    name: 'witp'
 
     # The world players will be teleported to if they accidentally join the WITP world without being a player
-    fall-back: world
+    fall-back: 'world'
 
 # Options for lead
 lead:
@@ -106,14 +106,14 @@ focus-mode:
     # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
     # If you want to disable the default whitelisted commands you can remove every item in the list below.
     whitelist:
-        - "witp"
-        - "parkour"
-        - "msg"
-        - "r"
-        - "w"
-        - "whisper"
-        - "reply"
-        - "message"
+        - 'witp'
+        - 'parkour'
+        - 'msg'
+        - 'r'
+        - 'w'
+        - 'whisper'
+        - 'reply'
+        - 'message'
 
 # Options for the option menu
 options:
@@ -129,13 +129,13 @@ options:
 commands: # todo this
     restricted-in:
         join:
-            - "Example World"
+            - 'Example World'
 
 # The different styles players can select
 styles:
 
     # The default style
-    default: "red"
+    default: 'red'
 
     # The list of all available styles, which you can add to if you want
     list:
@@ -184,9 +184,9 @@ rewards:
     # ;; is used for separating commands
     # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
     scores:
-        - "50;;tellraw @a \"hey there\";;second command"
-        - "100;;give %player% golden_apple"
-        - "200" # no command means it only does the command and Vault reward.
+        - '50;;tellraw @a "hey there";;second command'
+        - '100;;give %player% golden_apple'
+        - '200' # no command means it only does the command and Vault reward.
 
     # If the player gets the rewards in the 'scores' section AFTER leaving the parkour (true is afterwards)
     leave-rewards: false
@@ -194,20 +194,20 @@ rewards:
     # The same as scores, but players can only achieve this once
     # (!!!) Work in progress // not added yet.
     one-time-scores:
-        - "1000;;say \"Well done!\""
+        - '1000;;say "Well done!"'
 
     # The commands that will be executed if the interval is met.
     # Use %player% to get the player
     # 'null' means no command
     command:
-        - "null"
+        - 'null'
 
     # The amount of money players will receive as Vault currency
     vault-reward: 5
 
     # The message you get after the interval is met
     # '' means no message
-    message: "&6+5 coins"
+    message: '&6+5 coins'
 
 # Options for particles/sounds
 particles:
@@ -215,15 +215,15 @@ particles:
     # Particle shape
     # The shape of the particle that will appear
     # Possible options: dot (this is the original shape), box, circle
-    particle-shape: "box"
+    particle-shape: 'box'
 
     # The particle type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
-    particle-type: "SPELL_INSTANT"
+    particle-type: 'SPELL_INSTANT'
 
     # The sound type
     # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
-    sound-type: "BLOCK_NOTE_BLOCK_GUITAR"
+    sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
 
     # The pitch of the sound
     sound-pitch: 3

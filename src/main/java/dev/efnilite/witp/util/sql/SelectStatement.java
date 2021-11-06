@@ -1,7 +1,9 @@
 package dev.efnilite.witp.util.sql;
 
+import dev.efnilite.witp.util.Verbose;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,10 +64,16 @@ public class SelectStatement extends Statement {
         }
         statement.append(";");
         LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
-        ResultSet set = database.resultQuery(statement.toString());
-        if (set == null || set.isClosed()) {
+
+        PreparedStatement preparedStatement = database.resultQuery(statement.toString());
+        if (preparedStatement == null) {
             return null;
         }
+        ResultSet set = preparedStatement.executeQuery();
+        if (set == null) {
+            return null;
+        }
+
         while (set.next()) {
             String key = set.getString(1);
             List<Object> values = new ArrayList<>();
@@ -82,6 +90,7 @@ public class SelectStatement extends Statement {
             }
             map.put(key, values);
         }
+        preparedStatement.close();
         set.close();
         return map;
     }
