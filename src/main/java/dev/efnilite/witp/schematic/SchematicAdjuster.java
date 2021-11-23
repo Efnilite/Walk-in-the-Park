@@ -1,9 +1,7 @@
 package dev.efnilite.witp.schematic;
 
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,8 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class SchematicAdjuster {
 

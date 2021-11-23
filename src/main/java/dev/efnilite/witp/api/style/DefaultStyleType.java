@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DefaultStyleType extends StyleType {
@@ -21,6 +22,7 @@ public class DefaultStyleType extends StyleType {
 
     @Override
     public Material get(String style) {
-        return styles.get(style).get(ThreadLocalRandom.current().nextInt(styles.size()));
+        List<Material> materials = styles.get(style);
+        return materials.get(ThreadLocalRandom.current().nextInt(materials.size()));
     }
 }

@@ -84,7 +84,6 @@ locale:
             menu:
                 name: '&c&l-= Options =-'
                 lore: ''
-
         gamemodes:
             default:
                 name: '&c&lNormal'
@@ -98,7 +97,6 @@ locale:
             search:
                 name: '&a&lSearch'
                 lore: '&7Search for a player to spectate.'
-
         options:
             styles:
                 name: '&a&lParkour style'
@@ -152,7 +150,6 @@ locale:
             menu:
                 name: '&c&lOpties'
                 lore: ''
-
         gamemodes:
             default:
                 name: '&c&lNormaal'
@@ -166,7 +163,6 @@ locale:
             search:
                 name: '&a&lZoeken'
                 lore: '&7Zoek een speler op die je wil toekijken.'
-
         options:
             styles:
                 name: '&a&lParkourstijl'
@@ -220,7 +216,6 @@ locale:
             menu:
                 name: '&c&lOpciones'
                 lore: ''
-
         gamemodes:
             default:
                 name: '&c&lNormal'
@@ -234,7 +229,6 @@ locale:
             search:
                 name: '&a&lSearch'
                 lore: '&7Busca a un jugador para observar.'
-
         options:
             styles:
                 name: '&a&lEstilo de parkour'
@@ -353,7 +347,6 @@ locale:
             menu:
                 name: '&c&l设置'
                 lore: ''
-
         gamemodes:
             default:
                 name: '&c&l普通模式'
@@ -367,7 +360,6 @@ locale:
             search:
                 name: '&a&l搜索'
                 lore: '&7搜索您要观赏的玩家。'
-
         options:
             styles:
                 name: '&a&l跑酷风格'
@@ -540,6 +532,7 @@ locale:
             language:
                 name: '&e&lNgôn ngữ'
                 lore: '&7Hiện tại: &a%s'
+
     # Czechoslovakian (by DaveAshh)
     cz:
         general:
@@ -553,7 +546,7 @@ locale:
                 name: '&c&l-= Nastavení =-'
                 lore: ''
         gamemodes:
-             default:
+            default:
                 name: '&c&lNormální'
                 lore: '&7Hrát hru normálně.'
             spectator:

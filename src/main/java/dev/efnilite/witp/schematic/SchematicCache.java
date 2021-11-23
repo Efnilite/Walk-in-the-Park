@@ -25,8 +25,11 @@ public class SchematicCache {
             String fileName = file.getName();
             Schematic schematic = new Schematic().file(fileName);
             schematic.read();
-            cache.put(fileName, schematic);
+            if (schematic.isSupported()) {
+                cache.put(fileName, schematic);
+            }
         }
+        Verbose.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematics.");
         Verbose.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
     }
 

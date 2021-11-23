@@ -142,10 +142,6 @@ public class SubareaDivider {
      */
     public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator, boolean checkHistory) {
         if (getPoint(player) == null) {
-            if (possibleInLayer.isEmpty()){
-                fetchPossibleInLayer();
-            }
-
             if (checkHistory && !openSpaces.isEmpty()) { // spaces which were previously used
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
 
@@ -167,7 +163,7 @@ public class SubareaDivider {
                 return;
             }
 
-            if ((amount - 1) % 8 == 0) { // every new layer has +8 area points
+            if (amount % 8 == 0) { // every new layer has +8 area points
                 amount++;
                 createIsland(player, generator, current);
 
@@ -178,6 +174,10 @@ public class SubareaDivider {
                 Verbose.verbose("Layer increase in Divider");
 
             } else {
+                if (possibleInLayer.isEmpty()) {
+                    fetchPossibleInLayer();
+                }
+
                 SubareaPoint point = possibleInLayer.get(0);
 
                 if (point == null) {

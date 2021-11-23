@@ -1,6 +1,5 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.util.Verbose;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;

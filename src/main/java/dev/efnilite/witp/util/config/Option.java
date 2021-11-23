@@ -121,7 +121,7 @@ public class Option {
         for (String node : Util.getNode(items, "items.options")) {
             for (String option : options) {
                 if (option.equalsIgnoreCase(node)) {
-                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node));
+                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node + ".default"));
                 }
             }
         }

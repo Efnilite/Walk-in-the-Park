@@ -51,6 +51,13 @@ public class Schematic {
      */
     private File file;
 
+
+    /**
+     * Whether this schematic is supported on the current version.
+     * (if this schematic features an unknown material it will be declared as unsupported)
+     */
+    private boolean isSupported;
+
     /**
      * The constructor while creating a new schematic from 2 positions
      *
@@ -64,16 +71,19 @@ public class Schematic {
         this.dimensions = new Dimensions(pos1, pos2);
         this.blocks = new ArrayList<>();
         this.read = false;
+        this.isSupported = true;
     }
 
     public Schematic(@NotNull Selection selection) {
         this.dimensions = new Dimensions(selection.getPos1(), selection.getPos2());
         this.blocks = new ArrayList<>();
         this.read = false;
+        this.isSupported = true;
     }
 
     public Schematic() {
         this.read = false;
+        this.isSupported = true;
     }
 
     public Schematic file(@NotNull String fileName) {
@@ -185,7 +195,7 @@ public class Schematic {
             return;
         } catch (IOException ex) {
             ex.printStackTrace();
-            Verbose.error("I/O error!");
+            Verbose.error("I/O error while reading schematic!");
             return;
         }
         this.read = true;
@@ -207,14 +217,13 @@ public class Schematic {
 
                 BlockData data;
                 try {
-                    data = Bukkit.createBlockData(elements[1]);
+                    data = Bukkit.createBlockData(elements[1]); // if block data can't be created, check for legacy materials
                 } catch (IllegalArgumentException ex) {
-                    data = checkLegacyMaterials(elements[1]);
+                    data = checkLegacyMaterials(elements[1]); // if legacy materials can't find something, declare this schematic as unsupported
                 }
                 if (data == null) {
-                    Verbose.error("Unknown material: " + elements[1]);
-                    Verbose.error("Defaulting to material stone");
-                    data = Material.STONE.createBlockData();
+                    isSupported = false;
+                    return;
                 }
 
                 palette.put(Integer.parseInt(elements[0]), data);
@@ -438,6 +447,10 @@ public class Schematic {
             default:
                 return "north";
         }
+    }
+
+    public boolean isSupported() {
+        return isSupported;
     }
 
     public Dimensions getDimensions() {

@@ -3,7 +3,6 @@ package dev.efnilite.witp.util;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SkullSetter {

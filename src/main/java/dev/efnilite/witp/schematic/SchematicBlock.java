@@ -6,7 +6,7 @@ import org.bukkit.block.data.BlockData;
 public class SchematicBlock {
 
     private Vector3D relativePosition;
-    private BlockData data;
+    private final BlockData data;
 
     public SchematicBlock(Block block, Vector3D relativePosition) {
         this.relativePosition = relativePosition;

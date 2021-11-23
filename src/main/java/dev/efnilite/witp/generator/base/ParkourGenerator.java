@@ -1,12 +1,10 @@
 package dev.efnilite.witp.generator.base;
 
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Stopwatch;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.schematic.Vector3D;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
