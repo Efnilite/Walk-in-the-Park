@@ -19,10 +19,7 @@ import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * An utilities class for the Configuration
@@ -53,7 +50,7 @@ public class Configuration {
         }
         for (String file : defaultFiles) {
             try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Arrays.asList("styles.list", "messages.bruh"));
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to update config");

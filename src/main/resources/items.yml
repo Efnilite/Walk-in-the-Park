@@ -12,6 +12,10 @@ items:
         menu:
             item: compass
 
+    styles:
+        default:
+            item: poppy
+
     gamemodes:
         default:
             item: barrel
@@ -20,6 +24,7 @@ items:
         search:
             item: paper
 
+    # Options for the options in the menu
     options:
         styles:
             item: end_stone
@@ -28,24 +33,33 @@ items:
         lead:
             item: glass
             enabled: true
+            default: 4
         time:
             item: clock
             enabled: true
+            default: "Day"
         difficulty:
             item: anvil
             enabled: true
+            default: "0.3"
         difficulty-switch:
             enabled: true
+            default: true
         particles:
             enabled: true
+            default: true
         scoreboard:
             enabled: true
+            default: true
         death-msg:
             enabled: true
+            default: true
         special:
             enabled: true
+            default: true
         structure:
             enabled: true
+            default: true
         gamemode:
             item: paper
             enabled: true
@@ -461,7 +475,7 @@ locale:
                 name: '&e&lLangage'
                 lore: '&7Actuellement: &a%s'
 
-    # Vietnamese
+    # Vietnamese (by HSGamer)
     vi:
         general:
             quit:
@@ -526,3 +540,68 @@ locale:
             language:
                 name: '&e&lNgôn ngữ'
                 lore: '&7Hiện tại: &a%s'
+    # Czechoslovakian (by DaveAshh)
+    cz:
+        general:
+            quit:
+                name: '&4&lOdejít'
+                lore: ''
+            close:
+                name: '&c&lZavřít'
+                lore: ''
+            menu:
+                name: '&c&l-= Nastavení =-'
+                lore: ''
+        gamemodes:
+             default:
+                name: '&c&lNormální'
+                lore: '&7Hrát hru normálně.'
+            spectator:
+                name: '&c&lSledovat'
+                lore: '&7Sledovat ostatní hráče.'
+            spectator-head:
+                name: '&c&l%p'
+                lore: '&7Klikni ke sledování %p'
+            search:
+                name: '&a&lVyhledat'
+                lore: '&7Vyhledej hráče ke sledování.'
+        options:
+            styles:
+                name: '&a&lStyl parkouru'
+                lore: '&7Styl tvého parkouru||&7(které bloky budou použity)||||&7Momentálně: &a%s'
+            lead:
+                name: '&a&lViditelnost'
+                lore: '&7Kolik bloků||&7se před tebou vygeneruje.||||&7Momentálně: &a%s bloků'
+            time:
+                name: '&a&lČas'
+                lore: '&7Změň si denní čas.||||&7Momentálně: &a%s'
+            difficulty:
+                name: '&a&lObtížnost'
+                lore: '&7Změn si svou obtížnost||||&7Momentálně: %s'
+            difficulty-switch:
+                name: '&a&lObtížnost podle skóre'
+                lore: '&7Pokud zapnuto, čim větší skóre budeš mít||&7tím těžší to bude.||||&7Momentálně: %s'
+            particles:
+                name: '&a&lPoužij partikly a zvuky'
+                lore: '&7Pokud zapnuto, každý generovaný blok||&7ukáže partikly a udělá zvuk.||||&7Momentálně: %s'
+            scoreboard:
+                name: '&a&lZobrazit scoreboard'
+                lore: '&7Pokud zapnuto, ukáže scoreboard.||||&7Momentálně: %s'
+            death-msg:
+                name: '&a&lZobrazit pádové hlášky'
+                lore: '&7Pokud zapnuto, ukáže hlášku když spadneš||&7s extra infem.||||&7Momentálně: %s'
+            special:
+                name: '&a&lPoužít speciální bloky'
+                lore: '&7Pokud zapnuto, použije speciální bloky jako ice a slaby.||||&7Momentálně: %s'
+            structure:
+                name: '&a&lPoužít struktury'
+                lore: '&7Pokud zapnuto, statické struktury||&7se budou objevovat během parkouru.||||&7Momentálně: %s'
+            gamemode:
+                name: '&c&lHerní mod'
+                lore: ''
+            leaderboard:
+                name: '&6&lŽebříček TOP'
+                lore: '&7%s'
+            language:
+                name: '&e&lJazyk'
+                lore: '&7Momentálně: &a%s'

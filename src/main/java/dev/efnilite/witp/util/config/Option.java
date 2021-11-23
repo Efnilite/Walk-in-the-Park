@@ -95,19 +95,36 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
+    public static Direction HEADING;
+
     public static String DEFAULT_LANG;
+
     public static String DEFAULT_STYLE;
+    public static List<String> STYLES;
 
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
-    public static Direction HEADING;
     public static boolean SAVE_STATS;
     public static boolean LEAVE_REWARDS;
+    public static boolean OPTIONS_ENABLED;
+
+    public static HashMap<String, String> OPTIONS_DEFAULTS;
 
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
+        FileConfiguration items = WITP.getConfiguration().getFile("items");
+
+        List<String> options = Arrays.asList("lead", "time", "difficulty", "difficulty-switch", "particles", "scoreboard", "death-msg", "special", "structure");
+        OPTIONS_DEFAULTS = new HashMap<>();
+        for (String node : Util.getNode(items, "items.options")) {
+            for (String option : options) {
+                if (option.equalsIgnoreCase(node)) {
+                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node));
+                }
+            }
+        }
 
         HEADING = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
         PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
@@ -115,8 +132,15 @@ public class Option {
         LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
         LANGUAGES.remove("default");
         DEFAULT_LANG = lang.getString("messages.default");
+
         DEFAULT_STYLE = config.getString("styles.default");
+        STYLES = Util.getNode(config, "styles.list");
+        if (STYLES == null) {
+            Verbose.error("Error while trying to fetch possible styles from config.yml");
+        }
+
         SAVE_STATS = config.getBoolean("options.save-stats");
+        OPTIONS_ENABLED = config.getBoolean("options.enabled");
         LEAVE_REWARDS = config.getBoolean("rewards.leave-rewards");
 
         ALL_POINTS = config.getBoolean("scoring.all-points");
@@ -222,10 +246,6 @@ public class Option {
         PARTICLE_SHAPE = Option.ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
 
         // Advanced settings
-        if (init) {
-            BORDER_SIZE = gen.getDouble("advanced.border-size");
-            SQL = config.getBoolean("sql.enabled");
-        }
         GENERATOR_CHECK = gen.getInt("advanced.generator-check");
         HEIGHT_GAP = gen.getDouble("advanced.height-gap");
         MULTIPLIER = gen.getInt("advanced.maxed-multiplier");
@@ -234,6 +254,11 @@ public class Option {
         MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
+
+        if (init) {
+            BORDER_SIZE = gen.getDouble("advanced.border-size");
+            SQL = config.getBoolean("sql.enabled");
+        }
 
         SchematicCache.read();
     }

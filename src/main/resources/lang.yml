@@ -275,7 +275,7 @@ messages:
             beat: "&7Vous avez battu votre meilleur score en %s points!"
             tied: "&7Vous avez égalé votre meilleur score!"
 
-    # Vietnamese
+    # Tiếng Việt (Vietnamese) (by HSGamer)
     vi:
         join: '&7%p đã vào máy chủ'
         leave: '&7%p đã thoát máy chủ'
@@ -318,6 +318,50 @@ messages:
             miss: '&cBạn còn thiếu %s điểm để qua điểm cao nhất!'
             beat: '&aBạn đã đạt kỉ lục hơn %s điểm!'
             tied: '&fBạn đã đạt điểm cao nhất!'
+
+    # Čeština (Czech) (by DaveAshh)
+    cz:
+        join: '&7%p se připojil na server.'
+        leave: '&7%p se odpojil ze serveru.'
+        joined: '&a&l(!) &7Připojil jsi se na parkour.'
+        left: '&c&l(!) &7Odpojil jsi se z parkouru.'
+
+        next-page: '&aDalší strana >>'
+        previous-page: '&a<< Předchozí strana'
+        your-rank: '&7Tvůj rank: &f#%n &7(%h)'
+
+        selected-style: '&a&l(!) &7Vybral jsi styl &c%s&7!'
+        selected-block-lead: '&a&l(!) &7Vybral jsi &a%a &7blokovou viditelnost!'
+        selected-time: '&a&l(!) &7Změnil jsi časovou preferenci na &a%t'
+        selected-difficulty: '&a&l(!) &7Změnil jsi tvoji obtížnost na %v'
+        selected-structure-difficulty: '&a&l(!) &7Změnil jsi obtížnost struktur na %v'
+        selected-particles: '&a&l(!) &7Změnil jsi zobrazení partiklů na %v'
+        selected-scoreboard: '&a&l(!) &7Změnil jsi zobrazení scoreboardu na %v'
+        selected-fall-message: '&a&l(!) &7Změnil jsi zobrazení pádových hlášek na %v'
+        selected-special-blocks: '&a&l(!) &7Změnil jsi použití speciálních bloků na %v'
+        selected-structures: '&a&l(!) &7Změnil jsi použití struktur na %v'
+        selected-language: '&a&l(!) &7Vybral jsi jazyk %v'
+        cant-do: '&c&l(!) &cTohle momentálně nemůžeš.'
+        customize-menu: '&a&l(!) &7Svůj zážitek z parkouru si můžeš přizpůsobit pomocí /parkour menu.'
+        confirm: '&7Jsi si jistý, že chceš doopravdy udělat reset?'
+        confirm-click: '&8Klikni pro potvrzení'
+
+        not-there-search: '&7Napiš jméno hráče kterého chceš sledovat!'
+        click-search: '&c&l&nKlikni Zde&r&c&l k zadání jména hráče kterého chceš vyhledat.'
+
+        true: 'ano'
+        false: 'ne'
+        spectator: '&a&l(!) &7Právě jsi sledující. Můžeš použít "/parkour gm" pro odchod/změnu tvého herního modu.'
+        spectator-bar: '&cPrávě jsi sledující. &7Použij "/parkour gm" pro odchod.'
+        divider: '&7----------------------------------------'
+        score: '&aTvé skóre: &f%s'
+        time: '&bTvůj čas: &f%s'
+        highscore: '&eTvůj rekord: &f%s'
+        difficulty: obtížnost
+        message:
+            miss: '&cNedosáhl jsi tvého rekordu o %s bodů!'
+            beat: '&aPokořil jsi tvůj rekord o %s bodů!'
+            tied: '&fMáš stejné skóre jako tvůj rekord!'
 
 # Options for lang
 options:

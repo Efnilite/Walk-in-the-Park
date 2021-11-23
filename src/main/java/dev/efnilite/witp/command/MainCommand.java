@@ -76,7 +76,7 @@ public class MainCommand extends BukkitCommand {
                 case "reload":
                     if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(player, "cant-do");
-                        return false;
+                        return true;
                     }
 
                     Tasks.time("reload");
@@ -89,10 +89,10 @@ public class MainCommand extends BukkitCommand {
                 case "migrate":
                     if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(player, "cant-do");
-                        return false;
+                        return true;
                     } else if (!Option.SQL) {
                         send(sender, "&a&l(!) &7You have disabled SQL support in the config");
-                        return false;
+                        return true;
                     }
 
                     Tasks.time("migrate");
@@ -126,11 +126,11 @@ public class MainCommand extends BukkitCommand {
                 case "join": {
                     if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
                         Util.sendDefaultLang(player, "cant-do");
-                        return false;
+                        return true;
                     }
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null) {
-                        return false;
+                        return true;
                     }
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player);
@@ -146,7 +146,7 @@ public class MainCommand extends BukkitCommand {
                 case "leave": {
                     ParkourUser pp = ParkourUser.getUser(player);
                     if (pp == null) {
-                        return false;
+                        return true;
                     }
                     try {
                         pp.sendTranslated("left");
@@ -159,11 +159,11 @@ public class MainCommand extends BukkitCommand {
                 }
                 case "menu": {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                    if (pp != null) {
+                    if (Option.OPTIONS_ENABLED && pp != null) {
                         pp.getGenerator().menu();
                         return true;
                     }
-                    return false;
+                    return true;
                 }
                 case "gamemode":
                 case "gm": {
@@ -172,19 +172,19 @@ public class MainCommand extends BukkitCommand {
                         user.gamemode();
                         return true;
                     }
-                    return false;
+                    return true;
                 }
                 case "leaderboard":
                     if (Option.PERMISSIONS && !player.hasPermission("witp.leaderboard")) {
                         Util.sendDefaultLang(player, "cant-do");
-                        return false;
+                        return true;
                     }
                     ParkourUser.leaderboard(ParkourUser.getUser(player), player, 1);
                     break;
                 case "schematic":
                     if (Option.PERMISSIONS && !player.hasPermission("witp.schematic")) {
                         Util.sendDefaultLang(player, "cant-do");
-                        return false;
+                        return true;
                     }
                     send(player, "&8----------- &4&lSchematics &8-----------");
                     send(player, "");
@@ -237,7 +237,7 @@ public class MainCommand extends BukkitCommand {
                             send(player, "&8----------- &4&lSchematics &8-----------");
                             send(player, "&7Your schematic isn't complete yet.");
                             send(player, "&7Be sure to set the first and second position!");
-                            return false;
+                            return true;
                         }
 
                         String code = Util.randomDigits(6);
@@ -258,7 +258,7 @@ public class MainCommand extends BukkitCommand {
                     Integer.parseInt(args[1]);
                 } catch (NumberFormatException ex) {
                     send(player, "&c&l(!) &7" + args[1] + " is not a number! Please enter a page.");
-                    return false;
+                    return true;
                 }
                 ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
             } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {

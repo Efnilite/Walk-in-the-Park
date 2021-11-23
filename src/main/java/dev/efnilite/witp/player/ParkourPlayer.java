@@ -3,8 +3,7 @@ package dev.efnilite.witp.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
-import dev.efnilite.witp.api.style.DefaultStyle;
-import dev.efnilite.witp.api.style.Style;
+import dev.efnilite.witp.api.style.StyleType;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Wrapper class for a regular player to store plugin-usable data
@@ -61,7 +59,7 @@ public class ParkourPlayer extends ParkourUser {
     public final Instant joinTime;
 
     public UUID uuid;
-    private Style possibleStyle;
+    private StyleType possibleStyle;
     private ParkourGenerator generator;
     private final File file;
 
@@ -99,12 +97,37 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = lang;
         this.highScoreDifficulty = highScoreDifficulty;
 
-        setStyle(style);
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
-        if (generator instanceof DefaultGenerator) {
-            ((DefaultGenerator) generator).generate(blockLead);
-        }
+    }
+
+    private void resetPlayerPreferences() {
+        // General defaults
+        this.highScore = 0;
+        this.highScoreTime = "0.0s";
+        this.highScoreDifficulty = "?";
+
+        // Adjustable defaults
+        this.style = Option.DEFAULT_STYLE;
+        this.lang = Option.DEFAULT_LANG;
+
+        this.useSpecial = Boolean.parseBoolean(getDefaultValue("special"));
+        this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg"));
+        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("difficulty-switch"));
+        this.useStructure = Boolean.parseBoolean(getDefaultValue("structure"));
+        this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard"));
+        this.useParticles = Boolean.parseBoolean(getDefaultValue("particles"));
+        this.difficulty = Double.parseDouble(getDefaultValue("difficulty"));
+        this.blockLead = Integer.parseInt(getDefaultValue("lead"));
+        this.time = getDefaultValue("time");
+
+        this.locale = lang;
+        player.setPlayerTime(getTime(time), false);
+        updateScoreboard();
+    }
+
+    private String getDefaultValue(String option) {
+        return Option.OPTIONS_DEFAULTS.get(option.toLowerCase());
     }
 
     public void setGenerator(ParkourGenerator generator) {
@@ -167,31 +190,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return a random material
      */
     public Material randomMaterial() {
-        if (possibleStyle == null) {
-            setStyle(Option.DEFAULT_STYLE);
-            return randomMaterial();
-        }
-        return possibleStyle.get();
-    }
-
-    /**
-     * Sets the style and updates the possibleStyle variable to update the Material style
-     *
-     * @param   style
-     *          The style as listed in config.yml
-     */
-    public void setStyle(String style) {
-        List<Material> materials = getPossibleMaterials(style);
-        if (materials == null || materials.isEmpty()) {
-            materials = getPossibleMaterials(Option.DEFAULT_STYLE);
-            if (materials == null || materials.isEmpty()) {
-                Verbose.error("Default style " + Option.DEFAULT_STYLE + " and style " + style + " are both invalid/empty!");
-                send("&c(!) There was an error selecting this style.");
-                materials = Collections.singletonList(Material.STONE);
-            }
-        }
-        this.style = style;
-        this.possibleStyle = new DefaultStyle(materials);
+        return WITP.getRegistry().getTypeFromStyle(style).get(style);
     }
 
     /**
@@ -215,25 +214,6 @@ public class ParkourPlayer extends ParkourUser {
         }
         highScores.put(uuid, score);
         highScores = Util.sortByValue(highScores);
-    }
-
-    public @Nullable List<Material> getPossibleMaterials(String style) {
-        List<Material> possibleStyles = new ArrayList<>();
-        String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
-        if (possible == null) {
-            Verbose.warn("Style selected (" + style + ") doesn't exist in config.yml, defaulting to " + Option.DEFAULT_STYLE);
-            return null;
-        }
-        String[] materials = possible.replaceAll("[\\[\\]]", "").split(", ");
-        for (String material : materials) {
-            Material mat = Material.getMaterial(material.toUpperCase());
-            if (mat == null) {
-                continue;
-            }
-            possibleStyles.add(mat);
-        }
-
-        return possibleStyles;
     }
 
     private void saveStats() {
@@ -412,36 +392,7 @@ public class ParkourPlayer extends ParkourUser {
                     Verbose.verbose("Reading player data..");
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
-                    if (from.useParticles == null) { // outdated file format
-                        from.useParticles = true;
-                    }
-                    if (from.showDeathMsg == null) {
-                        from.showDeathMsg = true;
-                    }
-                    if (from.useSpecial == null) {
-                        from.useSpecial = true;
-                    }
-                    if (from.useStructure == null) {
-                        from.useStructure = true;
-                    }
-                    if (from.showScoreboard == null) {
-                        from.showScoreboard = true;
-                    }
-                    if (from.highScoreTime == null) {
-                        from.highScoreTime = "0.0s";
-                    }
-                    if (from.difficulty == 0) {
-                        from.difficulty = 0.5;
-                    }
-                    if (from.blockLead < 1) {
-                        from.blockLead = 4;
-                    }
-                    if (from.lang == null) {
-                        from.lang = Option.DEFAULT_LANG;
-                    }
-                    if (from.highScoreDifficulty == null) {
-                        from.highScoreDifficulty = "?";
-                    }
+
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
                             from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard, from.highScoreDifficulty);
                     pp.saveStats();
@@ -449,9 +400,7 @@ public class ParkourPlayer extends ParkourUser {
                     reader.close();
                 } else {
                     Verbose.verbose("Setting new player data..");
-                    pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            "0.0s", Option.DEFAULT_LANG,
-                            4, true, true, true, true, true, true, "?");
+                    pp.resetPlayerPreferences();
                     players.put(pp.player, pp);
                     pp.saveStats();
                 }
@@ -468,9 +417,7 @@ public class ParkourPlayer extends ParkourUser {
                     highScoreTime = (String) objects.get(2);
                     highScoreDifficulty = (String) objects.get(3);
                 } else {
-                    pp.setDefaults(0, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            "0.0s", Option.DEFAULT_LANG, 4,
-                            true, true, true, true, true, true, "?");
+                    pp.resetPlayerPreferences();
                     players.put(pp.player, pp);
                     pp.saveStats();
                     return pp;
@@ -489,9 +436,7 @@ public class ParkourPlayer extends ParkourUser {
                             translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
                             translateSqlBoolean((String) objects.get(8)), highScoreDifficulty);
                 } else {
-                    pp.setDefaults(highscore, "Day", WITP.getConfiguration().getString("config", "styles.default"),
-                            highScoreTime, Option.DEFAULT_LANG, 4,
-                            true, true, true, true, true, true, "?");
+                    pp.resetPlayerPreferences();
                     pp.saveStats();
                 }
                 players.put(pp.player, pp);

@@ -120,61 +120,81 @@ public class SubareaDivider {
         return null;
     }
 
+    public boolean isOccupied(SubareaPoint point) {
+        return collection.get(point) != null; // if null not occupied, so return false
+    }
+
+    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator) {
+        generate(player, generator, true);
+    }
+
     /**
      * Generates the next playable area
      *
      * @param   player
      *          The player of who the generator belongs to
+     *
+     * @param   generator
+     *          The generator instance of the player
+     *
+     * @param   checkHistory
+     *          Whether it should check if there are previously used places.
      */
-    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator) {
+    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator, boolean checkHistory) {
         if (getPoint(player) == null) {
-            amount++;
-            int copy = amount - 1;
+            if (possibleInLayer.isEmpty()){
+                fetchPossibleInLayer();
+            }
 
-            if (!openSpaces.isEmpty()) {
+            if (checkHistory && !openSpaces.isEmpty()) { // spaces which were previously used
                 SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
-                if (collection.get(last) != null) {
-                    Verbose.error("Used (cached) island is already assigned. Retrying without this island.");
-                    openSpaces.remove(last);
-                    amount--;
-                    generate(player, generator);
+
+                if (last == null) {
+                    openSpaces.clear();
+                    generate(player, generator, false);
                 }
-                createIsland(player, generator,  last);
+
+                if (isOccupied(last)) { // if it is being used
+                    openSpaces.remove(last); // remove it from possible
+                    amount--;
+                    generate(player, generator, true);
+                }
+
+                amount++;
+                createIsland(player, generator, last);
                 openSpaces.remove(last);
                 Verbose.verbose("Used Subarea divided to " + player.getPlayer().getName());
                 return;
             }
-            if (copy % 8 == 0) { // every new layer has +8 area points
+
+            if ((amount - 1) % 8 == 0) { // every new layer has +8 area points
+                amount++;
                 createIsland(player, generator, current);
-                current = current.zero();
+
+                current = current.zero(); // reset
                 layer++;
 
                 fetchPossibleInLayer();
-                Verbose.verbose("Layer increase");
+                Verbose.verbose("Layer increase in Divider");
+
             } else {
-                if (possibleInLayer.isEmpty()){
-                    fetchPossibleInLayer();
-                }
                 SubareaPoint point = possibleInLayer.get(0);
+
                 if (point == null) {
                     fetchPossibleInLayer();
-                    point = possibleInLayer.get(0);
+                    generate(player, generator, false);
                 }
-                if (point == null) {
-                    Verbose.error("Playing space assignment has gone terribly wrong - adding to layer");
-                    amount++;
-                    fetchPossibleInLayer();
-                    point = possibleInLayer.get(0);
-                }
-                if (collection.get(point) != null) {
-                    Verbose.error("Island is already assigned. Retrying without this island.");
-                    amount--;
+
+                if (isOccupied(point)) {
                     possibleInLayer.remove(point);
-                    generate(player, generator);
+                    amount--;
+                    generate(player, generator, false);
                 }
 
                 current = point;
                 possibleInLayer.remove(point);
+
+                amount++;
                 createIsland(player, generator, current);
             }
             Verbose.verbose("New Subarea divided to " + player.getPlayer().getName());
@@ -264,9 +284,8 @@ public class SubareaDivider {
     }
 
     private void createIsland(@NotNull ParkourPlayer pp, ParkourGenerator generator, SubareaPoint point) {
-        if (point == null) { // something has gone TERRIBLY WRONG, just in case
-            Verbose.error("Point assignment after confirmation has gone terribly wrong, retrying..");
-            generate(pp, generator);
+        if (point == null) {
+            generate(pp, generator, false);
             return;
         }
         collection.put(point, pp);
@@ -327,12 +346,12 @@ public class SubareaDivider {
 
         // -= Inventory =-
         player.setGameMode(GameMode.ADVENTURE);
-        if (Option.INVENTORY_HANDLING) {
+        if (Option.INVENTORY_HANDLING && Option.OPTIONS_ENABLED) {
             player.getInventory().clear();
             ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
             if (mat == null) {
                 Verbose.error("Material for options in config is null - defaulting to compass");
-                player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&lOptions").build());
+                player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&l-= Options =-").build());
             } else {
                 player.getInventory().setItem(8, mat);
             }

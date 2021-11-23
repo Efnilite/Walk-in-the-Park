@@ -1,6 +1,7 @@
 package dev.efnilite.witp.generator;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.api.style.StyleType;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
@@ -123,6 +124,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 tick();
 
                 Location playerLoc = player.getLocation();
+
+                if (playerLoc.getWorld() != playerSpawn.getWorld()) {
+                    player.teleport(playerSpawn);
+                    return;
+                }
 
                 // Fall check
                 if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
@@ -675,7 +681,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         public void menu(String... optDisabled) {
             InventoryBuilder builder = new InventoryBuilder(pp, 3, "Customize").open();
             InventoryBuilder lead = new InventoryBuilder(pp, 3, "Lead").open();
-            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
             InventoryBuilder timeofday = new InventoryBuilder(pp, 3, "Time").open();
             InventoryBuilder language = new InventoryBuilder(pp, 3, "Language").open();
             Configuration config = WITP.getConfiguration();
@@ -696,39 +701,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (!checkOptions("special", "witp.special", disabled)) itemCount--;          // 8
             if (!checkOptions("structure", "witp.structures", disabled)) itemCount--;     // 9
 
-
             InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(itemCount, 1);
             if (checkOptions("styles", "witp.style", disabled)) {
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.styles", pp.style), (t, e) -> {
-                    List<String> pos = Util.getNode(WITP.getConfiguration().getFile("config"), "styles.list");
-                    if (pos == null) {
-                        Verbose.error("Error while trying to fetch possible styles from config.yml");
-                        return;
+                    List<StyleType> styleTypes = WITP.getRegistry().getStyleTypes();
+                    if (styleTypes.size() == 1) {
+                        styleMenu(styleTypes.get(0), optDisabled);
+                    } else {
+                        String type = ChatColor.stripColor(e.getItemMeta().getDisplayName().toLowerCase());
+
                     }
-                    int i = 0;
-                    Random random = ThreadLocalRandom.current();
-                    for (String style : pos) {
-                        if (i == 26) {
-                            Verbose.error("There are too many styles to display!");
-                            return;
-                        }
-                        if (Option.PERMISSIONS_STYLES && pp.checkPermission("witp.styles." + style.toLowerCase())) {
-                            continue;
-                        }
-                        List<Material> possible = pp.getPossibleMaterials(style);
-                        if (possible == null) {
-                            continue;
-                        }
-                        Material material = possible.get(random.nextInt(possible.size() - 1));
-                        styling.setItem(i, new ItemBuilder(material, "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
-                            String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
-                            pp.setStyle(selected);
-                            pp.sendTranslated("selected-style", selected);
-                        });
-                        i++;
-                    }
-                    styling.setItem(26, close, (t2, e2) -> menu(optDisabled));
-                    styling.build();
                 });
             }
             if (checkOptions("lead", "witp.lead", disabled)) {
@@ -861,7 +843,38 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             builder.build();
         }
 
-        private void difficultyMenu() {
+        private void stylesMenu(String... optDisabled) {
+            Configuration config = WITP.getConfiguration();
+            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
+            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+        }
+
+        private void styleMenu(StyleType type, String... optDisabled) {
+            Configuration config = WITP.getConfiguration();
+            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
+            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+
+            int i = 0;
+            for (String style : type.styles.keySet()) {
+                if (i == 26) {
+                    Verbose.error("There are too many styles to display!");
+                    return;
+                }
+                if (Option.PERMISSIONS_STYLES && pp.checkPermission("witp.styles." + style)) {
+                    continue;
+                }
+                styling.setItem(i, new ItemBuilder(type.get(style), "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
+                    String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
+                    pp.style = selected;
+                    pp.sendTranslated("selected-style", selected);
+                });
+                i++;
+            }
+            styling.setItem(26, close, (t2, e2) -> menu(optDisabled));
+            styling.build();
+        }
+
+        private void difficultyMenu(String... optDisabled) {
             Configuration config = WITP.getConfiguration();
             InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Difficulty").open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
@@ -869,7 +882,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
             String difficultyString = Boolean.toString(pp.useDifficulty);
             ItemStack diffSwitchItem = config.getFromItemData(pp.locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
-            diffSwitchItem.setType(pp.useDifficulty ? Material.GREEN_WOOL : Material.RED_WOOL);
+            diffSwitchItem.setType(pp.useDifficulty ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
             int diffSlot = dynamic1.next();
             difficulty.setItem(diffSlot, diffSwitchItem, (t3, e3) -> {
                 if (checkOptions("difficulty-switch", "witp.difficulty-switch", new ArrayList<>())) {
@@ -881,7 +894,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> askReset("h-difficulty"));
             difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> askReset("vh-difficulty"));
 
-            difficulty.setItem(26, close, (t3, e3) -> pp.getGenerator().menu());
+            difficulty.setItem(26, close, (t3, e3) -> menu(optDisabled));
             difficulty.build();
         }
 

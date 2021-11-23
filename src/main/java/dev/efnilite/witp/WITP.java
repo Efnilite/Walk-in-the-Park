@@ -1,6 +1,9 @@
 package dev.efnilite.witp;
 
 import dev.efnilite.witp.api.Registry;
+import dev.efnilite.witp.api.gamemode.DefaultGamemode;
+import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
+import dev.efnilite.witp.api.style.DefaultStyleType;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
@@ -51,7 +54,6 @@ public final class WITP extends JavaPlugin {
 
         instance = this;
         Tasks.time("load");
-        registry = new Registry();
         Verbose.init();
 
         // ----- Versions -----
@@ -99,7 +101,9 @@ public final class WITP extends JavaPlugin {
             Verbose.info("Connecting with ProtocolAPI..");
             protocolHook = new ProtocolHook();
         }
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        if (Option.BUNGEECORD) {
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        }
 
         // ----- Configurations -----
 
@@ -107,6 +111,18 @@ public final class WITP extends JavaPlugin {
         Option.init(true);
         addCommand("witp", new MainCommand());
         divider = new SubareaDivider();
+
+        // ----- Registry -----
+
+        registry = new Registry();
+
+        registry.register(new DefaultGamemode());
+        registry.register(new SpectatorGamemode());
+        registry.registerType(new DefaultStyleType());
+
+        for (String style : Option.STYLES) {
+            registry.getStyleType("default").addConfigStyle(style);
+        }
 
         // ----- SQL and data -----
 

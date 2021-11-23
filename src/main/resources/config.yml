@@ -117,6 +117,7 @@ focus-mode:
 
 # Options for the option menu
 options:
+
     # If options are enabled
     enabled: true
 
@@ -137,7 +138,8 @@ styles:
     # The default style
     default: 'red'
 
-    # The list of all available styles, which you can add to if you want
+    # The list of all available styles, which you can add to if you want.
+    # For changes, you have to restart or reload your server.
     list:
         red: [red_wool, red_stained_glass, red_concrete, red_terracotta]
         blue: [blue_wool, blue_stained_glass, blue_concrete, blue_terracotta]

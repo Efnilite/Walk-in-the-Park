@@ -1,12 +1,20 @@
 Changelog:
-- Fix SQL error
+- Fix problems with SQL error
+- Add option to change default for every option
+    > You can find them in items.yml
+    > The default style will still be in config.yml
+- Add Czech language (thanks to DaveAshh)
+- Update area divider to be more reliable
+- Overhaul style API
+    > Developers can now add different types of styles.
 
 Walk in the Park TODO
 
 High priority:
-- Optimize ram with schematics
+- Optimize ram with schematics (async?)
 
 Medium priority:
 - Add one-time rewards
 
 Low priority:
+-

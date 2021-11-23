@@ -1,10 +1,8 @@
 package dev.efnilite.witp.api;
 
-import dev.efnilite.witp.api.gamemode.DefaultGamemode;
 import dev.efnilite.witp.api.gamemode.Gamemode;
-import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
+import dev.efnilite.witp.api.style.StyleType;
 import dev.efnilite.witp.util.Verbose;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,16 +16,27 @@ public final class Registry {
 
     private volatile boolean closed;
     private final HashMap<String, Gamemode> gamemodes;
+    private final HashMap<String, StyleType> styleTypes;
 
     public Registry() {
         this.gamemodes = new LinkedHashMap<>();
-
-        gamemodes.put("default", new DefaultGamemode());
-        gamemodes.put("spectator", new SpectatorGamemode());
+        this.styleTypes =  new LinkedHashMap<>();
     }
 
-    public @Nullable Gamemode getGamemode(String name) {
-        return gamemodes.get(name);
+    /**
+     * Registers a style type. This doesn't need materials, so you can pass the materials as null.
+     * Example: #registerType(new DefaultStyle(null));
+     *
+     * @param   style
+     *          The style type.
+     */
+    public void registerType(StyleType style) {
+        if (!closed) {
+            this.styleTypes.put(style.getName(), style);
+            Verbose.info("Registered style type " + style.getName() + "!");
+        } else {
+            throw new IllegalStateException("Register attempt while registry is closed");
+        }
     }
 
     public void register(Gamemode gamemode) {
@@ -37,6 +46,23 @@ public final class Registry {
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }
+    }
+
+    public StyleType getTypeFromStyle(String style) {
+        for (StyleType value : styleTypes.values()) {
+            if (value.styles.keySet().contains(style.toLowerCase())) {
+                return value;
+            }
+        }
+        return styleTypes.get("default");
+    }
+
+    public StyleType getStyleType(String name) {
+        return styleTypes.get(name);
+    }
+
+    public List<StyleType> getStyleTypes() {
+        return new ArrayList<>(styleTypes.values());
     }
 
     public List<Gamemode> getGamemodes() {
