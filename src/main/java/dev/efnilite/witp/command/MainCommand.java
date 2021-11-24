@@ -12,6 +12,7 @@ import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -38,10 +39,13 @@ import java.util.*;
 public class MainCommand extends BukkitCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
-    private final ItemStack wand = new ItemBuilder(Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")
+    private final ItemStack wand = new ItemBuilder(
+            Version.isHigherOrEqual(Version.V1_13) ? Material.getMaterial("GOLDEN_AXE") : Material.getMaterial("GOLD_AXE"),
+            "&4&lWITP Schematic Wand")
             .setLore("&7Left click: first position", "&7Right click: second position")
-            .setPersistentData("witp", "true")
-            .buildPersistent(WITP.getInstance());
+            .build();
+//            .setPersistentData("witp", "true")
+//            .buildPersistent(WITP.getInstance());
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {

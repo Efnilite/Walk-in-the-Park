@@ -10,6 +10,7 @@ import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
@@ -244,12 +245,13 @@ public class SubareaDivider {
         }
     }
 
+    @SuppressWarnings("deprecation") // for setGameRuleValue
     private @Nullable World createWorld(String name) {
         World world;
         if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
             WorldCreator creator = new WorldCreator(name)
                     .generateStructures(false)
-                    .hardcore(false)
+//                    .hardcore(false)
                     .type(WorldType.FLAT)
                     .generator(new VoidGenerator())
                     .environment(World.Environment.NORMAL);
@@ -268,13 +270,23 @@ public class SubareaDivider {
         Verbose.verbose("Created world " + name);
 
         // -= World gamerules & options =-
-        world.setGameRule(GameRule.DO_FIRE_TICK, false);
-        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        world.setGameRule(GameRule.DO_TILE_DROPS, false);
-        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
-        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        if (Version.isHigherOrEqual(Version.V1_13)) {
+            world.setGameRule(GameRule.DO_FIRE_TICK, false);
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+            world.setGameRule(GameRule.DO_TILE_DROPS, false);
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+            world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        } else {
+            world.setGameRuleValue("doFireTick", "false");
+            world.setGameRuleValue("doMobSpawning", "false");
+            world.setGameRuleValue("doTileDrops", "false");
+            world.setGameRuleValue("doDaylightCycle", "false");
+            world.setGameRuleValue("doWeatherCycle", "false");
+            world.setGameRuleValue("logAdminCommands", "false");
+            world.setGameRuleValue("announceAdvancements", "false");
+        }
 
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setWeatherDuration(1000);

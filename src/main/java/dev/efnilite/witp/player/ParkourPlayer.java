@@ -62,7 +62,6 @@ public class ParkourPlayer extends ParkourUser {
     public final Instant joinTime;
 
     public UUID uuid;
-    private StyleType possibleStyle;
     private ParkourGenerator generator;
     private final File file;
 

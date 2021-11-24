@@ -1,6 +1,7 @@
 package dev.efnilite.witp.util.inventory;
 
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -97,7 +98,9 @@ public class ItemBuilder {
 
         meta.setDisplayName(Util.color(name));
         meta.setLore(lore);
-        ((Damageable) meta).setDamage(Math.abs(durability - type.getMaxDurability()));
+        if (Version.isHigherOrEqual(Version.V1_13)) {
+            ((Damageable) meta).setDamage(Math.abs(durability - type.getMaxDurability()));
+        }
         meta.setUnbreakable(unbreakable);
         item.setItemMeta(meta);
         return item;

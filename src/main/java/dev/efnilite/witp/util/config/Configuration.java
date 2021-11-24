@@ -74,41 +74,42 @@ public class Configuration {
      * Downloads the structures
      */
     private void schematics() {
-        if (!(new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists())) {
-            String[] schematics = new String[]{"spawn-island.witp"};
-            File folder = new File(plugin.getDataFolder(), "schematics");
-            folder.mkdirs();
-            Verbose.info("Downloading all schematics...");
-            int structureCount = 21;
-            Tasks.asyncTask(() -> {
-                try {
-                    for (String schematic : schematics) {
-                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
-                        Files.copy(stream, Paths.get(folder + "/" + schematic));
-                        Verbose.verbose("Downloaded " + schematic);
-                        stream.close();
-                    }
-                    for (int i = 1; i <= structureCount; i++) {
-                        InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
-                        Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
-                        Verbose.verbose("Downloaded parkour-" + i);
-                        stream.close();
-                    }
-                    SchematicCache.read();
-                    Verbose.info("Downloaded all schematics");
-                } catch (FileAlreadyExistsException ex) {
-                    // do nothing
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");
-                }
-            });
+        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists()) {
+            return;
         }
+        String[] schematics = new String[]{"spawn-island.witp"};
+        File folder = new File(plugin.getDataFolder(), "schematics");
+        folder.mkdirs();
+        Verbose.info("Downloading all schematics...");
+        int structureCount = 21;
+        Tasks.asyncTask(() -> {
+            try {
+                for (String schematic : schematics) {
+                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
+                    Files.copy(stream, Paths.get(folder + "/" + schematic));
+                    Verbose.verbose("Downloaded " + schematic);
+                    stream.close();
+                }
+                for (int i = 1; i <= structureCount; i++) {
+                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
+                    Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
+                    Verbose.verbose("Downloaded parkour-" + i);
+                    stream.close();
+                }
+                SchematicCache.read();
+                Verbose.info("Downloaded all schematics");
+            } catch (FileAlreadyExistsException ex) {
+                // do nothing
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");
+            }
+        });
     }
 
-    /**
-     * Get a file
-     */
+        /**
+         * Get a file
+         */
     public FileConfiguration getFile(String file) {
         FileConfiguration config;
         if (files.get(file) == null) {
