@@ -366,8 +366,6 @@ messages:
 # Options for lang
 options:
 
-    # If the scoreboard is enabled
-    scoreboard-enabled: true
     # If join/leave messages should be shown
     join-leave-enabled: true
 

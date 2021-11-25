@@ -127,11 +127,6 @@ options:
     # Saves stats
     save-stats: true
 
-commands: # todo this
-    restricted-in:
-        join:
-            - 'Example World'
-
 # The different styles players can select
 styles:
 

@@ -85,6 +85,27 @@ public class Handler implements Listener {
     }
 
     @EventHandler
+    public void leave(PlayerQuitEvent event) {
+        ParkourUser player = ParkourUser.getUser(event.getPlayer());
+        if (player == null) {
+            return;
+        }
+
+        if (Option.JOIN_LEAVE) {
+            event.setQuitMessage(null);
+            for (ParkourUser user : ParkourUser.getUsers()) {
+                user.sendTranslated("leave", player.getPlayer().getName());
+            }
+        }
+        try {
+            ParkourPlayer.unregister(player, true, false, true);
+        } catch (IOException | InvalidStatementException ex) {
+            ex.printStackTrace();
+            Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
+        }
+    }
+
+    @EventHandler
     public void damage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             if (ParkourUser.getUser((Player) event.getEntity()) != null) {
@@ -203,24 +224,4 @@ public class Handler implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void leave(PlayerQuitEvent event) {
-        ParkourUser player = ParkourUser.getUser(event.getPlayer());
-        if (player != null) {
-            if (WITP.getConfiguration().getFile("lang").getBoolean("messages.join-leave-enabled")) {
-                event.setQuitMessage(null);
-                for (ParkourUser user : ParkourUser.getUsers()) {
-                    user.sendTranslated("leave", player.getPlayer().getName());
-                }
-            }
-            try {
-                ParkourPlayer.unregister(player, true, false, true);
-            } catch (IOException | InvalidStatementException ex) {
-                ex.printStackTrace();
-                Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
-            }
-        }
-    }
-
 }

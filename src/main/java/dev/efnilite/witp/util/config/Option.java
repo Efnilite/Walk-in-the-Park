@@ -66,11 +66,9 @@ public class Option {
     public static List<String> FOCUS_MODE_WHITELIST;
     public static boolean GO_BACK;
     public static boolean BUNGEECORD;
-    public static boolean JOIN_LEAVE;
 
     public static List<Integer> POSSIBLE_LEADS;
     public static boolean VERBOSE;
-    public static List<String> LANGUAGES;
     public static boolean GAMELOGS;
 
     public static boolean UPDATER;
@@ -97,7 +95,9 @@ public class Option {
 
     public static Direction HEADING;
 
+    public static List<String> LANGUAGES;
     public static String DEFAULT_LANG;
+    public static boolean JOIN_LEAVE;
 
     public static String DEFAULT_STYLE;
     public static List<String> STYLES;
@@ -126,6 +126,7 @@ public class Option {
             }
         }
 
+        JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
         HEADING = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
         PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
         GAMELOGS = config.getBoolean("sql.game-logs");
@@ -208,7 +209,6 @@ public class Option {
         INTERVAL_REWARDS_SCORES = new ArrayList<>();
         INTERVAL_REWARDS_SCORES.addAll(intervals2);
 
-        JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
         BUNGEECORD = config.getBoolean("bungeecord.enabled");
         REWARDS = config.getBoolean("rewards.enabled");
         REWARDS_MONEY = config.getInt("rewards.vault-reward");

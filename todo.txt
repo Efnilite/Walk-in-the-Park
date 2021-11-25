@@ -1,12 +1,19 @@
 Changelog:
-- Fix problems with SQL error
-- Add option to change default for every option
+- Added option to change default for every option:
     > You can find them in items.yml
     > The default style will still be in config.yml
-- Add Czech language (thanks to DaveAshh)
-- Update area divider to be more reliable
-- Overhaul style API
-    > Developers can now add different types of styles.
+- Added Czech language (thanks to DaveAshh)
+- Added leave messages
+- Fixed area divider overflow error:
+    > This change is experimental and something which I can't test
+    > Having issues with multiple players stuck on an island, etc.? Contact me :)
+- Fixed problems with SQL
+
+What to expect in future updates:
+- More gamemodes
+- 1.12-1.15 support
+- Optimized schematic processing
+- More possibilities for rewards
 
 Walk in the Park TODO
 

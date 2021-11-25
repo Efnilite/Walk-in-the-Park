@@ -43,9 +43,8 @@ public class MainCommand extends BukkitCommand {
             Version.isHigherOrEqual(Version.V1_13) ? Material.getMaterial("GOLDEN_AXE") : Material.getMaterial("GOLD_AXE"),
             "&4&lWITP Schematic Wand")
             .setLore("&7Left click: first position", "&7Right click: second position")
-            .build();
-//            .setPersistentData("witp", "true")
-//            .buildPersistent(WITP.getInstance());
+            .setPersistentData("witp", "true")
+            .buildPersistent(WITP.getInstance());
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {

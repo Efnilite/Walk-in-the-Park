@@ -846,7 +846,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         private void stylesMenu(String... optDisabled) {
             Configuration config = WITP.getConfiguration();
             InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
-            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+            ItemStack close = config.getFromItemData(pp.locale, "general.close"); // todo
+            throw new IllegalStateException();
         }
 
         private void styleMenu(StyleType type, String... optDisabled) {

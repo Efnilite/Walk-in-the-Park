@@ -219,7 +219,7 @@ public class Schematic {
                 try {
                     data = Bukkit.createBlockData(elements[1]); // if block data can't be created, check for legacy materials
                 } catch (IllegalArgumentException ex) {
-                    data = checkLegacyMaterials(elements[1]); // if legacy materials can't find something, declare this schematic as unsupported
+                    data = checkLegacyMaterials(elements[1], getName()); // if legacy materials can't find something, declare this schematic as unsupported
                 }
                 if (data == null) {
                     isSupported = false;
@@ -261,13 +261,13 @@ public class Schematic {
         Verbose.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
     }
 
-    private @Nullable BlockData checkLegacyMaterials(String full) {
+    private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
         Verbose.info("Checking legacy materials for " + full);
         String[] split = full.split("\\[");
         String material = split[0];
         Material legacy = Material.matchMaterial(material, true);
         if (legacy == null) {
-            Verbose.error("Unknown material: " + material);
+            Verbose.error("Unknown material: " + material + " in " + fileName);
             return null;
         }
         if (split.length > 1) {
@@ -298,7 +298,7 @@ public class Schematic {
 
     /**
      * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour.
-     * Todo -> optimize and clean up
+     * todo -> optimize/clean up, use matrices and get the initial heading to support for multiple directions
      *
      * @param   at
      *          The location at which the Schematic will be pasted

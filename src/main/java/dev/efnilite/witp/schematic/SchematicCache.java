@@ -16,21 +16,23 @@ public class SchematicCache {
     public static volatile Map<String, Schematic> cache = new HashMap<>();
 
     public static void read() {
-        Tasks.time("schematicsLoad");
-        Verbose.info("Initializing schematics...");
-        cache.clear();
-        File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
-        File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
-        for (File file : files) {
-            String fileName = file.getName();
-            Schematic schematic = new Schematic().file(fileName);
-            schematic.read();
-            if (schematic.isSupported()) {
-                cache.put(fileName, schematic);
+        Tasks.asyncTask(() -> {
+            Tasks.time("schematicsLoad");
+            Verbose.info("Initializing schematics...");
+            cache.clear();
+            File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
+            File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
+            for (File file : files) {
+                String fileName = file.getName();
+                Schematic schematic = new Schematic().file(fileName);
+                schematic.read();
+                if (schematic.isSupported()) {
+                    cache.put(fileName, schematic);
+                }
             }
-        }
-        Verbose.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematics.");
-        Verbose.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
+            Verbose.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
+            Verbose.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
+        });
     }
 
     public static Schematic getSchematic(String name) {
