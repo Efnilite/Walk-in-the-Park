@@ -131,6 +131,10 @@ public abstract class ParkourUser {
         }
     }
 
+    public static PreviousData getPreviousData(String playerName) {
+        return previousData.get(playerName);
+    }
+
     public boolean checkPermission(String perm) {
         if (Option.PERMISSIONS) {
             return player.hasPermission(perm);

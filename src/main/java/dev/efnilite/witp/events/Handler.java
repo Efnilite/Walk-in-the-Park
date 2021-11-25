@@ -6,6 +6,7 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -29,18 +30,34 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 
 public class Handler implements Listener {
+
+    /**
+     * If a player quits and rejoins, give them their stuff back
+     */
+    private final HashMap<String, PreviousData> quitInventoryData = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        String playerName = player.getName();
         World world = WITP.getDivider().getWorld();
+
+        PreviousData data = quitInventoryData.get(playerName);
+        if (data != null) {
+            data.apply();
+            quitInventoryData.remove(playerName);
+        }
+
+        // OP join messages
         if (player.isOp() && WITP.OUTDATED) {
             player.sendMessage(Util.color("&c&l(!) &7The WITP plugin you are using is outdated. " +
                     "Updates usually fix a variety of bugs. Check the Spigot page for more info."));
@@ -49,6 +66,8 @@ public class Handler implements Listener {
             player.sendMessage(Util.color("&c&l(!) &7You're running Multiverse without support for creating void worlds." +
                     "Go to the wiki to add support for this."));
         }
+
+        // Bungeecord joining
         if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer pp = ParkourPlayer.register(player);
@@ -56,8 +75,10 @@ public class Handler implements Listener {
                 WITP.getDivider().generate(pp, generator);
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
-                Verbose.error("Something went wrong while trying to fetch a player's (" + player.getName() + ") data");
+                Verbose.error("Something went wrong while trying to fetch a player's (" + playerName + ") data");
             }
+
+            // Join message
             if (Option.JOIN_LEAVE) {
                 event.setJoinMessage(null);
                 for (ParkourUser user : ParkourUser.getUsers()) {
@@ -86,7 +107,9 @@ public class Handler implements Listener {
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {
-        ParkourUser player = ParkourUser.getUser(event.getPlayer());
+        Player bPlayer = event.getPlayer();
+        String playerName = bPlayer.getName();
+        ParkourUser player = ParkourUser.getUser(bPlayer);
         if (player == null) {
             return;
         }
@@ -94,14 +117,20 @@ public class Handler implements Listener {
         if (Option.JOIN_LEAVE) {
             event.setQuitMessage(null);
             for (ParkourUser user : ParkourUser.getUsers()) {
-                user.sendTranslated("leave", player.getPlayer().getName());
+                user.sendTranslated("leave", playerName);
+            }
+        }
+        if (Option.INVENTORY_HANDLING) {
+            PreviousData data = ParkourUser.getPreviousData(playerName);
+            if (data != null)  {
+                quitInventoryData.put(playerName, data);
             }
         }
         try {
             ParkourPlayer.unregister(player, true, false, true);
         } catch (IOException | InvalidStatementException ex) {
             ex.printStackTrace();
-            Verbose.error("There was an error while trying to handle player " + player.getPlayer().getName() + " quitting!");
+            Verbose.error("There was an error while trying to handle player " + playerName + " quitting!");
         }
     }
 
