@@ -39,7 +39,7 @@
 36>minecraft:spruce_fence_gate[facing=south,in_wall=false,open=false,powered=false]
 37>minecraft:oak_leaves[distance=7,persistent=true]
 38>minecraft:andesite
-39>minecraft:grass_path
+39>minecraft:grass_block[snowy=false]
 40>minecraft:spruce_fence_gate[facing=west,in_wall=false,open=false,powered=false]
 41>minecraft:spruce_leaves[distance=1,persistent=true]
 42>minecraft:oak_wall_sign[facing=west,waterlogged=false]
