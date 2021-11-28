@@ -345,7 +345,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             gap++;
                             break;
                         case 1: // slab
-                            material = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
+                            material = Material.QUARTZ_SLAB.createBlockData();
                             height = Math.min(height, 0);
                             ((Slab) material).setType(Slab.Type.BOTTOM);
                             break;
@@ -362,7 +362,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
 
                 Location local = lastSpawn.clone();
-                if (local.getBlock().getType() == Material.SMOOTH_QUARTZ_SLAB) {
+                if (local.getBlock().getType() == Material.QUARTZ_SLAB) {
                     height = Math.min(height, 0);
                 }
                 if (height > 1) {

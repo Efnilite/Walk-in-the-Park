@@ -84,6 +84,22 @@ public final class WITP extends JavaPlugin {
                 Verbose.info("Registered under server version 1.12");
                 Version.VERSION = Version.V1_12;
                 break;
+            case "v1_11":
+                Verbose.info("Registered under server version 1.11");
+                Version.VERSION = Version.V1_11;
+                break;
+            case "v1_10":
+                Verbose.info("Registered under server version 1.10");
+                Version.VERSION = Version.V1_10;
+                break;
+            case "v1_9_":
+                Verbose.info("Registered under server version 1.9");
+                Version.VERSION = Version.V1_9;
+                break;
+            case "v1_8_":
+                Verbose.info("Registered under server version 1.8");
+                Version.VERSION = Version.V1_8;
+                break;
         }
 
         // ----- Hooks and Bungee -----

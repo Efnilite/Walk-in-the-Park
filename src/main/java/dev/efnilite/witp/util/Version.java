@@ -2,6 +2,10 @@ package dev.efnilite.witp.util;
 
 public enum Version {
 
+    V1_8(8),
+    V1_9(9),
+    V1_10(10),
+    V1_11(11),
     V1_12(12),
     V1_13(13),
     V1_14(14),

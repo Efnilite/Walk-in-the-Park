@@ -334,9 +334,13 @@ public class SubareaDivider {
         }
         if (!playerDetected) {
             Verbose.error("Couldn't find the spawn of a player - please check your block types and schematics");
+            blocks.forEach(b -> b.setType(Material.AIR, false));
+            createIsland(pp, generator, point);
         }
         if (!parkourDetected) {
             Verbose.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
+            blocks.forEach(b -> b.setType(Material.AIR, false));
+            createIsland(pp, generator, point);
         }
 
         if (pp.getGenerator() == null) {

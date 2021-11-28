@@ -49,7 +49,7 @@ public abstract class ParkourUser {
     protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
-    protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().create();
+    protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().setLenient(true).create();
 
     public ParkourUser(@NotNull Player player) {
         this.player = player;
