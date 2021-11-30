@@ -1,5 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
+import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
@@ -92,10 +93,12 @@ public class SubareaPoint {
      */
     public static class Data {
 
+        public List<Chunk> spawnChunks;
         public List<Block> blocks;
 
-        public Data(List<Block> blocks) {
+        public Data(List<Block> blocks, List<Chunk> spawnChunks) {
             this.blocks = blocks;
+            this.spawnChunks = spawnChunks;
         }
     }
 }

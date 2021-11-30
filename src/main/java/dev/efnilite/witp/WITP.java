@@ -60,6 +60,10 @@ public final class WITP extends JavaPlugin {
 
         String version = Util.getVersion();
         switch (version.substring(0, 5)) {
+            case "v1_18":
+                Verbose.info("Registered under server version 1.18");
+                Version.VERSION = Version.V1_18;
+                break;
             case "v1_17":
                 Verbose.info("Registered under server version 1.17");
                 Version.VERSION = Version.V1_17;

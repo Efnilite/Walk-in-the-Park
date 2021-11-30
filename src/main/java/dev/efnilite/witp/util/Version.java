@@ -11,7 +11,8 @@ public enum Version {
     V1_14(14),
     V1_15(15),
     V1_16(16),
-    V1_17(17);
+    V1_17(17),
+    V1_18(18);
 
     public final int major;
 

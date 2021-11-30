@@ -213,8 +213,60 @@ public class SubareaDivider {
         SubareaPoint point = getPoint(player);
         collection.remove(point);
         openSpaces.add(point);
-        for (Block block : player.getGenerator().data.blocks) {
+
+        SubareaPoint.Data data = player.getGenerator().data;
+        for (Chunk spawnChunk : data.spawnChunks) {
+            spawnChunk.setForceLoaded(false);
+        }
+        for (Block block : data.blocks) {
             block.setType(Material.AIR, false);
+        }
+    }
+
+    public List<Chunk> getChunksAround(Chunk base, int radius) {
+        int lastOfRadius = 2 * radius + 1;
+        int baseX = base.getX();
+        int baseZ = base.getZ();
+
+        List<Chunk> chunks = new ArrayList<>();
+        int amount = lastOfRadius * lastOfRadius;
+        for (int i = 0; i < amount; i++) {
+            int[] coords = spiralAt(i);
+            int x = coords[0];
+            int z = coords[1];
+
+            x += baseX;
+            z += baseZ;
+
+            chunks.add(world.getChunkAt(x, z));
+        }
+        return chunks;
+    }
+
+    // https://math.stackexchange.com/a/163101
+    private int[] spiralAt(int n) {
+        n++; // one-index
+        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        int t = 2 * k + 1;
+        int m = t * t;
+        t--;
+
+        if (n > m - t) {
+            return new int[]{k - (m - n), -k};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k, -k + (m - n)};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k + (m - n), k};
+        } else {
+            return new int[]{k, k - (m - n - t)};
         }
     }
 
@@ -302,10 +354,16 @@ public class SubareaDivider {
         }
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
+        List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
+        for (Chunk chunk : chunks) {
+            chunk.setForceLoaded(true);
+        }
 
+        // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().getDimensions();
         spawn.setY(spawn.getY() - dimension.y);
         List<Block> blocks = spawnIsland.paste(spawn, RotationAngle.ANGLE_0);
+
         Location min = spawn.clone();
         min.setX(min.getX() - (dimension.x / 2.0));
         min.setZ(min.getZ() - (dimension.z / 2.0));
@@ -347,7 +405,7 @@ public class SubareaDivider {
             pp.setGenerator(new DefaultGenerator(pp));
         }
 
-        pp.getGenerator().data = new SubareaPoint.Data(blocks);
+        pp.getGenerator().data = new SubareaPoint.Data(blocks, chunks);
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
