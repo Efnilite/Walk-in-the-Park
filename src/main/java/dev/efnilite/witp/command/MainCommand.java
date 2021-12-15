@@ -8,6 +8,7 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
@@ -72,6 +73,7 @@ public class MainCommand extends BukkitCommand {
             if (sender.hasPermission("witp.reload")) {
                 send(sender, "&a/witp reload &f- &7Reloads the lang.yml file");
                 send(sender, "&a/witp migrate &f- &7Migrate your Json files to MySQL");
+                send(sender, "&a/witp reset &f- &7Resets all highscores. &cBe careful when using!");
             }
             return true;
         } else if (args.length == 1) {
@@ -88,6 +90,16 @@ public class MainCommand extends BukkitCommand {
                     Option.init(false);
                     long time = Tasks.end("reload");
                     send(sender, "&a&l(!) &7Reloaded all config files in " + time + "ms!");
+                    return true;
+                case "reset":
+                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                        Util.sendDefaultLang(player, "cant-do");
+                        return true;
+                    }
+
+                    ParkourUser.resetHighScores();
+
+                    send(sender, "&4&l(!) &7Reset all high in-memory scores.");
                     return true;
                 case "migrate":
                     if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
@@ -137,7 +149,7 @@ public class MainCommand extends BukkitCommand {
                     }
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player);
-                        ParkourGenerator generator = new DefaultGenerator(pp);
+                        ParkourGenerator generator = WITP.getVersionGenerator(pp);
                         WITP.getDivider().generate(pp, generator);
                         pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {

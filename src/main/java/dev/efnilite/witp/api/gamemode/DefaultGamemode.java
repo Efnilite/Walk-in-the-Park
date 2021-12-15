@@ -32,7 +32,7 @@ public class DefaultGamemode implements Gamemode {
             player.closeInventory();
             ParkourUser.unregister(user, false, false, true);
             ParkourPlayer pp = ParkourPlayer.register(player);
-            ParkourGenerator generator = new DefaultGenerator(pp);
+            ParkourGenerator generator = WITP.getVersionGenerator(pp);
             WITP.getDivider().generate(pp, generator);
         } catch (IOException | SQLException ex) {
             ex.printStackTrace();

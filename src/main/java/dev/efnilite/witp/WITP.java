@@ -6,10 +6,13 @@ import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
 import dev.efnilite.witp.api.style.DefaultStyleType;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.events.Handler;
+import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.hook.ProtocolHook;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -210,6 +213,31 @@ public final class WITP extends JavaPlugin {
             }
             Bukkit.unloadWorld(world, false);
         }
+    }
+
+    /**
+     * Gets a DefaultGenerator which disables schematics if the version is below 1.16.
+     *
+     * @param   player
+     *          The player
+     *
+     * @return a {@link DefaultGenerator}
+     */
+    public static DefaultGenerator getVersionGenerator(ParkourPlayer player) {
+        if (versionSupportsSchematics()) {
+            return new DefaultGenerator(player);
+        } else {
+            return new DefaultGenerator(player, GeneratorOption.DISABLE_SCHEMATICS);
+        }
+    }
+
+    /**
+     * Checks whether the current version supports schematics
+     *
+     * @return true if it supports it, false if not.
+     */
+    public static boolean versionSupportsSchematics() {
+        return Version.isHigherOrEqual(Version.V1_16);
     }
 
     private void addCommand(String name, BukkitCommand wrapper) {

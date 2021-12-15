@@ -16,6 +16,11 @@ public class SchematicCache {
     public static volatile Map<String, Schematic> cache = new HashMap<>();
 
     public static void read() {
+        if (!WITP.versionSupportsSchematics()) {
+            Verbose.info("This version does *not* support schematics, consider upgrading if you want them");
+            return;
+        }
+
         Tasks.asyncTask(() -> {
             Tasks.time("schematicsLoad");
             Verbose.info("Initializing schematics...");

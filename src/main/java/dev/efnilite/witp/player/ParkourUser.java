@@ -87,7 +87,7 @@ public abstract class ParkourUser {
                 for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
                     try {
                         ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                        ParkourGenerator generator = new DefaultGenerator(spp);
+                        ParkourGenerator generator = WITP.getVersionGenerator(spp);
                         WITP.getDivider().generate(spp, generator);
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
@@ -228,6 +228,15 @@ public abstract class ParkourUser {
                 highScores.put(uuid, from.highScore);
                 scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime, from.highScoreDifficulty));
             }
+        }
+    }
+
+    public static void resetHighScores() {
+        highScores.replaceAll((u, v) -> 0);
+
+        for (UUID uuid : scoreMap.keySet()) {
+            String name = scoreMap.get(uuid).name;
+            scoreMap.put(uuid, new Highscore(name, "0.0s", "0.0"));
         }
     }
 

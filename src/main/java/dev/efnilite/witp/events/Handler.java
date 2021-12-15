@@ -70,7 +70,7 @@ public class Handler implements Listener {
         if (Option.BUNGEECORD) {
             try {
                 ParkourPlayer pp = ParkourPlayer.register(player);
-                ParkourGenerator generator = new DefaultGenerator(pp);
+                ParkourGenerator generator = WITP.getVersionGenerator(pp);
                 WITP.getDivider().generate(pp, generator);
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();

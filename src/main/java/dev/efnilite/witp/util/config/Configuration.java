@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
@@ -67,14 +68,14 @@ public class Configuration {
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items.yml")));
-        files.put("structures", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
+        files.put("schematics", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
     }
 
     /**
      * Downloads the structures
      */
     private void schematics() {
-        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists()) {
+        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists() || !WITP.versionSupportsSchematics()) {
             return;
         }
         String[] schematics = new String[]{"spawn-island.witp"};

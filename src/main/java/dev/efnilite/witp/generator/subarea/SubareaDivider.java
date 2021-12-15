@@ -402,7 +402,7 @@ public class SubareaDivider {
         }
 
         if (pp.getGenerator() == null) {
-            pp.setGenerator(new DefaultGenerator(pp));
+            pp.setGenerator(WITP.getVersionGenerator(pp));
         }
 
         pp.getGenerator().data = new SubareaPoint.Data(blocks, chunks);
