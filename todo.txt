@@ -5,6 +5,8 @@ Walk in the Park TODO
 ## Additions
 - Added option to put the quit item in players' hotbars.
     > Find it at `hotbar-quit-item` in config.yml
+- Added new 'schematic-difficulty' option
+    > This includes a new menu, a new permission and new option in items.yml
 
 ## Changes
 - Changed internal name of adaptive difficulty from `difficulty-switch` to `adaptive-difficulty`

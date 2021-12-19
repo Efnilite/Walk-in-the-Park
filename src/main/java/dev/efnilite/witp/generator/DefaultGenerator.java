@@ -975,17 +975,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     break;
                 case "e-difficulty":
                     pp.difficulty = 0.3;
-                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&a" + Util.parseDifficulty(pp.difficulty));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "m-difficulty":
                     pp.difficulty = 0.5;
-                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&e" + Util.parseDifficulty(pp.difficulty));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "h-difficulty":
                     pp.difficulty = 0.7;
-                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&6" + Util.parseDifficulty(pp.difficulty));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "vh-difficulty":
