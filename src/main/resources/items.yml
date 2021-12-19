@@ -41,10 +41,13 @@ items:
         difficulty:
             item: anvil
             enabled: true
-            default: "0.3"
-        difficulty-switch:
+        adaptive-difficulty:
             enabled: true
             default: true
+        schematic-difficulty:
+            item: scaffolding
+            enabled: true
+            default: "0.3"
         particles:
             enabled: true
             default: true
@@ -100,7 +103,7 @@ locale:
         options:
             styles:
                 name: '&a&lParkour style'
-                lore: '&7The style of your parkour||&7(which blocks will be used)||||&7Currently: &a%s'
+                lore: '&7The style of your parkour||&7(which blocks will be used)||&7&uThis doesn''t affect difficulty.||||&7Currently: &a%s'
             lead:
                 name: '&a&lLead'
                 lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
@@ -109,10 +112,13 @@ locale:
                 lore: '&7The time of day.||||&7Currently: &a%s'
             difficulty:
                 name: '&a&lDifficulty'
-                lore: '&7Change your difficuly settings||||&7Currently: %s'
-            difficulty-switch:
-                name: '&a&lScore difficulty'
+                lore: '&7Change how difficult the parkour is.||||&7Currently: %s'
+            adaptive-difficulty:
+                name: '&2&lScore difficulty'
                 lore: '&7When enabled, the higher score you have||&7the more difficult it gets.||||&7Currently: %s'
+            schematic-difficulty:
+                name: '&6&lSchematic difficulty'
+                lore: '&7Change the difficulty of the schematics that appear!||||&7Currently: &a%s'
             particles:
                 name: '&a&lUse particles and sounds'
                 lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
@@ -176,7 +182,7 @@ locale:
             difficulty:
                 name: '&a&lMoeilijkheid'
                 lore: '&7Verander je moeilijkheidsinstellingen||||&7Huidige waarde: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&Gebruik van puntenmoeilijkheid'
                 lore: '&7Als dit aanstaat dan wordt het parkour||&7moeilijker, naarmate je meer score hebt.||||&7Huidige waarde: %s'
             particles:
@@ -242,7 +248,7 @@ locale:
             difficulty:
                 name: '&a&lDificultad'
                 lore: '&7Cambia tu configuración de dificultad||||&7Actualmente: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&lDificultad por puntuación'
                 lore: '&7Cuando se habilita, entre más puntos tengas||&7más difícil se vuelve.||||&7Actualmente: %s'
             particles:
@@ -307,7 +313,7 @@ locale:
             difficulty:
                 name: '&a&lPoziom trudności'
                 lore: '&7Zmieniasz poziom trudności swojego parkoura.||||&7Obecnie: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&lRosnący poziom trudności'
                 lore: '&7Gdy włączony, im więcej punktów masz||&7tym trudniejszy staje się parkour.||||&Obecnie: %s'
             particles:
@@ -373,7 +379,7 @@ locale:
             difficulty:
                 name: '&a&l难度'
                 lore: '&7跑酷对您来说太难或太简单？||调整您的跑酷难度！||&7当前值为: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&l难度加分'
                 lore: '&7当该项开启时，您选择的难度越高，||&7您每次成功地跳跃的得分越高。||||&7当前值: %s'
             particles:
@@ -439,7 +445,7 @@ locale:
             difficulty:
                 name: '&a&lDifficulter'
                 lore: '&7Modifiez vos paramètres de difficulté||||&7Actuellement: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&lDifficulté du score'
                 lore: '&7Lorsqu''il est activé, plus votre score est élevé||&7plus c''est difficile.||||&7Actuellement: %s'
             particles:
@@ -505,7 +511,7 @@ locale:
             difficulty:
                 name: '&a&lĐộ khó'
                 lore: '&7Chỉnh độ khó của bạn||||&7Hiện tại: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&lĐộ khó theo điểm'
                 lore: '&7Khi bật, điểm càng cao||&7độ khó càng tăng.||||&7Hiện tại: %s'
             particles:
@@ -571,7 +577,7 @@ locale:
             difficulty:
                 name: '&a&lObtížnost'
                 lore: '&7Změn si svou obtížnost||||&7Momentálně: %s'
-            difficulty-switch:
+            adaptive-difficulty:
                 name: '&a&lObtížnost podle skóre'
                 lore: '&7Pokud zapnuto, čim větší skóre budeš mít||&7tím těžší to bude.||||&7Momentálně: %s'
             particles:

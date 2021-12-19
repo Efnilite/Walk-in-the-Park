@@ -114,11 +114,11 @@ public class ParkourPlayer extends ParkourUser {
 
         this.useSpecial = Boolean.parseBoolean(getDefaultValue("special"));
         this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg"));
-        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("difficulty-switch"));
+        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty"));
         this.useStructure = Boolean.parseBoolean(getDefaultValue("structure"));
         this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard"));
         this.useParticles = Boolean.parseBoolean(getDefaultValue("particles"));
-        this.difficulty = Double.parseDouble(getDefaultValue("difficulty"));
+        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
         this.blockLead = Integer.parseInt(getDefaultValue("lead"));
         this.time = getDefaultValue("time");
 
@@ -387,6 +387,7 @@ public class ParkourPlayer extends ParkourUser {
     public static ParkourPlayer register(@NotNull ParkourPlayer pp) throws IOException, SQLException {
         if (players.get(pp.player) == null) {
             UUID uuid = pp.getPlayer().getUniqueId();
+            JOIN_COUNT++;
             if (!Option.SQL) {
                 File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
                 if (data.exists()) {
@@ -444,7 +445,6 @@ public class ParkourPlayer extends ParkourUser {
             }
             return pp;
         }
-        JOIN_COUNT++;
         return pp;
     }
 

@@ -40,6 +40,12 @@ public class PreviousData {
 //        speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
         
 //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1); unsure whether this is the actual value
+
+        // Set to defaults
+
+        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        player.setHealth(20);
+
         for (PotionEffectType value : PotionEffectType.values()) {
             player.removePotionEffect(value);
         }

@@ -9,6 +9,7 @@ import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
+import dev.efnilite.witp.hook.HoloHook;
 import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.hook.ProtocolHook;
@@ -49,6 +50,7 @@ public final class WITP extends JavaPlugin {
     private static @Nullable MultiverseHook multiverseHook;
     private static @Nullable ProtocolHook protocolHook;
     private static @Nullable PlaceholderHook placeholderHook;
+    private static @Nullable HoloHook holoHook;
 
     @Override
     public void onEnable() {
@@ -111,18 +113,22 @@ public final class WITP extends JavaPlugin {
 
         // ----- Hooks and Bungee -----
 
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             Verbose.info("Connecting with PlaceholderAPI..");
             placeholderHook = new PlaceholderHook();
             placeholderHook.register();
         }
-        if (getServer().getPluginManager().getPlugin("Multiverse-Core") != null) {
+        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
             Verbose.info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
         }
-        if (getServer().getPluginManager().getPlugin("ProtocolAPI") != null) {
+        if (getServer().getPluginManager().isPluginEnabled("ProtocolAPI")) {
             Verbose.info("Connecting with ProtocolAPI..");
             protocolHook = new ProtocolHook();
+        }
+        if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            Verbose.info("Connecting with HolographicDisplays..");
+            holoHook = new HoloHook();
         }
         if (Option.BUNGEECORD) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -259,6 +265,10 @@ public final class WITP extends JavaPlugin {
 
     public static @Nullable PlaceholderHook getPlaceholderHook() {
         return placeholderHook;
+    }
+
+    public static HoloHook getHoloHook() {
+        return holoHook;
     }
 
     public static Registry getRegistry() {

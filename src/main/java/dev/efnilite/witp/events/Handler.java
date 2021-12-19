@@ -229,13 +229,18 @@ public class Handler implements Listener {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && Duration.between(player.joinTime, Instant.now()).toMillis() > 100) {
             event.setCancelled(true);
-            ItemStack mat = WITP.getConfiguration().getFromItemData(player.locale, "general.menu");
-            if (mat == null) {
-                Verbose.error("Material for options in config is null - defaulting to compass");
-                mat = new ItemBuilder(Material.COMPASS, "&c&lOptions").build();
-            }
-            if (Util.getHeldItem(player.getPlayer()).getType() == mat.getType()) {
+            Material menu = WITP.getConfiguration().getFromItemData(player.locale, "general.menu").getType();
+            Material quit = WITP.getConfiguration().getFromItemData(player.locale, "general.quit").getType();
+            Material held = Util.getHeldItem(player.getPlayer()).getType();
+            if (held == menu) {
                 player.getGenerator().menu();
+            } else if (held == quit) {
+                try {
+                    ParkourUser.unregister(player, true, false, true);
+                } catch (IOException | InvalidStatementException ex) {
+                    ex.printStackTrace();
+                    Verbose.error("Error while trying to unregister player");
+                }
             }
         }
     }

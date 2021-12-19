@@ -1,5 +1,21 @@
 Walk in the Park TODO
 
+## Additions
+- Added option to put the quit item in players' hotbars.
+    > Find it at `hotbar-quit-item` in config.yml
+
+## Changes
+- Changed internal name of adaptive difficulty from `difficulty-switch` to `adaptive-difficulty`
+    > Some items in items.yml may be reset to default because of this
+    > Some permissions might not be correct anymore, check [this page](https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions)
+
+## Fixes
+- Fixed conflict with AdvancedEnchantments which raised hearts every time a player joined
+    > Player health is now automatically set to 20 HP (10 hearts) on join
+- Fixed spawn island lowering in height every time it spawned
+- Fixed join count graph not counting correctly
+
+
 High priority:
 - Optimize ram with schematics (async?)
 

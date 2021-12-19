@@ -109,6 +109,7 @@ public class Option {
     public static boolean OPTIONS_ENABLED;
 
     public static HashMap<String, String> OPTIONS_DEFAULTS;
+    public static boolean HOTBAR_QUIT_ITEM;
 
     public static void init(boolean init) {
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
@@ -116,7 +117,7 @@ public class Option {
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
         FileConfiguration items = WITP.getConfiguration().getFile("items");
 
-        List<String> options = Arrays.asList("lead", "time", "difficulty", "difficulty-switch", "particles", "scoreboard", "death-msg", "special", "structure");
+        List<String> options = Arrays.asList("lead", "time", "difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
         OPTIONS_DEFAULTS = new HashMap<>();
         for (String node : Util.getNode(items, "items.options")) {
             for (String option : options) {
@@ -125,6 +126,8 @@ public class Option {
                 }
             }
         }
+
+        HOTBAR_QUIT_ITEM = config.getBoolean("options.hotbar-quit-item");
 
         JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
         HEADING = Util.getDirection(gen.getString("advanced.island.parkour.heading"));

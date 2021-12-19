@@ -127,6 +127,9 @@ options:
     # Saves things like health and max health for when a player joins the parkour.
     save-stats: true
 
+    # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
+    hotbar-quit-item: false
+
 # The different styles players can select
 styles:
 

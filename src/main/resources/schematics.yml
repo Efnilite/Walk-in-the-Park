@@ -10,7 +10,7 @@
 # 0 = super easy
 
 # Difficulties are also represented by an easy word, which is nice for users.
-# Players who pick i.e. "hard" will get every schematic below difficulty 0.7, so sometimes they will get easy.
+# Players who pick i.e. "hard" will get every schematic below difficulty 0.7, so sometimes they will get easy (0.3).
 # >0.8 = very hard
 # <0.7 = hard
 # <0.5 = medium

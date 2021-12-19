@@ -751,7 +751,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             ItemStack item;
             if (checkOptions("difficulty", "witp.difficulty", disabled)) {
                 builder.setItem(dynamic.next(),
-                        config.getFromItemData(pp.locale, "options.difficulty", "&a" + Util.parseDifficulty(pp.difficulty) + " &7(" + pp.calculateDifficultyScore() + "/1.0)"),
+                        config.getFromItemData(pp.locale, "options.difficulty", "&a" + pp.calculateDifficultyScore() + "/1.0"),
                         (t2, e2) -> difficultyMenu());
             }
             if (checkOptions("particles", "witp.particles", disabled)) {
@@ -876,26 +876,48 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         private void difficultyMenu(String... optDisabled) {
+            // Some important stuff
             Configuration config = WITP.getConfiguration();
             InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Difficulty").open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
-            InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(5, 1);
-            String difficultyString = Boolean.toString(pp.useDifficulty);
-            ItemStack diffSwitchItem = config.getFromItemData(pp.locale, "options.difficulty-switch", normalizeBoolean(Util.colorBoolean(difficultyString)));
-            diffSwitchItem.setType(pp.useDifficulty ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
-            int diffSlot = dynamic1.next();
-            difficulty.setItem(diffSlot, diffSwitchItem, (t3, e3) -> {
-                if (checkOptions("difficulty-switch", "witp.difficulty-switch", new ArrayList<>())) {
-                    askReset("difficulty");
-                }
-            });
-            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> askReset("e-difficulty"));
-            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> askReset("m-difficulty"));
-            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> askReset("h-difficulty"));
-            difficulty.setItem(dynamic1.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> askReset("vh-difficulty"));
+            InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(2, 1);
+
+            // Adaptive difficulty
+            String string = Boolean.toString(pp.useDifficulty);
+            ItemStack item = config.getFromItemData(pp.locale, "options.adaptive-difficulty", normalizeBoolean(Util.colorBoolean(string)));
+            item.setType(pp.useDifficulty ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+
+            if (checkOptions("adaptive-difficulty", "witp.adaptive-difficulty", Arrays.asList(optDisabled))) {
+                difficulty.setItem(dynamic.next(), item, (t3, e3) -> askReset("difficulty"));
+            }
+
+            // Schematic difficulty
+            string = Util.parseDifficulty(pp.difficulty);
+            item = config.getFromItemData(pp.locale, "options.schematic-difficulty", string);
+            if (checkOptions("schematic-difficulty", "witp.schematic-difficulty", Arrays.asList(optDisabled))) {
+                difficulty.setItem(dynamic.next(), item, (t3, e3) -> schematicDifficultyMenu(optDisabled));
+            }
 
             difficulty.setItem(26, close, (t3, e3) -> menu(optDisabled));
+            difficulty.build();
+        }
+
+        private void schematicDifficultyMenu(String... optDisabled) {
+            // Some important stuff
+            Configuration config = WITP.getConfiguration();
+            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Schematic difficulty").open();
+            ItemStack close = config.getFromItemData(pp.locale, "general.close");
+
+            InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(4, 1);
+
+            // All schematic difficulties
+            difficulty.setItem(dynamic.next(), new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3))).build(), (t3, e3) -> askReset("e-difficulty"));
+            difficulty.setItem(dynamic.next(), new ItemBuilder(Material.GREEN_WOOL, "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5))).build(), (t3, e3) -> askReset("m-difficulty"));
+            difficulty.setItem(dynamic.next(), new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7))).build(), (t3, e3) -> askReset("h-difficulty"));
+            difficulty.setItem(dynamic.next(), new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8))).build(), (t3, e3) -> askReset("vh-difficulty"));
+
+            difficulty.setItem(26, close, (t3, e3) -> difficultyMenu(optDisabled));
             difficulty.build();
         }
 

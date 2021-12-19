@@ -430,6 +430,15 @@ public class SubareaDivider {
                 player.getInventory().setItem(8, mat);
             }
         }
+        if (Option.INVENTORY_HANDLING && Option.HOTBAR_QUIT_ITEM) {
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit");
+            if (mat == null) {
+                Verbose.error("Material for quitting in config is null - defaulting to barrier");
+                player.getInventory().setItem(7, new ItemBuilder(Material.BARRIER, "&c&l-= Quit =-").build());
+            } else {
+                player.getInventory().setItem(7, mat);
+            }
+        }
 
         if (!Option.INVENTORY_HANDLING) {
             pp.sendTranslated("customize-menu");
