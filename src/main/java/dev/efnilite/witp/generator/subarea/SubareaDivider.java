@@ -354,6 +354,8 @@ public class SubareaDivider {
         }
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
+        pp.send("Spawn:" + spawn);
+        pp.send("Spawn y: " + spawn.getY());
         List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
         for (Chunk chunk : chunks) {
             chunk.setForceLoaded(true);
@@ -362,6 +364,7 @@ public class SubareaDivider {
         // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().getDimensions();
         spawn.setY(spawn.getY() - dimension.y);
+        pp.send("Spawn y2: " + spawn.getY());
         List<Block> blocks = spawnIsland.paste(spawn, RotationAngle.ANGLE_0);
 
         Location min = spawn.clone();

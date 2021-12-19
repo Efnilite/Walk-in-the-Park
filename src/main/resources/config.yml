@@ -124,7 +124,7 @@ options:
     # Enables/disables the inventory handling system
     inventory-handling: true
 
-    # Saves stats
+    # Saves things like health and max health for when a player joins the parkour.
     save-stats: true
 
 # The different styles players can select
