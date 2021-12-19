@@ -115,10 +115,10 @@ public class ParkourPlayer extends ParkourUser {
         this.useSpecial = Boolean.parseBoolean(getDefaultValue("special"));
         this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg"));
         this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty"));
+        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
         this.useStructure = Boolean.parseBoolean(getDefaultValue("structure"));
         this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard"));
         this.useParticles = Boolean.parseBoolean(getDefaultValue("particles"));
-        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
         this.blockLead = Integer.parseInt(getDefaultValue("lead"));
         this.time = getDefaultValue("time");
 

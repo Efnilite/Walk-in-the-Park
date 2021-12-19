@@ -1,7 +1,6 @@
 package dev.efnilite.witp.api.gamemode;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;

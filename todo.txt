@@ -1,5 +1,7 @@
 Walk in the Park TODO
 
+### This version contains important changes for items/permissions. Please read through them, so you can avoid any issues!
+
 ## Additions
 - Added option to put the quit item in players' hotbars.
     > Find it at `hotbar-quit-item` in config.yml
@@ -12,7 +14,7 @@ Walk in the Park TODO
 ## Fixes
 - Fixed conflict with AdvancedEnchantments which raised hearts every time a player joined
     > Player health is now automatically set to 20 HP (10 hearts) on join
-- Fixed spawn island lowering in height every time it spawned
+- Fixed spawn island y coordinate lowering every time it spawned
 - Fixed join count graph not counting correctly
 
 

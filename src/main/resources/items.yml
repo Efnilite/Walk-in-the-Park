@@ -102,16 +102,16 @@ locale:
                 lore: '&7Search for a player to spectate.'
         options:
             styles:
-                name: '&a&lParkour style'
+                name: '&3&lParkour style'
                 lore: '&7The style of your parkour||&7(which blocks will be used)||&7&uThis doesn''t affect difficulty.||||&7Currently: &a%s'
             lead:
-                name: '&a&lLead'
+                name: '&c&lLead'
                 lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
             time:
-                name: '&a&lTime'
+                name: '&7&lTime'
                 lore: '&7The time of day.||||&7Currently: &a%s'
             difficulty:
-                name: '&a&lDifficulty'
+                name: '&6&lDifficulty'
                 lore: '&7Change how difficult the parkour is.||||&7Currently: %s'
             adaptive-difficulty:
                 name: '&2&lScore difficulty'
@@ -181,10 +181,13 @@ locale:
                 lore: '&7De tijd.||||&7Huidige waarde: &a%s'
             difficulty:
                 name: '&a&lMoeilijkheid'
-                lore: '&7Verander je moeilijkheidsinstellingen||||&7Huidige waarde: %s'
+                lore: '&7Verander hoe moeilijk het parkour is!||||&7Huidige waarde: %s'
             adaptive-difficulty:
                 name: '&a&Gebruik van puntenmoeilijkheid'
                 lore: '&7Als dit aanstaat dan wordt het parkour||&7moeilijker, naarmate je meer score hebt.||||&7Huidige waarde: %s'
+            schematic-difficulty:
+                name: '&6&lStructuurmoeilijkheid'
+                lore: '&7Verander hoe moeilijk de structuren zijn die je tegenkomt!||||&7Huidige waarde: &a%s'
             particles:
                 name: '&a&lGebruik van particles en geluiden'
                 lore: '&Als dit aanstaat dan krijg je bij||&7elk nieuw blok particles en geluiden.||||&7Huidige waarde: %s'
@@ -210,7 +213,7 @@ locale:
                 name: '&e&lTaal'
                 lore: '&7Huidige waarde: &a%s'
 
-    # Español (Spanish), provided by !Фитуу．
+    # Español (Spanish, by !Фитуу．)
     es:
         general:
             quit:
@@ -251,6 +254,9 @@ locale:
             adaptive-difficulty:
                 name: '&a&lDificultad por puntuación'
                 lore: '&7Cuando se habilita, entre más puntos tengas||&7más difícil se vuelve.||||&7Actualmente: %s'
+            schematic-difficulty:
+                name: '&6&lDificultad de estructura'
+                lore: '&7Cambia la dificultad de los estructura que aparecen.||||&7Actualmente: &a%s'
             particles:
                 name: '&a&lUsar partículas y sonidos'
                 lore: '&7Si se habilita cada bloque generado||&7mostrará partículas y sonará un sonido.||||&7Actualmente:%s'
@@ -276,6 +282,7 @@ locale:
                 name: '&e&lLenguaje'
                 lore: '&7Actualmente: &a%s'
 
+    # Polish (Polski)
     pl:
         general:
             quit:
@@ -315,7 +322,10 @@ locale:
                 lore: '&7Zmieniasz poziom trudności swojego parkoura.||||&7Obecnie: %s'
             adaptive-difficulty:
                 name: '&a&lRosnący poziom trudności'
-                lore: '&7Gdy włączony, im więcej punktów masz||&7tym trudniejszy staje się parkour.||||&Obecnie: %s'
+                lore: '&7Gdy włączony, im więcej punktów masz||&7tym trudniejszy staje się parkour.||||&7Obecnie: %s'
+            schematic-difficulty:
+                name: '&6&lSchematyczna trudność'
+                lore: '&7Zmień poziom trudności pojawiających się schematów!||||&7Obecnie: &a%s'
             particles:
                 name: '&a&lUżywaj cząsteczek i dźwięków'
                 lore: '&7Gdy włączone generowanie nowego bloku||&7będzie obwieszczone dźwiękiem oraz cząsteczkami.||||&7Obecnie: %s'
@@ -382,6 +392,9 @@ locale:
             adaptive-difficulty:
                 name: '&a&l难度加分'
                 lore: '&7当该项开启时，您选择的难度越高，||&7您每次成功地跳跃的得分越高。||||&7当前值: %s'
+            schematic-difficulty:
+                name: '&6&l结构难度'
+                lore: '&7改变出现的示意图的难度！||||&7当前值: &a%s'
             particles:
                 name: '&a&l粒子效果与音效'
                 lore: '&7当该项开启时，每生成一个新跳台||&7将会产生粒子效果并播放音效。||||&7当前值: %s'
@@ -448,17 +461,20 @@ locale:
             adaptive-difficulty:
                 name: '&a&lDifficulté du score'
                 lore: '&7Lorsqu''il est activé, plus votre score est élevé||&7plus c''est difficile.||||&7Actuellement: %s'
+            schematic-difficulty:
+                name: '&6&lSchematic difficulty'
+                lore: '&7Change the difficulty of the schematics that appear!||||&7Currently: &a%s'
             particles:
-                name: '&a&lparticules et sons'
+                name: '&a&lParticules et sons'
                 lore: '&7Si cette option est activé, chaque bloc généré||&7affichera des particules et émettra un son.||||&7Actuellement: %s'
             scoreboard:
-                name: '&a&ltableau de scores'
+                name: '&a&lTableau de scores'
                 lore: '&7S''il est activé, il affiche le tableau des scores.||||&7Actuellement: %s'
             death-msg:
-                name: '&a&lmessage de mort'
+                name: '&a&lMessage de mort'
                 lore: '&7Si elle est activée, elle affiche un message lorsque vous tombez||&7avec des informations supplémentaires.||||&7Actuellement: %s'
             special:
-                name: '&a&lblocs spéciaux'
+                name: '&a&lBlocs spéciaux'
                 lore: '&7Si elle est activée, des blocs spéciaux comme la glace et les dalles.. se généreront||||&7Actuellement: %s'
             structure:
                 name: '&a&lstructures'
@@ -473,7 +489,7 @@ locale:
                 name: '&e&lLangage'
                 lore: '&7Actuellement: &a%s'
 
-    # Vietnamese (by HSGamer)
+    # Tiếng Việt (Vietnamese, by HSGamer)
     vi:
         general:
             quit:
@@ -514,6 +530,9 @@ locale:
             adaptive-difficulty:
                 name: '&a&lĐộ khó theo điểm'
                 lore: '&7Khi bật, điểm càng cao||&7độ khó càng tăng.||||&7Hiện tại: %s'
+            schematic-difficulty:
+                name: '&6&lSơ đồ khó khăn'
+                lore: '&7Thay đổi độ khó của các sơ đồ xuất hiện!||||&7Hiện tại: &a%s'
             particles:
                 name: '&a&lDùng hiệu ứng và âm thanh'
                 lore: '&7Khi bật, những khối đã tạo||&7sẽ hiện hiệu ứng và âm thanh.||||&7Hiện tại: %s'
@@ -539,7 +558,7 @@ locale:
                 name: '&e&lNgôn ngữ'
                 lore: '&7Hiện tại: &a%s'
 
-    # Czechoslovakian (by DaveAshh)
+    # Čeština (Czech, by DaveAshh)
     cz:
         general:
             quit:
@@ -580,6 +599,9 @@ locale:
             adaptive-difficulty:
                 name: '&a&lObtížnost podle skóre'
                 lore: '&7Pokud zapnuto, čim větší skóre budeš mít||&7tím těžší to bude.||||&7Momentálně: %s'
+            schematic-difficulty:
+                name: '&6&lSchématická obtížnost'
+                lore: '&7Změňte obtížnost zobrazených schémat!||||&7Momentálně: &a%s'
             particles:
                 name: '&a&lPoužij partikly a zvuky'
                 lore: '&7Pokud zapnuto, každý generovaný blok||&7ukáže partikly a udělá zvuk.||||&7Momentálně: %s'
