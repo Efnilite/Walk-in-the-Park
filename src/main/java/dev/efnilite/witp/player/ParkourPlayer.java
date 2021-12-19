@@ -115,11 +115,11 @@ public class ParkourPlayer extends ParkourUser {
         this.useSpecial = Boolean.parseBoolean(getDefaultValue("special"));
         this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg"));
         this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty"));
-        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
         this.useStructure = Boolean.parseBoolean(getDefaultValue("structure"));
         this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard"));
         this.useParticles = Boolean.parseBoolean(getDefaultValue("particles"));
         this.blockLead = Integer.parseInt(getDefaultValue("lead"));
+        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
         this.time = getDefaultValue("time");
 
         this.locale = lang;
@@ -396,7 +396,8 @@ public class ParkourPlayer extends ParkourUser {
                     ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
 
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg, from.showScoreboard, from.highScoreDifficulty);
+                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg,
+                            from.showScoreboard, from.highScoreDifficulty);
                     pp.saveStats();
                     players.put(pp.player, pp);
                     reader.close();

@@ -37,7 +37,7 @@ items:
         time:
             item: clock
             enabled: true
-            default: "Day"
+            default: Day
         difficulty:
             item: anvil
             enabled: true
@@ -47,7 +47,7 @@ items:
         schematic-difficulty:
             item: scaffolding
             enabled: true
-            default: "0.3"
+            default: 0.3
         particles:
             enabled: true
             default: true

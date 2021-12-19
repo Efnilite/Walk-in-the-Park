@@ -117,7 +117,7 @@ public class Option {
         FileConfiguration lang = WITP.getConfiguration().getFile("lang");
         FileConfiguration items = WITP.getConfiguration().getFile("items");
 
-        List<String> options = Arrays.asList("lead", "time", "difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
+        List<String> options = Arrays.asList("lead", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
         OPTIONS_DEFAULTS = new HashMap<>();
         for (String node : Util.getNode(items, "items.options")) {
             for (String option : options) {
