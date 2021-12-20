@@ -5,6 +5,7 @@ import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Version;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,6 +19,176 @@ import java.util.List;
  * Class for variables required in generating without accessing the file a lot (constants)
  */
 public class Option {
+
+    private static FileConfiguration generation;
+    private static FileConfiguration config;
+    private static FileConfiguration lang;
+    private static FileConfiguration items;
+
+    // Config stuff
+    public static boolean INVENTORY_HANDLING;
+    public static boolean PERMISSIONS;
+    public static boolean FOCUS_MODE;
+    public static List<String> FOCUS_MODE_WHITELIST;
+    public static boolean GO_BACK;
+    public static boolean BUNGEECORD;
+
+    public static List<Integer> POSSIBLE_LEADS;
+    public static boolean VERBOSE;
+    public static boolean GAMELOGS;
+
+    public static boolean UPDATER;
+
+    // Advanced settings
+    public static Direction HEADING;
+
+    public static List<String> LANGUAGES;
+    public static String DEFAULT_LANG;
+    public static boolean JOIN_LEAVE;
+
+    public static String DEFAULT_STYLE;
+    public static List<String> STYLES;
+
+    public static boolean JOINING;
+    public static boolean PERMISSIONS_STYLES;
+    public static boolean SAVE_STATS;
+    public static boolean LEAVE_REWARDS;
+    public static boolean OPTIONS_ENABLED;
+
+    public static HashMap<String, String> OPTIONS_DEFAULTS;
+    public static boolean HOTBAR_QUIT_ITEM;
+
+    public static void init(boolean init) {
+        generation = WITP.getConfiguration().getFile("generation");
+        config = WITP.getConfiguration().getFile("config");
+        lang = WITP.getConfiguration().getFile("lang");
+        items = WITP.getConfiguration().getFile("items");
+
+        initSql();
+        initEnums();
+        initRewards();
+        initScoreboard();
+        initGeneration();
+        initAdvancedGeneration();
+
+        List<String> options = Arrays.asList("lead", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
+        OPTIONS_DEFAULTS = new HashMap<>();
+        for (String node : Util.getNode(items, "items.options")) {
+            for (String option : options) {
+                if (option.equalsIgnoreCase(node)) {
+                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node + ".default"));
+                }
+            }
+        }
+
+        HOTBAR_QUIT_ITEM = config.getBoolean("options.hotbar-quit-item");
+
+        JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
+        HEADING = Util.getDirection(generation.getString("advanced.island.parkour.heading"));
+        PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
+        GAMELOGS = config.getBoolean("sql.game-logs");
+        LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
+        LANGUAGES.remove("default");
+        DEFAULT_LANG = lang.getString("messages.default");
+
+        DEFAULT_STYLE = config.getString("styles.default");
+        STYLES = Util.getNode(config, "styles.list");
+        if (STYLES == null) {
+            Verbose.error("Error while trying to fetch possible styles from config.yml");
+        }
+
+        SAVE_STATS = config.getBoolean("options.save-stats");
+        OPTIONS_ENABLED = config.getBoolean("options.enabled");
+
+        UPDATER = config.getBoolean("update-checker");
+        JOINING = config.getBoolean("joining");
+        VERBOSE = config.getBoolean("verbose");
+
+        // Config stuff
+
+        POSSIBLE_LEADS = config.getIntegerList("lead.amount");
+        for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
+            if (lead < 1) {
+                Verbose.error("Invalid lead in config: found " + lead + ", should be >1");
+                POSSIBLE_LEADS.remove((Object) lead);
+            }
+        }
+
+        INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
+        PERMISSIONS = config.getBoolean("permissions.enabled");
+        FOCUS_MODE = config.getBoolean("focus-mode.enabled");
+        FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
+
+        GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
+
+        if (init) {
+            BORDER_SIZE = generation.getDouble("advanced.border-size");
+            SQL = config.getBoolean("sql.enabled");
+        }
+
+        SchematicCache.read();
+    }
+
+    public static Option.ParticleShape PARTICLE_SHAPE;
+    public static Sound SOUND_TYPE;
+    public static int SOUND_PITCH;
+    public static Particle PARTICLE_TYPE;
+
+    // Very not efficient but this is basically the only way to ensure the enums have a value
+    private static void initEnums() {
+        String enumValue;
+        enumValue = config.getString("particles.sound-type").toUpperCase();
+
+        if (Version.isHigherOrEqual(Version.V1_9)) { // 1.8 has no Particle class & severely limited Sound support
+            try {
+                SOUND_TYPE = Sound.valueOf(enumValue);
+            } catch (IllegalArgumentException ex) {
+                try {
+                    SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
+                } catch (IllegalArgumentException ex2) {
+                    Verbose.error("Invalid sound: " + enumValue);
+                    SOUND_TYPE = Sound.values()[0];
+                }
+            }
+            SOUND_PITCH = config.getInt("particles.sound-pitch");
+
+            try {
+                PARTICLE_TYPE = Particle.valueOf(enumValue);
+            } catch (IllegalArgumentException ex) {
+                try {
+                    PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
+                } catch (IllegalArgumentException ex2) {
+                    Verbose.error("Invalid particle: " + enumValue);
+                    PARTICLE_TYPE = Particle.values()[0];
+                }
+            }
+
+            PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
+        }
+    }
+
+
+    // --------------------------------------------------------------
+    // MySQL
+    public static boolean SQL;
+    public static int SQL_PORT;
+    public static String SQL_URL;
+    public static String SQL_DB;
+    public static String SQL_USERNAME;
+    public static String SQL_PASSWORD;
+    public static String SQL_PREFIX;
+
+    private static void initSql() {
+        SQL_PORT = config.getInt("sql.port");
+        SQL_DB = config.getString("sql.database");
+        SQL_URL = config.getString("sql.url");
+        SQL_USERNAME = config.getString("sql.username");
+        SQL_PASSWORD = config.getString("sql.password");
+        SQL_PREFIX = config.getString("sql.prefix");
+    }
+
+    // --------------------------------------------------------------
+    // Generation
 
     public static int NORMAL;
     public static int SPECIAL;
@@ -41,48 +212,33 @@ public class Option {
     public static int MAX_Y;
     public static int MIN_Y;
 
-    // Config stuff
-    public static boolean ALL_POINTS;
-    public static boolean REWARDS;
-    public static HashMap<Integer, List<String>> REWARDS_SCORES;
-    public static HashMap<Integer, List<String>> ON_LEAVE_REWARDS_SCORES;
-    public static List<String> INTERVAL_REWARDS_SCORES;
-    public static int REWARDS_INTERVAL;
-    public static double REWARDS_MONEY;
-    public static String REWARDS_COMMAND;
-    public static String REWARDS_MESSAGE;
+    private static void initGeneration() {
+        NORMAL = generation.getInt("generation.normal-jump.chance");
+        SCHEMATICS = generation.getInt("generation.structures.chance");
+        SPECIAL = generation.getInt("generation.normal-jump.special.chance");
 
-    public static Option.ParticleShape PARTICLE_SHAPE;
-    public static Sound SOUND_TYPE;
-    public static int SOUND_PITCH;
-    public static Particle PARTICLE_TYPE;
+        SPECIAL_ICE = generation.getInt("generation.normal-jump.special.ice");
+        SPECIAL_SLAB = generation.getInt("generation.normal-jump.special.slab");
+        SPECIAL_PANE = generation.getInt("generation.normal-jump.special.pane");
+        SPECIAL_FENCE = generation.getInt("generation.normal-jump.special.fence");
 
-    public static boolean SCOREBOARD;
-    public static boolean INVENTORY_HANDLING;
-    public static String SCOREBOARD_TITLE;
-    public static List<String> SCOREBOARD_LINES;
-    public static boolean PERMISSIONS;
-    public static boolean FOCUS_MODE;
-    public static List<String> FOCUS_MODE_WHITELIST;
-    public static boolean GO_BACK;
-    public static boolean BUNGEECORD;
+        NORMAL_ONE_BLOCK = generation.getInt("generation.normal-jump.1-block");
+        NORMAL_TWO_BLOCK = generation.getInt("generation.normal-jump.2-block");
+        NORMAL_THREE_BLOCK = generation.getInt("generation.normal-jump.3-block");
+        NORMAL_FOUR_BLOCK = generation.getInt("generation.normal-jump.4-block");
 
-    public static List<Integer> POSSIBLE_LEADS;
-    public static boolean VERBOSE;
-    public static boolean GAMELOGS;
+        NORMAL_UP = generation.getInt("generation.normal-jump.up");
+        NORMAL_LEVEL = generation.getInt("generation.normal-jump.level");
+        NORMAL_DOWN = generation.getInt("generation.normal-jump.down");
+        NORMAL_DOWN2 = generation.getInt("generation.normal-jump.down2");
 
-    public static boolean UPDATER;
+        MAX_Y = generation.getInt("generation.settings.max-y");
+        MIN_Y = generation.getInt("generation.settings.min-y");
+    }
 
-    // MySQL
-    public static boolean SQL;
-    public static int SQL_PORT;
-    public static String SQL_URL;
-    public static String SQL_DB;
-    public static String SQL_USERNAME;
-    public static String SQL_PASSWORD;
-    public static String SQL_PREFIX;
+    // --------------------------------------------------------------
+    // Advanced settings in generation
 
-    // Advanced settings
     public static double BORDER_SIZE;
     public static int GENERATOR_CHECK;
     public static double HEIGHT_GAP;
@@ -93,95 +249,31 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
-    public static Direction HEADING;
+    private static void initAdvancedGeneration() {
+        GENERATOR_CHECK = generation.getInt("advanced.generator-check");
+        HEIGHT_GAP = generation.getDouble("advanced.height-gap");
+        MULTIPLIER = generation.getInt("advanced.maxed-multiplier");
 
-    public static List<String> LANGUAGES;
-    public static String DEFAULT_LANG;
-    public static boolean JOIN_LEAVE;
+        MAXED_ONE_BLOCK = generation.getInt("advanced.maxed-values.1-block");
+        MAXED_TWO_BLOCK = generation.getInt("advanced.maxed-values.2-block");
+        MAXED_THREE_BLOCK = generation.getInt("advanced.maxed-values.3-block");
+        MAXED_FOUR_BLOCK = generation.getInt("advanced.maxed-values.4-block");
+    }
 
-    public static String DEFAULT_STYLE;
-    public static List<String> STYLES;
+    // --------------------------------------------------------------
+    // Rewards
 
-    public static boolean JOINING;
-    public static boolean PERMISSIONS_STYLES;
-    public static boolean SAVE_STATS;
-    public static boolean LEAVE_REWARDS;
-    public static boolean OPTIONS_ENABLED;
+    public static boolean ALL_POINTS;
+    public static boolean REWARDS;
+    public static HashMap<Integer, List<String>> REWARDS_SCORES;
+    public static HashMap<Integer, List<String>> ON_LEAVE_REWARDS_SCORES;
+    public static List<String> INTERVAL_REWARDS_SCORES;
+    public static int REWARDS_INTERVAL;
+    public static double REWARDS_MONEY;
+    public static String REWARDS_COMMAND;
+    public static String REWARDS_MESSAGE;
 
-    public static HashMap<String, String> OPTIONS_DEFAULTS;
-    public static boolean HOTBAR_QUIT_ITEM;
-
-    public static void init(boolean init) {
-        FileConfiguration gen = WITP.getConfiguration().getFile("generation");
-        FileConfiguration config = WITP.getConfiguration().getFile("config");
-        FileConfiguration lang = WITP.getConfiguration().getFile("lang");
-        FileConfiguration items = WITP.getConfiguration().getFile("items");
-
-        List<String> options = Arrays.asList("lead", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
-        OPTIONS_DEFAULTS = new HashMap<>();
-        for (String node : Util.getNode(items, "items.options")) {
-            for (String option : options) {
-                if (option.equalsIgnoreCase(node)) {
-                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node + ".default"));
-                }
-            }
-        }
-
-        HOTBAR_QUIT_ITEM = config.getBoolean("options.hotbar-quit-item");
-
-        JOIN_LEAVE = lang.getBoolean("messages.join-leave-enabled");
-        HEADING = Util.getDirection(gen.getString("advanced.island.parkour.heading"));
-        PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
-        GAMELOGS = config.getBoolean("sql.game-logs");
-        LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
-        LANGUAGES.remove("default");
-        DEFAULT_LANG = lang.getString("messages.default");
-
-        DEFAULT_STYLE = config.getString("styles.default");
-        STYLES = Util.getNode(config, "styles.list");
-        if (STYLES == null) {
-            Verbose.error("Error while trying to fetch possible styles from config.yml");
-        }
-
-        SAVE_STATS = config.getBoolean("options.save-stats");
-        OPTIONS_ENABLED = config.getBoolean("options.enabled");
-        LEAVE_REWARDS = config.getBoolean("rewards.leave-rewards");
-
-        ALL_POINTS = config.getBoolean("scoring.all-points");
-        UPDATER = config.getBoolean("update-checker");
-        JOINING = config.getBoolean("joining");
-        VERBOSE = config.getBoolean("verbose");
-
-        SQL_PORT = config.getInt("sql.port");
-        SQL_DB = config.getString("sql.database");
-        SQL_URL = config.getString("sql.url");
-        SQL_USERNAME = config.getString("sql.username");
-        SQL_PASSWORD = config.getString("sql.password");
-        SQL_PREFIX = config.getString("sql.prefix");
-
-        NORMAL = gen.getInt("generation.normal-jump.chance");
-        SCHEMATICS = gen.getInt("generation.structures.chance");
-        SPECIAL = gen.getInt("generation.normal-jump.special.chance");
-
-        SPECIAL_ICE = gen.getInt("generation.normal-jump.special.ice");
-        SPECIAL_SLAB = gen.getInt("generation.normal-jump.special.slab");
-        SPECIAL_PANE = gen.getInt("generation.normal-jump.special.pane");
-        SPECIAL_FENCE = gen.getInt("generation.normal-jump.special.fence");
-
-        NORMAL_ONE_BLOCK = gen.getInt("generation.normal-jump.1-block");
-        NORMAL_TWO_BLOCK = gen.getInt("generation.normal-jump.2-block");
-        NORMAL_THREE_BLOCK = gen.getInt("generation.normal-jump.3-block");
-        NORMAL_FOUR_BLOCK = gen.getInt("generation.normal-jump.4-block");
-
-        NORMAL_UP = gen.getInt("generation.normal-jump.up");
-        NORMAL_LEVEL = gen.getInt("generation.normal-jump.level");
-        NORMAL_DOWN = gen.getInt("generation.normal-jump.down");
-        NORMAL_DOWN2 = gen.getInt("generation.normal-jump.down2");
-
-        MAX_Y = gen.getInt("generation.settings.max-y");
-        MIN_Y = gen.getInt("generation.settings.min-y");
-
-        // Config stuff
+    private static void initRewards() {
         List<String> intervals = config.getStringList("rewards.scores");
         REWARDS_SCORES = new HashMap<>();
         for (String key : intervals) {
@@ -225,45 +317,21 @@ public class Option {
             REWARDS_MESSAGE = null;
         }
 
-        POSSIBLE_LEADS = config.getIntegerList("lead.amount");
-        for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
-            if (lead < 1) {
-                Verbose.error("Invalid lead in config: found " + lead + ", should be >1");
-                POSSIBLE_LEADS.remove((Object) lead);
-            }
-        }
+        LEAVE_REWARDS = config.getBoolean("rewards.leave-rewards");
+        ALL_POINTS = config.getBoolean("scoring.all-points");
+    }
 
+    // --------------------------------------------------------------
+    // Scoreboard
+
+    public static boolean SCOREBOARD;
+    public static String SCOREBOARD_TITLE;
+    public static List<String> SCOREBOARD_LINES;
+
+    private static void initScoreboard() {
         SCOREBOARD = lang.getBoolean("scoreboard.enabled");
         SCOREBOARD_TITLE = Util.color(lang.getString("scoreboard.title"));
         SCOREBOARD_LINES = Util.color(lang.getStringList("scoreboard.lines"));
-        INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
-        PERMISSIONS = config.getBoolean("permissions.enabled");
-        FOCUS_MODE = config.getBoolean("focus-mode.enabled");
-        FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
-
-        GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
-
-        SOUND_TYPE = Sound.valueOf(config.getString("particles.sound-type").toUpperCase());
-        SOUND_PITCH = config.getInt("particles.sound-pitch");
-        PARTICLE_TYPE = Particle.valueOf(config.getString("particles.particle-type").toUpperCase());
-        PARTICLE_SHAPE = Option.ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
-
-        // Advanced settings
-        GENERATOR_CHECK = gen.getInt("advanced.generator-check");
-        HEIGHT_GAP = gen.getDouble("advanced.height-gap");
-        MULTIPLIER = gen.getInt("advanced.maxed-multiplier");
-
-        MAXED_ONE_BLOCK = gen.getInt("advanced.maxed-values.1-block");
-        MAXED_TWO_BLOCK = gen.getInt("advanced.maxed-values.2-block");
-        MAXED_THREE_BLOCK = gen.getInt("advanced.maxed-values.3-block");
-        MAXED_FOUR_BLOCK = gen.getInt("advanced.maxed-values.4-block");
-
-        if (init) {
-            BORDER_SIZE = gen.getDouble("advanced.border-size");
-            SQL = config.getBoolean("sql.enabled");
-        }
-
-        SchematicCache.read();
     }
 
     public enum ParticleShape {

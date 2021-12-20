@@ -16,6 +16,7 @@ import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
@@ -386,7 +387,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 new BlockGenerateEvent(chosen, this, player).call();
                 lastSpawn = chosen.getLocation().clone();
 
-                if (player.useParticles) {
+                if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
                     PARTICLE_DATA.setType(Option.PARTICLE_TYPE);
 
                     Player bukkitPlayer = player.getPlayer();
