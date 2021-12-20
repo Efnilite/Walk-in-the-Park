@@ -27,10 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Wrapper class for a regular player to store plugin-usable data
@@ -112,23 +109,36 @@ public class ParkourPlayer extends ParkourUser {
         this.style = Option.DEFAULT_STYLE;
         this.lang = Option.DEFAULT_LANG;
 
-        this.useSpecial = Boolean.parseBoolean(getDefaultValue("special"));
-        this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg"));
-        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty"));
-        this.useStructure = Boolean.parseBoolean(getDefaultValue("structure"));
-        this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard"));
-        this.useParticles = Boolean.parseBoolean(getDefaultValue("particles"));
-        this.blockLead = Integer.parseInt(getDefaultValue("lead"));
-        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty"));
-        this.time = getDefaultValue("time");
+        this.useSpecial = Boolean.parseBoolean(getDefaultValue("special", "boolean"));
+        this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg", "boolean"));
+        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty", "boolean"));
+        this.useStructure = Boolean.parseBoolean(getDefaultValue("structure", "boolean"));
+        this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard", "boolean"));
+        this.useParticles = Boolean.parseBoolean(getDefaultValue("particles", "boolean"));
+        this.blockLead = Integer.parseInt(getDefaultValue("lead", "int"));
+        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty", "double"));
+        this.time = getDefaultValue("time", "string");
 
         this.locale = lang;
         player.setPlayerTime(getTime(time), false);
         updateScoreboard();
     }
 
-    private String getDefaultValue(String option) {
-        return Option.OPTIONS_DEFAULTS.get(option.toLowerCase());
+    private String getDefaultValue(String option, String presumedType) {
+        String def = Option.OPTIONS_DEFAULTS.get(option.toLowerCase());
+        if (def == null) {
+            switch (presumedType.toLowerCase()) {
+                case "boolean":
+                    return "true";
+                case "double":
+                    return "0.3";
+                case "int":
+                    return "4";
+                case "string":
+                    return "Day";
+            }
+        }
+        return def;
     }
 
     public void setGenerator(ParkourGenerator generator) {

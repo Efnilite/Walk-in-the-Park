@@ -111,6 +111,13 @@ public final class WITP extends JavaPlugin {
                 break;
         }
 
+        // ----- Configurations -----
+
+        configuration = new Configuration(this);
+        Option.init(true);
+        addCommand("witp", new MainCommand());
+        divider = new SubareaDivider();
+
         // ----- Hooks and Bungee -----
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -133,13 +140,6 @@ public final class WITP extends JavaPlugin {
         if (Option.BUNGEECORD) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
-
-        // ----- Configurations -----
-
-        configuration = new Configuration(this);
-        Option.init(true);
-        addCommand("witp", new MainCommand());
-        divider = new SubareaDivider();
 
         // ----- Registry -----
 
