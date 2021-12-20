@@ -37,7 +37,7 @@ public class InventoryBuilder {
      * @param   rows
      *          amount of rows
      * @param   name
-     *          the name ('\&' can be used)
+     *          the name (and sign can be used)
      */
     public InventoryBuilder(int rows, String name) {
         this(null, rows, name);

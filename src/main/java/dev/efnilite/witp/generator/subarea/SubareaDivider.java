@@ -355,8 +355,10 @@ public class SubareaDivider {
         collection.put(point, pp);
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
         List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
-        for (Chunk chunk : chunks) {
-            chunk.setForceLoaded(true);
+        if (Version.isHigherOrEqual(Version.V1_13)) {
+            for (Chunk chunk : chunks) {
+                chunk.setForceLoaded(true);
+            }
         }
 
         // --- Schematic pasting ---

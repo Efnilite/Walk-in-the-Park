@@ -256,7 +256,7 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Sends a message or array of it - coloured allowed, using '&'
+     * Sends a message or array of it - coloured allowed, using the and sign
      *
      * @param   messages
      *          The message

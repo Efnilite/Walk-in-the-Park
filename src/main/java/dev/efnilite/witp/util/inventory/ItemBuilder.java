@@ -100,8 +100,8 @@ public class ItemBuilder {
         meta.setLore(lore);
         if (Version.isHigherOrEqual(Version.V1_13)) {
             ((Damageable) meta).setDamage(Math.abs(durability - type.getMaxDurability()));
+            meta.setUnbreakable(unbreakable);
         }
-        meta.setUnbreakable(unbreakable);
         item.setItemMeta(meta);
         return item;
     }

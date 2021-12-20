@@ -308,7 +308,7 @@ public class ParkourPlayer extends ParkourUser {
      * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
      * the player to achieve this score using their settings.
      *
-     * @return a number from 0 -> 1 (both inclusive)
+     * @return a number from 0 to 1 (both inclusive)
      */
     public String calculateDifficultyScore() {
         try {

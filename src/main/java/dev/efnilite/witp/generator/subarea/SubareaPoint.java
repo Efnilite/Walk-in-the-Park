@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a 2D Vector -> (x, z)
+ * Represents a 2D Vector: (x, z)
  *
  * @author Efnilite
  */

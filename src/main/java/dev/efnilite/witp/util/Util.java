@@ -285,7 +285,7 @@ public class Util {
     }
 
     /**
-     * Colors strings (uses & as color marker)
+     * Colors strings (uses and sign as color marker)
      *
      * @param   strings
      *          The strings
@@ -302,7 +302,7 @@ public class Util {
     }
 
     /**
-     * Color a list of strings (uses & as color marker)
+     * Color a list of strings (uses and sign as color marker)
      *
      * @param   strings
      *          The string to be colored
@@ -347,7 +347,7 @@ public class Util {
     }
 
     /**
-     * Formats ints with dots (1000 -> 1.000)
+     * Formats ints with dots (1000 to 1.000)
      *
      * @param   value
      *          The int
@@ -370,7 +370,7 @@ public class Util {
      * @param   material
      *          The material
      *
-     * @return true -> the box contains something other then the given material
+     * @return true: the box contains something other then the given material
      */
     public static boolean excludeMaterial(Location position, Location position2, Material material) {
         World w = position.getWorld();

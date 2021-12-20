@@ -298,7 +298,7 @@ public class Schematic {
 
     /**
      * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour.
-     * todo -> optimize/clean up, use matrices and get the initial heading to support for multiple directions
+     * todo: optimize/clean up, use matrices and get the initial heading to support for multiple directions
      *
      * @param   at
      *          The location at which the Schematic will be pasted

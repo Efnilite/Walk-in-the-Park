@@ -39,12 +39,17 @@ import java.util.*;
 public class MainCommand extends BukkitCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
-    private final ItemStack wand = new ItemBuilder(
-            Version.isHigherOrEqual(Version.V1_13) ? Material.getMaterial("GOLDEN_AXE") : Material.getMaterial("GOLD_AXE"),
-            "&4&lWITP Schematic Wand")
-            .setLore("&7Left click: first position", "&7Right click: second position")
-            .setPersistentData("witp", "true")
-            .buildPersistent(WITP.getInstance());
+    private ItemStack wand;
+
+    public MainCommand() {
+        if (Version.isHigherOrEqual(Version.V1_14)) {
+            wand = new ItemBuilder(
+                    Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")
+                    .setLore("&7Left click: first position", "&7Right click: second position")
+                    .setPersistentData("witp", "true")
+                    .buildPersistent(WITP.getInstance());
+        }
+    }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -204,7 +209,9 @@ public class MainCommand extends BukkitCommand {
                     send(player, "");
                     send(player, "&7Welcome to the schematic creating section.");
                     send(player, "&7You can use the following commands:");
-                    send(player, "&c/witp schematic wand &8- &7Get the schematic wand");
+                    if (Version.isHigherOrEqual(Version.V1_14)) {
+                        send(player, "&c/witp schematic wand &8- &7Get the schematic wand");
+                    }
                     send(player, "&c/witp schematic pos1 &8- &7Set the first position of your selection");
                     send(player, "&c/witp schematic pos2 &8- &7Set the second position of your selection");
                     send(player, "&c/witp schematic save &8- &7Save your selection to a schematic file");
@@ -217,12 +224,14 @@ public class MainCommand extends BukkitCommand {
                 Selection selection = selections.get(player);
                 switch (args[1].toLowerCase()) {
                     case "wand":
-                        player.getInventory().addItem(wand);
+                        if (Version.isHigherOrEqual(Version.V1_14)) {
+                            player.getInventory().addItem(wand);
 
-                        send(player, "&8----------- &4&lSchematics &8-----------");
-                        send(player, "&7Use your WITP Schematic Wand to easily select schematics.");
-                        send(player, "&7Use &8left click&7 to set the first position, and &8right click &7for the second!");
-                        send(player, "&7If you can't place a block and need to set a position mid-air, use &8the pos commands &7instead.");
+                            send(player, "&8----------- &4&lSchematics &8-----------");
+                            send(player, "&7Use your WITP Schematic Wand to easily select schematics.");
+                            send(player, "&7Use &8left click&7 to set the first position, and &8right click &7for the second!");
+                            send(player, "&7If you can't place a block and need to set a position mid-air, use &8the pos commands &7instead.");
+                        }
                         return true;
                     case "pos1":
                         if (selections.get(player) == null) {

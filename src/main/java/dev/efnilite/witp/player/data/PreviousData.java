@@ -3,6 +3,7 @@ package dev.efnilite.witp.player.data;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -46,8 +47,10 @@ public class PreviousData {
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
         player.setHealth(20);
 
-        for (PotionEffectType value : PotionEffectType.values()) {
-            player.removePotionEffect(value);
+        if (Version.isHigherOrEqual(Version.V1_13)) {
+            for (PotionEffectType value : PotionEffectType.values()) {
+                player.removePotionEffect(value);
+            }
         }
     }
 

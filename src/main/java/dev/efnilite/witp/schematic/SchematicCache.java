@@ -17,7 +17,7 @@ public class SchematicCache {
 
     public static void read() {
         if (!WITP.versionSupportsSchematics()) {
-            Verbose.info("This version does *not* support schematics, consider upgrading if you want them");
+            Verbose.warn("This version does *not* support schematics, consider upgrading if you want them");
             return;
         }
 
