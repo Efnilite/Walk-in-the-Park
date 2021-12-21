@@ -42,7 +42,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose int highScore;
     public @Expose String highScoreTime;
     public @Expose int blockLead;
-    public @Expose boolean useDifficulty;
+    public @Expose Boolean useDifficulty;
     public @Expose String highScoreDifficulty;
     public @Expose Boolean useParticles;
     public @Expose Boolean useSpecial;
@@ -406,8 +406,13 @@ public class ParkourPlayer extends ParkourUser {
                     ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
 
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg,
-                            from.showScoreboard, from.highScoreDifficulty);
+                            from.useParticles == null || from.useParticles,
+                            from.useDifficulty == null || from.useDifficulty,
+                            from.useStructure == null || from.useStructure,
+                            from.useSpecial == null || from.useSpecial,
+                            from.showDeathMsg == null || from.showDeathMsg,
+                            from.showScoreboard == null || from.showScoreboard,
+                            from.highScoreDifficulty);
                     pp.saveStats();
                     players.put(pp.player, pp);
                     reader.close();
