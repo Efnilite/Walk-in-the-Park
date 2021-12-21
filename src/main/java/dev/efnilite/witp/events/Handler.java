@@ -14,6 +14,10 @@ import dev.efnilite.witp.util.inventory.PersistentUtil;
 import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,8 +60,15 @@ public class Handler implements Listener {
 
         // OP join messages
         if (player.isOp() && WITP.OUTDATED) {
-            player.sendMessage(Util.color("&c&l(!) &7The WITP plugin you are using is outdated. " +
-                    "Updates usually fix a variety of bugs. Check the Spigot page for more info."));
+            BaseComponent[] message = new ComponentBuilder()
+                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Efnilite/Walk-in-the-Park/releases/latest"))
+                    .append("(!) ").color(ChatColor.RED).bold(true)
+                    .append("Your WITP version is outdated. ").color(ChatColor.GRAY).bold(false)
+                    .append("Click here").underlined(true)
+                    .append(" to visit the latest version!").color(ChatColor.GRAY).underlined(false)
+                    .create();
+
+            player.spigot().sendMessage(message);
         }
         if (player.isOp() && WITP.getMultiverseHook() != null && Util.getVoidGenerator() == null) {
             player.sendMessage(Util.color("&c&l(!) &7You're running Multiverse without support for creating void worlds." +
