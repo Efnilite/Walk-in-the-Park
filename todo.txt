@@ -1,12 +1,12 @@
 Walk in the Park TODO
 
 ## Additions
+- Added option to disable/enable teleporting after leaving
 
 ## Changes
 
 ## Fixes
-- Fixed bungeecord option not working with BungeeCord/Waterfall
-- Fixed (rare) bug with a double being null
+- Fixed reading null values from json files
 
 High priority:
 - Optimize ram with schematics (async?)

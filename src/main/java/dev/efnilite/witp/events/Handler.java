@@ -259,7 +259,7 @@ public class Handler implements Listener {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
-                ParkourUser.unregister(user, true, false, true);
+                ParkourUser.unregister(user, Option.LEAVE_TELEPORTING, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Verbose.error("Error while trying to unregister player");
