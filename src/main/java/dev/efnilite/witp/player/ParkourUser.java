@@ -108,7 +108,7 @@ public abstract class ParkourUser {
         }
         users.remove(pl.getName());
 
-        if (sendBack) {
+        if (sendBack && Option.LEAVE_TELEPORTING) {
             if (Option.BUNGEECORD && kickIfBungee) {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {

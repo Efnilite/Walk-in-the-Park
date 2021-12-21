@@ -35,6 +35,9 @@ bungeecord:
     # The server the players will be returned to after the game is done
     return_server: 'Lobby'
 
+    # If a player gets teleported after they leave
+    teleporting: true
+
     # If go back is enabled
     go-back-enabled: false
 

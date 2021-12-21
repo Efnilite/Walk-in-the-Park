@@ -31,6 +31,7 @@ public class Option {
     public static boolean FOCUS_MODE;
     public static List<String> FOCUS_MODE_WHITELIST;
     public static boolean GO_BACK;
+    public static boolean LEAVE_TELEPORTING;
     public static boolean BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
@@ -120,6 +121,7 @@ public class Option {
         FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
 
         GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
+        LEAVE_TELEPORTING = config.getBoolean("bungeecord.teleporting");
 
         if (init) {
             BORDER_SIZE = generation.getDouble("advanced.border-size");
