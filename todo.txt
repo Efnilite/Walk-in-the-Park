@@ -1,12 +1,9 @@
 Walk in the Park TODO
 
-## Additions
-- Added option to disable/enable teleporting after leaving
-
-## Changes
-
-## Fixes
-- Fixed reading null values from json files
+- Added 'teleporting' option in config.yml
+    > Useful to disable for servers who use /spawn, warps, etc.
+- Update project to Java 11 (higher versions are still supported)
+- Fix space in Multiverse message
 
 High priority:
 - Optimize ram with schematics (async?)

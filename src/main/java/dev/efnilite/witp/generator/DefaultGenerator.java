@@ -241,7 +241,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         player.saveGame();
         deleteStructure();
         buildLog.clear();
-        player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        if (Option.LEAVE_TELEPORTING) {
+            player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
         int score = this.score;
         String time = this.time;
         String diff = player.calculateDifficultyScore();

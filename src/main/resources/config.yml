@@ -35,7 +35,8 @@ bungeecord:
     # The server the players will be returned to after the game is done
     return_server: 'Lobby'
 
-    # If a player gets teleported after they leave the parkour by teleporting out of the w orld
+    # Whether a player gets teleported to their previous location after they leave the parkour by using a teleport command.
+    # Useful to disable for servers who have /spawn, warps, etc.
     teleporting: true
 
     # If go back is enabled
