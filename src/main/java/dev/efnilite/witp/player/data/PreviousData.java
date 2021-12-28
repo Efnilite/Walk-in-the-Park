@@ -37,15 +37,15 @@ public class PreviousData {
             this.health = player.getHealth();
             this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         }
+        if (Option.HEALTH_HANDLING) {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+        }
+
         saveInventory();
 //        speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
         
 //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1); unsure whether this is the actual value
-
-        // Set to defaults
-
-        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        player.setHealth(20);
 
         if (Version.isHigherOrEqual(Version.V1_13)) {
             for (PotionEffectType value : PotionEffectType.values()) {
@@ -66,7 +66,7 @@ public class PreviousData {
             player.setGameMode(gamemode);
 
             // -= Attributes =-
-            if (Option.SAVE_STATS) {
+            if (Option.SAVE_STATS && Option.HEALTH_HANDLING) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }

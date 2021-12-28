@@ -376,11 +376,7 @@ public class ParkourPlayer extends ParkourUser {
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @Nullable ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
-        if (!Option.JOINING) {
-            player.sendMessage(Util.color("&c&l(!) &7Parkour is currently disabled. Try again later."));
-            return null;
-        }
+    public static @NotNull ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
         return register(new ParkourPlayer(player));
     }
 
@@ -459,7 +455,6 @@ public class ParkourPlayer extends ParkourUser {
                 }
                 players.put(pp.player, pp);
             }
-            return pp;
         }
         return pp;
     }

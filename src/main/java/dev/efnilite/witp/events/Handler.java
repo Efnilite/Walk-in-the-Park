@@ -77,6 +77,11 @@ public class Handler implements Listener {
 
         // Bungeecord joining
         if (Option.BUNGEECORD) {
+            if (!Option.JOINING) {
+                Verbose.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                return;
+            }
+
             try {
                 ParkourPlayer pp = ParkourPlayer.register(player);
                 ParkourGenerator generator = WITP.getVersionGenerator(pp);

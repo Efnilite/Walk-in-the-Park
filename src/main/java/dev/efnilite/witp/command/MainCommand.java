@@ -147,10 +147,16 @@ public class MainCommand extends BukkitCommand {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
+                    if (!Option.JOINING) {
+                        Verbose.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                        return true;
+                    }
+
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null) {
                         return true;
                     }
+
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player);
                         ParkourGenerator generator = WITP.getVersionGenerator(pp);

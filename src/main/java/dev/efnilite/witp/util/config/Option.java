@@ -55,6 +55,7 @@ public class Option {
     public static boolean SAVE_STATS;
     public static boolean LEAVE_REWARDS;
     public static boolean OPTIONS_ENABLED;
+    public static boolean HEALTH_HANDLING;
 
     public static HashMap<String, String> OPTIONS_DEFAULTS;
     public static boolean HOTBAR_QUIT_ITEM;
@@ -71,6 +72,8 @@ public class Option {
         initScoreboard();
         initGeneration();
         initAdvancedGeneration();
+
+        HEALTH_HANDLING = config.getBoolean("options.health-handling");
 
         List<String> options = Arrays.asList("lead", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
         OPTIONS_DEFAULTS = new HashMap<>();
