@@ -311,7 +311,7 @@ public class Option {
 
         BUNGEECORD = config.getBoolean("bungeecord.enabled");
         REWARDS = config.getBoolean("rewards.enabled");
-        REWARDS_MONEY = config.getInt("rewards.vault-reward");
+        REWARDS_MONEY = config.getDouble("rewards.vault-reward");
         REWARDS_INTERVAL = config.getInt("rewards.interval");
         REWARDS_COMMAND = config.getString("rewards.command").replace("/", "");
         if (REWARDS_COMMAND.equalsIgnoreCase("null")) {

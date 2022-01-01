@@ -1,9 +1,6 @@
 Walk in the Park TODO
 
-- Added 'teleporting' option in config.yml
-    > Useful to disable for servers who use /spawn, warps, etc.
-- Update project to Java 11 (higher versions are still supported)
-- Fix space in Multiverse message
+- Fixed Vault rewards only passing integers
 
 High priority:
 - Optimize ram with schematics (async?)
