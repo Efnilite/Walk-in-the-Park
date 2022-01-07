@@ -25,9 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Divides the empty world into sections so there can be an infinite amount of players in 1 world/**
@@ -60,6 +58,13 @@ public class SubareaDivider {
      */
     private List<SubareaPoint> openSpaces;
     private HashMap<SubareaPoint, ParkourPlayer> collection;
+
+    /**
+     * Spaces which have been previously generated but now have no players, so instead of generating a new point
+     * it just picks an old one without any players.
+     */
+    private volatile Queue<SubareaPoint> cachedPoints = new LinkedList<>(); // volatile to reduce chance of thread collision
+    private volatile HashMap<ParkourPlayer, SubareaPoint> activePoints = new HashMap<>();
 
     /**
      * New instance of the SubareaDivider
@@ -100,10 +105,6 @@ public class SubareaDivider {
         this.possibleInLayer = new ArrayList<>();
     }
 
-    public World getWorld() {
-        return world;
-    }
-
     /**
      * Gets the point where the player is at
      *
@@ -113,92 +114,40 @@ public class SubareaDivider {
      * @return the point of the player
      */
     public @Nullable SubareaPoint getPoint(@NotNull ParkourPlayer player) {
-        for (SubareaPoint point : collection.keySet()) {
-            if (collection.get(point).getPlayer().getUniqueId() == player.getPlayer().getUniqueId()) {
-                return point;
+        for (ParkourPlayer loopPlayer : activePoints.keySet()) {
+            if (loopPlayer == player) {
+                return activePoints.get(loopPlayer);
             }
         }
         return null;
     }
 
-    public boolean isOccupied(SubareaPoint point) {
-        return collection.get(point) != null; // if null not occupied, so return false
-    }
-
     public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator) {
-        generate(player, generator, true);
-    }
+        if (getPoint(player) != null) { // player already has assigned point
+            return;
+        }
 
-    /**
-     * Generates the next playable area
-     *
-     * @param   player
-     *          The player of who the generator belongs to
-     *
-     * @param   generator
-     *          The generator instance of the player
-     *
-     * @param   checkHistory
-     *          Whether it should check if there are previously used places.
-     */
-    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator, boolean checkHistory) {
-        if (getPoint(player) == null) {
-            if (checkHistory && !openSpaces.isEmpty()) { // spaces which were previously used
-                SubareaPoint last = openSpaces.get(openSpaces.size() - 1);
+        if (cachedPoints.size() > 0) { // check for leftover spots, if none are left just generate a new one
+            SubareaPoint cachedPoint = cachedPoints.poll(); // get top result
 
-                if (last == null) {
-                    openSpaces.clear();
-                    generate(player, generator, false);
-                }
-
-                if (isOccupied(last)) { // if it is being used
-                    openSpaces.remove(last); // remove it from possible
-                    amount--;
-                    generate(player, generator, true);
-                }
-
-                amount++;
-                createIsland(player, generator, last);
-                openSpaces.remove(last);
-                Verbose.verbose("Used Subarea divided to " + player.getPlayer().getName());
+            if (cachedPoint == null) { // if cachedPoint is somehow still null after checking size (to remove @NotNull warning)
+                generate(player, generator);
                 return;
             }
 
-            if (amount % 8 == 0) { // every new layer has +8 area points
-                amount++;
-                createIsland(player, generator, current);
+            activePoints.put(player, cachedPoint);
+            createIsland(player, generator, cachedPoint);
 
-                current = current.zero(); // reset
-                layer++;
+            Verbose.verbose("Cached point divided to " + player.getPlayer().getName() + " at " + cachedPoint);
+        } else {
+            int size = activePoints.size();
+            int[] coords = spiralAt(size);
+            SubareaPoint point = new SubareaPoint(coords[0], coords[1]);
 
-                fetchPossibleInLayer();
-                Verbose.verbose("Layer increase in Divider");
+            activePoints.put(player, point);
+            createIsland(player, generator, point);
 
-            } else {
-                if (possibleInLayer.isEmpty()) {
-                    fetchPossibleInLayer();
-                }
-
-                SubareaPoint point = possibleInLayer.get(0);
-
-                if (point == null) {
-                    fetchPossibleInLayer();
-                    generate(player, generator, false);
-                }
-
-                if (isOccupied(point)) {
-                    possibleInLayer.remove(point);
-                    amount--;
-                    generate(player, generator, false);
-                }
-
-                current = point;
-                possibleInLayer.remove(point);
-
-                amount++;
-                createIsland(player, generator, current);
-            }
-            Verbose.verbose("New Subarea divided to " + player.getPlayer().getName());
+            Verbose.verbose("New point divided to " + player.getPlayer().getName() + " at " + point);
         }
     }
 
@@ -209,10 +158,12 @@ public class SubareaDivider {
      * @param   player
      *          The player
      */
-    public void leave(@NotNull ParkourPlayer player) {
+    public synchronized void leave(@NotNull ParkourPlayer player) {
         SubareaPoint point = getPoint(player);
-        collection.remove(point);
-        openSpaces.add(point);
+
+        cachedPoints.add(point);
+        activePoints.remove(player);
+        Verbose.verbose("Cached point " + point);
 
         SubareaPoint.Data data = player.getGenerator().data;
         for (Chunk spawnChunk : data.spawnChunks) {
@@ -270,40 +221,12 @@ public class SubareaDivider {
         }
     }
 
-    // gets all possible points in a square in the current layer
-    private void fetchPossibleInLayer() {
-        SubareaPoint corner1 = new SubareaPoint(layer, layer); // layer 2 has an offset of 2, so it would be (2,2)
-        SubareaPoint corner2 = new SubareaPoint(layer, -layer); // (2,-2)
-        SubareaPoint corner3 = new SubareaPoint(-layer, layer); // (-2,2)
-        SubareaPoint corner4 = new SubareaPoint(-layer, -layer); // (-2,-2)
-
-        possibleInLayer.clear();
-
-        List<SubareaPoint> loop = new ArrayList<>();
-        loop.addAll(corner1.getInBetween(corner2));
-        loop.addAll(corner1.getInBetween(corner3));
-        loop.addAll(corner4.getInBetween(corner2));
-        loop.addAll(corner4.getInBetween(corner3));
-
-        loop1:
-        for (SubareaPoint point : loop) { // removes duplicates
-            for (SubareaPoint other : possibleInLayer) {
-                if (other.equals(point)) {
-                    continue loop1;
-                }
-            }
-            possibleInLayer.add(point);
-            Verbose.verbose("Add point " + point.toString() + " to possible");
-        }
-    }
-
     @SuppressWarnings("deprecation") // for setGameRuleValue
     private @Nullable World createWorld(String name) {
         World world;
         if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
             WorldCreator creator = new WorldCreator(name)
                     .generateStructures(false)
-//                    .hardcore(false)
                     .type(WorldType.FLAT)
                     .generator(new VoidGenerator())
                     .environment(World.Environment.NORMAL);
@@ -347,12 +270,7 @@ public class SubareaDivider {
         return world;
     }
 
-    private void createIsland(@NotNull ParkourPlayer pp, ParkourGenerator generator, SubareaPoint point) {
-        if (point == null) {
-            generate(pp, generator, false);
-            return;
-        }
-        collection.put(point, pp);
+    private synchronized void createIsland(@NotNull ParkourPlayer pp, ParkourGenerator generator, @NotNull SubareaPoint point) {
         Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
         List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
         if (Version.isHigherOrEqual(Version.V1_13)) {
@@ -454,5 +372,9 @@ public class SubareaDivider {
                 player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
         }, 10);
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

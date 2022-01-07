@@ -1,6 +1,7 @@
 Walk in the Park TODO
 
-- Fixed Vault rewards only passing integers
+- Reworked SubareaDivider
+    > This should make island assigning more reliable and easier to test
 
 High priority:
 - Optimize ram with schematics (async?)

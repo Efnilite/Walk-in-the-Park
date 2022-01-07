@@ -9,10 +9,7 @@ import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
-import dev.efnilite.witp.hook.HoloHook;
-import dev.efnilite.witp.hook.MultiverseHook;
-import dev.efnilite.witp.hook.PlaceholderHook;
-import dev.efnilite.witp.hook.ProtocolHook;
+import dev.efnilite.witp.hook.*;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Util;
@@ -50,6 +47,7 @@ public final class WITP extends JavaPlugin {
     private static @Nullable MultiverseHook multiverseHook;
     private static @Nullable ProtocolHook protocolHook;
     private static @Nullable PlaceholderHook placeholderHook;
+    private static @Nullable NoteHook noteHook;
     private static @Nullable HoloHook holoHook;
 
     @Override
@@ -136,6 +134,10 @@ public final class WITP extends JavaPlugin {
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
             Verbose.info("Connecting with HolographicDisplays..");
             holoHook = new HoloHook();
+        }
+        if (getServer().getPluginManager().isPluginEnabled("NoteBlockAPI")) {
+            Verbose.info("Connecting with NoteBlockAPI..");
+            noteHook = new NoteHook();
         }
         if (Option.BUNGEECORD) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -265,6 +267,10 @@ public final class WITP extends JavaPlugin {
 
     public static @Nullable PlaceholderHook getPlaceholderHook() {
         return placeholderHook;
+    }
+
+    public static @Nullable NoteHook getNoteHook() {
+        return noteHook;
     }
 
     public static HoloHook getHoloHook() {

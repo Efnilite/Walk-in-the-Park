@@ -17,6 +17,17 @@ public class SubareaPoint {
     public int x;
     public int z;
 
+    /**
+     * Constructs a new point
+     *
+     * @param   x
+     *          The top-down x-coordinate where each point is for example (1,0) away.
+     *          Each point is a coord in integer values: (1,1), (4,7), etc.
+     *
+     * @param   z
+     *          The top-down z-coordinate where each point is for example (0,1) away.
+     *          Each point is a coord in integer values: (1,1), (4,7), etc.
+     */
     public SubareaPoint(int x, int z) {
         this.x = x;
         this.z = z;
@@ -45,39 +56,39 @@ public class SubareaPoint {
         return this;
     }
 
-    /**
-     * Gets the SubareaPoints between 2 points
-     *
-     * @param   other
-     *          The other point
-     *
-     * @return the points inbetween these 2 points (including these points)
-     */
-    public List<SubareaPoint> getInBetween(SubareaPoint other) {
-        List<SubareaPoint> points = new ArrayList<>();
-        if (other.z == z) { // For example: this is (1,1) and other is (-1,1), z will be the same
-            int deltaX = other.x - x; // -1 - 1 = -2
-            int abs = Math.abs(deltaX); //  -(-2) = 2
-            int increment = deltaX / abs; // -2 / 2 = -1, so every loop the x gets decreased by 1
-            int current = x; // = 1
-            for (int i = 0; i <= abs; i++) {
-                points.add(new SubareaPoint(current, z));
-                current += increment;
-            }
-        } else if (other.x == x) {
-            int deltaZ = other.z - z;
-            int abs = Math.abs(deltaZ);
-            int increment = deltaZ / abs;
-            int current = z;
-            for (int i = 0; i <= abs; i++) {
-                points.add(new SubareaPoint(x, current));
-                current += increment;
-            }
-        } else {
-            throw new IllegalArgumentException("X or Z must be the same if getting the points in a straight line");
-        }
-        return points;
-    }
+//    /**
+//     * Gets the SubareaPoints between 2 points
+//     *
+//     * @param   other
+//     *          The other point
+//     *
+//     * @return the points inbetween these 2 points (including these points)
+//     */
+//    public List<SubareaPoint> getInBetween(SubareaPoint other) {
+//        List<SubareaPoint> points = new ArrayList<>();
+//        if (other.z == z) { // For example: this is (1,1) and other is (-1,1), z will be the same
+//            int deltaX = other.x - x; // -1 - 1 = -2
+//            int abs = Math.abs(deltaX); //  -(-2) = 2
+//            int increment = deltaX / abs; // -2 / 2 = -1, so every loop the x gets decreased by 1
+//            int current = x; // = 1
+//            for (int i = 0; i <= abs; i++) {
+//                points.add(new SubareaPoint(current, z));
+//                current += increment;
+//            }
+//        } else if (other.x == x) {
+//            int deltaZ = other.z - z;
+//            int abs = Math.abs(deltaZ);
+//            int increment = deltaZ / abs;
+//            int current = z;
+//            for (int i = 0; i <= abs; i++) {
+//                points.add(new SubareaPoint(x, current));
+//                current += increment;
+//            }
+//        } else {
+//            throw new IllegalArgumentException("X or Z must be the same if getting the points in a straight line");
+//        }
+//        return points;
+//    }
 
     public boolean equals(SubareaPoint other) {
         return other.x == x && other.z == z;
@@ -85,7 +96,7 @@ public class SubareaPoint {
 
     @Override
     public String toString() {
-        return "SubareaPoint{" + "x=" + x + ", z=" + z + '}';
+        return "x = " + x + " and z = " + z;
     }
 
     /**
