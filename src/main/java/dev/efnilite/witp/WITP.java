@@ -12,8 +12,8 @@ import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.*;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
@@ -57,54 +57,54 @@ public final class WITP extends JavaPlugin {
 
         instance = this;
         Tasks.time("load");
-        Verbose.init();
+        Logging.init();
 
         // ----- Versions -----
 
         String version = Util.getVersion();
         switch (version.substring(0, 5)) {
             case "v1_18":
-                Verbose.info("Registered under server version 1.18");
+                Logging.info("Registered under server version 1.18");
                 Version.VERSION = Version.V1_18;
                 break;
             case "v1_17":
-                Verbose.info("Registered under server version 1.17");
+                Logging.info("Registered under server version 1.17");
                 Version.VERSION = Version.V1_17;
                 break;
             case "v1_16":
-                Verbose.info("Registered under server version 1.16");
+                Logging.info("Registered under server version 1.16");
                 Version.VERSION = Version.V1_16;
                 break;
             case "v1_15":
-                Verbose.info("Registered under server version 1.15");
+                Logging.info("Registered under server version 1.15");
                 Version.VERSION = Version.V1_15;
                 break;
             case "v1_14":
-                Verbose.info("Registered under server version 1.14");
+                Logging.info("Registered under server version 1.14");
                 Version.VERSION = Version.V1_14;
                 break;
             case "v1_13":
-                Verbose.info("Registered under server version 1.13");
+                Logging.info("Registered under server version 1.13");
                 Version.VERSION = Version.V1_13;
                 break;
             case "v1_12":
-                Verbose.info("Registered under server version 1.12");
+                Logging.info("Registered under server version 1.12");
                 Version.VERSION = Version.V1_12;
                 break;
             case "v1_11":
-                Verbose.info("Registered under server version 1.11");
+                Logging.info("Registered under server version 1.11");
                 Version.VERSION = Version.V1_11;
                 break;
             case "v1_10":
-                Verbose.info("Registered under server version 1.10");
+                Logging.info("Registered under server version 1.10");
                 Version.VERSION = Version.V1_10;
                 break;
             case "v1_9_":
-                Verbose.info("Registered under server version 1.9");
+                Logging.info("Registered under server version 1.9");
                 Version.VERSION = Version.V1_9;
                 break;
             case "v1_8_":
-                Verbose.info("Registered under server version 1.8");
+                Logging.info("Registered under server version 1.8");
                 Version.VERSION = Version.V1_8;
                 break;
         }
@@ -119,27 +119,27 @@ public final class WITP extends JavaPlugin {
         // ----- Hooks and Bungee -----
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            Verbose.info("Connecting with PlaceholderAPI..");
+            Logging.info("Connecting with PlaceholderAPI..");
             placeholderHook = new PlaceholderHook();
             placeholderHook.register();
         }
         if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            Verbose.info("Connecting with Multiverse..");
+            Logging.info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
         }
         if (getServer().getPluginManager().isPluginEnabled("ProtocolAPI")) {
-            Verbose.info("Connecting with ProtocolAPI..");
+            Logging.info("Connecting with ProtocolAPI..");
             protocolHook = new ProtocolHook();
         }
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            Verbose.info("Connecting with HolographicDisplays..");
+            Logging.info("Connecting with HolographicDisplays..");
             holoHook = new HoloHook();
         }
         if (getServer().getPluginManager().isPluginEnabled("NoteBlockAPI")) {
-            Verbose.info("Connecting with NoteBlockAPI..");
+            Logging.info("Connecting with NoteBlockAPI..");
             noteHook = new NoteHook();
         }
-        if (Option.BUNGEECORD) {
+        if (Option.BUNGEECORD.get()) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
@@ -151,15 +151,16 @@ public final class WITP extends JavaPlugin {
         registry.register(new SpectatorGamemode());
         registry.registerType(new DefaultStyleType());
 
-        for (String style : Option.STYLES) {
+        for (String style : Option.STYLES.get()) {
             registry.getStyleType("default").addConfigStyle(style);
         }
 
         // ----- SQL and data -----
 
-        if (Option.SQL) {
+        if (Option.SQL.get()) {
             database = new Database();
-            database.connect(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB, Option.SQL_USERNAME, Option.SQL_PASSWORD);
+            database.connect(Option.SQL_URL.get(), Option.SQL_PORT.get(), Option.SQL_DB.get(),
+                    Option.SQL_USERNAME.get(), Option.SQL_PASSWORD.get());
         }
         ParkourUser.initHighScores();
 
@@ -170,7 +171,7 @@ public final class WITP extends JavaPlugin {
 
         // ----- Update checker -----
 
-        if (Option.UPDATER) {
+        if (Option.UPDATER.get()) {
             UpdateChecker checker = new UpdateChecker();
             Tasks.syncRepeat(checker::check, 8 * 72000); // 8 hours
         }
@@ -178,9 +179,9 @@ public final class WITP extends JavaPlugin {
         // ----- Metrics -----
 
         Metrics metrics = new Metrics(this, 9272);
-        metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
-        metrics.addCustomChart(new SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS)));
-        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
+        metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL.get())));
+        metrics.addCustomChart(new SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS.get())));
+        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.get().size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;
             ParkourUser.JOIN_COUNT = 0;
@@ -188,7 +189,7 @@ public final class WITP extends JavaPlugin {
         }));
         long time = Tasks.end("load");
 
-        Verbose.info("Loaded WITP in " + time + "ms!");
+        Logging.info("Loaded WITP in " + time + "ms!");
     }
 
     @Override
@@ -198,7 +199,7 @@ public final class WITP extends JavaPlugin {
                 ParkourUser.unregister(user, true, false, false);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while unregistering");
+                Logging.error("Error while unregistering");
             }
         }
 

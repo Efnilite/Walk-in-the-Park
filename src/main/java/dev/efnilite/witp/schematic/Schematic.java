@@ -3,8 +3,8 @@ package dev.efnilite.witp.schematic;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -117,7 +117,7 @@ public class Schematic {
             try {
                 Tasks.time("saveSchematic-" + file.getName());
                 if (dimensions == null || blocks == null) {
-                    Verbose.error("Data of schematic is null while trying to save!");
+                    Logging.error("Data of schematic is null while trying to save!");
                     return;
                 }
 
@@ -172,7 +172,7 @@ public class Schematic {
                 player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Tasks.end("saveSchematic-" + file.getName()) + "ms&7!"));
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while saving");
+                Logging.error("Error while saving");
             }
         });
     }
@@ -184,18 +184,18 @@ public class Schematic {
         if (read) {
             return;
         }
-        Verbose.verbose("Reading schematic " + file.getName() + "...");
+        Logging.verbose("Reading schematic " + file.getName() + "...");
         Tasks.time("individualSchemRead");
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
-            Verbose.error("File doesn't exist!");
+            Logging.error("File doesn't exist!");
             return;
         } catch (IOException ex) {
             ex.printStackTrace();
-            Verbose.error("I/O error while reading schematic!");
+            Logging.error("I/O error while reading schematic!");
             return;
         }
         this.read = true;
@@ -258,16 +258,16 @@ public class Schematic {
 
         Vector3D readDimensions = Util.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
-        Verbose.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
+        Logging.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
-        Verbose.info("Checking legacy materials for " + full);
+        Logging.info("Checking legacy materials for " + full);
         String[] split = full.split("\\[");
         String material = split[0];
         Material legacy = Material.matchMaterial(material, true);
         if (legacy == null) {
-            Verbose.error("Unknown material: " + material + " in " + fileName);
+            Logging.error("Unknown material: " + material + " in " + fileName);
             return null;
         }
         if (split.length > 1) {
@@ -332,7 +332,7 @@ public class Schematic {
         }
 
         if (other == null) { // if no lime wool
-            Verbose.error("No lime wool found in file " + file.getName());
+            Logging.error("No lime wool found in file " + file.getName());
             return null;
         }
 

@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.config.Option;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ public class Database {
         this.database = database;
 
         try {
-            Verbose.info("Connecting to SQL...");
+            Logging.info("Connecting to SQL...");
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver"); // For newer versions
             } catch (ClassNotFoundException ignored) {
@@ -32,10 +32,10 @@ public class Database {
                     + "?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=utf-8"
                     + "&autoReconnect=true", username, password);
             init();
-            Verbose.info("Connected to SQL!");
+            Logging.info("Connected to SQL!");
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to connect to SQL!");
+            Logging.error("Error while trying to connect to SQL!");
         }
     }
 
@@ -44,8 +44,8 @@ public class Database {
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to update MySQL database!");
-            Verbose.error("Query: " + query);
+            Logging.error("Error while trying to update MySQL database!");
+            Logging.error("Query: " + query);
         }
     }
 
@@ -62,8 +62,8 @@ public class Database {
             return connection.prepareStatement(query);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to fetch from MySQL database!");
-            Verbose.error("Query: " + query);
+            Logging.error("Error while trying to fetch from MySQL database!");
+            Logging.error("Query: " + query);
             return null;
         }
     }
@@ -82,16 +82,16 @@ public class Database {
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `lang` VARCHAR(5)");
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `hsdiff` VARCHAR(3)");
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "game-history` ADD `scoreDiff` VARCHAR(3)");
-        Verbose.info("Initialized database");
+        Logging.info("Initialized database");
     }
 
     public void close() {
         try {
             connection.close();
-            Verbose.info("Closed connection to MySQL");
+            Logging.info("Closed connection to MySQL");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to close connection to MySQL database!");
+            Logging.error("Error while trying to close connection to MySQL database!");
         }
     }
 

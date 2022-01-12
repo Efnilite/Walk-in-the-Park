@@ -14,8 +14,8 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
@@ -89,11 +89,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
         super(player, generatorOptions);
-        Verbose.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
+        Logging.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
         calculateChances();
 
         this.handler = new InventoryHandler(player);
-        this.heading = Option.HEADING;
+        this.heading = Option.HEADING.get();
 
         this.score = 0;
         this.totalScore = 0;
@@ -114,7 +114,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     @Override
     public void start() {
-        Verbose.verbose("Starting generator of " + player.getPlayer().getName());
+        Logging.verbose("Starting generator of " + player.getPlayer().getName());
         task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -179,7 +179,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
                             latestLocation = current.getLocation();
 
-                            if (!Option.ALL_POINTS) {
+                            if (!Option.ALL_POINTS.get()) {
                                 addPoint();
                             } else if (score == 0) {
                                 addPoint();
@@ -191,7 +191,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             for (int i = lastIndex; i < size; i++) {
                                 Block block = Util.parseLocation(locations.get(i)).getBlock();
                                 if (block.getType() != Material.AIR) {
-                                    if (Option.ALL_POINTS) {
+                                    if (Option.ALL_POINTS.get()) {
                                         addPoint();
                                     }
                                     block.setType(Material.AIR);
@@ -213,7 +213,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 player.updateScoreboard();
             }
         };
-        Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK);
+        Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK.get());
     }
 
     public void score() { }
@@ -244,7 +244,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         if (regenerate) {
             player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        } else if (Option.LEAVE_TELEPORTING) {
+        } else if (Option.LEAVE_TELEPORTING.get()) {
             player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
@@ -313,8 +313,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
 
                 int height = 0;
-                int deltaYMin = lastSpawn.getBlockY() - Option.MIN_Y;
-                int deltaYMax = lastSpawn.getBlockY() - Option.MAX_Y;
+                int deltaYMin = lastSpawn.getBlockY() - Option.MIN_Y.get();
+                int deltaYMax = lastSpawn.getBlockY() - Option.MAX_Y.get();
                 if (deltaYMin < 20) { // buffer of 20, so the closer to the max/min the more chance of opposite
                     int delta = (deltaYMin - 20) * -1;
                     int chanceRise = delta * 5;
@@ -394,10 +394,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 lastSpawn = chosen.getLocation().clone();
 
                 if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
-                    PARTICLE_DATA.setType(Option.PARTICLE_TYPE);
+                    PARTICLE_DATA.setType(Option.PARTICLE_TYPE.get());
 
                     Player bukkitPlayer = player.getPlayer();
-                    switch (Option.PARTICLE_SHAPE) {
+                    switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get())) {
                         case DOT:
                             PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
                             Particles.draw(lastSpawn.clone().add(0.5, 1, 0.5), PARTICLE_DATA, bukkitPlayer);
@@ -411,7 +411,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             Particles.box(BoundingBox.of(chosen), player.getPlayer().getWorld(), PARTICLE_DATA, bukkitPlayer, 0.15);
                             break;
                     }
-                    player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+                    player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
                 }
 
                 if (structureCooldown > 0) {
@@ -439,7 +439,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         }
                     }
                 } else {
-                    Verbose.error("No structures to choose from!");
+                    Logging.error("No structures to choose from!");
                     return;
                 }
                 Schematic schematic = SchematicCache.getSchematic(file.getName());
@@ -463,7 +463,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     reset(true);
                 }
                 if (structureBlocks == null || structureBlocks.isEmpty()) {
-                    Verbose.error("0 blocks found in structure!");
+                    Logging.error("0 blocks found in structure!");
                     player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                     reset(true);
                 }
@@ -520,7 +520,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     private void checkRewards() {
-        if (!Option.REWARDS) {
+        if (!Option.REWARDS.get()) {
             return;
         }
 
@@ -529,7 +529,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (!scores.isEmpty() && scores.containsKey(score) && scores.get(score) != null) {
             List<String> commands = scores.get(score);
             if (commands != null) {
-                if (Option.LEAVE_REWARDS) {
+                if (Option.LEAVE_REWARDS.get()) {
                     rewardsLeaveList.addAll(commands);
                 } else {
                     for (String command : commands) {
@@ -540,18 +540,23 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // Interval rewards
-        if (Option.REWARDS_INTERVAL > 0 && totalScore % Option.REWARDS_INTERVAL == 0) {
+        if (Option.REWARDS_INTERVAL.get() > 0 && totalScore % Option.REWARDS_INTERVAL.get() == 0) {
             if (Option.INTERVAL_REWARDS_SCORES != null) {
                 for (String command : Option.INTERVAL_REWARDS_SCORES) {
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
                             command.replace("%player%", player.getPlayer().getName()));
                 }
             }
-            if (Option.REWARDS_MONEY != 0) {
-                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY);
+            if (Option.REWARDS_COMMANDS.get() != null) {
+                for (String command : Option.REWARDS_COMMANDS.get()) {
+                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getPlayer().getName()));
+                }
             }
-            if (Option.REWARDS_MESSAGE != null) {
-                player.send(Option.REWARDS_MESSAGE);
+            if (Option.REWARDS_MONEY.get() != 0) {
+                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY.get());
+            }
+            if (Option.REWARDS_MESSAGE.get() != null) {
+                player.send(Option.REWARDS_MESSAGE.get());
             }
         }
     }
@@ -601,7 +606,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int y = base.getBlockY();
 
         // the distance, adjusted to the height (dy)
-        double heightGap = dy >= 0 ? Option.HEIGHT_GAP - dy : Option.HEIGHT_GAP - (dy + 1);
+        double heightGap = dy >= 0 ? Option.HEIGHT_GAP.get() - dy : Option.HEIGHT_GAP.get() - (dy + 1);
 
         // the range in which it should check for blocks (max 180 degrees, min 90 degrees)
         double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;
@@ -703,7 +708,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (!checkOptions("time", "witp.time", disabled)) itemCount--;                // 3
             if (!checkOptions("difficulty", "witp.difficulty", disabled)) itemCount--;    // 4
             if (!checkOptions("particles", "witp.particles", disabled)) itemCount--;      // 5
-            if (!checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) itemCount--; // 6
+            if (!checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD.get()) itemCount--; // 6
             if (!checkOptions("death-msg", "witp.fall", disabled)) itemCount--;           // 7
             if (!checkOptions("special", "witp.special", disabled)) itemCount--;          // 8
             if (!checkOptions("structure", "witp.structures", disabled)) itemCount--;     // 9
@@ -771,7 +776,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     menu(optDisabled);
                 });
             }
-            if (checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD) {
+            if (checkOptions("scoreboard", "witp.scoreboard", disabled) && Option.SCOREBOARD.get()) {
                 String scoreboardString = Boolean.toString(pp.showScoreboard);
                 item = config.getFromItemData(pp.locale, "options.scoreboard", normalizeBoolean(Util.colorBoolean(scoreboardString)));
                 item.setType(pp.showScoreboard ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
@@ -823,7 +828,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
             if (checkOptions("language", "witp.language", disabled)) {
                 builder.setItem(22, WITP.getConfiguration().getFromItemData(pp.locale, "options.language", pp.locale), (t2, e2) -> {
-                    List<String> langs = Option.LANGUAGES;
+                    List<String> langs = Option.LANGUAGES.get();
                     InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
                     for (String langName : langs) {
                         language.setItem(dynamic1.next(), new ItemBuilder(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
@@ -843,7 +848,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     ParkourPlayer.unregister(pp, true, true, true);
                 } catch (IOException | InvalidStatementException ex) {
                     ex.printStackTrace();
-                    Verbose.error("Error while trying to quit player " + player.getName());
+                    Logging.error("Error while trying to quit player " + player.getName());
                 }
             });
             builder.setItem(25, close, (t2, e2) -> player.closeInventory());
@@ -865,10 +870,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             int i = 0;
             for (String style : type.styles.keySet()) {
                 if (i == 26) {
-                    Verbose.error("There are too many styles to display!");
+                    Logging.error("There are too many styles to display!");
                     return;
                 }
-                if (Option.PERMISSIONS_STYLES && pp.checkPermission("witp.styles." + style)) {
+                if (Option.PERMISSIONS_STYLES.get() && pp.checkPermission("witp.styles." + style)) {
                     continue;
                 }
                 styling.setItem(i, new ItemBuilder(type.get(style), "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {

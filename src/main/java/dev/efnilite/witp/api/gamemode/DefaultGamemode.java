@@ -4,7 +4,7 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +35,7 @@ public class DefaultGamemode implements Gamemode {
             WITP.getDivider().generate(pp, generator);
         } catch (IOException | SQLException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to register player" + player.getName());
+            Logging.error("Error while trying to register player" + player.getName());
         }
     }
 }

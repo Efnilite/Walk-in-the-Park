@@ -7,8 +7,8 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.schematic.selection.Selection;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
 import dev.efnilite.witp.util.particle.ParticleData;
@@ -76,9 +76,9 @@ public class Handler implements Listener {
         }
 
         // Bungeecord joining
-        if (Option.BUNGEECORD) {
-            if (!Option.JOINING) {
-                Verbose.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+        if (Option.BUNGEECORD.get()) {
+            if (!Option.JOINING.get()) {
+                Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                 return;
             }
 
@@ -88,11 +88,11 @@ public class Handler implements Listener {
                 WITP.getDivider().generate(pp, generator);
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
-                Verbose.error("Something went wrong while trying to fetch a player's (" + playerName + ") data");
+                Logging.error("Something went wrong while trying to fetch a player's (" + playerName + ") data");
             }
 
             // Join message
-            if (Option.JOIN_LEAVE) {
+            if (Option.JOIN_LEAVE.get()) {
                 event.setJoinMessage(null);
                 for (ParkourUser user : ParkourUser.getUsers()) {
                     user.sendTranslated("join", player.getName());
@@ -104,7 +104,7 @@ public class Handler implements Listener {
                 // If players who left in the world end up in the world itself while not being a player
                 player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             } else {
-                Verbose.error("There is no backup world! Selecting one at random...");
+                Logging.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(world.getName()))) {
                         player.sendMessage(Util.color("&cThere was an error while trying to get a world"));
@@ -112,7 +112,7 @@ public class Handler implements Listener {
                         return;
                     }
                 }
-                Verbose.error("There are no worlds for player " + player.getName() + " to fall back to! Kicking player..");
+                Logging.error("There are no worlds for player " + player.getName() + " to fall back to! Kicking player..");
                 player.kickPlayer("There are no accessible worlds for you to go to - please rejoin");
             }
         }
@@ -127,13 +127,13 @@ public class Handler implements Listener {
             return;
         }
 
-        if (Option.JOIN_LEAVE) {
+        if (Option.JOIN_LEAVE.get()) {
             event.setQuitMessage(null);
             for (ParkourUser user : ParkourUser.getUsers()) {
                 user.sendTranslated("leave", playerName);
             }
         }
-        if (Option.INVENTORY_HANDLING) {
+        if (Option.INVENTORY_HANDLING.get()) {
             PreviousData data = ParkourUser.getPreviousData(playerName);
             if (data != null)  {
                 quitInventoryData.put(playerName, data);
@@ -143,7 +143,7 @@ public class Handler implements Listener {
             ParkourPlayer.unregister(player, true, false, true);
         } catch (IOException | InvalidStatementException ex) {
             ex.printStackTrace();
-            Verbose.error("There was an error while trying to handle player " + playerName + " quitting!");
+            Logging.error("There was an error while trying to handle player " + playerName + " quitting!");
         }
     }
 
@@ -158,11 +158,11 @@ public class Handler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void command(PlayerCommandPreprocessEvent event) {
-        if (Option.FOCUS_MODE) {
+        if (Option.FOCUS_MODE.get()) {
             ParkourUser user = ParkourUser.getUser(event.getPlayer());
             if (user != null) {
                 String command = event.getMessage().toLowerCase();
-                for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
+                for (String item : Option.FOCUS_MODE_WHITELIST.get()) {   // i.e.: "msg", "w"
                     if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
                         return;                                     // yes, so let event go through
                     }
@@ -253,7 +253,7 @@ public class Handler implements Listener {
                     ParkourUser.unregister(player, true, false, true);
                 } catch (IOException | InvalidStatementException ex) {
                     ex.printStackTrace();
-                    Verbose.error("Error while trying to unregister player");
+                    Logging.error("Error while trying to unregister player");
                 }
             }
         }
@@ -264,10 +264,10 @@ public class Handler implements Listener {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
-                ParkourUser.unregister(user, Option.LEAVE_TELEPORTING, false, true);
+                ParkourUser.unregister(user, Option.LEAVE_TELEPORTING.get(), false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to unregister player");
+                Logging.error("Error while trying to unregister player");
             }
         }
     }

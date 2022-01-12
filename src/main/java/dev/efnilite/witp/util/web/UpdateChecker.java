@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.web;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.task.Tasks;
 
 import java.io.BufferedReader;
@@ -20,26 +20,26 @@ public class UpdateChecker {
                 latest = getLatestVersion();
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to fetch latest version!");
+                Logging.error("Error while trying to fetch latest version!");
                 return;
             }
             if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
-                Verbose.info("A new version of WITP is available to download!");
-                Verbose.info("Newest version: " + latest);
+                Logging.info("A new version of WITP is available to download!");
+                Logging.info("Newest version: " + latest);
                 WITP.OUTDATED = true;
             } else {
-                Verbose.info("WITP is currently up-to-date!");
+                Logging.info("WITP is currently up-to-date!");
             }
         });
     }
 
     private String getLatestVersion() throws IOException {
         InputStream stream;
-        Verbose.info("Checking for updates...");
+        Logging.info("Checking for updates...");
         try {
             stream = new URL("https://raw.githubusercontent.com/Efnilite/Walk-in-the-Park/master/src/main/resources/plugin.yml").openStream();
         } catch (IOException e) {
-            Verbose.info("Unable to check for updates!");
+            Logging.info("Unable to check for updates!");
             return "";
         }
 

@@ -9,8 +9,8 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -91,7 +91,7 @@ public abstract class ParkourUser {
                         WITP.getDivider().generate(spp, generator);
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
-                        Verbose.error("Error while trying to register player" + player.getPlayer().getName());
+                        Logging.error("Error while trying to register player" + player.getPlayer().getName());
                     }
                 }
                 pp.getGenerator().spectators.clear();
@@ -109,7 +109,7 @@ public abstract class ParkourUser {
         users.remove(pl.getName());
 
         if (sendBack) {
-            if (Option.BUNGEECORD && kickIfBungee) {
+            if (Option.BUNGEECORD.get() && kickIfBungee) {
                 Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             } else {
                 PreviousData data = previousData.get(pl.getName());
@@ -118,7 +118,7 @@ public abstract class ParkourUser {
                 pl.resetPlayerTime();
                 pl.resetPlayerWeather();
 
-                if (Option.REWARDS && Option.LEAVE_REWARDS && player instanceof ParkourPlayer) {
+                if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && player instanceof ParkourPlayer) {
                     ParkourPlayer pp = (ParkourPlayer) player;
                     if (pp.getGenerator() instanceof DefaultGenerator) {
                         for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
@@ -136,14 +136,14 @@ public abstract class ParkourUser {
     }
 
     public boolean checkPermission(String perm) {
-        if (Option.PERMISSIONS) {
+        if (Option.PERMISSIONS.get()) {
             return player.hasPermission(perm);
         }
         return true;
     }
 
     public boolean alertCheckPermission(String perm) {
-        if (Option.PERMISSIONS) {
+        if (Option.PERMISSIONS.get()) {
             boolean check = player.hasPermission(perm);
             if (!check) {
                 sendTranslated("cant-do");
@@ -196,7 +196,7 @@ public abstract class ParkourUser {
      *          When creating the file reader goes wrong
      */
     public static void fetchHighScores() throws IOException, SQLException {
-        if (Option.SQL) {
+        if (Option.SQL.get()) {
             SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
@@ -249,7 +249,7 @@ public abstract class ParkourUser {
                 fetchHighScores();
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to fetch the high scores!");
+                Logging.error("Error while trying to fetch the high scores!");
             }
             highScores = Util.sortByValue(highScores);
         }
@@ -404,7 +404,7 @@ public abstract class ParkourUser {
         path = "messages." + this.locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
-            Verbose.error("Unknown path: " + path + " - try deleting the config");
+            Logging.error("Unknown path: " + path + " - try deleting the config");
             return;
         }
         send(replace(string, replaceable));
@@ -432,7 +432,7 @@ public abstract class ParkourUser {
         path = "messages." + locale + "." + path;
         String string = WITP.getConfiguration().getString("lang", path);
         if (string == null) {
-            Verbose.error("Custom language '" + locale + "' is missing a path: '" + path + "'. Please add this path to the language in lang.yml!");
+            Logging.error("Custom language '" + locale + "' is missing a path: '" + path + "'. Please add this path to the language in lang.yml!");
             return "";
         }
         return replace(string, replaceable);

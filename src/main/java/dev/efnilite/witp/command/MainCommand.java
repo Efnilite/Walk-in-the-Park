@@ -10,8 +10,8 @@ import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
@@ -69,7 +69,7 @@ public class MainCommand extends BukkitCommand {
 
             // Advanced settings based per permission
             if (sender.hasPermission("witp.reload") || sender.hasPermission("witp.schematic") || sender.isOp()) {
-                send(sender, "&7------------ &aAdvanced &7------------)");
+                send(sender, "&7------------ &aAdvanced &7-------------");
             }
             if (sender.hasPermission("witp.schematic")) {
                 send(sender, "&a/witp schematic &f- &7Create a schematic");
@@ -83,34 +83,34 @@ public class MainCommand extends BukkitCommand {
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
                 case "reload":
-                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
 
                     Tasks.time("reload");
-                    send(sender, "&a&l(!) &7Reloading config files..");
+                    send(sender, "&4&l> &7Reloading config files..");
                     WITP.getConfiguration().reload();
                     Option.init(false);
                     long time = Tasks.end("reload");
-                    send(sender, "&a&l(!) &7Reloaded all config files in " + time + "ms!");
+                    send(sender, "&4&l> &7Reloaded all config files in " + time + "ms!");
                     return true;
                 case "reset":
-                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
 
                     ParkourUser.resetHighScores();
 
-                    send(sender, "&4&l(!) &7Reset all high in-memory scores.");
+                    send(sender, "&4&l> &7Reset all high in-memory scores.");
                     return true;
                 case "migrate":
-                    if (Option.PERMISSIONS && !sender.hasPermission("witp.reload")) {
+                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
-                    } else if (!Option.SQL) {
-                        send(sender, "&a&l(!) &7You have disabled SQL support in the config");
+                    } else if (!Option.SQL.get()) {
+                        send(sender, "&4&l> &7You have disabled SQL support in the config");
                         return true;
                     }
 
@@ -127,7 +127,7 @@ public class MainCommand extends BukkitCommand {
                             reader = new FileReader(file);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
-                            send(sender, "&a&l(!) &cError while trying to read file, check your console");
+                            send(sender, "&4&l> &cError while trying to read file, check your console");
                             return true;
                         }
                         ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
@@ -135,7 +135,7 @@ public class MainCommand extends BukkitCommand {
                         from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                         from.save(true);
                     }
-                    send(sender, "&a&l(!) &7Your players' data has been migrated in " + Tasks.end("migrate") + "ms!");
+                    send(sender, "&4&l> &7Your players' data has been migrated in " + Tasks.end("migrate") + "ms!");
                     return true;
             }
             if (player == null) {
@@ -143,12 +143,12 @@ public class MainCommand extends BukkitCommand {
             }
             switch (args[0]) {
                 case "join": {
-                    if (!player.hasPermission("witp.join") && Option.PERMISSIONS) {
+                    if (!player.hasPermission("witp.join") && Option.PERMISSIONS.get()) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
-                    if (!Option.JOINING) {
-                        Verbose.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                    if (!Option.JOINING.get()) {
+                        Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                         return true;
                     }
 
@@ -164,7 +164,7 @@ public class MainCommand extends BukkitCommand {
                         pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
-                        Verbose.error("Error while joining");
+                        Logging.error("Error while joining");
                     }
                     return true;
                 }
@@ -178,13 +178,13 @@ public class MainCommand extends BukkitCommand {
                         ParkourUser.unregister(pp, true, true, true);
                     } catch (IOException | InvalidStatementException ex) {
                         ex.printStackTrace();
-                        Verbose.error("Error while leaving");
+                        Logging.error("Error while leaving");
                     }
                     return true;
                 }
                 case "menu": {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                    if (Option.OPTIONS_ENABLED && pp != null) {
+                    if (Option.OPTIONS_ENABLED.get() && pp != null) {
                         pp.getGenerator().menu();
                         return true;
                     }
@@ -200,14 +200,14 @@ public class MainCommand extends BukkitCommand {
                     return true;
                 }
                 case "leaderboard":
-                    if (Option.PERMISSIONS && !player.hasPermission("witp.leaderboard")) {
+                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.leaderboard")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
                     ParkourUser.leaderboard(ParkourUser.getUser(player), player, 1);
                     break;
                 case "schematic":
-                    if (Option.PERMISSIONS && !player.hasPermission("witp.schematic")) {
+                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.schematic")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
@@ -248,7 +248,7 @@ public class MainCommand extends BukkitCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(player.getLocation(), true));
+                        send(player, "&4&l> &7Position 1 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "pos2":
                         if (selections.get(player) == null) {
@@ -259,7 +259,7 @@ public class MainCommand extends BukkitCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(player.getLocation(), true));
+                        send(player, "&4&l> &7Position 2 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "save":
                         if (selection == null || !selection.isComplete()) {
@@ -286,7 +286,7 @@ public class MainCommand extends BukkitCommand {
                 try {
                     Integer.parseInt(args[1]);
                 } catch (NumberFormatException ex) {
-                    send(player, "&c&l(!) &7" + args[1] + " is not a number! Please enter a page.");
+                    send(player, "&4&l> &7" + args[1] + " is not a number! Please enter a page.");
                     return true;
                 }
                 ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
@@ -294,7 +294,7 @@ public class MainCommand extends BukkitCommand {
                 if (sender.isOp()) {
                     Player join = Bukkit.getPlayer(args[1]);
                     if (join == null) {
-                        Verbose.error("Player " + args[1] + " doesn't exist!");
+                        Logging.error("Player " + args[1] + " doesn't exist!");
                         return true;
                     }
                     try {
@@ -305,7 +305,7 @@ public class MainCommand extends BukkitCommand {
                         }
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
-                        Verbose.error("Error while joining");
+                        Logging.error("Error while joining");
                     }
                 }
             } else if (args[0].equalsIgnoreCase("search") && player != null) {

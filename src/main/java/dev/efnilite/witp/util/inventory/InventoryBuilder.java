@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.inventory;
 
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class InventoryBuilder {
         }
         if (open) {
             if (player == null) {
-                Verbose.error("Tried opening inventory but player is null");
+                Logging.error("Tried opening inventory but player is null");
             } else {
                 player.getPlayer().openInventory(inventory);
                 player.openInventory = new OpenInventoryData(name, onClick);

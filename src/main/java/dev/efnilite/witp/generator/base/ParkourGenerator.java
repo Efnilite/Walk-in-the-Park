@@ -51,7 +51,7 @@ public abstract class ParkourGenerator {
         this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
-        this.borderOffset = Option.BORDER_SIZE / 2.0;
+        this.borderOffset = Option.BORDER_SIZE.get() / 2.0;
         player.setGenerator(this);
     }
 

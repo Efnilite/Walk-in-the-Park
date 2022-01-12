@@ -103,7 +103,7 @@ public class Util {
 
     public static String parseDifficulty(double difficulty) {
         if (difficulty > 1) {
-            Verbose.error("Invalid difficuly, above 1: " + difficulty);
+            Logging.error("Invalid difficuly, above 1: " + difficulty);
             return "unknown";
         }
         if (difficulty <= 0.3) {
@@ -154,7 +154,7 @@ public class Util {
                     economy = service.getProvider();
                     economy.depositPlayer(player, amount);
                 } else {
-                    Verbose.error("There was an error while trying to fetch the Vault economy!");
+                    Logging.error("There was an error while trying to fetch the Vault economy!");
                 }
                 return;
             }
@@ -170,11 +170,14 @@ public class Util {
      *
      * @return a vector that indicates the direction
      */
-    public static Direction getDirection(String face) {
+    public static Direction getDirection(@Nullable String face) {
+        if (face == null) {
+            return null;
+        }
         try {
             return Direction.valueOf(face.toUpperCase());
         } catch (IllegalArgumentException ex) {
-            Verbose.error(face + " is not a direction! Defaulting to east.");
+            Logging.error(face + " is not a direction! Defaulting to east.");
             return Direction.EAST;
         }
     }
@@ -190,7 +193,7 @@ public class Util {
             case WEST:
                 return new Vector3D(-1, 0, 0);
             default:
-                Verbose.error("Invalid direction (direction used: " + direction.name() + ")");
+                Logging.error("Invalid direction (direction used: " + direction.name() + ")");
                 return new Vector3D(1, 0, 0);
         }
     }
@@ -250,7 +253,7 @@ public class Util {
         try {
             player.sendPluginMessage(WITP.getInstance(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
-            Verbose.error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
+            Logging.error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
             player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
         }
     }
@@ -285,23 +288,6 @@ public class Util {
     }
 
     /**
-     * Colors strings (uses and sign as color marker)
-     *
-     * @param   strings
-     *          The strings
-     *
-     * @return the strings
-     */
-    public static String[] color(String... strings) {
-        String[] ret = new String[strings.length];
-        int i = 0;
-        for (String string : strings) {
-            ret[i++] = Util.color(string);
-        }
-        return ret;
-    }
-
-    /**
      * Color a list of strings (uses and sign as color marker)
      *
      * @param   strings
@@ -309,7 +295,7 @@ public class Util {
      *
      * @return the strings, but colored
      */
-    public static List<String> color(List<String> strings) {
+    public static List<String> colorList(List<String> strings) {
         List<String> ret = new ArrayList<>();
         for (String string : strings) {
             ret.add(Util.color(string));
@@ -584,7 +570,7 @@ public class Util {
     public static void sendDefaultLang(Player player, String path, String... replaceable) {
         String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
         if (message == null) {
-            Verbose.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
             return;
         }
         for (String s : replaceable) {
@@ -596,7 +582,7 @@ public class Util {
     public static String getDefaultLang(String path) {
         String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
         if (message == null) {
-            Verbose.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
             return "";
         }
         return message;
@@ -626,7 +612,7 @@ public class Util {
         String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
         World world = Bukkit.getWorld(values[3]);
         if (world == null) {
-            Verbose.error("Detected an invalid world: " + values[3]);
+            Logging.error("Detected an invalid world: " + values[3]);
             return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
         }
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));

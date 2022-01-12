@@ -1,8 +1,8 @@
 Walk in the Park TODO
 
-- Reworked SubareaDivider
-    > This should make island assigning more reliable and easier to test
-- Fixed reset system completely breaking when having option 'leave-teleporting' set to false
+- Fixed rewards command not working
+- Reworked config system
+    > Added custom error to give more information
 
 High priority:
 - Optimize ram with schematics (async?)

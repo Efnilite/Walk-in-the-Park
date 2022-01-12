@@ -2,8 +2,8 @@ package dev.efnilite.witp.util.config;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.SchematicCache;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Material;
@@ -47,20 +47,20 @@ public class Configuration {
             for (String file : defaultFiles) {
                 plugin.saveResource(file, false);
             }
-            Verbose.info("Downloaded all config files");
+            Logging.info("Downloaded all config files");
         }
         for (String file : defaultFiles) {
             try {
                 ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to update config");
+                Logging.error("Error while trying to update config");
             }
             FileConfiguration configuration = this.getFile(folder + "/" + file);
             files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
         }
         schematics();
-        Verbose.verbose("Loaded all config files");
+        Logging.info("Loaded all config files");
     }
 
     public void reload() {
@@ -81,29 +81,29 @@ public class Configuration {
         String[] schematics = new String[]{"spawn-island.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
         folder.mkdirs();
-        Verbose.info("Downloading all schematics...");
+        Logging.info("Downloading all schematics...");
         int structureCount = 21;
         Tasks.asyncTask(() -> {
             try {
                 for (String schematic : schematics) {
                     InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
                     Files.copy(stream, Paths.get(folder + "/" + schematic));
-                    Verbose.verbose("Downloaded " + schematic);
+                    Logging.verbose("Downloaded " + schematic);
                     stream.close();
                 }
                 for (int i = 1; i <= structureCount; i++) {
                     InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
                     Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
-                    Verbose.verbose("Downloaded parkour-" + i);
+                    Logging.verbose("Downloaded parkour-" + i);
                     stream.close();
                 }
                 SchematicCache.read();
-                Verbose.info("Downloaded all schematics");
+                Logging.info("Downloaded all schematics");
             } catch (FileAlreadyExistsException ex) {
                 // do nothing
             } catch (IOException ex) {
                 ex.printStackTrace();
-                Verbose.error("Stopped download - please delete all the structures that have been downloaded and restart the server");
+                Logging.stack("Stopped download of schematics", "Please delete all the structures that have been downloaded and restart the server");
             }
         });
     }
@@ -137,7 +137,7 @@ public class Configuration {
         if (string.isEmpty()) {
             return null;
         }
-        return Util.color(string);
+        return Util.colorList(string);
     }
 
     /**

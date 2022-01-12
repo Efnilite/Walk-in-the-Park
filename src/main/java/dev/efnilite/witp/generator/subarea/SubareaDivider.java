@@ -8,8 +8,8 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.Vector3D;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
@@ -73,11 +73,11 @@ public class SubareaDivider {
      */
     @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
-        Verbose.verbose("Initializing SubareaDivider");
+        Logging.verbose("Initializing SubareaDivider");
         FileConfiguration config = WITP.getConfiguration().getFile("config");
         String worldName = config.getString("world.name");
         if (worldName == null) {
-            Verbose.error("Name of world is null in config");
+            Logging.error("Name of world is null in config");
             return;
         }
         if (WITP.getMultiverseHook() == null) {
@@ -85,11 +85,11 @@ public class SubareaDivider {
             File folder = new File(worldName);
             if (folder.exists() && folder.isDirectory()) {
                 folder.delete();
-                Verbose.verbose("Deleted world " + worldName);
+                Logging.verbose("Deleted world " + worldName);
             }
         } else {
             WITP.getMultiverseHook().deleteWorld(worldName);
-            Verbose.verbose("Deleted world " + worldName);
+            Logging.verbose("Deleted world " + worldName);
         }
         this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
@@ -136,18 +136,18 @@ public class SubareaDivider {
             }
 
             activePoints.put(player, cachedPoint);
-            createIsland(player, generator, cachedPoint);
+            createIsland(player, cachedPoint);
 
-            Verbose.verbose("Cached point divided to " + player.getPlayer().getName() + " at " + cachedPoint);
+            Logging.verbose("Cached point divided to " + player.getPlayer().getName() + " at " + cachedPoint);
         } else {
             int size = activePoints.size();
             int[] coords = spiralAt(size);
             SubareaPoint point = new SubareaPoint(coords[0], coords[1]);
 
             activePoints.put(player, point);
-            createIsland(player, generator, point);
+            createIsland(player, point);
 
-            Verbose.verbose("New point divided to " + player.getPlayer().getName() + " at " + point);
+            Logging.verbose("New point divided to " + player.getPlayer().getName() + " at " + point);
         }
     }
 
@@ -163,7 +163,7 @@ public class SubareaDivider {
 
         cachedPoints.add(point);
         activePoints.remove(player);
-        Verbose.verbose("Cached point " + point);
+        Logging.verbose("Cached point " + point);
 
         SubareaPoint.Data data = player.getGenerator().data;
         for (Chunk spawnChunk : data.spawnChunks) {
@@ -233,7 +233,7 @@ public class SubareaDivider {
 
             world = Bukkit.createWorld(creator);
             if (world == null) {
-                Verbose.error("Error while trying to create the parkour world - please restart and delete the folder");
+                Logging.error("Error while trying to create the parkour world - please restart and delete the folder");
                 return null;
             }
             // -= Optimizations =-
@@ -242,7 +242,7 @@ public class SubareaDivider {
         } else { // if multiverse is detected
             world = WITP.getMultiverseHook().createWorld(name);
         }
-        Verbose.verbose("Created world " + name);
+        Logging.verbose("Created world " + name);
 
         // -= World gamerules & options =-
         if (Version.isHigherOrEqual(Version.V1_13)) {
@@ -270,8 +270,8 @@ public class SubareaDivider {
         return world;
     }
 
-    private synchronized void createIsland(@NotNull ParkourPlayer pp, ParkourGenerator generator, @NotNull SubareaPoint point) {
-        Location spawn = point.getEstimatedCenter((int) Option.BORDER_SIZE).toLocation(world).clone();
+    private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull SubareaPoint point) {
+        Location spawn = point.getEstimatedCenter(Math.round(Option.BORDER_SIZE.get())).toLocation(world).clone();
         List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
         if (Version.isHigherOrEqual(Version.V1_13)) {
             for (Chunk chunk : chunks) {
@@ -305,20 +305,20 @@ public class SubareaDivider {
                 block.setType(Material.AIR);
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING).multiply(-1).toBukkitVector()); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING.get()).multiply(-1).toBukkitVector()); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }
         }
         if (!playerDetected) {
-            Verbose.error("Couldn't find the spawn of a player - please check your block types and schematics");
+            Logging.error("Couldn't find the spawn of a player - please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
-            createIsland(pp, generator, point);
+            createIsland(pp, point);
         }
         if (!parkourDetected) {
-            Verbose.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
+            Logging.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
-            createIsland(pp, generator, point);
+            createIsland(pp, point);
         }
 
         if (pp.getGenerator() == null) {
@@ -340,27 +340,27 @@ public class SubareaDivider {
 
         // -= Inventory =-
         player.setGameMode(GameMode.ADVENTURE);
-        if (Option.INVENTORY_HANDLING && Option.OPTIONS_ENABLED) {
+        if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
             player.getInventory().clear();
             ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
             if (mat == null) {
-                Verbose.error("Material for options in config is null - defaulting to compass");
+                Logging.error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&l-= Options =-").build());
             } else {
                 player.getInventory().setItem(8, mat);
             }
         }
-        if (Option.INVENTORY_HANDLING && Option.HOTBAR_QUIT_ITEM) {
+        if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
             ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit");
             if (mat == null) {
-                Verbose.error("Material for quitting in config is null - defaulting to barrier");
+                Logging.error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new ItemBuilder(Material.BARRIER, "&c&l-= Quit =-").build());
             } else {
                 player.getInventory().setItem(7, mat);
             }
         }
 
-        if (!Option.INVENTORY_HANDLING) {
+        if (!Option.INVENTORY_HANDLING.get()) {
             pp.sendTranslated("customize-menu");
         }
         pp.getGenerator().start();

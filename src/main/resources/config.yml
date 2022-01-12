@@ -206,9 +206,9 @@ rewards:
 
     # The commands that will be executed if the interval is met.
     # Use %player% to get the player
-    # 'null' means no command
+    # '' means no command
     command:
-        - 'null'
+        - ''
 
     # The amount of money players will receive as Vault currency
     vault-reward: 5

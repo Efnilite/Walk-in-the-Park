@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class UpdertStatement extends Statement {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            Verbose.error("Error while trying to update/insert values");
+            Logging.error("Error while trying to update/insert values");
         }
     }
 }

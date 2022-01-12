@@ -2,7 +2,7 @@ package dev.efnilite.witp.api;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +54,7 @@ public class WITPAPI {
     public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException, InvalidStatementException {
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp == null) {
-            Verbose.error("Player " + player.getName() + " isn't registered!");
+            Logging.error("Player " + player.getName() + " isn't registered!");
             return;
         }
         ParkourPlayer.unregister(pp, sendBack, false, true);

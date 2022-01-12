@@ -7,8 +7,8 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.sql.InsertStatement;
@@ -27,7 +27,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Wrapper class for a regular player to store plugin-usable data
@@ -67,13 +70,13 @@ public class ParkourPlayer extends ParkourUser {
      */
     public ParkourPlayer(@NotNull Player player) {
         super(player);
-        Verbose.verbose("Init of Player " + player.getName());
+        Logging.verbose("Init of Player " + player.getName());
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.joinTime = Instant.now();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
-        this.locale = Option.DEFAULT_LANG;
+        this.locale = Option.DEFAULT_LANG.get();
         this.lang = locale;
     }
 
@@ -106,8 +109,8 @@ public class ParkourPlayer extends ParkourUser {
         this.highScoreDifficulty = "?";
 
         // Adjustable defaults
-        this.style = Option.DEFAULT_STYLE;
-        this.lang = Option.DEFAULT_LANG;
+        this.style = Option.DEFAULT_STYLE.get();
+        this.lang = Option.DEFAULT_LANG.get();
 
         this.useSpecial = Boolean.parseBoolean(getDefaultValue("special", "boolean"));
         this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg", "boolean"));
@@ -153,12 +156,12 @@ public class ParkourPlayer extends ParkourUser {
         if (showScoreboard == null) {
             showScoreboard = true;
         }
-        if (showScoreboard && Option.SCOREBOARD && board != null && generator != null) {
-            String title = Option.SCOREBOARD_TITLE;
+        if (showScoreboard && Option.SCOREBOARD.get() && board != null && generator != null) {
+            String title = Option.SCOREBOARD_TITLE.get();
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
             if (lines == null) {
-                Verbose.error("Scoreboard lines are null! Check your config!");
+                Logging.error("Scoreboard lines are null! Check your config!");
                 return;
             }
             Integer rank = getHighScoreValue(uuid);
@@ -237,8 +240,8 @@ public class ParkourPlayer extends ParkourUser {
     public void save(boolean async) {
         Runnable runnable = () -> {
             try {
-                if (Option.SQL) {
-                    Verbose.verbose("Writing player's data to SQL server");
+                if (Option.SQL.get()) {
+                    Logging.verbose("Writing player's data to SQL server");
 
                     if (highScoreDifficulty == null) {
                         calculateDifficultyScore();
@@ -276,7 +279,7 @@ public class ParkourPlayer extends ParkourUser {
                 }
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to save the player's data..");
+                Logging.error("Error while trying to save the player's data..");
             }
         };
         if (async) {
@@ -290,7 +293,7 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the current game of the player
      */
     public void saveGame() {
-        if (Option.GAMELOGS && Option.SQL && generator.score > 0) {
+        if (Option.GAMELOGS.get() && Option.SQL.get() && generator.score > 0) {
             InsertStatement statement = new InsertStatement(WITP.getDatabase(), Option.SQL_PREFIX + "game-history")
                     .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
                     .setValue("name", player.getName()).setValue("score", generator.score)
@@ -299,7 +302,7 @@ public class ParkourPlayer extends ParkourUser {
                 statement.query();
             } catch (InvalidStatementException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while saving game");
+                Logging.error("Error while saving game");
             }
         }
     }
@@ -394,10 +397,10 @@ public class ParkourPlayer extends ParkourUser {
         if (players.get(pp.player) == null) {
             UUID uuid = pp.getPlayer().getUniqueId();
             JOIN_COUNT++;
-            if (!Option.SQL) {
+            if (!Option.SQL.get()) {
                 File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
                 if (data.exists()) {
-                    Verbose.verbose("Reading player data..");
+                    Logging.verbose("Reading player data..");
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
 
@@ -413,7 +416,7 @@ public class ParkourPlayer extends ParkourUser {
                     players.put(pp.player, pp);
                     reader.close();
                 } else {
-                    Verbose.verbose("Setting new player data..");
+                    Logging.verbose("Setting new player data..");
                     pp.resetPlayerPreferences();
                     players.put(pp.player, pp);
                     pp.saveStats();
@@ -444,7 +447,7 @@ public class ParkourPlayer extends ParkourUser {
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
                     pp.setDefaults(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
-                            Option.DEFAULT_LANG,
+                            Option.DEFAULT_LANG.get(),
                             Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
                             translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
                             translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
@@ -489,7 +492,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public int getTime(String time) {
         if (time == null) {
-            Verbose.error("Time is null, defaulting to daytime");
+            Logging.error("Time is null, defaulting to daytime");
             this.time = "day";
             return 1000;
         }

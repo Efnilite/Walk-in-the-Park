@@ -2,7 +2,7 @@ package dev.efnilite.witp.api;
 
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.api.style.StyleType;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public final class Registry {
     public void registerType(StyleType style) {
         if (!closed) {
             this.styleTypes.put(style.getName(), style);
-            Verbose.info("Registered style type " + style.getName() + "!");
+            Logging.info("Registered style type " + style.getName() + "!");
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }
@@ -42,7 +42,7 @@ public final class Registry {
     public void register(Gamemode gamemode) {
         if (!closed) {
             this.gamemodes.put(gamemode.getName(), gamemode);
-            Verbose.info("Registered gamemode " + gamemode.getName() + "!");
+            Logging.info("Registered gamemode " + gamemode.getName() + "!");
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }

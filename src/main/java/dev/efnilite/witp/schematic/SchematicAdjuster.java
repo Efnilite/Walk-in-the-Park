@@ -31,7 +31,7 @@ public class SchematicAdjuster {
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
-        return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING));
+        return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING.get()));
     }
 
     /**

@@ -2,7 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatMessageType;
@@ -25,7 +25,7 @@ public class ParkourSpectator extends ParkourUser {
 
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
         super(player.getPlayer());
-        Verbose.verbose("New ParkourSpectator init " + this.player.getName());
+        Logging.verbose("New ParkourSpectator init " + this.player.getName());
         this.locale = player.locale;
 
         if (player instanceof ParkourPlayer) {
@@ -33,7 +33,7 @@ public class ParkourSpectator extends ParkourUser {
                 ParkourPlayer.unregister(player, false, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
-                Verbose.error("Error while trying to unregister");
+                Logging.error("Error while trying to unregister");
             }
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
@@ -61,12 +61,12 @@ public class ParkourSpectator extends ParkourUser {
 
     @Override
     public void updateScoreboard() {
-        if (Option.SCOREBOARD) {
-            board.updateTitle(Option.SCOREBOARD_TITLE);
+        if (Option.SCOREBOARD.get()) {
+            board.updateTitle(Option.SCOREBOARD_TITLE.get());
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
             if (lines == null) {
-                Verbose.error("Scoreboard lines are null! Check your config!");
+                Logging.error("Scoreboard lines are null! Check your config!");
                 return;
             }
             Integer rank = ParkourPlayer.getHighScoreValue(watching.getPlayer().uuid);

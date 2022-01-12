@@ -1,7 +1,7 @@
 package dev.efnilite.witp.schematic;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Verbose;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.task.Tasks;
 
 import java.io.File;
@@ -17,13 +17,13 @@ public class SchematicCache {
 
     public static void read() {
         if (!WITP.versionSupportsSchematics()) {
-            Verbose.warn("This version does *not* support schematics, consider upgrading if you want them");
+            Logging.warn("This version does *not* support schematics, consider upgrading if you want them");
             return;
         }
 
         Tasks.asyncTask(() -> {
             Tasks.time("schematicsLoad");
-            Verbose.info("Initializing schematics...");
+            Logging.info("Initializing schematics...");
             cache.clear();
             File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
             File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
@@ -35,8 +35,8 @@ public class SchematicCache {
                     cache.put(fileName, schematic);
                 }
             }
-            Verbose.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
-            Verbose.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
+            Logging.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
+            Logging.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
         });
     }
 

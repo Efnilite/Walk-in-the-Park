@@ -1,8 +1,8 @@
 package dev.efnilite.witp.player.data;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Verbose;
 import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
@@ -33,11 +33,11 @@ public class PreviousData {
         this.location = player.getLocation();
         this.hunger = player.getFoodLevel();
 
-        if (Option.SAVE_STATS) {
+        if (Option.SAVE_STATS.get()) {
             this.health = player.getHealth();
             this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         }
-        if (Option.HEALTH_HANDLING) {
+        if (Option.HEALTH_HANDLING.get()) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
@@ -56,7 +56,7 @@ public class PreviousData {
 
     public void apply() {
         try {
-            if (Option.GO_BACK) {
+            if (Option.GO_BACK.get()) {
                 Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
                 player.teleport(to);
             } else {
@@ -66,16 +66,16 @@ public class PreviousData {
             player.setGameMode(gamemode);
 
             // -= Attributes =-
-            if (Option.SAVE_STATS && Option.HEALTH_HANDLING) {
+            if (Option.SAVE_STATS.get() && Option.HEALTH_HANDLING.get()) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }
             //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
         } catch (Exception ex) {// not optimal but there isn't another way
             ex.printStackTrace();
-            Verbose.error("Error while giving the stats of player " + player.getName() + " back! The inventory will still be restored.");
+            Logging.error("Error while giving the stats of player " + player.getName() + " back! The inventory will still be restored.");
         }
-        if (Option.INVENTORY_HANDLING) {
+        if (Option.INVENTORY_HANDLING.get()) {
             player.getInventory().clear();
             for (int slot : inventory.keySet()) {
                 player.getInventory().setItem(slot, inventory.get(slot));
@@ -87,7 +87,7 @@ public class PreviousData {
      * Saves the inventory to cache, so if the player leaves the player gets their items back
      */
     protected void saveInventory() {
-        if (Option.INVENTORY_HANDLING) {
+        if (Option.INVENTORY_HANDLING.get()) {
             int index = 0;
             Inventory inventory = this.player.getInventory();
             for (ItemStack item : inventory.getContents()) {

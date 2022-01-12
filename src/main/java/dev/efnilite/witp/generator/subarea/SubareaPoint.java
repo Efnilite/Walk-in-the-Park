@@ -4,7 +4,6 @@ import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
