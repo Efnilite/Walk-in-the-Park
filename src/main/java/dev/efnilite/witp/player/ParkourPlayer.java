@@ -520,7 +520,10 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the ParkourGenerator associated with this player
      */
-    public ParkourGenerator getGenerator() {
+    public @NotNull ParkourGenerator getGenerator() {
+        if (generator == null) {
+            generator = WITP.getVersionGenerator(this);
+        }
         return generator;
     }
 }

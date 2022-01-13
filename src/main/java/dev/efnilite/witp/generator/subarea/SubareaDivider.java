@@ -311,18 +311,14 @@ public class SubareaDivider {
             }
         }
         if (!playerDetected) {
-            Logging.error("Couldn't find the spawn of a player - please check your block types and schematics");
+            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
         if (!parkourDetected) {
-            Logging.error("Couldn't find the spawn of the parkour - please check your block types and schematics");
+            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
-        }
-
-        if (pp.getGenerator() == null) {
-            pp.setGenerator(WITP.getVersionGenerator(pp));
         }
 
         pp.getGenerator().data = new SubareaPoint.Data(blocks, chunks);

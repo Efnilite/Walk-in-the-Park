@@ -33,7 +33,7 @@ public class SpectatorGamemode implements Gamemode {
         int index = 0;
         player.closeInventory();
         for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
-            if (pp == null || pp.getGenerator() == null) {
+            if (pp == null) {
                 continue;
             }
             Player pl = pp.getPlayer();
@@ -47,7 +47,7 @@ public class SpectatorGamemode implements Gamemode {
                 SkullSetter.setPlayerHead(pl, meta);
                 item.setItemMeta(meta);
                 spectatable.setItem(index, item, (t2, e2) -> {
-                    if (ParkourUser.getActivePlayers().contains(pp) && pp.getGenerator() != null) {
+                    if (ParkourUser.getActivePlayers().contains(pp)) {
                         new ParkourSpectator(user, pp);
                     }
                 });

@@ -319,9 +319,7 @@ public class MainCommand extends BukkitCommand {
                             ParkourUser searchUser = ParkourUser.getUser(search);
                             if (searchUser instanceof ParkourPlayer) {
                                 ParkourPlayer searchPp = (ParkourPlayer) searchUser;
-                                if (searchPp.getGenerator() != null) {
-                                    new ParkourSpectator(user, searchPp);
-                                }
+                                new ParkourSpectator(user, searchPp);
                             }
                         }
                     }

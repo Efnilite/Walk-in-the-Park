@@ -82,24 +82,22 @@ public abstract class ParkourUser {
         if (player instanceof ParkourPlayer) {
             ParkourPlayer pp = (ParkourPlayer) player;
 
-            if (pp.getGenerator() != null) {
-                // remove spectators
-                for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
-                    try {
-                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                        ParkourGenerator generator = WITP.getVersionGenerator(spp);
-                        WITP.getDivider().generate(spp, generator);
-                    } catch (IOException | SQLException ex) {
-                        ex.printStackTrace();
-                        Logging.error("Error while trying to register player" + player.getPlayer().getName());
-                    }
+            // remove spectators
+            for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
+                try {
+                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                    ParkourGenerator generator = WITP.getVersionGenerator(spp);
+                    WITP.getDivider().generate(spp, generator);
+                } catch (IOException | SQLException ex) {
+                    ex.printStackTrace();
+                    Logging.error("Error while trying to register player" + player.getPlayer().getName());
                 }
-                pp.getGenerator().spectators.clear();
-
-                // reset generator (remove blocks) and delete island
-                pp.getGenerator().reset(false);
-                WITP.getDivider().leave(pp);
             }
+            pp.getGenerator().spectators.clear();
+
+            // reset generator (remove blocks) and delete island
+            pp.getGenerator().reset(false);
+            WITP.getDivider().leave(pp);
             pp.save(saveAsync);
             players.remove(pl);
         } else if (player instanceof ParkourSpectator) {
