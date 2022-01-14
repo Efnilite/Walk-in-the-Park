@@ -3,6 +3,7 @@ package dev.efnilite.witp.player;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Logging;
+import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatMessageType;
@@ -62,7 +63,7 @@ public class ParkourSpectator extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (Option.SCOREBOARD.get()) {
-            board.updateTitle(Option.SCOREBOARD_TITLE.get());
+            board.updateTitle(Util.color(Option.SCOREBOARD_TITLE.get()));
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
             if (lines == null) {

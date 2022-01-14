@@ -1,8 +1,9 @@
 Walk in the Park TODO
 
-- Fixed rewards command not working
-- Reworked config system
-    > Added custom error to give more information
+- Fixed colouring not working in scoreboard
+- Fixed double/integer handling in the new config system
+- Fixed error when joining setup is incomplete due to an error
+- Fixed MapLayers error with flat worlds
 
 High priority:
 - Optimize ram with schematics (async?)
@@ -11,4 +12,3 @@ Medium priority:
 - Add one-time rewards
 
 Low priority:
--

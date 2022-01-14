@@ -229,7 +229,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     public void reset(boolean regenerate) {
         if (!regenerate) {
             stopped = true;
-            task.cancel();
+            if (task == null) {// incomplete setup as task is the last thing to start
+                Logging.warn("Incomplete joining setup: there has probably been an error above. Please report this error to the developer!");
+                Logging.warn("You don't have to report this warning.");
+            } else {
+                task.cancel();
+            }
         }
         for (Block block : generatedHistory) {
             block.setType(Material.AIR);
@@ -396,7 +401,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     PARTICLE_DATA.setType(Option.PARTICLE_TYPE.get());
 
                     Player bukkitPlayer = player.getPlayer();
-                    switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get())) {
+                    switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
                         case DOT:
                             PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
                             Particles.draw(lastSpawn.clone().add(0.5, 1, 0.5), PARTICLE_DATA, bukkitPlayer);
@@ -494,6 +499,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     protected int getRandom(HashMap<Integer, Integer> map) {
         List<Integer> keys = new ArrayList<>(map.keySet());
+        if (keys.size() == 0) {
+            calculateChances();
+            return 1;
+        }
         int index = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
         return map.get(index);
     }

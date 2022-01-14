@@ -157,7 +157,7 @@ public class ParkourPlayer extends ParkourUser {
             showScoreboard = true;
         }
         if (showScoreboard && Option.SCOREBOARD.get() && board != null && generator != null) {
-            String title = Option.SCOREBOARD_TITLE.get();
+            String title = Util.color(Option.SCOREBOARD_TITLE.get());
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES;
             if (lines == null) {

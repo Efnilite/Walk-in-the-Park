@@ -210,8 +210,8 @@ public class SubareaDivider {
         if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
             WorldCreator creator = new WorldCreator(name)
                     .generateStructures(false)
-                    .type(WorldType.FLAT)
-                    .generator(new VoidGenerator())
+                    .type(WorldType.NORMAL)
+                    .generator(new VoidGenerator()) // to fix No keys in MapLayer etc..
                     .environment(World.Environment.NORMAL);
 
             world = Bukkit.createWorld(creator);
