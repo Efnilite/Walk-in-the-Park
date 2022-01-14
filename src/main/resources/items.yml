@@ -103,7 +103,7 @@ locale:
         options:
             styles:
                 name: '&3&lParkour style'
-                lore: '&7The style of your parkour||&7(which blocks will be used)||&7&uThis doesn''t affect difficulty.||||&7Currently: &a%s'
+                lore: '&7The style of your parkour||&7(which blocks will be used)||&7&bThis doesn''t affect difficulty.||||&7Currently: &a%s'
             lead:
                 name: '&c&lLead'
                 lore: '&7How many blocks will||&7be generated ahead of you.||||&7Currently: &a%s blocks'
