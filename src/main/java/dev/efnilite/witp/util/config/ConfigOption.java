@@ -3,6 +3,12 @@ package dev.efnilite.witp.util.config;
 import dev.efnilite.witp.util.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 
+/**
+ * Class for config options
+ *
+ * @param   <Type>
+ *          The type of the config option: double, integer, etc.
+ */
 @SuppressWarnings("unchecked")
 public class ConfigOption<Type> {
 
@@ -14,6 +20,7 @@ public class ConfigOption<Type> {
         } catch (ClassCastException ex) {
             Logging.stack("Incompatible types in config option '" + path + "': " + ex.getMessage(),
                     "Please check if you have entered the correct type of data for path '" + path + "'");
+            return;
         }
 
         if (value == null) {
@@ -33,6 +40,13 @@ public class ConfigOption<Type> {
 
     public void thenSet(Type value) {
         this.value = value;
+    }
+
+    public double getAsDouble() {
+        if (value instanceof Double) {
+            return Double.parseDouble(String.valueOf(value));
+        }
+        return 0D;
     }
 
     public Type get() {

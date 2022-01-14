@@ -66,7 +66,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     protected boolean deleteStructure;
     protected boolean stopped;
     protected boolean waitForSchematicCompletion;
-    protected Direction heading;
 
     protected Location lastSpawn;
     protected Location lastPlayer;
@@ -552,8 +551,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getPlayer().getName()));
                 }
             }
-            if (Option.REWARDS_MONEY.get() != 0) {
-                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY.get());
+            if (Option.REWARDS_MONEY.getAsDouble() != 0) {
+                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY.getAsDouble());
             }
             if (Option.REWARDS_MESSAGE.get() != null) {
                 player.send(Option.REWARDS_MESSAGE.get());
@@ -606,7 +605,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int y = base.getBlockY();
 
         // the distance, adjusted to the height (dy)
-        double heightGap = dy >= 0 ? Option.HEIGHT_GAP.get() - dy : Option.HEIGHT_GAP.get() - (dy + 1);
+        double heightGap = dy >= 0 ? Option.HEIGHT_GAP.getAsDouble() - dy : Option.HEIGHT_GAP.getAsDouble() - (dy + 1);
 
         // the range in which it should check for blocks (max 180 degrees, min 90 degrees)
         double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;

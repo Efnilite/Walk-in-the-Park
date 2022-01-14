@@ -243,7 +243,7 @@ public class Option {
     // --------------------------------------------------------------
     // Advanced settings in generation
 
-    public static ConfigOption<Double> BORDER_SIZE;
+    public static ConfigOption<Integer> BORDER_SIZE;
     public static ConfigOption<Integer> GENERATOR_CHECK;
     public static ConfigOption<Double> HEIGHT_GAP;
     public static ConfigOption<Double> MULTIPLIER;

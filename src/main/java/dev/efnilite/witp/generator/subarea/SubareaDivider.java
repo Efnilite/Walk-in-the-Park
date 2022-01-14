@@ -38,9 +38,6 @@ import java.util.*;
  */
 public class SubareaDivider {
 
-    private int amount = 0;
-    private int layer = 0;
-    private SubareaPoint current;
     private World world;
     private Schematic spawnIsland;
 
@@ -48,16 +45,6 @@ public class SubareaDivider {
     private int spawnPitch;
     private Material playerSpawn;
     private Material parkourSpawn;
-
-    /**
-     * The SubareaPoints available in the current layer
-     */
-    private List<SubareaPoint> possibleInLayer;
-    /**
-     * Open spaces which may open up if a player leaves
-     */
-    private List<SubareaPoint> openSpaces;
-    private HashMap<SubareaPoint, ParkourPlayer> collection;
 
     /**
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
@@ -98,11 +85,7 @@ public class SubareaDivider {
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
         this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
 
-        this.current = new SubareaPoint(0, 0);
         this.spawnIsland = new Schematic().file("spawn-island.witp");
-        this.collection = new HashMap<>();
-        this.openSpaces = new ArrayList<>();
-        this.possibleInLayer = new ArrayList<>();
     }
 
     /**
@@ -271,7 +254,7 @@ public class SubareaDivider {
     }
 
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull SubareaPoint point) {
-        Location spawn = point.getEstimatedCenter(Math.round(Option.BORDER_SIZE.get())).toLocation(world).clone();
+        Location spawn = point.getEstimatedCenter(Option.BORDER_SIZE.get()).toLocation(world).clone();
         List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
         if (Version.isHigherOrEqual(Version.V1_13)) {
             for (Chunk chunk : chunks) {

@@ -1,10 +1,11 @@
 package dev.efnilite.witp.generator.base;
 
+import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Stopwatch;
+import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
-import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,9 +27,9 @@ public abstract class ParkourGenerator {
     public String time = "0.0s";
 
     /**
-     * The heading of the parkour
+     * The direction of the parkour
      */
-    public Vector3D heading;
+    public Direction heading;
 
     /**
      * The score of the player
@@ -42,8 +43,8 @@ public abstract class ParkourGenerator {
 
     public SubareaPoint.Data data;
     public final HashMap<String, ParkourSpectator> spectators;
-    protected final double borderOffset;
     protected final Stopwatch stopwatch;
+    protected final double borderOffset;
     protected final ParkourPlayer player;
 
     public ParkourGenerator(ParkourPlayer player, GeneratorOption... options) {

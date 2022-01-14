@@ -99,7 +99,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     protected void calculateAdaptiveDistance() {
         adaptiveDistanceChances.clear();
 
-        double multiplier = Option.MULTIPLIER.get();
+        double multiplier = Option.MULTIPLIER.getAsDouble();
         adaptiveDistanceChances.put(1, (Option.MAXED_ONE_BLOCK.get() - Option.NORMAL_ONE_BLOCK.get()) / multiplier);
         adaptiveDistanceChances.put(2, (Option.MAXED_TWO_BLOCK.get() - Option.NORMAL_TWO_BLOCK.get()) / multiplier);
         adaptiveDistanceChances.put(3, (Option.MAXED_THREE_BLOCK.get() - Option.NORMAL_THREE_BLOCK.get()) / multiplier);
@@ -170,7 +170,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
         if (player.useDifficulty) {
-            if (score <= Option.MULTIPLIER.get()) {
+            if (score <= Option.MULTIPLIER.getAsDouble()) {
                 one = (int) (Option.NORMAL_ONE_BLOCK.get() + (adaptiveDistanceChances.get(1) * score));
                 two = (int) (Option.NORMAL_TWO_BLOCK.get() + (adaptiveDistanceChances.get(2) * score));
                 three = (int) (Option.NORMAL_THREE_BLOCK.get() + (adaptiveDistanceChances.get(3) * score));
