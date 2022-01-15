@@ -65,7 +65,7 @@ public class ParkourSpectator extends ParkourUser {
         if (Option.SCOREBOARD.get()) {
             board.updateTitle(Util.color(Option.SCOREBOARD_TITLE.get()));
             List<String> list = new ArrayList<>();
-            List<String> lines = Option.SCOREBOARD_LINES;
+            List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
             if (lines == null) {
                 Logging.error("Scoreboard lines are null! Check your config!");
                 return;

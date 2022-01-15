@@ -2,7 +2,6 @@ package dev.efnilite.witp.events;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.command.MainCommand;
-import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.PreviousData;
@@ -84,8 +83,7 @@ public class Handler implements Listener {
 
             try {
                 ParkourPlayer pp = ParkourPlayer.register(player);
-                ParkourGenerator generator = WITP.getVersionGenerator(pp);
-                WITP.getDivider().generate(pp, generator);
+                WITP.getDivider().generate(pp);
             } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
                 Logging.error("Something went wrong while trying to fetch a player's (" + playerName + ") data");

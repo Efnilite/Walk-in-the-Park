@@ -1,4 +1,4 @@
-package dev.efnilite.witp.util.wrapper;
+package dev.efnilite.witp.wrapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 /**
  * Command wrap
  */
-public abstract class BukkitCommand implements CommandExecutor, TabCompleter {
+public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
 
     /**
      * Execute a command
      */
-    public abstract boolean execute(CommandSender player, String[] args);
+    public abstract boolean execute(CommandSender sender, String[] args);
 
     /**
      * Get what should be suggested
@@ -35,6 +35,17 @@ public abstract class BukkitCommand implements CommandExecutor, TabCompleter {
         return Arrays.stream(options)
                 .filter(option -> option.toLowerCase().contains(typed))
                 .collect(Collectors.toList());
+    }
+
+    public static void register(String name, SimpleCommand wrapper) {
+        PluginCommand command = Bukkit.getPluginCommand(name);
+
+        if (command == null) {
+            throw new IllegalStateException("Command is null");
+        }
+
+        command.setExecutor(wrapper);
+        command.setTabCompleter(wrapper);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class UpdateStatement extends Statement {
 
     @Override
     public void query() throws InvalidStatementException {
-        if (condition == null || values.size() == 0) {
+        if (condition == null || values.isEmpty()) {
             throw new InvalidStatementException("Invalid UpdateStatement");
         }
         StringBuilder statement = new StringBuilder("UPDATE `" + table + "` SET ");

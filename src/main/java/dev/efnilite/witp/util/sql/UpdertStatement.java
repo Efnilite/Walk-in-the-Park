@@ -32,7 +32,7 @@ public class UpdertStatement extends Statement {
 
     @Override
     public void query() throws InvalidStatementException {
-        if (defaults.size() == 0 || condition == null) {
+        if (defaults.isEmpty() || condition == null) {
             throw new InvalidStatementException("Invalid UpdertStatement");
         }
         SelectStatement statement = new SelectStatement(database, table);

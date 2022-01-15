@@ -31,11 +31,11 @@ public class Tasks {
         return System.currentTimeMillis() - then;
     }
 
-    public static BukkitTask defaultSyncRepeat(BukkitRunnable runnable, int interval) {
+    public static BukkitTask syncRepeat(BukkitRunnable runnable, int interval) {
         return runnable.runTaskTimer(plugin, 0L, interval);
     }
 
-    public static BukkitTask syncRepeat(Runnable runnable, int interval) {
+    public static BukkitTask defaultSyncRepeat(Runnable runnable, int interval) {
         return Bukkit.getScheduler().runTaskTimer(plugin, runnable, 0L, interval);
     }
 

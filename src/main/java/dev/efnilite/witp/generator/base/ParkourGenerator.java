@@ -1,22 +1,29 @@
 package dev.efnilite.witp.generator.base;
 
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Stopwatch;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.util.config.Option;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Main class for Parkour Generation handling
+ */
 public abstract class ParkourGenerator {
 
-    // -= Generator Options =-
+    /**
+     * Generator options
+     */
     public List<GeneratorOption> generatorOptions;
 
     /**
@@ -42,10 +49,23 @@ public abstract class ParkourGenerator {
     protected int borderWarning = 50;
 
     public SubareaPoint.Data data;
+
+    /**
+     * List of this player's spectators
+     */
     public final HashMap<String, ParkourSpectator> spectators;
     protected final Stopwatch stopwatch;
     protected final double borderOffset;
+
+    /**
+     * The player associated with this Generator.
+     */
     protected final ParkourPlayer player;
+
+    /**
+     * The random for this Thread, which is useful in randomly generating parkour
+     */
+    protected final Random random;
 
     public ParkourGenerator(ParkourPlayer player, GeneratorOption... options) {
         this.player = player;
@@ -53,32 +73,43 @@ public abstract class ParkourGenerator {
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
         this.borderOffset = Option.BORDER_SIZE.get() / 2.0;
+        this.random = ThreadLocalRandom.current();
+
         player.setGenerator(this);
     }
 
-    public abstract void reset(boolean regenerateBack);
+    /**
+     * Implementable method for selecting materials used to set the blocks used in {@link #selectBlocks()}
+     */
+    public abstract BlockData selectBlockData();
 
-    public abstract void start();
+    /**
+     * Implementable method for selecting blocks that are to-be set
+     */
+    public abstract List<Block> selectBlocks();
 
-    public abstract void generate();
+    /**
+     * Implementable method for what happens when a player scores
+     */
+    public abstract void score();
 
+    /**
+     * Implementable method for what happens when a player scores
+     */
+    public abstract void fall();
+
+    /**
+     * Implementable method for menu handling
+     */
     public abstract void menu();
 
-    protected abstract static class InventoryHandler {
+    public abstract void reset(boolean regenerateBack);
 
-        protected final ParkourPlayer pp;
-        protected final Player player;
+    public abstract void startTick();
 
-        public InventoryHandler(ParkourPlayer pp) {
-            this.pp = pp;
-            this.player = pp.getPlayer();
-        }
-    }
+    public abstract void tick();
 
-    // whether the option is present but simplified
-    protected boolean option(GeneratorOption option) {
-        return generatorOptions.contains(option);
-    }
+    public abstract void generate();
 
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {

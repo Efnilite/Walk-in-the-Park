@@ -105,7 +105,16 @@ public class SubareaDivider {
         return null;
     }
 
-    public synchronized void generate(@NotNull ParkourPlayer player, @NotNull ParkourGenerator generator) {
+    /**
+     * Generates an area for the player with no set generator. This will be set to the default DefaultGenerator.
+     *
+     * @param   player
+     */
+    public synchronized void generate(@NotNull ParkourPlayer player) {
+        this.generate(player, null, true);
+    }
+
+    public synchronized void generate(@NotNull ParkourPlayer player, @Nullable ParkourGenerator generator, boolean generateIsland) {
         if (getPoint(player) != null) { // player already has assigned point
             return;
         }
@@ -114,21 +123,31 @@ public class SubareaDivider {
             SubareaPoint cachedPoint = cachedPoints.poll(); // get top result
 
             if (cachedPoint == null) { // if cachedPoint is somehow still null after checking size (to remove @NotNull warning)
-                generate(player, generator);
+                generate(player, generator, generateIsland);
                 return;
             }
 
             activePoints.put(player, cachedPoint);
-            createIsland(player, cachedPoint);
+            if (generator != null) {
+                player.setGenerator(generator);
+            }
+            if (generateIsland) {
+                createIsland(player, cachedPoint);
+            }
 
             Logging.verbose("Cached point divided to " + player.getPlayer().getName() + " at " + cachedPoint);
         } else {
             int size = activePoints.size();
-            int[] coords = spiralAt(size);
+            int[] coords = Util.spiralAt(size);
             SubareaPoint point = new SubareaPoint(coords[0], coords[1]);
 
             activePoints.put(player, point);
-            createIsland(player, point);
+            if (generator != null) {
+                player.setGenerator(generator);
+            }
+            if (generateIsland) {
+                createIsland(player, point);
+            }
 
             Logging.verbose("New point divided to " + player.getPlayer().getName() + " at " + point);
         }
@@ -165,7 +184,7 @@ public class SubareaDivider {
         List<Chunk> chunks = new ArrayList<>();
         int amount = lastOfRadius * lastOfRadius;
         for (int i = 0; i < amount; i++) {
-            int[] coords = spiralAt(i);
+            int[] coords = Util.spiralAt(i);
             int x = coords[0];
             int z = coords[1];
 
@@ -175,33 +194,6 @@ public class SubareaDivider {
             chunks.add(world.getChunkAt(x, z));
         }
         return chunks;
-    }
-
-    // https://math.stackexchange.com/a/163101
-    private int[] spiralAt(int n) {
-        n++; // one-index
-        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
-        int t = 2 * k + 1;
-        int m = t * t;
-        t--;
-
-        if (n > m - t) {
-            return new int[]{k - (m - n), -k};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k, -k + (m - n)};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k + (m - n), k};
-        } else {
-            return new int[]{k, k - (m - n - t)};
-        }
     }
 
     @SuppressWarnings("deprecation") // for setGameRuleValue
@@ -288,7 +280,7 @@ public class SubareaDivider {
                 block.setType(Material.AIR);
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING.get()).multiply(-1).toBukkitVector()); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING.get()).multiply(-2).toBukkitVector()); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }
@@ -342,7 +334,7 @@ public class SubareaDivider {
         if (!Option.INVENTORY_HANDLING.get()) {
             pp.sendTranslated("customize-menu");
         }
-        pp.getGenerator().start();
+        pp.getGenerator().startTick();
 
         // Make sure the player is in the correct world
         // Used to be a problem, don't know if it still is, too scared to remove it now :)

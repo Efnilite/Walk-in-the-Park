@@ -36,7 +36,7 @@ public class WITPAPI {
      * @throws  IOException
      *          If something goes wrong with reading the player's file
      */
-    public static @Nullable ParkourPlayer registerPlayer(@NotNull Player player) throws IOException, SQLException {
+    public static @NotNull ParkourPlayer registerPlayer(@NotNull Player player) throws IOException, SQLException {
         return ParkourPlayer.register(player);
     }
 

@@ -7,7 +7,6 @@ import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.base.DefaultGeneratorBase;
 import dev.efnilite.witp.generator.base.GeneratorOption;
-import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
@@ -61,23 +60,54 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     private BukkitRunnable task;
     public DefaultGenerator.InventoryHandler handler;
 
+    private boolean isSpecial;
+    private Material specialType;
+
     protected int totalScore;
-    protected int structureCooldown;
+    protected int schematicCooldown;
     protected boolean deleteStructure;
     protected boolean stopped;
     protected boolean waitForSchematicCompletion;
 
-    protected Location lastSpawn;
-    protected Location lastPlayer;
-    protected Location previousSpawn;
-    protected Location latestLocation; // to disallow 1 block infinite point glitch
+    /**
+     * The most recently spawned block
+     */
+    protected Location mostRecentBlock;
 
+    /**
+     * The last location the player was found standing in
+     */
+    protected Location lastStandingPlayerLocation;
+
+    /**
+     * Where the player spawns on reset
+     */
     protected Location playerSpawn;
-    protected Location blockSpawn;
-    protected List<Block> structureBlocks;
 
-    protected final Queue<Block> generatedHistory;
-    protected final LinkedHashMap<String, Integer> buildLog;
+    /**
+     * Where blocks from schematics spawn
+     */
+    protected Location blockSpawn;
+
+    /**
+     * A list of blocks from the (possibly) spawned structure
+     */
+    protected List<Block> schematicBlocks;
+
+    /**
+     * The count total. Always bigger (or the same) than the positionIndexPlayer
+     */
+    protected int positionIndexTotal;
+
+    /**
+     * The player's current position index.
+     */
+    protected int lastPositionIndexPlayer;
+
+    /**
+     * A map which stores all blocks and their number values. The first block generated will have a value of 0.
+     */
+    protected final LinkedHashMap<Block, Integer> positionIndexMap;
 
     protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0, 0, 0, 0);
 
@@ -89,7 +119,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
         super(player, generatorOptions);
         Logging.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
-        calculateChances();
 
         this.handler = new InventoryHandler(player);
         this.heading = Option.HEADING.get();
@@ -98,22 +127,91 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.totalScore = 0;
         this.stopped = false;
         this.waitForSchematicCompletion = false;
-        this.structureCooldown = 20;
-        this.lastSpawn = player.getLocation().clone();
-        this.lastPlayer = lastSpawn.clone();
-        this.latestLocation = lastSpawn.clone();
-        this.generatedHistory = new LinkedList<>();
-        this.buildLog = new LinkedHashMap<>();
-        this.structureBlocks = new ArrayList<>();
+        this.schematicCooldown = 20;
+        this.mostRecentBlock = player.getLocation().clone();
+        this.lastStandingPlayerLocation = mostRecentBlock.clone();
+        this.schematicBlocks = new ArrayList<>();
         this.deleteStructure = false;
+
+        this.positionIndexTotal = 0;
+        this.lastPositionIndexPlayer = 0;
+        this.positionIndexMap = new LinkedHashMap<>();
     }
 
-    /**
-     * Starts the check
-     */
     @Override
-    public void start() {
+    public BlockData selectBlockData() {
+        BlockData data = player.randomMaterial().createBlockData();
+        return data;
+    }
+
+    @Override
+    public List<Block> selectBlocks() {
+        int height;
+        int gap = getRandomChance(distanceChances) + 1;
+
+        int deltaYMax = Option.MAX_Y.get() - mostRecentBlock.getBlockY();
+        int deltaYMin = mostRecentBlock.getBlockY() - Option.MIN_Y.get();
+
+        if (deltaYMax < 0) {
+            height = -1;
+        } else if (deltaYMin < 0) {
+            height = 1;
+        } else {
+            height = getRandomChance(heightChances);
+        }
+
+        if (isSpecial) {
+            switch (specialType) { // adjust for special jumps
+                case PACKED_ICE: // ice
+                    gap++;
+                    break;
+                case QUARTZ_SLAB: // slab
+                    height = Math.min(height, 0);
+                    break;
+                case GLASS_PANE: // pane
+                    gap -= 0.5;
+                    break;
+                case OAK_FENCE:
+                    height = Math.min(height, 0);
+                    gap -= 1;
+                    break;
+            }
+        }
+
+        height = Math.min(height, 1);
+        gap = Math.min(gap, 4);
+
+        List<Block> possible = getPossiblePositions(gap - height, height);
+
+        if (possible.isEmpty()) {
+            return null;
+        }
+
+        return Collections.singletonList(possible.get(random.nextInt(possible.size())));
+    }
+
+    @Override
+    public void score() {
+        score++;
+        totalScore++;
+        checkRewards();
+    }
+
+    @Override
+    public void fall() {
+        new PlayerFallEvent(player).call();
+        reset(true);
+    }
+
+    @Override
+    public void menu() {
+        handler.menu();
+    }
+
+    @Override
+    public void startTick() {
         Logging.verbose("Starting generator of " + player.getPlayer().getName());
+
         task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -121,103 +219,96 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     this.cancel();
                     return;
                 }
+
                 tick();
-
-                Location playerLoc = player.getLocation();
-
-                if (playerLoc.getWorld() != playerSpawn.getWorld()) {
-                    player.teleport(playerSpawn);
-                    return;
-                }
-
-                // Fall check
-                if (lastPlayer.getY() - playerLoc.getY() > 10 && playerSpawn.distance(playerLoc) > 5) {
-                    new PlayerFallEvent(player).call();
-                    reset(true);
-                    return;
-                }
-
-                // If the block below
-                Block at = playerLoc.getBlock();
-                Block current = playerLoc.clone().subtract(0, 1, 0).getBlock();
-                if (at.getType() != Material.AIR) {
-                    current = at;
-                }
-
-                updateTime();
-                player.getPlayer().setSaturation(20);
-                updateSpectators();
-
-                if (current.getLocation().equals(latestLocation)) {
-                    player.updateScoreboard();
-                    return;
-                }
-
-                if (current.getType() != Material.AIR) {
-                    previousSpawn = lastPlayer.clone();
-                    lastPlayer = current.getLocation();
-                    // Structure deletion check
-                    if (structureBlocks.contains(current) && current.getType() == Material.RED_WOOL && !deleteStructure) {
-                        for (int i = 0; i < 10; i++) {
-                            score++;
-                            checkRewards();
-                        }
-                        waitForSchematicCompletion = false;
-                        structureCooldown = 20;
-                        generate(player.blockLead);
-                        deleteStructure = true;
-                        return;
-                    }
-                    String last = Util.toString(lastPlayer, false);
-                    Integer latest = buildLog.get(last);
-                    if (latest != null) {
-                        if (!(Util.toString(previousSpawn, true).equals(Util.toString(lastPlayer, true)))) {
-                            if (!stopwatch.hasStarted()) {
-                                stopwatch.start();
-                            }
-
-                            latestLocation = current.getLocation();
-
-                            if (!Option.ALL_POINTS.get()) {
-                                addPoint();
-                            } else if (score == 0) {
-                                addPoint();
-                            }
-
-                            List<String> locations = new ArrayList<>(buildLog.keySet()); // delete blocks
-                            int lastIndex = locations.indexOf(last) + 1;
-                            int size = locations.size();
-                            for (int i = lastIndex; i < size; i++) {
-                                Block block = Util.parseLocation(locations.get(i)).getBlock();
-                                if (block.getType() != Material.AIR) {
-                                    if (Option.ALL_POINTS.get()) {
-                                        addPoint();
-                                    }
-                                    block.setType(Material.AIR);
-                                }
-                            }
-
-                            new PlayerScoreEvent(player).call();
-                            if (deleteStructure) {
-                                deleteStructure();
-                            }
-                        }
-
-                        int difference = player.blockLead - latest;
-                        if (difference > 0) {
-                            generate(Math.abs(difference));
-                        }
-                    }
-                }
-                player.updateScoreboard();
             }
         };
-        Tasks.defaultSyncRepeat(task, Option.GENERATOR_CHECK.get());
+        Tasks.syncRepeat(task, Option.GENERATOR_CHECK.get());
     }
 
-    public void score() { }
+    /**
+     * Starts the check
+     */
+    @Override
+    public void tick() {
+        updateTime();
+        updateSpectators();
+        player.updateScoreboard();
+        player.getPlayer().setSaturation(20);
 
-    public void tick() { }
+        Location playerLocation = player.getLocation();
+
+        if (playerLocation.getWorld() != playerSpawn.getWorld()) { // sometimes player worlds dont match (somehow)
+            player.teleport(playerSpawn);
+            return;
+        }
+
+        if (lastStandingPlayerLocation.getY() - playerLocation.getY() > 10 && playerSpawn.distance(playerLocation) > 5) { // Fall check
+            fall();
+            return;
+        }
+
+        Block blockBelowPlayer = playerLocation.clone().subtract(0, 1, 0).getBlock(); // Get the block below
+
+        if (blockBelowPlayer.getType() == Material.AIR) {
+            return;
+        }
+
+        if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteStructure) { // Structure deletion check
+            for (int i = 0; i < 10; i++) {
+                score();
+            }
+            waitForSchematicCompletion = false;
+            schematicCooldown = 20;
+            generate(player.blockLead);
+            deleteStructure = true;
+            return;
+        }
+
+        if (!positionIndexMap.containsKey(blockBelowPlayer)) {
+            return;
+        }
+        int currentIndex = positionIndexMap.get(blockBelowPlayer); // current index of the player
+        int deltaFromLast = currentIndex - lastPositionIndexPlayer;
+
+        if (deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
+            return;
+        }
+
+        if (!stopwatch.hasStarted()) { // start stopwatch when first point is achieved
+            stopwatch.start();
+        }
+
+        lastStandingPlayerLocation = playerLocation.clone();
+
+        new PlayerScoreEvent(player).call();
+        if (Option.ALL_POINTS.get()) { // score handling
+            for (int i = 0; i < deltaFromLast; i++) { // score the difference
+                score();
+            }
+        } else {
+            score();
+        }
+
+        int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
+        if (deltaCurrentTotal < player.blockLead) {
+            generate(player.blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
+        }
+        lastPositionIndexPlayer = currentIndex;
+
+        // delete trailing blocks
+        for (Block block : new ArrayList<>(positionIndexMap.keySet())) {
+            int index = positionIndexMap.get(block);
+            if (currentIndex - index > 2) {
+                block.setType(Material.AIR);
+                positionIndexMap.remove(block);
+            }
+        }
+
+        if (deleteStructure) { // deletes the structure if the player goes to the next block (reason why it's last)
+            deleteStructure();
+        }
+    }
 
     /**
      * Resets the parkour
@@ -236,15 +327,18 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 task.cancel();
             }
         }
-        for (Block block : generatedHistory) {
+
+        for (Block block : positionIndexMap.keySet()) {
             block.setType(Material.AIR);
         }
-        generatedHistory.clear();
+
+        lastPositionIndexPlayer = 0;
+        positionIndexTotal = 0;
+        positionIndexMap.clear();
 
         waitForSchematicCompletion = false;
         player.saveGame();
         deleteStructure();
-        buildLog.clear();
 
         if (regenerate) {
             player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -281,9 +375,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 player.setHighScore(score, time, diff);
             }
         }
+
         this.score = 0;
         stopwatch.stop();
-        if (regenerate) {
+
+        if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
         }
     }
@@ -302,204 +398,133 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int def = getRandom(defaultChances); // 0 = normal, 1 = structures, 2 = special
-        int special = def == 2 ? 1 : 0; // 1 = yes, 0 = no
-        if (special == 1) {
-            def = 0;
+        int type = getRandomChance(defaultChances); // 0 = normal, 1 = structures, 2 = special
+        isSpecial = type == 2; // 1 = yes, 0 = no
+        if (isSpecial) {
+            type = 0;
         } else {
-            def = structureCooldown == 0 && player.useStructure ? def : 0;
+            type = schematicCooldown == 0 && player.useStructure ? type : 0;
         }
-        switch (def) {
-            case 0:
-                if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
-                    heading = heading.turnRight(); // reverse heading
-                }
+        if (type == 0) {
+            if (isNearBorder(mostRecentBlock.clone().toVector()) && score > 0) {
+                heading = heading.turnRight(); // reverse heading if close to border
+            }
 
-                int height = 0;
-                int deltaYMin = lastSpawn.getBlockY() - Option.MIN_Y.get();
-                int deltaYMax = lastSpawn.getBlockY() - Option.MAX_Y.get();
-                if (deltaYMin < 20) { // buffer of 20, so the closer to the max/min the more chance of opposite
-                    int delta = (deltaYMin - 20) * -1;
-                    int chanceRise = delta * 5;
-                    if (chanceRise >= random.nextInt(100) + 1) {
-                        height = 1;
-                    } else {
-                        height = getRandom(heightChances);
-                    }
-                } else if (deltaYMax > -20) {
-                    int delta = deltaYMax + 20;
-                    int chanceRise = delta * 5;
-                    if (chanceRise >= random.nextInt(100) + 1) {
-                        switch (random.nextInt(2)) {
-                            case 0:
-                                height = -2;
-                                break;
-                            case 1:
-                                height = -1;
-                                break;
-                        }
-                    } else {
-                        height = getRandom(heightChances);
-                    }
-                } else {
-                    height = getRandom(heightChances);
-                }
-                int gap = getRandom(distanceChances) + 1;
+            BlockData selectedBlockData = selectBlockData();
 
-                BlockData material = player.randomMaterial().createBlockData();
-                if (special == 1 && player.useSpecial) {
-                    int spec = getRandom(specialChances);
-                    switch (spec) {
-                        case 0: // ice
-                            material = Material.PACKED_ICE.createBlockData();
-                            gap++;
-                            break;
-                        case 1: // slab
-                            material = Material.QUARTZ_SLAB.createBlockData();
-                            height = Math.min(height, 0);
-                            ((Slab) material).setType(Slab.Type.BOTTOM);
-                            break;
-                        case 2: // pane
-                            material = Material.GLASS_PANE.createBlockData();
-                            gap -= 0.5;
-                            break;
-                        case 3:
-                            material = Material.OAK_FENCE.createBlockData();
-                            height = Math.min(height, 0);
-                            gap -= 1;
-                            break;
-                    }
-                }
-
-                Location local = lastSpawn.clone();
-                if (local.getBlock().getType() == Material.QUARTZ_SLAB) {
-                    height = Math.min(height, 0);
-                }
-                if (height > 1) {
-                    height = 1;
-                }
-                if (gap > 4) {
-                    gap = 4;
-                }
-                List<Block> possible = getPossible(gap - height, height);
-                if (possible.isEmpty()) {
-                    lastSpawn = local.clone();
-                    return;
-                }
-
-                Block chosen = possible.get(random.nextInt(possible.size()));
-                setBlock(chosen, material);
-                generatedHistory.add(chosen);
-                if (generatedHistory.size() > player.blockLead + 5) {
-                    generatedHistory.remove();
-                }
-                new BlockGenerateEvent(chosen, this, player).call();
-                lastSpawn = chosen.getLocation().clone();
-
-                if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
-                    PARTICLE_DATA.setType(Option.PARTICLE_TYPE.get());
-
-                    Player bukkitPlayer = player.getPlayer();
-                    switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
-                        case DOT:
-                            PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
-                            Particles.draw(lastSpawn.clone().add(0.5, 1, 0.5), PARTICLE_DATA, bukkitPlayer);
-                            break;
-                        case CIRCLE:
-                            PARTICLE_DATA.setSize(5);
-                            Particles.circle(lastSpawn.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, bukkitPlayer, 1, 25);
-                            break;
-                        case BOX:
-                            PARTICLE_DATA.setSize(1);
-                            Particles.box(BoundingBox.of(chosen), player.getPlayer().getWorld(), PARTICLE_DATA, bukkitPlayer, 0.15);
-                            break;
-                    }
-                    player.getPlayer().playSound(lastSpawn.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
-                }
-
-                if (structureCooldown > 0) {
-                    structureCooldown--;
-                }
-                break;
-            case 1:
-                if (isNearBorder(lastSpawn.clone().toVector()) && score > 0) {
-                    generate(); // generate a normal block
-                    return;
-                }
-
-                File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
-                List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-                File file = null;
-                if (!files.isEmpty()) {
-                    boolean passed = true;
-                    while (passed) {
-                        file = files.get(random.nextInt(files.size()));
-                        if (player.difficulty == 0) {
-                            player.difficulty = 0.3;
-                        }
-                        if (Util.getDifficulty(file.getName()) < player.difficulty) {
-                            passed = false;
-                        }
-                    }
-                } else {
-                    Logging.error("No structures to choose from!");
-                    return;
-                }
-                Schematic schematic = SchematicCache.getSchematic(file.getName());
-
-                structureCooldown = 20;
-                double gapStructure = getRandom(distanceChances) + 1;
-
-                Location local2 = lastSpawn.clone();
-                List<Block> possibleStructure = getPossible(gapStructure, 0);
-                if (possibleStructure.isEmpty()) {
-                    lastSpawn = local2.clone();
-                    return;
-                }
-                Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
-
-                try {
-                    structureBlocks = SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
-                    waitForSchematicCompletion = true;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    reset(true);
-                }
-                if (structureBlocks == null || structureBlocks.isEmpty()) {
-                    Logging.error("0 blocks found in structure!");
-                    player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
-                    reset(true);
-                }
-
-                for (Block block : structureBlocks) {
-                    if (block.getType() == Material.RED_WOOL) {
-                        lastSpawn = block.getLocation();
+            if (isSpecial && player.useSpecial) { // if special
+                switch (getRandomChance(specialChances)) {
+                    case 0: // ice
+                        selectedBlockData = Material.PACKED_ICE.createBlockData();
                         break;
+                    case 1: // slab
+                        selectedBlockData = Material.QUARTZ_SLAB.createBlockData();
+                        ((Slab) selectedBlockData).setType(Slab.Type.BOTTOM);
+                        break;
+                    case 2: // pane
+                        selectedBlockData = Material.WHITE_STAINED_GLASS_PANE.createBlockData();
+                        break;
+                    case 3: // fence
+                        selectedBlockData = Material.OAK_FENCE.createBlockData();
+                        break;
+                }
+                specialType = selectedBlockData.getMaterial();
+            }
+
+            Block selectedBlock = selectBlocks().get(0);
+            setBlock(selectedBlock, selectedBlockData);
+            new BlockGenerateEvent(selectedBlock, this, player).call();
+
+            positionIndexMap.put(selectedBlock, positionIndexTotal);
+            positionIndexTotal++;
+
+            mostRecentBlock = selectedBlock.getLocation().clone();
+
+            if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
+                PARTICLE_DATA.setType(Option.PARTICLE_TYPE.get());
+
+                switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
+                    case DOT:
+                        PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
+                        Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
+                        break;
+                    case CIRCLE:
+                        PARTICLE_DATA.setSize(5);
+                        Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), 1, 25);
+                        break;
+                    case BOX:
+                        PARTICLE_DATA.setSize(1);
+                        Particles.box(BoundingBox.of(selectedBlock), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
+                        break;
+                }
+                player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+            }
+
+            if (schematicCooldown > 0) {
+                schematicCooldown--;
+            }
+        } else if (type == 1) {
+            if (isNearBorder(mostRecentBlock.clone().toVector()) && score > 0) {
+                generate(); // generate a normal block
+                return;
+            }
+
+            File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
+            List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
+            File file = null;
+            if (!files.isEmpty()) {
+                boolean passed = true;
+                while (passed) {
+                    file = files.get(random.nextInt(files.size()));
+                    if (player.difficulty == 0) {
+                        player.difficulty = 0.3;
+                    }
+                    if (Util.getDifficulty(file.getName()) < player.difficulty) {
+                        passed = false;
                     }
                 }
-                break;
-        }
+            } else {
+                Logging.error("No structures to choose from!");
+                return;
+            }
+            Schematic schematic = SchematicCache.getSchematic(file.getName());
 
-        int listSize = player.blockLead + 7; // the size of the queue of parkour blocks
-        listSize--;
-        List<String> locations = new ArrayList<>(buildLog.keySet());
-        if (locations.size() > listSize) {
-            locations = locations.subList(0, listSize);
-        }
-        buildLog.clear();
-        buildLog.put(Util.toString(lastSpawn, false), 0);
-        for (int i = 0; i < locations.size(); i++) {
-            String location = locations.get(i);
-            if (location != null) {
-                buildLog.put(location, i + 1);
+            schematicCooldown = 20;
+            double gapStructure = getRandomChance(distanceChances) + 1;
+
+            Location local2 = mostRecentBlock.clone();
+            List<Block> possibleStructure = getPossiblePositions(gapStructure, 0);
+            if (possibleStructure.isEmpty()) {
+                mostRecentBlock = local2.clone();
+                return;
+            }
+            Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
+
+            try {
+                schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
+                waitForSchematicCompletion = true;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                reset(true);
+            }
+            if (schematicBlocks == null || schematicBlocks.isEmpty()) {
+                Logging.error("0 blocks found in structure!");
+                player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
+                reset(true);
+            }
+
+            for (Block block : schematicBlocks) {
+                if (block.getType() == Material.RED_WOOL) {
+                    mostRecentBlock = block.getLocation();
+                    break;
+                }
             }
         }
     }
 
-    protected int getRandom(HashMap<Integer, Integer> map) {
+    protected int getRandomChance(HashMap<Integer, Integer> map) {
         List<Integer> keys = new ArrayList<>(map.keySet());
-        if (keys.size() == 0) {
+        if (keys.isEmpty()) {
             calculateChances();
             return 1;
         }
@@ -513,18 +538,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     public boolean hasAltMenu() {
         return false;
-    }
-
-    @Override
-    public void menu() {
-        handler.menu();
-    }
-
-    private void addPoint() {
-        score++;
-        totalScore++;
-        score();
-        checkRewards();
     }
 
     private void checkRewards() {
@@ -570,20 +583,22 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     protected void deleteStructure() {
-        for (Block block : structureBlocks) {
+        for (Block block : schematicBlocks) {
             block.setType(Material.AIR);
         }
 
-        structureBlocks.clear();
+        schematicBlocks.clear();
         deleteStructure = false;
-        structureCooldown = 20;
+        schematicCooldown = 20;
     }
 
     protected void setBlock(Block block, BlockData data) {
+        block.getWorld().getChunkAt(block);
+
         if (data instanceof Fence || data instanceof Wall) {
             block.setType(data.getMaterial(), true);
         } else {
-            block.setBlockData(data);
+            block.setBlockData(data, false);
         }
     }
 
@@ -603,11 +618,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      *
      * @return a list of possible blocks (contains copies of the same block)
      */
-    protected List<Block> getPossible(double radius, double dy) {
+    protected List<Block> getPossiblePositions(double radius, double dy) {
         List<Block> possible = new ArrayList<>();
 
-        World world = lastSpawn.getWorld();
-        Location base = lastSpawn.add(0, dy, 0); // adds y to the last spawned block
+        World world = mostRecentBlock.getWorld();
+        Location base = mostRecentBlock.add(0, dy, 0); // adds y to the last spawned block
         base.add(0.5, 0, 0.5);
         radius -= 0.5;
 
@@ -679,9 +694,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn.clone();
-        lastPlayer = spawn.clone();
+        lastStandingPlayerLocation = spawn.clone();
         blockSpawn = block.clone();
-        lastSpawn = block.clone();
+        mostRecentBlock = block.clone();
         generate(player.blockLead);
     }
 
@@ -692,12 +707,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
     }
 
-    public static class InventoryHandler extends ParkourGenerator.InventoryHandler {
+    public static class InventoryHandler {
+
+        protected final ParkourPlayer pp;
+        protected final Player player;
 
         public InventoryHandler(ParkourPlayer pp) {
-            super(pp);
+            this.pp = pp;
+            this.player = pp.getPlayer();
         }
-
         public void menu(String... optDisabled) {
             InventoryBuilder builder = new InventoryBuilder(pp, 3, "Customize").open();
             InventoryBuilder lead = new InventoryBuilder(pp, 3, "Lead").open();

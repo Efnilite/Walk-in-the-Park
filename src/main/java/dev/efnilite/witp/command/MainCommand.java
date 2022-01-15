@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
@@ -19,7 +18,7 @@ import dev.efnilite.witp.util.particle.ParticleData;
 import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
-import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import dev.efnilite.witp.wrapper.SimpleCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +35,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-public class MainCommand extends BukkitCommand {
+public class MainCommand extends SimpleCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
     private ItemStack wand;
@@ -84,7 +83,7 @@ public class MainCommand extends BukkitCommand {
             switch (args[0].toLowerCase()) {
                 case "reload":
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
-                        Util.sendDefaultLang(player, "cant-do");
+                        Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
 
@@ -97,7 +96,7 @@ public class MainCommand extends BukkitCommand {
                     return true;
                 case "reset":
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
-                        Util.sendDefaultLang(player, "cant-do");
+                        Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
 
@@ -107,7 +106,7 @@ public class MainCommand extends BukkitCommand {
                     return true;
                 case "migrate":
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
-                        Util.sendDefaultLang(player, "cant-do");
+                        Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL.get()) {
                         send(sender, "&4&l> &7You have disabled SQL support in the config");
@@ -143,10 +142,11 @@ public class MainCommand extends BukkitCommand {
             }
             switch (args[0]) {
                 case "join": {
-                    if (!player.hasPermission("witp.join") && Option.PERMISSIONS.get()) {
+                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.join")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
+
                     if (!Option.JOINING.get()) {
                         Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                         return true;
@@ -159,8 +159,7 @@ public class MainCommand extends BukkitCommand {
 
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player);
-                        ParkourGenerator generator = WITP.getVersionGenerator(pp);
-                        WITP.getDivider().generate(pp, generator);
+                        WITP.getDivider().generate(pp);
                         pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {
                         ex.printStackTrace();
@@ -195,7 +194,6 @@ public class MainCommand extends BukkitCommand {
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null && user.alertCheckPermission("witp.gamemode")) {
                         user.gamemode();
-                        return true;
                     }
                     return true;
                 }

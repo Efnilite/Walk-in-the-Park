@@ -22,13 +22,12 @@ import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.task.Tasks;
 import dev.efnilite.witp.util.web.UpdateChecker;
-import dev.efnilite.witp.util.wrapper.BukkitCommand;
+import dev.efnilite.witp.wrapper.SimpleCommand;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -113,7 +112,7 @@ public final class WITP extends JavaPlugin {
 
         configuration = new Configuration(this);
         Option.init(true);
-        addCommand("witp", new MainCommand());
+        SimpleCommand.register("witp", new MainCommand());
         divider = new SubareaDivider();
 
         // ----- Hooks and Bungee -----
@@ -173,7 +172,7 @@ public final class WITP extends JavaPlugin {
 
         if (Option.UPDATER.get()) {
             UpdateChecker checker = new UpdateChecker();
-            Tasks.syncRepeat(checker::check, 8 * 72000); // 8 hours
+            Tasks.defaultSyncRepeat(checker::check, 8 * 72000); // 8 hours
         }
 
         // ----- Metrics -----
@@ -247,17 +246,6 @@ public final class WITP extends JavaPlugin {
      */
     public static boolean versionSupportsSchematics() {
         return Version.isHigherOrEqual(Version.V1_16);
-    }
-
-    private void addCommand(String name, BukkitCommand wrapper) {
-        PluginCommand command = getCommand(name);
-
-        if (command == null) {
-            throw new IllegalStateException("Command is null");
-        }
-
-        command.setExecutor(wrapper);
-        command.setTabCompleter(wrapper);
     }
 
     // Static stuff

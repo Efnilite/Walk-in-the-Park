@@ -196,7 +196,7 @@ public class ItemBuilder {
      * @return  the instance
      */
     public ItemBuilder setLore(@Nullable List<String> lore) {
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             return this;
         }
         for (String l : lore) {

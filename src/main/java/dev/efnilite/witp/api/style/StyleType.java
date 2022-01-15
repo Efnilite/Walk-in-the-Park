@@ -2,7 +2,6 @@ package dev.efnilite.witp.api.style;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Logging;
-import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +83,7 @@ public abstract class StyleType {
         List<Material> materials = new ArrayList<>();
         String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
         if (possible == null) {
-            Logging.warn("Style selected (" + style + ") doesn't exist in config.yml, defaulting to " + Option.DEFAULT_STYLE);
+            Logging.warn("Style '" + style + "' doesn't exist in config.yml but is registered!");
             return null;
         }
         for (String material : possible.replaceAll("[\\[\\]]", "").split(", ")) {

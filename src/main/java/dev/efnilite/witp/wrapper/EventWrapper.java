@@ -1,4 +1,4 @@
-package dev.efnilite.witp.util.wrapper;
+package dev.efnilite.witp.wrapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;

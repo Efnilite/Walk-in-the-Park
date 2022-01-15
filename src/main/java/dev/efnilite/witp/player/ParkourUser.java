@@ -6,7 +6,6 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.DefaultGenerator;
-import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Logging;
@@ -86,8 +85,7 @@ public abstract class ParkourUser {
             for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
                 try {
                     ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                    ParkourGenerator generator = WITP.getVersionGenerator(spp);
-                    WITP.getDivider().generate(spp, generator);
+                    WITP.getDivider().generate(spp);
                 } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                     Logging.error("Error while trying to register player" + player.getPlayer().getName());
@@ -195,7 +193,7 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
                 for (String string : stats.keySet()) {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Class to reduce the amount of mess in {@link DefaultGenerator}
  */
-public class DefaultGeneratorBase extends ParkourGenerator {
+public abstract class DefaultGeneratorBase extends ParkourGenerator {
 
     /**
      * List of all commands
@@ -55,6 +55,18 @@ public class DefaultGeneratorBase extends ParkourGenerator {
         this.adaptiveDistanceChances = new HashMap<>();
 
         calculateChances();
+    }
+
+    /**
+     * Whether the option is present
+     *
+     * @param   option
+     *          The option
+     *
+     * @return true if yes, false if not.
+     */
+    protected boolean option(GeneratorOption option) {
+        return generatorOptions.contains(option);
     }
 
     /**
@@ -212,7 +224,7 @@ public class DefaultGeneratorBase extends ParkourGenerator {
     }
 
     @Override
-    public void start() {
+    public void tick() {
 
     }
 

@@ -72,16 +72,16 @@ public class Database {
         query("CREATE DATABASE IF NOT EXISTS `" + database + "`;");
         query("USE `" + database + "`;");
 
-        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "players` (`uuid` CHAR(36) NOT NULL, `name` VARCHAR(20) NULL, `highscore` INT NOT NULL, " +
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "players` (`uuid` CHAR(36) NOT NULL, `name` VARCHAR(20) NULL, `highscore` INT NOT NULL, " +
                 "`hstime` VARCHAR(13) NULL, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
-        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10)," +
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "options` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10)," +
                 " `blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
-        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "game-history` (`code` CHAR(9) NOT NULL, `uuid` VARCHAR(36), " +
+        query("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "game-history` (`code` CHAR(9) NOT NULL, `uuid` VARCHAR(36), " +
                 "`name` VARCHAR(20), `score` VARCHAR(10), `hstime` VARCHAR(13) NULL, `difficultyScore` DECIMAL, PRIMARY KEY (`code`)) ENGINE = InnoDB CHARSET = utf8;");
-        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `lang` VARCHAR(5)");
-        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "players` ADD `hsdiff` VARCHAR(3)");
-        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX + "game-history` ADD `scoreDiff` VARCHAR(3)");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `lang` VARCHAR(5)");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `hsdiff` VARCHAR(3)");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "game-history` ADD `scoreDiff` VARCHAR(3)");
         Logging.info("Initialized database");
     }
 

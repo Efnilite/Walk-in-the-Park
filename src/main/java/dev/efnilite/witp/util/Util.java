@@ -7,11 +7,12 @@ import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.task.Tasks;
-import dev.efnilite.witp.util.wrapper.EventWrapper;
+import dev.efnilite.witp.wrapper.EventWrapper;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -567,22 +568,22 @@ public class Util {
      * @param   path
      *          The path
      */
-    public static void sendDefaultLang(Player player, String path, String... replaceable) {
-        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
+    public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
+        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
         if (message == null) {
-            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG.get() + "!");
             return;
         }
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }
-        player.sendMessage(message);
+        sender.sendMessage(message);
     }
 
     public static String getDefaultLang(String path) {
-        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
+        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
         if (message == null) {
-            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG + "!");
+            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG.get() + "!");
             return "";
         }
         return message;
@@ -625,5 +626,40 @@ public class Util {
      */
     public static String getVersion() {
         return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+    }
+
+    /**
+     * Gets a spiral
+     *
+     * @param   n
+     *          The number of  value
+     *
+     * @return the coords of this value
+     */
+    // https://math.stackexchange.com/a/163101
+    public static int[] spiralAt(int n) {
+        n++; // one-index
+        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        int t = 2 * k + 1;
+        int m = t * t;
+        t--;
+
+        if (n > m - t) {
+            return new int[]{k - (m - n), -k};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k, -k + (m - n)};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k + (m - n), k};
+        } else {
+            return new int[]{k, k - (m - n - t)};
+        }
     }
 }

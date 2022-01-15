@@ -18,7 +18,7 @@ public class InsertStatement extends Statement {
 
     @Override
     public void query() throws InvalidStatementException {
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             throw new InvalidStatementException("Invalid InsertStatement");
         }
         StringBuilder statement = new StringBuilder("INSERT INTO `" + table + "` (");

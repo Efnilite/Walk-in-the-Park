@@ -1,9 +1,12 @@
 Walk in the Park TODO
 
-- Fixed colouring not working in scoreboard
-- Fixed double/integer handling in the new config system
-- Fixed error when joining setup is incomplete due to an error
-- Fixed MapLayers error with flat worlds
+v2.9
+- Reworked entire Generator system to be more efficient and reliable
+- Added 2 block trail behind players' parkour to decrease chance of blocks disappearing in front of player
+- Changed glass pane to white glass pane for better compatibility with resource packs and better visibility
+- Fixed structures not counting to total score
+- Fixed blocks spawning in unloaded chunks
+- Fixed SQL handling not being updated to the new config system
 
 High priority:
 - Optimize ram with schematics (async?)

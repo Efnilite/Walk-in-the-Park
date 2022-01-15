@@ -1,7 +1,6 @@
 package dev.efnilite.witp.api.gamemode;
 
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.Logging;
@@ -31,8 +30,7 @@ public class DefaultGamemode implements Gamemode {
             player.closeInventory();
             ParkourUser.unregister(user, false, false, true);
             ParkourPlayer pp = ParkourPlayer.register(player);
-            ParkourGenerator generator = WITP.getVersionGenerator(pp);
-            WITP.getDivider().generate(pp, generator);
+            WITP.getDivider().generate(pp);
         } catch (IOException | SQLException ex) {
             ex.printStackTrace();
             Logging.error("Error while trying to register player" + player.getName());
