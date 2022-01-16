@@ -60,6 +60,7 @@ public final class WITP extends JavaPlugin {
         instance = this;
         Tasks.time("load");
         Logging.init();
+        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().setLenient().create();
 
         // ----- Versions -----
 
@@ -189,11 +190,8 @@ public final class WITP extends JavaPlugin {
             ParkourUser.JOIN_COUNT = 0;
             return joins;
         }));
-        long time = Tasks.end("load");
 
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().setLenient().create();
-
-        Logging.info("Loaded WITP in " + time + "ms!");
+        Logging.info("Loaded WITP in " + Tasks.end("load") + "ms!");
     }
 
     @Override
