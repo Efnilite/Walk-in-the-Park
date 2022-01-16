@@ -1,7 +1,5 @@
 package dev.efnilite.witp.player;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
@@ -48,7 +46,6 @@ public abstract class ParkourUser {
     protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
-    protected static final Gson gson = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation().setLenient().create();
 
     public ParkourUser(@NotNull Player player) {
         this.player = player;
@@ -73,55 +70,70 @@ public abstract class ParkourUser {
      *          When saving the player's file goes wrong
      */
     public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) throws IOException, InvalidStatementException {
-        new PlayerLeaveEvent(player).call();
         Player pl = player.getPlayer();
-        if (!player.getBoard().isDeleted()) {
-            player.getBoard().delete();
-        }
-        if (player instanceof ParkourPlayer) {
-            ParkourPlayer pp = (ParkourPlayer) player;
 
-            // remove spectators
-            for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
-                try {
-                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                    WITP.getDivider().generate(spp);
-                } catch (IOException | SQLException ex) {
-                    ex.printStackTrace();
-                    Logging.error("Error while trying to register player" + player.getPlayer().getName());
-                }
+        try {
+            new PlayerLeaveEvent(player).call();
+            if (!player.getBoard().isDeleted()) {
+                player.getBoard().delete();
             }
-            pp.getGenerator().spectators.clear();
+            Player playerd = null;
+            playerd.getName().toUpperCase();
+            if (player instanceof ParkourPlayer) {
+                ParkourPlayer pp = (ParkourPlayer) player;
 
-            // reset generator (remove blocks) and delete island
-            pp.getGenerator().reset(false);
-            WITP.getDivider().leave(pp);
-            pp.save(saveAsync);
-            players.remove(pl);
-        } else if (player instanceof ParkourSpectator) {
-            ParkourSpectator spectator = (ParkourSpectator) player;
-            spectator.watching.removeSpectators(spectator);
-        }
-        users.remove(pl.getName());
-
-        if (sendBack) {
-            if (Option.BUNGEECORD.get() && kickIfBungee) {
-                Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
-            } else {
-                PreviousData data = previousData.get(pl.getName());
-                previousData.remove(pl.getName());
-                data.apply();
-                pl.resetPlayerTime();
-                pl.resetPlayerWeather();
-
-                if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && player instanceof ParkourPlayer) {
-                    ParkourPlayer pp = (ParkourPlayer) player;
-                    if (pp.getGenerator() instanceof DefaultGenerator) {
-                        for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
-                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                                    command.replace("%player%", player.getPlayer().getName()));
-                        }
+                // remove spectators
+                for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
+                    try {
+                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                        WITP.getDivider().generate(spp);
+                    } catch (IOException | SQLException ex) {
+                        ex.printStackTrace();
+                        Logging.error("Error while trying to register player" + player.getPlayer().getName());
                     }
+                }
+                pp.getGenerator().spectators.clear();
+
+                // reset generator (remove blocks) and delete island
+                pp.getGenerator().reset(false);
+                WITP.getDivider().leave(pp);
+                pp.save(saveAsync);
+                players.remove(pl);
+            } else if (player instanceof ParkourSpectator) {
+                ParkourSpectator spectator = (ParkourSpectator) player;
+                spectator.watching.removeSpectators(spectator);
+            }
+            users.remove(pl.getName());
+        } catch (Exception ex) { // safeguard to prevent people from losing data
+            ex.printStackTrace();
+            Logging.stack("Error while trying to make player " + player.getPlayer().getName() + " leave",
+                    "Please report this error to the developer. Inventory will still be set");
+        }
+
+        if (!sendBack) {
+            return;
+        }
+        if (Option.BUNGEECORD.get() && kickIfBungee) {
+            Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+            return;
+        }
+        PreviousData data = previousData.get(pl.getName());
+        if (data == null) {
+            Logging.warn("No previous data found for " + player.getPlayer().getName());
+            return;
+        } else {
+            data.apply();
+            previousData.remove(pl.getName());
+        }
+        pl.resetPlayerTime();
+        pl.resetPlayerWeather();
+
+        if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && player instanceof ParkourPlayer) {
+            ParkourPlayer pp = (ParkourPlayer) player;
+            if (pp.getGenerator() instanceof DefaultGenerator) {
+                for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
+                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+                            command.replace("%player%", player.getPlayer().getName()));
                 }
             }
         }
@@ -215,7 +227,7 @@ public abstract class ParkourUser {
             }
             for (File file : folder.listFiles()) {
                 FileReader reader = new FileReader(file);
-                ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
                 String name = file.getName();
                 UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                 if (from.highScoreDifficulty == null) {

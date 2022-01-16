@@ -1,9 +1,12 @@
 Walk in the Park TODO
 
 v2.9
-- Reworked entire Generator system to be more efficient and reliable
-- Added 2 block trail behind players' parkour to decrease chance of blocks disappearing in front of player
-- Changed glass pane to white glass pane for better compatibility with resource packs and better visibility
+- Reworked entire Generator system to be more efficient and much more reliable
+    > Added 2 block trail behind players' parkour to decrease chance of blocks disappearing in front of player
+- Added inventory saving to files
+    > Use /witp recoverinventory.
+    > Useful for recovering inventories after crashes.
+- Changed glass pane to white glass pane for better compatibility with certain resource packs and better visibility
 - Fixed structures not counting to total score
 - Fixed blocks spawning in unloaded chunks
 - Fixed SQL handling not being updated to the new config system

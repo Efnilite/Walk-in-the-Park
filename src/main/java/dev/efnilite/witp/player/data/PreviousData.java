@@ -9,23 +9,18 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 public class PreviousData {
 
-    private double speed;
     private double health;
     private double maxHealth;
+    private InventoryData data;
     private final int hunger;
+    private final Player player;
     private final GameMode gamemode;
     private final Location location;
-    private final Player player;
-    private final HashMap<Integer, ItemStack> inventory = new HashMap<>();
 
     public PreviousData(@NotNull Player player) {
         this.player = player;
@@ -41,12 +36,13 @@ public class PreviousData {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
-
-        saveInventory();
-//        speed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
-        
-//        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1); unsure whether this is the actual value
-
+        if (Option.INVENTORY_HANDLING.get()) {
+            this.data = new InventoryData(player);
+            this.data.saveInventory();
+            if (Option.INVENTORY_SAVING.get()) {
+                this.data.saveFile();
+            }
+        }
         if (Version.isHigherOrEqual(Version.V1_13)) {
             for (PotionEffectType value : PotionEffectType.values()) {
                 player.removePotionEffect(value);
@@ -73,29 +69,11 @@ public class PreviousData {
             //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
         } catch (Exception ex) {// not optimal but there isn't another way
             ex.printStackTrace();
-            Logging.error("Error while giving the stats of player " + player.getName() + " back! The inventory will still be restored.");
+            Logging.stack("Error while recovering stats of " + player.getName() + ": " + ex.getMessage(),
+                    "Please report this error to the developer! Inventory will still be restored.");
         }
-        if (Option.INVENTORY_HANDLING.get()) {
-            player.getInventory().clear();
-            for (int slot : inventory.keySet()) {
-                player.getInventory().setItem(slot, inventory.get(slot));
-            }
-        }
-    }
-
-    /**
-     * Saves the inventory to cache, so if the player leaves the player gets their items back
-     */
-    protected void saveInventory() {
-        if (Option.INVENTORY_HANDLING.get()) {
-            int index = 0;
-            Inventory inventory = this.player.getInventory();
-            for (ItemStack item : inventory.getContents()) {
-                if (item != null) {
-                    this.inventory.put(index, item);
-                }
-                index++;
-            }
+        if (data != null) {
+            data.apply();
         }
     }
 }

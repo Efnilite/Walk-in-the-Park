@@ -1,12 +1,11 @@
 package dev.efnilite.witp.command;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.player.data.InventoryData;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Logging;
@@ -58,25 +57,37 @@ public class MainCommand extends SimpleCommand {
         }
         if (args.length == 0) {
             // Help menu
-            send(sender, "&7--------------- &aWITP &7---------------");
-            send(sender, "&a/witp &f- &7Main command");
-            send(sender, "&a/witp join [player] &f- &7Join the game on this server or make another player join");
-            send(sender, "&a/witp leave &f- &7Leave the game on this server");
-            send(sender, "&a/witp menu &f- &7Open the customization menu");
-            send(sender, "&a/witp gamemode &f- &7Open the gamemode menu");
-            send(sender, "&a/witp leaderboard &f- &7Open the leaderboard");
+            send(sender, "&7--------------- &4WITP &7---------------");
+            send(sender, "&4/witp &8- &7Main command");
+            if (sender.hasPermission("witp.join")) {
+                send(sender, "&4/witp join [player] &8- &7Join the game on this server or make another player join");
+                send(sender, "&4/witp leave &8- &7Leave the game on this server");
+            }
+            if (sender.hasPermission("witp.menu")) {
+                send(sender, "&4/witp menu &8- &7Open the customization menu");
+            }
+            if (sender.hasPermission("witp.gamemode")) {
+                send(sender, "&4/witp gamemode &8- &7Open the gamemode menu");
+            }
+            if (sender.hasPermission("witp.leaderboard")) {
+                send(sender, "&4/witp leaderboard &8- &7Open the leaderboard");
+            }
 
             // Advanced settings based per permission
             if (sender.hasPermission("witp.reload") || sender.hasPermission("witp.schematic") || sender.isOp()) {
-                send(sender, "&7------------ &aAdvanced &7-------------");
+                send(sender, "&7------------ &4&lAdvanced &7-------------");
             }
             if (sender.hasPermission("witp.schematic")) {
-                send(sender, "&a/witp schematic &f- &7Create a schematic");
+                send(sender, "&4/witp schematic &f- &7Create a schematic");
             }
             if (sender.hasPermission("witp.reload")) {
-                send(sender, "&a/witp reload &f- &7Reloads the lang.yml file");
-                send(sender, "&a/witp migrate &f- &7Migrate your Json files to MySQL");
-                send(sender, "&a/witp reset &f- &7Resets all highscores. &cBe careful when using!");
+                send(sender, "&4&l/witp reload &8- &7Reloads the lang.yml file");
+                send(sender, "&4&l/witp migrate &8- &7Migrate your Json files to MySQL");
+                send(sender, "&4&l/witp reset &8- &7Resets all highscores. &cBe careful when using!");
+            }
+            if (sender.hasPermission("witp.recoverinventory")) {
+                send(sender, "&4&l/witp recoverinventory <player> &8- &7Recover a player's saved inventory." +
+                        " &cUseful for recovering data after server crashes or errors when leaving.");
             }
             return true;
         } else if (args.length == 1) {
@@ -119,7 +130,6 @@ public class MainCommand extends SimpleCommand {
                         folder.mkdirs();
                         return true;
                     }
-                    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().create();
                     for (File file : folder.listFiles()) {
                         FileReader reader;
                         try {
@@ -129,7 +139,7 @@ public class MainCommand extends SimpleCommand {
                             send(sender, "&4&l> &cError while trying to read file, check your console");
                             return true;
                         }
-                        ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                        ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
                         String name = file.getName();
                         from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                         from.save(true);
@@ -288,23 +298,21 @@ public class MainCommand extends SimpleCommand {
                     return true;
                 }
                 ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
-            } else if (args[0].equalsIgnoreCase("join") && args[1] != null) {
-                if (sender.isOp()) {
-                    Player join = Bukkit.getPlayer(args[1]);
-                    if (join == null) {
-                        Logging.error("Player " + args[1] + " doesn't exist!");
-                        return true;
+            } else if (args[0].equalsIgnoreCase("join") && args[1] != null && sender.hasPermission("witp.join.other")) {
+                Player join = Bukkit.getPlayer(args[1]);
+                if (join == null) {
+                    send(sender, "&4&l> &7That player isn't online!");
+                    return true;
+                }
+                try {
+                    ParkourPlayer.register(join);
+                    ParkourPlayer pp = ParkourPlayer.getPlayer(join);
+                    if (pp != null) {
+                        pp.sendTranslated("joined");
                     }
-                    try {
-                        ParkourPlayer.register(join);
-                        ParkourPlayer pp = ParkourPlayer.getPlayer(join);
-                        if (pp != null) {
-                            pp.sendTranslated("joined");
-                        }
-                    } catch (IOException | SQLException ex) {
-                        ex.printStackTrace();
-                        Logging.error("Error while joining");
-                    }
+                } catch (IOException | SQLException ex) {
+                    ex.printStackTrace();
+                    Logging.error("Error while joining");
                 }
             } else if (args[0].equalsIgnoreCase("search") && player != null) {
                 ParkourUser user = ParkourUser.getUser(player);
@@ -322,6 +330,24 @@ public class MainCommand extends SimpleCommand {
                         }
                     }
                 }
+            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
+                Player arg1 = Bukkit.getPlayer(args[1]);
+                if (arg1 == null) {
+                    send(sender, "&4&l> &7That player isn't online!");
+                    return true;
+                }
+
+                InventoryData data = new InventoryData(arg1);
+                data.readFile(success -> {
+                    if (success) {
+                        send(sender, "&4&l> &7Successfully recovered the inventory of " + arg1.getName() + " from their file");
+                        send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
+                        data.apply();
+                    } else {
+                        send(sender, "&4&l> &cThere was an error recovering the inventory of " + arg1.getName() + " from their file");
+                        send(sender, "&4&l> &7" + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
+                    }
+                });
             }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("askreset") && player != null && args[2] != null) {
@@ -345,7 +371,34 @@ public class MainCommand extends SimpleCommand {
 
     @Override
     public List<String> tabComplete(Player player, String[] args) {
-        if (args.length == 2) {
+        List<String> completions = new ArrayList<>();
+        if (args.length == 1) {
+            if (player.hasPermission("witp.join")) {
+                completions.add("join");
+                completions.add("leave");
+            }
+            if (player.hasPermission("witp.menu")) {
+                completions.add("menu");
+            }
+            if (player.hasPermission("witp.gamemode")) {
+                completions.add("gamemode");
+            }
+            if (player.hasPermission("witp.leaderboard")) {
+                completions.add("leaderboard");
+            }
+            if (player.hasPermission("witp.schematic")) {
+                completions.add("schematic");
+            }
+            if (player.hasPermission("witp.reload")) {
+                completions.add("reload");
+                completions.add("migrate");
+                completions.add("reset");
+            }
+            if (player.hasPermission("witp.recoverinventory")) {
+                completions.add("recoverinventory");
+            }
+            return completions(args[0], completions);
+        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("search")) {
                 List<String> names = new ArrayList<>();
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
@@ -355,19 +408,24 @@ public class MainCommand extends SimpleCommand {
                     }
                     names.add(name);
                 }
-                return names;
+                completions.addAll(names);
             } else if (args[0].equalsIgnoreCase("schematic") && player.hasPermission("witp.schematic")) {
-                return Arrays.asList("wand", "pos1", "pos2", "save");
+                completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
+            } else if ((args[0].equalsIgnoreCase("join") && player.hasPermission("witp.join.other")) ||
+                    (args[0].equalsIgnoreCase("recoverinventory") && player.hasPermission("witp.recoverinventory"))) {
+                List<String> names = new ArrayList<>();
+                for (Player pl : Bukkit.getOnlinePlayers()) {
+                    String name = pl.getName();
+                    if (player.getName().equals(name)) {
+                        continue;
+                    }
+                    names.add(name);
+                }
+                completions.addAll(names);
             }
+            return completions(args[1], completions);
+        } else {
+            return Collections.emptyList();
         }
-        List<String> suggestions = new ArrayList<>(Arrays.asList("join", "leave", "menu", "leaderboard", "gamemode"));
-        if (player.hasPermission("witp.reload")) {
-            suggestions.add("reload");
-            suggestions.add("migrate");
-        }
-        if (player.hasPermission("witp.schematic")) {
-            suggestions.add("schematic");
-        }
-        return suggestions;
     }
 }

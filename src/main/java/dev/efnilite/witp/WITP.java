@@ -1,5 +1,7 @@
 package dev.efnilite.witp;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.api.gamemode.DefaultGamemode;
 import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
@@ -43,6 +45,7 @@ public final class WITP extends JavaPlugin {
     private static Configuration configuration;
     private static SubareaDivider divider;
     private static Registry registry;
+    private static Gson gson;
     private static @Nullable MultiverseHook multiverseHook;
     private static @Nullable ProtocolHook protocolHook;
     private static @Nullable PlaceholderHook placeholderHook;
@@ -188,6 +191,8 @@ public final class WITP extends JavaPlugin {
         }));
         long time = Tasks.end("load");
 
+        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().setLenient().create();
+
         Logging.info("Loaded WITP in " + time + "ms!");
     }
 
@@ -280,6 +285,10 @@ public final class WITP extends JavaPlugin {
 
     public static Configuration getConfiguration() {
         return configuration;
+    }
+
+    public static Gson getGson() {
+        return gson;
     }
 
     public static WITP getInstance() {

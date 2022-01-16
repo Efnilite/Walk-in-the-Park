@@ -128,6 +128,11 @@ options:
     # Enables/disables the inventory handling system
     inventory-handling: true
 
+    # Logs inventories of the players that join to the inventories/ folder.
+    # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
+    # inventories of players to be lost if this is set to false!
+    inventory-saving: true
+
     # Enables/disables the health handling system
     # Disable this if you're experiencing errors with max health, etc.
     health-handling: true

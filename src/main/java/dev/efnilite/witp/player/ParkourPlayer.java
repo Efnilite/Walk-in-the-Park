@@ -273,7 +273,7 @@ public class ParkourPlayer extends ParkourUser {
                         file.createNewFile();
                     }
                     FileWriter writer = new FileWriter(file);
-                    gson.toJson(ParkourPlayer.this, writer);
+                    WITP.getGson().toJson(ParkourPlayer.this, writer);
                     writer.flush();
                     writer.close();
                 }
@@ -402,7 +402,7 @@ public class ParkourPlayer extends ParkourUser {
                 if (data.exists()) {
                     Logging.verbose("Reading player data..");
                     FileReader reader = new FileReader(data);
-                    ParkourPlayer from = gson.fromJson(reader, ParkourPlayer.class);
+                    ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
                     pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
                             from.useParticles == null || from.useParticles,
@@ -422,7 +422,7 @@ public class ParkourPlayer extends ParkourUser {
                     pp.saveStats();
                 }
             } else {
-                SelectStatement select = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX.get() + "players")
+                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
