@@ -6,6 +6,9 @@ v2.9
 - Added inventory saving to files for backup
     > Use /witp recoverinventory.
     > Useful for recovering inventories after crashes.
+    > Has permission witp.recoverinventory
+- Added forcing other players to join permission
+    > witp.join.other
 - Changed glass pane to white glass pane for better compatibility with certain resource packs and better visibility
 - Removed need for 'teleporting' option by automatically not teleporting players who leave by switch worlds
 - Fixed errors on join/leave causing incomplete setups for joining or leaving

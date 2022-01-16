@@ -141,8 +141,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public BlockData selectBlockData() {
-        BlockData data = player.randomMaterial().createBlockData();
-        return data;
+        return player.randomMaterial().createBlockData();
     }
 
     @Override
@@ -161,7 +160,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             height = getRandomChance(heightChances);
         }
 
-        if (isSpecial) {
+        if (isSpecial && specialType != null) {
             switch (specialType) { // adjust for special jumps
                 case PACKED_ICE: // ice
                     gap++;
