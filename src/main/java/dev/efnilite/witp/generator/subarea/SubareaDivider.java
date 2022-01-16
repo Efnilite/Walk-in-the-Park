@@ -280,7 +280,7 @@ public class SubareaDivider {
                 block.setType(Material.AIR);
                 playerDetected = true;
             } else if (type == parkourSpawn && !parkourDetected) {
-                parkourBegin = block.getLocation().clone().add(Util.getDirectionVector(Option.HEADING.get()).multiply(-2).toBukkitVector()); // remove an extra block of jumping space
+                parkourBegin = block.getLocation().clone(); // remove an extra block of jumping space
                 block.setType(Material.AIR);
                 parkourDetected = true;
             }

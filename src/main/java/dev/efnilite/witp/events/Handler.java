@@ -53,7 +53,7 @@ public class Handler implements Listener {
 
         PreviousData data = quitInventoryData.get(playerName);
         if (data != null) {
-            data.apply();
+            data.apply(false);
             quitInventoryData.remove(playerName);
         }
 
@@ -61,9 +61,9 @@ public class Handler implements Listener {
         if (player.isOp() && WITP.OUTDATED) {
             BaseComponent[] message = new ComponentBuilder()
                     .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Efnilite/Walk-in-the-Park/releases/latest"))
-                    .append("(!) ").color(ChatColor.RED).bold(true)
+                    .append("> ").color(ChatColor.DARK_RED).bold(true)
                     .append("Your WITP version is outdated. ").color(ChatColor.GRAY).bold(false)
-                    .append("Click here").underlined(true)
+                    .append("Click here").color(ChatColor.DARK_RED).underlined(true)
                     .append(" to visit the latest version!").color(ChatColor.GRAY).underlined(false)
                     .create();
 
@@ -262,7 +262,7 @@ public class Handler implements Listener {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
-                ParkourUser.unregister(user, Option.LEAVE_TELEPORTING.get(), false, true);
+                ParkourUser.unregister(user, false, false, true);
             } catch (IOException | InvalidStatementException ex) {
                 ex.printStackTrace();
                 Logging.error("Error while trying to unregister player");

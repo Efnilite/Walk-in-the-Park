@@ -19,7 +19,7 @@ public class SkullSetter {
             hasTexturesMethod = playerProfileClass.getDeclaredMethod("hasTextures");
             setPlayerProfileMethod = SkullMeta.class.getDeclaredMethod("setPlayerProfile", playerProfileClass);
             isPaper = true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             isPaper = false;
         }
     }
@@ -32,7 +32,7 @@ public class SkullSetter {
                 if (hasTexture) {
                     setPlayerProfileMethod.invoke(meta, playerProfile);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 meta.setOwningPlayer(player); // if the paper version doesn't work, try the default one
             }
         } else {

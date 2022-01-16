@@ -29,6 +29,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Slab;
@@ -178,13 +179,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         }
 
+        if (mostRecentBlock.getBlock().getType() == Material.QUARTZ_SLAB) { // slabs cant go higher than one
+            height = Math.min(height, 0);
+        }
+
         height = Math.min(height, 1);
         gap = Math.min(gap, 4);
 
         List<Block> possible = getPossiblePositions(gap - height, height);
 
         if (possible.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         return Collections.singletonList(possible.get(random.nextInt(possible.size())));
@@ -325,6 +330,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Logging.warn("You don't have to report this warning.");
             } else {
                 task.cancel();
+                return;
             }
         }
 
@@ -341,8 +347,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         deleteStructure();
 
         if (regenerate) {
-            player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        } else if (Option.LEAVE_TELEPORTING.get()) {
             player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
 
@@ -429,9 +433,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         break;
                 }
                 specialType = selectedBlockData.getMaterial();
+            } else {
+                specialType = null;
             }
 
-            Block selectedBlock = selectBlocks().get(0);
+            List<Block> blocks = selectBlocks();
+            if (blocks.isEmpty()) {
+                return;
+            }
+
+            Block selectedBlock = blocks.get(0);
             setBlock(selectedBlock, selectedBlockData);
             new BlockGenerateEvent(selectedBlock, this, player).call();
 
@@ -490,32 +501,32 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             Schematic schematic = SchematicCache.getSchematic(file.getName());
 
             schematicCooldown = 20;
-            double gapStructure = getRandomChance(distanceChances) + 1;
-
-            Location local2 = mostRecentBlock.clone();
-            List<Block> possibleStructure = getPossiblePositions(gapStructure, 0);
-            if (possibleStructure.isEmpty()) {
-                mostRecentBlock = local2.clone();
+            List<Block> blocks = selectBlocks();
+            if (blocks.isEmpty()) {
                 return;
             }
-            Block chosenStructure = possibleStructure.get(random.nextInt(possibleStructure.size()));
+
+            Block selectedBlock = blocks.get(0);
 
             try {
-                schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, chosenStructure.getLocation());
+                schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
                 waitForSchematicCompletion = true;
             } catch (IOException ex) {
                 ex.printStackTrace();
                 reset(true);
+                return;
             }
+
             if (schematicBlocks == null || schematicBlocks.isEmpty()) {
                 Logging.error("0 blocks found in structure!");
                 player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                 reset(true);
+                return;
             }
 
-            for (Block block : schematicBlocks) {
-                if (block.getType() == Material.RED_WOOL) {
-                    mostRecentBlock = block.getLocation();
+            for (Block schematicBlock : schematicBlocks) {
+                if (schematicBlock.getType() == Material.RED_WOOL) {
+                    mostRecentBlock = schematicBlock.getLocation();
                     break;
                 }
             }

@@ -338,11 +338,11 @@ public class MainCommand extends SimpleCommand {
                 }
 
                 InventoryData data = new InventoryData(arg1);
-                data.readFile(success -> {
-                    if (success) {
+                data.readFile(readData -> {
+                    if (readData != null) {
                         send(sender, "&4&l> &7Successfully recovered the inventory of " + arg1.getName() + " from their file");
                         send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
-                        data.apply();
+                        readData.apply();
                     } else {
                         send(sender, "&4&l> &cThere was an error recovering the inventory of " + arg1.getName() + " from their file");
                         send(sender, "&4&l> &7" + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
@@ -400,28 +400,20 @@ public class MainCommand extends SimpleCommand {
             return completions(args[0], completions);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("search")) {
-                List<String> names = new ArrayList<>();
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
                     String name = pp.getPlayer().getName();
                     if (player.getName().equals(name)) {
                         continue;
                     }
-                    names.add(name);
+                    completions.add(name);
                 }
-                completions.addAll(names);
             } else if (args[0].equalsIgnoreCase("schematic") && player.hasPermission("witp.schematic")) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
             } else if ((args[0].equalsIgnoreCase("join") && player.hasPermission("witp.join.other")) ||
                     (args[0].equalsIgnoreCase("recoverinventory") && player.hasPermission("witp.recoverinventory"))) {
-                List<String> names = new ArrayList<>();
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    String name = pl.getName();
-                    if (player.getName().equals(name)) {
-                        continue;
-                    }
-                    names.add(name);
+                    completions.add(pl.getName());
                 }
-                completions.addAll(names);
             }
             return completions(args[1], completions);
         } else {

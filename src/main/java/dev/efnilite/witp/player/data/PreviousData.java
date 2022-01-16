@@ -50,14 +50,17 @@ public class PreviousData {
         }
     }
 
-    public void apply() {
+    public void apply(boolean teleportBack) {
         try {
-            if (Option.GO_BACK.get()) {
-                Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
-                player.teleport(to);
-            } else {
-                player.teleport(location);
+            if (teleportBack) {
+                if (Option.GO_BACK.get()) {
+                    Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
+                    player.teleport(to);
+                } else {
+                    player.teleport(location);
+                }
             }
+
             player.setFoodLevel(hunger);
             player.setGameMode(gamemode);
 
@@ -66,8 +69,7 @@ public class PreviousData {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }
-            //        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
-        } catch (Exception ex) {// not optimal but there isn't another way
+        } catch (Throwable ex) {// not optimal but there isn't another way
             ex.printStackTrace();
             Logging.stack("Error while recovering stats of " + player.getName() + ": " + ex.getMessage(),
                     "Please report this error to the developer! Inventory will still be restored.");

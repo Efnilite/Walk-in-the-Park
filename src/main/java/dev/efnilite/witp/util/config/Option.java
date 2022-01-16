@@ -31,7 +31,6 @@ public class Option {
     public static ConfigOption<Boolean> FOCUS_MODE;
     public static ConfigOption<List<String>> FOCUS_MODE_WHITELIST;
     public static ConfigOption<Boolean> GO_BACK;
-    public static ConfigOption<Boolean> LEAVE_TELEPORTING;
     public static ConfigOption<Boolean> BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
@@ -125,7 +124,6 @@ public class Option {
         FOCUS_MODE_WHITELIST = new ConfigOption<>(config, "focus-mode.whitelist");
 
         GO_BACK = new ConfigOption<>(config, "bungeecord.go-back-enabled");
-        LEAVE_TELEPORTING = new ConfigOption<>(config, "bungeecord.teleporting");
 
         if (init) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");

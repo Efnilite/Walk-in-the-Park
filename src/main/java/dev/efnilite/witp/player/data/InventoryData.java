@@ -3,25 +3,26 @@ package dev.efnilite.witp.player.data;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Logging;
-import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class InventoryData {
 
-    private final File file;
-    private final Player player;
+    private File file;
+    private Player player;
     @Expose
-    private final HashMap<Integer, ItemStack> inventory = new HashMap<>();
+    private final HashMap<Integer, Map<String, Object>> inventory = new HashMap<>();
 
     public InventoryData(Player player) {
         this.player = player;
@@ -34,26 +35,29 @@ public class InventoryData {
     public void apply() {
         player.getInventory().clear();
         for (int slot : inventory.keySet()) {
-            player.getInventory().setItem(slot, inventory.get(slot));
+            player.getInventory().setItem(slot, ItemStack.deserialize(inventory.get(slot)));
         }
     }
 
-    public void readFile(Consumer<Boolean> successfulCallback) {
+    public void readFile(Consumer<@Nullable InventoryData> successfulCallback) {
         Tasks.asyncTask(() -> {
             try {
                 if (!file.exists()) {
-                    successfulCallback.accept(false);
+                    successfulCallback.accept(null);
                     return;
                 }
                 FileReader reader = new FileReader(file);
-                WITP.getGson().fromJson(reader, InventoryData.class);
+                InventoryData data = WITP.getGson().fromJson(reader, InventoryData.class);
+                data.player = player;
+                data.file = file;
+                successfulCallback.accept(data);
+
                 reader.close();
-                successfulCallback.accept(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 Logging.stack("Error while reading inventory of " + player.getName() + " from file: ",
                         "Please report this error and the above stack trace to the developer!");
-                successfulCallback.accept(false);
+                successfulCallback.accept(null);
             }
         });
     }
@@ -88,7 +92,7 @@ public class InventoryData {
         Inventory inventory = this.player.getInventory();
         for (ItemStack item : inventory.getContents()) {
             if (item != null) {
-                this.inventory.put(index, item);
+                this.inventory.put(index, item.serialize());
             }
             index++;
         }

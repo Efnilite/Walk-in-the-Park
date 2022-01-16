@@ -74,23 +74,13 @@ public abstract class ParkourUser {
 
         try {
             new PlayerLeaveEvent(player).call();
-            if (!player.getBoard().isDeleted()) {
-                player.getBoard().delete();
-            }
-            Player playerd = null;
-            playerd.getName().toUpperCase();
             if (player instanceof ParkourPlayer) {
                 ParkourPlayer pp = (ParkourPlayer) player;
 
                 // remove spectators
                 for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
-                    try {
-                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                        WITP.getDivider().generate(spp);
-                    } catch (IOException | SQLException ex) {
-                        ex.printStackTrace();
-                        Logging.error("Error while trying to register player" + player.getPlayer().getName());
-                    }
+                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                    WITP.getDivider().generate(spp);
                 }
                 pp.getGenerator().spectators.clear();
 
@@ -98,22 +88,24 @@ public abstract class ParkourUser {
                 pp.getGenerator().reset(false);
                 WITP.getDivider().leave(pp);
                 pp.save(saveAsync);
-                players.remove(pl);
             } else if (player instanceof ParkourSpectator) {
                 ParkourSpectator spectator = (ParkourSpectator) player;
                 spectator.watching.removeSpectators(spectator);
             }
-            users.remove(pl.getName());
-        } catch (Exception ex) { // safeguard to prevent people from losing data
+            if (!player.getBoard().isDeleted()) {
+                player.getBoard().delete();
+            }
+        } catch (Throwable ex) { // safeguard to prevent people from losing data
             ex.printStackTrace();
             Logging.stack("Error while trying to make player " + player.getPlayer().getName() + " leave",
                     "Please report this error to the developer. Inventory will still be set");
+            player.send("&4&l> &cThere was an error while trying to handle leaving.");
         }
 
-        if (!sendBack) {
-            return;
-        }
-        if (Option.BUNGEECORD.get() && kickIfBungee) {
+        players.remove(pl);
+        users.remove(pl.getName());
+
+        if (sendBack && Option.BUNGEECORD.get() && kickIfBungee) {
             Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
@@ -122,7 +114,7 @@ public abstract class ParkourUser {
             Logging.warn("No previous data found for " + player.getPlayer().getName());
             return;
         } else {
-            data.apply();
+            data.apply(sendBack);
             previousData.remove(pl.getName());
         }
         pl.resetPlayerTime();
