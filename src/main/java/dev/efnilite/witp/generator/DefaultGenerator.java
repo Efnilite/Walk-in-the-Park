@@ -109,7 +109,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * A map which stores all blocks and their number values. The first block generated will have a value of 0.
      */
     protected final LinkedHashMap<Block, Integer> positionIndexMap;
-    protected final List<Block> generatedHistory;
 
     protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0, 0, 0, 0);
 
@@ -135,7 +134,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.positionIndexTotal = 0;
         this.lastPositionIndexPlayer = 0;
         this.positionIndexMap = new LinkedHashMap<>();
-        this.generatedHistory = new ArrayList<>();
 
         this.handler = new InventoryHandler(player);
         this.heading = Option.HEADING.get();
@@ -331,20 +329,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Logging.warn("You don't have to report this warning.");
             } else {
                 task.cancel();
-                return;
             }
         }
 
         for (Block block : positionIndexMap.keySet()) {
             block.setType(Material.AIR);
         }
-        for (Block block : generatedHistory) {
-            block.setType(Material.AIR);
-        }
 
         lastPositionIndexPlayer = 0;
         positionIndexTotal = 0;
-        generatedHistory.clear();
         positionIndexMap.clear();
 
         waitForSchematicCompletion = false;
@@ -451,7 +444,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             setBlock(selectedBlock, selectedBlockData);
             new BlockGenerateEvent(selectedBlock, this, player).call();
 
-            generatedHistory.add(selectedBlock);
             positionIndexMap.put(selectedBlock, positionIndexTotal);
             positionIndexTotal++;
 
