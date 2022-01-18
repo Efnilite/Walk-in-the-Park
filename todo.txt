@@ -1,21 +1,7 @@
 Walk in the Park TODO
 
-v2.9
-- Reworked entire Generator system to be more efficient and much more reliable
-    > Added 2 block trail behind players' parkour to decrease chance of blocks disappearing in front of player
-- Added inventory saving to files for backup
-    > Use /witp recoverinventory.
-    > Useful for recovering inventories after crashes.
-    > Has permission witp.recoverinventory
-- Added forcing other players to join permission
-    > witp.join.other
-- Changed glass pane to white glass pane for better compatibility with certain resource packs and better visibility
-- Removed need for 'teleporting' option by automatically not teleporting players who leave by switch worlds
-- Fixed errors on join/leave causing incomplete setups for joining or leaving
-    > This should massively improve reliability and reduce the impact of errors.
-- Fixed structures not counting to total score
-- Fixed blocks spawning in unloaded chunks
-- Fixed SQL handling not being updated to the new config system
+v2.9.1
+- Fixed blocks not being deleted on leave in BungeeCord mode
 
 High priority:
 - Optimize ram with schematics (async?)

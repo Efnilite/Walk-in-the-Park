@@ -41,7 +41,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
         PluginCommand command = Bukkit.getPluginCommand(name);
 
         if (command == null) {
-            throw new IllegalStateException("Command is null");
+            return; // command has been overwritten, whatever lol
         }
 
         command.setExecutor(wrapper);

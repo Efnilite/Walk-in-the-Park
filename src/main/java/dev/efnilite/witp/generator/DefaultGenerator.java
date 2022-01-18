@@ -29,7 +29,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Slab;
@@ -312,6 +311,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (deleteStructure) { // deletes the structure if the player goes to the next block (reason why it's last)
             deleteStructure();
         }
+
+        calculateDistance();
     }
 
     /**
@@ -494,6 +495,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
             } else {
                 Logging.error("No structures to choose from!");
+                generate(); // generate if no schematic is found
                 return;
             }
             Schematic schematic = SchematicCache.getSchematic(file.getName());

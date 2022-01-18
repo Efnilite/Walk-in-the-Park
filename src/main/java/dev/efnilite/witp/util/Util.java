@@ -6,11 +6,12 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.task.Tasks;
-import dev.efnilite.witp.wrapper.EventWrapper;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,13 +21,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 
 /**
  * General utilities
@@ -38,15 +37,6 @@ public class Util {
     private static Economy economy;
     private static final char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
-
-    /**
-     * Returns a zero'd location.
-     *
-     * @return a location where everything is 0
-     */
-    public static Location zero() {
-        return new Location(null, 0, 0, 0);
-    }
 
     /**
      * Returns the active void generator plugin
@@ -183,61 +173,6 @@ public class Util {
         }
     }
 
-    public static Vector3D getDirectionVector(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return new Vector3D(0, 0, -1);
-            case SOUTH:
-                return new Vector3D(0, 0, 1);
-            case EAST:
-                return new Vector3D(1, 0, 0);
-            case WEST:
-                return new Vector3D(-1, 0, 0);
-            default:
-                Logging.error("Invalid direction (direction used: " + direction.name() + ")");
-                return new Vector3D(1, 0, 0);
-        }
-    }
-
-    /**
-     * Gets the chunks from a BoundingBox
-     *
-     * @param   box
-     *          The BoundingBox
-     *
-     * @param   world
-     *          Za warudo
-     *
-     * @return the list of chunks
-     */
-    public static List<Chunk> getChunks(BoundingBox box, World world) {
-        List<Chunk> chunks = new ArrayList<>();
-        Location mal = box.getMax().toLocation(world);
-        Location mil = box.getMin().toLocation(world);
-
-        int mix = mil.getChunk().getX();
-        int max = mal.getChunk().getX();
-        int miz = mil.getChunk().getZ();
-        int maz = mal.getChunk().getZ();
-
-        for (int x = mix; x <= max; x++) {
-            for (int z = miz; z <= maz; z++) {
-                chunks.add(world.getChunkAt(x, z));
-            }
-        }
-        return chunks;
-    }
-
-    /**
-     * Calls an event
-     *
-     * @param   wrapper
-     *          The event instance
-     */
-    public static boolean callEvent(EventWrapper wrapper) {
-        return wrapper.call();
-    }
-
     /**
      * Sends a player to a BungeeCord server
      *
@@ -305,23 +240,6 @@ public class Util {
     }
 
     /**
-     * Parses a String of locations to a list of Location objects
-     *
-     * @param   string
-     *          The string
-     *
-     * @return the list of Location objects
-     */
-    public static List<Location> parseLocations(String string) {
-        String[] split = string.split("->");
-        List<Location> locs = new ArrayList<>();
-        for (String s : split) {
-            locs.add(Util.parseLocation(s));
-        }
-        return locs;
-    }
-
-    /**
      * Capitalizes the first letter in a word
      *
      * @param   string
@@ -331,57 +249,6 @@ public class Util {
      */
     public static String capitalizeFirst(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
-    }
-
-    /**
-     * Formats ints with dots (1000 to 1.000)
-     *
-     * @param   value
-     *          The int
-     *
-     * @return the int but with seperation dots
-     */
-    public static String formatInt(int value) {
-        return String.format("%,d", value);
-    }
-
-    /**
-     * Checks if the cuboid box contains any Material other then the given one
-     *
-     * @param   position
-     *          The first position
-     *
-     * @param   position2
-     *          The second position
-     *
-     * @param   material
-     *          The material
-     *
-     * @return true: the box contains something other then the given material
-     */
-    public static boolean excludeMaterial(Location position, Location position2, Material material) {
-        World w = position.getWorld();
-        Location location = new Location(w, 0, 0, 0);
-        int max = Math.max(position.getBlockX(), position2.getBlockX());
-        int mix = Math.min(position.getBlockX(), position2.getBlockX());
-        int may = Math.max(position.getBlockY(), position2.getBlockY());
-        int miy = Math.min(position.getBlockY(), position2.getBlockY());
-        int maz = Math.max(position.getBlockZ(), position2.getBlockZ());
-        int miz = Math.min(position.getBlockZ(), position2.getBlockZ());
-        for (int x = mix; x <= max; x++) {
-            for (int y = miy; y <= may; y++) {
-                for (int z = miz; z <= maz; z++) {
-                    location.setX(x);
-                    location.setY(y);
-                    location.setZ(z);
-
-                    if (location.getBlock().getType() != material) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -421,10 +288,6 @@ public class Util {
         return add;
     }
 
-    public static void getBlocksAsync(Location pos1, Location pos2, Consumer<List<Block>> consumer) {
-        Tasks.asyncTask(() -> consumer.accept(getBlocks(pos1, pos2)));
-    }
-
     /**
      * Reverses a boolean in a string
      */
@@ -449,13 +312,6 @@ public class Util {
         } else {
             throw new IllegalStateException("Boolean value is not false or true (Util#colorBoolean)");
         }
-    }
-
-    /**
-     * Is a location in a cuboid?
-     */
-    public static boolean isInCuboid(BoundingBox box, Location location) {
-        return box.clone().expand(0.1, 0.1, 0.1).contains(location.toVector());
     }
 
     /**
@@ -488,32 +344,6 @@ public class Util {
     public static Location min(Location pos1, Location pos2) {
         World world = pos1.getWorld() == null ? pos2.getWorld() : pos1.getWorld();
         return new Location(world, Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
-    }
-
-    public static Location min(List<Location> positions) {
-        Location min = new Location(null, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        for (Location position : positions) {
-            if (position.getWorld() != null) {
-                min.setWorld(position.getWorld());
-            }
-            min.setX(Math.min(position.getX(), min.getX()));
-            min.setY(Math.min(position.getY(), min.getY()));
-            min.setZ(Math.min(position.getZ(), min.getZ()));
-        }
-        return min;
-    }
-
-    public static Location max(List<Location> positions) {
-        Location max = new Location(null, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
-        for (Location position : positions) {
-            if (position.getWorld() != null) {
-                max.setWorld(position.getWorld());
-            }
-            max.setX(Math.max(position.getX(), max.getX()));
-            max.setY(Math.max(position.getY(), max.getY()));
-            max.setZ(Math.max(position.getZ(), max.getZ()));
-        }
-        return max;
     }
 
     /**
@@ -562,8 +392,8 @@ public class Util {
      * Send a text to a player from the lang.yml file in the default language
      * (if the player isn't a {@link dev.efnilite.witp.player.ParkourUser}, knowing their preferred language is impossible)
      *
-     * @param   player
-     *          The player
+     * @param   sender
+     *          The sender
      *
      * @param   path
      *          The path
