@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import net.md_5.bungee.api.ChatColor;

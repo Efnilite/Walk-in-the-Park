@@ -110,7 +110,7 @@ locale:
             time:
                 name: '&7&lTime'
                 lore: '&7The time of day.||||&7Currently: &a%s'
-                values: ['Day', 'Noon', 'Dawn', 'Night', 'Midnight'] # Make sure it's the same order every time!
+                values: [Day, Noon, Dawn, Night, Midnight] # Make sure it's the same order every time!
             difficulty:
                 name: '&6&lDifficulty'
                 lore: '&7Change how difficult the parkour is.||||&7Currently: %s'
@@ -120,7 +120,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSchematic difficulty'
                 lore: '&7Change the difficulty of the schematics that appear!||||&7Currently: &a%s'
-                values: ['Easy', 'Medium', 'Hard', 'Very hard'] # Make sure it's the same order every time!
+                values: [Easy, Medium, Hard, Very hard] # Make sure it's the same order every time!
             particles:
                 name: '&a&lUse particles and sounds'
                 lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
@@ -181,7 +181,7 @@ locale:
             time:
                 name: '&a&lTijd'
                 lore: '&7De tijd.||||&7Huidige waarde: &a%s'
-                values: ['Dag', 'Middag, 'Zonsondergang', 'Nacht', 'Middernacht']
+                values: [Dag, Middag, Zonsondergang, Nacht, Middernacht]
             difficulty:
                 name: '&a&lMoeilijkheid'
                 lore: '&7Verander hoe moeilijk het parkour is!||||&7Huidige waarde: %s'
@@ -191,6 +191,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lStructuurmoeilijkheid'
                 lore: '&7Verander hoe moeilijk de structuren zijn die je tegenkomt!||||&7Huidige waarde: &a%s'
+                values: [Makkelijk, Middelmatig, Moeilijk, Heel moeilijk]
             particles:
                 name: '&a&lGebruik van particles en geluiden'
                 lore: '&Als dit aanstaat dan krijg je bij||&7elk nieuw blok particles en geluiden.||||&7Huidige waarde: %s'
@@ -251,7 +252,7 @@ locale:
             time:
                 name: '&a&lHora'
                 lore: '&7Hora del día.||||&7Actualmente: &a%s'
-                values: ['Día', 'Mediodía', 'Amanecer', 'Noche', 'Medianoche']
+                values: [Día, Mediodía, Amanecer, Noche, Medianoche]
             difficulty:
                 name: '&a&lDificultad'
                 lore: '&7Cambia tu configuración de dificultad||||&7Actualmente: %s'
@@ -261,6 +262,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lDificultad de estructura'
                 lore: '&7Cambia la dificultad de los estructura que aparecen.||||&7Actualmente: &a%s'
+                values: [Fácil, Medio, Difícil, Muy difícil]
             particles:
                 name: '&a&lUsar partículas y sonidos'
                 lore: '&7Si se habilita cada bloque generado||&7mostrará partículas y sonará un sonido.||||&7Actualmente:%s'
@@ -321,7 +323,7 @@ locale:
             time:
                 name: '&a&lPora dnia'
                 lore: '&7Pora dnia.||||&7Obecnie: &a%s'
-                values: ['Dzień', 'Południe', 'Świt', 'Noc', 'Północ']
+                values: [Dzień, Południe, Świt, Noc, Północ]
             difficulty:
                 name: '&a&lPoziom trudności'
                 lore: '&7Zmieniasz poziom trudności swojego parkoura.||||&7Obecnie: %s'
@@ -331,6 +333,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSchematyczna trudność'
                 lore: '&7Zmień poziom trudności pojawiających się schematów!||||&7Obecnie: &a%s'
+                values: [Łatwy, Średni, Twardy, Bardzo twardy]
             particles:
                 name: '&a&lUżywaj cząsteczek i dźwięków'
                 lore: '&7Gdy włączone generowanie nowego bloku||&7będzie obwieszczone dźwiękiem oraz cząsteczkami.||||&7Obecnie: %s'
@@ -391,7 +394,7 @@ locale:
             time:
                 name: '&a&l跑酷时令'
                 lore: '&7喜欢在日出或黄昏时跑酷？||&7自定义您喜欢的跑酷时间吧||&7当前值为: &a%s'
-                values: ['白天', '中午', '黎明', '夜晚', '午夜']
+                values: [白天, 中午, 黎明, 夜晚, 午夜]
             difficulty:
                 name: '&a&l难度'
                 lore: '&7跑酷对您来说太难或太简单？||调整您的跑酷难度！||&7当前值为: %s'
@@ -401,6 +404,7 @@ locale:
             schematic-difficulty:
                 name: '&6&l结构难度'
                 lore: '&7改变出现的示意图的难度！||||&7当前值: &a%s'
+                values: [简单, 中等, 困难, 非常困难]
             particles:
                 name: '&a&l粒子效果与音效'
                 lore: '&7当该项开启时，每生成一个新跳台||&7将会产生粒子效果并播放音效。||||&7当前值: %s'
@@ -461,7 +465,7 @@ locale:
             time:
                 name: '&a&lTemps'
                 lore: '&7L''heure du jour.||||&7Actuellement: &a%s'
-                values: ['Jour', 'Midi', 'Aube', 'Nuit', 'Minuit']
+                values: [Jour, Midi, Aube, Nuit, Minuit]
             difficulty:
                 name: '&a&lDifficulter'
                 lore: '&7Modifiez vos paramètres de difficulté||||&7Actuellement: %s'
@@ -471,6 +475,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSchematic difficulty'
                 lore: '&7Change the difficulty of the schematics that appear!||||&7Currently: &a%s'
+                values: [Facile, Moyen, Difficile, Très difficile]
             particles:
                 name: '&a&lParticules et sons'
                 lore: '&7Si cette option est activé, chaque bloc généré||&7affichera des particules et émettra un son.||||&7Actuellement: %s'
@@ -531,7 +536,7 @@ locale:
             time:
                 name: '&a&lThời gian'
                 lore: '&7Thời gian trong ngày.||||&7Hiện tại: &a%s'
-                values: ['Ngày', 'Trưa', 'Bình minh', 'Ban đêm', 'Nửa đêm']
+                values: [Ngày, Trưa, Bình minh, Ban đêm, Nửa đêm]
             difficulty:
                 name: '&a&lĐộ khó'
                 lore: '&7Chỉnh độ khó của bạn||||&7Hiện tại: %s'
@@ -541,6 +546,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSơ đồ khó khăn'
                 lore: '&7Thay đổi độ khó của các sơ đồ xuất hiện!||||&7Hiện tại: &a%s'
+                values: [Dễ, Trung bình, Khó, Rất khó]
             particles:
                 name: '&a&lDùng hiệu ứng và âm thanh'
                 lore: '&7Khi bật, những khối đã tạo||&7sẽ hiện hiệu ứng và âm thanh.||||&7Hiện tại: %s'
@@ -601,7 +607,7 @@ locale:
             time:
                 name: '&a&lČas'
                 lore: '&7Změň si denní čas.||||&7Momentálně: &a%s'
-                values: ['Den', 'Polední', 'Svítání', 'Noc', 'Půlnoc']
+                values: [Den, Polední, Svítání, Noc, Půlnoc]
             difficulty:
                 name: '&a&lObtížnost'
                 lore: '&7Změn si svou obtížnost||||&7Momentálně: %s'
@@ -611,6 +617,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSchématická obtížnost'
                 lore: '&7Změňte obtížnost zobrazených schémat!||||&7Momentálně: &a%s'
+                values: [Snadné, Střední, Tvrdé, Velmi těžké]
             particles:
                 name: '&a&lPoužij partikly a zvuky'
                 lore: '&7Pokud zapnuto, každý generovaný blok||&7ukáže partikly a udělá zvuk.||||&7Momentálně: %s'

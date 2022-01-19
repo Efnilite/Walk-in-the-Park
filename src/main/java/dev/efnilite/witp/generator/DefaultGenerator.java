@@ -782,7 +782,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (checkOptions("time", "witp.time", disabled)) {
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.time", pp.time.toLowerCase()), (t, e) -> {
                     int i = 11;
-                    for (String time : getOptionValues("time")) {
+                    List<String> times = getOptionValues("time");
+                    if (times.size() != 5) {
+                        Logging.stack("Time translation values are incomplete!", "Make sure your translations are correct or delete your items.yml file");
+                        pp.send("&4&l> &cThere was an error while handling changing that option!");
+                        return;
+                    }
+                    for (String time : times) {
                         timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
                             if (e2.getItemMeta() != null) {
                                 String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
@@ -894,8 +900,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         private String getInventoryName(String type) {
             Configuration config = WITP.getConfiguration();
-            String name = config.getString("items", "items." + pp.locale + "." + type.toLowerCase() + ".name");
+            String name = config.getString("items", "locale." + pp.locale + "." + type.toLowerCase() + ".name");
             if (name == null) {
+                Logging.warn("Didn't find a value for option '" + "locale." + pp.locale + "." + type.toLowerCase() + ".name'");
                 return "";
             }
             return ChatColor.stripColor(name);
@@ -903,8 +910,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         private List<String> getOptionValues(String option) {
             Configuration config = WITP.getConfiguration();
-            List<String> values = config.getStringList("items", "items." + pp.locale + ".options." + option.toLowerCase() + ".values");
+            List<String> values = config.getStringList("items", "locale." + pp.locale + ".options." + option.toLowerCase() + ".values");
             if (values == null) {
+                Logging.warn("Didn't find any values for option '" + "locale." + pp.locale + ".options." + option.toLowerCase() + ".values'");
                 return Collections.emptyList();
             }
             return values;
@@ -945,7 +953,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         private void difficultyMenu(String... optDisabled) {
             // Some important stuff
             Configuration config = WITP.getConfiguration();
-            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Difficulty").open();
+            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, getInventoryName("difficulty")).open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
             InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(2, 1);
@@ -973,30 +981,31 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         private void schematicDifficultyMenu(String... optDisabled) {
             // Some important stuff
             Configuration config = WITP.getConfiguration();
-            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, "Schematic difficulty").open();
+            InventoryBuilder difficulty = new InventoryBuilder(pp, 3, getInventoryName("schematic-difficulty")).open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
             InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(4, 1);
 
             // All schematic difficulties
+            List<String> name = getOptionValues("schematic-difficulty");
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(Util.parseDifficulty(0.3)))
+                    new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(name.get(0)))
                             .glowing(pp.difficulty == 0.3)
                             .build(),
                     (t3, e3) -> askReset("e-difficulty"));
             difficulty.setItem(dynamic.next(),
                     new ItemBuilder(Material.GREEN_WOOL,
-                            "&2&l" + Util.capitalizeFirst(Util.parseDifficulty(0.5)))
+                            "&2&l" + Util.capitalizeFirst(name.get(1)))
                             .glowing(pp.difficulty == 0.5)
                             .build(),
                     (t3, e3) -> askReset("m-difficulty"));
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(Util.parseDifficulty(0.7)))
+                    new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(name.get(2)))
                             .glowing(pp.difficulty == 0.7)
                             .build(),
                     (t3, e3) -> askReset("h-difficulty"));
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(Util.parseDifficulty(0.8)))
+                    new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(name.get(3)))
                             .glowing(pp.difficulty == 0.8)
                             .build(),
                     (t3, e3) -> askReset("vh-difficulty"));
@@ -1029,6 +1038,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         public void confirmReset(String item, String... optDisabled) {
+            List<String> name = getOptionValues("schematic-difficulty");
+            if (name.size() != 4 && item.contains("-difficulty")) {
+                Logging.stack("Schematic difficulty translation values are incomplete!",
+                        "Make sure your translations are correct or delete your items.yml file");
+                pp.send("&4&l> &cThere was an error while handling changing that option!");
+                return;
+            }
             switch (item) {
                 case "structure":
                     pp.useStructure = !pp.useStructure;
@@ -1042,22 +1058,22 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     break;
                 case "e-difficulty":
                     pp.difficulty = 0.3;
-                    pp.sendTranslated("selected-structure-difficulty", "&a" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&a" + name.get(0));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "m-difficulty":
                     pp.difficulty = 0.5;
-                    pp.sendTranslated("selected-structure-difficulty", "&e" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&e" + name.get(1));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "h-difficulty":
                     pp.difficulty = 0.7;
-                    pp.sendTranslated("selected-structure-difficulty", "&6" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&6" + name.get(2));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "vh-difficulty":
                     pp.difficulty = 0.8;
-                    pp.sendTranslated("selected-structure-difficulty", "&c" + Util.parseDifficulty(pp.difficulty));
+                    pp.sendTranslated("selected-structure-difficulty", "&c" + name.get(3));
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "difficulty":
