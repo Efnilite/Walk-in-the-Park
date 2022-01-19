@@ -70,7 +70,7 @@ public class Handler implements Listener {
             player.spigot().sendMessage(message);
         }
         if (player.isOp() && WITP.getMultiverseHook() != null && Util.getVoidGenerator() == null) {
-            player.sendMessage(Util.color("&c&l(!) &7You're running Multiverse without support for creating void worlds. " +
+            player.sendMessage(Util.color("&4&l> &7You're running Multiverse &4without&7 support for creating void worlds. " +
                     "Go to the wiki to add support for this."));
         }
 
