@@ -110,6 +110,11 @@ public final class WITP extends JavaPlugin {
                 Logging.info("Registered under server version 1.8");
                 Version.VERSION = Version.V1_8;
                 break;
+            default:
+                Logging.error("Outdated version!");
+                Logging.error("This plugin only supports 1.8.x to 1.18.x");
+                Logging.error("Please update!");
+                Bukkit.getPluginManager().disablePlugin(this);
         }
 
         // ----- Configurations -----
