@@ -1,6 +1,5 @@
 package dev.efnilite.witp.util.task;
 
-import dev.efnilite.witp.WITP;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,11 +12,11 @@ import java.util.HashMap;
  */
 public class Tasks {
 
-    private static final Plugin plugin;
-    private static final HashMap<String, Long> timingKeys;
+    private static Plugin plugin;
+    private static HashMap<String, Long> timingKeys;
 
-    static {
-        plugin = WITP.getInstance();
+    public static void init(Plugin plugin) {
+        Tasks.plugin = plugin;
         timingKeys = new HashMap<>();
     }
 

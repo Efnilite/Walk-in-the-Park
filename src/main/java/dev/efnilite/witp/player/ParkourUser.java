@@ -8,6 +8,7 @@ import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
@@ -17,6 +18,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -272,7 +274,7 @@ public abstract class ParkourUser {
      */
     public void gamemode() {
         WITP.getRegistry().close();
-        InventoryBuilder gamemode = new InventoryBuilder(this, 3, "Gamemode").open();
+        InventoryBuilder gamemode = new InventoryBuilder(this, 3, getInventoryName("options.gamemode")).open();
         List<Gamemode> gamemodes = WITP.getRegistry().getGamemodes();
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(gamemodes.size(), 1);
@@ -287,6 +289,15 @@ public abstract class ParkourUser {
         });
         gamemode.setItem(26, WITP.getConfiguration().getFromItemData(locale, "general.close"), (t2, e2) -> player.closeInventory());
         gamemode.build();
+    }
+
+    protected String getInventoryName(String type) {
+        Configuration config = WITP.getConfiguration();
+        String name = config.getString("items", "items." + locale + "." + type.toLowerCase() + ".name");
+        if (name == null) {
+            return "";
+        }
+        return ChatColor.stripColor(name);
     }
 
     /**

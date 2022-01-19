@@ -727,11 +727,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             this.pp = pp;
             this.player = pp.getPlayer();
         }
+
         public void menu(String... optDisabled) {
-            InventoryBuilder builder = new InventoryBuilder(pp, 3, "Customize").open();
-            InventoryBuilder lead = new InventoryBuilder(pp, 3, "Lead").open();
-            InventoryBuilder timeofday = new InventoryBuilder(pp, 3, "Time").open();
-            InventoryBuilder language = new InventoryBuilder(pp, 3, "Language").open();
+            InventoryBuilder builder = new InventoryBuilder(pp, 3, getInventoryName("general.menu")).open();
+            InventoryBuilder lead = new InventoryBuilder(pp, 3, getInventoryName("options.lead")).open();
+            InventoryBuilder timeofday = new InventoryBuilder(pp, 3, getInventoryName("options.time")).open();
+            InventoryBuilder language = new InventoryBuilder(pp, 3, getInventoryName("options.language")).open();
             Configuration config = WITP.getConfiguration();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
@@ -780,9 +781,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
             if (checkOptions("time", "witp.time", disabled)) {
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.time", pp.time.toLowerCase()), (t, e) -> {
-                    List<String> pos = Arrays.asList("Day", "Noon", "Dawn", "Night", "Midnight");
                     int i = 11;
-                    for (String time : pos) {
+                    for (String time : getOptionValues("time")) {
                         timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
                             if (e2.getItemMeta() != null) {
                                 String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
@@ -892,16 +892,34 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             builder.build();
         }
 
+        private String getInventoryName(String type) {
+            Configuration config = WITP.getConfiguration();
+            String name = config.getString("items", "items." + pp.locale + "." + type.toLowerCase() + ".name");
+            if (name == null) {
+                return "";
+            }
+            return ChatColor.stripColor(name);
+        }
+
+        private List<String> getOptionValues(String option) {
+            Configuration config = WITP.getConfiguration();
+            List<String> values = config.getStringList("items", "items." + pp.locale + ".options." + option.toLowerCase() + ".values");
+            if (values == null) {
+                return Collections.emptyList();
+            }
+            return values;
+        }
+
         private void stylesMenu(String... optDisabled) {
             Configuration config = WITP.getConfiguration();
-            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
+            InventoryBuilder styling = new InventoryBuilder(pp, 3, getInventoryName("options.styles")).open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close"); // todo
             throw new IllegalStateException();
         }
 
         private void styleMenu(StyleType type, String... optDisabled) {
             Configuration config = WITP.getConfiguration();
-            InventoryBuilder styling = new InventoryBuilder(pp, 3, "Parkour style").open();
+            InventoryBuilder styling = new InventoryBuilder(pp, 3, getInventoryName("options.styles")).open();
             ItemStack close = config.getFromItemData(pp.locale, "general.close");
 
             int i = 0;

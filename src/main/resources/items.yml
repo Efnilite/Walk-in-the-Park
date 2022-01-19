@@ -110,6 +110,7 @@ locale:
             time:
                 name: '&7&lTime'
                 lore: '&7The time of day.||||&7Currently: &a%s'
+                values: ['Day', 'Noon', 'Dawn', 'Night', 'Midnight'] # Make sure it's the same order every time!
             difficulty:
                 name: '&6&lDifficulty'
                 lore: '&7Change how difficult the parkour is.||||&7Currently: %s'
@@ -119,6 +120,7 @@ locale:
             schematic-difficulty:
                 name: '&6&lSchematic difficulty'
                 lore: '&7Change the difficulty of the schematics that appear!||||&7Currently: &a%s'
+                values: ['Easy', 'Medium', 'Hard', 'Very hard'] # Make sure it's the same order every time!
             particles:
                 name: '&a&lUse particles and sounds'
                 lore: '&7If enabled every generated block||&7will show particles and play a sound.||||&7Currently: %s'
@@ -179,6 +181,7 @@ locale:
             time:
                 name: '&a&lTijd'
                 lore: '&7De tijd.||||&7Huidige waarde: &a%s'
+                values: ['Dag', 'Middag, 'Zonsondergang', 'Nacht', 'Middernacht']
             difficulty:
                 name: '&a&lMoeilijkheid'
                 lore: '&7Verander hoe moeilijk het parkour is!||||&7Huidige waarde: %s'
@@ -248,6 +251,7 @@ locale:
             time:
                 name: '&a&lHora'
                 lore: '&7Hora del día.||||&7Actualmente: &a%s'
+                values: ['Día', 'Mediodía', 'Amanecer', 'Noche', 'Medianoche']
             difficulty:
                 name: '&a&lDificultad'
                 lore: '&7Cambia tu configuración de dificultad||||&7Actualmente: %s'
@@ -317,6 +321,7 @@ locale:
             time:
                 name: '&a&lPora dnia'
                 lore: '&7Pora dnia.||||&7Obecnie: &a%s'
+                values: ['Dzień', 'Południe', 'Świt', 'Noc', 'Północ']
             difficulty:
                 name: '&a&lPoziom trudności'
                 lore: '&7Zmieniasz poziom trudności swojego parkoura.||||&7Obecnie: %s'
@@ -351,7 +356,7 @@ locale:
                 name: '&e&lJęzyk'
                 lore: '&7Obecnie: &a%s'
 
-    # 简体中文 (中国大陆 ,Simplified Chinese)
+    # 简体中文 (中国大陆, Simplified Chinese)
     zh_CN:
         general:
             quit:
@@ -386,6 +391,7 @@ locale:
             time:
                 name: '&a&l跑酷时令'
                 lore: '&7喜欢在日出或黄昏时跑酷？||&7自定义您喜欢的跑酷时间吧||&7当前值为: &a%s'
+                values: ['白天', '中午', '黎明', '夜晚', '午夜']
             difficulty:
                 name: '&a&l难度'
                 lore: '&7跑酷对您来说太难或太简单？||调整您的跑酷难度！||&7当前值为: %s'
@@ -455,6 +461,7 @@ locale:
             time:
                 name: '&a&lTemps'
                 lore: '&7L''heure du jour.||||&7Actuellement: &a%s'
+                values: ['Jour', 'Midi', 'Aube', 'Nuit', 'Minuit']
             difficulty:
                 name: '&a&lDifficulter'
                 lore: '&7Modifiez vos paramètres de difficulté||||&7Actuellement: %s'
@@ -524,6 +531,7 @@ locale:
             time:
                 name: '&a&lThời gian'
                 lore: '&7Thời gian trong ngày.||||&7Hiện tại: &a%s'
+                values: ['Ngày', 'Trưa', 'Bình minh', 'Ban đêm', 'Nửa đêm']
             difficulty:
                 name: '&a&lĐộ khó'
                 lore: '&7Chỉnh độ khó của bạn||||&7Hiện tại: %s'
@@ -593,6 +601,7 @@ locale:
             time:
                 name: '&a&lČas'
                 lore: '&7Změň si denní čas.||||&7Momentálně: &a%s'
+                values: ['Den', 'Polední', 'Svítání', 'Noc', 'Půlnoc']
             difficulty:
                 name: '&a&lObtížnost'
                 lore: '&7Změn si svou obtížnost||||&7Momentálně: %s'

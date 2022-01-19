@@ -2,6 +2,7 @@ package dev.efnilite.witp.util;
 
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.config.Option;
+import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Logger;
 
@@ -12,8 +13,8 @@ public class Logging {
 
     private static Logger logger;
 
-    public static void init() {
-        logger = WITP.getInstance().getLogger();
+    public static void init(Plugin plugin) {
+        logger = plugin.getLogger();
     }
 
     public static void info(String info) {

@@ -54,12 +54,12 @@ public final class WITP extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         // ----- Instance and timing -----
 
         instance = this;
+        Tasks.init(this);
         Tasks.time("load");
-        Logging.init();
+        Logging.init(this);
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().setLenient().create();
 
         // ----- Versions -----
@@ -165,12 +165,17 @@ public final class WITP extends JavaPlugin {
 
         // ----- SQL and data -----
 
-        if (Option.SQL.get()) {
-            database = new Database();
-            database.connect(Option.SQL_URL.get(), Option.SQL_PORT.get(), Option.SQL_DB.get(),
-                    Option.SQL_USERNAME.get(), Option.SQL_PASSWORD.get());
+        try {
+            if (Option.SQL.get()) {
+                database = new Database();
+                database.connect(Option.SQL_URL.get(), Option.SQL_PORT.get(), Option.SQL_DB.get(),
+                        Option.SQL_USERNAME.get(), Option.SQL_PASSWORD.get());
+            }
+            ParkourUser.initHighScores();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            Logging.stack("There was an error while starting WITP", "Please report this error and the above stack trace to the developer!");
         }
-        ParkourUser.initHighScores();
 
         // ----- Events -----
 
