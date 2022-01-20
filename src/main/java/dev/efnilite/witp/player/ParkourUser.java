@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -199,7 +200,8 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players").addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
+            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
+                    .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
                 for (String string : stats.keySet()) {
@@ -229,16 +231,28 @@ public abstract class ParkourUser {
                 }
                 highScores.put(uuid, from.highScore);
                 scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime, from.highScoreDifficulty));
+                reader.close();
             }
         }
     }
 
-    public static void resetHighScores() {
-        highScores.replaceAll((u, v) -> 0);
+    public static void resetHighScores() throws IOException {
+        for (ParkourPlayer player : ParkourPlayer.getActivePlayers()) { // active players
+            player.setHighScore(player.name, 0, "0.0s", "0.0");
+        }
 
-        for (UUID uuid : scoreMap.keySet()) {
-            String name = scoreMap.get(uuid).name;
-            scoreMap.put(uuid, new Highscore(name, "0.0s", "0.0"));
+        File folder = new File(WITP.getInstance().getDataFolder() + "/players/"); // update files
+        if (!(folder.exists())) {
+            folder.mkdirs();
+            return;
+        }
+        for (File file : folder.listFiles()) {
+            FileReader reader = new FileReader(file);
+            ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+            from.uuid = UUID.fromString(file.getName().replace(".json", ""));
+            from.setHighScore(from.name, 0, "0.0s", "0.0");
+            from.save(true);
+            reader.close();
         }
     }
 

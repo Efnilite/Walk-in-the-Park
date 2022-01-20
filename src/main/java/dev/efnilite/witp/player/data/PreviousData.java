@@ -75,7 +75,7 @@ public class PreviousData {
                     "Please report this error to the developer! Inventory will still be restored.");
         }
         if (data != null) {
-            data.apply();
+            data.apply(false);
         }
     }
 }

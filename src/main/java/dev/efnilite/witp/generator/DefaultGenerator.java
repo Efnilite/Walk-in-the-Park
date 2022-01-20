@@ -365,7 +365,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 message = "message.miss";
             }
             if (score > player.highScore) {
-                player.setHighScore(score, time, diff);
+                player.setHighScore(player.name, score, time, diff);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
@@ -375,7 +375,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.sendTranslated("divider");
         } else {
             if (score >= player.highScore) {
-                player.setHighScore(score, time, diff);
+                player.setHighScore(player.name, score, time, diff);
             }
         }
 
@@ -609,7 +609,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (data instanceof Fence || data instanceof Wall) {
             block.setType(data.getMaterial(), true);
         } else {
-            block.setBlockData(data, false);
+            block.setBlockData(data, false); // todo maybe add packet block change to instantly update it?
         }
     }
 

@@ -176,6 +176,7 @@ public class SubareaDivider {
         }
     }
 
+    // https://math.stackexchange.com/a/163101
     public List<Chunk> getChunksAround(Chunk base, int radius) {
         int lastOfRadius = 2 * radius + 1;
         int baseX = base.getX();
@@ -211,9 +212,6 @@ public class SubareaDivider {
                 Logging.error("Error while trying to create the parkour world - please restart and delete the folder");
                 return null;
             }
-            // -= Optimizations =-
-            world.setKeepSpawnInMemory(false);
-
         } else { // if multiverse is detected
             world = WITP.getMultiverseHook().createWorld(name);
         }
@@ -227,12 +225,14 @@ public class SubareaDivider {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
+            world.setGameRule(GameRule.KEEP_INVENTORY, true);
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         } else {
             world.setGameRuleValue("doFireTick", "false");
             world.setGameRuleValue("doMobSpawning", "false");
             world.setGameRuleValue("doTileDrops", "false");
             world.setGameRuleValue("doDaylightCycle", "false");
+            world.setGameRuleValue("keepInventory", "true");
             world.setGameRuleValue("doWeatherCycle", "false");
             world.setGameRuleValue("logAdminCommands", "false");
             world.setGameRuleValue("announceAdvancements", "false");
@@ -241,6 +241,8 @@ public class SubareaDivider {
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setWeatherDuration(1000);
         world.setAutoSave(false);
+
+        world.setKeepSpawnInMemory(false);
 
         return world;
     }

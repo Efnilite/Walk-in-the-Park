@@ -1,9 +1,12 @@
 Walk in the Park TODO
 
-v2.9.2
-- Added translations for schematic difficulty, day times and inventory names
-- Fixed startup bug
-- Added witp_player placeholder
+v2.9.3
+- Fixed bug not resetting high scores of online players and files
+- Fixed item serialization for /witp recoverinventory (enchantments)
+- Fixed items with extra data (books, etc.) not being saved in memory
+    > This data is still not saved in inventory files. It only saves essential data like damage, item name, lore and enchantments.
+    > I'm still working on adding more data.
+
 
 High priority:
 - Optimize ram with schematics (async?)

@@ -62,7 +62,7 @@ public class ParkourPlayer extends ParkourUser {
 
     public UUID uuid;
     private ParkourGenerator generator;
-    private final File file;
+    private File file;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -213,7 +213,7 @@ public class ParkourPlayer extends ParkourUser {
      * @param   score
      *          The score
      */
-    public void setHighScore(int score, String time, String diff) {
+    public void setHighScore(String name, int score, String time, String diff) {
         this.highScore = score;
         highScoreTime = time;
         if (diff.length() > 3) {
@@ -221,7 +221,7 @@ public class ParkourPlayer extends ParkourUser {
         }
         highScoreDifficulty = diff;
         if (scoreMap.get(uuid) == null) {
-            scoreMap.put(uuid, new Highscore(player.getName(), highScoreTime, diff));
+            scoreMap.put(uuid, new Highscore(name, highScoreTime, diff));
         } else {
             scoreMap.get(uuid).time = highScoreTime;
             scoreMap.get(uuid).diff = diff;
@@ -265,6 +265,9 @@ public class ParkourPlayer extends ParkourUser {
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {
+                    if (file == null) {
+                        file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                    }
                     if (!file.exists()) {
                         File folder = new File(WITP.getInstance().getDataFolder() + "/players");
                         if (!folder.exists()) {

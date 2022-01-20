@@ -127,6 +127,7 @@ options:
     # Logs inventories of the players that join to the inventories/ folder.
     # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
     # inventories of players to be lost if this is set to false!
+    # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
     inventory-saving: true
 
     # Enables/disables the health handling system

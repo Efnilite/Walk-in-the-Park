@@ -111,16 +111,21 @@ public class MainCommand extends SimpleCommand {
                         return true;
                     }
 
-                    ParkourUser.resetHighScores();
+                    try {
+                        ParkourUser.resetHighScores();
+                        send(sender, "&4&l> &7Successfully reset all high scores in memory and the files.");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        send(sender, "&4&l> &cThere was an error while trying to reset high scores.");
+                    }
 
-                    send(sender, "&4&l> &7Reset all high in-memory scores.");
                     return true;
                 case "migrate":
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL.get()) {
-                        send(sender, "&4&l> &7You have disabled SQL support in the config");
+                        send(sender, "&4&l> &7You have disabled SQL support in the config!");
                         return true;
                     }
 
@@ -342,7 +347,7 @@ public class MainCommand extends SimpleCommand {
                     if (readData != null) {
                         send(sender, "&4&l> &7Successfully recovered the inventory of " + arg1.getName() + " from their file");
                         send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
-                        readData.apply();
+                        readData.apply(true);
                     } else {
                         send(sender, "&4&l> &cThere was an error recovering the inventory of " + arg1.getName() + " from their file");
                         send(sender, "&4&l> &7" + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
