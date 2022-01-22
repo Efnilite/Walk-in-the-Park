@@ -85,8 +85,8 @@ public class Handler implements Listener {
                 ParkourPlayer pp = ParkourPlayer.register(player);
                 WITP.getDivider().generate(pp);
             } catch (IOException | SQLException ex) {
-                ex.printStackTrace();
-                Logging.error("Something went wrong while trying to fetch a player's (" + playerName + ") data");
+                Logging.stack("Error while joining player " + player.getName(),
+                        "Please try again or report this error to the developer!", ex);
             }
 
             // Join message
@@ -140,8 +140,8 @@ public class Handler implements Listener {
         try {
             ParkourPlayer.unregister(player, true, false, true);
         } catch (IOException | InvalidStatementException ex) {
-            ex.printStackTrace();
-            Logging.error("There was an error while trying to handle player " + playerName + " quitting!");
+            Logging.stack("Error while unregistering player " + playerName,
+                    "Please try again or report this error to the developer!", ex);
         }
     }
 
@@ -250,8 +250,8 @@ public class Handler implements Listener {
                 try {
                     ParkourUser.unregister(player, true, false, true);
                 } catch (IOException | InvalidStatementException ex) {
-                    ex.printStackTrace();
-                    Logging.error("Error while trying to unregister player");
+                    Logging.stack("Error while unregistering player " + event.getPlayer().getName(),
+                            "Please try again or report this error to the developer!", ex);
                 }
             }
         }
@@ -264,8 +264,8 @@ public class Handler implements Listener {
             try {
                 ParkourUser.unregister(user, false, false, true);
             } catch (IOException | InvalidStatementException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to unregister player");
+                Logging.stack("Error while unregistering player " + event.getPlayer().getName(),
+                        "Please try again or report this error to the developer!", ex);
             }
         }
     }

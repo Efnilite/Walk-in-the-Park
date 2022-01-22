@@ -171,8 +171,8 @@ public class Schematic {
                 }
                 player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Tasks.end("saveSchematic-" + file.getName()) + "ms&7!"));
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while saving");
+                Logging.stack("Error while saving data of player " + (player == null ? "?" : player.getName()),
+                        "Please try again or report this error to the developer!", ex);
             }
         });
     }
@@ -190,12 +190,10 @@ public class Schematic {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-            Logging.error("File doesn't exist!");
+            Logging.stack("Schematic file does not exist!", "Try again!", ex);
             return;
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Logging.error("I/O error while reading schematic!");
+            Logging.stack("Error while reading file!", "Please report this error to the developer!", ex);
             return;
         }
         this.read = true;

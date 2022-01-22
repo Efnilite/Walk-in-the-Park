@@ -19,8 +19,8 @@ public class UpdateChecker {
             try {
                 latest = getLatestVersion();
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to fetch latest version!");
+                Logging.stack("Error while trying to fetch latest version!",
+                        "Please report this error to the developer!", ex);
                 return;
             }
             if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {

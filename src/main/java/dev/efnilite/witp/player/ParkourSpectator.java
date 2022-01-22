@@ -33,8 +33,8 @@ public class ParkourSpectator extends ParkourUser {
             try {
                 ParkourPlayer.unregister(player, false, false, true);
             } catch (IOException | InvalidStatementException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to unregister");
+                Logging.stack("Error while unregistering player " + this.player.getName(),
+                        "Please try again or report this error to the developer!", ex);
             }
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;

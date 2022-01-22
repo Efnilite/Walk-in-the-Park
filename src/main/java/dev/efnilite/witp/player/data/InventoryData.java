@@ -4,25 +4,16 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.task.Tasks;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class InventoryData {
@@ -76,8 +67,8 @@ public class InventoryData {
 
                 reader.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.stack("Error while reading inventory of " + player.getName() + " from file: ", "Please report this error and the above stack trace to the developer!");
+                Logging.stack("Error while reading inventory of " + player.getName() + " from file: ",
+                        "Please report this error and the above stack trace to the developer!", ex);
                 successfulCallback.accept(null);
             }
         });
@@ -98,8 +89,8 @@ public class InventoryData {
                 writer.flush();
                 writer.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.stack("Error while saving inventory of " + player.getName() + " to file: ", "Please report this error and the above stack trace to the developer!");
+                Logging.stack("Error while saving inventory of " + player.getName() + " to file: ",
+                        "Please report this error and the above stack trace to the developer!", ex);
             }
         });
     }
@@ -129,9 +120,8 @@ public class InventoryData {
             output.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
             Logging.stack("There was an error while trying to convert an item to base 64!",
-                    "Please retry. If this error still persists, contact the developer!");
+                    "Please retry. If this error still persists, contact the developer!", throwable);
             return "";
         }
     }
@@ -144,9 +134,8 @@ public class InventoryData {
             input.close();
             return (ItemStack) input.readObject();
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
             Logging.stack("There was an error while trying to convert an item from base 64!",
-                    "You are probably using an outdated inventory saving format. Please delete file " + file);
+                    "You are probably using an outdated inventory saving format. Please delete file " + file, throwable);
             return null;
         }
     }

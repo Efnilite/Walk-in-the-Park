@@ -70,9 +70,8 @@ public class PreviousData {
                 player.setHealth(health);
             }
         } catch (Throwable ex) {// not optimal but there isn't another way
-            ex.printStackTrace();
-            Logging.stack("Error while recovering stats of " + player.getName() + ": " + ex.getMessage(),
-                    "Please report this error to the developer! Inventory will still be restored.");
+            Logging.stack("Error while recovering stats of " + player.getName(),
+                    "Please report this error to the developer! Inventory will still be restored.", ex);
         }
         if (inventoryData != null) {
             inventoryData.apply(false);

@@ -32,8 +32,8 @@ public class DefaultGamemode implements Gamemode {
             ParkourPlayer pp = ParkourPlayer.register(player);
             WITP.getDivider().generate(pp);
         } catch (IOException | SQLException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to register player" + player.getName());
+            Logging.stack("Error while joining player " + player.getName(),
+                    "Please try again or report this error to the developer!", ex);
         }
     }
 }

@@ -56,8 +56,8 @@ public class UpdertStatement extends Statement {
                 update.query();
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to update/insert values");
+            Logging.stack("Error while trying to update/set values",
+                    "Please try again or report this error to the developer!", ex);
         }
     }
 }

@@ -19,13 +19,13 @@ public class ConfigOption<Type> {
             value = (Type) config.get(path);
         } catch (ClassCastException ex) {
             Logging.stack("Incompatible types in config option '" + path + "': " + ex.getMessage(),
-                    "Please check if you have entered the correct type of data for path '" + path + "'");
+                    "Please check if you have entered the correct type of data for path '" + path + "'", ex);
             return;
         }
 
         if (value == null) {
             Logging.stack("No value found for option '" + path + "'",
-                    "Please check if you have entered anything for path '" + path + "'");
+                    "Please check if you have entered anything for path '" + path + "'", null);
         }
     }
 
@@ -34,7 +34,7 @@ public class ConfigOption<Type> {
 
         if (value == null) {
             Logging.stack("No value found for unknown option",
-                    "Please check if you have entered everything correctly.");
+                    "Please check if you have entered everything correctly.", null);
         }
     }
 

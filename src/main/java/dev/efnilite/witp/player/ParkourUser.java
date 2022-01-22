@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -98,10 +97,9 @@ public abstract class ParkourUser {
             if (!player.getBoard().isDeleted()) {
                 player.getBoard().delete();
             }
-        } catch (Throwable ex) { // safeguard to prevent people from losing data
-            ex.printStackTrace();
+        } catch (Throwable throwable) { // safeguard to prevent people from losing data
             Logging.stack("Error while trying to make player " + player.getPlayer().getName() + " leave",
-                    "Please report this error to the developer. Inventory will still be set");
+                    "Please report this error to the developer. Inventory will still be set", throwable);
             player.send("&4&l> &cThere was an error while trying to handle leaving.");
         }
 
@@ -267,8 +265,8 @@ public abstract class ParkourUser {
             try {
                 fetchHighScores();
             } catch (IOException | SQLException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to fetch the high scores!");
+                Logging.stack("Error while trying to fetch the high scores!",
+                        "Please try again or report this error to the developer!", ex);
             }
             highScores = Util.sortByValue(highScores);
         }

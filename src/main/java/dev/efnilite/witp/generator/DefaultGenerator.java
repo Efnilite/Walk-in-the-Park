@@ -512,7 +512,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
                 waitForSchematicCompletion = true;
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logging.stack("There was an error while trying to paste schematic " + schematic.getName(),
+                        "This file might have been manually edited - please report this error to the developer!", ex);
                 reset(true);
                 return;
             }
@@ -785,7 +786,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     int i = 11;
                     List<String> times = getOptionValues("time");
                     if (times.size() != 5) {
-                        Logging.stack("Time translation values are incomplete!", "Make sure your translations are correct or delete your items.yml file");
+                        Logging.stack("Time translation values are incomplete!",
+                                "Make sure your translations are correct or delete your items.yml file", null);
                         pp.send("&4&l> &cThere was an error while handling changing that option!");
                         return;
                     }
@@ -891,8 +893,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     pp.sendTranslated("left");
                     ParkourPlayer.unregister(pp, true, true, true);
                 } catch (IOException | InvalidStatementException ex) {
-                    ex.printStackTrace();
-                    Logging.error("Error while trying to quit player " + player.getName());
+                    Logging.stack("Error while unregistering player " + player.getName(),
+                            "Please try again or report this error to the developer!", ex);
                 }
             });
             builder.setItem(25, close, (t2, e2) -> player.closeInventory());
@@ -1042,7 +1044,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             List<String> name = getOptionValues("schematic-difficulty");
             if (name.size() != 4 && item.contains("-difficulty")) {
                 Logging.stack("Schematic difficulty translation values are incomplete!",
-                        "Make sure your translations are correct or delete your items.yml file");
+                        "Make sure your translations are correct or delete your items.yml file", null);
                 pp.send("&4&l> &cThere was an error while handling changing that option!");
                 return;
             }

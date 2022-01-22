@@ -281,8 +281,8 @@ public class ParkourPlayer extends ParkourUser {
                     writer.close();
                 }
             } catch (IOException | InvalidStatementException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to save the player's data..");
+                Logging.stack("Error while saving data of player " + player.getName(),
+                        "Please report this error to the developer!", ex);
             }
         };
         if (async) {
@@ -304,8 +304,8 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 statement.query();
             } catch (InvalidStatementException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while saving game");
+                Logging.stack("Error while saving game of player " + player.getName(),
+                        "Please report this error to the developer!", ex);
             }
         }
     }

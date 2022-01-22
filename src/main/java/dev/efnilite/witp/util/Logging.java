@@ -3,6 +3,7 @@ package dev.efnilite.witp.util;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
@@ -29,10 +30,20 @@ public class Logging {
         logger.severe(error);
     }
 
-    public static void stack(String error, String fix) {
+    public static void stack(String error, String fix, @Nullable Throwable throwable) {
         error("##");
         error("## Walk in the Park has encountered a critical error!");
         error("## " + error);
+
+        if (throwable != null) {
+            error("##");
+            error("## Stack trace:");
+            StackTraceElement[] stack = throwable.getStackTrace();
+            for (StackTraceElement stackTraceElement : stack) {
+                error("## " + stackTraceElement.toString());
+            }
+        }
+
         error("##");
         error("## This is an internal error which may be able to fix.");
         error("## How to fix: " + fix);

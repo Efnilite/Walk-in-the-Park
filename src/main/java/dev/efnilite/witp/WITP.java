@@ -173,8 +173,8 @@ public final class WITP extends JavaPlugin {
             }
             ParkourUser.initHighScores();
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            Logging.stack("There was an error while starting WITP", "Please report this error and the above stack trace to the developer!");
+            Logging.stack("There was an error while starting WITP",
+                    "Please report this error and the above stack trace to the developer!", throwable);
         }
 
         // ----- Events -----
@@ -210,8 +210,8 @@ public final class WITP extends JavaPlugin {
             try {
                 ParkourUser.unregister(user, true, false, false);
             } catch (IOException | InvalidStatementException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while unregistering");
+                Logging.stack("Error while unregistering player " + user.getPlayer().getName(),
+                        "Please report this error to the developer!", ex);
             }
         }
 

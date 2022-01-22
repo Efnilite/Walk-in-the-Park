@@ -34,8 +34,8 @@ public class Database {
             init();
             Logging.info("Connected to SQL!");
         } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to connect to SQL!");
+            Logging.stack("Error while trying to connect to SQL",
+                    "Please check if your SQL database/name/password is entered correctly.", ex);
         }
     }
 
@@ -43,9 +43,8 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.executeUpdate();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to update MySQL database!");
-            Logging.error("Query: " + query);
+            Logging.stack("Error while trying to execute query " + query,
+                    "Please try again or report this error to the developer!", ex);
         }
     }
 
@@ -61,9 +60,8 @@ public class Database {
         try {
             return connection.prepareStatement(query);
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to fetch from MySQL database!");
-            Logging.error("Query: " + query);
+            Logging.stack("Error while trying to execute query " + query,
+                    "Please try again or report this error to the developer!", ex);
             return null;
         }
     }
@@ -90,8 +88,8 @@ public class Database {
             connection.close();
             Logging.info("Closed connection to MySQL");
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            Logging.error("Error while trying to close connection to MySQL database!");
+            Logging.stack("Error while trying to close connection to SQL database",
+                    "Please try again or report this error to the developer!", ex);
         }
     }
 

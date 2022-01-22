@@ -115,7 +115,8 @@ public class MainCommand extends SimpleCommand {
                         ParkourUser.resetHighScores();
                         send(sender, "&4&l> &7Successfully reset all high scores in memory and the files.");
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        Logging.stack("Error while trying to reset the high scores!",
+                                "Please try again or report this error to the developer!", ex);
                         send(sender, "&4&l> &cThere was an error while trying to reset high scores.");
                     }
 
@@ -139,9 +140,9 @@ public class MainCommand extends SimpleCommand {
                         FileReader reader;
                         try {
                             reader = new FileReader(file);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                            send(sender, "&4&l> &cError while trying to read file, check your console");
+                        } catch (FileNotFoundException ex) {
+                            Logging.stack("Could not find file to migrate", "Please try again!", ex);
+                            send(sender, "&4&l> &cCould not find that file, try again!");
                             return true;
                         }
                         ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
@@ -177,8 +178,8 @@ public class MainCommand extends SimpleCommand {
                         WITP.getDivider().generate(pp);
                         pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {
-                        ex.printStackTrace();
-                        Logging.error("Error while joining");
+                        Logging.stack("Error while joining player " + player.getName(),
+                                "Please try again or report this error to the developer!", ex);
                     }
                     return true;
                 }
@@ -191,8 +192,8 @@ public class MainCommand extends SimpleCommand {
                         pp.sendTranslated("left");
                         ParkourUser.unregister(pp, true, true, true);
                     } catch (IOException | InvalidStatementException ex) {
-                        ex.printStackTrace();
-                        Logging.error("Error while leaving");
+                        Logging.stack("Error while unregistering player " + player.getName(),
+                                "Please try again or report this error to the developer!", ex);
                     }
                     return true;
                 }
@@ -316,8 +317,8 @@ public class MainCommand extends SimpleCommand {
                         pp.sendTranslated("joined");
                     }
                 } catch (IOException | SQLException ex) {
-                    ex.printStackTrace();
-                    Logging.error("Error while joining");
+                    Logging.stack("Error while joining player " + join.getName(),
+                            "Please try again or report this error to the developer!", ex);
                 }
             } else if (args[0].equalsIgnoreCase("search") && player != null) {
                 ParkourUser user = ParkourUser.getUser(player);

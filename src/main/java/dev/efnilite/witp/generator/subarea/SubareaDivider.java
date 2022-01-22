@@ -211,12 +211,11 @@ public class SubareaDivider {
 
                 world = Bukkit.createWorld(creator);
                 if (world == null) {
-                    Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!");
+                    Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!", null);
                     return null;
                 }
             } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!");
+                Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!", throwable);
                 return null;
             }
         } else { // if multiverse is detected
@@ -295,12 +294,12 @@ public class SubareaDivider {
             }
         }
         if (!playerDetected) {
-            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics");
+            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics", null);
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
         if (!parkourDetected) {
-            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics");
+            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics", null);
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }

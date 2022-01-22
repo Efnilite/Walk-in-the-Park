@@ -53,8 +53,8 @@ public class Configuration {
             try {
                 ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.error("Error while trying to update config");
+                Logging.stack("Error while trying to update file " + file,
+                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
             }
             FileConfiguration configuration = this.getFile(folder + "/" + file);
             files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
@@ -102,8 +102,8 @@ public class Configuration {
             } catch (FileAlreadyExistsException ex) {
                 // do nothing
             } catch (IOException ex) {
-                ex.printStackTrace();
-                Logging.stack("Stopped download of schematics", "Please delete all the structures that have been downloaded and restart the server");
+                Logging.stack("Stopped download of schematics",
+                        "Please delete all the structures that have been downloaded and restart the server", ex);
             }
         });
     }
