@@ -346,8 +346,13 @@ public class MainCommand extends SimpleCommand {
                 data.readFile(readData -> {
                     if (readData != null) {
                         send(sender, "&4&l> &7Successfully recovered the inventory of " + arg1.getName() + " from their file");
-                        send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
-                        readData.apply(true);
+                        if (readData.apply(true)) {
+                            send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
+                        } else {
+                            send(sender, "&4&l> &cThere was an error decoding an item of " + arg1.getName());
+                            send(sender, "&4&l> &7" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
+                                    "Check the console for more information.");
+                        }
                     } else {
                         send(sender, "&4&l> &cThere was an error recovering the inventory of " + arg1.getName() + " from their file");
                         send(sender, "&4&l> &7" + arg1.getName() + " has no saved inventory or there was an error. Check the console.");

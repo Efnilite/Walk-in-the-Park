@@ -109,6 +109,7 @@ public class SubareaDivider {
      * Generates an area for the player with no set generator. This will be set to the default DefaultGenerator.
      *
      * @param   player
+     *          The player
      */
     public synchronized void generate(@NotNull ParkourPlayer player) {
         this.generate(player, null, true);

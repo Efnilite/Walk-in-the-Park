@@ -1,13 +1,8 @@
 Walk in the Park TODO
 
-v2.9.3
-- Fixed bug not resetting high scores of online players and files
-- Fixed item serialization for /witp recoverinventory (enchantments)
-- Fixed items with extra data (books, etc.) not being saved in memory
-    > This data is still not saved in inventory files. It only saves essential data like damage, item name, lore and enchantments.
-    > I'm still working on adding more data.
-- Fixed multiple errors for world creation
-
+v2.9.4
+- Updated item recovering to perfectly match previous items
+    > This has increased file size per player, but it's usually still <25 KB per player.
 
 High priority:
 - Optimize ram with schematics (async?)

@@ -45,19 +45,6 @@ public class Vector3D {
         }
     }
 
-    public Vector3D rotateUnitRight() {
-        if (x == 0) {
-            return this.swapXZ();
-        } else {
-            if (x == -1) {
-                return this.add(1, 1);
-            } else {
-                return this.subtract(1, 1);
-            }
-        }
-    }
-
-
     public Vector toBukkitVector() {
         return new Vector(x, y, z);
     }
@@ -66,6 +53,7 @@ public class Vector3D {
         return new Vector3D(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
     }
 
+    @Override
     public Vector3D clone() {
         return new Vector3D(x, y, z);
     }
@@ -107,6 +95,13 @@ public class Vector3D {
         this.y *= modifier;
         this.z *= modifier;
         return this;
+    }
+
+    public double distanceTo(Vector3D other) {
+        double x2 = Math.pow(other.x - x, 2);
+        double y2 = Math.pow(other.y - y, 2);
+        double z2 = Math.pow(other.z - z, 2);
+        return Math.sqrt(x2 + y2 + z2);
     }
 
     public Vector3D setX(int x) {
