@@ -43,6 +43,7 @@ public class InventoryData {
      */
     public void apply(boolean readFromFile) {
         player.getInventory().clear();
+
         for (int slot : inventory.keySet()) {
             if (readFromFile) {
                 player.getInventory().setItem(slot, deserialize(inventory.get(slot)));

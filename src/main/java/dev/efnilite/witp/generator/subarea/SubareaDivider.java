@@ -201,15 +201,21 @@ public class SubareaDivider {
     private @Nullable World createWorld(String name) {
         World world;
         if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
-            WorldCreator creator = new WorldCreator(name)
-                    .generateStructures(false)
-                    .type(WorldType.NORMAL)
-                    .generator(new VoidGenerator()) // to fix No keys in MapLayer etc..
-                    .environment(World.Environment.NORMAL);
+            try {
+                WorldCreator creator = new WorldCreator(name)
+                        .generateStructures(false)
+                        .type(WorldType.NORMAL)
+                        .generator(new VoidGenerator()) // to fix No keys in MapLayer etc..
+                        .environment(World.Environment.NORMAL);
 
-            world = Bukkit.createWorld(creator);
-            if (world == null) {
-                Logging.error("Error while trying to create the parkour world - please restart and delete the folder");
+                world = Bukkit.createWorld(creator);
+                if (world == null) {
+                    Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!");
+                    return null;
+                }
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!");
                 return null;
             }
         } else { // if multiverse is detected

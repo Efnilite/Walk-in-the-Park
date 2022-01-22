@@ -6,6 +6,7 @@ v2.9.3
 - Fixed items with extra data (books, etc.) not being saved in memory
     > This data is still not saved in inventory files. It only saves essential data like damage, item name, lore and enchantments.
     > I'm still working on adding more data.
+- Fixed multiple errors for world creation
 
 
 High priority:

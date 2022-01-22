@@ -611,6 +611,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         } else {
             block.setBlockData(data, false); // todo maybe add packet block change to instantly update it?
         }
+        player.getPlayer().sendBlockChange(block.getLocation(), data);
     }
 
     /**

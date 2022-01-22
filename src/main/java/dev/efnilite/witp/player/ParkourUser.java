@@ -224,6 +224,9 @@ public abstract class ParkourUser {
             for (File file : folder.listFiles()) {
                 FileReader reader = new FileReader(file);
                 ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                if (from == null) {
+                    continue;
+                }
                 String name = file.getName();
                 UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                 if (from.highScoreDifficulty == null) {

@@ -16,7 +16,7 @@ public class PreviousData {
 
     private double health;
     private double maxHealth;
-    private InventoryData data;
+    private InventoryData inventoryData;
     private final int hunger;
     private final Player player;
     private final GameMode gamemode;
@@ -37,10 +37,10 @@ public class PreviousData {
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
         if (Option.INVENTORY_HANDLING.get()) {
-            this.data = new InventoryData(player);
-            this.data.saveInventory();
+            this.inventoryData = new InventoryData(player);
+            this.inventoryData.saveInventory();
             if (Option.INVENTORY_SAVING.get()) {
-                this.data.saveFile();
+                this.inventoryData.saveFile();
             }
         }
         if (Version.isHigherOrEqual(Version.V1_13)) {
@@ -74,8 +74,8 @@ public class PreviousData {
             Logging.stack("Error while recovering stats of " + player.getName() + ": " + ex.getMessage(),
                     "Please report this error to the developer! Inventory will still be restored.");
         }
-        if (data != null) {
-            data.apply(false);
+        if (inventoryData != null) {
+            inventoryData.apply(false);
         }
     }
 }
