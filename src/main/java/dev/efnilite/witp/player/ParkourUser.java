@@ -43,9 +43,9 @@ public abstract class ParkourUser {
     protected final Player player;
     public static int JOIN_COUNT;
 
-    public static HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
+    public static volatile HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
     private static final HashMap<String, PreviousData> previousData = new HashMap<>();
-    protected static HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
+    protected static volatile HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
     protected static final HashMap<String, ParkourUser> users = new HashMap<>();
     protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
 

@@ -38,14 +38,15 @@ public class Logging {
         if (throwable != null) {
             error("##");
             error("## Stack trace:");
+            error("## " + throwable);
             StackTraceElement[] stack = throwable.getStackTrace();
             for (StackTraceElement stackTraceElement : stack) {
-                error("## " + stackTraceElement.toString());
+                error("## \t" + stackTraceElement.toString());
             }
         }
 
         error("##");
-        error("## This is an internal error which may be able to fix.");
+        error("## This is an internal error which you may be able to fix.");
         error("## How to fix: " + fix);
         error("## Unable to solve this problem using the fix? Visit the Discord or GitHub.");
         error("##");

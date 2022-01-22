@@ -100,10 +100,11 @@ public class MainCommand extends SimpleCommand {
 
                     Tasks.time("reload");
                     send(sender, "&4&l> &7Reloading config files..");
+
                     WITP.getConfiguration().reload();
                     Option.init(false);
-                    long time = Tasks.end("reload");
-                    send(sender, "&4&l> &7Reloaded all config files in " + time + "ms!");
+
+                    send(sender, "&4&l> &7Reloaded all config files in " + Tasks.end("reload") + "ms!");
                     return true;
                 case "reset":
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {

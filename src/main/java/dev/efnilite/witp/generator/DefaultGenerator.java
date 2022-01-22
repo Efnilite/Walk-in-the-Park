@@ -326,7 +326,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (!regenerate) {
             stopped = true;
             if (task == null) {// incomplete setup as task is the last thing to start
-                Logging.warn("Incomplete joining setup: there has probably been an error above. Please report this error to the developer!");
+                Logging.warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
                 Logging.warn("You don't have to report this warning.");
             } else {
                 task.cancel();

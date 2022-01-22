@@ -255,12 +255,15 @@ public class SubareaDivider {
 
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull SubareaPoint point) {
         Location spawn = point.getEstimatedCenter(Option.BORDER_SIZE.get()).toLocation(world).clone();
-        List<Chunk> chunks = getChunksAround(spawn.getChunk(), 1);
-        if (Version.isHigherOrEqual(Version.V1_13)) {
-            for (Chunk chunk : chunks) {
-                chunk.setForceLoaded(true);
+        List<Chunk> chunks = new ArrayList<>();
+        try {
+            chunks = getChunksAround(spawn.getChunk(), 1);
+            if (Version.isHigherOrEqual(Version.V1_13)) {
+                for (Chunk chunk : chunks) {
+                    chunk.setForceLoaded(true);
+                }
             }
-        }
+        } catch (Throwable ignored) {} // ignored if chunks cant be requested
 
         // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().getDimensions();
