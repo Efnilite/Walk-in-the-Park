@@ -323,22 +323,77 @@ public class MainCommand extends SimpleCommand {
                     return true;
                 }
                 ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
-            } else if (args[0].equalsIgnoreCase("join") && args[1] != null && sender.hasPermission("witp.join.other")) {
-                Player join = Bukkit.getPlayer(args[1]);
-                if (join == null) {
+            } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission("witp.forcejoin")) {
+
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
+                    for (Player other : Bukkit.getOnlinePlayers()) {
+                        try {
+                            ParkourPlayer pp = ParkourPlayer.register(other, null);
+                            WITP.getDivider().generate(pp);
+                            pp.sendTranslated("joined");
+                        } catch (IOException | SQLException ex) {
+                            Logging.stack("Error while joining player " + other.getName(),
+                                    "Please try again or report this error to the developer!", ex);
+                            send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
+                            return true;
+                        }
+                    }
+                    send(sender, "&4&l> &7Succesfully force joined everyone");
+                    return true;
+                }
+
+                Player other = Bukkit.getPlayer(args[1]);
+                if (other == null) {
                     send(sender, "&4&l> &7That player isn't online!");
                     return true;
                 }
                 try {
-                    ParkourPlayer.register(join, null);
-                    ParkourPlayer pp = ParkourPlayer.getPlayer(join);
-                    if (pp != null) {
-                        pp.sendTranslated("joined");
-                    }
+                    ParkourPlayer pp = ParkourPlayer.register(other, null);
+                    WITP.getDivider().generate(pp);
+                    pp.sendTranslated("joined");
                 } catch (IOException | SQLException ex) {
-                    Logging.stack("Error while joining player " + join.getName(),
+                    Logging.stack("Error while joining player " + other.getName(),
                             "Please try again or report this error to the developer!", ex);
                 }
+
+            } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission("witp.forceleave")) {
+
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forceleave.everyone")) {
+                    for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
+                        try {
+                            other.sendTranslated("left");
+                            ParkourUser.unregister(other, true, true, true);
+                        } catch (IOException | InvalidStatementException ex) {
+                            Logging.stack("Error while unregistering player " + other.getPlayer().getName(),
+                                    "Please try again or report this error to the developer!", ex);
+                            send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
+                            return true;
+                        }
+                    }
+                    send(sender, "&4&l> &7Succesfully force kicked everyone");
+                    return true;
+                }
+
+                Player other = Bukkit.getPlayer(args[1]);
+                if (other == null) {
+                    send(sender, "&4&l> &7That player isn't online!");
+                    return true;
+                }
+
+                ParkourUser user = ParkourUser.getUser(other);
+                if (user == null) {
+                    send(sender, "&4&lThat player isn't currently playing!");
+                    return true;
+                }
+
+                try {
+                    user.sendTranslated("left");
+                    ParkourUser.unregister(user, true, true, true);
+                } catch (IOException | InvalidStatementException ex) {
+                    Logging.stack("Error while unregistering player " + other.getName(),
+                            "Please try again or report this error to the developer!", ex);
+                }
+
             } else if (args[0].equalsIgnoreCase("search") && player != null) {
                 ParkourUser user = ParkourUser.getUser(player);
                 if (user != null) {
@@ -438,8 +493,21 @@ public class MainCommand extends SimpleCommand {
                 }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
-            } else if ((args[0].equalsIgnoreCase("join") && sender.hasPermission("witp.join.other")) ||
-                    (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory"))) {
+            } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission("witp.forcejoin")) {
+                for (Player pl : Bukkit.getOnlinePlayers()) {
+                    completions.add(pl.getName());
+                }
+                if (sender.hasPermission("witp.forcejoin.everyone")) {
+                    completions.add("everyone");
+                }
+            } else if (args[0].equalsIgnoreCase("forceleave") && sender.hasPermission("witp.forceleave")) {
+                for (Player pl : Bukkit.getOnlinePlayers()) {
+                    completions.add(pl.getName());
+                }
+                if (sender.hasPermission("witp.forceleave.everyone")) {
+                    completions.add("everyone");
+                }
+            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }
