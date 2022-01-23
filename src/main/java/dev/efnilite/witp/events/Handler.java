@@ -82,7 +82,7 @@ public class Handler implements Listener {
             }
 
             try {
-                ParkourPlayer pp = ParkourPlayer.register(player);
+                ParkourPlayer pp = ParkourPlayer.register(player, null);
                 WITP.getDivider().generate(pp);
             } catch (IOException | SQLException ex) {
                 Logging.stack("Error while joining player " + player.getName(),
@@ -132,7 +132,7 @@ public class Handler implements Listener {
             }
         }
         if (Option.INVENTORY_HANDLING.get()) {
-            PreviousData data = ParkourUser.getPreviousData(playerName);
+            PreviousData data = player.getPreviousData();
             if (data != null)  {
                 quitInventoryData.put(playerName, data);
             }

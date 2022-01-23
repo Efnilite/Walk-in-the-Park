@@ -29,7 +29,7 @@ public class DefaultGamemode implements Gamemode {
         try {
             player.closeInventory();
             ParkourUser.unregister(user, false, false, true);
-            ParkourPlayer pp = ParkourPlayer.register(player);
+            ParkourPlayer pp = ParkourPlayer.register(player, user.getPreviousData());
             WITP.getDivider().generate(pp);
         } catch (IOException | SQLException ex) {
             Logging.stack("Error while joining player " + player.getName(),

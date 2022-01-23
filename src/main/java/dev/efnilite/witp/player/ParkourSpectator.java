@@ -2,6 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
+import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
@@ -11,6 +12,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,8 +26,8 @@ public class ParkourSpectator extends ParkourUser {
 
     protected final ParkourGenerator watching;
 
-    public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching) {
-        super(player.getPlayer());
+    public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching, @Nullable PreviousData previousData) {
+        super(player.getPlayer(), previousData);
         Logging.verbose("New ParkourSpectator init " + this.player.getName());
         this.locale = player.locale;
 
@@ -40,7 +42,8 @@ public class ParkourSpectator extends ParkourUser {
             ParkourSpectator spectator = (ParkourSpectator) player;
             spectator.watching.removeSpectators(spectator);
         }
-        users.put(this.player.getName(), this);
+
+        users.put(this.player.getUniqueId(), this);
 
         this.watching = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);

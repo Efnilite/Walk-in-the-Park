@@ -187,7 +187,7 @@ public class MainCommand extends SimpleCommand {
                     }
 
                     try {
-                        ParkourPlayer pp = ParkourPlayer.register(player);
+                        ParkourPlayer pp = ParkourPlayer.register(player, null);
                         WITP.getDivider().generate(pp);
                         pp.sendTranslated("joined");
                     } catch (IOException | SQLException ex) {
@@ -330,7 +330,7 @@ public class MainCommand extends SimpleCommand {
                     return true;
                 }
                 try {
-                    ParkourPlayer.register(join);
+                    ParkourPlayer.register(join, null);
                     ParkourPlayer pp = ParkourPlayer.getPlayer(join);
                     if (pp != null) {
                         pp.sendTranslated("joined");
@@ -350,7 +350,7 @@ public class MainCommand extends SimpleCommand {
                             ParkourUser searchUser = ParkourUser.getUser(search);
                             if (searchUser instanceof ParkourPlayer) {
                                 ParkourPlayer searchPp = (ParkourPlayer) searchUser;
-                                new ParkourSpectator(user, searchPp);
+                                new ParkourSpectator(user, searchPp, user.getPreviousData());
                             }
                         }
                     }

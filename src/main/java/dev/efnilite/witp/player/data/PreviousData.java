@@ -23,6 +23,7 @@ public class PreviousData {
     private final Location location;
 
     public PreviousData(@NotNull Player player) {
+        Logging.verbose("New PreviousData instance for player " + player.getName());
         this.player = player;
         this.gamemode = player.getGameMode();
         this.location = player.getLocation();

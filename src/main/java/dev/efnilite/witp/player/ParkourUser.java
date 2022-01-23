@@ -40,26 +40,26 @@ public abstract class ParkourUser {
     public String locale;
     public InventoryBuilder.OpenInventoryData openInventory;
     protected FastBoard board;
+    protected PreviousData previousData;
     protected final Player player;
+
     public static int JOIN_COUNT;
 
-    public static volatile HashMap<UUID, Integer> highScores = new LinkedHashMap<>();
-    private static final HashMap<String, PreviousData> previousData = new HashMap<>();
-    protected static volatile HashMap<UUID, Highscore> scoreMap = new LinkedHashMap<>();
-    protected static final HashMap<String, ParkourUser> users = new HashMap<>();
-    protected static final HashMap<Player, ParkourPlayer> players = new HashMap<>();
+    public static Map<UUID, Integer> highScores = new LinkedHashMap<>();
+    protected static volatile Map<UUID, Highscore> scoreMap = new LinkedHashMap<>();
+    protected static final Map<UUID, ParkourUser> users = new HashMap<>();
+    protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
 
-    public ParkourUser(@NotNull Player player) {
+    public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
-        if (!previousData.containsKey(player.getName())) {
-            previousData.put(player.getName(), new PreviousData(player));
-        }
+        this.previousData = previousData == null ? new PreviousData(player) : previousData;
+
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
         this.board = new FastBoard(player);
         // remove duplicates
-        users.put(player.getName(), this);
+        users.put(player.getUniqueId(), this);
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class ParkourUser {
 
                 // remove spectators
                 for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
-                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer(), spectator.previousData);
                     WITP.getDivider().generate(spp);
                 }
                 pp.getGenerator().spectators.clear();
@@ -104,19 +104,17 @@ public abstract class ParkourUser {
         }
 
         players.remove(pl);
-        users.remove(pl.getName());
+        users.remove(pl.getUniqueId());
 
         if (sendBack && Option.BUNGEECORD.get() && kickIfBungee) {
             Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
-        PreviousData data = previousData.get(pl.getName());
-        if (data == null) {
+        if (player.getPreviousData() == null) {
             Logging.warn("No previous data found for " + player.getPlayer().getName());
             return;
         } else {
-            data.apply(sendBack);
-            previousData.remove(pl.getName());
+            player.getPreviousData().apply(sendBack);
         }
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
@@ -130,10 +128,6 @@ public abstract class ParkourUser {
                 }
             }
         }
-    }
-
-    public static PreviousData getPreviousData(String playerName) {
-        return previousData.get(playerName);
     }
 
     public boolean checkPermission(String perm) {
@@ -481,8 +475,16 @@ public abstract class ParkourUser {
         return board;
     }
 
+    public UUID getUUID() {
+        return player.getUniqueId();
+    }
+
     public Location getLocation() {
         return player.getLocation();
+    }
+
+    public PreviousData getPreviousData() {
+        return previousData;
     }
 
     /**

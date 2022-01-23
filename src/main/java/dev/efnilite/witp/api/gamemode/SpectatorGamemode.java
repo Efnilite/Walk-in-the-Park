@@ -48,7 +48,7 @@ public class SpectatorGamemode implements Gamemode {
                 item.setItemMeta(meta);
                 spectatable.setItem(index, item, (t2, e2) -> {
                     if (ParkourUser.getActivePlayers().contains(pp)) {
-                        new ParkourSpectator(user, pp);
+                        new ParkourSpectator(user, pp, user.getPreviousData());
                     }
                 });
                 index++;

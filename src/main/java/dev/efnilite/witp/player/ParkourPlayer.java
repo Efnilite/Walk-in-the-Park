@@ -7,6 +7,7 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
+import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
@@ -68,8 +69,8 @@ public class ParkourPlayer extends ParkourUser {
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
      */
-    public ParkourPlayer(@NotNull Player player) {
-        super(player);
+    public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
+        super(player, previousData);
         Logging.verbose("Init of Player " + player.getName());
         this.uuid = player.getUniqueId();
         this.name = player.getName();
@@ -379,11 +380,14 @@ public class ParkourPlayer extends ParkourUser {
      * @param   player
      *          The player
      *
+     * @param   previousData
+     *          Previous PreviousData which will persist to this instance
+     *
      * @throws  IOException
      *          Thrown if the reader fails or the getting fails
      */
-    public static @NotNull ParkourPlayer register(@NotNull Player player) throws IOException, SQLException {
-        return register(new ParkourPlayer(player));
+    public static @NotNull ParkourPlayer register(@NotNull Player player, @Nullable PreviousData previousData) throws IOException, SQLException {
+        return register(new ParkourPlayer(player, previousData));
     }
 
     /**
@@ -415,15 +419,14 @@ public class ParkourPlayer extends ParkourUser {
                             from.showDeathMsg == null || from.showDeathMsg,
                             from.showScoreboard == null || from.showScoreboard,
                             from.highScoreDifficulty);
-                    pp.saveStats();
-                    players.put(pp.player, pp);
                     reader.close();
                 } else {
                     Logging.verbose("Setting new player data..");
                     pp.resetPlayerPreferences();
-                    players.put(pp.player, pp);
-                    pp.saveStats();
                 }
+
+                players.put(pp.player, pp);
+                pp.saveStats();
             } else {
                 SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
@@ -459,6 +462,7 @@ public class ParkourPlayer extends ParkourUser {
                     pp.resetPlayerPreferences();
                     pp.saveStats();
                 }
+
                 players.put(pp.player, pp);
             }
         }
