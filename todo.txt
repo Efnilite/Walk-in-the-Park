@@ -1,8 +1,7 @@
 Walk in the Park TODO
 
 v2.9.4
-- Updated item recovering to perfectly match previous items
-    > This has increased file size per player, but it's usually still <25 KB per player.
+- Added cooldowns to joining, leaving and menus to reduce problems with spamming these commands.
 
 High priority:
 - Optimize ram with schematics (async?)

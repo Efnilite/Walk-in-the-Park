@@ -93,6 +93,9 @@ public class MainCommand extends SimpleCommand {
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
                 case "reload":
+                    if (!cooldown(sender, "reload", 2500)) {
+                        return true;
+                    }
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
@@ -107,6 +110,9 @@ public class MainCommand extends SimpleCommand {
                     send(sender, "&4&l> &7Reloaded all config files in " + Tasks.end("reload") + "ms!");
                     return true;
                 case "reset":
+                    if (!cooldown(sender, "reset", 2500)) {
+                        return true;
+                    }
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
@@ -123,6 +129,9 @@ public class MainCommand extends SimpleCommand {
 
                     return true;
                 case "migrate":
+                    if (!cooldown(sender, "migrate", 2500)) {
+                        return true;
+                    }
                     if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
@@ -159,6 +168,9 @@ public class MainCommand extends SimpleCommand {
             }
             switch (args[0]) {
                 case "join": {
+                    if (!cooldown(sender, "join", 2500)) {
+                        return true;
+                    }
                     if (Option.PERMISSIONS.get() && !player.hasPermission("witp.join")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
@@ -185,6 +197,9 @@ public class MainCommand extends SimpleCommand {
                     return true;
                 }
                 case "leave": {
+                    if (!cooldown(sender, "leave", 2500)) {
+                        return true;
+                    }
                     ParkourUser pp = ParkourUser.getUser(player);
                     if (pp == null) {
                         return true;
@@ -277,6 +292,9 @@ public class MainCommand extends SimpleCommand {
                         send(player, "&4&l> &7Position 2 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "save":
+                        if (!cooldown(sender, "schematic-save", 2500)) {
+                            return true;
+                        }
                         if (selection == null || !selection.isComplete()) {
                             send(player, "&8----------- &4&lSchematics &8-----------");
                             send(player, "&7Your schematic isn't complete yet.");
@@ -338,6 +356,9 @@ public class MainCommand extends SimpleCommand {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
+                if (!cooldown(sender, "recoverinventory", 2500)) {
+                    return true;
+                }
                 Player arg1 = Bukkit.getPlayer(args[1]);
                 if (arg1 == null) {
                     send(sender, "&4&l> &7That player isn't online!");
@@ -382,47 +403,43 @@ public class MainCommand extends SimpleCommand {
     }
 
     @Override
-    public List<String> tabComplete(Player player, String[] args) {
+    public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            if (player.hasPermission("witp.join")) {
+            if (sender.hasPermission("witp.join")) {
                 completions.add("join");
                 completions.add("leave");
             }
-            if (player.hasPermission("witp.menu")) {
+            if (sender.hasPermission("witp.menu")) {
                 completions.add("menu");
             }
-            if (player.hasPermission("witp.gamemode")) {
+            if (sender.hasPermission("witp.gamemode")) {
                 completions.add("gamemode");
             }
-            if (player.hasPermission("witp.leaderboard")) {
+            if (sender.hasPermission("witp.leaderboard")) {
                 completions.add("leaderboard");
             }
-            if (player.hasPermission("witp.schematic")) {
+            if (sender.hasPermission("witp.schematic")) {
                 completions.add("schematic");
             }
-            if (player.hasPermission("witp.reload")) {
+            if (sender.hasPermission("witp.reload")) {
                 completions.add("reload");
                 completions.add("migrate");
                 completions.add("reset");
             }
-            if (player.hasPermission("witp.recoverinventory")) {
+            if (sender.hasPermission("witp.recoverinventory")) {
                 completions.add("recoverinventory");
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("search")) {
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
-                    String name = pp.getPlayer().getName();
-                    if (player.getName().equals(name)) {
-                        continue;
-                    }
-                    completions.add(name);
+                    completions.add(pp.getPlayer().getName());
                 }
-            } else if (args[0].equalsIgnoreCase("schematic") && player.hasPermission("witp.schematic")) {
+            } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
-            } else if ((args[0].equalsIgnoreCase("join") && player.hasPermission("witp.join.other")) ||
-                    (args[0].equalsIgnoreCase("recoverinventory") && player.hasPermission("witp.recoverinventory"))) {
+            } else if ((args[0].equalsIgnoreCase("join") && sender.hasPermission("witp.join.other")) ||
+                    (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory"))) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }

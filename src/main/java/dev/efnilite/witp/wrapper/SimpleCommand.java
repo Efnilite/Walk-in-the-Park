@@ -1,10 +1,13 @@
 package dev.efnilite.witp.wrapper;
 
+import dev.efnilite.witp.command.MainCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +53,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
         UUID uuid = player.getUniqueId();
 
         CommandCooldown cooldown = null; // the current cooldown
-        List<CommandCooldown> playerCooldowns = cooldowns.get(uuid);
+        List<CommandCooldown> playerCooldowns = cooldowns.get(uuid) == null ? new ArrayList<>() : cooldowns.get(uuid);
         for (CommandCooldown plCooldown : playerCooldowns) { // get the appropriate commandcooldown class
             if (plCooldown.getArg().equals(arg)) {
                 cooldown = plCooldown;
@@ -64,8 +67,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        long now = System.currentTimeMillis();
-        if (now - cooldown.getLastExecuted() > cooldownMs) {
+        if (System.currentTimeMillis() - cooldown.getLastExecuted() > cooldownMs) {
 
             playerCooldowns.remove(cooldown); // update cooldown
             playerCooldowns.add(new CommandCooldown(arg));
@@ -73,6 +75,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
 
             return true;
         } else {
+            MainCommand.send(sender, "&4&l> &7Please wait before using that again.");
             return false;
         }
     }

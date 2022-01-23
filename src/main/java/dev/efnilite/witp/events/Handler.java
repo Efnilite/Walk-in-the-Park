@@ -239,7 +239,7 @@ public class Handler implements Listener {
     public void interact(PlayerInteractEvent event) {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
-        if (player != null && action && Duration.between(player.joinTime, Instant.now()).toMillis() > 100) {
+        if (player != null && action && System.currentTimeMillis() - player.joinTime > 1000) {
             event.setCancelled(true);
             Material menu = WITP.getConfiguration().getFromItemData(player.locale, "general.menu").getType();
             Material quit = WITP.getConfiguration().getFromItemData(player.locale, "general.quit").getType();

@@ -58,7 +58,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String name; // for fixing null in leaderboard
     public @Expose double difficulty;
 
-    public final Instant joinTime;
+    public final long joinTime;
 
     public UUID uuid;
     private ParkourGenerator generator;
@@ -73,7 +73,7 @@ public class ParkourPlayer extends ParkourUser {
         Logging.verbose("Init of Player " + player.getName());
         this.uuid = player.getUniqueId();
         this.name = player.getName();
-        this.joinTime = Instant.now();
+        this.joinTime = System.currentTimeMillis();
 
         this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.locale = Option.DEFAULT_LANG.get();
