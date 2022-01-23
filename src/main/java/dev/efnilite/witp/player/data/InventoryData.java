@@ -3,7 +3,9 @@ package dev.efnilite.witp.player.data;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.Logging;
+import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.task.Tasks;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -107,6 +109,10 @@ public class InventoryData {
                 this.loadedInventory.put(index, item);
             }
             index++;
+        }
+        String command = Option.ALT_INVENTORY_SAVING_COMMAND.get();
+        if (command != null && command.length() > 0) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.getName()));
         }
     }
 

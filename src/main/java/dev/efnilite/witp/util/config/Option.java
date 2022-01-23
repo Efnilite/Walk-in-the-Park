@@ -56,6 +56,7 @@ public class Option {
     public static ConfigOption<Boolean> OPTIONS_ENABLED;
     public static ConfigOption<Boolean> HEALTH_HANDLING;
     public static ConfigOption<Boolean> INVENTORY_SAVING;
+    public static ConfigOption<String> ALT_INVENTORY_SAVING_COMMAND;
 
     public static HashMap<String, String> OPTIONS_DEFAULTS;
     public static ConfigOption<Boolean> HOTBAR_QUIT_ITEM;
@@ -76,6 +77,7 @@ public class Option {
         VERBOSE = new ConfigOption<>(config, "verbose");
         HEALTH_HANDLING = new ConfigOption<>(config, "options.health-handling");
         INVENTORY_SAVING = new ConfigOption<>(config, "options.inventory-saving");
+        ALT_INVENTORY_SAVING_COMMAND = new ConfigOption<>(config, "options.alt-inventory-saving-command");
 
         List<String> options = Arrays.asList("lead", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
         OPTIONS_DEFAULTS = new HashMap<>();

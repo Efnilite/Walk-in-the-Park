@@ -130,6 +130,11 @@ options:
     # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
     inventory-saving: true
 
+    # Alternate inventory saving command
+    # Example: /inventory save %player%
+    # This command will be executed by console.
+    alt-inventory-saving-command: ''
+
     # Enables/disables the health handling system
     # Disable this if you're experiencing errors with max health, etc.
     health-handling: true
