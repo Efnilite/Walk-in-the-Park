@@ -1,6 +1,8 @@
 package dev.efnilite.witp.player;
 
 import com.google.gson.annotations.Expose;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -8,15 +10,13 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.sql.InsertStatement;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
-import dev.efnilite.witp.util.task.Tasks;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -287,7 +286,10 @@ public class ParkourPlayer extends ParkourUser {
             }
         };
         if (async) {
-            Tasks.asyncTask(runnable);
+            new Task()
+                    .async()
+                    .execute(runnable)
+                    .run();
         } else {
             runnable.run();
         }

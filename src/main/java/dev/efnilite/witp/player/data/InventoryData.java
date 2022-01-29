@@ -1,10 +1,10 @@
 package dev.efnilite.witp.player.data;
 
 import com.google.gson.annotations.Expose;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -55,46 +55,52 @@ public class InventoryData {
     }
 
     public void readFile(Consumer<@Nullable InventoryData> successfulCallback) {
-        Tasks.asyncTask(() -> {
-            try {
-                if (!file.exists()) {
-                    successfulCallback.accept(null);
-                    return;
-                }
-                FileReader reader = new FileReader(file);
-                InventoryData data = WITP.getGson().fromJson(reader, InventoryData.class);
-                data.player = player;
-                data.file = file;
-                successfulCallback.accept(data);
+        new Task()
+                .async()
+                .execute(() -> {
+                    try {
+                        if (!file.exists()) {
+                            successfulCallback.accept(null);
+                            return;
+                        }
+                        FileReader reader = new FileReader(file);
+                        InventoryData data = WITP.getGson().fromJson(reader, InventoryData.class);
+                        data.player = player;
+                        data.file = file;
+                        successfulCallback.accept(data);
 
-                reader.close();
-            } catch (IOException ex) {
-                Logging.stack("Error while reading inventory of " + player.getName() + " from file: ",
-                        "Please report this error and the above stack trace to the developer!", ex);
-                successfulCallback.accept(null);
-            }
-        });
+                        reader.close();
+                    } catch (IOException ex) {
+                        Logging.stack("Error while reading inventory of " + player.getName() + " from file: ",
+                                "Please report this error and the above stack trace to the developer!", ex);
+                        successfulCallback.accept(null);
+                    }
+                })
+                .run();
     }
 
     public void saveFile() {
-        Tasks.asyncTask(() -> {
-            try {
-                if (!file.exists()) {
-                    File folder = new File(WITP.getInstance().getDataFolder() + "/inventories");
-                    if (!folder.exists()) {
-                        folder.mkdirs();
+        new Task()
+                .async()
+                .execute(() -> {
+                    try {
+                        if (!file.exists()) {
+                            File folder = new File(WITP.getInstance().getDataFolder() + "/inventories");
+                            if (!folder.exists()) {
+                                folder.mkdirs();
+                            }
+                            file.createNewFile();
+                        }
+                        FileWriter writer = new FileWriter(file);
+                        WITP.getGson().toJson(this, writer);
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException ex) {
+                        Logging.stack("Error while saving inventory of " + player.getName() + " to file: ",
+                                "Please report this error and the above stack trace to the developer!", ex);
                     }
-                    file.createNewFile();
-                }
-                FileWriter writer = new FileWriter(file);
-                WITP.getGson().toJson(this, writer);
-                writer.flush();
-                writer.close();
-            } catch (IOException ex) {
-                Logging.stack("Error while saving inventory of " + player.getName() + " to file: ",
-                        "Please report this error and the above stack trace to the developer!", ex);
-            }
-        });
+                })
+                .run();
     }
 
     /**

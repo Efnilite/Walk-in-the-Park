@@ -1,8 +1,8 @@
 package dev.efnilite.witp.util.web;
 
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Logging;
-import dev.efnilite.witp.util.task.Tasks;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,23 +14,26 @@ import java.util.stream.Collectors;
 public class UpdateChecker {
 
     public void check() {
-        Tasks.asyncTask(() -> {
-            String latest;
-            try {
-                latest = getLatestVersion();
-            } catch (IOException ex) {
-                Logging.stack("Error while trying to fetch latest version!",
-                        "Please report this error to the developer!", ex);
-                return;
-            }
-            if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
-                Logging.info("A new version of WITP is available to download!");
-                Logging.info("Newest version: " + latest);
-                WITP.OUTDATED = true;
-            } else {
-                Logging.info("WITP is currently up-to-date!");
-            }
-        });
+        new Task()
+                .async()
+                .execute(() -> {
+                    String latest;
+                    try {
+                        latest = getLatestVersion();
+                    } catch (IOException ex) {
+                        Logging.stack("Error while trying to fetch latest version!",
+                                "Please report this error to the developer!", ex);
+                        return;
+                    }
+                    if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
+                        Logging.info("A new version of WITP is available to download!");
+                        Logging.info("Newest version: " + latest);
+                        WITP.OUTDATED = true;
+                    } else {
+                        Logging.info("WITP is currently up-to-date!");
+                    }
+                })
+                .run();
     }
 
     private String getLatestVersion() throws IOException {

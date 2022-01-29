@@ -1,5 +1,8 @@
 package dev.efnilite.witp.generator.subarea;
 
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -8,13 +11,10 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.Vector3D;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -248,7 +248,7 @@ public class SubareaDivider {
         world.setWeatherDuration(1000);
         world.setAutoSave(false);
 
-        world.setKeepSpawnInMemory(false);
+//        world.setKeepSpawnInMemory(false);
 
         return world;
     }
@@ -349,11 +349,14 @@ public class SubareaDivider {
 
         // Make sure the player is in the correct world
         // Used to be a problem, don't know if it still is, too scared to remove it now :)
-        Tasks.syncDelay(() -> {
-            if (!player.getWorld().getUID().equals(world.getUID())) {
-                player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            }
-        }, 10);
+        new Task()
+                .delay(10)
+                .execute(() -> {
+                    if (!player.getWorld().getUID().equals(world.getUID())) {
+                        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    }
+                })
+                .run();
     }
 
     public World getWorld() {

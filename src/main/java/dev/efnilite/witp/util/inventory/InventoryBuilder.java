@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.inventory;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -1,9 +1,9 @@
 package dev.efnilite.witp.api.gamemode;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -1,14 +1,15 @@
 package dev.efnilite.witp.player.data;
 
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,10 @@ public class PreviousData {
         this.gamemode = player.getGameMode();
         this.location = player.getLocation();
         this.hunger = player.getFoodLevel();
+
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
 
         if (Option.SAVE_STATS.get()) {
             this.health = player.getHealth();
@@ -53,6 +58,10 @@ public class PreviousData {
 
     public void apply(boolean teleportBack) {
         try {
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                player.removePotionEffect(effect.getType());
+            }
+
             if (teleportBack) {
                 if (Option.GO_BACK.get()) {
                     Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));

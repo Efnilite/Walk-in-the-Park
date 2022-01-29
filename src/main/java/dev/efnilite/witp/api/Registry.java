@@ -1,8 +1,8 @@
 package dev.efnilite.witp.api;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.api.style.StyleType;
-import dev.efnilite.witp.util.Logging;
 
 import java.util.ArrayList;
 import java.util.HashMap;

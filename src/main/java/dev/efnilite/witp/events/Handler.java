@@ -1,17 +1,17 @@
 package dev.efnilite.witp.events;
 
+import dev.efnilite.fycore.particle.ParticleData;
+import dev.efnilite.fycore.particle.Particles;
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.schematic.selection.Selection;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
-import dev.efnilite.witp.util.particle.ParticleData;
-import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -34,8 +34,6 @@ import org.bukkit.util.BoundingBox;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 
 public class Handler implements Listener {
@@ -113,6 +111,20 @@ public class Handler implements Listener {
                 Logging.error("There are no worlds for player " + player.getName() + " to fall back to! Kicking player..");
                 player.kickPlayer("There are no accessible worlds for you to go to - please rejoin");
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void tpSpec(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+
+        ParkourUser user = ParkourUser.getUser(player);
+        if (user == null) {
+            return;
+        }
+
+        if (player.getGameMode() == GameMode.SPECTATOR || event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            event.setCancelled(true);
         }
     }
 

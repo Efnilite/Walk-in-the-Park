@@ -1,5 +1,10 @@
 package dev.efnilite.witp.generator;
 
+import dev.efnilite.fycore.particle.ParticleData;
+import dev.efnilite.fycore.particle.Particles;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.style.StyleType;
 import dev.efnilite.witp.events.BlockGenerateEvent;
@@ -8,23 +13,19 @@ import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.base.DefaultGeneratorBase;
 import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
-import dev.efnilite.witp.util.particle.ParticleData;
-import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
-import dev.efnilite.witp.util.task.Tasks;
+import fr.mrmicky.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
@@ -51,7 +52,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <p>
  * Important notice: tempering with details in this class could result in complete malfunction of code since
  * this class has been meticulously made using a lot of cross-references. Same goes for
- * {@link dev.efnilite.witp.generator.subarea.SubareaDivider}.
+ * {@link SubareaDivider}.
  *
  * @author Efnilite
  */
@@ -131,11 +132,47 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.deleteStructure = false;
 
         this.positionIndexTotal = 0;
-        this.lastPositionIndexPlayer = 0;
+        this.lastPositionIndexPlayer = -1;
         this.positionIndexMap = new LinkedHashMap<>();
 
         this.handler = new InventoryHandler(player);
         this.heading = Option.HEADING.get();
+    }
+
+    @Override
+    public void particles(List<Block> applyTo) {
+        if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
+            PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
+
+            switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
+                case DOT:
+                    PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
+                    Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
+                    break;
+                case CIRCLE:
+                    PARTICLE_DATA.size(5);
+                    Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), (int) Math.sqrt(applyTo.size()), 25);
+                    break;
+                case BOX:
+                    Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+                    Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+
+                    for (Block block : applyTo) {
+                        Location loc = block.getLocation();
+                        min = Util.min(min, loc);
+                        max = Util.max(max, loc);
+                    }
+
+                    if (max.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
+                        return;
+                    }
+
+                    PARTICLE_DATA.size(1);
+                    Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
+                    break;
+            }
+            player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+        }
     }
 
     @Override
@@ -226,7 +263,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 tick();
             }
         };
-        Tasks.syncRepeat(task, Option.GENERATOR_CHECK.get());
+        new Task()
+                .repeat(Option.GENERATOR_CHECK.get())
+                .execute(task)
+                .run();
     }
 
     /**
@@ -294,7 +334,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
-        if (deltaCurrentTotal < player.blockLead) {
+        if (deltaCurrentTotal <= player.blockLead) {
             generate(player.blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
         }
         lastPositionIndexPlayer = currentIndex;
@@ -450,25 +490,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
             mostRecentBlock = selectedBlock.getLocation().clone();
 
-            if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
-                PARTICLE_DATA.setType(Option.PARTICLE_TYPE.get());
-
-                switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
-                    case DOT:
-                        PARTICLE_DATA.setSpeed(0.4).setSize(20).setOffsetX(0.5).setOffsetY(1).setOffsetZ(0.5);
-                        Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
-                        break;
-                    case CIRCLE:
-                        PARTICLE_DATA.setSize(5);
-                        Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), 1, 25);
-                        break;
-                    case BOX:
-                        PARTICLE_DATA.setSize(1);
-                        Particles.box(BoundingBox.of(selectedBlock), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
-                        break;
-                }
-                player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
-            }
+            particles(Collections.singletonList(selectedBlock));
 
             if (schematicCooldown > 0) {
                 schematicCooldown--;
@@ -832,7 +854,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         pp.setBoard(new FastBoard(player));
                         pp.updateScoreboard();
                     } else {
-                        pp.getBoard().delete();
+                        if (pp.getBoard() != null) {
+                            pp.getBoard().delete();
+                        }
                     }
                     pp.sendTranslated("selected-scoreboard", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(scoreboardString))));
                     menu(optDisabled);

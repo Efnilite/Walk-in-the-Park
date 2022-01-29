@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.inventory;
 
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

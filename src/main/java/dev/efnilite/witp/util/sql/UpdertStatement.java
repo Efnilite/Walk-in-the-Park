@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.util.Logging;
+import dev.efnilite.fycore.util.Logging;
 
 import java.sql.SQLException;
 import java.util.HashMap;

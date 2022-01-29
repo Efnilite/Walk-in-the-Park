@@ -1,11 +1,12 @@
 package dev.efnilite.witp.schematic;
 
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
+import dev.efnilite.fycore.util.Time;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -113,68 +114,71 @@ public class Schematic {
      * Saves a schematic file
      */
     public void save(@Nullable Player player) {
-        Tasks.asyncTask(() -> {
-            try {
-                Tasks.time("saveSchematic-" + file.getName());
-                if (dimensions == null || blocks == null) {
-                    Logging.error("Data of schematic is null while trying to save!");
-                    return;
-                }
+        new Task()
+                .async()
+                .execute(() -> {
+                    try {
+                        Time.timerStart("saveSchematic-" + file.getName());
+                        if (dimensions == null || blocks == null) {
+                            Logging.error("Data of schematic is null while trying to save!");
+                            return;
+                        }
 
-                for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
-                    if (currentBlock.getType() == Material.AIR) { // skip air if enabled
-                        continue;
+                        for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
+                            if (currentBlock.getType() == Material.AIR) { // skip air if enabled
+                                continue;
+                            }
+                            Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
+                            blocks.add(new SchematicBlock(currentBlock, relativeOffset));
+                        }
+
+                        file.createNewFile();
+
+                        FileWriter writer = new FileWriter(file);
+                        String separator = System.lineSeparator();
+
+                        writer.write(dimensions.toString()); // write dimensions to first line
+                        writer.write(separator); // is basically an enter
+
+                        writer.write("*");
+                        writer.write(separator);
+
+                        HashSet<String> filtered = new HashSet<>();
+                        Map<String, Integer> palette = new HashMap<>();
+                        blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
+
+                        int index = 0;
+                        for (String data : filtered) {
+                            palette.put(data, index);
+                            writer.write(index + ">" + data);
+                            writer.write(separator);
+                            index++;
+                        }
+
+                        writer.write("~");
+                        writer.write(separator);
+
+                        StringJoiner joiner = new StringJoiner("/");
+                        for (SchematicBlock block : blocks) {
+                            String current = block.getData().getAsString();
+                            String id = Integer.toString(palette.get(current));
+
+                            joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
+                        }
+
+                        writer.write(joiner.toString());
+                        writer.flush();
+                        writer.close();
+                        if (player == null) {
+                            return;
+                        }
+                        player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!"));
+                    } catch (IOException ex) {
+                        Logging.stack("Error while saving data of player " + (player == null ? "?" : player.getName()),
+                                "Please try again or report this error to the developer!", ex);
                     }
-                    Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
-                    blocks.add(new SchematicBlock(currentBlock, relativeOffset));
-                }
-
-                file.createNewFile();
-
-                FileWriter writer = new FileWriter(file);
-                String separator = System.lineSeparator();
-
-                writer.write(dimensions.toString()); // write dimensions to first line
-                writer.write(separator); // is basically an enter
-
-                writer.write("*");
-                writer.write(separator);
-
-                HashSet<String> filtered = new HashSet<>();
-                Map<String, Integer> palette = new HashMap<>();
-                blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
-
-                int index = 0;
-                for (String data : filtered) {
-                    palette.put(data, index);
-                    writer.write(index + ">" + data);
-                    writer.write(separator);
-                    index++;
-                }
-
-                writer.write("~");
-                writer.write(separator);
-
-                StringJoiner joiner = new StringJoiner("/");
-                for (SchematicBlock block : blocks) {
-                    String current = block.getData().getAsString();
-                    String id = Integer.toString(palette.get(current));
-
-                    joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
-                }
-
-                writer.write(joiner.toString());
-                writer.flush();
-                writer.close();
-                if (player == null) {
-                    return;
-                }
-                player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Tasks.end("saveSchematic-" + file.getName()) + "ms&7!"));
-            } catch (IOException ex) {
-                Logging.stack("Error while saving data of player " + (player == null ? "?" : player.getName()),
-                        "Please try again or report this error to the developer!", ex);
-            }
-        });
+                })
+                .run();
     }
 
     /**
@@ -185,7 +189,7 @@ public class Schematic {
             return;
         }
         Logging.verbose("Reading schematic " + file.getName() + "...");
-        Tasks.time("individualSchemRead");
+        Time.timerStart("individualSchemRead");
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
@@ -256,7 +260,7 @@ public class Schematic {
 
         Vector3D readDimensions = Util.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
-        Logging.verbose("Finished reading in " + Tasks.end("individualSchemRead") + "ms!");
+        Logging.verbose("Finished reading in " + Time.timerEnd("individualSchemRead") + "ms!");
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {

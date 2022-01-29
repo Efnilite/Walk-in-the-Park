@@ -1,11 +1,12 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.fycore.config.ConfigOption;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;

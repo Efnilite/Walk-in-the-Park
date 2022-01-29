@@ -1,15 +1,16 @@
 package dev.efnilite.witp.player;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,15 +58,18 @@ public class ParkourSpectator extends ParkourUser {
      * If the distance is more than 30 blocks, the player gets teleported back.
      */
     public void checkDistance() {
+        Entity target = player.getSpectatorTarget();
         if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
+            player.setSpectatorTarget(null);
             player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            player.setSpectatorTarget(target);
         }
-        this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
     @Override
     public void updateScoreboard() {
-        if (Option.SCOREBOARD.get()) {
+        if (Option.SCOREBOARD.get() && board != null) {
             board.updateTitle(Util.color(Option.SCOREBOARD_TITLE.get()));
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption

@@ -1,8 +1,9 @@
 package dev.efnilite.witp.schematic;
 
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
+import dev.efnilite.fycore.util.Time;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Logging;
-import dev.efnilite.witp.util.task.Tasks;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,23 +22,26 @@ public class SchematicCache {
             return;
         }
 
-        Tasks.asyncTask(() -> {
-            Tasks.time("schematicsLoad");
-            Logging.info("Initializing schematics...");
-            cache.clear();
-            File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
-            File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
-            for (File file : files) {
-                String fileName = file.getName();
-                Schematic schematic = new Schematic().file(fileName);
-                schematic.read();
-                if (schematic.isSupported()) {
-                    cache.put(fileName, schematic);
-                }
-            }
-            Logging.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
-            Logging.info("Loaded all schematics in " + Tasks.end("schematicsLoad") + "ms!");
-        });
+        new Task()
+                .async()
+                .execute(() -> {
+                    Time.timerStart("schematicsLoad");
+                    Logging.info("Initializing schematics...");
+                    cache.clear();
+                    File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
+                    File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
+                    for (File file : files) {
+                        String fileName = file.getName();
+                        Schematic schematic = new Schematic().file(fileName);
+                        schematic.read();
+                        if (schematic.isSupported()) {
+                            cache.put(fileName, schematic);
+                        }
+                    }
+                    Logging.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
+                    Logging.info("Loaded all schematics in " + Time.timerEnd("schematicsLoad") + "ms!");
+                })
+                .run();
     }
 
     public static Schematic getSchematic(String name) {

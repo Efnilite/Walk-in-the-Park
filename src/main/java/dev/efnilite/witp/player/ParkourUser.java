@@ -1,19 +1,19 @@
 package dev.efnilite.witp.player;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.gamemode.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.fastboard.FastBoard;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
+import fr.mrmicky.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -57,7 +57,9 @@ public abstract class ParkourUser {
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
-        this.board = new FastBoard(player);
+        if (Option.SCOREBOARD.get()) {
+            this.board = new FastBoard(player);
+        }
         // remove duplicates
         users.put(player.getUniqueId(), this);
     }
@@ -94,7 +96,7 @@ public abstract class ParkourUser {
                 ParkourSpectator spectator = (ParkourSpectator) player;
                 spectator.watching.removeSpectators(spectator);
             }
-            if (!player.getBoard().isDeleted()) {
+            if (player.getBoard() != null && !player.getBoard().isDeleted()) {
                 player.getBoard().delete();
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
@@ -471,7 +473,7 @@ public abstract class ParkourUser {
      *
      * @return the {@link FastBoard} of the player
      */
-    public FastBoard getBoard() {
+    public @Nullable FastBoard getBoard() {
         return board;
     }
 

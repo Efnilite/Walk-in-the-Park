@@ -2,8 +2,11 @@ package dev.efnilite.witp.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.colour.Colours;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import net.md_5.bungee.api.ChatColor;
@@ -218,7 +221,7 @@ public class Util {
      */
     public static String color(String string) {
         if (!string.equals("")) {
-            return ChatColor.translateAlternateColorCodes('&', HexColours.translate(string));
+            return ChatColor.translateAlternateColorCodes('&', Colours.colour(string));
         }
         return string;
     }
@@ -390,7 +393,7 @@ public class Util {
 
     /**
      * Send a text to a player from the lang.yml file in the default language
-     * (if the player isn't a {@link dev.efnilite.witp.player.ParkourUser}, knowing their preferred language is impossible)
+     * (if the player isn't a {@link ParkourUser}, knowing their preferred language is impossible)
      *
      * @param   sender
      *          The sender

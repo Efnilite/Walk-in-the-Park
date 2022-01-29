@@ -79,6 +79,14 @@ public abstract class ParkourGenerator {
     }
 
     /**
+     * Applies particles to list of blocks
+     *
+     * @param   applyTo
+     *          The blocks to apply the particles to.
+     */
+    public abstract void particles(List<Block> applyTo);
+
+    /**
      * Implementable method for selecting materials used to set the blocks used in {@link #selectBlocks()}
      */
     public abstract BlockData selectBlockData();
@@ -103,12 +111,27 @@ public abstract class ParkourGenerator {
      */
     public abstract void menu();
 
+    /**
+     * Method for resetting the parkour
+     *
+     * @param   regenerateBack
+     *          Whether the parkour should regenerate back or not
+     */
     public abstract void reset(boolean regenerateBack);
 
+    /**
+     * Starts the tick method
+     */
     public abstract void startTick();
 
+    /**
+     * Method that gets run every game tick (every 2 ticks)
+     */
     public abstract void tick();
 
+    /**
+     * Generates a block or blocks
+     */
     public abstract void generate();
 
     public void removeSpectators(ParkourSpectator... spectators) {

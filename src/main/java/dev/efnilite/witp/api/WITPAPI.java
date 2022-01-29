@@ -1,8 +1,8 @@
 package dev.efnilite.witp.api;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

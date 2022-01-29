@@ -1,5 +1,11 @@
 package dev.efnilite.witp.command;
 
+import dev.efnilite.fycore.command.FyCommand;
+import dev.efnilite.fycore.particle.ParticleData;
+import dev.efnilite.fycore.particle.Particles;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Time;
+import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -8,16 +14,10 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.InventoryData;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.Version;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
-import dev.efnilite.witp.util.particle.ParticleData;
-import dev.efnilite.witp.util.particle.Particles;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
-import dev.efnilite.witp.util.task.Tasks;
-import dev.efnilite.witp.wrapper.SimpleCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-public class MainCommand extends SimpleCommand {
+public class MainCommand extends FyCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
     private ItemStack wand;
@@ -101,13 +101,13 @@ public class MainCommand extends SimpleCommand {
                         return true;
                     }
 
-                    Tasks.time("reload");
+                    Time.timerStart("reload");
                     send(sender, "&4&l> &7Reloading config files..");
 
                     WITP.getConfiguration().reload();
                     Option.init(false);
 
-                    send(sender, "&4&l> &7Reloaded all config files in " + Tasks.end("reload") + "ms!");
+                    send(sender, "&4&l> &7Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
                     return true;
                 case "reset":
                     if (!cooldown(sender, "reset", 2500)) {
@@ -140,7 +140,7 @@ public class MainCommand extends SimpleCommand {
                         return true;
                     }
 
-                    Tasks.time("migrate");
+                    Time.timerStart("migrate");
                     File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
                     if (!folder.exists()) {
                         folder.mkdirs();
@@ -160,7 +160,7 @@ public class MainCommand extends SimpleCommand {
                         from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                         from.save(true);
                     }
-                    send(sender, "&4&l> &7Your players' data has been migrated in " + Tasks.end("migrate") + "ms!");
+                    send(sender, "&4&l> &7Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
                     return true;
             }
             if (player == null) {

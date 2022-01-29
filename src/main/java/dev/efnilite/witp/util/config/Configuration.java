@@ -1,11 +1,12 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.fycore.config.ConfigUpdater;
+import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.SchematicCache;
-import dev.efnilite.witp.util.Logging;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.inventory.ItemBuilder;
-import dev.efnilite.witp.util.task.Tasks;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -83,29 +84,33 @@ public class Configuration {
         folder.mkdirs();
         Logging.info("Downloading all schematics...");
         int structureCount = 21;
-        Tasks.asyncTask(() -> {
-            try {
-                for (String schematic : schematics) {
-                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
-                    Files.copy(stream, Paths.get(folder + "/" + schematic));
-                    Logging.verbose("Downloaded " + schematic);
-                    stream.close();
-                }
-                for (int i = 1; i <= structureCount; i++) {
-                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
-                    Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
-                    Logging.verbose("Downloaded parkour-" + i);
-                    stream.close();
-                }
-                SchematicCache.read();
-                Logging.info("Downloaded all schematics");
-            } catch (FileAlreadyExistsException ex) {
-                // do nothing
-            } catch (IOException ex) {
-                Logging.stack("Stopped download of schematics",
-                        "Please delete all the structures that have been downloaded and restart the server", ex);
-            }
-        });
+
+        new Task()
+                .async()
+                .execute(() -> {
+                    try {
+                        for (String schematic : schematics) {
+                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
+                            Files.copy(stream, Paths.get(folder + "/" + schematic));
+                            Logging.verbose("Downloaded " + schematic);
+                            stream.close();
+                        }
+                        for (int i = 1; i <= structureCount; i++) {
+                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
+                            Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
+                            Logging.verbose("Downloaded parkour-" + i);
+                            stream.close();
+                        }
+                        SchematicCache.read();
+                        Logging.info("Downloaded all schematics");
+                    } catch (FileAlreadyExistsException ex) {
+                        // do nothing
+                    } catch (IOException ex) {
+                        Logging.stack("Stopped download of schematics",
+                                "Please delete all the structures that have been downloaded and restart the server", ex);
+                    }
+                })
+                .run();
     }
 
         /**

@@ -217,24 +217,4 @@ public abstract class DefaultGeneratorBase extends ParkourGenerator {
     public List<String> getLeaveRewards() {
         return rewardsLeaveList;
     }
-
-    @Override
-    public void reset(boolean regenerateBack) {
-
-    }
-
-    @Override
-    public void tick() {
-
-    }
-
-    @Override
-    public void generate() {
-
-    }
-
-    @Override
-    public void menu() {
-
-    }
 }

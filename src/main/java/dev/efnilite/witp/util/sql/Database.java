@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.witp.util.Logging;
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.util.config.Option;
 import org.jetbrains.annotations.Nullable;
 

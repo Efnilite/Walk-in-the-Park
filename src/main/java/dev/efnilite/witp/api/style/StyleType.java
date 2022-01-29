@@ -1,7 +1,7 @@
 package dev.efnilite.witp.api.style;
 
+import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.Logging;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
