@@ -1,6 +1,7 @@
 package dev.efnilite.witp.command;
 
 import dev.efnilite.fycore.command.FyCommand;
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
@@ -16,7 +17,7 @@ import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
+import dev.efnilite.witp.util.inventory.PersistentUtil;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +26,7 @@ import org.bukkit.Particle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 
 import java.io.File;
@@ -41,11 +43,10 @@ public class MainCommand extends FyCommand {
 
     public MainCommand() {
         if (Version.isHigherOrEqual(Version.V1_14)) {
-            wand = new ItemBuilder(
+            wand = new Item(
                     Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")
-                    .setLore("&7Left click: first position", "&7Right click: second position")
-                    .setPersistentData("witp", "true")
-                    .buildPersistent(WITP.getInstance());
+                    .lore("&7Left click: first position", "&7Right click: second position").build();
+            PersistentUtil.setPersistentData(wand, "witp", PersistentDataType.STRING, "true");
         }
     }
 

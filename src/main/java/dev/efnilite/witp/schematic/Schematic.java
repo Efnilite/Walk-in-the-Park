@@ -292,7 +292,8 @@ public class Schematic {
             // all positions are saved to be relative to the minimum location
             Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
             Block affectedBlock = pasteLocation.getBlock();
-            affectedBlock.setBlockData(block.getData());
+
+            setBlock(affectedBlock, block.getData());
             affectedBlocks.add(affectedBlock);
         }
         return affectedBlocks;
@@ -351,8 +352,11 @@ public class Schematic {
         // add it to the difference
         difference.add(turn.toBukkitVector());
 
-        List<Block> affectedBlocks = new ArrayList<>();
         Pattern pattern = Pattern.compile("facing=(\\w+)");
+
+        List<Block> affectedBlocks = new ArrayList<>();
+        Map<Block, BlockData> toBeSet = new HashMap<>();
+
         for (Location location : rotated.keySet()) {
             // align block to where it will actually be set (final step)
             Block block = location.clone().add(0, difference.getBlockY(),0).subtract(difference).getBlock();
@@ -373,16 +377,28 @@ public class Schematic {
 
             BlockData blockData = Bukkit.createBlockData(finalBlockData);
 
-            if (blockData instanceof Fence || blockData instanceof Wall) {
-                block.setType(blockData.getMaterial(), true);
+            if (block.getType().isBlock()) { // first solid blocks, then things which go on walls, beds, etc.
+                setBlock(block, blockData);
             } else {
-                block.setBlockData(blockData);
+                toBeSet.put(block, blockData);
             }
 
             affectedBlocks.add(block);
         }
 
+        for (Block block : toBeSet.keySet()) { // set torches, etc.
+            setBlock(block, toBeSet.get(block));
+        }
+
         return affectedBlocks;
+    }
+
+    private void setBlock(Block block, BlockData data) {
+        if (data instanceof Fence || data instanceof Wall) {
+            block.setType(data.getMaterial(), true);
+        } else {
+            block.setBlockData(data);
+        }
     }
 
     /**

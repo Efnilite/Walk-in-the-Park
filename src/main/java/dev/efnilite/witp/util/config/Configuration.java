@@ -1,12 +1,12 @@
 package dev.efnilite.witp.util.config;
 
 import dev.efnilite.fycore.config.ConfigUpdater;
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -176,7 +176,7 @@ public class Configuration {
      */
     public ItemStack getFromItemData(String locale, String path, @Nullable String... replace) {
         ItemData data = getItemData(path, locale, replace);
-        return new ItemBuilder(data.material, data.name).setLore(data.lore).build();
+        return new Item(data.material, data.name).lore(data.lore).build();
     }
 
     private ItemData getItemData(String path, String locale, @Nullable String... replace) {

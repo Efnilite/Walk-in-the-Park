@@ -1,7 +1,7 @@
 package dev.efnilite.witp.events;
 
+import dev.efnilite.fycore.event.EventWrapper;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.wrapper.EventWrapper;
 
 /**
  * When a player scores

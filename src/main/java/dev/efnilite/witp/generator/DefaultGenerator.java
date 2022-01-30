@@ -1,5 +1,6 @@
 package dev.efnilite.witp.generator;
 
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
@@ -23,7 +24,6 @@ import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import fr.mrmicky.fastboard.FastBoard;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -792,7 +792,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 InventoryBuilder.DynamicInventory dynamicLead = new InventoryBuilder.DynamicInventory(possible.size(), 1);
                 builder.setItem(dynamic.next(), config.getFromItemData(pp.locale, "options.lead", Integer.toString(pp.blockLead)), (t, e) -> {
                     for (Integer integer : possible) {
-                        lead.setItem(dynamicLead.next(), new ItemBuilder(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
+                        lead.setItem(dynamicLead.next(), new Item(Material.PAPER, "&b&l" + integer).build(), (t2, e2) -> {
                             if (e2.getItemMeta() != null) {
                                 pp.blockLead = Integer.parseInt(ChatColor.stripColor(e2.getItemMeta().getDisplayName()));
                                 pp.sendTranslated("selected-block-lead", Integer.toString(pp.blockLead));
@@ -814,7 +814,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         return;
                     }
                     for (String time : times) {
-                        timeofday.setItem(i, new ItemBuilder(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
+                        timeofday.setItem(i, new Item(Material.PAPER, "&b&l" + time).build(), (t2, e2) -> {
                             if (e2.getItemMeta() != null) {
                                 String name = ChatColor.stripColor(e2.getItemMeta().getDisplayName());
                                 pp.time = name;
@@ -901,7 +901,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     List<String> langs = Option.LANGUAGES.get();
                     InventoryBuilder.DynamicInventory dynamic1 = new InventoryBuilder.DynamicInventory(langs.size(), 1);
                     for (String langName : langs) {
-                        language.setItem(dynamic1.next(), new ItemBuilder(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
+                        language.setItem(dynamic1.next(), new Item(Material.PAPER, "&c" + langName).build(), (t3, e3) -> {
                             pp.lang = langName;
                             pp.locale = langName;
                             pp.sendTranslated("selected-language", langName);
@@ -966,7 +966,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 if (Option.PERMISSIONS_STYLES.get() && pp.checkPermission("witp.styles." + style)) {
                     continue;
                 }
-                styling.setItem(i, new ItemBuilder(type.get(style), "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
+                styling.setItem(i, new Item(type.get(style), "&b&l" + Util.capitalizeFirst(style)).build(), (t2, e2) -> {
                     String selected = ChatColor.stripColor(e2.getItemMeta().getDisplayName()).toLowerCase();
                     pp.style = selected;
                     pp.sendTranslated("selected-style", selected);
@@ -1016,23 +1016,23 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             // All schematic difficulties
             List<String> name = getOptionValues("schematic-difficulty");
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(name.get(0)))
+                    new Item(Material.LIME_WOOL, "&a&l" + Util.capitalizeFirst(name.get(0)))
                             .glowing(pp.difficulty == 0.3)
                             .build(),
                     (t3, e3) -> askReset("e-difficulty"));
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.GREEN_WOOL,
+                    new Item(Material.GREEN_WOOL,
                             "&2&l" + Util.capitalizeFirst(name.get(1)))
                             .glowing(pp.difficulty == 0.5)
                             .build(),
                     (t3, e3) -> askReset("m-difficulty"));
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(name.get(2)))
+                    new Item(Material.ORANGE_WOOL, "&6&l" + Util.capitalizeFirst(name.get(2)))
                             .glowing(pp.difficulty == 0.7)
                             .build(),
                     (t3, e3) -> askReset("h-difficulty"));
             difficulty.setItem(dynamic.next(),
-                    new ItemBuilder(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(name.get(3)))
+                    new Item(Material.RED_WOOL, "&c&l" + Util.capitalizeFirst(name.get(3)))
                             .glowing(pp.difficulty == 0.8)
                             .build(),
                     (t3, e3) -> askReset("vh-difficulty"));

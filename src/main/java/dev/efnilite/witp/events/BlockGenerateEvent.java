@@ -1,8 +1,8 @@
 package dev.efnilite.witp.events;
 
+import dev.efnilite.fycore.event.EventWrapper;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.wrapper.EventWrapper;
 import org.bukkit.block.Block;
 
 /**

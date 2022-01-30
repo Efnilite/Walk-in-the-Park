@@ -1,5 +1,6 @@
 package dev.efnilite.witp.generator.subarea;
 
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Version;
@@ -14,7 +15,6 @@ import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.inventory.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -327,7 +327,7 @@ public class SubareaDivider {
             ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
             if (mat == null) {
                 Logging.error("Material for options in config is null - defaulting to compass");
-                player.getInventory().setItem(8, new ItemBuilder(Material.COMPASS, "&c&l-= Options =-").build());
+                player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
             } else {
                 player.getInventory().setItem(8, mat);
             }
@@ -336,7 +336,7 @@ public class SubareaDivider {
             ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit");
             if (mat == null) {
                 Logging.error("Material for quitting in config is null - defaulting to barrier");
-                player.getInventory().setItem(7, new ItemBuilder(Material.BARRIER, "&c&l-= Quit =-").build());
+                player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
             } else {
                 player.getInventory().setItem(7, mat);
             }
