@@ -14,3 +14,5 @@ Medium priority:
 - Add one-time rewards
 
 Low priority:
+- Customize main command
+- Customize leaderboard current rank

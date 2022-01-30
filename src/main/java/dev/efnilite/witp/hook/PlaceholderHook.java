@@ -62,8 +62,6 @@ public class PlaceholderHook extends PlaceholderExpansion {
         if (pp != null) {
             ParkourGenerator generator = pp.getGenerator();
             switch (params) {
-                case "rank":
-                    return Integer.toString(ParkourUser.getRank(player.getUniqueId()));
                 case "score":
                 case "current_score":
                     return Integer.toString(generator.score);
@@ -90,6 +88,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
 
         switch (params) {
+            case "rank":
+                return Integer.toString(ParkourUser.getRank(player.getUniqueId()));
             case "highscore":
             case "high_score":
                 Integer value = ParkourPlayer.getHighScoreValue(player.getUniqueId());
