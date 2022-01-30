@@ -123,7 +123,7 @@ public class Handler implements Listener {
             return;
         }
 
-        if (player.getGameMode() == GameMode.SPECTATOR || event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
             event.setCancelled(true);
         }
     }

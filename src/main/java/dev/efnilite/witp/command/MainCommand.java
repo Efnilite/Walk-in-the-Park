@@ -122,9 +122,9 @@ public class MainCommand extends FyCommand {
                     try {
                         ParkourUser.resetHighScores();
                         send(sender, "&4&l> &7Successfully reset all high scores in memory and the files.");
-                    } catch (IOException ex) {
+                    } catch (Throwable throwable) {
                         Logging.stack("Error while trying to reset the high scores!",
-                                "Please try again or report this error to the developer!", ex);
+                                "Please try again or report this error to the developer!", throwable);
                         send(sender, "&4&l> &cThere was an error while trying to reset high scores.");
                     }
 
@@ -191,9 +191,9 @@ public class MainCommand extends FyCommand {
                         ParkourPlayer pp = ParkourPlayer.register(player, null);
                         WITP.getDivider().generate(pp);
                         pp.sendTranslated("joined");
-                    } catch (IOException | SQLException ex) {
+                    } catch (Throwable throwable) {
                         Logging.stack("Error while joining player " + player.getName(),
-                                "Please try again or report this error to the developer!", ex);
+                                "Please try again or report this error to the developer!", throwable);
                     }
                     return true;
                 }
@@ -208,9 +208,9 @@ public class MainCommand extends FyCommand {
                     try {
                         pp.sendTranslated("left");
                         ParkourUser.unregister(pp, true, true, true);
-                    } catch (IOException | InvalidStatementException ex) {
+                    } catch (Throwable throwable) {
                         Logging.stack("Error while unregistering player " + player.getName(),
-                                "Please try again or report this error to the developer!", ex);
+                                "Please try again or report this error to the developer!", throwable);
                     }
                     return true;
                 }
@@ -332,9 +332,9 @@ public class MainCommand extends FyCommand {
                             ParkourPlayer pp = ParkourPlayer.register(other, null);
                             WITP.getDivider().generate(pp);
                             pp.sendTranslated("joined");
-                        } catch (IOException | SQLException ex) {
+                        } catch (Throwable throwable) {
                             Logging.stack("Error while joining player " + other.getName(),
-                                    "Please try again or report this error to the developer!", ex);
+                                    "Please try again or report this error to the developer!", throwable);
                             send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
                             return true;
                         }
@@ -352,9 +352,9 @@ public class MainCommand extends FyCommand {
                     ParkourPlayer pp = ParkourPlayer.register(other, null);
                     WITP.getDivider().generate(pp);
                     pp.sendTranslated("joined");
-                } catch (IOException | SQLException ex) {
+                } catch (Throwable throwable) {
                     Logging.stack("Error while joining player " + other.getName(),
-                            "Please try again or report this error to the developer!", ex);
+                            "Please try again or report this error to the developer!", throwable);
                 }
 
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission("witp.forceleave")) {
@@ -364,9 +364,9 @@ public class MainCommand extends FyCommand {
                         try {
                             other.sendTranslated("left");
                             ParkourUser.unregister(other, true, true, true);
-                        } catch (IOException | InvalidStatementException ex) {
+                        } catch (Throwable throwable) {
                             Logging.stack("Error while unregistering player " + other.getPlayer().getName(),
-                                    "Please try again or report this error to the developer!", ex);
+                                    "Please try again or report this error to the developer!", throwable);
                             send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
                             return true;
                         }
@@ -390,9 +390,9 @@ public class MainCommand extends FyCommand {
                 try {
                     user.sendTranslated("left");
                     ParkourUser.unregister(user, true, true, true);
-                } catch (IOException | InvalidStatementException ex) {
+                } catch (Throwable throwable) {
                     Logging.stack("Error while unregistering player " + other.getName(),
-                            "Please try again or report this error to the developer!", ex);
+                            "Please try again or report this error to the developer!", throwable);
                 }
 
             } else if (args[0].equalsIgnoreCase("search") && player != null) {
