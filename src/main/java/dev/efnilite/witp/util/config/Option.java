@@ -85,7 +85,12 @@ public class Option {
         for (String node : Util.getNode(items, "items.options")) {
             for (String option : options) {
                 if (option.equalsIgnoreCase(node)) {
-                    OPTIONS_DEFAULTS.put(node, items.getString("items.options." + node + ".default"));
+                    String value = items.getString("items.options." + node + ".default");
+                    if (value == null) {
+                        Logging.stack("Default option '" + node + "' is null!", "Please check your items.yml file and check the default options!");
+                        continue;
+                    }
+                    OPTIONS_DEFAULTS.put(node, value);
                 }
             }
         }

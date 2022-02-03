@@ -328,6 +328,10 @@ public class MainCommand extends FyCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
+                        if (ParkourUser.getUser(other) != null) {
+                            continue;
+                        }
+
                         try {
                             ParkourPlayer pp = ParkourPlayer.register(other, null);
                             WITP.getDivider().generate(pp);

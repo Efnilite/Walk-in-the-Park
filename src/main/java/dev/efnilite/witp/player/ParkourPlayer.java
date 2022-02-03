@@ -42,9 +42,9 @@ public class ParkourPlayer extends ParkourUser {
     /**
      * Player data used in saving
      */
-    public @Expose int highScore;
+    public @Expose Integer highScore;
     public @Expose String highScoreTime;
-    public @Expose int blockLead;
+    public @Expose Integer blockLead;
     public @Expose Boolean useDifficulty;
     public @Expose String highScoreDifficulty;
     public @Expose Boolean useParticles;
@@ -56,7 +56,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String style;
     public @Expose String lang;
     public @Expose String name; // for fixing null in leaderboard
-    public @Expose double difficulty;
+    public @Expose Double difficulty;
 
     public final long joinTime;
 
@@ -80,68 +80,47 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = locale;
     }
 
-    public void setDefaults(int highScore, String time, String style, String highScoreTime, String lang,
-                            int blockLead, boolean useParticles, boolean useDifficulty, boolean useStructure, boolean useSpecial,
-                            boolean showDeathMsg, boolean showScoreboard, String highScoreDifficulty) {
-        this.highScoreTime = highScoreTime;
-        this.useSpecial = useSpecial;
-        this.showDeathMsg = showDeathMsg;
-        this.highScore = highScore;
-        this.blockLead = blockLead;
-        this.style = style;
-        this.useParticles = useParticles;
-        this.time = time;
-        this.useDifficulty = useDifficulty;
-        this.useStructure = useStructure;
-        this.showScoreboard = showScoreboard;
-        this.locale = lang;
-        this.lang = lang;
-        this.highScoreDifficulty = highScoreDifficulty;
+    public void setSettings(Integer highScore, String time, String style, String highScoreTime, String lang,
+                            Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
+                            Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty) {
 
-        player.setPlayerTime(getTime(time), false);
+        // General defaults
+        this.difficulty = 0.3; // todo add file support
+
+        this.highScore = orDefault(highScore, 0);
+        this.highScoreTime = orDefault(highScoreTime, "0.0s");
+        this.highScoreDifficulty = orDefault(highScoreDifficulty, "?");
+
+        // Adjustable defaults
+        this.style = orDefault(style, Option.DEFAULT_STYLE.get());
+        this.lang = orDefault(lang, Option.DEFAULT_LANG.get());
+        this.locale = lang;
+
+        this.useSpecial = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("special")));
+        this.showDeathMsg = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("death-msg")));
+        this.useDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("adaptive-difficulty")));
+        this.useStructure = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("structure")));
+        this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("scoreboard")));
+        this.useParticles = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("particles")));
+        this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get("lead")));
+        this.time = orDefault(time, Option.OPTIONS_DEFAULTS.get("time"));
+
+        player.setPlayerTime(getTime(this.time), false);
         updateScoreboard();
+    }
+
+    private <T> T orDefault(T value, T def) {
+        if (def == null) {
+            Logging.stack("Default value is null!", "Please see if there are any errors above. Check your items.yml.");
+        }
+
+        return value == null ? def : value;
     }
 
     private void resetPlayerPreferences() {
-        // General defaults
-        this.highScore = 0;
-        this.highScoreTime = "0.0s";
-        this.highScoreDifficulty = "?";
-
-        // Adjustable defaults
-        this.style = Option.DEFAULT_STYLE.get();
-        this.lang = Option.DEFAULT_LANG.get();
-
-        this.useSpecial = Boolean.parseBoolean(getDefaultValue("special", "boolean"));
-        this.showDeathMsg = Boolean.parseBoolean(getDefaultValue("death-msg", "boolean"));
-        this.useDifficulty = Boolean.parseBoolean(getDefaultValue("adaptive-difficulty", "boolean"));
-        this.useStructure = Boolean.parseBoolean(getDefaultValue("structure", "boolean"));
-        this.showScoreboard = Boolean.parseBoolean(getDefaultValue("scoreboard", "boolean"));
-        this.useParticles = Boolean.parseBoolean(getDefaultValue("particles", "boolean"));
-        this.blockLead = Integer.parseInt(getDefaultValue("lead", "int"));
-        this.difficulty = Double.parseDouble(getDefaultValue("schematic-difficulty", "double"));
-        this.time = getDefaultValue("time", "string");
-
-        this.locale = lang;
-        player.setPlayerTime(getTime(time), false);
-        updateScoreboard();
-    }
-
-    private String getDefaultValue(String option, String presumedType) {
-        String def = Option.OPTIONS_DEFAULTS.get(option.toLowerCase());
-        if (def == null) {
-            switch (presumedType.toLowerCase()) {
-                case "boolean":
-                    return "true";
-                case "double":
-                    return "0.3";
-                case "int":
-                    return "4";
-                case "string":
-                    return "Day";
-            }
-        }
-        return def;
+        setSettings(null, null, null, null, null, null,
+                null, null, null, null, null,
+                null, null);
     }
 
     public void setGenerator(ParkourGenerator generator) {
@@ -153,9 +132,6 @@ public class ParkourPlayer extends ParkourUser {
      */
     @Override
     public void updateScoreboard() {
-        if (showScoreboard == null) {
-            showScoreboard = true;
-        }
         if (showScoreboard && Option.SCOREBOARD.get() && board != null && generator != null) {
             String title = Util.color(Option.SCOREBOARD_TITLE.get());
             List<String> list = new ArrayList<>();
@@ -413,14 +389,9 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setDefaults(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticles == null || from.useParticles,
-                            from.useDifficulty == null || from.useDifficulty,
-                            from.useStructure == null || from.useStructure,
-                            from.useSpecial == null || from.useSpecial,
-                            from.showDeathMsg == null || from.showDeathMsg,
-                            from.showScoreboard == null || from.showScoreboard,
-                            from.highScoreDifficulty);
+                    pp.setSettings(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
+                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg,
+                            from.showScoreboard, from.highScoreDifficulty);
                     reader.close();
                 } else {
                     Logging.verbose("Setting new player data..");
@@ -454,7 +425,7 @@ public class ParkourPlayer extends ParkourUser {
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setDefaults(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
+                    pp.setSettings(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
                             Option.DEFAULT_LANG.get(),
                             Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
                             translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
@@ -501,7 +472,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public int getTime(String time) {
         if (time == null) {
-            Logging.error("Time is null, defaulting to daytime");
+            Logging.error("Time is null, defaulting to day time");
             this.time = "day";
             return 1000;
         }
@@ -514,7 +485,6 @@ public class ParkourPlayer extends ParkourUser {
                 return 15000;
             case "midnight":
                 return 18000;
-            case "day":
             default:
                 return 1000;
         }
