@@ -1,4 +1,4 @@
-package dev.efnilite.witp.api.gamemode;
+package dev.efnilite.witp.api;
 
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;

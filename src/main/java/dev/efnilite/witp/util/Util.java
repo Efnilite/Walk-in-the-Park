@@ -2,12 +2,11 @@ package dev.efnilite.witp.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.colour.Colours;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.config.Option;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
@@ -24,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -221,7 +219,7 @@ public class Util {
      */
     public static String color(String string) {
         if (!string.equals("")) {
-            return ChatColor.translateAlternateColorCodes('&', Colours.colour(string));
+            return ChatColor.translateAlternateColorCodes('&', Message.parseFormatting(string));
         }
         return string;
     }
@@ -363,19 +361,6 @@ public class Util {
     }
 
     /**
-     * Gets a Vector from a String
-     *
-     * @param   vector
-     *          The Vector in String format
-     *
-     * @return the Vector
-     */
-    public static Vector3D parseVector(String vector) {
-        String[] split = vector.replaceAll("[()]", "").split(",");
-        return new Vector3D(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-    }
-
-    /**
      * Creates a string version of a Location.
      *
      * @param   location
@@ -423,18 +408,6 @@ public class Util {
     }
 
     /**
-     * Creates a string version of a Location.
-     *
-     * @param   vector
-     *          The location
-     *
-     * @return string version
-     */
-    public static String toString(Vector vector) {
-        return "(" + vector.getBlockX() + "," + vector.getBlockY() + "," + vector.getBlockZ() + ")";
-    }
-
-    /**
      * Get a location from a string
      *
      * @param   location
@@ -450,15 +423,6 @@ public class Util {
             return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
         }
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
-    }
-
-    /**
-     * Gets the NMS version
-     *
-     * @return the nms version
-     */
-    public static String getVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
     }
 
     /**

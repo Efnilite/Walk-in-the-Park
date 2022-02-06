@@ -150,15 +150,15 @@ public class ParkourPlayer extends ParkourUser {
             }
             for (String s : lines) {
                 s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
-                list.add(s.replace("%score%", Integer.toString(generator.score))
-                        .replace("%time%", generator.time)
+                list.add(s.replace("%score%", Integer.toString(generator.getScore()))
+                        .replace("%time%", generator.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
                         .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
             }
             title = translatePlaceholders(player, title);
-            board.updateTitle(title.replace("%score%", Integer.toString(generator.score))
-                    .replace("%time%", generator.time)
+            board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
+                    .replace("%time%", generator.getTime())
                     .replace("%highscore%", rank != null ? rank.toString() : "0")
                     .replace("%topscore%", top != null ? top.toString() : "0")
                     .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
@@ -275,11 +275,11 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the current game of the player
      */
     public void saveGame() {
-        if (Option.GAMELOGS.get() && Option.SQL.get() && generator.score > 0) {
+        if (Option.GAMELOGS.get() && Option.SQL.get() && generator.getScore() > 0) {
             InsertStatement statement = new InsertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "game-history")
                     .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
-                    .setValue("name", player.getName()).setValue("score", generator.score)
-                    .setValue("hstime", generator.time).setValue("scoreDiff", calculateDifficultyScore());
+                    .setValue("name", player.getName()).setValue("score", generator.getScore())
+                    .setValue("hstime", generator.getTime()).setValue("scoreDiff", calculateDifficultyScore());
             try {
                 statement.query();
             } catch (InvalidStatementException ex) {

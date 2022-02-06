@@ -10,6 +10,9 @@ import com.comphenix.protocol.wrappers.MinecraftKey;
 import dev.efnilite.witp.WITP;
 import org.bukkit.entity.Player;
 
+/**
+ * Hook for ProtocolAPI. Used to set dimension lighting for the player
+ */
 public class ProtocolHook {
 
     /**

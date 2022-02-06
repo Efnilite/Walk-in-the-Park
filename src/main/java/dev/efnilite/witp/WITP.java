@@ -8,10 +8,6 @@ import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Time;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.api.Registry;
-import dev.efnilite.witp.api.gamemode.DefaultGamemode;
-import dev.efnilite.witp.api.gamemode.SpectatorGamemode;
-import dev.efnilite.witp.api.style.DefaultStyleType;
-import dev.efnilite.witp.command.MainCommand;
 import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.GeneratorOption;
@@ -19,14 +15,17 @@ import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.hook.ProtocolHook;
+import dev.efnilite.witp.internal.gamemode.DefaultGamemode;
+import dev.efnilite.witp.internal.gamemode.SpectatorGamemode;
+import dev.efnilite.witp.internal.style.DefaultStyleType;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
-import dev.efnilite.witp.util.web.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -37,18 +36,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
+/**
+ * Main class
+ *
+ * @author Efnilite
+ * Copyright (c) 2020-2022
+ */
 public final class WITP extends FyPlugin {
 
     public static boolean OUTDATED = false;
+    private static Gson gson;
     private static WITP instance;
     private static Database database;
+    private static Registry registry;
     private static Configuration configuration;
     private static SubareaDivider divider;
-    private static Registry registry;
-    private static Gson gson;
-    private static @Nullable MultiverseHook multiverseHook;
-    private static @Nullable ProtocolHook protocolHook;
-    private static @Nullable PlaceholderHook placeholderHook;
+
+    @Nullable
+    private static ProtocolHook protocolHook;
+
+    @Nullable
+    private static MultiverseHook multiverseHook;
+
+    @Nullable
+    private static PlaceholderHook placeholderHook;
 
     @Override
     public void enable() {
@@ -63,7 +74,7 @@ public final class WITP extends FyPlugin {
 
         configuration = new Configuration(this);
         Option.init(true);
-        registerCommand("witp", new MainCommand());
+        registerCommand("witp", new WITPCommand());
         divider = new SubareaDivider();
 
         // ----- Hooks and Bungee -----

@@ -1,4 +1,4 @@
-Walk in the Park TODO
+Walk in the Park
 
 v2.9.5
 - Added forcekick/forcejoin command

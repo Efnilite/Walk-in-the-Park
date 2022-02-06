@@ -1,11 +1,12 @@
 package dev.efnilite.witp.schematic;
 
+import dev.efnilite.fycore.vector.Vector3D;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
 public class SchematicBlock {
 
-    private Vector3D relativePosition;
+    private final Vector3D relativePosition;
     private final BlockData data;
 
     public SchematicBlock(Block block, Vector3D relativePosition) {
@@ -20,10 +21,6 @@ public class SchematicBlock {
 
     public Vector3D getRelativePosition() {
         return relativePosition;
-    }
-
-    public void setRelativePosition(Vector3D relativePosition) {
-        this.relativePosition = relativePosition;
     }
 
     public BlockData getData() {

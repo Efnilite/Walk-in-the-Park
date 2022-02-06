@@ -1,8 +1,7 @@
 package dev.efnilite.witp.api;
 
 import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.witp.api.gamemode.Gamemode;
-import dev.efnilite.witp.api.style.StyleType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public final class Registry {
      * @param   style
      *          The style type.
      */
-    public void registerType(StyleType style) {
+    public void registerType(@NotNull StyleType style) {
         if (!closed) {
             this.styleTypes.put(style.getName(), style);
             Logging.info("Registered style type " + style.getName() + "!");
@@ -39,6 +38,12 @@ public final class Registry {
         }
     }
 
+    /**
+     * Registers a gamemode. Registrations are only accepted until the first time a player opens the Gamemode menu.
+     *
+     * @param   gamemode
+     *          The instance of the gamemode that's to be registered
+     */
     public void register(Gamemode gamemode) {
         if (!closed) {
             this.gamemodes.put(gamemode.getName(), gamemode);

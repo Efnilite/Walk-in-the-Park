@@ -1,7 +1,8 @@
-package dev.efnilite.witp.api.gamemode;
+package dev.efnilite.witp.internal.gamemode;
 
 import dev.efnilite.fycore.util.SkullSetter;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;

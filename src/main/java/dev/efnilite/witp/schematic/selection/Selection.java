@@ -15,22 +15,17 @@ public class Selection {
     /**
      * The world
      */
-    private World world;
+    private final World world;
 
     /**
      * The first position
      */
-    private Location pos1;
+    private final Location pos1;
 
     /**
      * The second position
      */
-    private Location pos2;
-
-    /**
-     * The dimensions of this selection
-     */
-    private Dimensions dimensions;
+    private final Location pos2;
 
     /**
      * Create a new CuboidSelection instance

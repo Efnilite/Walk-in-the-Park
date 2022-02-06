@@ -1,6 +1,7 @@
-package dev.efnilite.witp.api.style;
+package dev.efnilite.witp.internal.style;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.api.StyleType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

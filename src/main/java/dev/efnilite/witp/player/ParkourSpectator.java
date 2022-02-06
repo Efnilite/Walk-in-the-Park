@@ -86,8 +86,8 @@ public class ParkourSpectator extends ParkourUser {
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
-                list.add(s.replace("%score%", Integer.toString(watching.score))
-                        .replace("%time%", watching.time)
+                list.add(s.replace("%score%", Integer.toString(watching.getScore()))
+                        .replace("%time%", watching.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
                         .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));

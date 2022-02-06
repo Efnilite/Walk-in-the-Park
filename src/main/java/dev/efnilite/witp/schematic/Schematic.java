@@ -3,6 +3,7 @@ package dev.efnilite.witp.schematic;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Time;
+import dev.efnilite.fycore.vector.Vector3D;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;
@@ -251,14 +252,14 @@ public class Schematic {
             Matcher vectorMatcher = vectorPattern.matcher(block);
             Vector3D vector = null;
             while (vectorMatcher.find()) {
-                vector = Util.parseVector(vectorMatcher.group());
+                vector = VectorUtil.parseVector(vectorMatcher.group());
             }
 
             blocks.add(new SchematicBlock(palette.get(id), vector));
         }
         this.blocks = blocks;
 
-        Vector3D readDimensions = Util.parseVector(lines.get(0));
+        Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
         Logging.verbose("Finished reading in " + Time.timerEnd("individualSchemRead") + "ms!");
     }
@@ -287,7 +288,7 @@ public class Schematic {
         List<Block> affectedBlocks = new ArrayList<>();
         for (SchematicBlock block : blocks) {
             Vector3D relativeOffset = block.getRelativePosition();
-            relativeOffset = relativeOffset.rotateAround(angle);
+            relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);
 
             // all positions are saved to be relative to the minimum location
             Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
@@ -323,7 +324,7 @@ public class Schematic {
         Map<Location, BlockData> rotated = new HashMap<>();
         for (SchematicBlock block : blocks) { // go through blocks
             Vector3D relativeOffset = block.getRelativePosition().clone();
-            relativeOffset = relativeOffset.rotateAround(angle);
+            relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);
 
             // all positions are saved to be relative to the minimum location
             Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
@@ -348,7 +349,7 @@ public class Schematic {
         // get the opposite angle of the one being pasted at
         RotationAngle opposite = RotationAngle.getFromInteger(angle.getOpposite());
         // turn it in a specific way
-        Vector3D turn = Vector3D.fromBukkit(difference).defaultRotate(opposite);
+        Vector3D turn = VectorUtil.defaultRotate(Vector3D.fromBukkit(difference), opposite);
         // add it to the difference
         difference.add(turn.toBukkitVector());
 

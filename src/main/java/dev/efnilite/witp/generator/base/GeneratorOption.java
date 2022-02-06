@@ -1,5 +1,8 @@
 package dev.efnilite.witp.generator.base;
 
+/**
+ * Options for Generators
+ */
 public enum GeneratorOption {
 
     DISABLE_SCHEMATICS,

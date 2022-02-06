@@ -1,4 +1,4 @@
-package dev.efnilite.witp.generator;
+package dev.efnilite.witp.util;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 

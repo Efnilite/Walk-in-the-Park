@@ -4,6 +4,8 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Version;
+import dev.efnilite.fycore.vector.Vector2D;
+import dev.efnilite.fycore.vector.Vector3D;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.WITPAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -11,7 +13,6 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
-import dev.efnilite.witp.schematic.Vector3D;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
@@ -21,6 +22,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,8 +52,8 @@ public class SubareaDivider {
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
      * it just picks an old one without any players.
      */
-    private volatile Queue<SubareaPoint> cachedPoints = new LinkedList<>(); // volatile to reduce chance of thread collision
-    private volatile HashMap<ParkourPlayer, SubareaPoint> activePoints = new HashMap<>();
+    private volatile Queue<Vector2D> cachedPoints = new LinkedList<>(); // volatile to reduce chance of thread collision
+    private volatile HashMap<ParkourPlayer, Vector2D> activePoints = new HashMap<>();
 
     /**
      * New instance of the SubareaDivider
@@ -96,7 +98,7 @@ public class SubareaDivider {
      *
      * @return the point of the player
      */
-    public @Nullable SubareaPoint getPoint(@NotNull ParkourPlayer player) {
+    public @Nullable Vector2D getPoint(@NotNull ParkourPlayer player) {
         for (ParkourPlayer loopPlayer : activePoints.keySet()) {
             if (loopPlayer == player) {
                 return activePoints.get(loopPlayer);
@@ -121,7 +123,7 @@ public class SubareaDivider {
         }
 
         if (cachedPoints.size() > 0) { // check for leftover spots, if none are left just generate a new one
-            SubareaPoint cachedPoint = cachedPoints.poll(); // get top result
+            Vector2D cachedPoint = cachedPoints.poll(); // get top result
 
             if (cachedPoint == null) { // if cachedPoint is somehow still null after checking size (to remove @NotNull warning)
                 generate(player, generator, generateIsland);
@@ -140,7 +142,7 @@ public class SubareaDivider {
         } else {
             int size = activePoints.size();
             int[] coords = Util.spiralAt(size);
-            SubareaPoint point = new SubareaPoint(coords[0], coords[1]);
+            Vector2D point = new Vector2D(coords[0], coords[1]);
 
             activePoints.put(player, point);
             if (generator != null) {
@@ -162,13 +164,13 @@ public class SubareaDivider {
      *          The player
      */
     public synchronized void leave(@NotNull ParkourPlayer player) {
-        SubareaPoint point = getPoint(player);
+        Vector2D point = getPoint(player);
 
         cachedPoints.add(point);
         activePoints.remove(player);
         Logging.verbose("Cached point " + point);
 
-        SubareaPoint.Data data = player.getGenerator().data;
+        AreaData data = player.getGenerator().getData();
         for (Chunk spawnChunk : data.spawnChunks) {
             spawnChunk.setForceLoaded(false);
         }
@@ -253,8 +255,8 @@ public class SubareaDivider {
         return world;
     }
 
-    private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull SubareaPoint point) {
-        Location spawn = point.getEstimatedCenter(Option.BORDER_SIZE.get()).toLocation(world).clone();
+    private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
+        Location spawn = getEstimatedCenter(point, Option.BORDER_SIZE.get()).toLocation(world).clone();
         List<Chunk> chunks = new ArrayList<>();
         try {
             chunks = getChunksAround(spawn.getChunk(), 1);
@@ -297,17 +299,17 @@ public class SubareaDivider {
             }
         }
         if (!playerDetected) {
-            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics", null);
+            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
         if (!parkourDetected) {
-            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics", null);
+            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
 
-        pp.getGenerator().data = new SubareaPoint.Data(blocks, chunks);
+        pp.getGenerator().setData(new AreaData(blocks, chunks));
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
@@ -359,6 +361,27 @@ public class SubareaDivider {
                 .run();
     }
 
+    /**
+     * Gets the estimated center of an area
+     *
+     * @param   vector
+     *          The position
+     *
+     * @param   borderSize
+     *          The border size
+     *
+     * @return the vector in the middle
+     */
+    private Vector getEstimatedCenter(Vector2D vector, double borderSize) {
+        int size = (int) borderSize;
+        return new Vector(vector.x * size, 150, vector.y * size);
+    }
+
+    /**
+     * Gets the world
+     *
+     * @return the world
+     */
     public World getWorld() {
         return world;
     }

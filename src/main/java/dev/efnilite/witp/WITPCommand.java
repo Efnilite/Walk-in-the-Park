@@ -1,4 +1,4 @@
-package dev.efnilite.witp.command;
+package dev.efnilite.witp;
 
 import dev.efnilite.fycore.command.FyCommand;
 import dev.efnilite.fycore.inventory.item.Item;
@@ -7,7 +7,6 @@ import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Time;
 import dev.efnilite.fycore.util.Version;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
@@ -18,7 +17,6 @@ import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,16 +30,14 @@ import org.bukkit.util.BoundingBox;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
-public class MainCommand extends FyCommand {
+public class WITPCommand extends FyCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
     private ItemStack wand;
 
-    public MainCommand() {
+    public WITPCommand() {
         if (Version.isHigherOrEqual(Version.V1_14)) {
             wand = new Item(
                     Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")

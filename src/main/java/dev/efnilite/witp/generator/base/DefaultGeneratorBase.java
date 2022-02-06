@@ -181,7 +181,7 @@ public abstract class DefaultGeneratorBase extends ParkourGenerator {
         int four = Option.MAXED_FOUR_BLOCK.get();
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
-        if (player.useDifficulty) {
+        if (player.useDifficulty && option(GeneratorOption.DISABLE_ADAPTIVE)) {
             if (score <= Option.MULTIPLIER.getAsDouble()) {
                 one = (int) (Option.NORMAL_ONE_BLOCK.get() + (adaptiveDistanceChances.get(1) * score));
                 two = (int) (Option.NORMAL_TWO_BLOCK.get() + (adaptiveDistanceChances.get(2) * score));

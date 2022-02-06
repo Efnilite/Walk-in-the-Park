@@ -2,9 +2,10 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.gamemode.Gamemode;
+import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
@@ -81,15 +82,17 @@ public abstract class ParkourUser {
             if (player instanceof ParkourPlayer) {
                 ParkourPlayer pp = (ParkourPlayer) player;
 
+                ParkourGenerator generator = pp.getGenerator();
                 // remove spectators
-                for (ParkourSpectator spectator : pp.getGenerator().spectators.values()) {
+                for (ParkourSpectator spectator : generator.getSpectators()) {
                     ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer(), spectator.previousData);
                     WITP.getDivider().generate(spp);
+
+                    generator.removeSpectators(spectator);
                 }
-                pp.getGenerator().spectators.clear();
 
                 // reset generator (remove blocks) and delete island
-                pp.getGenerator().reset(false);
+                generator.reset(false);
                 WITP.getDivider().leave(pp);
                 pp.save(saveAsync);
             } else if (player instanceof ParkourSpectator) {
@@ -284,8 +287,12 @@ public abstract class ParkourUser {
      * Opens the gamemode menu
      */
     public void gamemode() {
-        WITP.getRegistry().close();
-        InventoryBuilder gamemode = new InventoryBuilder(this, 3, getInventoryName("options.gamemode")).open();
+        WITP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
+
+//        Menu menu = new Menu(3, getInventoryName())
+//                .distributeRowEvenly(1); todo
+
+        InventoryBuilder gamemode = new InventoryBuilder(this, 3, getInventoryName()).open();
         List<Gamemode> gamemodes = WITP.getRegistry().getGamemodes();
 
         InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(gamemodes.size(), 1);
@@ -302,9 +309,9 @@ public abstract class ParkourUser {
         gamemode.build();
     }
 
-    protected String getInventoryName(String type) {
+    private String getInventoryName() {
         Configuration config = WITP.getConfiguration();
-        String name = config.getString("items", "items." + locale + "." + type.toLowerCase() + ".name");
+        String name = config.getString("items", "items." + locale + ".options.gamemode.name");
         if (name == null) {
             return "";
         }
@@ -401,6 +408,14 @@ public abstract class ParkourUser {
         user.sendTranslated(path, replaceable);
     }
 
+    public static List<ParkourUser> getUsers() {
+        return new ArrayList<>(users.values());
+    }
+
+    public static List<ParkourPlayer> getActivePlayers() {
+        return new ArrayList<>(players.values());
+    }
+
     /**
      * Gets the rank of a certain player
      *
@@ -432,13 +447,6 @@ public abstract class ParkourUser {
         send(replace(string, replaceable));
     }
 
-    public String replace(String string, String... replaceable) {
-        for (String s : replaceable) {
-            string = string.replaceFirst("%[a-z]", s);
-        }
-        return string;
-    }
-
     /**
      * Same as {@link #sendTranslated(String, String...)}, but without sending the text (used in GUIs)
      *
@@ -460,12 +468,12 @@ public abstract class ParkourUser {
         return replace(string, replaceable);
     }
 
-    public static List<ParkourUser> getUsers() {
-        return new ArrayList<>(users.values());
-    }
-
-    public static List<ParkourPlayer> getActivePlayers() {
-        return new ArrayList<>(players.values());
+    // Replaces %s, etc. with replaceable arguments
+    private String replace(String string, String... replaceable) {
+        for (String s : replaceable) {
+            string = string.replaceFirst("%[a-z]", s);
+        }
+        return string;
     }
 
     /**
@@ -477,14 +485,29 @@ public abstract class ParkourUser {
         return board;
     }
 
+    /**
+     * Gets the UUID of the player
+     *
+     * @return the uuid
+     */
     public UUID getUUID() {
         return player.getUniqueId();
     }
 
+    /**
+     * Gets the location of the player
+     *
+     * @return the player's location
+     */
     public Location getLocation() {
         return player.getLocation();
     }
 
+    /**
+     * Gets the previous data of the player
+     *
+     * @return the previousdata of the player
+     */
     public PreviousData getPreviousData() {
         return previousData;
     }

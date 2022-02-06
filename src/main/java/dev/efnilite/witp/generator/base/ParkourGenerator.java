@@ -1,19 +1,16 @@
 package dev.efnilite.witp.generator.base;
 
-import dev.efnilite.witp.generator.Stopwatch;
+import dev.efnilite.witp.generator.subarea.AreaData;
 import dev.efnilite.witp.generator.subarea.Direction;
-import dev.efnilite.witp.generator.subarea.SubareaPoint;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
+import dev.efnilite.witp.util.Stopwatch;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -22,40 +19,51 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class ParkourGenerator {
 
     /**
-     * Generator options
-     */
-    public List<GeneratorOption> generatorOptions;
-
-    /**
-     * The time of the player's current session
-     *
-     * @see Stopwatch#toString()
-     */
-    public String time = "0.0s";
-
-    /**
-     * The direction of the parkour
-     */
-    public Direction heading;
-
-    /**
      * The score of the player
      */
-    public int score;
+    protected int score;
 
     /**
      * At which range the direction of the parkour will change for players.
      */
     protected int borderWarning = 50;
 
-    public SubareaPoint.Data data;
+    /**
+     * Area data
+     */
+    protected AreaData data;
 
     /**
-     * List of this player's spectators
+     * The time of the player's current session
+     *
+     * @see Stopwatch#toString()
      */
-    public final HashMap<String, ParkourSpectator> spectators;
-    protected final Stopwatch stopwatch;
+    protected String time = "0.0s";
+
+    /**
+     * The direction of the parkour
+     */
+    protected Direction heading;
+
+    /**
+     * Generator options
+     */
+    protected List<GeneratorOption> generatorOptions;
+
+    /**
+     * The offset of the border
+     */
     protected final double borderOffset;
+
+    /**
+     * The random for this Thread, which is useful in randomly generating parkour
+     */
+    protected final Random random;
+
+    /**
+     * The stopwatch instance
+     */
+    protected final Stopwatch stopwatch;
 
     /**
      * The player associated with this Generator.
@@ -63,9 +71,9 @@ public abstract class ParkourGenerator {
     protected final ParkourPlayer player;
 
     /**
-     * The random for this Thread, which is useful in randomly generating parkour
+     * The spectators
      */
-    protected final Random random;
+    protected final Map<UUID, ParkourSpectator> spectators;
 
     public ParkourGenerator(ParkourPlayer player, GeneratorOption... options) {
         this.player = player;
@@ -134,15 +142,27 @@ public abstract class ParkourGenerator {
      */
     public abstract void generate();
 
+    /**
+     * Removes one or more spectators from this player
+     *
+     * @param   spectators
+     *          The spectator(s)
+     */
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
-            this.spectators.remove(spectator.getPlayer().getName());
+            this.spectators.remove(spectator.getUUID());
         }
     }
 
+    /**
+     * Adds one or more spectators to this player
+     *
+     * @param   spectators
+     *          The spectator(s)
+     */
     public void addSpectator(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
-            this.spectators.put(spectator.getPlayer().getName(), spectator);
+            this.spectators.put(spectator.getUUID(), spectator);
         }
     }
 
@@ -156,15 +176,13 @@ public abstract class ParkourGenerator {
         }
     }
 
-    public ParkourPlayer getPlayer() {
-        return player;
-    }
-
     /**
-     * Updates the time
+     * Gets the map of spectators
+     *
+     * @return the spectators
      */
-    public void updateTime() {
-        time = stopwatch.toString();
+    public List<ParkourSpectator> getSpectators() {
+        return new ArrayList<>(spectators.values());
     }
 
     /**
@@ -180,5 +198,56 @@ public abstract class ParkourGenerator {
         zBorder.setZ(borderOffset);
 
         return vector.distance(xBorder) < borderWarning || vector.distance(zBorder) < borderWarning;
+    }
+
+    /**
+     * Updates the time
+     */
+    public void updateTime() {
+        time = stopwatch.toString();
+    }
+
+    /**
+     * Gets the owning player
+     *
+     * @return the owning player
+     */
+    public ParkourPlayer getPlayer() {
+        return player;
+    }
+
+    /**
+     * Gets the score of the player
+     *
+     * @return the score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Gets the border offset
+     *
+     * @return the border offset
+     */
+    public double getBorderOffset() {
+        return borderOffset;
+    }
+
+    /**
+     * Gets the current time
+     *
+     * @return the player's current time
+     */
+    public String getTime() {
+        return time;
+    }
+
+    public void setData(AreaData data) {
+        this.data = data;
+    }
+
+    public AreaData getData() {
+        return data;
     }
 }

@@ -11,10 +11,15 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/**
+ * Hook for PlaceholderAPI
+ */
+@ApiStatus.Internal
 public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
@@ -42,10 +47,6 @@ public class PlaceholderHook extends PlaceholderExpansion {
         return WITP.getInstance().getDescription().getVersion();
     }
 
-    public static String translate(Player player, String string) {
-        return PlaceholderAPI.setPlaceholders(player, string);
-    }
-
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String params) {
         if (player == null) {
@@ -64,10 +65,10 @@ public class PlaceholderHook extends PlaceholderExpansion {
             switch (params) {
                 case "score":
                 case "current_score":
-                    return Integer.toString(generator.score);
+                    return Integer.toString(generator.getScore());
                 case "time":
                 case "current_time":
-                    return generator.time;
+                    return generator.getTime();
                 case "blocklead":
                 case "lead":
                     return Integer.toString(pp.blockLead);
@@ -160,5 +161,9 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
 
         return null;
+    }
+
+    public static String translate(Player player, String string) {
+        return PlaceholderAPI.setPlaceholders(player, string);
     }
 }

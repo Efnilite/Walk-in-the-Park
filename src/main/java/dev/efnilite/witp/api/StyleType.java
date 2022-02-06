@@ -1,4 +1,4 @@
-package dev.efnilite.witp.api.style;
+package dev.efnilite.witp.api;
 
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Class for style types
+ */
 public abstract class StyleType {
 
     /**

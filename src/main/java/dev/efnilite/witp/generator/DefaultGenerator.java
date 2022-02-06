@@ -7,7 +7,7 @@ import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.style.StyleType;
+import dev.efnilite.witp.api.StyleType;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
@@ -264,7 +264,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         };
         new Task()
-                .repeat(Option.GENERATOR_CHECK.get())
+                .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK.get())
                 .execute(task)
                 .run();
     }
@@ -564,14 +564,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
         int index = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
         return map.get(index);
-    }
-
-    public void altMenu() {
-        // to be inherited
-    }
-
-    public boolean hasAltMenu() {
-        return false;
     }
 
     private void checkRewards() {
@@ -1042,7 +1034,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         private void askReset(String item, String... optDisabled) {
-            if (pp.getGenerator().score < 25) {
+            if (pp.getGenerator().getScore() < 25) {
                 confirmReset(item, optDisabled);
                 return;
             }

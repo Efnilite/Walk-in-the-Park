@@ -1,4 +1,4 @@
-package dev.efnilite.witp.util.web;
+package dev.efnilite.witp.util;
 
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
