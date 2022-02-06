@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class WITPAPI {
+public class ParkourAPI {
 
-    private WITPAPI() throws IllegalAccessException {
+    private ParkourAPI() throws IllegalAccessException {
         throw new IllegalAccessException("Initializing API class");
     }
 

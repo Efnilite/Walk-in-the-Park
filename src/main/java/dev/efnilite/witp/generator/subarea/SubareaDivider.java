@@ -7,7 +7,7 @@ import dev.efnilite.fycore.util.Version;
 import dev.efnilite.fycore.vector.Vector2D;
 import dev.efnilite.fycore.vector.Vector3D;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.WITPAPI;
+import dev.efnilite.witp.api.ParkourAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -158,7 +158,7 @@ public class SubareaDivider {
 
     /**
      * Removes a player from the registry
-     * If you're using the API, please use {@link WITPAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
+     * If you're using the API, please use {@link ParkourAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
      *
      * @param   player
      *          The player

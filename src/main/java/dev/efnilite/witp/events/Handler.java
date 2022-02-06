@@ -1,10 +1,11 @@
 package dev.efnilite.witp.events;
 
+import dev.efnilite.fycore.event.EventWatcher;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.WITPCommand;
+import dev.efnilite.witp.ParkourCommand;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.PreviousData;
@@ -21,7 +22,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class Handler implements Listener {
+public class Handler implements EventWatcher {
 
     /**
      * If a player quits and rejoins, give them their stuff back
@@ -216,33 +216,33 @@ public class Handler implements Listener {
         switch (action) {
             case LEFT_CLICK_BLOCK:
                 event.setCancelled(true);
-                if (WITPCommand.selections.get(player) == null) {
-                    WITPCommand.selections.put(player, new Selection(location, null, player.getWorld()));
+                if (ParkourCommand.selections.get(player) == null) {
+                    ParkourCommand.selections.put(player, new Selection(location, null, player.getWorld()));
                 } else {
-                    Location pos2 = WITPCommand.selections.get(player).getPos2();
+                    Location pos2 = ParkourCommand.selections.get(player).getPos2();
                     if (pos2 == null) {
-                        WITPCommand.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
+                        ParkourCommand.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
                         return;
                     }
-                    WITPCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
+                    ParkourCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
                     Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                WITPCommand.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
+                ParkourCommand.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
                 break;
             case RIGHT_CLICK_BLOCK:
                 event.setCancelled(true);
-                if (WITPCommand.selections.get(player) == null) {
-                    WITPCommand.selections.put(player, new Selection(null, location, player.getWorld()));
+                if (ParkourCommand.selections.get(player) == null) {
+                    ParkourCommand.selections.put(player, new Selection(null, location, player.getWorld()));
                 } else {
-                    Location pos1 = WITPCommand.selections.get(player).getPos1();
+                    Location pos1 = ParkourCommand.selections.get(player).getPos1();
                     if (pos1 == null) {
-                        WITPCommand.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
+                        ParkourCommand.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
                         return;
                     }
-                    WITPCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
+                    ParkourCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
                     Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                WITPCommand.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
+                ParkourCommand.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
                 break;
         }
     }

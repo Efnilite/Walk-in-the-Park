@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.WITPAPI;
+import dev.efnilite.witp.api.ParkourAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -66,7 +66,7 @@ public class ParkourPlayer extends ParkourUser {
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
-     * If you are using the API, please use {@link WITPAPI#registerPlayer(Player)} instead
+     * If you are using the API, please use {@link ParkourAPI#registerPlayer(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);

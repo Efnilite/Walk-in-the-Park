@@ -1,5 +1,7 @@
 package dev.efnilite.witp.generator;
 
+import dev.efnilite.fycore.inventory.Menu;
+import dev.efnilite.fycore.inventory.animation.SnakeSingleAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;

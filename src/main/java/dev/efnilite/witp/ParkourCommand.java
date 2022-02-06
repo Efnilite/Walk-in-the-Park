@@ -32,12 +32,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-public class WITPCommand extends FyCommand {
+public class ParkourCommand extends FyCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
     private ItemStack wand;
 
-    public WITPCommand() {
+    public ParkourCommand() {
         if (Version.isHigherOrEqual(Version.V1_14)) {
             wand = new Item(
                     Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")

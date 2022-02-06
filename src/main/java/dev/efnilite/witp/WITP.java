@@ -74,7 +74,7 @@ public final class WITP extends FyPlugin {
 
         configuration = new Configuration(this);
         Option.init(true);
-        registerCommand("witp", new WITPCommand());
+        registerCommand("witp", new ParkourCommand());
         divider = new SubareaDivider();
 
         // ----- Hooks and Bungee -----
@@ -124,7 +124,7 @@ public final class WITP extends FyPlugin {
 
         // ----- Events -----
 
-        this.getServer().getPluginManager().registerEvents(new Handler(), this);
+        registerListener(new Handler());
         new InventoryBuilder.ClickHandler(this);
 
         // ----- Update checker -----
