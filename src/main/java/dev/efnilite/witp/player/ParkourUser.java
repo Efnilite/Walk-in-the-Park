@@ -1,5 +1,8 @@
 package dev.efnilite.witp.player;
 
+import dev.efnilite.fycore.inventory.PagedMenu;
+import dev.efnilite.fycore.inventory.item.Item;
+import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
@@ -19,10 +22,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -289,30 +292,27 @@ public abstract class ParkourUser {
     public void gamemode() {
         WITP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
 
-//        Menu menu = new Menu(3, getInventoryName())
-//                .distributeRowEvenly(1); todo
-
-        InventoryBuilder gamemode = new InventoryBuilder(this, 3, getInventoryName()).open();
-        List<Gamemode> gamemodes = WITP.getRegistry().getGamemodes();
-
-        InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(gamemodes.size(), 1);
-        for (Gamemode gm : gamemodes) {
-            gamemode.setItem(dynamic.next(), gm.getItem(locale), (t, e) -> gm.handleItemClick(player, this, gamemode));
-        }
-        gamemode.setItem(25, WITP.getConfiguration().getFromItemData(locale, "gamemodes.search"), (t2, e2) -> {
-            player.closeInventory();
-            BaseComponent[] send = new ComponentBuilder().append(getTranslated("click-search"))
-                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
-            player.spigot().sendMessage(send);
-        });
-        gamemode.setItem(26, WITP.getConfiguration().getFromItemData(locale, "general.close"), (t2, e2) -> player.closeInventory());
-        gamemode.build();
-    }
-
-    private String getInventoryName() {
         Configuration config = WITP.getConfiguration();
-        String name = config.getString("items", "items." + locale + ".options.gamemode.name");
-        return ChatColor.stripColor(name);
+
+        PagedMenu gamemode = new PagedMenu(3, config.getString("items", "items." + locale + ".options.gamemode.name"));
+
+        List<MenuItem> items = new ArrayList<>();
+        for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
+            ItemStack stack = gm.getItem(locale);
+            items.add(new Item(stack.getType(), stack.getItemMeta().getDisplayName())
+                    .click((menu, event) -> {
+                        gm.handleItemClick(player, this, null); // todo
+                    }));
+        }
+
+        gamemode
+                .displayRows(0, 1)
+                .addToDisplay(items)
+
+                .item(26, config.getFromItemData(locale, "general.close")
+                        .click((menu, event) -> player.closeInventory()))
+
+                .open(player);
     }
 
     /**

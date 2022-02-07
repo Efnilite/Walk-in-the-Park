@@ -1,6 +1,5 @@
 package dev.efnilite.witp;
 
-import dev.efnilite.fycore.chat.tag.TextTag;
 import dev.efnilite.fycore.command.FyCommand;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
