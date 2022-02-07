@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -50,6 +51,7 @@ public class Configuration {
             }
             Logging.info("Downloaded all config files");
         }
+
         for (String file : defaultFiles) {
             try {
                 ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
@@ -113,9 +115,14 @@ public class Configuration {
                 .run();
     }
 
-        /**
-         * Get a file
-         */
+    /**
+     * Gets a file
+     *
+     * @param   file
+     *          The name of the file
+     *
+     * @return the FileConfiguration
+     */
     public FileConfiguration getFile(String file) {
         FileConfiguration config;
         if (files.get(file) == null) {
@@ -146,18 +153,44 @@ public class Configuration {
     }
 
     /**
-     * Gets a coloured string
+     * Gets a coloured string that isn't null
      *
      * @param   file
      *          The file
+     *
+     * @param   path
+     *          The path
+     *
+     * @return a coloured string that isn't null
+     */
+    public @NotNull String getString(@NotNull String file, @NotNull String path) {
+        String string = getFile(file).getString(path);
+
+        if (string == null) {
+            Logging.stack("Option at path " + path + " with file " + file + " is null", "Please check your config values");
+            return "";
+        }
+
+        return Util.color(string);
+    }
+
+    /**
+     * Gets a coloured string that may be null
+     *
+     * @param   file
+     *          The file
+     *
      * @param   path
      *          The path
      *
      * @return a coloured string
      */
-    public @Nullable String getString(String file, String path) {
+    public @Nullable String getStringNullable(@NotNull String file, @NotNull String path, Runnable onNullFound) {
         String string = getFile(file).getString(path);
         if (string == null) {
+            if (onNullFound != null) {
+                onNullFound.run();
+            }
             return null;
         }
         return Util.color(string);
@@ -174,19 +207,22 @@ public class Configuration {
      *
      * @return the item based on the data from items.yml
      */
-    public ItemStack getFromItemData(String locale, String path, @Nullable String... replace) {
+    public Item getFromItemData(String locale, String path, @Nullable String... replace) {
         ItemData data = getItemData(path, locale, replace);
-        return new Item(data.material, data.name).lore(data.lore).build();
+        return new Item(data.material, data.name).lore(data.lore);
     }
 
     private ItemData getItemData(String path, String locale, @Nullable String... replace) {
+        FileConfiguration config = getFile("items");
+
         String namePath = "locale." + locale + "." + path;
         String matPath = "items." + path;
-        FileConfiguration config = getFile("items");
+
         String name = config.getString(namePath + ".name");
         if (name != null && replace != null && replace.length > 0) {
             name = name.replaceFirst("%[a-z]", replace[0]);
         }
+
         String l = config.getString(namePath + ".lore");
         List<String> lore = null;
         if (l != null) {
@@ -206,6 +242,7 @@ public class Configuration {
         if (configMaterial != null) {
             material = Material.getMaterial(configMaterial.toUpperCase());
         }
+
         return new ItemData(name, lore, material);
     }
 

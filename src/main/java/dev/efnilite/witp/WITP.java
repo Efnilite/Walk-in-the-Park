@@ -44,6 +44,9 @@ import java.io.IOException;
  */
 public final class WITP extends FyPlugin {
 
+    public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
+    public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
+
     public static boolean OUTDATED = false;
     private static Gson gson;
     private static WITP instance;

@@ -1,11 +1,9 @@
 Walk in the Park
 
-v2.9.5
-- Added forcekick/forcejoin command
-    > This replaces /witp join <player>
-- Fixed players not teleporting on reset in spectator mode
-- Fixed spectator mode exploit with teleporting
-- Fixed scoreboard conflict with others
+v2.9.6
+- Reworked entire menu system
+- Removed limit of 26 styles by adding pages
+- Fixed schematics/ladders pasting incorrectly
 
 High priority:
 - Optimize ram with schematics (async?)

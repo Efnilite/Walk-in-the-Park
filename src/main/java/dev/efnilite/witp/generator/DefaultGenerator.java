@@ -1,7 +1,5 @@
 package dev.efnilite.witp.generator;
 
-import dev.efnilite.fycore.inventory.Menu;
-import dev.efnilite.fycore.inventory.animation.SnakeSingleAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
@@ -920,13 +918,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         private String getInventoryName(String type) {
-            Configuration config = WITP.getConfiguration();
-            String name = config.getString("items", "locale." + pp.locale + "." + type.toLowerCase() + ".name");
-            if (name == null) {
-                Logging.warn("Didn't find a value for option '" + "locale." + pp.locale + "." + type.toLowerCase() + ".name'");
-                return "";
-            }
-            return ChatColor.stripColor(name);
+            return ChatColor.stripColor(WITP.getConfiguration().getString("items", "locale." + pp.locale + "." + type.toLowerCase() + ".name"));
         }
 
         private List<String> getOptionValues(String option) {

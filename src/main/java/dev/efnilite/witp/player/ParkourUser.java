@@ -312,9 +312,6 @@ public abstract class ParkourUser {
     private String getInventoryName() {
         Configuration config = WITP.getConfiguration();
         String name = config.getString("items", "items." + locale + ".options.gamemode.name");
-        if (name == null) {
-            return "";
-        }
         return ChatColor.stripColor(name);
     }
 
@@ -439,12 +436,7 @@ public abstract class ParkourUser {
      */
     public void sendTranslated(String path, String... replaceable) {
         path = "messages." + this.locale + "." + path;
-        String string = WITP.getConfiguration().getString("lang", path);
-        if (string == null) {
-            Logging.error("Unknown path: " + path + " - try deleting the config");
-            return;
-        }
-        send(replace(string, replaceable));
+        send(replace(WITP.getConfiguration().getString("lang", path), replaceable));
     }
 
     /**
@@ -460,12 +452,7 @@ public abstract class ParkourUser {
      */
     public String getTranslated(String path, String... replaceable) {
         path = "messages." + locale + "." + path;
-        String string = WITP.getConfiguration().getString("lang", path);
-        if (string == null) {
-            Logging.error("Custom language '" + locale + "' is missing a path: '" + path + "'. Please add this path to the language in lang.yml!");
-            return "";
-        }
-        return replace(string, replaceable);
+        return replace(WITP.getConfiguration().getString("lang", path), replaceable);
     }
 
     // Replaces %s, etc. with replaceable arguments

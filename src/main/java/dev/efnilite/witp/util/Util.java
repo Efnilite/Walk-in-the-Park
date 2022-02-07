@@ -39,6 +39,10 @@ public class Util {
     private static final char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
+    public static <T> T getRandom(List<T> list) {
+        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+    }
+
     /**
      * Returns the active void generator plugin
      *
@@ -388,10 +392,6 @@ public class Util {
      */
     public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
         String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
-        if (message == null) {
-            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG.get() + "!");
-            return;
-        }
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }
@@ -399,12 +399,7 @@ public class Util {
     }
 
     public static String getDefaultLang(String path) {
-        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
-        if (message == null) {
-            Logging.error("Path " + path + " has no message in language " + Option.DEFAULT_LANG.get() + "!");
-            return "";
-        }
-        return message;
+        return WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
     }
 
     /**

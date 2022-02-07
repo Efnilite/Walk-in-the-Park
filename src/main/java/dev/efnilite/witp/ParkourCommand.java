@@ -1,5 +1,6 @@
 package dev.efnilite.witp;
 
+import dev.efnilite.fycore.chat.tag.TextTag;
 import dev.efnilite.fycore.command.FyCommand;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
@@ -52,40 +53,40 @@ public class ParkourCommand extends FyCommand {
         if (sender instanceof Player) {
             player = (Player) sender;
         }
+
         if (args.length == 0) {
             // Help menu
-            send(sender, "&7--------------- &4WITP &7---------------");
-            send(sender, "&4/witp &8- &7Main command");
+            send(sender, "");
+            send(sender, "<dark_gray><strikethrough>---------------</strikethrough> " + WITP.NAME + " <dark_gray><strikethrough>---------------</strikethrough>");
+            send(sender, "");
+            send(sender, "<gray>/witp <dark_gray>- Main command");
             if (sender.hasPermission("witp.join")) {
-                send(sender, "&4/witp join [player] &8- &7Join the game on this server or make another player join");
-                send(sender, "&4/witp leave &8- &7Leave the game on this server");
+                send(sender, "<gray>/witp join <dark_gray>- Join the game on this server");
+                send(sender, "<gray>/witp leave <dark_gray>- Leave the game on this server");
             }
             if (sender.hasPermission("witp.menu")) {
-                send(sender, "&4/witp menu &8- &7Open the customization menu");
+                send(sender, "<gray>/witp menu <dark_gray>- Open the customization menu");
             }
             if (sender.hasPermission("witp.gamemode")) {
-                send(sender, "&4/witp gamemode &8- &7Open the gamemode menu");
+                send(sender, "<gray>/witp gamemode <dark_gray>- Open the gamemode menu");
             }
             if (sender.hasPermission("witp.leaderboard")) {
-                send(sender, "&4/witp leaderboard &8- &7Open the leaderboard");
+                send(sender, "<gray>/witp leaderboard <dark_gray>- Open the leaderboard");
             }
 
-            // Advanced settings based per permission
-            if (sender.hasPermission("witp.reload") || sender.hasPermission("witp.schematic") || sender.isOp()) {
-                send(sender, "&7------------ &4&lAdvanced &7-------------");
-            }
             if (sender.hasPermission("witp.schematic")) {
                 send(sender, "&4/witp schematic &f- &7Create a schematic");
             }
             if (sender.hasPermission("witp.reload")) {
-                send(sender, "&4&l/witp reload &8- &7Reloads the lang.yml file");
-                send(sender, "&4&l/witp migrate &8- &7Migrate your Json files to MySQL");
-                send(sender, "&4&l/witp reset &8- &7Resets all highscores. &cBe careful when using!");
+                send(sender, "&4/witp reload <dark_gray>- Reloads the lang.yml file");
+                send(sender, "&4/witp migrate <dark_gray>- Migrate your Json files to MySQL");
+                send(sender, "&4/witp reset <dark_gray>- Resets all highscores. <red>Be careful when using!");
             }
             if (sender.hasPermission("witp.recoverinventory")) {
-                send(sender, "&4&l/witp recoverinventory <player> &8- &7Recover a player's saved inventory." +
-                        " &cUseful for recovering data after server crashes or errors when leaving.");
+                send(sender, "&4/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
+                        " <red>Useful for recovering data after server crashes or errors when leaving.");
             }
+            send(sender, "");
             return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -99,12 +100,12 @@ public class ParkourCommand extends FyCommand {
                     }
 
                     Time.timerStart("reload");
-                    send(sender, "&4&l> &7Reloading config files..");
+                    send(sender, WITP.PREFIX + "Reloading config files..");
 
                     WITP.getConfiguration().reload();
                     Option.init(false);
 
-                    send(sender, "&4&l> &7Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
+                    send(sender, WITP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
                     return true;
                 case "reset":
                     if (!cooldown(sender, "reset", 2500)) {
@@ -117,11 +118,11 @@ public class ParkourCommand extends FyCommand {
 
                     try {
                         ParkourUser.resetHighScores();
-                        send(sender, "&4&l> &7Successfully reset all high scores in memory and the files.");
+                        send(sender, WITP.PREFIX + "Successfully reset all high scores in memory and the files.");
                     } catch (Throwable throwable) {
                         Logging.stack("Error while trying to reset the high scores!",
                                 "Please try again or report this error to the developer!", throwable);
-                        send(sender, "&4&l> &cThere was an error while trying to reset high scores.");
+                        send(sender, WITP.PREFIX + "<red>There was an error while trying to reset high scores.");
                     }
 
                     return true;
@@ -133,7 +134,7 @@ public class ParkourCommand extends FyCommand {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL.get()) {
-                        send(sender, "&4&l> &7You have disabled SQL support in the config!");
+                        send(sender, WITP.PREFIX + "You have disabled SQL support in the config!");
                         return true;
                     }
 
@@ -149,7 +150,7 @@ public class ParkourCommand extends FyCommand {
                             reader = new FileReader(file);
                         } catch (FileNotFoundException ex) {
                             Logging.stack("Could not find file to migrate", "Please try again!", ex);
-                            send(sender, "&4&l> &cCould not find that file, try again!");
+                            send(sender, WITP.PREFIX + "<red>Could not find that file, try again!");
                             return true;
                         }
                         ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
@@ -157,7 +158,7 @@ public class ParkourCommand extends FyCommand {
                         from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                         from.save(true);
                     }
-                    send(sender, "&4&l> &7Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
+                    send(sender, WITP.PREFIX + "Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
                     return true;
             }
             if (player == null) {
@@ -238,18 +239,18 @@ public class ParkourCommand extends FyCommand {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
-                    send(player, "&8----------- &4&lSchematics &8-----------");
+                    send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
                     send(player, "");
                     send(player, "&7Welcome to the schematic creating section.");
                     send(player, "&7You can use the following commands:");
                     if (Version.isHigherOrEqual(Version.V1_14)) {
-                        send(player, "&c/witp schematic wand &8- &7Get the schematic wand");
+                        send(player, "<red>/witp schematic wand <dark_gray>- &7Get the schematic wand");
                     }
-                    send(player, "&c/witp schematic pos1 &8- &7Set the first position of your selection");
-                    send(player, "&c/witp schematic pos2 &8- &7Set the second position of your selection");
-                    send(player, "&c/witp schematic save &8- &7Save your selection to a schematic file");
+                    send(player, "<red>/witp schematic pos1 <dark_gray>- &7Set the first position of your selection");
+                    send(player, "<red>/witp schematic pos2 <dark_gray>- &7Set the second position of your selection");
+                    send(player, "<red>/witp schematic save <dark_gray>- &7Save your selection to a schematic file");
                     send(player, "");
-                    send(player, "&8&nHave any questions or need help? Join the Discord!");
+                    send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
                     return true;
             }
         } else if (args.length == 2) {
@@ -260,10 +261,10 @@ public class ParkourCommand extends FyCommand {
                         if (Version.isHigherOrEqual(Version.V1_14)) {
                             player.getInventory().addItem(wand);
 
-                            send(player, "&8----------- &4&lSchematics &8-----------");
+                            send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
                             send(player, "&7Use your WITP Schematic Wand to easily select schematics.");
-                            send(player, "&7Use &8left click&7 to set the first position, and &8right click &7for the second!");
-                            send(player, "&7If you can't place a block and need to set a position mid-air, use &8the pos commands &7instead.");
+                            send(player, "&7Use <dark_gray>left click&7 to set the first position, and <dark_gray>right click &7for the second!");
+                            send(player, "&7If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands &7instead.");
                         }
                         return true;
                     case "pos1":
@@ -275,7 +276,7 @@ public class ParkourCommand extends FyCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        send(player, "&4&l> &7Position 1 was set to " + Util.toString(player.getLocation(), true));
+                        send(player, WITP.PREFIX + "Position 1 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "pos2":
                         if (selections.get(player) == null) {
@@ -286,14 +287,14 @@ public class ParkourCommand extends FyCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        send(player, "&4&l> &7Position 2 was set to " + Util.toString(player.getLocation(), true));
+                        send(player, WITP.PREFIX + "Position 2 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "save":
                         if (!cooldown(sender, "schematic-save", 2500)) {
                             return true;
                         }
                         if (selection == null || !selection.isComplete()) {
-                            send(player, "&8----------- &4&lSchematics &8-----------");
+                            send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
                             send(player, "&7Your schematic isn't complete yet.");
                             send(player, "&7Be sure to set the first and second position!");
                             return true;
@@ -301,11 +302,11 @@ public class ParkourCommand extends FyCommand {
 
                         String code = Util.randomDigits(6);
 
-                        send(player, "&8----------- &4&lSchematics &8-----------");
+                        send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
                         send(player, "&7Your schematic is being saved..");
-                        send(player, "&7Your schematic will be generated with random number code &c'" + code + "'&7!");
+                        send(player, "&7Your schematic will be generated with random number code <red>'" + code + "'&7!");
                         send(player, "&7You can change the file name to whatever number you like.");
-                        send(player, "&8Be sure to add this schematic to &r&8schematics.yml!");
+                        send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
                         Schematic schematic = new Schematic(selection);
                         schematic.file("parkour-" + code).save(player);
@@ -316,7 +317,7 @@ public class ParkourCommand extends FyCommand {
                 try {
                     Integer.parseInt(args[1]);
                 } catch (NumberFormatException ex) {
-                    send(player, "&4&l> &7" + args[1] + " is not a number! Please enter a page.");
+                    send(player, WITP.PREFIX + "" + args[1] + " is not a number! Please enter a page.");
                     return true;
                 }
                 ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
@@ -335,17 +336,17 @@ public class ParkourCommand extends FyCommand {
                         } catch (Throwable throwable) {
                             Logging.stack("Error while joining player " + other.getName(),
                                     "Please try again or report this error to the developer!", throwable);
-                            send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
+                            send(sender, WITP.PREFIX + "<red>There was an error while trying to kick everyone! Please check your console.");
                             return true;
                         }
                     }
-                    send(sender, "&4&l> &7Succesfully force joined everyone");
+                    send(sender, WITP.PREFIX + "Succesfully force joined everyone");
                     return true;
                 }
 
                 Player other = Bukkit.getPlayer(args[1]);
                 if (other == null) {
-                    send(sender, "&4&l> &7That player isn't online!");
+                    send(sender, WITP.PREFIX + "That player isn't online!");
                     return true;
                 }
                 try {
@@ -367,23 +368,23 @@ public class ParkourCommand extends FyCommand {
                         } catch (Throwable throwable) {
                             Logging.stack("Error while unregistering player " + other.getPlayer().getName(),
                                     "Please try again or report this error to the developer!", throwable);
-                            send(sender, "&4&l> &cThere was an error while trying to kick everyone! Please check your console.");
+                            send(sender, WITP.PREFIX + "<red>There was an error while trying to kick everyone! Please check your console.");
                             return true;
                         }
                     }
-                    send(sender, "&4&l> &7Succesfully force kicked everyone");
+                    send(sender, WITP.PREFIX + "Succesfully force kicked everyone");
                     return true;
                 }
 
                 Player other = Bukkit.getPlayer(args[1]);
                 if (other == null) {
-                    send(sender, "&4&l> &7That player isn't online!");
+                    send(sender, WITP.PREFIX + "That player isn't online!");
                     return true;
                 }
 
                 ParkourUser user = ParkourUser.getUser(other);
                 if (user == null) {
-                    send(sender, "&4&lThat player isn't currently playing!");
+                    send(sender, WITP.PREFIX + "That player isn't currently playing!");
                     return true;
                 }
 
@@ -417,24 +418,24 @@ public class ParkourCommand extends FyCommand {
                 }
                 Player arg1 = Bukkit.getPlayer(args[1]);
                 if (arg1 == null) {
-                    send(sender, "&4&l> &7That player isn't online!");
+                    send(sender, WITP.PREFIX + "That player isn't online!");
                     return true;
                 }
 
                 InventoryData data = new InventoryData(arg1);
                 data.readFile(readData -> {
                     if (readData != null) {
-                        send(sender, "&4&l> &7Successfully recovered the inventory of " + arg1.getName() + " from their file");
+                        send(sender, WITP.PREFIX + "Successfully recovered the inventory of " + arg1.getName() + " from their file");
                         if (readData.apply(true)) {
-                            send(sender, "&4&l> &7Giving " + arg1.getName() + " their items now...");
+                            send(sender, WITP.PREFIX + "Giving " + arg1.getName() + " their items now...");
                         } else {
-                            send(sender, "&4&l> &cThere was an error decoding an item of " + arg1.getName());
-                            send(sender, "&4&l> &7" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
+                            send(sender, WITP.PREFIX + "<red>There was an error decoding an item of " + arg1.getName());
+                            send(sender, WITP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
                                     "Check the console for more information.");
                         }
                     } else {
-                        send(sender, "&4&l> &cThere was an error recovering the inventory of " + arg1.getName() + " from their file");
-                        send(sender, "&4&l> &7" + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
+                        send(sender, WITP.PREFIX + "<red>There was an error recovering the inventory of " + arg1.getName() + " from their file");
+                        send(sender, WITP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
                     }
                 });
             }
