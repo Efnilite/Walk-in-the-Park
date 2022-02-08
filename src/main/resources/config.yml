@@ -69,20 +69,58 @@ world:
     # The world players will be teleported to if they accidentally join the WITP world without being a player
     fall-back: 'world'
 
-# Options for lead
-lead:
+options:
 
-    # The amounts of the lead
-    # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
-    # Also must be above 1
-    amount:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 10
+    # If the options menu is enabled
+    enabled: true
+
+    # Options for the leads
+    leads:
+
+        # The amounts of the lead
+        # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
+        # Also must be above 1
+        amount:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 10
+
+    # Options for the time
+    time:
+
+        # Selects the time format.
+        # Choose between:
+        # 24 - 24 hour clock. (00:00, 12:00, 23:59)
+        # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
+        format: 24
+
+    # Enables/disables the inventory handling system
+    inventory-handling: true
+
+    # Logs inventories of the players that join to the inventories/ folder.
+    # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
+    # inventories of players to be lost if this is set to false!
+    # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
+    inventory-saving: true
+
+    # Alternate inventory saving command
+    # Example: /inventory save %player%
+    # This command will be executed by console.
+    alt-inventory-saving-command: ''
+
+    # Enables/disables the health handling system
+    # Disable this if you're experiencing errors with max health, etc.
+    health-handling: true
+
+    # Saves things like health and max health for when a player joins the parkour.
+    save-stats: true
+
+    # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
+    hotbar-quit-item: false
 
 # Options for permissions.
 # These permissions are used to determine which things the player can change.
@@ -114,36 +152,6 @@ focus-mode:
         - 'whisper'
         - 'reply'
         - 'message'
-
-# Options for the option menu
-options:
-
-    # If options are enabled
-    enabled: true
-
-    # Enables/disables the inventory handling system
-    inventory-handling: true
-
-    # Logs inventories of the players that join to the inventories/ folder.
-    # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
-    # inventories of players to be lost if this is set to false!
-    # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
-    inventory-saving: true
-
-    # Alternate inventory saving command
-    # Example: /inventory save %player%
-    # This command will be executed by console.
-    alt-inventory-saving-command: ''
-
-    # Enables/disables the health handling system
-    # Disable this if you're experiencing errors with max health, etc.
-    health-handling: true
-
-    # Saves things like health and max health for when a player joins the parkour.
-    save-stats: true
-
-    # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
-    hotbar-quit-item: false
 
 # The different styles players can select
 styles:

@@ -25,7 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -298,10 +297,10 @@ public abstract class ParkourUser {
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
-            ItemStack stack = gm.getItem(locale);
-            items.add(new Item(stack.getType(), stack.getItemMeta().getDisplayName())
+            Item item = gm.getItem(locale);
+            items.add(new Item(item.getMaterial(), item.getName())
                     .click((menu, event) -> {
-                        gm.handleItemClick(player, this, null); // todo
+                        gm.handleItemClick(player, this, menu); // todo
                     }));
         }
 

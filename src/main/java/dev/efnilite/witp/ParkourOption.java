@@ -5,8 +5,18 @@ package dev.efnilite.witp;
  */
 public enum ParkourOption {
 
-    STYLES("styles", "witp.style"),
-    LEAD("lead", "witp.lead");
+    STYLES("styles", "witp.option.styles"),
+    LEADS("leads", "witp.option.leads"),
+    TIME("time", "witp.option.time"),
+    DIMENSION("dimension", "witp.option.dimension"),
+
+    SHOW_SCOREBOARD("show-scoreboard", "witp.option.show-scoreboard"),
+    SHOW_FALL_MESSAGE("fall-message", "witp.option.fall-message"),
+    PARTICLES_AND_SOUND("particles-and-sound", "witp.option.particles-and-sound"),
+    SPECIAL_BLOCKS("special-blocks", "witp.option.special-blocks"),
+    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty"),
+
+    SCHEMATICS("schematics", "witp.option.schematics");
 
     /**
      * The name of the option

@@ -141,7 +141,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (player.useParticles && Version.isHigherOrEqual(Version.V1_9)) {
+        if (player.useParticlesAndSound && Version.isHigherOrEqual(Version.V1_9)) {
             PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
 
             switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
@@ -392,7 +392,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int score = this.score;
         String time = this.time;
         String diff = player.calculateDifficultyScore();
-        if (player.showDeathMsg && regenerate && time != null) {
+        if (player.showFallMessage && regenerate && time != null) {
             String message;
             int number = 0;
             if (score == player.highScore) {
@@ -446,7 +446,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (isSpecial) {
             type = 0;
         } else {
-            type = schematicCooldown == 0 && player.useStructure ? type : 0;
+            type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
             if (isNearBorder(mostRecentBlock.clone().toVector()) && score > 0) {
@@ -455,7 +455,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
             BlockData selectedBlockData = selectBlockData();
 
-            if (isSpecial && player.useSpecial) { // if special
+            if (isSpecial && player.useSpecialBlocks) { // if special
                 switch (getRandomChance(specialChances)) {
                     case 0: // ice
                         selectedBlockData = Material.PACKED_ICE.createBlockData();
@@ -827,11 +827,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         (t2, e2) -> difficultyMenu());
             }
             if (checkOptions("particles", "witp.particles", disabled)) {
-                String particlesString = Boolean.toString(pp.useParticles);
+                String particlesString = Boolean.toString(pp.useParticlesAndSound);
                 item = config.getFromItemData(pp.locale, "options.particles", normalizeBoolean(Util.colorBoolean(particlesString)));
-                item.setType(pp.useParticles ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+                item.setType(pp.useParticlesAndSound ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
-                    pp.useParticles = !pp.useParticles;
+                    pp.useParticlesAndSound = !pp.useParticlesAndSound;
                     pp.sendTranslated("selected-particles", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(particlesString))));
                     menu(optDisabled);
                 });
@@ -855,25 +855,25 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 });
             }
             if (checkOptions("death-msg", "witp.fall", disabled)) {
-                String deathString = Boolean.toString(pp.showDeathMsg);
+                String deathString = Boolean.toString(pp.showFallMessage);
                 item = config.getFromItemData(pp.locale, "options.death-msg", normalizeBoolean(Util.colorBoolean(deathString)));
-                item.setType(pp.showDeathMsg ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+                item.setType(pp.showFallMessage ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> {
-                    pp.showDeathMsg = !pp.showDeathMsg;
+                    pp.showFallMessage = !pp.showFallMessage;
                     pp.sendTranslated("selected-fall-message", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(deathString))));
                     menu(optDisabled);
                 });
             }
             if (checkOptions("special", "witp.special", disabled)) {
-                String specialString = Boolean.toString(pp.useSpecial);
+                String specialString = Boolean.toString(pp.useSpecialBlocks);
                 item = config.getFromItemData(pp.locale, "options.special", normalizeBoolean(Util.colorBoolean(specialString)));
-                item.setType(pp.useSpecial ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+                item.setType(pp.useSpecialBlocks ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("special", optDisabled));
             }
             if (checkOptions("structure", "witp.structures", disabled)) {
-                String structuresString = Boolean.toString(pp.useStructure);
+                String structuresString = Boolean.toString(pp.useSchematic);
                 item = config.getFromItemData(pp.locale, "options.structure", normalizeBoolean(Util.colorBoolean(structuresString)));
-                item.setType(pp.useStructure ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+                item.setType(pp.useSchematic ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
                 builder.setItem(dynamic.next(), item, (t2, e2) -> askReset("structure", optDisabled));
             }
 
@@ -972,9 +972,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             InventoryBuilder.DynamicInventory dynamic = new InventoryBuilder.DynamicInventory(2, 1);
 
             // Adaptive difficulty
-            String string = Boolean.toString(pp.useDifficulty);
+            String string = Boolean.toString(pp.useScoreDifficulty);
             ItemStack item = config.getFromItemData(pp.locale, "options.adaptive-difficulty", normalizeBoolean(Util.colorBoolean(string)));
-            item.setType(pp.useDifficulty ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+            item.setType(pp.useScoreDifficulty ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 
             if (checkOptions("adaptive-difficulty", "witp.adaptive-difficulty", Arrays.asList(optDisabled))) {
                 difficulty.setItem(dynamic.next(), item, (t3, e3) -> askReset("difficulty"));
@@ -1060,13 +1060,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
             switch (item) {
                 case "structure":
-                    pp.useStructure = !pp.useStructure;
-                    pp.sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useStructure))));
+                    pp.useSchematic = !pp.useSchematic;
+                    pp.sendTranslated("selected-structures", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useSchematic))));
                     menu(optDisabled);
                     break;
                 case "special":
-                    pp.useSpecial = !pp.useSpecial;
-                    pp.sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useSpecial))));
+                    pp.useSpecialBlocks = !pp.useSpecialBlocks;
+                    pp.sendTranslated("selected-special-blocks", normalizeBoolean(Util.colorBoolean(Boolean.toString(pp.useSpecialBlocks))));
                     menu(optDisabled);
                     break;
                 case "e-difficulty":
@@ -1090,8 +1090,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     schematicDifficultyMenu(optDisabled);
                     break;
                 case "difficulty":
-                    pp.useDifficulty = !pp.useDifficulty;
-                    pp.sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(pp.useDifficulty)))));
+                    pp.useScoreDifficulty = !pp.useScoreDifficulty;
+                    pp.sendTranslated("selected-difficulty", normalizeBoolean(Util.colorBoolean(Util.reverseBoolean(Boolean.toString(pp.useScoreDifficulty)))));
                     difficultyMenu(optDisabled);
                     break;
             }

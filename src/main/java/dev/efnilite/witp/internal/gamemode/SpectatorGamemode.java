@@ -1,5 +1,7 @@
 package dev.efnilite.witp.internal.gamemode;
 
+import dev.efnilite.fycore.inventory.Menu;
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.SkullSetter;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
@@ -24,12 +26,12 @@ public class SpectatorGamemode implements Gamemode {
     }
 
     @Override
-    public @NotNull ItemStack getItem(String locale) {
+    public @NotNull Item getItem(String locale) {
         return WITP.getConfiguration().getFromItemData(locale, "gamemodes.spectator");
     }
 
     @Override
-    public void handleItemClick(Player player, ParkourUser user, InventoryBuilder previousInventory) {
+    public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
         InventoryBuilder spectatable = new InventoryBuilder(user, 3, "Select a player").open();
         int index = 0;
         player.closeInventory();
@@ -39,7 +41,7 @@ public class SpectatorGamemode implements Gamemode {
             }
             Player pl = pp.getPlayer();
             if (pl.getUniqueId() != player.getUniqueId() && !player.getName().equals(pl.getName())) {
-                ItemStack item = WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.spectator-head", pl.getName(), pl.getName());
+                ItemStack item = WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.spectator-head", pl.getName(), pl.getName()).build();
                 item.setType(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 if (meta == null) {
@@ -58,7 +60,7 @@ public class SpectatorGamemode implements Gamemode {
                 }
             }
         }
-        spectatable.setItem(25, WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.search"),
+        spectatable.setItem(25, WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.search").build(),
                 (t2, e2) -> {
                     player.closeInventory();
                     BaseComponent[] send = new ComponentBuilder().append(user.getTranslated("click-search"))

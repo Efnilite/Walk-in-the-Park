@@ -1,9 +1,9 @@
 package dev.efnilite.witp.api;
 
+import dev.efnilite.fycore.inventory.Menu;
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +28,7 @@ public interface Gamemode {
      *
      * @return the item.
      */
-    @NotNull ItemStack getItem(String locale);
+    @NotNull Item getItem(String locale);
 
     /**
      * When this gamemode gets clicked in the inventory screen
@@ -39,9 +39,9 @@ public interface Gamemode {
      * @param   user
      *          The {@link ParkourUser} who clicked
      *
-     * @param   previousInventory
+     * @param   previousMenu
      *          The inventory
      */
-    void handleItemClick(Player player, ParkourUser user, InventoryBuilder previousInventory);
+    void handleItemClick(Player player, ParkourUser user, Menu previousMenu);
 
 }

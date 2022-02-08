@@ -39,24 +39,25 @@ import java.util.UUID;
  */
 public class ParkourPlayer extends ParkourUser {
 
-    /**
-     * Player data used in saving
-     */
+    // Player data used in saving
     public @Expose Integer highScore;
     public @Expose String highScoreTime;
-    public @Expose Integer blockLead;
-    public @Expose Boolean useDifficulty;
-    public @Expose String highScoreDifficulty;
-    public @Expose Boolean useParticles;
-    public @Expose Boolean useSpecial;
-    public @Expose Boolean showDeathMsg;
-    public @Expose Boolean showScoreboard;
-    public @Expose Boolean useStructure;
-    public @Expose String time;
-    public @Expose String style;
-    public @Expose String lang;
+
     public @Expose String name; // for fixing null in leaderboard
     public @Expose Double difficulty;
+
+    // ---------- Options ----------
+    public @Expose Integer blockLead;
+    public @Expose Boolean useScoreDifficulty;
+    public @Expose String highScoreDifficulty;
+    public @Expose Boolean useParticlesAndSound;
+    public @Expose Boolean useSpecialBlocks;
+    public @Expose Boolean showFallMessage;
+    public @Expose Boolean showScoreboard;
+    public @Expose Boolean useSchematic;
+    public @Expose Integer time;
+    public @Expose String style;
+    public @Expose String lang;
 
     public final long joinTime;
 
@@ -96,12 +97,12 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = orDefault(lang, Option.DEFAULT_LANG.get());
         this.locale = lang;
 
-        this.useSpecial = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("special")));
-        this.showDeathMsg = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("death-msg")));
-        this.useDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("adaptive-difficulty")));
-        this.useStructure = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("structure")));
+        this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("special")));
+        this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("death-msg")));
+        this.useScoreDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("adaptive-difficulty")));
+        this.useSchematic = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("structure")));
         this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("scoreboard")));
-        this.useParticles = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("particles")));
+        this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("particles")));
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get("lead")));
         this.time = orDefault(time, Option.OPTIONS_DEFAULTS.get("time"));
 
@@ -235,9 +236,9 @@ public class ParkourPlayer extends ParkourUser {
                     statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
                             .setDefault("uuid", uuid.toString()).setDefault("time", time)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
-                            .setDefault("useParticles", useParticles).setDefault("useDifficulty", useDifficulty)
-                            .setDefault("useStructure", useStructure).setDefault("useSpecial", useSpecial)
-                            .setDefault("showFallMsg", showDeathMsg).setDefault("showScoreboard", showScoreboard)
+                            .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
+                            .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
+                            .setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard)
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {
@@ -298,9 +299,9 @@ public class ParkourPlayer extends ParkourUser {
     public String calculateDifficultyScore() {
         try {
             double score = 0.0;
-            if (useSpecial) score += 0.3;          // sum:      0.3
-            if (useDifficulty) score += 0.2;       //           0.5
-            if (useStructure) {
+            if (useSpecialBlocks) score += 0.3;          // sum:      0.3
+            if (useScoreDifficulty) score += 0.2;       //           0.5
+            if (useSchematic) {
                 if (difficulty == 0.3) score += 0.1;      //    0.6
                 else if (difficulty == 0.5) score += 0.3; //    0.8
                 else if (difficulty == 0.7) score += 0.4; //    0.9
@@ -390,7 +391,7 @@ public class ParkourPlayer extends ParkourUser {
                     ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
                     pp.setSettings(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticles, from.useDifficulty, from.useStructure, from.useSpecial, from.showDeathMsg,
+                            from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage,
                             from.showScoreboard, from.highScoreDifficulty);
                     reader.close();
                 } else {
