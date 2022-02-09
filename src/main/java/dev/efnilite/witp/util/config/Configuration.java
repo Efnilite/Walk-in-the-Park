@@ -134,7 +134,7 @@ public class Configuration {
     }
 
     /**
-     * Gets a coloured string
+     * Gets a coloured string list. This list can't be null, only empty or containing items.
      *
      * @param   file
      *          The file
@@ -143,10 +143,10 @@ public class Configuration {
      *
      * @return a coloured string
      */
-    public @Nullable List<String> getStringList(String file, String path) {
+    public @NotNull List<String> getStringList(@NotNull String file, @NotNull String path) {
         List<String> string = getFile(file).getStringList(path);
         if (string.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return Util.colorList(string);
     }

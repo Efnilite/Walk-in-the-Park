@@ -3,6 +3,7 @@ package dev.efnilite.witp.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
+import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.ParkourAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -44,7 +45,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String highScoreTime;
 
     public @Expose String name; // for fixing null in leaderboard
-    public @Expose Double difficulty;
+    public @Expose Double schematicDifficulty;
 
     // ---------- Options ----------
     public @Expose Integer blockLead;
@@ -81,12 +82,12 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = locale;
     }
 
-    public void setSettings(Integer highScore, String time, String style, String highScoreTime, String lang,
+    public void setSettings(Integer highScore, Integer time, String style, String highScoreTime, String lang,
                             Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
                             Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty) {
 
         // General defaults
-        this.difficulty = 0.3; // todo add file support
+        this.schematicDifficulty = 0.2; // todo add file support
 
         this.highScore = orDefault(highScore, 0);
         this.highScoreTime = orDefault(highScoreTime, "0.0s");
@@ -97,16 +98,16 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = orDefault(lang, Option.DEFAULT_LANG.get());
         this.locale = lang;
 
-        this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("special")));
-        this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("death-msg")));
-        this.useScoreDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("adaptive-difficulty")));
-        this.useSchematic = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("structure")));
-        this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("scoreboard")));
-        this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get("particles")));
-        this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get("lead")));
-        this.time = orDefault(time, Option.OPTIONS_DEFAULTS.get("time"));
+        this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS.getName())));
+        this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_FALL_MESSAGE.getName())));
+        this.useScoreDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCORE_DIFFICULTY.getName())));
+        this.useSchematic = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATICS.getName())));
+        this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_SCOREBOARD.getName())));
+        this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND.getName())));
+        this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
+        this.time = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
 
-        player.setPlayerTime(getTime(this.time), false);
+        player.setPlayerTime(this.time, false);
         updateScoreboard();
     }
 
@@ -302,10 +303,10 @@ public class ParkourPlayer extends ParkourUser {
             if (useSpecialBlocks) score += 0.3;          // sum:      0.3
             if (useScoreDifficulty) score += 0.2;       //           0.5
             if (useSchematic) {
-                if (difficulty == 0.3) score += 0.1;      //    0.6
-                else if (difficulty == 0.5) score += 0.3; //    0.8
-                else if (difficulty == 0.7) score += 0.4; //    0.9
-                else if (difficulty == 0.8) score += 0.5; //    1.0
+                if (schematicDifficulty == 0.3) score += 0.1;      //    0.6
+                else if (schematicDifficulty == 0.5) score += 0.3; //    0.8
+                else if (schematicDifficulty == 0.7) score += 0.4; //    0.9
+                else if (schematicDifficulty == 0.8) score += 0.5; //    1.0
             }
             return Double.toString(score).substring(0, 3);
         } catch (NullPointerException ex) {
@@ -426,7 +427,7 @@ public class ParkourPlayer extends ParkourUser {
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings(highscore, (String) objects.get(0), (String) objects.get(1), highScoreTime,
+                    pp.setSettings(highscore, (Integer) objects.get(0), (String) objects.get(1), highScoreTime,
                             Option.DEFAULT_LANG.get(),
                             Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
                             translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
@@ -461,34 +462,6 @@ public class ParkourPlayer extends ParkourUser {
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the time from a string
-     *
-     * @param   time
-     *          The time as a string
-     *
-     * @return the int value used to set the time
-     */
-    public int getTime(String time) {
-        if (time == null) {
-            Logging.error("Time is null, defaulting to day time");
-            this.time = "day";
-            return 1000;
-        }
-        switch (time.toLowerCase()) {
-            case "noon":
-                return 6000;
-            case "dawn":
-                return 12500;
-            case "night":
-                return 15000;
-            case "midnight":
-                return 18000;
-            default:
-                return 1000;
-        }
     }
 
     public void setBoard(FastBoard board) {

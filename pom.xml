@@ -6,7 +6,7 @@
 
     <groupId>dev.efnilite</groupId>
     <artifactId>WITP</artifactId>
-    <version>2.9.5</version>
+    <version>3.0.0</version>
 
     <properties>
         <java.version>11</java.version>

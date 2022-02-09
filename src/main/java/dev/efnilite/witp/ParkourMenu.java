@@ -14,6 +14,7 @@ import dev.efnilite.witp.util.Unicodes;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -56,33 +57,38 @@ public class ParkourMenu {
             main.item(1, item);
         }
 
+        if (checkOptions(player, ParkourOption.SCHEMATICS, disabledOptions)) {
+            main.item(2, config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATICS.getName())
+                    .click((menu, event) -> openSchematicMenu(user, disabledOptions)));
+        }
+
         if (checkOptions(player, ParkourOption.TIME, disabledOptions)) {
             // Tick times start at 6:00 and total is 24,000.
             // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
             List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
 
-            main.item(2, new SliderItem()
+            main.item(3, new SliderItem()
                     .initial(times.indexOf(user.time))
                     .add(0, new Item(Material.BLUE_STAINED_GLASS_PANE, "<#1666CF><bold>" + (Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00"))
-                                    .lore("<gray>Your current time."),
+                                    .lore("<gray>Your current visual time."),
                             (menu, event) -> {
                                     user.time = 0;
                                     player.setPlayerTime(18000, false); // 00:00
                             })
                     .add(1, new Item(Material.BLUE_STAINED_GLASS_PANE, "<#1666CF><bold>" + (Option.OPTIONS_TIME_FORMAT.get() == 12 ? "06:00 AM" : "06:00"))
-                                    .lore("<gray>Your current time."),
+                                    .lore("<gray>Your current visual time."),
                             (menu, event) -> {
                                 user.time = 6000;
                                 player.setPlayerTime(0, false); // 00:00
                             })
                     .add(2, new Item(Material.BLUE_STAINED_GLASS_PANE, "<#1666CF><bold>" + (Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00"))
-                                    .lore("<gray>Your current time."),
+                                    .lore("<gray>Your current visual time."),
                             (menu, event) -> {
                                 user.time = 12000;
                                 player.setPlayerTime(6000, false); // 12:00
                             })
                     .add(3, new Item(Material.BLUE_STAINED_GLASS_PANE, "<#1666CF><bold>" + (Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00"))
-                                    .lore("<gray>Your current time."),
+                                    .lore("<gray>Your current visual time."),
                             (menu, event) -> {
                                 user.time = 18000;
                                 player.setPlayerTime(12000, false); // 18:00
@@ -97,9 +103,18 @@ public class ParkourMenu {
             main.item(9, new SliderItem()
                     .initial(user.showScoreboard ? 0 : 1)
                     .add(0, new Item(Material.GREEN_STAINED_GLASS_PANE, item.getName()),
-                            (menu, event) -> user.showScoreboard = true)
+                            (menu, event) -> {
+                                    user.showScoreboard = true;
+                                    user.setBoard(new FastBoard(player));
+                                    user.updateScoreboard();
+                            })
                     .add(1, new Item(Material.RED_STAINED_GLASS_PANE, item.getName()),
-                            (menu, event) -> user.showScoreboard = false));
+                            (menu, event) -> {
+                                    user.showScoreboard = false;
+                                    if (user.getBoard() != null) {
+                                        user.getBoard().delete();
+                                    }
+                            }));
         }
 
         if (checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabledOptions)) {
@@ -148,7 +163,7 @@ public class ParkourMenu {
 
         // opens the menu
         main
-                .distributeRowsEvenly()
+                .distributeRowEvenly(0, 1, 3)
 
                 .item(28, config.getFromItemData(user.locale, "general.close")
                         .click((menu, event) -> user.getPlayer().closeInventory()))
@@ -177,16 +192,16 @@ public class ParkourMenu {
                 .displayRows(0, 1)
                 .addToDisplay(items)
 
-                .nextPage(27, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // next page
+                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click((menu, event) -> style.page(1)))
 
-                .prevPage(35, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // previous page
+                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((menu, event) -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.locale, "general.close")
                         .click((menu, event) -> openMainMenu(user, disabledOptions)))
 
-                .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
                 .open(user.getPlayer());
     }
@@ -195,12 +210,29 @@ public class ParkourMenu {
         Configuration config = WITP.getConfiguration();
 
         // init menu
-        Menu schematics = new Menu(3, "Schematics"); // todo
+        Menu schematics = new Menu(3, "<white>Schematics"); // todo
+
+        List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
+
+        List<String> values = config.getStringList("items", "locale." + user.locale + ".options.schematic-difficulty.values");
+
+        schematics.item(10, new SliderItem()
+                        .initial(difficulties.indexOf(user.schematicDifficulty))
+                        .add(0, new Item(Material.GREEN_STAINED_GLASS_PANE, "<green><bold>" + values.get(0)),
+                                (menu, event) -> user.schematicDifficulty = 0.2)
+                        .add(1, new Item(Material.YELLOW_STAINED_GLASS_PANE, "<yellow><bold>" + values.get(1)),
+                                (menu, event) -> user.schematicDifficulty = 0.4)
+                        .add(2, new Item(Material.ORANGE_STAINED_GLASS_PANE, "<#FF6C17><bold>" + values.get(2)),
+                                (menu, event) -> user.schematicDifficulty = 0.6)
+                        .add(3, new Item(Material.SKELETON_SKULL, "<dark_red><bold>" + values.get(3)),
+                                (menu, event) -> user.schematicDifficulty = 0.8));
 
         Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATICS.getName(), getBooleanSymbol(user.useSpecialBlocks));
 
         schematics
-                .item(13, new SliderItem()
+                .distributeRowEvenly(0, 1, 2)
+
+                .item(9, new SliderItem()
                         .initial(user.useSchematic ? 0 : 1)
                         .add(0, new Item(Material.GREEN_STAINED_GLASS_PANE, item.getName()),
                                 (menu, event) -> user.useSchematic = true)
@@ -208,12 +240,12 @@ public class ParkourMenu {
                                 (menu, event) -> user.useSchematic = false));
 
         schematics
-                .distributeRowsEvenly()
+                .distributeRowEvenly(0, 1, 2)
 
                 .item(26, config.getFromItemData(user.locale, "general.close")
                         .click((menu, event) -> openMainMenu(user, disabledOptions)))
 
-                .fillBackground(Material.RED_STAINED_GLASS_PANE)
+                .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
                 .open(user.getPlayer());
     }
@@ -228,7 +260,7 @@ public class ParkourMenu {
         if (!enabled || Arrays.asList(disabled).contains(option)) {
             return false;
         } else {
-            return Option.PERMISSIONS.get() && player.hasPermission(option.getPermission());
+            return !Option.PERMISSIONS.get() || player.hasPermission(option.getPermission());
         }
     }
 }

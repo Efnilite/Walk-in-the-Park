@@ -326,7 +326,7 @@ public class SubareaDivider {
         player.setGameMode(GameMode.ADVENTURE);
         if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
             player.getInventory().clear();
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu");
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu").build();
             if (mat == null) {
                 Logging.error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
@@ -335,7 +335,7 @@ public class SubareaDivider {
             }
         }
         if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit");
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit").build();
             if (mat == null) {
                 Logging.error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());

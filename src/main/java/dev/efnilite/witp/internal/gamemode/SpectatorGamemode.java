@@ -1,8 +1,12 @@
 package dev.efnilite.witp.internal.gamemode;
 
 import dev.efnilite.fycore.inventory.Menu;
+import dev.efnilite.fycore.inventory.PagedMenu;
+import dev.efnilite.fycore.inventory.animation.WaveWestAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
+import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.SkullSetter;
+import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -18,6 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SpectatorGamemode implements Gamemode {
 
     @Override
@@ -32,9 +39,11 @@ public class SpectatorGamemode implements Gamemode {
 
     @Override
     public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
-        InventoryBuilder spectatable = new InventoryBuilder(user, 3, "Select a player").open();
-        int index = 0;
+        PagedMenu spectator = new PagedMenu(3, "Select a player");
         player.closeInventory();
+
+        List<MenuItem> display = new ArrayList<>();
+
         for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
             if (pp == null) {
                 continue;
@@ -49,25 +58,27 @@ public class SpectatorGamemode implements Gamemode {
                 }
                 SkullSetter.setPlayerHead(pl, meta);
                 item.setItemMeta(meta);
-                spectatable.setItem(index, item, (t2, e2) -> {
-                    if (ParkourUser.getActivePlayers().contains(pp)) {
-                        new ParkourSpectator(user, pp, user.getPreviousData());
-                    }
-                });
-                index++;
-                if (index == 25) {
-                    break;
-                }
+
+                // todo add bukkit -> Item support
+//                display.add(new Item(item).click((menu, event) -> {
+//                    if (ParkourUser.getActivePlayers().contains(pp)) {
+//                        new ParkourSpectator(user, pp, user.getPreviousData());
+//                    }
+//                }));
+
             }
         }
-        spectatable.setItem(25, WITP.getConfiguration().getFromItemData(user.locale, "gamemodes.search").build(),
-                (t2, e2) -> {
-                    player.closeInventory();
-                    BaseComponent[] send = new ComponentBuilder().append(user.getTranslated("click-search"))
-                            .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/witp search ")).create();
-                    player.spigot().sendMessage(send);
-                });
-        spectatable.setItem(26, WITP.getConfiguration().getFromItemData(user.locale, "general.close"), (t2, e2) -> previousInventory.build());
-        spectatable.build();
+
+        spectator
+                .displayRows(0, 1)
+
+                .item(26, WITP.getConfiguration().getFromItemData(user.locale, "general.close")
+                        .click((menu, event) -> {
+//                            ParkourMenu.openMainMenu(user);
+                        }))
+
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new WaveWestAnimation())
+                .open(player);
     }
 }

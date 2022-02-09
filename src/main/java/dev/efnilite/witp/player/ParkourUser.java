@@ -293,7 +293,7 @@ public abstract class ParkourUser {
 
         Configuration config = WITP.getConfiguration();
 
-        PagedMenu gamemode = new PagedMenu(3, config.getString("items", "items." + locale + ".options.gamemode.name"));
+        PagedMenu gamemode = new PagedMenu(3, config.getString("items", "locale." + locale + ".options.gamemode.name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : WITP.getRegistry().getGamemodes()) {

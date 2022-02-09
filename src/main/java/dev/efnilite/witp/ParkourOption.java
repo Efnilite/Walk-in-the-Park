@@ -9,14 +9,13 @@ public enum ParkourOption {
     LEADS("leads", "witp.option.leads"),
     TIME("time", "witp.option.time"),
     DIMENSION("dimension", "witp.option.dimension"),
+    SCHEMATICS("schematics", "witp.option.schematics"),
 
     SHOW_SCOREBOARD("show-scoreboard", "witp.option.show-scoreboard"),
     SHOW_FALL_MESSAGE("fall-message", "witp.option.fall-message"),
     PARTICLES_AND_SOUND("particles-and-sound", "witp.option.particles-and-sound"),
     SPECIAL_BLOCKS("special-blocks", "witp.option.special-blocks"),
-    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty"),
-
-    SCHEMATICS("schematics", "witp.option.schematics");
+    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty");
 
     /**
      * The name of the option

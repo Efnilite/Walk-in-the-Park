@@ -37,10 +37,11 @@ items:
         time:
             item: clock
             enabled: true
-            default: Day
+            default: 6000 # time is in ticks
         difficulty:
             item: anvil
             enabled: true
+            default: 0.2
         score-difficulty:
             enabled: true
             default: true
@@ -60,7 +61,7 @@ items:
         special-blocks:
             enabled: true
             default: true
-        structure:
+        schematics:
             enabled: true
             default: true
         gamemode:
@@ -98,43 +99,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Click to spectate %p'
             search:
-                name: '<lime><bold>Search'
+                name: '<green><bold>Search'
                 lore: '<gray>Search for a player to spectate.'
         options:
             styles:
                 name: '&3<bold>Parkour style'
-                lore: '<gray>The style of your parkour||<gray>(which blocks will be used)||<gray>&bThis doesn''t affect difficulty.||||<gray>Currently: <lime>%s'
+                lore: '<gray>The style of your parkour||<gray>(which blocks will be used)||<gray>&bThis doesn''t affect difficulty.||||<gray>Currently: <green>%s'
             leads:
                 name: '<red><bold>Lead'
-                lore: '<gray>How many blocks will||<gray>be generated ahead of you.||||<gray>Currently: <lime>%s blocks'
+                lore: '<gray>How many blocks will||<gray>be generated ahead of you.||||<gray>Currently: <green>%s blocks'
             time:
                 name: '<gray><bold>Time'
-                lore: '<gray>The time of day.||||<gray>Currently: <lime>%s'
-                values: [Day, Noon, Dawn, Night, Midnight] # Make sure it's the same order every time!
+                lore: '<gray>The time of day.||||<gray>Currently: <green>%s'
             difficulty:
                 name: '&6<bold>Difficulty'
                 lore: '<gray>Change how difficult the parkour is.||||<gray>Currently: %s'
             score-difficulty:
-                name: '&2<bold>Score difficulty'
+                name: '<green><bold>Score difficulty'
                 lore: '<gray>When enabled, the higher score you have||<gray>the more difficult it gets.||||<gray>Currently: %s'
             schematic-difficulty:
                 name: '&6<bold>Schematic difficulty'
-                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: <lime>%s'
+                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: <green>%s'
                 values: [Easy, Medium, Hard, Very hard] # Make sure it's the same order every time!
             show-scoreboard:
-                name: '<lime><bold>Show scoreboard'
+                name: '<green><bold>Show scoreboard'
                 lore: '<gray>If enabled shows the scoreboard.||||<gray>Currently: %s'
             fall-message:
-                name: '<lime><bold>Show fall message'
+                name: '<green><bold>Show fall message'
                 lore: '<gray>If enabled shows a message when you fall||<gray>with extra info.||||<gray>Currently: %s'
             particles-and-sound:
-                name: '<lime><bold>Use particles and sounds'
+                name: '<green><bold>Use particles and sounds'
                 lore: '<gray>If enabled every generated block||<gray>will show particles and play a sound.||||<gray>Currently: %s'
             special-blocks:
-                name: '<lime><bold>Use special blocks'
+                name: '<green><bold>Use special blocks'
                 lore: '<gray>If enabled uses special blocks like ice and slabs.||||<gray>Currently: %s'
-            structure:
-                name: '<lime><bold>Use structures'
+            schematics:
+                name: '<green><bold>Use structures'
                 lore: '<gray>If enabled static structures||<gray>will appear throughout the parkour.||||<gray>Currently: %s'
             gamemode:
                 name: '<red><bold>Gamemode'
@@ -144,7 +144,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Language'
-                lore: '<gray>Currently: <lime>%s'
+                lore: '<gray>Currently: <green>%s'
 
     # Nederlands (Dutch)
     nl:
@@ -169,43 +169,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Klik om %p toe te kijken'
             search:
-                name: '<lime><bold>Zoeken'
+                name: '<green><bold>Zoeken'
                 lore: '<gray>Zoek een speler op die je wil toekijken.'
         options:
             styles:
-                name: '<lime><bold>Parkourstijl'
-                lore: '<gray>De stijl van het parkour||<gray>(welke blokken worden gebruikt)||||<gray>Huidige waarde: <lime>%s'
+                name: '<green><bold>Parkourstijl'
+                lore: '<gray>De stijl van het parkour||<gray>(welke blokken worden gebruikt)||||<gray>Huidige waarde: <green>%s'
             leads:
-                name: '<lime><bold>Voorsprong'
-                lore: '<gray>De voorsprong van blokken.||||<gray>Huidige waarde: <lime>%s blokken'
+                name: '<green><bold>Voorsprong'
+                lore: '<gray>De voorsprong van blokken.||||<gray>Huidige waarde: <green>%s blokken'
             time:
-                name: '<lime><bold>Tijd'
-                lore: '<gray>De tijd.||||<gray>Huidige waarde: <lime>%s'
-                values: [Dag, Middag, Zonsondergang, Nacht, Middernacht]
+                name: '<green><bold>Tijd'
+                lore: '<gray>De tijd.||||<gray>Huidige waarde: <green>%s'
             difficulty:
-                name: '<lime><bold>Moeilijkheid'
+                name: '<green><bold>Moeilijkheid'
                 lore: '<gray>Verander hoe moeilijk het parkour is!||||<gray>Huidige waarde: %s'
             score-difficulty:
-                name: '<lime>&Gebruik van puntenmoeilijkheid'
+                name: '<green>&Gebruik van puntenmoeilijkheid'
                 lore: '<gray>Als dit aanstaat dan wordt het parkour||<gray>moeilijker, naarmate je meer score hebt.||||<gray>Huidige waarde: %s'
             schematic-difficulty:
                 name: '&6<bold>Structuurmoeilijkheid'
-                lore: '<gray>Verander hoe moeilijk de structuren zijn die je tegenkomt!||||<gray>Huidige waarde: <lime>%s'
+                lore: '<gray>Verander hoe moeilijk de structuren zijn die je tegenkomt!||||<gray>Huidige waarde: <green>%s'
                 values: [Makkelijk, Middelmatig, Moeilijk, Heel moeilijk]
             particles-and-sound:
-                name: '<lime><bold>Gebruik van particles en geluiden'
+                name: '<green><bold>Gebruik van particles en geluiden'
                 lore: '<gray>Als dit aanstaat dan krijg je bij||<gray>elk nieuw blok particles en geluiden.||||<gray>Huidige waarde: %s'
             show-scoreboard:
-                name: '<lime><bold>Gebruik van scoreboard'
+                name: '<green><bold>Gebruik van scoreboard'
                 lore: '<gray>Als dit aanstaat kan je het scoreboard zien.||||<gray>Huidige waarde: %s'
             fall-message:
-                name: '<lime><bold>Gebruik van valbericht'
+                name: '<green><bold>Gebruik van valbericht'
                 lore: '<gray>Als dit aanstaat komt er een bericht||<gray>met extra info, als je valt.||||<gray>Huidige waarde: %s'
             special-blocks:
-                name: '<lime><bold>Gebruik van speciale blokken'
+                name: '<green><bold>Gebruik van speciale blokken'
                 lore: '<gray>If enabled uses special blocks like ice and slabs.||||<gray>Huidige waarde: %s'
-            structure:
-                name: '<lime><bold>Gebruik van gebouwen'
+            schematics:
+                name: '<green><bold>Gebruik van gebouwen'
                 lore: '<gray>Als dit aanstaat spawnen er||<gray>gebouwen tijdens het parkour.||||<gray>Huidige waarde: %s'
             gamemode:
                 name: '<red><bold>Gamemode'
@@ -215,7 +214,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Taal'
-                lore: '<gray>Huidige waarde: <lime>%s'
+                lore: '<gray>Huidige waarde: <green>%s'
 
     # Español (Spanish, by !Фитуу．)
     es:
@@ -240,43 +239,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Click para observar a %p'
             search:
-                name: '<lime><bold>Search'
+                name: '<green><bold>Search'
                 lore: '<gray>Busca a un jugador para observar.'
         options:
             styles:
-                name: '<lime><bold>Estilo de parkour'
-                lore: '<gray>El estilo de tu parkour||<gray>(Qué bloques se usarán)||||<gray>Actualmente: <lime>%s'
+                name: '<green><bold>Estilo de parkour'
+                lore: '<gray>El estilo de tu parkour||<gray>(Qué bloques se usarán)||||<gray>Actualmente: <green>%s'
             leads:
-                name: '<lime><bold>Visibilidad de bloques'
-                lore: '<gray>Cuántos bloques serán||<gray>generados delante de tí.||||<gray>Actualmente: <lime>%s bloques'
+                name: '<green><bold>Visibilidad de bloques'
+                lore: '<gray>Cuántos bloques serán||<gray>generados delante de tí.||||<gray>Actualmente: <green>%s bloques'
             time:
-                name: '<lime><bold>Hora'
-                lore: '<gray>Hora del día.||||<gray>Actualmente: <lime>%s'
-                values: [Día, Mediodía, Amanecer, Noche, Medianoche]
+                name: '<green><bold>Hora'
+                lore: '<gray>Hora del día.||||<gray>Actualmente: <green>%s'
             difficulty:
-                name: '<lime><bold>Dificultad'
+                name: '<green><bold>Dificultad'
                 lore: '<gray>Cambia tu configuración de dificultad||||<gray>Actualmente: %s'
             score-difficulty:
-                name: '<lime><bold>Dificultad por puntuación'
+                name: '<green><bold>Dificultad por puntuación'
                 lore: '<gray>Cuando se habilita, entre más puntos tengas||<gray>más difícil se vuelve.||||<gray>Actualmente: %s'
             schematic-difficulty:
                 name: '&6<bold>Dificultad de estructura'
-                lore: '<gray>Cambia la dificultad de los estructura que aparecen.||||<gray>Actualmente: <lime>%s'
+                lore: '<gray>Cambia la dificultad de los estructura que aparecen.||||<gray>Actualmente: <green>%s'
                 values: [Fácil, Medio, Difícil, Muy difícil]
             particles-and-sound:
-                name: '<lime><bold>Usar partículas y sonidos'
+                name: '<green><bold>Usar partículas y sonidos'
                 lore: '<gray>Si se habilita cada bloque generado||<gray>mostrará partículas y sonará un sonido.||||<gray>Actualmente:%s'
             show-scoreboard:
-                name: '<lime><bold>Mostrar scoreboard'
+                name: '<green><bold>Mostrar scoreboard'
                 lore: '<gray>Si se habilita muestra la scoreboard.||||<gray>Actualmente: %s'
             fall-message:
-                name: '<lime><bold>Mostrar mensaje al caer'
+                name: '<green><bold>Mostrar mensaje al caer'
                 lore: '<gray>Si se habilita muestra un mensaje al caer||<gray>con información extra.||||<gray>Actualmente: %s'
             special-blocks:
-                name: '<lime><bold>Usar bloques especiales'
+                name: '<green><bold>Usar bloques especiales'
                 lore: '<gray>Si se habilita, se usarán bloques especiales, como losas y hielo.||||<gray>Actualmente: %s'
-            structure:
-                name: '<lime><bold>Usar estructuras'
+            schematics:
+                name: '<green><bold>Usar estructuras'
                 lore: '<gray>Si está habilitado aparecerán||<gray>estructuras a lo largo del parkour.||||<gray>Actualmente: %s'
             gamemode:
                 name: '<red><bold>Modo de juego'
@@ -286,7 +284,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Lenguaje'
-                lore: '<gray>Actualmente: <lime>%s'
+                lore: '<gray>Actualmente: <green>%s'
 
     # Polish (Polski)
     pl:
@@ -311,43 +309,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Kliknij aby obserwować %p'
             search:
-                name: '<lime><bold>Szukaj'
+                name: '<green><bold>Szukaj'
                 lore: '<gray>Wyszukaj gracza do obserwowania.'
         options:
             styles:
-                name: '<lime><bold>Styl parkoura'
-                lore: '<gray>Styl twojego parkoura||<gray>(jakie bloki zostaną użyte).||||<gray>Obecnie ustawione: <lime>%s'
+                name: '<green><bold>Styl parkoura'
+                lore: '<gray>Styl twojego parkoura||<gray>(jakie bloki zostaną użyte).||||<gray>Obecnie ustawione: <green>%s'
             leads:
-                name: '<lime><bold>Wyprzedzenie'
-                lore: '<gray>Jak dużo bloków będzie wygenerowanych||<gray>przed tobą.||||<gray>Obecnie: <lime>%s bloki'
+                name: '<green><bold>Wyprzedzenie'
+                lore: '<gray>Jak dużo bloków będzie wygenerowanych||<gray>przed tobą.||||<gray>Obecnie: <green>%s bloki'
             time:
-                name: '<lime><bold>Pora dnia'
-                lore: '<gray>Pora dnia.||||<gray>Obecnie: <lime>%s'
-                values: [Dzień, Południe, Świt, Noc, Północ]
+                name: '<green><bold>Pora dnia'
+                lore: '<gray>Pora dnia.||||<gray>Obecnie: <green>%s'
             difficulty:
-                name: '<lime><bold>Poziom trudności'
+                name: '<green><bold>Poziom trudności'
                 lore: '<gray>Zmieniasz poziom trudności swojego parkoura.||||<gray>Obecnie: %s'
             score-difficulty:
-                name: '<lime><bold>Rosnący poziom trudności'
+                name: '<green><bold>Rosnący poziom trudności'
                 lore: '<gray>Gdy włączony, im więcej punktów masz||<gray>tym trudniejszy staje się parkour.||||<gray>Obecnie: %s'
             schematic-difficulty:
                 name: '&6<bold>Schematyczna trudność'
-                lore: '<gray>Zmień poziom trudności pojawiających się schematów!||||<gray>Obecnie: <lime>%s'
+                lore: '<gray>Zmień poziom trudności pojawiających się schematów!||||<gray>Obecnie: <green>%s'
                 values: [Łatwy, Średni, Twardy, Bardzo twardy]
             particles-and-sound:
-                name: '<lime><bold>Używaj cząsteczek i dźwięków'
+                name: '<green><bold>Używaj cząsteczek i dźwięków'
                 lore: '<gray>Gdy włączone generowanie nowego bloku||<gray>będzie obwieszczone dźwiękiem oraz cząsteczkami.||||<gray>Obecnie: %s'
             show-scoreboard:
-                name: '<lime><bold>Widoczność tablicy wyników'
+                name: '<green><bold>Widoczność tablicy wyników'
                 lore: '<gray>Gdy włączone pokazuje tablice wyników.||||<gray>Obecnie: %s'
             fall-message:
-                name: '<lime><bold>Pokazuj wiadomość po spadnięciu'
+                name: '<green><bold>Pokazuj wiadomość po spadnięciu'
                 lore: '<gray>Gdy włączone pokazuje wiadomość||<gray>z dodatkowymi informacjami.||||<gray>Obecnie: %s'
             special-blocks:
-                name: '<lime><bold>Użycie bloków specjalnych'
+                name: '<green><bold>Użycie bloków specjalnych'
                 lore: '<gray>Gdy włączone używa bloków specjalnych||<gray>takich jak lód czy półpłytki.||||<gray>Obecnie: %s'
-            structure:
-                name: '<lime><bold>Używaj struktur'
+            schematics:
+                name: '<green><bold>Używaj struktur'
                 lore: '<gray>Gdy włączone struktury||<gray>będa się pojawiać w trakcie parkouru.||||<gray>Obecnie: %s'
             gamemode:
                 name: '<red><bold>Tryb gry'
@@ -357,7 +354,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Język'
-                lore: '<gray>Obecnie: <lime>%s'
+                lore: '<gray>Obecnie: <green>%s'
 
     # 简体中文 (中国大陆, Simplified Chinese)
     zh_CN:
@@ -382,43 +379,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>点击以观赏玩家 %p 的跑酷'
             search:
-                name: '<lime><bold>搜索'
+                name: '<green><bold>搜索'
                 lore: '<gray>搜索您要观赏的玩家。'
         options:
             styles:
-                name: '<lime><bold>跑酷风格'
-                lore: '<gray>选择您的跑酷风格||<gray>(指定您要使用的方块)||||<gray>当前值为: <lime>%s'
+                name: '<green><bold>跑酷风格'
+                lore: '<gray>选择您的跑酷风格||<gray>(指定您要使用的方块)||||<gray>当前值为: <green>%s'
             leads:
-                name: '<lime><bold>预备跳台'
-                lore: '<gray>有多少方块会在您落地前||<gray>在您前方预先生成。||||<gray>当前值为: <lime>%s 个方块'
+                name: '<green><bold>预备跳台'
+                lore: '<gray>有多少方块会在您落地前||<gray>在您前方预先生成。||||<gray>当前值为: <green>%s 个方块'
             time:
-                name: '<lime><bold>跑酷时令'
-                lore: '<gray>喜欢在日出或黄昏时跑酷？||<gray>自定义您喜欢的跑酷时间吧||<gray>当前值为: <lime>%s'
-                values: [白天, 中午, 黎明, 夜晚, 午夜]
+                name: '<green><bold>跑酷时令'
+                lore: '<gray>喜欢在日出或黄昏时跑酷？||<gray>自定义您喜欢的跑酷时间吧||<gray>当前值为: <green>%s'
             difficulty:
-                name: '<lime><bold>难度'
+                name: '<green><bold>难度'
                 lore: '<gray>跑酷对您来说太难或太简单？||调整您的跑酷难度！||<gray>当前值为: %s'
             score-difficulty:
-                name: '<lime><bold>难度加分'
+                name: '<green><bold>难度加分'
                 lore: '<gray>当该项开启时，您选择的难度越高，||<gray>您每次成功地跳跃的得分越高。||||<gray>当前值: %s'
             schematic-difficulty:
                 name: '&6<bold>结构难度'
-                lore: '<gray>改变出现的示意图的难度！||||<gray>当前值: <lime>%s'
+                lore: '<gray>改变出现的示意图的难度！||||<gray>当前值: <green>%s'
                 values: [简单, 中等, 困难, 非常困难]
             particles-and-sound:
-                name: '<lime><bold>粒子效果与音效'
+                name: '<green><bold>粒子效果与音效'
                 lore: '<gray>当该项开启时，每生成一个新跳台||<gray>将会产生粒子效果并播放音效。||||<gray>当前值: %s'
             show-scoreboard:
-                name: '<lime><bold>显示计分板'
+                name: '<green><bold>显示计分板'
                 lore: '<gray>当该项开启时，将显示计分板。||||<gray>当前值: %s'
             fall-message:
-                name: '<lime><bold>显示失足信息'
+                name: '<green><bold>显示失足信息'
                 lore: '<gray>当该项开启时，将会在您掉落的时候显示信息||<gray>并附带额外参数。||||<gray>当前值: %s'
             special-blocks:
-                name: '<lime><bold>使用特殊方块'
+                name: '<green><bold>使用特殊方块'
                 lore: '<gray>当该项开启时，将在跑酷中使用像冰或台阶等特殊方块。||||<gray>当前值: %s'
-            structure:
-                name: '<lime><bold>使用预制结构'
+            schematics:
+                name: '<green><bold>使用预制结构'
                 lore: '<gray>如果该项启用，将在整个跑酷过程中||<gray>将出现预制的跑酷地图模板，并贯穿整个跑酷。||||<gray>当前值: %s'
             gamemode:
                 name: '<red><bold>跑酷模式'
@@ -428,7 +424,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>语言文件'
-                lore: '<gray>当前使用: <lime>%s'
+                lore: '<gray>当前使用: <green>%s'
 
     # Francais (French)
     fr:
@@ -453,43 +449,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Cliquez pour regarder %p'
             search:
-                name: '<lime><bold>Recherchez'
+                name: '<green><bold>Recherchez'
                 lore: '<gray>Recherche un joueur à observer.'
         options:
             styles:
-                name: '<lime><bold>style de Parkour'
-                lore: '<gray>Le style de votre parkour||<gray>(les blocs qui seront utilisés)||||<gray>Actuellement: <lime>%s'
+                name: '<green><bold>style de Parkour'
+                lore: '<gray>Le style de votre parkour||<gray>(les blocs qui seront utilisés)||||<gray>Actuellement: <green>%s'
             leads:
-                name: '<lime><bold>génération des blocks'
-                lore: '<gray>Combien de blocs seront||<gray>généré avant vous.||||<gray>Actuellement: <lime>%s blocks'
+                name: '<green><bold>génération des blocks'
+                lore: '<gray>Combien de blocs seront||<gray>généré avant vous.||||<gray>Actuellement: <green>%s blocks'
             time:
-                name: '<lime><bold>Temps'
-                lore: '<gray>L''heure du jour.||||<gray>Actuellement: <lime>%s'
-                values: [Jour, Midi, Aube, Nuit, Minuit]
+                name: '<green><bold>Temps'
+                lore: '<gray>L''heure du jour.||||<gray>Actuellement: <green>%s'
             difficulty:
-                name: '<lime><bold>Difficulter'
+                name: '<green><bold>Difficulter'
                 lore: '<gray>Modifiez vos paramètres de difficulté||||<gray>Actuellement: %s'
             score-difficulty:
-                name: '<lime><bold>Difficulté du score'
+                name: '<green><bold>Difficulté du score'
                 lore: '<gray>Lorsqu''il est activé, plus votre score est élevé||<gray>plus c''est difficile.||||<gray>Actuellement: %s'
             schematic-difficulty:
                 name: '&6<bold>Schematic difficulty'
-                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: <lime>%s'
+                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: <green>%s'
                 values: [Facile, Moyen, Difficile, Très difficile]
             particles-and-sound:
-                name: '<lime><bold>Particules et sons'
+                name: '<green><bold>Particules et sons'
                 lore: '<gray>Si cette option est activé, chaque bloc généré||<gray>affichera des particules et émettra un son.||||<gray>Actuellement: %s'
             show-scoreboard:
-                name: '<lime><bold>Tableau de scores'
+                name: '<green><bold>Tableau de scores'
                 lore: '<gray>S''il est activé, il affiche le tableau des scores.||||<gray>Actuellement: %s'
             fall-message:
-                name: '<lime><bold>Message de mort'
+                name: '<green><bold>Message de mort'
                 lore: '<gray>Si elle est activée, elle affiche un message lorsque vous tombez||<gray>avec des informations supplémentaires.||||<gray>Actuellement: %s'
             special-blocks:
-                name: '<lime><bold>Blocs spéciaux'
+                name: '<green><bold>Blocs spéciaux'
                 lore: '<gray>Si elle est activée, des blocs spéciaux comme la glace et les dalles.. se généreront||||<gray>Actuellement: %s'
-            structure:
-                name: '<lime><bold>structures'
+            schematics:
+                name: '<green><bold>structures'
                 lore: '<gray>Si les structures statiques sont activées||<gray>elle apparaîtrons tout au long du parcours.||||<gray>Actuellement: %s'
             gamemode:
                 name: '<red><bold>Gamemode'
@@ -499,7 +494,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Langage'
-                lore: '<gray>Actuellement: <lime>%s'
+                lore: '<gray>Actuellement: <green>%s'
 
     # Tiếng Việt (Vietnamese, by HSGamer)
     vi:
@@ -524,43 +519,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Nhấp để theo dõi %p'
             search:
-                name: '<lime><bold>Tìm kiếm'
+                name: '<green><bold>Tìm kiếm'
                 lore: '<gray>Tìm kiếm người chơi để theo dõi.'
         options:
             styles:
-                name: '<lime><bold>Kiểu Parkour'
-                lore: '<gray>Kiểu Parkour của bạn||<gray>(khối nào được dùng)||||<gray>Hiện tại: <lime>%s'
+                name: '<green><bold>Kiểu Parkour'
+                lore: '<gray>Kiểu Parkour của bạn||<gray>(khối nào được dùng)||||<gray>Hiện tại: <green>%s'
             leads:
-                name: '<lime><bold>Tạo khối'
-                lore: '<gray>Bao nhiêu khối||<gray>được tạo trước bạn.||||<gray>Hiện tại: <lime>%s khối'
+                name: '<green><bold>Tạo khối'
+                lore: '<gray>Bao nhiêu khối||<gray>được tạo trước bạn.||||<gray>Hiện tại: <green>%s khối'
             time:
-                name: '<lime><bold>Thời gian'
-                lore: '<gray>Thời gian trong ngày.||||<gray>Hiện tại: <lime>%s'
-                values: [Ngày, Trưa, Bình minh, Ban đêm, Nửa đêm]
+                name: '<green><bold>Thời gian'
+                lore: '<gray>Thời gian trong ngày.||||<gray>Hiện tại: <green>%s'
             difficulty:
-                name: '<lime><bold>Độ khó'
+                name: '<green><bold>Độ khó'
                 lore: '<gray>Chỉnh độ khó của bạn||||<gray>Hiện tại: %s'
             score-difficulty:
-                name: '<lime><bold>Độ khó theo điểm'
+                name: '<green><bold>Độ khó theo điểm'
                 lore: '<gray>Khi bật, điểm càng cao||<gray>độ khó càng tăng.||||<gray>Hiện tại: %s'
             schematic-difficulty:
                 name: '&6<bold>Sơ đồ khó khăn'
-                lore: '<gray>Thay đổi độ khó của các sơ đồ xuất hiện!||||<gray>Hiện tại: <lime>%s'
+                lore: '<gray>Thay đổi độ khó của các sơ đồ xuất hiện!||||<gray>Hiện tại: <green>%s'
                 values: [Dễ, Trung bình, Khó, Rất khó]
             particles-and-sound:
-                name: '<lime><bold>Dùng hiệu ứng và âm thanh'
+                name: '<green><bold>Dùng hiệu ứng và âm thanh'
                 lore: '<gray>Khi bật, những khối đã tạo||<gray>sẽ hiện hiệu ứng và âm thanh.||||<gray>Hiện tại: %s'
             show-scoreboard:
-                name: '<lime><bold>Xem bảng'
+                name: '<green><bold>Xem bảng'
                 lore: '<gray>Bật để hiện bảng bên phải.||||<gray>Hiện tại: %s'
             fall-message:
-                name: '<lime><bold>Thông báo khi rơi'
+                name: '<green><bold>Thông báo khi rơi'
                 lore: '<gray>Khi bật, một thông báo sẽ hiện lên||<gray>khi bạn rơi với thông tin chi tiết.||||<gray>Hiện tại: %s'
             special-blocks:
-                name: '<lime><bold>Dùng khối đặc biệt'
+                name: '<green><bold>Dùng khối đặc biệt'
                 lore: '<gray>Khi bật sẽ tạo khối đặc biệt như băng và bậc thang.||||<gray>Hiện tại: %s'
-            structure:
-                name: '<lime><bold>Dùng kiến trúc'
+            schematics:
+                name: '<green><bold>Dùng kiến trúc'
                 lore: '<gray>Khi bật sẽ tạo các kiến trúc||<gray>trong quá trình parkour.||||<gray>Hiện tại: %s'
             gamemode:
                 name: '<red><bold>Chế độ chơi'
@@ -570,7 +564,7 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Ngôn ngữ'
-                lore: '<gray>Hiện tại: <lime>%s'
+                lore: '<gray>Hiện tại: <green>%s'
 
     # Čeština (Czech, by DaveAshh)
     cz:
@@ -595,43 +589,42 @@ locale:
                 name: '<red><bold>%p'
                 lore: '<gray>Klikni ke sledování %p'
             search:
-                name: '<lime><bold>Vyhledat'
+                name: '<green><bold>Vyhledat'
                 lore: '<gray>Vyhledej hráče ke sledování.'
         options:
             styles:
-                name: '<lime><bold>Styl parkouru'
-                lore: '<gray>Styl tvého parkouru||<gray>(které bloky budou použity)||||<gray>Momentálně: <lime>%s'
+                name: '<green><bold>Styl parkouru'
+                lore: '<gray>Styl tvého parkouru||<gray>(které bloky budou použity)||||<gray>Momentálně: <green>%s'
             leads:
-                name: '<lime><bold>Viditelnost'
-                lore: '<gray>Kolik bloků||<gray>se před tebou vygeneruje.||||<gray>Momentálně: <lime>%s bloků'
+                name: '<green><bold>Viditelnost'
+                lore: '<gray>Kolik bloků||<gray>se před tebou vygeneruje.||||<gray>Momentálně: <green>%s bloků'
             time:
-                name: '<lime><bold>Čas'
-                lore: '<gray>Změň si denní čas.||||<gray>Momentálně: <lime>%s'
-                values: [Den, Polední, Svítání, Noc, Půlnoc]
+                name: '<green><bold>Čas'
+                lore: '<gray>Změň si denní čas.||||<gray>Momentálně: <green>%s'
             difficulty:
-                name: '<lime><bold>Obtížnost'
+                name: '<green><bold>Obtížnost'
                 lore: '<gray>Změn si svou obtížnost||||<gray>Momentálně: %s'
             score-difficulty:
-                name: '<lime><bold>Obtížnost podle skóre'
+                name: '<green><bold>Obtížnost podle skóre'
                 lore: '<gray>Pokud zapnuto, čim větší skóre budeš mít||<gray>tím těžší to bude.||||<gray>Momentálně: %s'
             schematic-difficulty:
                 name: '&6<bold>Schématická obtížnost'
-                lore: '<gray>Změňte obtížnost zobrazených schémat!||||<gray>Momentálně: <lime>%s'
+                lore: '<gray>Změňte obtížnost zobrazených schémat!||||<gray>Momentálně: <green>%s'
                 values: [Snadné, Střední, Tvrdé, Velmi těžké]
             particles-and-sound:
-                name: '<lime><bold>Použij partikly a zvuky'
+                name: '<green><bold>Použij partikly a zvuky'
                 lore: '<gray>Pokud zapnuto, každý generovaný blok||<gray>ukáže partikly a udělá zvuk.||||<gray>Momentálně: %s'
             show-scoreboard:
-                name: '<lime><bold>Zobrazit scoreboard'
+                name: '<green><bold>Zobrazit scoreboard'
                 lore: '<gray>Pokud zapnuto, ukáže scoreboard.||||<gray>Momentálně: %s'
             fall-message:
-                name: '<lime><bold>Zobrazit pádové hlášky'
+                name: '<green><bold>Zobrazit pádové hlášky'
                 lore: '<gray>Pokud zapnuto, ukáže hlášku když spadneš||<gray>s extra infem.||||<gray>Momentálně: %s'
             special-blocks:
-                name: '<lime><bold>Použít speciální bloky'
+                name: '<green><bold>Použít speciální bloky'
                 lore: '<gray>Pokud zapnuto, použije speciální bloky jako ice a slaby.||||<gray>Momentálně: %s'
-            structure:
-                name: '<lime><bold>Použít struktury'
+            schematics:
+                name: '<green><bold>Použít struktury'
                 lore: '<gray>Pokud zapnuto, statické struktury||<gray>se budou objevovat během parkouru.||||<gray>Momentálně: %s'
             gamemode:
                 name: '<red><bold>Herní mod'
@@ -641,4 +634,4 @@ locale:
                 lore: '<gray>%s'
             language:
                 name: '&e<bold>Jazyk'
-                lore: '<gray>Momentálně: <lime>%s'
+                lore: '<gray>Momentálně: <green>%s'

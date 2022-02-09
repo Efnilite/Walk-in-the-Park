@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.config;
 
+import dev.efnilite.fycore.chat.ChatColour;
 import dev.efnilite.fycore.config.ConfigOption;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
@@ -123,7 +124,7 @@ public class Option {
 
         // Config stuff
 
-        POSSIBLE_LEADS = config.getIntegerList("options.lead.amount");
+        POSSIBLE_LEADS = config.getIntegerList("options.leads.amount");
         for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
             if (lead < 1) {
                 Logging.error("Invalid lead in config: found " + lead + ", should be >1");

@@ -18,7 +18,7 @@ public class DefaultStyleType extends StyleType {
 
     @Override
     public @NotNull ItemStack getItem(String locale) {
-        return WITP.getConfiguration().getFromItemData(locale, "styles.default");
+        return WITP.getConfiguration().getFromItemData(locale, "styles.default").build();
     }
 
     @Override

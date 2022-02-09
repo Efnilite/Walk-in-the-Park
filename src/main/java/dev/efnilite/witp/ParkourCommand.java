@@ -445,7 +445,7 @@ public class ParkourCommand extends FyCommand {
                     if (user.getGenerator() instanceof DefaultGenerator) {
                         user.send("");
                         DefaultGenerator defaultGenerator = (DefaultGenerator) user.getGenerator();
-                        defaultGenerator.handler.confirmReset(args[1]);
+//                        defaultGenerator.handler.confirmReset(args[1]);
                         defaultGenerator.reset(true);
                     }
                 }
