@@ -66,11 +66,11 @@ public class Option {
     public static ConfigOption<Boolean> HOTBAR_QUIT_ITEM;
 
     public static void init(boolean init) {
+        scoreboard = WITP.getConfiguration().getFile("scoreboard");
         generation = WITP.getConfiguration().getFile("generation");
         config = WITP.getConfiguration().getFile("config");
         lang = WITP.getConfiguration().getFile("lang");
         items = WITP.getConfiguration().getFile("items");
-        scoreboard = WITP.getConfiguration().getFile("scoreboard");
 
         initSql();
         initEnums();

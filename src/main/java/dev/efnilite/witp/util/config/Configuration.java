@@ -58,8 +58,7 @@ public class Configuration {
                 Logging.stack("Error while trying to update file " + file,
                         "Delete this file. If the problem persists, please report this error to the developer!", ex);
             }
-            FileConfiguration configuration = this.getFile(folder + "/" + file);
-            files.put(file.replaceAll("(.+/|.yml)", ""), configuration);
+            reload();
         }
         schematics();
         Logging.info("Loaded all config files");

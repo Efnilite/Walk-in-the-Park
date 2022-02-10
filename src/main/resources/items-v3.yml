@@ -104,14 +104,14 @@ locale:
                 lore: '<gray>Search for a player to spectate.'
         options:
             styles:
-                name: '<#1666CF><bold>Style'
-                lore: '<#5783BE>Currently: <dark_gray>%s||<gray>Choose which blocks will be used.'
+                name: '<#6693E7><bold>Style'
+                lore: '<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used.'
             leads:
-                name: '<#1666CF><bold>Lead'
-                lore: '<#5783BE>Currently: <dark_gray>%s blocks||<gray>How many blocks will||<gray>be generated in front of you.'
+                name: '<#6693E7><bold>Lead'
+                lore: '<#5574AF>Currently: <gray>%s blocks||<gray>How many blocks will||<gray>be generated in front of you.'
             time:
-                name: '<#1666CF><bold>Time'
-                lore: '<#5783BE>Currently: <dark_gray>%s||<gray>Your current visual time.'
+                name: '<#6693E7><bold>Time'
+                lore: '<#5574AF>Currently: <gray>%s||<gray>Your current visual time.'
             difficulty:
                 name: 'Difficulty'
                 lore: '<gray>Change how difficult the parkour is.||||<gray>Currently: %s'
@@ -120,7 +120,7 @@ locale:
                 lore: '<gray>When enabled, the higher score you have||<gray>the more difficult it gets.||||<gray>Currently: %s'
             schematic-difficulty:
                 name: 'Schematic difficulty'
-                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: <green>%s'
+                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: %s'
                 values: [Easy, Medium, Hard, Very hard] # Make sure it's the same order every time!
             show-scoreboard:
                 name: 'Show scoreboard'
@@ -138,14 +138,14 @@ locale:
                 name: 'Use schematics'
                 lore: '<gray>If enabled static schematics||<gray>will appear throughout the parkour.||||<gray>Currently: %s'
             gamemode:
-                name: '<#1666CF><bold>Gamemode'
+                name: '<#6693E7><bold>Gamemode'
                 lore: ''
             leaderboard:
-                name: '<#1666CF><bold>Leaderboard'
+                name: '<#6693E7><bold>Leaderboard'
                 lore: '<gray>%s'
             language:
-                name: '<#1666CF><bold>Language'
-                lore: '<gray>Currently: <#5783BE>%s'
+                name: '<#6693E7><bold>Language'
+                lore: '<#5574AF>Currently: <gray>%s'
 
     # Nederlands (Dutch)
     nl:

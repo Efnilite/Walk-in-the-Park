@@ -15,8 +15,8 @@ scoreboard:
     title: "<gradient:#0072FF><bold>Walk in the Park</gradient:#1553A1>"
     lines:
         - "&a"
-        - "<#5395E6><bold>Score <gray>%score%"
-        - "<#5395E6><bold>Time <gray>%time%"
-        - "<#5395E6><bold>Score <gray>%highscore%"
+        - "<#5395E6>Score <white>%score%"
+        - "<#5395E6>Time <white>%time%"
+        - "<#5395E6>Score <white>%highscore%"
         - "&b"
         - "<#3F83D8><bold>server.ip"
