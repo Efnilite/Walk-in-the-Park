@@ -132,7 +132,7 @@ public final class WITP extends FyPlugin {
 
         // ----- Update checker -----
 
-        if (Option.UPDATER.get()) {
+        if (Option.UPDATE_CHECKER.get()) {
             UpdateChecker checker = new UpdateChecker();
 
             new Task()

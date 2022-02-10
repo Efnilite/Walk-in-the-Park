@@ -1,16 +1,15 @@
-# -------------- Placeholders ----------------
+# ----------- Messages v3 -----------
+# Change messages per language.
+# Some messages contain placeholders.
 # %p is the player.
-# %[a-z] is the value that can get replaced
+# %[a-z] is a value that can get replaced.
+# Colouring is also available.
+# &a, &b, &1, &2 or <name> - Regular colours
+# <#123456> - Hex colours
 
-# ---------------- Colours -------------------
-# &a, &b, &1, &2 - Regular colours
-# &#123456 - Hex colours
-
-# !!! Currently adding custom languages isn't supported !!!
-# !!! This will be in a future update !!!
 messages:
 
-    default: en
+    default: "en"
 
     # English (English)
     en:
@@ -44,17 +43,17 @@ messages:
 
         true: "yes"
         false: "no"
-        spectator: "&a&l(!) &7You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
-        spectator-bar: "&cYou are a spectator. &7Use \"/parkour gm\" to leave."
-        divider: "&7----------------------------------------"
-        score: "&aYour score: &f%s"
-        time: "&bYour time: &f%s"
-        highscore: "&eYour highscore: &f%s"
+        spectator: "<#4CB3FF>You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
+        spectator-bar: "<#4CB3FF>You are a spectator <dark_gray>• <#4CB3FF>Use \"/parkour gm\" to leave."
+        divider: "<dark_gray><strikethrough>--------------------"
+        score: "<#80C7FD>Score <white>%s"
+        time: "<#80C7FD>Time <white>%s"
+        highscore: "<#80C7FD>Highscore: <white>%s"
         difficulty: "difficulty"
         message:
-            miss: "&cYou missed your high score by %s points!"
-            beat: "&aYou beat your high score by %s points!"
-            tied: "&fYou tied your high score!"
+            miss: "<dark_gray>You missed your high score by %s points!"
+            beat: "<dark_gray>You beat your high score by %s points!"
+            tied: "<dark_gray>You tied your high score!"
 
     # Nederlands (Dutch)
     nl:
@@ -362,24 +361,3 @@ messages:
             miss: '&cNedosáhl jsi tvého rekordu o %s bodů!'
             beat: '&aPokořil jsi tvůj rekord o %s bodů!'
             tied: '&fMáš stejné skóre jako tvůj rekord!'
-
-# Options for lang
-options:
-
-    # If join/leave messages should be shown
-    join-leave-enabled: true
-
-# How the scoreboard looks
-# Placeholders: %score%, %time%, %highscore%, %topscore% and %topplayer% (in title and lines)
-scoreboard:
-    enabled: true
-
-    # You can use PlaceholderAPI placeholders with this scoreboard!
-    title: "&a&lWalk in the Park"
-    lines:
-        - "&a"
-        - "&7Score: &f%score%"
-        - "&7Time: &f%time%"
-        - "&7Highscore: &f%highscore%"
-        - "&b"
-        - "&6&lserver.ip"

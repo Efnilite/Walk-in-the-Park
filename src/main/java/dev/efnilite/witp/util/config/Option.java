@@ -1,6 +1,5 @@
 package dev.efnilite.witp.util.config;
 
-import dev.efnilite.fycore.chat.ChatColour;
 import dev.efnilite.fycore.config.ConfigOption;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
@@ -26,6 +25,7 @@ public class Option {
     private static FileConfiguration config;
     private static FileConfiguration lang;
     private static FileConfiguration items;
+    private static FileConfiguration scoreboard;
 
     // Config stuff
     public static ConfigOption<Boolean> INVENTORY_HANDLING;
@@ -36,22 +36,22 @@ public class Option {
     public static ConfigOption<Boolean> BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
-    public static ConfigOption<Boolean> VERBOSE;
+    public static ConfigOption<Boolean> VERBOSING;
     public static ConfigOption<Boolean> GAMELOGS;
 
-    public static ConfigOption<Boolean> UPDATER;
+    public static ConfigOption<Boolean> UPDATE_CHECKER;
 
     // Advanced settings
     public static ConfigOption<Direction> HEADING;
 
     public static ConfigOption<List<String>> LANGUAGES;
     public static ConfigOption<String> DEFAULT_LANG;
-    public static ConfigOption<Boolean> JOIN_LEAVE;
+    public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
 
     public static ConfigOption<String> DEFAULT_STYLE;
     public static ConfigOption<List<String>> STYLES;
 
-    public static ConfigOption<Boolean> JOINING;
+    public static ConfigOption<Boolean> ENABLE_JOINING;
     public static ConfigOption<Boolean> PERMISSIONS_STYLES;
     public static ConfigOption<Boolean> SAVE_STATS;
     public static ConfigOption<Boolean> LEAVE_REWARDS;
@@ -70,6 +70,7 @@ public class Option {
         config = WITP.getConfiguration().getFile("config");
         lang = WITP.getConfiguration().getFile("lang");
         items = WITP.getConfiguration().getFile("items");
+        scoreboard = WITP.getConfiguration().getFile("scoreboard");
 
         initSql();
         initEnums();
@@ -78,9 +79,17 @@ public class Option {
         initGeneration();
         initAdvancedGeneration();
 
-        OPTIONS_TIME_FORMAT = new ConfigOption<>(config, "options.time.format");
+        // General settings
+        VERBOSING = new ConfigOption<>(config, "verbosing");
+        UPDATE_CHECKER = new ConfigOption<>(config, "update-checker");
+        ENABLE_JOINING = new ConfigOption<>(config, "enable-joining");
+        JOIN_LEAVE_MESSAGES = new ConfigOption<>(config, "join-leave-messages");
 
-        VERBOSE = new ConfigOption<>(config, "verbose");
+        // Options
+
+        SAVE_STATS = new ConfigOption<>(config, "options.save-stats");
+        OPTIONS_ENABLED = new ConfigOption<>(config, "options.enabled");
+        OPTIONS_TIME_FORMAT = new ConfigOption<>(config, "options.time.format");
         HEALTH_HANDLING = new ConfigOption<>(config, "options.health-handling");
         INVENTORY_SAVING = new ConfigOption<>(config, "options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = new ConfigOption<>(config, "options.alt-inventory-saving-command");
@@ -93,7 +102,7 @@ public class Option {
                 if (option.equalsIgnoreCase(node)) {
                     String value = items.getString("items.options." + node + ".default");
                     if (value == null) {
-                        Logging.stack("Default option '" + node + "' is null!", "Please check your items.yml file and check the default options!");
+                        Logging.stack("Default option '" + node + "' is null!", "Please check your items-v3.yml file and check the default options!");
                         continue;
                     }
                     OPTIONS_DEFAULTS.put(node, value);
@@ -103,8 +112,6 @@ public class Option {
 
         HOTBAR_QUIT_ITEM = new ConfigOption<>(config, "options.hotbar-quit-item");
 
-        JOIN_LEAVE = new ConfigOption<>(lang, "options.join-leave-enabled");
-        HEADING = new ConfigOption<>(Util.getDirection(generation.getString("advanced.island.parkour.heading")));
         PERMISSIONS_STYLES = new ConfigOption<>(config, "permissions.per-style");
         GAMELOGS = new ConfigOption<>(config, "sql.game-logs");
         LANGUAGES = new ConfigOption<>(new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false)));
@@ -116,18 +123,12 @@ public class Option {
         DEFAULT_STYLE = new ConfigOption<>(config, "styles.default");
         STYLES = new ConfigOption<>(Util.getNode(config, "styles.list"));
 
-        SAVE_STATS = new ConfigOption<>(config, "options.save-stats");
-        OPTIONS_ENABLED = new ConfigOption<>(config, "options.enabled");
-
-        UPDATER = new ConfigOption<>(config, "update-checker");
-        JOINING = new ConfigOption<>(config, "joining");
-
         // Config stuff
 
         POSSIBLE_LEADS = config.getIntegerList("options.leads.amount");
         for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
-            if (lead < 1) {
-                Logging.error("Invalid lead in config: found " + lead + ", should be >1");
+            if (lead < 1 || lead > 64) {
+                Logging.error("Invalid lead in config: found " + lead + ", should be above 1 and below 64!");
                 POSSIBLE_LEADS.remove((Object) lead);
             }
         }
@@ -137,7 +138,11 @@ public class Option {
         FOCUS_MODE = new ConfigOption<>(config, "focus-mode.enabled");
         FOCUS_MODE_WHITELIST = new ConfigOption<>(config, "focus-mode.whitelist");
 
+        // Bungeecord
         GO_BACK = new ConfigOption<>(config, "bungeecord.go-back-enabled");
+
+        // Generation
+        HEADING = new ConfigOption<>(Util.getDirection(generation.getString("advanced.island.parkour.heading")));
 
         if (init) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");
@@ -344,9 +349,9 @@ public class Option {
     public static List<String> SCOREBOARD_LINES;
 
     private static void initScoreboard() {
-        SCOREBOARD = new ConfigOption<>(lang, "scoreboard.enabled");
-        SCOREBOARD_TITLE = new ConfigOption<>(lang, "scoreboard.title");
-        SCOREBOARD_LINES = Util.colorList(lang.getStringList("scoreboard.lines"));
+        SCOREBOARD = new ConfigOption<>(scoreboard, "scoreboard.enabled");
+        SCOREBOARD_TITLE = new ConfigOption<>(scoreboard, "scoreboard.title");
+        SCOREBOARD_LINES = Util.colorList(scoreboard.getStringList("scoreboard.lines"));
     }
 
     public enum ParticleShape {

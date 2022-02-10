@@ -130,13 +130,12 @@
             <scope>provided</scope>
         </dependency>
 
-
         <!-- Dependencies that will be compiled with the jar -->
 
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>fyCore</artifactId>
-            <version>7fc9877e77</version>
+            <version>d8878aa31a</version>
             <scope>compile</scope>
         </dependency>
 

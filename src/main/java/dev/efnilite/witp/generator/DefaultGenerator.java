@@ -322,7 +322,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= player.blockLead) {
-            generate(player.blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
+            generate(player.blockLead - deltaCurrentTotal + 1); // generate the remaining amount so it will match
         }
         lastPositionIndexPlayer = currentIndex;
 
@@ -788,7 +788,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 //                    List<String> times = getOptionValues("time");
 //                    if (times.size() != 5) {
 //                        Logging.stack("Time translation values are incomplete!",
-//                                "Make sure your translations are correct or delete your items.yml file", null);
+//                                "Make sure your translations are correct or delete your items-v3.yml file", null);
 //                        pp.send("&4&l> &cThere was an error while handling changing that option!");
 //                        return;
 //                    }
@@ -921,7 +921,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 //        private void stylesMenu(String... optDisabled) {
 //            Configuration config = WITP.getConfiguration();
 //            InventoryBuilder styling = new InventoryBuilder(pp, 3, getInventoryName("options.styles")).open();
-//            ItemStack close = config.getFromItemData(pp.locale, "general.close"); // todo
+//            ItemStack close = config.getFromItemData(pp.locale, "general.close");
 //            throw new IllegalStateException();
 //        }
 //
@@ -1041,7 +1041,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 //            List<String> name = getOptionValues("schematic-difficulty");
 //            if (name.size() != 4 && item.contains("-difficulty")) {
 //                Logging.stack("Schematic difficulty translation values are incomplete!",
-//                        "Make sure your translations are correct or delete your items.yml file", null);
+//                        "Make sure your translations are correct or delete your items-v3.yml file", null);
 //                pp.send("&4&l> &cThere was an error while handling changing that option!");
 //                return;
 //            }

@@ -1,0 +1,22 @@
+# ----------- Scoreboard v3 -----------
+# Choose how the scoreboard looks.
+# Allowed placeholders in the lines:
+# %score% - the score of the player
+# %time% - the player's current time
+# %highscore% - the player's high score
+
+scoreboard:
+
+    # Whether the scoreboard is enabled or not.
+    # Disable this if you want to use another scoreboard plugin!
+    enabled: true
+
+    # You can use PlaceholderAPI placeholders with this scoreboard!
+    title: "<gradient:#0072FF><bold>Walk in the Park</gradient:#1553A1>"
+    lines:
+        - "&a"
+        - "<#5395E6><bold>Score <gray>%score%"
+        - "<#5395E6><bold>Time <gray>%time%"
+        - "<#5395E6><bold>Score <gray>%highscore%"
+        - "&b"
+        - "<#3F83D8><bold>server.ip"

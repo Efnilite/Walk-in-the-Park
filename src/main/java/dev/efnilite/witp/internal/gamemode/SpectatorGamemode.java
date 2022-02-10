@@ -2,20 +2,15 @@ package dev.efnilite.witp.internal.gamemode;
 
 import dev.efnilite.fycore.inventory.Menu;
 import dev.efnilite.fycore.inventory.PagedMenu;
+import dev.efnilite.fycore.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.fycore.inventory.animation.WaveWestAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.SkullSetter;
-import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -78,7 +73,7 @@ public class SpectatorGamemode implements Gamemode {
                         }))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new WaveWestAnimation())
+                .animation(new SplitMiddleInAnimation())
                 .open(player);
     }
 }

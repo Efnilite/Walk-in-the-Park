@@ -16,15 +16,19 @@
 
 # Verbosing
 # If this is set to true it will display extra data when stuff happens (useful for developers)
-verbose: false
+verbosing: false
 
 # Player joining
 # Whether players can join
-joining: true
+enable-joining: true
 
 # Whether the plugin should check for updates
 # !! Highly recommended to be enabled !!
 update-checker: true
+
+# Join-leave messages
+# Whether players should receive a message when a player joins
+join-leave-messages: true
 
 # Options about Bungeecord/autojoining
 bungeecord:

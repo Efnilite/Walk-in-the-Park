@@ -11,5 +11,6 @@ public class Unicodes {
     public static final char DOUBLE_ARROW_LEFT = '\u00AB';
     public static final char HEAVY_CHECK = '\u2714';
     public static final char HEAVY_CROSS = '\u2718';
+    public static final char BULLET = '\u2022';
 
 }

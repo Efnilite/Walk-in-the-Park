@@ -381,7 +381,7 @@ public class Util {
     }
 
     /**
-     * Send a text to a player from the lang.yml file in the default language
+     * Send a text to a player from the messages-v3.yml file in the default language
      * (if the player isn't a {@link ParkourUser}, knowing their preferred language is impossible)
      *
      * @param   sender

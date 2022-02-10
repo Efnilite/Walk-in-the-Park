@@ -15,7 +15,11 @@ public enum ParkourOption {
     SHOW_FALL_MESSAGE("fall-message", "witp.option.fall-message"),
     PARTICLES_AND_SOUND("particles-and-sound", "witp.option.particles-and-sound"),
     SPECIAL_BLOCKS("special-blocks", "witp.option.special-blocks"),
-    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty");
+    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty"),
+
+    GAMEMODE("gamemode", "witp.option.gamemode"),
+    LEADERBOARD("leaderboard", "witp.option.leaderboard"),
+    LANGUAGE("language", "witp.option.language");
 
     /**
      * The name of the option

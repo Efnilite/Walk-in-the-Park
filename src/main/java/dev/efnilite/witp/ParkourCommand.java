@@ -77,7 +77,7 @@ public class ParkourCommand extends FyCommand {
                 send(sender, "&4/witp schematic &f- &7Create a schematic");
             }
             if (sender.hasPermission("witp.reload")) {
-                send(sender, "&4/witp reload <dark_gray>- Reloads the lang.yml file");
+                send(sender, "&4/witp reload <dark_gray>- Reloads the messages-v3.yml file");
                 send(sender, "&4/witp migrate <dark_gray>- Migrate your Json files to MySQL");
                 send(sender, "&4/witp reset <dark_gray>- Resets all highscores. <red>Be careful when using!");
             }
@@ -173,7 +173,7 @@ public class ParkourCommand extends FyCommand {
                         return true;
                     }
 
-                    if (!Option.JOINING.get()) {
+                    if (!Option.ENABLE_JOINING.get()) {
                         Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                         return true;
                     }

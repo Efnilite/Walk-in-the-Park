@@ -57,14 +57,14 @@ advanced:
     island:
         spawn:
             # The block the player will spawn on
-            # This block will be set to air once the schematic's been pasted
+            # This block will be set to air once the schematic has been pasted
             player-block: diamond_block
             yaw: -90
             pitch: 0
 
         parkour:
             # The block from which the parkour begins
-            # This block will be set to air once the schematic's been pasted
+            # This block will be set to air once the schematic has been pasted
             begin-block: emerald_block
 
             # The directional heading of the parkour

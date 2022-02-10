@@ -74,7 +74,7 @@ public class Handler implements EventWatcher {
 
         // Bungeecord joining
         if (Option.BUNGEECORD.get()) {
-            if (!Option.JOINING.get()) {
+            if (!Option.ENABLE_JOINING.get()) {
                 Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                 return;
             }
@@ -88,7 +88,7 @@ public class Handler implements EventWatcher {
             }
 
             // Join message
-            if (Option.JOIN_LEAVE.get()) {
+            if (Option.JOIN_LEAVE_MESSAGES.get()) {
                 event.setJoinMessage(null);
                 for (ParkourUser user : ParkourUser.getUsers()) {
                     user.sendTranslated("join", player.getName());
@@ -137,7 +137,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        if (Option.JOIN_LEAVE.get()) {
+        if (Option.JOIN_LEAVE_MESSAGES.get()) {
             event.setQuitMessage(null);
             for (ParkourUser user : ParkourUser.getUsers()) {
                 user.sendTranslated("leave", playerName);

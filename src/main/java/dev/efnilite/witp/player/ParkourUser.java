@@ -425,10 +425,10 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Gets a message from lang.yml
+     * Gets a message from messages-v3.yml
      *
      * @param   path
-     *          The path name in lang.yml (for example: 'time-preference')
+     *          The path name in messages-v3.yml (for example: 'time-preference')
      *
      * @param   replaceable
      *          What can be replaced (for example: %s to yes)

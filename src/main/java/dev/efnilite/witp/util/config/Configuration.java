@@ -38,11 +38,11 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "lang.yml", "items.yml", "schematics.yml"};
+        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "schematics.yml", "messages-v3.yml", "items-v3.yml", "scoreboard-v3.yml"};
 
         File folder = plugin.getDataFolder();
         if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
-                !new File(folder, defaultFiles[3]).exists() || !new File(folder, defaultFiles[4]).exists()) {
+                !new File(folder, defaultFiles[3]).exists() || !new File(folder, defaultFiles[4]).exists() || !new File(folder, defaultFiles[5]).exists()) {
             plugin.getDataFolder().mkdirs();
 
             for (String file : defaultFiles) {
@@ -66,10 +66,12 @@ public class Configuration {
     }
 
     public void reload() {
-        files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang.yml")));
+        files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/messages-v3.yml")));
+        files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items-v3.yml")));
+        files.put("scoreboard", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/scoreboard-v3.yml")));
+
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
-        files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items.yml")));
         files.put("schematics", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
     }
 
@@ -196,7 +198,7 @@ public class Configuration {
     }
 
     /**
-     * Gets an item from the items.yml file and automatically creates it.
+     * Gets an item from the items-v3.yml file and automatically creates it.
      *
      * @param   path
      *          The path of the item (excluding the parameters and 'items.')
@@ -204,7 +206,7 @@ public class Configuration {
      * @param   replace
      *          What should be replaced in the lore/name
      *
-     * @return the item based on the data from items.yml
+     * @return the item based on the data from items-v3.yml
      */
     public Item getFromItemData(String locale, String path, @Nullable String... replace) {
         ItemData data = getItemData(path, locale, replace);
@@ -235,6 +237,9 @@ public class Configuration {
                 lore = copy;
             }
         }
+        if (lore != null && lore.size() == 1 && lore.get(0).length() == 0) {
+            lore = null;
+        }
 
         Material material = null;
         String configMaterial = config.getString(matPath + ".item");
@@ -246,9 +251,9 @@ public class Configuration {
     }
 
     /**
-     * Class to make gathering data (items.yml) easier
+     * Class to make gathering data (items-v3.yml) easier
      */
-    public static class ItemData {
+    private static class ItemData {
 
         public String name;
         public List<String> lore;

@@ -113,7 +113,7 @@ public class ParkourPlayer extends ParkourUser {
 
     private <T> T orDefault(T value, T def) {
         if (def == null) {
-            Logging.stack("Default value is null!", "Please see if there are any errors above. Check your items.yml.");
+            Logging.stack("Default value is null!", "Please see if there are any errors above. Check your items-v3.yml.");
         }
 
         return value == null ? def : value;
