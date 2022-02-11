@@ -27,6 +27,7 @@ import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  * Handles all menu-related activities
@@ -381,7 +385,6 @@ public class ParkourMenu {
             main.item(21, item.click((menu, event) -> openLangMenu(user, disabledOptions)));
         }
 
-
         // opens the menu
         main
                 .distributeRowEvenly(0, 1, 2, 3)
@@ -428,7 +431,7 @@ public class ParkourMenu {
                     .click((menu, event) -> {
                         user.locale = lang;
                         user.lang = lang;
-                        menu.update();
+                        openMainMenu(user, disabledOptions);
                     }));
         }
 
@@ -472,13 +475,12 @@ public class ParkourMenu {
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
             Material material = Util.getRandom(styleType.styles.get(name));
-            Item item = new Item(material, "<#238681><bold>" + name);
+            Item item = new Item(material, "<#238681><bold>" + name); // todo add enchantment on select
 
             items.add(item
-                    .glowing(user.style.equals(name))
                     .click((menu, event) -> {
                         user.style = name;
-                        menu.update();
+                        openMainMenu(user, disabledOptions);
                     }));
         }
 

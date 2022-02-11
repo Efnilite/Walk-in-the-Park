@@ -1,9 +1,15 @@
 Walk in the Park
 
-v2.9.6
-- Reworked entire menu system
-- Removed limit of 26 styles by adding pages
-- Fixed schematics/ladders pasting incorrectly
+v3.0.0
+- Added leaderboard menu
+- Added scoreboard.yml
+- Reworked main menu
+- Reworked style menu
+- Reworked lang menu
+- Improve default colouring scheme
+    > These new colouring schemes have been moved to <file>-v3.yml.
+    > You can transfer your old formats by copying the English v3 variant and replacing the sentences.
+    > I know this is a pain, but so much has been changed that it's very difficult to transfer old formats to v3.
 
 High priority:
 - Optimize ram with schematics (async?)
@@ -12,5 +18,7 @@ Medium priority:
 - Add one-time rewards
 
 Low priority:
+- Option for particles shape
+- Option for particle colour
 - Customize main command
 - Customize leaderboard current rank
