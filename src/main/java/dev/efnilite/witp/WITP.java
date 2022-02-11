@@ -23,7 +23,6 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.Database;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bstats.bukkit.Metrics;
@@ -128,7 +127,6 @@ public final class WITP extends FyPlugin {
         // ----- Events -----
 
         registerListener(new Handler());
-        new InventoryBuilder.ClickHandler(this);
 
         // ----- Update checker -----
 

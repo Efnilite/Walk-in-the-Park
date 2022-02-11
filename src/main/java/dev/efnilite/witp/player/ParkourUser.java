@@ -1,28 +1,18 @@
 package dev.efnilite.witp.player;
 
-import dev.efnilite.fycore.inventory.PagedMenu;
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.inventory.InventoryBuilder;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import fr.mrmicky.fastboard.FastBoard;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -42,7 +32,6 @@ import java.util.*;
 public abstract class ParkourUser {
 
     public String locale;
-    public InventoryBuilder.OpenInventoryData openInventory;
     protected FastBoard board;
     protected PreviousData previousData;
     protected final Player player;
@@ -69,6 +58,11 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Updates the scoreboard
+     */
+    public abstract void updateScoreboard();
+
+    /**
      * Unregisters a ParkourPlayer
      *
      * @param   player
@@ -77,7 +71,8 @@ public abstract class ParkourUser {
      * @throws  IOException
      *          When saving the player's file goes wrong
      */
-    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) throws IOException, InvalidStatementException {
+    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync)
+            throws IOException, InvalidStatementException {
         Player pl = player.getPlayer();
 
         try {
@@ -188,11 +183,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Updates the scoreboard
-     */
-    public abstract void updateScoreboard();
-
-    /**
      * Gets the highscores of all player
      *
      * @throws  IOException
@@ -286,140 +276,36 @@ public abstract class ParkourUser {
         }
     }
 
-    /**
-     * Opens the gamemode menu
-     */
-    public void gamemode() {
-        WITP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
-
-        Configuration config = WITP.getConfiguration();
-
-        PagedMenu gamemode = new PagedMenu(3, ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
-
-        List<MenuItem> items = new ArrayList<>();
-        for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
-            Item item = gm.getItem(locale);
-            items.add(new Item(item.getMaterial(), item.getName())
-                    .click((menu, event) -> {
-                        gm.handleItemClick(player, this, menu); // todo
-                    }));
-        }
-
-        gamemode
-                .displayRows(0, 1)
-                .addToDisplay(items)
-
-                .item(26, config.getFromItemData(locale, "general.close")
-                        .click((menu, event) -> player.closeInventory()))
-
-                .open(player);
-    }
-
-    /**
-     * Shows the leaderboard in a message
-     *
-     * @param   user
-     *          The user, but can be null
-     *
-     * @param   player
-     *          The player
-     *
-     * @param   page
-     *          The page, starting from 1
-     */
-    public static void leaderboard(@Nullable ParkourUser user, Player player, int page) {
-        initHighScores();
-
-        int lowest = (page + 1) * 10;
-        int highest = page * 10;
-        if (page < 0) {
-            return;
-        }
-        if (page > 0 && highest > highScores.size()) {
-            return;
-        }
-
-        HashMap<UUID, Integer> sorted = Util.sortByValue(highScores);
-        highScores = sorted;
-        List<UUID> uuids = new ArrayList<>(sorted.keySet());
-
-        sendLeaderboard(user, player);
-        for (int i = highest; i < lowest; i++) {
-            if (i == uuids.size()) {
-                break;
-            }
-            @Nullable UUID uuid = uuids.get(i);
-            if (uuid == null) {
-                continue;
-            }
-            @Nullable Highscore highscore = scoreMap.get(uuid);
-            if (highscore == null) {
-                continue;
-            }
-            @Nullable String name = highscore.name;
-            if (name == null || name.equals("null")) {
-                name = Bukkit.getOfflinePlayer(uuid).getName();
-                if (name == null || name.equals("null")) {
-                    continue;
-                }
-            }
-            @Nullable String time = highscore.time;
-            if (time == null || time.equals("null")) {
-                time = "N/A";
-            }
-            @Nullable String diff = highscore.diff;
-            if (diff == null || diff.equals("null")) {
-                diff = "?";
-            }
-            int rank = i + 1;
-            player.sendMessage(Util.color("&a#" + rank + ". &7" + name + " &f- " + highScores.get(uuid) +
-                    " &7(" + time + ", " + getLeaderboard(user, "difficulty") + ": " + diff + "/1.0)"));
-            // #1. Efnilite - 354 (3m 12s, difficulty: 0.6/1.0)
-        }
-
-        UUID uuid = player.getUniqueId();
-        Integer person = highScores.get(uuid);
-//        sendLeaderboard(user, player, "your-rank", Integer.toString(ParkourUser.getRank(uuid)), person != null ? person.toString() : "0");
-        player.sendMessage("");
-
-        int prevPage = page - 1;
-        int nextPage = page + 1;
-        BaseComponent[] previous = new ComponentBuilder()
-                .append(getLeaderboard(user, "previous-page"))
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + prevPage))
-                .append(" | ").color(net.md_5.bungee.api.ChatColor.GRAY)
-                .event((ClickEvent) null)
-                .append(getLeaderboard(user, "next-page"))
-                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/witp leaderboard " + nextPage))
-                .create();
-
-        player.spigot().sendMessage(previous);
-        sendLeaderboard(user, player);
-    }
-
-    // to avoid repeating the same code every time
-    private static String getLeaderboard(@Nullable ParkourUser user, String path) {
-        if (user == null) {
-            return Util.getDefaultLang(path);
-        }
-        return user.getTranslated(path);
-    }
-
-    // to avoid repeating the same code every time
-    private static void sendLeaderboard(@Nullable ParkourUser user, Player player, String... replaceable) {
-        if (user == null) {
-            Util.sendDefaultLang(player, "divider", replaceable);
-            return;
-        }
-        user.sendTranslated("divider", replaceable);
-    }
-
     public static List<ParkourUser> getUsers() {
         return new ArrayList<>(users.values());
     }
 
     public static List<ParkourPlayer> getActivePlayers() {
         return new ArrayList<>(players.values());
+    }
+
+    /**
+     * Gets an instance of a {@link Highscore} with the player's uuid
+     *
+     * @param   uuid
+     *          The player's uuid
+     *
+     * @return the Highscore instance associated with this player uuid
+     */
+    public static Highscore getHighscore(@NotNull UUID uuid) {
+        return scoreMap.get(uuid);
+    }
+
+    /**
+     * Gets the highest score of a player from their uuid
+     *
+     * @param   uuid
+     *          The player's uuid
+     *
+     * @return the highest score they got
+     */
+    public static int getHighestScore(@NotNull UUID uuid) {
+        return highScores.get(uuid);
     }
 
     /**

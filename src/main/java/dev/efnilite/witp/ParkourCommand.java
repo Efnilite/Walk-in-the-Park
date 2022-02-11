@@ -7,9 +7,7 @@ import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Time;
 import dev.efnilite.fycore.util.Version;
-import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
-import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.InventoryData;
 import dev.efnilite.witp.schematic.Schematic;
@@ -220,7 +218,7 @@ public class ParkourCommand extends FyCommand {
                 case "gm": {
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null && user.alertCheckPermission("witp.gamemode")) {
-                        user.gamemode();
+                        ParkourMenu.openGamemodeMenu(user);
                     }
                     return true;
                 }
@@ -229,7 +227,7 @@ public class ParkourCommand extends FyCommand {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
-                    ParkourUser.leaderboard(ParkourUser.getUser(player), player, 0);
+                    ParkourMenu.openLeaderboardMenu(ParkourUser.getUser(player), player);
                     break;
                 case "schematic":
                     if (Option.PERMISSIONS.get() && !player.hasPermission("witp.schematic")) {
@@ -309,15 +307,6 @@ public class ParkourCommand extends FyCommand {
                         schematic.file("parkour-" + code).save(player);
                         return true;
                 }
-            } else if (args[0].equalsIgnoreCase("leaderboard") && args[1] != null && player != null) {
-                int page = 0;
-                try {
-                    Integer.parseInt(args[1]);
-                } catch (NumberFormatException ex) {
-                    send(player, WITP.PREFIX + "" + args[1] + " is not a number! Please enter a page.");
-                    return true;
-                }
-                ParkourUser.leaderboard(ParkourUser.getUser(player), player, page);
             } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission("witp.forcejoin")) {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
@@ -392,23 +381,6 @@ public class ParkourCommand extends FyCommand {
                     Logging.stack("Error while unregistering player " + other.getName(),
                             "Please try again or report this error to the developer!", throwable);
                 }
-
-            } else if (args[0].equalsIgnoreCase("search") && player != null) {
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user != null) {
-                    if (args[1] == null || player.getName().equalsIgnoreCase(args[1])) {
-                        user.sendTranslated("not-there-search");
-                    } else {
-                        Player search = Bukkit.getPlayer(args[1]);
-                        if (search != null && !search.getName().equals(player.getName())) {
-                            ParkourUser searchUser = ParkourUser.getUser(search);
-                            if (searchUser instanceof ParkourPlayer) {
-                                ParkourPlayer searchPp = (ParkourPlayer) searchUser;
-                                new ParkourSpectator(user, searchPp, user.getPreviousData());
-                            }
-                        }
-                    }
-                }
             } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
                 if (!cooldown(sender, "recoverinventory", 2500)) {
                     return true;
@@ -435,18 +407,6 @@ public class ParkourCommand extends FyCommand {
                         send(sender, WITP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
                     }
                 });
-            }
-        } else if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("askreset") && player != null && args[2] != null) {
-                ParkourPlayer user = ParkourPlayer.getPlayer(player);
-                if (user != null && Boolean.parseBoolean(args[2])) {
-                    if (user.getGenerator() instanceof DefaultGenerator) {
-                        user.send("");
-                        DefaultGenerator defaultGenerator = (DefaultGenerator) user.getGenerator();
-//                        defaultGenerator.handler.confirmReset(args[1]);
-                        defaultGenerator.reset(true);
-                    }
-                }
             }
         }
         return true;

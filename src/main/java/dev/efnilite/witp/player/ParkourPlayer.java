@@ -96,7 +96,7 @@ public class ParkourPlayer extends ParkourUser {
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE.get());
         this.lang = orDefault(lang, Option.DEFAULT_LANG.get());
-        this.locale = lang;
+        this.locale = this.lang;
 
         this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS.getName())));
         this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_FALL_MESSAGE.getName())));

@@ -9,28 +9,169 @@ import dev.efnilite.fycore.inventory.animation.WaveWestAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.inventory.item.SliderItem;
+import dev.efnilite.fycore.inventory.item.TimedItem;
 import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.SkullSetter;
+import dev.efnilite.fycore.util.Task;
+import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.api.StyleType;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Unicodes;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import fr.mrmicky.fastboard.FastBoard;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+/**
+ * Handles all menu-related activities
+ */
 public class ParkourMenu {
 
+    /**
+     * Opens the gamemode menu
+     *
+     * @param   user
+     *          The ParkourUser instance
+     */
+    public static void openGamemodeMenu(ParkourUser user) {
+        WITP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
+
+        Configuration config = WITP.getConfiguration();
+        PagedMenu gamemode = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.gamemode.name")));
+
+        List<MenuItem> items = new ArrayList<>();
+        for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
+            Item item = gm.getItem(user.locale);
+            items.add(new Item(item.getMaterial(), item.getName())
+                    .click((menu, event) -> gm.handleItemClick(user.getPlayer(), user, menu)));
+        }
+
+        gamemode
+                .displayRows(0, 1)
+                .addToDisplay(items)
+
+                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                        .click((menu, event) -> gamemode.page(1)))
+
+                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                        .click((menu, event) -> gamemode.page(-1)))
+
+                .item(31, config.getFromItemData(user.locale, "general.close")
+                        .click((menu, event) -> user.getPlayer().closeInventory()))
+
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new RandomAnimation())
+                .open(user.getPlayer());
+    }
+    
+    /**
+     * Shows the leaderboard menu
+     *
+     * @param   user
+     *          The user, but can be null
+     *
+     * @param   player
+     *          The player
+     */
+    public static void openLeaderboardMenu(@Nullable ParkourUser user, Player player) {
+        ParkourUser.initHighScores(); // make sure scores are enabled
+
+        // sort high scores by value
+        HashMap<UUID, Integer> sorted = Util.sortByValue(ParkourUser.highScores);
+        ParkourUser.highScores = sorted;
+        List<UUID> uuids = new ArrayList<>(sorted.keySet());
+
+        // init vars
+        String locale = user == null ? Option.DEFAULT_LANG.get() : user.locale;
+        Configuration config = WITP.getConfiguration();
+        PagedMenu leaderboard = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
+        List<MenuItem> items = new ArrayList<>();
+
+        int rank = 1;
+        Item item = config.getFromItemData(locale, "options.leaderboard-head");
+        for (UUID uuid : uuids) {
+            Highscore highscore = ParkourUser.getHighscore(uuid);
+            if (highscore == null) {
+                continue;
+            }
+
+            int finalRank = rank;
+            item = item.clone()
+                    .material(Material.PLAYER_HEAD)
+                    .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
+                            .replace("%s",  Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%p", highscore.name)
+                            .replace("%t", highscore.time)
+                            .replace("%d", highscore.diff))
+                    .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
+                            .replace("%s",  Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%p", highscore.name)
+                            .replace("%t", highscore.time)
+                            .replace("%d", highscore.diff));
+
+            // Player head gathering
+            ItemStack stack = item.build();
+            stack.setType(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) stack.getItemMeta();
+            if (meta == null) {
+                continue;
+            }
+            SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
+            item.meta(meta);
+
+            if (uuid.equals(player.getUniqueId())) {
+                leaderboard.item(30, item.clone());
+                item.glowing();
+            }
+
+            items.add(item);
+            rank++;
+        }
+
+        leaderboard
+                .displayRows(0, 1)
+                .addToDisplay(items)
+
+                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                        .click((menu, event) -> leaderboard.page(1)))
+
+                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                        .click((menu, event) -> leaderboard.page(-1)))
+
+                .item(32, config.getFromItemData(locale, "general.close")
+                        .click((menu, event) -> player.closeInventory()))
+
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new WaveEastAnimation())
+                .open(player);
+    }
+
+    /**
+     * Shows the main menu to a valid ParkourPlayer instance
+     *
+     * @param   user
+     *          The ParkourPlayer
+     *
+     * @param   disabledOptions
+     *          An array of disabled options
+     */
     public static void openMainMenu(ParkourPlayer user, ParkourOption... disabledOptions)  {
         Player player = user.getPlayer();
         Configuration config = WITP.getConfiguration();
@@ -176,11 +317,19 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (menu, event) -> user.useSpecialBlocks = true)
+                            (menu, event) -> {
+                                if (allowSettingChange(user, menu, event)) {
+                                    user.useSpecialBlocks = true;
+                                }
+                            })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (menu, event) -> user.useSpecialBlocks = false));
+                            (menu, event) -> {
+                                if (allowSettingChange(user, menu, event)) {
+                                    user.useSpecialBlocks = false;
+                                }
+                            }));
         }
 
         if (checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabledOptions)) {
@@ -191,17 +340,25 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (menu, event) -> user.useScoreDifficulty = true)
+                            (menu, event) -> {
+                                if (allowSettingChange(user, menu, event)) {
+                                    user.useScoreDifficulty = true;
+                                }
+                            })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (menu, event) -> user.useScoreDifficulty = false));
+                            (menu, event) -> {
+                                if (allowSettingChange(user, menu, event)) {
+                                    user.useScoreDifficulty = false;
+                                }
+                            }));
         }
 
         if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
             Item item = config.getFromItemData(user.locale, "options." + ParkourOption.GAMEMODE.getName());
 
-            main.item(19, item.click((menu, event) -> user.gamemode()));
+            main.item(19, item.click((menu, event) -> openGamemodeMenu(user)));
         }
 
         if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
@@ -212,7 +369,7 @@ public class ParkourMenu {
 
             main.item(20, item.click((menu, event) -> {
                 player.closeInventory();
-                ParkourUser.leaderboard(user, player, 0);
+                openLeaderboardMenu(user, player);
             }));
         }
 
@@ -246,6 +403,15 @@ public class ParkourMenu {
                 .open(player);
     }
 
+    /**
+     * Opens the language menu
+     *
+     * @param   user
+     *          The ParkourPlayer instance
+     *
+     * @param   disabledOptions
+     *          Options which are disabled
+     */
     public static void openLangMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
         Configuration config = WITP.getConfiguration();
 
@@ -284,7 +450,18 @@ public class ParkourMenu {
                 .open(user.getPlayer());
     }
 
-
+    /**
+     * Opens the style menu for a specific style type
+     *
+     * @param   user
+     *          The ParkourPlayer instance
+     *
+     * @param   styleType
+     *          The style type
+     *
+     * @param   disabledOptions
+     *          Disabled options
+     */
     public static void openSingleStyleMenu(ParkourPlayer user, StyleType styleType, ParkourOption... disabledOptions) {
         Configuration config = WITP.getConfiguration();
 
@@ -323,6 +500,15 @@ public class ParkourMenu {
                 .open(user.getPlayer());
     }
 
+    /**
+     * Opens the schematic customization menu
+     *
+     * @param   user
+     *          The ParkourPlayer instance
+     *
+     * @param   disabledOptions
+     *          Options which are disabled
+     */
     public static void openSchematicMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
         Configuration config = WITP.getConfiguration();
 
@@ -336,19 +522,35 @@ public class ParkourMenu {
         Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
         schematics.item(10, new SliderItem()
-                        .initial(difficulties.indexOf(user.schematicDifficulty))
-                        .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
-                                (menu, event) -> user.schematicDifficulty = 0.2)
-                        .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
-                                (menu, event) -> user.schematicDifficulty = 0.4)
-                        .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
-                                (menu, event) -> user.schematicDifficulty = 0.6)
-                        .add(3, item.clone().material(Material.SKELETON_SKULL)
-                                        .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
-                                (menu, event) -> user.schematicDifficulty = 0.8));
+                .initial(difficulties.indexOf(user.schematicDifficulty))
+                .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
+                        (menu, event) -> {
+                            if (allowSettingChange(user, menu, event)) {
+                                user.schematicDifficulty = 0.2;
+                            }
+                        })
+                .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
+                                .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
+                        (menu, event) -> {
+                            if (allowSettingChange(user, menu, event)) {
+                                user.schematicDifficulty = 0.4;
+                            }
+                        })
+                .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
+                                .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
+                        (menu, event) -> {
+                            if (allowSettingChange(user, menu, event)) {
+                                user.schematicDifficulty = 0.6;
+                            }
+                        })
+                .add(3, item.clone().material(Material.SKELETON_SKULL)
+                                .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
+                        (menu, event) -> {
+                            if (allowSettingChange(user, menu, event)) {
+                                user.schematicDifficulty = 0.8;
+                            }
+                        }));
 
         item = config.getFromItemData(user.locale, "options." + ParkourOption.USE_SCHEMATICS.getName());
 
@@ -360,11 +562,19 @@ public class ParkourMenu {
                         .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                                (menu, event) -> user.useSchematic = true)
+                                (menu, event) -> {
+                                    if (allowSettingChange(user, menu, event)) {
+                                        user.useSchematic = true;
+                                    }
+                                })
                         .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                                (menu, event) -> user.useSchematic = false))
+                                (menu, event) -> {
+                                    if (allowSettingChange(user, menu, event)) {
+                                        user.useSchematic = false;
+                                    }
+                                }))
 
                 .item(26, config.getFromItemData(user.locale, "general.close")
                         .click((menu, event) -> openMainMenu(user, disabledOptions)))
@@ -374,11 +584,30 @@ public class ParkourMenu {
                 .open(user.getPlayer());
     }
 
+    private static boolean allowSettingChange(ParkourPlayer player, Menu menu, InventoryClickEvent event) {
+        if (player.getGenerator().getScore() > 0) {
+            new Task()
+                    .delay(1)
+                    .execute(() -> {
+                        menu.item(event.getSlot(), new TimedItem(new Item(Material.BARRIER, "<dark_red><bold>You can't change this right now")
+                                .lore("<gray>You have a score above 0,", "<gray>which means you can't change settings.")
+                                .click((menu1, event1) -> {
+
+                                }), menu, event, 5 * 20));
+                        menu.updateItem(event.getSlot());
+                    })
+                    .run();
+            return false;
+        }
+        return true;
+    }
+
+    // replaces true/false with a checkmark and cross
     private static String getBooleanSymbol(boolean value) {
         return value ? "<#0DCB07><bold>" + Unicodes.HEAVY_CHECK : "<red><bold>" + Unicodes.HEAVY_CROSS;
     }
 
-    //Checks all options
+    // check if option is allowed to be displayed
     private static boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
         boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option.getName() + ".enabled");
         if (!enabled || Arrays.asList(disabled).contains(option)) {

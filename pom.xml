@@ -135,7 +135,7 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>fyCore</artifactId>
-            <version>aec20e4f6e</version>
+            <version>28d7550873</version>
             <scope>compile</scope>
         </dependency>
 

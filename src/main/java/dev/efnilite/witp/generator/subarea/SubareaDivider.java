@@ -2,7 +2,6 @@ package dev.efnilite.witp.generator.subarea;
 
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.fycore.vector.Vector2D;
 import dev.efnilite.fycore.vector.Vector3D;
@@ -20,7 +19,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;

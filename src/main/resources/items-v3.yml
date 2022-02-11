@@ -97,10 +97,7 @@ locale:
                 lore: '<gray>Spectate another player'
             spectator-head:
                 name: '<#6693E7><bold>%p'
-                lore: '<gray>Click to spectate %p'
-            search:
-                name: 'Search'
-                lore: '<gray>Search for a player to spectate.'
+                lore: '<gray>Click to spectate.'
         options:
             styles:
                 name: '<#6693E7><bold>Style'
@@ -145,6 +142,9 @@ locale:
             leaderboard:
                 name: '<#6693E7><bold>Leaderboard'
                 lore: '<#5574AF>Rank: <gray>%s'
+            leaderboard-head:
+                name: '<#6693E7><bold>#%r - %p'
+                lore: '<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0'
             language:
                 name: '<#6693E7><bold>Language'
                 lore: '<#5574AF>Currently: <gray>%s'
