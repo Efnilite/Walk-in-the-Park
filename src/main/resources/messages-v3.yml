@@ -20,7 +20,6 @@ messages:
 
         next-page: "&aNext page >>"
         previous-page: "&a<< Previous page"
-        your-rank: "&7Your rank: &f#%n &7(%h)"
 
         selected-style: "&a&l(!) &7You selected style &c%s&7!"
         selected-block-lead: "&a&l(!) &7You selected a &a%a &7block lead!"
@@ -44,16 +43,18 @@ messages:
         true: "yes"
         false: "no"
         spectator: "<#4CB3FF>You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
-        spectator-bar: "<#4CB3FF>You are a spectator <dark_gray>• <#4CB3FF>Use \"/parkour gm\" to leave."
-        divider: "<dark_gray><strikethrough>--------------------"
-        score: "<#80C7FD>Score <white>%s"
-        time: "<#80C7FD>Time <white>%s"
-        highscore: "<#80C7FD>Highscore: <white>%s"
+        spectator-bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use \"/parkour gm\" to leave."
+
+        your-rank: "<#5574AF>Rank: <gray>#%n (%s)"
+        divider: "<dark_gray><strikethrough>------------------------------"
+        score: "<#80C7FD><bold>Score <white>%s"
+        time: "<#80C7FD><bold>Time <white>%s"
+        highscore: "<#80C7FD><bold>Highscore <white>%s"
         difficulty: "difficulty"
         message:
-            miss: "<dark_gray>You missed your high score by %s points!"
-            beat: "<dark_gray>You beat your high score by %s points!"
-            tied: "<dark_gray>You tied your high score!"
+            miss: "<gray>You missed your high score by %s points!"
+            beat: "<gray>You beat your high score by %s points!"
+            tied: "<gray>You tied your high score!"
 
     # Nederlands (Dutch)
     nl:

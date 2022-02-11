@@ -56,7 +56,7 @@ public class ParkourCommand extends FyCommand {
         if (args.length == 0) {
             // Help menu
             send(sender, "");
-            send(sender, "<dark_gray><strikethrough>---------------</strikethrough> " + WITP.NAME + " <dark_gray><strikethrough>---------------</strikethrough>");
+            send(sender, "<dark_gray><strikethrough>---------------<reset> " + WITP.NAME + " <dark_gray><strikethrough>---------------<reset>");
             send(sender, "");
             send(sender, "<gray>/witp <dark_gray>- Main command");
             if (sender.hasPermission("witp.join")) {
@@ -74,15 +74,15 @@ public class ParkourCommand extends FyCommand {
             }
 
             if (sender.hasPermission("witp.schematic")) {
-                send(sender, "&4/witp schematic &f- &7Create a schematic");
+                send(sender, "<gray>/witp schematic <dark_gray>- Create a schematic");
             }
             if (sender.hasPermission("witp.reload")) {
-                send(sender, "&4/witp reload <dark_gray>- Reloads the messages-v3.yml file");
-                send(sender, "&4/witp migrate <dark_gray>- Migrate your Json files to MySQL");
-                send(sender, "&4/witp reset <dark_gray>- Resets all highscores. <red>Be careful when using!");
+                send(sender, "<gray>/witp reload <dark_gray>- Reloads the messages-v3.yml file");
+                send(sender, "<gray>/witp migrate <dark_gray>- Migrate your Json files to MySQL");
+                send(sender, "<gray>/witp reset <dark_gray>- Resets all highscores. <red>Be careful when using!");
             }
             if (sender.hasPermission("witp.recoverinventory")) {
-                send(sender, "&4/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
+                send(sender, "<gray>/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
                         " <red>Useful for recovering data after server crashes or errors when leaving.");
             }
             send(sender, "");

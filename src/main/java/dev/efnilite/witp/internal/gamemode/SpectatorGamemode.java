@@ -3,7 +3,6 @@ package dev.efnilite.witp.internal.gamemode;
 import dev.efnilite.fycore.inventory.Menu;
 import dev.efnilite.fycore.inventory.PagedMenu;
 import dev.efnilite.fycore.inventory.animation.SplitMiddleInAnimation;
-import dev.efnilite.fycore.inventory.animation.WaveWestAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.SkullSetter;

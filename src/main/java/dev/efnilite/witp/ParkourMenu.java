@@ -35,7 +35,8 @@ public class ParkourMenu {
         Player player = user.getPlayer();
         Configuration config = WITP.getConfiguration();
 
-        Menu main = new Menu(4, "<white>" + ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".general.menu.name")));
+        Menu main = new Menu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".general.menu.name")));
 
         // ---------- top row ----------
 
@@ -82,25 +83,29 @@ public class ParkourMenu {
             main.item(3, new SliderItem()
                     .initial(times.indexOf(user.time))
                     .add(0, item.clone()
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
+                                    .modifyLore(line ->
+                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
                             (menu, event) -> {
                                     user.time = 0;
                                     player.setPlayerTime(18000, false); // 00:00
                             })
                     .add(1, item.clone()
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
+                                    .modifyLore(line ->
+                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
                             (menu, event) -> {
                                 user.time = 6000;
                                 player.setPlayerTime(0, false); // 00:00
                             })
                     .add(2, item.clone()
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
+                                    .modifyLore(line ->
+                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
                             (menu, event) -> {
                                 user.time = 12000;
                                 player.setPlayerTime(6000, false); // 12:00
                             })
                     .add(3, item.clone()
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
+                                    .modifyLore(line ->
+                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
                             (menu, event) -> {
                                 user.time = 18000;
                                 player.setPlayerTime(12000, false); // 18:00
@@ -200,7 +205,11 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LEADERBOARD.getName());
+            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LEADERBOARD.getName())
+                    .modifyLore(line ->
+                            line.replaceAll("%s", user.getTranslated("your-rank",
+                                    Integer.toString(ParkourUser.getRank(user.getUUID())),
+                                    user.highScore.toString())));
 
             main.item(20, item.click((menu, event) -> {
                     ParkourUser.leaderboard(user, user.getPlayer(), 0);
@@ -240,7 +249,8 @@ public class ParkourMenu {
         Configuration config = WITP.getConfiguration();
 
         // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" + ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.language.name")));
+        PagedMenu style = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.language.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Option.LANGUAGES.get()) {
@@ -278,7 +288,8 @@ public class ParkourMenu {
         Configuration config = WITP.getConfiguration();
 
         // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" + ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.styles.name")));
+        PagedMenu style = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.styles.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -315,24 +326,30 @@ public class ParkourMenu {
         Configuration config = WITP.getConfiguration();
 
         // init menu
-        Menu schematics = new Menu(3, "<white>Schematics"); // todo
+        Menu schematics = new Menu(3, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.schematics.name")));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
-
         List<String> values = config.getStringList("items", "locale." + user.locale + ".options.schematic-difficulty.values");
+
+        Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
         schematics.item(10, new SliderItem()
                         .initial(difficulties.indexOf(user.schematicDifficulty))
-                        .add(0, new Item(Material.LIME_STAINED_GLASS_PANE, "<#0DCB07><bold>" + values.get(0)),
+                        .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                        .modifyLore(line -> line.replaceAll("%s", "<#0DCB07>" + values.get(0))),
                                 (menu, event) -> user.schematicDifficulty = 0.2)
-                        .add(1, new Item(Material.YELLOW_STAINED_GLASS_PANE, "<yellow><bold>" + values.get(1)),
+                        .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
+                                        .modifyLore(line -> line.replaceAll("%s", "<yellow>" + values.get(1))),
                                 (menu, event) -> user.schematicDifficulty = 0.4)
-                        .add(2, new Item(Material.ORANGE_STAINED_GLASS_PANE, "<#FF6C17><bold>" + values.get(2)),
+                        .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
+                                        .modifyLore(line -> line.replaceAll("%s", "<#FF6C17>" + values.get(2))),
                                 (menu, event) -> user.schematicDifficulty = 0.6)
-                        .add(3, new Item(Material.SKELETON_SKULL, "<dark_red><bold>" + values.get(3)),
+                        .add(3, item.clone().material(Material.SKELETON_SKULL)
+                                        .modifyLore(line -> line.replaceAll("%s", "<dark_red>" + values.get(3))),
                                 (menu, event) -> user.schematicDifficulty = 0.8));
 
-        Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATICS.getName());
+        item = config.getFromItemData(user.locale, "options." + ParkourOption.USE_SCHEMATICS.getName());
 
         schematics
                 .distributeRowEvenly(0, 1, 2)

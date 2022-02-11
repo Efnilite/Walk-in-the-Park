@@ -12,11 +12,11 @@ scoreboard:
     enabled: true
 
     # You can use PlaceholderAPI placeholders with this scoreboard!
-    title: "<gradient:#0072FF><bold>Walk in the Park</gradient:#1553A1>"
+    title: "<gradient:#002A41>Infinite Parkour</gradient:#0072B3>"
     lines:
         - "&a"
-        - "<#5395E6>Score <white>%score%"
-        - "<#5395E6>Time <white>%time%"
-        - "<#5395E6>Score <white>%highscore%"
+        - "<#0072B3>Score <white>%score%"
+        - "<#0072B3>Time <white>%time%"
+        - "<#0072B3>Highscore <white>%highscore%"
         - "&b"
-        - "<#3F83D8><bold>server.ip"
+        - "<#80C7FD><bold>server.ip"

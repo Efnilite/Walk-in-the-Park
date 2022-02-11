@@ -39,17 +39,12 @@ items:
             item: clock
             enabled: true
             default: 6000 # time is in ticks
-        difficulty:
-            item: anvil
-            enabled: true
-            default: 0.2
         score-difficulty:
             enabled: true
             default: true
         schematic-difficulty:
-            item: scaffolding
             enabled: true
-            default: 0.3
+            default: 0.2
         particles-and-sound:
             enabled: true
             default: true
@@ -62,7 +57,11 @@ items:
         special-blocks:
             enabled: true
             default: true
+        use-schematics:
+            enabled: true
+            default: true
         schematics:
+            item: scaffolding
             enabled: true
             default: true
         gamemode:
@@ -91,13 +90,13 @@ locale:
                 lore: ''
         gamemodes:
             default:
-                name: '<red><bold>Normal'
+                name: '<#6693E7><bold>Normal'
                 lore: '<gray>Play the game like normal'
             spectator:
-                name: '<red><bold>Spectate'
+                name: '<#6693E7><bold>Spectate'
                 lore: '<gray>Spectate another player'
             spectator-head:
-                name: '<red><bold>%p'
+                name: '<#6693E7><bold>%p'
                 lore: '<gray>Click to spectate %p'
             search:
                 name: 'Search'
@@ -112,16 +111,18 @@ locale:
             time:
                 name: '<#6693E7><bold>Time'
                 lore: '<#5574AF>Currently: <gray>%s||<gray>Your current visual time.'
-            difficulty:
-                name: 'Difficulty'
-                lore: '<gray>Change how difficult the parkour is.||||<gray>Currently: %s'
-            score-difficulty:
-                name: 'Score difficulty'
-                lore: '<gray>When enabled, the higher score you have||<gray>the more difficult it gets.||||<gray>Currently: %s'
+
             schematic-difficulty:
-                name: 'Schematic difficulty'
-                lore: '<gray>Change the difficulty of the schematics that appear!||||<gray>Currently: %s'
-                values: [Easy, Medium, Hard, Very hard] # Make sure it's the same order every time!
+                name: '<#6693E7><bold>Schematic difficulty'
+                lore: '<#5574AF>Currently: <gray>%s||<gray>The difficulty of schematics'
+                values: [easy, medium, hard, very hard] # Make sure it's the same order every time!
+            use-schematics:
+                name: 'Use schematics'
+                lore: '<gray>If enabled static schematics||<gray>will appear throughout the parkour.||||<gray>Currently: %s'
+            schematics:
+                name: '<#6693E7><bold>Schematics'
+                lore: '<gray>Change schematic settings'
+
             show-scoreboard:
                 name: 'Show scoreboard'
                 lore: '<gray>If enabled shows the scoreboard.||||<gray>Currently: %s'
@@ -134,9 +135,10 @@ locale:
             special-blocks:
                 name: 'Use special blocks'
                 lore: '<gray>If enabled uses special blocks like ice and slabs.||||<gray>Currently: %s'
-            schematics:
-                name: 'Use schematics'
-                lore: '<gray>If enabled static schematics||<gray>will appear throughout the parkour.||||<gray>Currently: %s'
+            score-difficulty:
+                name: 'Score difficulty'
+                lore: '<gray>When enabled, the higher score you have||<gray>the more difficult it gets.||||<gray>Currently: %s'
+
             gamemode:
                 name: '<#6693E7><bold>Gamemode'
                 lore: ''

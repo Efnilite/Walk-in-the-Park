@@ -22,6 +22,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -293,7 +294,7 @@ public abstract class ParkourUser {
 
         Configuration config = WITP.getConfiguration();
 
-        PagedMenu gamemode = new PagedMenu(3, config.getString("items", "locale." + locale + ".options.gamemode.name"));
+        PagedMenu gamemode = new PagedMenu(3, ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
