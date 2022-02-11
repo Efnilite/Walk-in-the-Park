@@ -106,7 +106,7 @@ public class ParkourPlayer extends ParkourUser {
         this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND.getName())));
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
         this.time = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
-
+        
         player.setPlayerTime(this.time, false);
         updateScoreboard();
     }

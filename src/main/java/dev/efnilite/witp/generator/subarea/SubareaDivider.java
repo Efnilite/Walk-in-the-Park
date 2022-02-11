@@ -348,17 +348,6 @@ public class SubareaDivider {
             pp.sendTranslated("customize-menu");
         }
         pp.getGenerator().startTick();
-
-        // Make sure the player is in the correct world
-        // Used to be a problem, don't know if it still is, too scared to remove it now :)
-        new Task()
-                .delay(10)
-                .execute(() -> {
-                    if (!player.getWorld().getUID().equals(world.getUID())) {
-                        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    }
-                })
-                .run();
     }
 
     /**

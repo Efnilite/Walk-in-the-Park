@@ -316,17 +316,26 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Shows the leaderboard (as a chat message)
+     * Shows the leaderboard in a message
+     *
+     * @param   user
+     *          The user, but can be null
+     *
+     * @param   player
+     *          The player
+     *
+     * @param   page
+     *          The page, starting from 1
      */
     public static void leaderboard(@Nullable ParkourUser user, Player player, int page) {
         initHighScores();
 
-        int lowest = page * 10;
-        int highest = (page - 1) * 10;
-        if (page < 1) {
+        int lowest = (page + 1) * 10;
+        int highest = page * 10;
+        if (page < 0) {
             return;
         }
-        if (page > 1 && highest > highScores.size()) {
+        if (page > 0 && highest > highScores.size()) {
             return;
         }
 
@@ -334,7 +343,7 @@ public abstract class ParkourUser {
         highScores = sorted;
         List<UUID> uuids = new ArrayList<>(sorted.keySet());
 
-        sendLeaderboard(user, player, "divider");
+        sendLeaderboard(user, player);
         for (int i = highest; i < lowest; i++) {
             if (i == uuids.size()) {
                 break;
@@ -370,7 +379,7 @@ public abstract class ParkourUser {
 
         UUID uuid = player.getUniqueId();
         Integer person = highScores.get(uuid);
-        sendLeaderboard(user, player, "your-rank", Integer.toString(ParkourUser.getRank(uuid)), person != null ? person.toString() : "0");
+//        sendLeaderboard(user, player, "your-rank", Integer.toString(ParkourUser.getRank(uuid)), person != null ? person.toString() : "0");
         player.sendMessage("");
 
         int prevPage = page - 1;
@@ -385,7 +394,7 @@ public abstract class ParkourUser {
                 .create();
 
         player.spigot().sendMessage(previous);
-        sendLeaderboard(user, player, "divider");
+        sendLeaderboard(user, player);
     }
 
     // to avoid repeating the same code every time
@@ -397,12 +406,12 @@ public abstract class ParkourUser {
     }
 
     // to avoid repeating the same code every time
-    private static void sendLeaderboard(@Nullable ParkourUser user, Player player, String path, String... replaceable) {
+    private static void sendLeaderboard(@Nullable ParkourUser user, Player player, String... replaceable) {
         if (user == null) {
-            Util.sendDefaultLang(player, path, replaceable);
+            Util.sendDefaultLang(player, "divider", replaceable);
             return;
         }
-        user.sendTranslated(path, replaceable);
+        user.sendTranslated("divider", replaceable);
     }
 
     public static List<ParkourUser> getUsers() {

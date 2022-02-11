@@ -60,7 +60,7 @@ public class ParkourMenu {
             for (int value : leads) {
                 item.add(slot, displayItem.clone()
                                 .amount(value)
-                                .modifyLore(line -> line.replaceAll("%[a-z]", Integer.toString(value))),
+                                .modifyLore(line -> line.replace("%s", Integer.toString(value))),
                         (menu, event) -> user.blockLead = value);
                 slot++;
             }
@@ -84,28 +84,28 @@ public class ParkourMenu {
                     .initial(times.indexOf(user.time))
                     .add(0, item.clone()
                                     .modifyLore(line ->
-                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
+                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
                             (menu, event) -> {
                                     user.time = 0;
                                     player.setPlayerTime(18000, false); // 00:00
                             })
                     .add(1, item.clone()
                                     .modifyLore(line ->
-                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
+                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
                             (menu, event) -> {
                                 user.time = 6000;
                                 player.setPlayerTime(0, false); // 00:00
                             })
                     .add(2, item.clone()
                                     .modifyLore(line ->
-                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
+                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
                             (menu, event) -> {
                                 user.time = 12000;
                                 player.setPlayerTime(6000, false); // 12:00
                             })
                     .add(3, item.clone()
                                     .modifyLore(line ->
-                                            line.replaceAll("%[a-z]", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
+                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
                             (menu, event) -> {
                                 user.time = 18000;
                                 player.setPlayerTime(12000, false); // 18:00
@@ -121,7 +121,7 @@ public class ParkourMenu {
                     .initial(user.showScoreboard ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                             (menu, event) -> {
                                     user.showScoreboard = true;
                                     user.setBoard(new FastBoard(player));
@@ -129,7 +129,7 @@ public class ParkourMenu {
                             })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                             (menu, event) -> {
                                     user.showScoreboard = false;
                                     if (user.getBoard() != null && !user.getBoard().isDeleted()) {
@@ -145,11 +145,11 @@ public class ParkourMenu {
                     .initial(user.showFallMessage ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                             (menu, event) -> user.showFallMessage = true)
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                             (menu, event) -> user.showFallMessage = false));
         }
 
@@ -160,11 +160,11 @@ public class ParkourMenu {
                     .initial(user.useParticlesAndSound ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                             (menu, event) -> user.useParticlesAndSound = true)
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                             (menu, event) -> user.useParticlesAndSound = false));
         }
 
@@ -175,11 +175,11 @@ public class ParkourMenu {
                     .initial(user.useSpecialBlocks ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                             (menu, event) -> user.useSpecialBlocks = true)
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                             (menu, event) -> user.useSpecialBlocks = false));
         }
 
@@ -190,11 +190,11 @@ public class ParkourMenu {
                     .initial(user.useScoreDifficulty ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                             (menu, event) -> user.useScoreDifficulty = true)
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                             (menu, event) -> user.useScoreDifficulty = false));
         }
 
@@ -206,19 +206,20 @@ public class ParkourMenu {
 
         if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
             Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LEADERBOARD.getName())
-                    .modifyLore(line ->
-                            line.replaceAll("%s", user.getTranslated("your-rank",
-                                    Integer.toString(ParkourUser.getRank(user.getUUID())),
-                                    user.highScore.toString())));
+                    .modifyLore(line -> // #%n (%s)
+                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
+                                    user.highScore.toString()) + ")");
 
             main.item(20, item.click((menu, event) -> {
-                    ParkourUser.leaderboard(user, user.getPlayer(), 0);
-                    event.getWhoClicked().closeInventory();
+                player.closeInventory();
+                ParkourUser.leaderboard(user, player, 0);
             }));
         }
 
         if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LANGUAGE.getName());
+            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LANGUAGE.getName())
+                    .modifyLore(line ->
+                            line.replace("%s", user.locale));
 
             main.item(21, item.click((menu, event) -> openLangMenu(user, disabledOptions)));
         }
@@ -337,16 +338,16 @@ public class ParkourMenu {
         schematics.item(10, new SliderItem()
                         .initial(difficulties.indexOf(user.schematicDifficulty))
                         .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replaceAll("%s", "<#0DCB07>" + values.get(0))),
+                                        .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
                                 (menu, event) -> user.schematicDifficulty = 0.2)
                         .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replaceAll("%s", "<yellow>" + values.get(1))),
+                                        .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
                                 (menu, event) -> user.schematicDifficulty = 0.4)
                         .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
-                                        .modifyLore(line -> line.replaceAll("%s", "<#FF6C17>" + values.get(2))),
+                                        .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
                                 (menu, event) -> user.schematicDifficulty = 0.6)
                         .add(3, item.clone().material(Material.SKELETON_SKULL)
-                                        .modifyLore(line -> line.replaceAll("%s", "<dark_red>" + values.get(3))),
+                                        .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
                                 (menu, event) -> user.schematicDifficulty = 0.8));
 
         item = config.getFromItemData(user.locale, "options." + ParkourOption.USE_SCHEMATICS.getName());
@@ -358,11 +359,11 @@ public class ParkourMenu {
                         .initial(user.useSchematic ? 0 : 1)
                         .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                        .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(true))),
+                                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                 (menu, event) -> user.useSchematic = true)
                         .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                        .modifyLore(line -> line.replaceAll("%[a-z]", getBooleanSymbol(false))),
+                                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                                 (menu, event) -> user.useSchematic = false))
 
                 .item(26, config.getFromItemData(user.locale, "general.close")

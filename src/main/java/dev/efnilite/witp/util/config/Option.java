@@ -3,6 +3,7 @@ package dev.efnilite.witp.util.config;
 import dev.efnilite.fycore.config.ConfigOption;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
+import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
@@ -94,8 +95,12 @@ public class Option {
         INVENTORY_SAVING = new ConfigOption<>(config, "options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = new ConfigOption<>(config, "options.alt-inventory-saving-command");
 
-        // todo fix this
-        List<String> options = Arrays.asList("leads", "time", "difficulty", "schematic-difficulty", "adaptive-difficulty", "particles", "scoreboard", "death-msg", "special", "structure");
+        List<String> options = Arrays.asList(ParkourOption.LEADS.getName(), ParkourOption.TIME.getName(),
+                ParkourOption.SCHEMATIC_DIFFICULTY.getName(), ParkourOption.SCORE_DIFFICULTY.getName(),
+                ParkourOption.PARTICLES_AND_SOUND.getName(), ParkourOption.SHOW_SCOREBOARD.getName(),
+                ParkourOption.SHOW_FALL_MESSAGE.getName(), ParkourOption.SPECIAL_BLOCKS.getName(),
+                ParkourOption.USE_SCHEMATICS.getName());
+
         OPTIONS_DEFAULTS = new HashMap<>();
         for (String node : Util.getNode(items, "items.options")) {
             for (String option : options) {

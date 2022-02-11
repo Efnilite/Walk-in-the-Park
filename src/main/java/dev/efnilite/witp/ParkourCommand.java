@@ -186,7 +186,6 @@ public class ParkourCommand extends FyCommand {
                     try {
                         ParkourPlayer pp = ParkourPlayer.register(player, null);
                         WITP.getDivider().generate(pp);
-                        pp.sendTranslated("joined");
                     } catch (Throwable throwable) {
                         Logging.stack("Error while joining player " + player.getName(),
                                 "Please try again or report this error to the developer!", throwable);
@@ -202,7 +201,6 @@ public class ParkourCommand extends FyCommand {
                         return true;
                     }
                     try {
-                        pp.sendTranslated("left");
                         ParkourUser.unregister(pp, true, true, true);
                     } catch (Throwable throwable) {
                         Logging.stack("Error while unregistering player " + player.getName(),
@@ -231,7 +229,7 @@ public class ParkourCommand extends FyCommand {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
-                    ParkourUser.leaderboard(ParkourUser.getUser(player), player, 1);
+                    ParkourUser.leaderboard(ParkourUser.getUser(player), player, 0);
                     break;
                 case "schematic":
                     if (Option.PERMISSIONS.get() && !player.hasPermission("witp.schematic")) {
