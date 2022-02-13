@@ -13,7 +13,6 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.util.Util;
-import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -24,7 +23,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -38,13 +36,12 @@ import java.util.*;
  */
 public class SubareaDivider {
 
-    private World world;
-    private Schematic spawnIsland;
+    private final Schematic spawnIsland;
 
-    private int spawnYaw;
-    private int spawnPitch;
-    private Material playerSpawn;
-    private Material parkourSpawn;
+    private final int spawnYaw;
+    private final int spawnPitch;
+    private final Material playerSpawn;
+    private final Material parkourSpawn;
 
     /**
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
@@ -61,24 +58,6 @@ public class SubareaDivider {
     @SuppressWarnings("ConstantConditions")
     public SubareaDivider() {
         Logging.verbose("Initializing SubareaDivider");
-        FileConfiguration config = WITP.getConfiguration().getFile("config");
-        String worldName = config.getString("world.name");
-        if (worldName == null) {
-            Logging.error("Name of world is null in config");
-            return;
-        }
-        if (WITP.getMultiverseHook() == null) {
-            Bukkit.unloadWorld(worldName, false);
-            File folder = new File(worldName);
-            if (folder.exists() && folder.isDirectory()) {
-                folder.delete();
-                Logging.verbose("Deleted world " + worldName);
-            }
-        } else {
-            WITP.getMultiverseHook().deleteWorld(worldName);
-            Logging.verbose("Deleted world " + worldName);
-        }
-        this.world = createWorld(worldName);
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
@@ -179,6 +158,8 @@ public class SubareaDivider {
 
     // https://math.stackexchange.com/a/163101
     public List<Chunk> getChunksAround(Chunk base, int radius) {
+        World world = WITP.getWorldHandler().getWorld();
+
         int lastOfRadius = 2 * radius + 1;
         int baseX = base.getX();
         int baseZ = base.getZ();
@@ -198,62 +179,8 @@ public class SubareaDivider {
         return chunks;
     }
 
-    @SuppressWarnings("deprecation") // for setGameRuleValue
-    private @Nullable World createWorld(String name) {
-        World world;
-        if (WITP.getMultiverseHook() == null) { // if multiverse isn't detected
-            try {
-                WorldCreator creator = new WorldCreator(name)
-                        .generateStructures(false)
-                        .type(WorldType.NORMAL)
-                        .generator(new VoidGenerator()) // to fix No keys in MapLayer etc..
-                        .environment(World.Environment.NORMAL);
-
-                world = Bukkit.createWorld(creator);
-                if (world == null) {
-                    Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!", null);
-                    return null;
-                }
-            } catch (Throwable throwable) {
-                Logging.stack("Error while trying to create the parkour world", "Delete the witp world forder and restart!", throwable);
-                return null;
-            }
-        } else { // if multiverse is detected
-            world = WITP.getMultiverseHook().createWorld(name);
-        }
-        Logging.verbose("Created world " + name);
-
-        // -= World gamerules & options =-
-        if (Version.isHigherOrEqual(Version.V1_13)) {
-            world.setGameRule(GameRule.DO_FIRE_TICK, false);
-            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-            world.setGameRule(GameRule.DO_TILE_DROPS, false);
-            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-            world.setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
-            world.setGameRule(GameRule.KEEP_INVENTORY, true);
-            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        } else {
-            world.setGameRuleValue("doFireTick", "false");
-            world.setGameRuleValue("doMobSpawning", "false");
-            world.setGameRuleValue("doTileDrops", "false");
-            world.setGameRuleValue("doDaylightCycle", "false");
-            world.setGameRuleValue("keepInventory", "true");
-            world.setGameRuleValue("doWeatherCycle", "false");
-            world.setGameRuleValue("logAdminCommands", "false");
-            world.setGameRuleValue("announceAdvancements", "false");
-        }
-
-        world.setDifficulty(Difficulty.PEACEFUL);
-        world.setWeatherDuration(1000);
-        world.setAutoSave(false);
-
-//        world.setKeepSpawnInMemory(false);
-
-        return world;
-    }
-
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
+        World world = WITP.getWorldHandler().getWorld();
         Location spawn = getEstimatedCenter(point, Option.BORDER_SIZE.get()).toLocation(world).clone();
         List<Chunk> chunks = new ArrayList<>();
         try {
@@ -362,14 +289,5 @@ public class SubareaDivider {
     private Vector getEstimatedCenter(Vector2D vector, double borderSize) {
         int size = (int) borderSize;
         return new Vector(vector.x * size, 150, vector.y * size);
-    }
-
-    /**
-     * Gets the world
-     *
-     * @return the world
-     */
-    public World getWorld() {
-        return world;
     }
 }

@@ -47,7 +47,6 @@ public class Handler implements EventWatcher {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
-        World world = WITP.getDivider().getWorld();
 
         PreviousData data = quitInventoryData.get(playerName);
         if (data != null) {
@@ -94,7 +93,7 @@ public class Handler implements EventWatcher {
                     user.sendTranslated("join", player.getName());
                 }
             }
-        } else if (player.getWorld() == WITP.getDivider().getWorld()) {
+        } else if (player.getWorld().getUID().equals(WITP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(WITP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {
                 // If players who left in the world end up in the world itself while not being a player
@@ -102,7 +101,7 @@ public class Handler implements EventWatcher {
             } else {
                 Logging.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
-                    if (!(last.getName().equals(world.getName()))) {
+                    if (!(last.getName().equals(Option.WORLD_NAME.get()))) {
                         player.sendMessage(Util.color("&cThere was an error while trying to get a world"));
                         player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
@@ -272,7 +271,7 @@ public class Handler implements EventWatcher {
     @EventHandler
     public void onSwitch(PlayerChangedWorldEvent event) {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
-        if (event.getFrom().getUID() == WITP.getDivider().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
+        if (event.getFrom().getUID() == WITP.getWorldHandler().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
             try {
                 ParkourUser.unregister(user, false, false, true);
             } catch (IOException | InvalidStatementException ex) {

@@ -37,9 +37,9 @@ public class Option {
     public static ConfigOption<Boolean> BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
+
     public static ConfigOption<Boolean> VERBOSING;
     public static ConfigOption<Boolean> GAMELOGS;
-
     public static ConfigOption<Boolean> UPDATE_CHECKER;
 
     // Advanced settings
@@ -66,6 +66,10 @@ public class Option {
     public static HashMap<String, String> OPTIONS_DEFAULTS;
     public static ConfigOption<Boolean> HOTBAR_QUIT_ITEM;
 
+    // Worlds
+    public static ConfigOption<Boolean> DELETE_ON_RELOAD;
+    public static ConfigOption<String> WORLD_NAME;
+
     public static void init(boolean init) {
         scoreboard = WITP.getConfiguration().getFile("scoreboard");
         generation = WITP.getConfiguration().getFile("generation");
@@ -85,6 +89,10 @@ public class Option {
         UPDATE_CHECKER = new ConfigOption<>(config, "update-checker");
         ENABLE_JOINING = new ConfigOption<>(config, "enable-joining");
         JOIN_LEAVE_MESSAGES = new ConfigOption<>(config, "join-leave-messages");
+
+        // Worlds
+        DELETE_ON_RELOAD = new ConfigOption<>(config, "world.delete-on-reload");
+        WORLD_NAME = new ConfigOption<>(config, "world.name", "[a-zA-Z0-9/._-]+");
 
         // Options
 

@@ -38,7 +38,7 @@ public class Configuration {
         this.plugin = plugin;
         files = new HashMap<>();
 
-        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "schematics.yml", "messages-v3.yml", "items-v3.yml", "scoreboard-v3.yml"};
+        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml"};
 
         File folder = plugin.getDataFolder();
         if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
@@ -65,9 +65,9 @@ public class Configuration {
     }
 
     public void reload() {
-        files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/messages-v3.yml")));
-        files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/items-v3.yml")));
-        files.put("scoreboard", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/scoreboard-v3.yml")));
+        files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/messages-v3.yml")));
+        files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/items-v3.yml")));
+        files.put("scoreboard", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/scoreboard-v3.yml")));
 
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));

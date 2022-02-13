@@ -6,12 +6,12 @@ import dev.efnilite.fycore.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.util.SkullSetter;
+import dev.efnilite.fycore.util.Unicodes;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.Unicodes;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +60,7 @@ public class SpectatorGamemode implements Gamemode {
             SkullSetter.setPlayerHead(bukkitPlayer, meta);
             item.meta(meta);
 
-            display.add(item.click((menu, event) -> {
+            display.add(item.click((event) -> {
                 if (ParkourUser.getActivePlayers().contains(pp)) {
                     new ParkourSpectator(user, pp, user.getPreviousData());
                 }
@@ -72,13 +72,13 @@ public class SpectatorGamemode implements Gamemode {
                 .addToDisplay(display)
 
                 .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((menu, event) -> spectator.page(1)))
+                        .click((event) -> spectator.page(1)))
 
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((menu, event) -> spectator.page(-1)))
+                        .click((event) -> spectator.page(-1)))
 
                 .item(31, WITP.getConfiguration().getFromItemData(user.locale, "general.close")
-                        .click((menu, event) -> player.closeInventory()))
+                        .click((event) -> player.closeInventory()))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleInAnimation())

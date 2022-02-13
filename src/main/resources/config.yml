@@ -70,6 +70,11 @@ world:
     # The world in which the personal parkours will take place
     name: 'witp'
 
+    # Deletes the world on reload/restart of the server.
+    # This makes sure there are no ghost blocks left when a server crash occurs.
+    # Disable this if you want to have a static map.
+    delete-on-reload: true
+
     # The world players will be teleported to if they accidentally join the WITP world without being a player
     fall-back: 'world'
 

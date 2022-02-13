@@ -10,11 +10,11 @@ import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
+import dev.efnilite.witp.generator.WorldHandler;
 import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
-import dev.efnilite.witp.hook.ProtocolHook;
 import dev.efnilite.witp.internal.gamemode.DefaultGamemode;
 import dev.efnilite.witp.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.witp.internal.style.DefaultStyleType;
@@ -51,11 +51,9 @@ public final class WITP extends FyPlugin {
     private static WITP instance;
     private static Database database;
     private static Registry registry;
-    private static Configuration configuration;
     private static SubareaDivider divider;
-
-    @Nullable
-    private static ProtocolHook protocolHook;
+    private static WorldHandler worldHandler;
+    private static Configuration configuration;
 
     @Nullable
     private static MultiverseHook multiverseHook;
@@ -76,8 +74,11 @@ public final class WITP extends FyPlugin {
 
         configuration = new Configuration(this);
         Option.init(true);
-        registerCommand("witp", new ParkourCommand());
+
         divider = new SubareaDivider();
+
+        worldHandler = new WorldHandler();
+        worldHandler.createWorld();
 
         // ----- Hooks and Bungee -----
 
@@ -89,10 +90,6 @@ public final class WITP extends FyPlugin {
         if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
             Logging.info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
-        }
-        if (getServer().getPluginManager().isPluginEnabled("ProtocolAPI")) {
-            Logging.info("Connecting with ProtocolAPI..");
-            protocolHook = new ProtocolHook();
         }
         if (Option.BUNGEECORD.get()) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -127,6 +124,7 @@ public final class WITP extends FyPlugin {
         // ----- Events -----
 
         registerListener(new Handler());
+        registerCommand("witp", new ParkourCommand());
 
         // ----- Update checker -----
 
@@ -171,18 +169,16 @@ public final class WITP extends FyPlugin {
         }
 
         if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
-            for (Player player : divider.getWorld().getPlayers()) {
+            for (Player player : worldHandler.getWorld().getPlayers()) {
                 player.kickPlayer("Server is restarting");
             }
-            Bukkit.unloadWorld(divider.getWorld(), false);
         } else {
-            String name = configuration.getString("config", "world.name");
-            World world = Bukkit.getWorld(name);
+            World world = Bukkit.getWorld(Option.WORLD_NAME.get());
             for (Player player : world.getPlayers()) {
                 player.kickPlayer("Server is restarting");
             }
-            Bukkit.unloadWorld(world, false);
         }
+        worldHandler.deleteWorld();
     }
 
     /**
@@ -211,13 +207,18 @@ public final class WITP extends FyPlugin {
     }
 
     // Static stuff
-
-    public static @Nullable MultiverseHook getMultiverseHook() {
+    @Nullable
+    public static MultiverseHook getMultiverseHook() {
         return multiverseHook;
     }
 
-    public static @Nullable PlaceholderHook getPlaceholderHook() {
+    @Nullable
+    public static PlaceholderHook getPlaceholderHook() {
         return placeholderHook;
+    }
+
+    public static WorldHandler getWorldHandler() {
+        return worldHandler;
     }
 
     public static Registry getRegistry() {
