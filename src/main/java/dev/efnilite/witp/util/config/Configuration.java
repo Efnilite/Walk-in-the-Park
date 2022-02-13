@@ -51,14 +51,14 @@ public class Configuration {
             Logging.info("Downloaded all config files");
         }
 
-//        for (String file : defaultFiles) {
-//            try { todo
-//                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
-//            } catch (IOException ex) {
-//                Logging.stack("Error while trying to update file " + file,
-//                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
-//            }
-//        }
+        for (String file : Arrays.asList("config.yml", "generation.yml", "schematics.yml")) { // todo add for lang
+            try {
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
+            } catch (IOException ex) {
+                Logging.stack("Error while trying to update file " + file,
+                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
+            }
+        }
         reload();
         schematics();
         Logging.info("Loaded all config files");

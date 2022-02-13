@@ -133,13 +133,6 @@ public abstract class ParkourUser {
         }
     }
 
-    public boolean checkPermission(String perm) {
-        if (Option.PERMISSIONS.get()) {
-            return player.hasPermission(perm);
-        }
-        return true;
-    }
-
     public boolean alertCheckPermission(String perm) {
         if (Option.PERMISSIONS.get()) {
             boolean check = player.hasPermission(perm);
