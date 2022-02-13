@@ -139,7 +139,7 @@ public class Handler implements EventWatcher {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             event.setQuitMessage(null);
             for (ParkourUser user : ParkourUser.getUsers()) {
-                user.sendTranslated("leave", playerName);
+                user.sendTranslated("leave", bPlayer.getName());
             }
         }
         if (Option.INVENTORY_HANDLING.get()) {

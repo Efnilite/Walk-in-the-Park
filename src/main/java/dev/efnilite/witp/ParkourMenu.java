@@ -623,10 +623,10 @@ public class ParkourMenu {
                 .open(user.getPlayer());
     }
 
+    // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private static boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(new Item(Material.BARRIER, "<dark_red><bold>You can't change this right now")
-                    .lore("<gray>You have a score above 0,", "<gray>which means you can't change settings.")
+            event.getMenu().item(event.getSlot(), new TimedItem(WITP.getConfiguration().getFromItemData(player.locale, "options.cant-change")
                     .click((event1) -> {
 
                     }), event, 5 * 20));

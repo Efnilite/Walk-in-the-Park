@@ -11,30 +11,14 @@ messages:
 
     default: "en"
 
-    # English (English)
+    # English (English), provided by Efnilite
     en:
-        join: "&7%p has joined the server"
-        leave: "&7%p has left the server"
-
-        selected-style: "&a&l(!) &7You selected style &c%s&7!"
-        selected-block-lead: "&a&l(!) &7You selected a &a%a &7block lead!"
-        selected-time: "&a&l(!) &7You changed your time preference to &a%t"
-        selected-difficulty: "&a&l(!) &7You changed your usage of difficulty to %v"
-        selected-structure-difficulty: "&a&l(!) &7You changed your structure difficulty to %v"
-        selected-particles: "&a&l(!) &7You changed the showing of particles to %v"
-        selected-scoreboard: "&a&l(!) &7You changed the showing of the scoreboard to %v"
-        selected-fall-message: "&a&l(!) &7You changed the showing of the fall messages to %v"
-        selected-special-blocks: "&a&l(!) &7You changed the usage of special blocks to %v"
-        selected-structures: "&a&l(!) &7You changed the usage of structures to %v"
-        selected-language: "&a&l(!) &7You selected language %v"
-        cant-do: "&c&l(!) &cYou can't do this right now."
-        customize-menu: "&a&l(!) &7You can customize your parkour experience by using /parkour menu."
-
-        true: "yes"
-        false: "no"
+        join: "<green><bold>+ &7%p"
+        leave: "<red><bold>- &7%p"
+        cant-do: "<dark_red><bold>> <gray>You can't do this right now."
+        customize-menu: "<green><bold>> <gray>Customize your parkour experience by using /parkour menu."
         spectator: "<#4CB3FF>You are now a spectator. You can use \"/parkour gm\" to leave/change your gamemode."
         spectator-bar: "<#4CB3FF>You are a spectator <dark_gray>• <#4CB3FF>Use \"/parkour gm\" to leave."
-
         divider: "<dark_gray><strikethrough>-----------------------------------"
         score: "<#80C7FD><bold>Score <white>%s"
         time: "<#80C7FD><bold>Time <white>%s"
@@ -43,3 +27,37 @@ messages:
             miss: "<gray>You missed your high score by %s points!"
             beat: "<gray>You beat your high score by %s points!"
             tied: "<gray>You tied your high score!"
+
+    # Nederlands (Dutch), provided by Efnilite
+    nl:
+        join: "<green><bold>+ <gray>%p"
+        leave: "<red><bold>- <gray>%p"
+        cant-do: "<dark_red><bold>> <gray>Je kan dit nu niet doen."
+        customize-menu: "<green><bold>> <gray>Personaliseer je ervaring met \"/parkour menu\"."
+        spectator: "<#4CB3FF>Je bent nu een spectator. Gebruik \"/parkour gm\" om je speelmode te veranderen."
+        spectator-bar: "<#4CB3FF>Je bent een spectator <dark_gray>• <#4CB3FF>Gebruik \"/parkour gm\" om te stoppen."
+        divider: "<dark_gray><strikethrough>-----------------------------------"
+        score: "<#80C7FD><bold>Score <white>%s"
+        time: "<#80C7FD><bold>Tijd <white>%s"
+        highscore: "<#80C7FD><bold>Highscore <white>%s"
+        message:
+            miss: "<gray>Je hebt je highscore gemist met %s punten!"
+            beat: "<gray>Je hebt je highscore overtroffen met %s punten!"
+            tied: "<gray>Je hebt net zo veel als je highscore!"
+
+    # Francais (French), provided by NoaLUNE/Efnilite
+    fr:
+        join: "<green><bold>+ &7%p"
+        leave: "<red><bold>- &7%p"
+        cant-do: "<dark_red><bold>> <gray>Il n'est pas possible de modifier ce paramètre en ce moment "
+        customize-menu: "<green><bold>> <gray>Personnaliser votre expérience de parkour en utilisant \"/parkour menu\"."
+        spectator: "<#4CB3FF>Vous êtes maintenant un spectateur. Utiliser \"/parkour gm\" pour quitter/modifier ton mode de jeu."
+        spectator-bar: "<#4CB3FF>Vous êtes un spectateur <dark_gray>• <#4CB3FF>Utiliser \"/parkour gm\" pour quitter."
+        divider: "<dark_gray><strikethrough>-----------------------------------"
+        score: "<#80C7FD><bold>Score <white>%s"
+        time: "<#80C7FD><bold>Temps <white>%s"
+        highscore: "<#80C7FD><bold>Highscore <white>%s"
+        message:
+            miss: "<gray>Vous avez raté votre meilleur score de %s points"
+            beat: "<gray>Vous avez battu votre meilleur score en %s points!"
+            tied: "<gray>Vous avez égalé votre meilleur score!"

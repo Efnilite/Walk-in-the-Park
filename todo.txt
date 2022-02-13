@@ -3,6 +3,7 @@ Walk in the Park
 v3.0.0
 - Added leaderboard menu
 - Added scoreboard.yml
+- Added option to disable world regeneration on loda
 - Reworked main menu
 - Reworked style menu
 - Reworked lang menu
@@ -10,6 +11,8 @@ v3.0.0
     > These new colouring schemes have been moved to <file>-v3.yml.
     > You can transfer your old formats by copying the English v3 variant and replacing the sentences.
     > I know this is a pain, but so much has been changed that it's very difficult to transfer old formats to v3.
+- Reworked spectator menu
+- Fixed lead being 1 less than selected
 
 High priority:
 - Optimize ram with schematics (async?)

@@ -318,7 +318,6 @@ public class ParkourCommand extends FyCommand {
                         try {
                             ParkourPlayer pp = ParkourPlayer.register(other, null);
                             WITP.getDivider().generate(pp);
-                            pp.sendTranslated("joined");
                         } catch (Throwable throwable) {
                             Logging.stack("Error while joining player " + other.getName(),
                                     "Please try again or report this error to the developer!", throwable);
@@ -338,7 +337,6 @@ public class ParkourCommand extends FyCommand {
                 try {
                     ParkourPlayer pp = ParkourPlayer.register(other, null);
                     WITP.getDivider().generate(pp);
-                    pp.sendTranslated("joined");
                 } catch (Throwable throwable) {
                     Logging.stack("Error while joining player " + other.getName(),
                             "Please try again or report this error to the developer!", throwable);
@@ -349,7 +347,7 @@ public class ParkourCommand extends FyCommand {
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forceleave.everyone")) {
                     for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
                         try {
-                            other.sendTranslated("left");
+                            other.sendTranslated("leave");
                             ParkourUser.unregister(other, true, true, true);
                         } catch (Throwable throwable) {
                             Logging.stack("Error while unregistering player " + other.getPlayer().getName(),
@@ -375,7 +373,6 @@ public class ParkourCommand extends FyCommand {
                 }
 
                 try {
-                    user.sendTranslated("left");
                     ParkourUser.unregister(user, true, true, true);
                 } catch (Throwable throwable) {
                     Logging.stack("Error while unregistering player " + other.getName(),

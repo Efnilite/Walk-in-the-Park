@@ -174,8 +174,10 @@ public final class WITP extends FyPlugin {
             }
         } else {
             World world = Bukkit.getWorld(Option.WORLD_NAME.get());
-            for (Player player : world.getPlayers()) {
-                player.kickPlayer("Server is restarting");
+            if (world != null) {
+                for (Player player : world.getPlayers()) {
+                    player.kickPlayer("Server is restarting");
+                }
             }
         }
         worldHandler.deleteWorld();

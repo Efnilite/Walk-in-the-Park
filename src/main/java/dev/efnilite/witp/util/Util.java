@@ -245,18 +245,6 @@ public class Util {
     }
 
     /**
-     * Capitalizes the first letter in a word
-     *
-     * @param   string
-     *          The string
-     *
-     * @return the string but with 1st letter capitalized
-     */
-    public static String capitalizeFirst(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1);
-    }
-
-    /**
      * Gets the blocks between 2 locations
      *
      * @param   position
@@ -291,32 +279,6 @@ public class Util {
             }
         }
         return add;
-    }
-
-    /**
-     * Reverses a boolean in a string
-     */
-    public static String reverseBoolean(String first) {
-        if (first.contains("true")) {
-            return "false";
-        } else if (first.contains("false")) {
-            return "true";
-        } else {
-            throw new IllegalStateException("Boolean value does not contain false or true (Util#reverseBoolean)");
-        }
-    }
-
-    /**
-     * Color a boolean (true = green, false = red)
-     */
-    public static String colorBoolean(String string) {
-        if (string.contains("true")) {
-            return Util.color("&atrue");
-        } else if (string.contains("false")) {
-            return Util.color("&cfalse");
-        } else {
-            throw new IllegalStateException("Boolean value is not false or true (Util#colorBoolean)");
-        }
     }
 
     /**
@@ -396,10 +358,6 @@ public class Util {
             message = message.replaceFirst("%[a-z]", s);
         }
         sender.sendMessage(message);
-    }
-
-    public static String getDefaultLang(String path) {
-        return WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
     }
 
     /**
