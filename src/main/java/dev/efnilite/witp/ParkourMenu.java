@@ -230,7 +230,7 @@ public class ParkourMenu {
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
                             (event) -> {
                                 user.time = 0;
-                                player.setPlayerTime(18000, false); // 00:00
+                                user.updateVisualTime();
                                 return true;
                             })
                     .add(1, item.clone()
@@ -238,7 +238,7 @@ public class ParkourMenu {
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
                             (event) -> {
                                 user.time = 6000;
-                                player.setPlayerTime(0, false); // 00:00
+                                user.updateVisualTime();
                                 return true;
                             })
                     .add(2, item.clone()
@@ -246,7 +246,7 @@ public class ParkourMenu {
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
                             (event) -> {
                                 user.time = 12000;
-                                player.setPlayerTime(6000, false); // 12:00
+                                user.updateVisualTime();
                                 return true;
                             })
                     .add(3, item.clone()
@@ -254,7 +254,7 @@ public class ParkourMenu {
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
                             (event) -> {
                                 user.time = 18000;
-                                player.setPlayerTime(12000, false); // 18:00
+                                user.updateVisualTime();
                                 return true;
                             }));
         }

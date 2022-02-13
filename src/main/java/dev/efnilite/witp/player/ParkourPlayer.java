@@ -106,8 +106,8 @@ public class ParkourPlayer extends ParkourUser {
         this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND.getName())));
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
         this.time = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
-        
-        player.setPlayerTime(this.time, false);
+
+        updateVisualTime();
         updateScoreboard();
     }
 
@@ -123,10 +123,6 @@ public class ParkourPlayer extends ParkourUser {
         setSettings(null, null, null, null, null, null,
                 null, null, null, null, null,
                 null, null);
-    }
-
-    public void setGenerator(ParkourGenerator generator) {
-        this.generator = generator;
     }
 
     /**
@@ -464,10 +460,6 @@ public class ParkourPlayer extends ParkourUser {
         return null;
     }
 
-    public void setBoard(FastBoard board) {
-        this.board = board;
-    }
-
     /**
      * Gets the player's {@link ParkourGenerator}
      *
@@ -478,6 +470,23 @@ public class ParkourPlayer extends ParkourUser {
             generator = WITP.getVersionGenerator(this);
         }
         return generator;
+    }
+
+    public void updateVisualTime() {
+        int newTime = 18000 + time;
+        if (newTime >= 24000) {
+            newTime -= 24000;
+        }
+
+        player.setPlayerTime(newTime, false);
+    }
+
+    public void setGenerator(ParkourGenerator generator) {
+        this.generator = generator;
+    }
+
+    public void setBoard(FastBoard board) {
+        this.board = board;
     }
 }
 

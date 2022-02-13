@@ -34,7 +34,7 @@ public class Configuration {
     /**
      * Create a new instance
      */
-    public Configuration(Plugin plugin) {
+    public Configuration(Plugin plugin) { // todo move to json since yaml sucks
         this.plugin = plugin;
         files = new HashMap<>();
 
@@ -51,15 +51,15 @@ public class Configuration {
             Logging.info("Downloaded all config files");
         }
 
-        for (String file : defaultFiles) {
-            try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
-            } catch (IOException ex) {
-                Logging.stack("Error while trying to update file " + file,
-                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
-            }
-            reload();
-        }
+//        for (String file : defaultFiles) {
+//            try { todo
+//                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
+//            } catch (IOException ex) {
+//                Logging.stack("Error while trying to update file " + file,
+//                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
+//            }
+//        }
+        reload();
         schematics();
         Logging.info("Loaded all config files");
     }
