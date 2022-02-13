@@ -169,8 +169,11 @@ public final class WITP extends FyPlugin {
         }
 
         if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
-            for (Player player : worldHandler.getWorld().getPlayers()) {
-                player.kickPlayer("Server is restarting");
+            World world = worldHandler.getWorld();
+            if (world != null) {
+                for (Player player : world.getPlayers()) {
+                    player.kickPlayer("Server is restarting");
+                }
             }
         } else {
             World world = Bukkit.getWorld(Option.WORLD_NAME.get());
