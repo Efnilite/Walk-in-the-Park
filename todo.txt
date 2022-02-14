@@ -1,7 +1,9 @@
 Walk in the Park
 
 v3.0.1
-- Fix time being parsed as string in storage formats
+- Fix time being parsed as string in local and MySQL storage formats
+- Fix menus not supporting multiple players visiting them
+- Fix leaderboard display
 
 High priority:
 - Optimize ram with schematics (async?)

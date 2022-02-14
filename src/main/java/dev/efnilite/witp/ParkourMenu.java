@@ -107,7 +107,6 @@ public class ParkourMenu {
         Item base = config.getFromItemData(locale, "options.leaderboard-head");
         for (UUID uuid : uuids) {
             Highscore highscore = ParkourUser.getHighscore(uuid);
-            Logging.info(uuid.toString());
             if (highscore == null) {
                 continue;
             }
