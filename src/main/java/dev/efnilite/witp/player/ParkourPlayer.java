@@ -82,7 +82,7 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = locale;
     }
 
-    public void setSettings(Integer highScore, Integer time, String style, String highScoreTime, String lang,
+    public void setSettings(Integer highScore, Integer selectedTime, String style, String highScoreTime, String lang,
                             Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
                             Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty) {
 
@@ -105,7 +105,7 @@ public class ParkourPlayer extends ParkourUser {
         this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_SCOREBOARD.getName())));
         this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND.getName())));
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
-        this.selectedTime = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
+        this.selectedTime = orDefault(selectedTime, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
 
         updateVisualTime();
         updateScoreboard();
@@ -231,7 +231,7 @@ public class ParkourPlayer extends ParkourUser {
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
                     statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
-                            .setDefault("uuid", uuid.toString()).setDefault("time", selectedTime)
+                            .setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
                             .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
@@ -418,17 +418,17 @@ public class ParkourPlayer extends ParkourUser {
                 }
 
                 SelectStatement options = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX.get() + "options")
-                        .addColumns("uuid", "time", "style", "blockLead", "useParticles", "useDifficulty", "useStructure",
-                                "useSpecial", "showFallMsg", "showScoreboard").addCondition("uuid = '" + uuid + "'");
+                        .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
+                                "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings(highscore, (Integer) objects.get(0), (String) objects.get(1), highScoreTime,
+                    pp.setSettings(highscore, Integer.parseInt((String) objects.get(8)), (String) objects.get(0), highScoreTime,
                             Option.DEFAULT_LANG.get(),
-                            Integer.parseInt((String) objects.get(2)), translateSqlBoolean((String) objects.get(3)),
-                            translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)),
-                            translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)),
-                            translateSqlBoolean((String) objects.get(8)), highScoreDifficulty);
+                            Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
+                            translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
+                            translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
+                            translateSqlBoolean((String) objects.get(7)), highScoreDifficulty);
                 } else {
                     pp.resetPlayerPreferences();
                     pp.saveStats();

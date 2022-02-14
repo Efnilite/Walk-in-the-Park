@@ -104,23 +104,24 @@ public class ParkourMenu {
         List<MenuItem> items = new ArrayList<>();
 
         int rank = 1;
-        Item item = config.getFromItemData(locale, "options.leaderboard-head");
+        Item base = config.getFromItemData(locale, "options.leaderboard-head");
         for (UUID uuid : uuids) {
             Highscore highscore = ParkourUser.getHighscore(uuid);
+            Logging.info(uuid.toString());
             if (highscore == null) {
                 continue;
             }
 
             int finalRank = rank;
-            item = item.clone()
+            Item item = base.clone()
                     .material(Material.PLAYER_HEAD)
                     .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
-                            .replace("%s",  Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
                             .replace("%p", highscore.name)
                             .replace("%t", highscore.time)
                             .replace("%d", highscore.diff))
                     .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
-                            .replace("%s",  Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
                             .replace("%p", highscore.name)
                             .replace("%t", highscore.time)
                             .replace("%d", highscore.diff));

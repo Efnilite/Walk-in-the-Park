@@ -1,24 +1,7 @@
 Walk in the Park
 
-v3.0.0
-## Important
-# v3.0.0 has reworked every message and item. Languages which I don't speak have been removed from support.
-# The previous lang.yml/items.yml are still saved. If you want to add your own language, copy the default English one
-# and replace all messages with the previous ones. You will have to add your own messages, since I can't translate
-# all of them. I hope you understand.
-
-- Added leaderboard menu
-- Added scoreboard.yml
-- Added option to disable world regeneration on loda
-- Reworked main menu
-- Reworked style menu
-- Reworked lang menu
-- Improve default colouring scheme
-    > These new colouring schemes have been moved to <file>-v3.yml.
-    > You can transfer your old formats by copying the English v3 variant and replacing the sentences.
-    > I know this is a pain, but so much has been changed that it's very difficult to transfer old formats to v3.
-- Reworked spectator menu
-- Fixed lead being 1 less than selected
+v3.0.1
+- Fix time being parsed as string in storage formats
 
 High priority:
 - Optimize ram with schematics (async?)

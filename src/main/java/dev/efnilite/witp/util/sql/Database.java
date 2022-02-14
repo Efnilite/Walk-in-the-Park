@@ -80,6 +80,11 @@ public class Database {
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `lang` VARCHAR(5)");
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `hsdiff` VARCHAR(3)");
         suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "game-history` ADD `scoreDiff` VARCHAR(3)");
+
+        // v3.0.0
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` DROP COLUMN `time`");
+        suppressedQuery("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `selectedTime` INT NOT NULL");
+
         Logging.info("Initialized database");
     }
 
