@@ -56,7 +56,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose Boolean showFallMessage;
     public @Expose Boolean showScoreboard;
     public @Expose Boolean useSchematic;
-    public @Expose Integer time;
+    public @Expose Integer selectedTime;
     public @Expose String style;
     public @Expose String lang;
 
@@ -105,7 +105,7 @@ public class ParkourPlayer extends ParkourUser {
         this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_SCOREBOARD.getName())));
         this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND.getName())));
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
-        this.time = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
+        this.selectedTime = orDefault(time, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
 
         updateVisualTime();
         updateScoreboard();
@@ -231,7 +231,7 @@ public class ParkourPlayer extends ParkourUser {
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
                     statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
-                            .setDefault("uuid", uuid.toString()).setDefault("time", time)
+                            .setDefault("uuid", uuid.toString()).setDefault("time", selectedTime)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
                             .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
@@ -387,7 +387,7 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(from.highScore, from.time, from.style, from.highScoreTime, from.lang, from.blockLead,
+                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang, from.blockLead,
                             from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage,
                             from.showScoreboard, from.highScoreDifficulty);
                     reader.close();
@@ -473,7 +473,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     public void updateVisualTime() {
-        int newTime = 18000 + time;
+        int newTime = 18000 + selectedTime;
         if (newTime >= 24000) {
             newTime -= 24000;
         }

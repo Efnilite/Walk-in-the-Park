@@ -76,7 +76,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return pp.style;
                 case "time_pref":
                 case "time_preference":
-                    return Integer.toString(pp.time); // todo make this readable instead of number
+                    return Integer.toString(pp.selectedTime); // todo make this readable instead of number
                 case "scoreboard":
                     return pp.showScoreboard.toString();
                 case "difficulty":

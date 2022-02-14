@@ -224,12 +224,12 @@ public class ParkourMenu {
             Item item = config.getFromItemData(user.locale, "options." + ParkourOption.TIME.getName());
 
             main.item(3, new SliderItem()
-                    .initial(times.indexOf(user.time))
+                    .initial(times.indexOf(user.selectedTime))
                     .add(0, item.clone()
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
                             (event) -> {
-                                user.time = 0;
+                                user.selectedTime = 0;
                                 user.updateVisualTime();
                                 return true;
                             })
@@ -237,7 +237,7 @@ public class ParkourMenu {
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
                             (event) -> {
-                                user.time = 6000;
+                                user.selectedTime = 6000;
                                 user.updateVisualTime();
                                 return true;
                             })
@@ -245,7 +245,7 @@ public class ParkourMenu {
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
                             (event) -> {
-                                user.time = 12000;
+                                user.selectedTime = 12000;
                                 user.updateVisualTime();
                                 return true;
                             })
@@ -253,7 +253,7 @@ public class ParkourMenu {
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
                             (event) -> {
-                                user.time = 18000;
+                                user.selectedTime = 18000;
                                 user.updateVisualTime();
                                 return true;
                             }));
