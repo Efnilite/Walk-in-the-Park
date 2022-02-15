@@ -189,7 +189,7 @@ public class ParkourCommand extends FyCommand {
                         Logging.stack("Error while joining player " + player.getName(),
                                 "Please try again or report this error to the developer!", throwable);
                     }
-                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave messages
+                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send join message after join so player gets notified
                         for (ParkourUser other : ParkourUser.getUsers()) {
                             other.sendTranslated("join", player.getName());
                         }
@@ -205,16 +205,18 @@ public class ParkourCommand extends FyCommand {
                     if (pp == null) {
                         return true;
                     }
+
+                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave message before leave so player gets notified
+                        for (ParkourUser other : ParkourUser.getUsers()) {
+                            other.sendTranslated("leave", player.getName());
+                        }
+                    }
+
                     try {
                         ParkourUser.unregister(pp, true, true, true);
                     } catch (Throwable throwable) {
                         Logging.stack("Error while unregistering player " + player.getName(),
                                 "Please try again or report this error to the developer!", throwable);
-                    }
-                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave messages
-                        for (ParkourUser other : ParkourUser.getUsers()) {
-                            other.sendTranslated("leave", player.getName());
-                        }
                     }
 
                     return true;
