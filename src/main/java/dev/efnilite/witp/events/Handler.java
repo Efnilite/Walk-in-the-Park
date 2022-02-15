@@ -89,8 +89,8 @@ public class Handler implements EventWatcher {
             // Join message
             if (Option.JOIN_LEAVE_MESSAGES.get()) {
                 event.setJoinMessage(null);
-                for (ParkourUser user : ParkourUser.getUsers()) {
-                    user.sendTranslated("join", player.getName());
+                for (ParkourUser other : ParkourUser.getUsers()) {
+                    other.sendTranslated("join", player.getName());
                 }
             }
         } else if (player.getWorld().getUID().equals(WITP.getWorldHandler().getWorld().getUID())) {
@@ -129,27 +129,27 @@ public class Handler implements EventWatcher {
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {
-        Player bPlayer = event.getPlayer();
-        String playerName = bPlayer.getName();
-        ParkourUser player = ParkourUser.getUser(bPlayer);
-        if (player == null) {
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+        ParkourUser user = ParkourUser.getUser(player);
+        if (user == null) {
             return;
         }
 
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             event.setQuitMessage(null);
-            for (ParkourUser user : ParkourUser.getUsers()) {
-                user.sendTranslated("leave", bPlayer.getName());
+            for (ParkourUser other : ParkourUser.getUsers()) {
+                other.sendTranslated("leave", player.getName());
             }
         }
         if (Option.INVENTORY_HANDLING.get()) {
-            PreviousData data = player.getPreviousData();
+            PreviousData data = user.getPreviousData();
             if (data != null)  {
                 quitInventoryData.put(playerName, data);
             }
         }
         try {
-            ParkourPlayer.unregister(player, true, false, true);
+            ParkourPlayer.unregister(user, true, false, true);
         } catch (IOException | InvalidStatementException ex) {
             Logging.stack("Error while unregistering player " + playerName,
                     "Please try again or report this error to the developer!", ex);

@@ -166,6 +166,7 @@ public class ParkourCommand extends FyCommand {
                     if (!cooldown(sender, "join", 2500)) {
                         return true;
                     }
+
                     if (Option.PERMISSIONS.get() && !player.hasPermission("witp.join")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
@@ -188,6 +189,12 @@ public class ParkourCommand extends FyCommand {
                         Logging.stack("Error while joining player " + player.getName(),
                                 "Please try again or report this error to the developer!", throwable);
                     }
+                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave messages
+                        for (ParkourUser other : ParkourUser.getUsers()) {
+                            other.sendTranslated("join", player.getName());
+                        }
+                    }
+
                     return true;
                 }
                 case "leave": {
@@ -204,6 +211,12 @@ public class ParkourCommand extends FyCommand {
                         Logging.stack("Error while unregistering player " + player.getName(),
                                 "Please try again or report this error to the developer!", throwable);
                     }
+                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave messages
+                        for (ParkourUser other : ParkourUser.getUsers()) {
+                            other.sendTranslated("leave", player.getName());
+                        }
+                    }
+
                     return true;
                 }
                 case "menu": {
