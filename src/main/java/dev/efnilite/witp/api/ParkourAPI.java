@@ -1,11 +1,11 @@
 package dev.efnilite.witp.api;
 
+import dev.efnilite.fycore.sql.InvalidStatementException;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,14 +37,12 @@ public class ParkourAPI {
 
     /**
      * Registers a player and makes a player join the world.
-     * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#register(Player)}.
+     * Deprecated. Use {@link ParkourUser#register(Player)}.
      *
      * @param   player
      *          The player
      *
      * @return The registered version of the player, even if the player is already registered
-     * @throws  IOException
-     *          If something goes wrong with reading the player's file
      */
     @Deprecated
     public static @NotNull ParkourPlayer registerPlayer(@NotNull Player player) throws IOException, SQLException {
@@ -53,7 +51,7 @@ public class ParkourAPI {
 
     /**
      * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
-     * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
+     * Deprecated. Use {@link ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
      *
      * @param   player
      *          The Bukkit version of the player
@@ -81,8 +79,6 @@ public class ParkourAPI {
      *
      * @param   sendBack
      *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
-     *
-     * @throws IOException If saving the file of the player goes wrong
      */
     @Deprecated
     public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException, InvalidStatementException {
@@ -90,15 +86,26 @@ public class ParkourAPI {
     }
 
     /**
-     * Gets a player
-     * @see ParkourPlayer
+     * Gets a {@link ParkourPlayer} from its respective Bukkit player instance.
      *
      * @param   player
      *          The Bukkit version of the player
      *
-     * @return the {@link ParkourPlayer} version of the player
+     * @return the ParkourPlayer instance.
      */
     public static @Nullable ParkourPlayer getPlayer(Player player) {
         return ParkourPlayer.getPlayer(player);
+    }
+
+    /**
+     * Gets a {@link ParkourUser} from a Bukkit player instance
+     *
+     * @param   player
+     *          The player
+     *
+     * @return the ParkourUser instance. This may be null.
+     */
+    public static @Nullable ParkourUser getUser(Player player) {
+        return ParkourUser.getUser(player);
     }
 }

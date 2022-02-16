@@ -6,7 +6,8 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import org.bukkit.block.Block;
 
 /**
- * When a block gets generated
+ * Event that gets called when a block generates in Parkour.
+ * This event is read-only.
  */
 public class BlockGenerateEvent extends EventWrapper {
 

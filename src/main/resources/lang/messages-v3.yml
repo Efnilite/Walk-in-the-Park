@@ -62,9 +62,11 @@ messages:
         player-leave: '<red><bold>- &7%p'
 
         cant-do: '<dark_red><bold>> <gray>Il n''est pas possible de modifier ce paramètre en ce moment'
-        customize-menu: '<green><bold>> <gray>Personnaliser votre expérience de parkour en utilisant "/parkour menu".'
-        spectator: '<#4CB3FF>Vous êtes maintenant un spectateur. Utiliser "/parkour gm" pour quitter/modifier ton mode de jeu.'
-        spectator-bar: '<#4CB3FF>Vous êtes un spectateur <dark_gray>• <#4CB3FF>Utiliser "/parkour gm" pour quitter.'
+        customize-menu: '&a&l> &7Personnaliser votre expérience de parkour en utilisant "/parkour menu".'
+        spectator: '<#4CB3FF>Vous êtes maintenant un spectateur.
+        Utiliser "/parkour gm" pour modifier ton mode de jeu.'
+        spectator-bar: '<#4CB3FF>Vous êtes un spectateur <dark_gray>•
+        <#4CB3FF>Utiliser "/parkour gm" pour quitter.'
         divider: '<dark_gray><strikethrough>-----------------------------------'
         score: '<#80C7FD><bold>Score <white>%s'
         time: '<#80C7FD><bold>Temps <white>%s'

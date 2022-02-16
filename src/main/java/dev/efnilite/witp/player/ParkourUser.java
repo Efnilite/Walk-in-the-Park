@@ -28,7 +28,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Class to envelop every user in WITP.
+ * Superclass of every type of player. This encompasses every player currently in the Parkour world.
+ * This includes active players ({@link ParkourPlayer}) and spectators ({@link ParkourSpectator}).
+ *
+ * @author Efnilite
  */
 public abstract class ParkourUser {
 
@@ -77,7 +80,7 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             pp.sendTranslated("join");
             for (ParkourUser to : getUsers()) {
-                to.sendTranslated("player-join");
+                to.sendTranslated("player-join", player.getName());
             }
         }
 
@@ -134,7 +137,7 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             user.sendTranslated("leave");
             for (ParkourUser to : getUsers()) {
-                to.sendTranslated("player-leave");
+                to.sendTranslated("player-leave", user.player.getName());
             }
         }
 
@@ -401,8 +404,6 @@ public abstract class ParkourUser {
      *          What can be replaced (for example: %s to yes)
      */
     public void sendTranslated(String path, String... replaceable) {
-        path = "messages." + this.locale + "." + path;
-
         String message = getTranslated(path, replaceable);
         if (WITP.getPlaceholderHook() == null) {
             send(message);

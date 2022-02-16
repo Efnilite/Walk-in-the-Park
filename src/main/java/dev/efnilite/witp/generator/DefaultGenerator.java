@@ -222,6 +222,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         score++;
         totalScore++;
         checkRewards();
+
+        new PlayerScoreEvent(player).call();
     }
 
     @Override
@@ -311,7 +313,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         lastStandingPlayerLocation = playerLocation.clone();
 
-        new PlayerScoreEvent(player).call();
         if (Option.ALL_POINTS.get()) { // score handling
             for (int i = 0; i < deltaFromLast; i++) { // score the difference
                 score();

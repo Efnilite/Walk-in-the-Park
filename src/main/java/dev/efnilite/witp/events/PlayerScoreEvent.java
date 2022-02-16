@@ -4,7 +4,8 @@ import dev.efnilite.fycore.event.EventWrapper;
 import dev.efnilite.witp.player.ParkourPlayer;
 
 /**
- * When a player scores
+ * This event gets called when a scores a point.
+ * This event is read-only.
  */
 public class PlayerScoreEvent extends EventWrapper {
 

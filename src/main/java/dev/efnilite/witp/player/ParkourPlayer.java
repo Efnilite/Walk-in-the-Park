@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Wrapper class for a regular player to store plugin-usable data
+ * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
+ * besides Spectator Mode. Please not that this is NOT the same as {@link ParkourUser} itself.
  *
  * @author Efnilite
  */
@@ -366,7 +367,9 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang, from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.highScoreDifficulty);
+                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang,
+                            from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic,
+                            from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.highScoreDifficulty);
                     reader.close();
                 } catch (Throwable throwable) {
                     Logging.stack("Error while reading file of player " + pp.player.getName(),
@@ -381,7 +384,8 @@ public class ParkourPlayer extends ParkourUser {
             pp.saveStats();
         } else {
             try {
-                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players").addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
+                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
+                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 String highScoreTime;
@@ -398,7 +402,8 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
 
-                SelectStatement options = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options").addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
+                SelectStatement options = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
+                        .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
                         "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
@@ -472,4 +477,3 @@ public class ParkourPlayer extends ParkourUser {
         this.board = board;
     }
 }
-

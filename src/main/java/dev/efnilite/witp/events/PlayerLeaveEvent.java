@@ -4,7 +4,8 @@ import dev.efnilite.fycore.event.EventWrapper;
 import dev.efnilite.witp.player.ParkourUser;
 
 /**
- * When a player scores
+ * This event gets called when a player leaves the game.
+ * This event is read-only.
  */
 public class PlayerLeaveEvent extends EventWrapper {
 

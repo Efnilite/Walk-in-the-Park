@@ -259,8 +259,8 @@ locale:
                 lore: '<gray>Cliquez pour regarder.'
         options:
             cant-change:
-                name: '<dark_red><bold>Il n''est pas possible de modifier ce paramètre en ce moment!'
-                lore: '<gray>Il n''est pas possible de modifier ce paramètre||<gray>en ayant un score supérieur à 0.'
+                name: '<dark_red><bold>Il n est pas possible de modifier ce paramètre en ce moment!'
+                lore: '<gray>Il n est pas possible de modifier ce paramètre||<gray>en ayant un score supérieur à 0.'
 
             styles:
                 name: '<#6693E7><bold>Style'

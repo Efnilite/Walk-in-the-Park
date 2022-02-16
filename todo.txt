@@ -8,6 +8,7 @@ Please visit the ParkourUser class for the most recent methods.
 - Improve /witp help for users
 - Fix Scoreboard option being customizable with custom scoreboard
 - Fix join messages not appearing
+- Fix PlayerScoreEvent not calling when all points mode is enabled
 - Add PAPI placeholder support to all messages
 - Add player-specific join messages
 

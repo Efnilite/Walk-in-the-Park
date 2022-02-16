@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Class for spectators
+ * Class for spectators.
+ *
+ * @author Efnilite
  */
 public class ParkourSpectator extends ParkourUser {
 
@@ -28,8 +30,10 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourSpectator(@NotNull ParkourUser player, @NotNull ParkourPlayer watching, @Nullable PreviousData previousData) {
         super(player.getPlayer(), previousData);
         Logging.verbose("New ParkourSpectator init " + this.player.getName());
+
         this.locale = player.locale;
 
+        // Unregister if player is already active
         if (player instanceof ParkourPlayer) {
             unregister(player, false, false, true);
         } else if (player instanceof ParkourSpectator) {
@@ -37,12 +41,12 @@ public class ParkourSpectator extends ParkourUser {
             spectator.watching.removeSpectators(spectator);
         }
 
-        users.put(this.player.getUniqueId(), this);
+        watching.getGenerator().addSpectator(this);
 
         this.watching = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
-        watching.getGenerator().addSpectator(this);
         this.player.teleport(watching.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+
         sendTranslated("spectator");
     }
 
@@ -89,7 +93,12 @@ public class ParkourSpectator extends ParkourUser {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
-    public ParkourGenerator getWatching() {
-        return watching;
+    /**
+     * Get the {@link ParkourGenerator} of the spectated player.
+     *
+     * @return the generator of the player that is being spectated.
+     */
+    public ParkourPlayer getWatching() {
+        return watching.getPlayer();
     }
 }

@@ -4,7 +4,8 @@ import dev.efnilite.fycore.event.EventWrapper;
 import dev.efnilite.witp.player.ParkourPlayer;
 
 /**
- * When a player falls
+ * This event gets called when a player falls off of the parkour.
+ * This event is read-only.
  */
 public class PlayerFallEvent extends EventWrapper {
 

@@ -98,6 +98,11 @@ public class WorldHandler {
         world.setAutoSave(false);
     }
 
+    /**
+     * Gets the WITP Bukkit world.
+     *
+     * @return the Bukkit world wherein WITP is currently active.
+     */
     public World getWorld() {
         return world;
     }

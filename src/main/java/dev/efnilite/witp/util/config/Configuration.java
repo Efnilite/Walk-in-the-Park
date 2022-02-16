@@ -51,7 +51,7 @@ public class Configuration {
             Logging.info("Downloaded all config files");
         }
 
-        for (String file : Arrays.asList("config.yml", "generation.yml", "schematics.yml")) { // todo add for lang
+        for (String file : defaultFiles) { // todo add for lang
             try {
                 ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
             } catch (IOException ex) {
