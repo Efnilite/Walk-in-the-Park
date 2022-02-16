@@ -11,7 +11,6 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.inventory.item.MenuItem;
 import dev.efnilite.fycore.inventory.item.SliderItem;
 import dev.efnilite.fycore.inventory.item.TimedItem;
-import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.SkullSetter;
 import dev.efnilite.fycore.util.Unicodes;
 import dev.efnilite.witp.api.Gamemode;
@@ -22,7 +21,6 @@ import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,11 +31,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
  * Handles all menu-related activities
+ *
+ * @author Efnilite
  */
 public class ParkourMenu {
 
@@ -261,7 +260,7 @@ public class ParkourMenu {
 
         // ---------- bottom row ----------
 
-        if (checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabledOptions)) {
+        if (checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabledOptions) && Option.SCOREBOARD.get()) {
             Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SHOW_SCOREBOARD.getName());
 
             main.item(9, new SliderItem()
@@ -417,13 +416,7 @@ public class ParkourMenu {
                         .click((event) -> user.getPlayer().closeInventory()))
 
                 .item(29, config.getFromItemData(user.locale, "general.quit")
-                        .click((event) -> {
-                            try {
-                                ParkourPlayer.unregister(user, true, true, true);
-                            } catch (IOException | InvalidStatementException ex) {
-                                Logging.stack("Error while unregistering player", "Please report this error to the developer!", ex);
-                            }
-                        }))
+                        .click((event) -> ParkourPlayer.leave(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SnakeSingleAnimation())

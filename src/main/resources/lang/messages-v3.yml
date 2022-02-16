@@ -13,8 +13,12 @@ messages:
 
     # English (English), provided by Efnilite
     en:
-        join: '<green><bold>+ &7%p'
-        leave: '<red><bold>- &7%p'
+        join: '<green><bold>+ <gray>You joined Infinite Parkour.'
+        leave: '<red><bold>- <gray>You left Infinite Parkour.'
+
+        player-join: '<green><bold>+ <gray>%p'
+        player-leave: '<red><bold>- <gray>%p'
+
         cant-do: '<dark_red><bold>> <gray>You can''t do this right now.'
         customize-menu: '<green><bold>> <gray>Customize your parkour experience by using "/parkour menu".'
         spectator: '<#4CB3FF>You are now a spectator. You can use "/parkour gm" to leave/change your gamemode.'
@@ -30,8 +34,12 @@ messages:
 
     # Nederlands (Dutch), provided by Efnilite
     nl:
-        join: '<green><bold>+ <gray>%p'
-        leave: '<red><bold>- <gray>%p'
+        join: '<green><bold>+ <gray>Je bent Infinite Parkour gejoined.'
+        leave: '<red><bold>- <gray>Je bent Infinite Parkour geleaved.'
+
+        player-join: '<green><bold>+ <gray>%p'
+        player-leave: '<red><bold>- <gray>%p'
+
         cant-do: '<dark_red><bold>> <gray>Je kan dit nu niet doen.'
         customize-menu: '<green><bold>> <gray>Personaliseer je ervaring met "/parkour menu".'
         spectator: '<#4CB3FF>Je bent nu een spectator. Gebruik "/parkour gm" om je speelmode te veranderen.'
@@ -47,8 +55,12 @@ messages:
 
     # Francais (French), provided by NoaLUNE/Efnilite
     fr:
-        join: '<green><bold>+ &7%p'
-        leave: '<red><bold>- &7%p'
+        join: '<green><bold>+ <gray>Vous avez rejoint Infinite Parkour.'
+        leave: '<red><bold>- <gray>Vous avez quitté Infinite Parkour.'
+
+        player-join: '<green><bold>+ &7%p'
+        player-leave: '<red><bold>- &7%p'
+
         cant-do: '<dark_red><bold>> <gray>Il n''est pas possible de modifier ce paramètre en ce moment'
         customize-menu: '<green><bold>> <gray>Personnaliser votre expérience de parkour en utilisant "/parkour menu".'
         spectator: '<#4CB3FF>Vous êtes maintenant un spectateur. Utiliser "/parkour gm" pour quitter/modifier ton mode de jeu.'

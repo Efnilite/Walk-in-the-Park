@@ -1,5 +1,7 @@
 package dev.efnilite.witp.util.sql;
 
+import dev.efnilite.fycore.sql.InvalidStatementException;
+
 public abstract class Statement {
 
     protected Database database;

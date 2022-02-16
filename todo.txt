@@ -1,9 +1,15 @@
 Walk in the Park
 
 v3.0.1
-- Fix time being parsed as string in local and MySQL storage formats
-- Fix menus not supporting multiple players visiting them
-- Fix leaderboard display
+API
+There have been internal changes in the way player join and leave handling works.
+Please visit the ParkourUser class for the most recent methods.
+
+- Improve /witp help for users
+- Fix Scoreboard option being customizable with custom scoreboard
+- Fix join messages not appearing
+- Add PAPI placeholder support to all messages
+- Add player-specific join messages
 
 High priority:
 - Optimize ram with schematics (async?)

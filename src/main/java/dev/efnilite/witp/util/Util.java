@@ -8,7 +8,6 @@ import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.subarea.Direction;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.config.Option;
-import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -223,7 +222,7 @@ public class Util {
      */
     public static String color(String string) {
         if (!string.equals("")) {
-            return ChatColor.translateAlternateColorCodes('&', Message.parseFormatting(string));
+            return Message.parseFormatting(string);
         }
         return string;
     }

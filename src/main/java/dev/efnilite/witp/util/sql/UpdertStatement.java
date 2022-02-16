@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
+import dev.efnilite.fycore.sql.InvalidStatementException;
 import dev.efnilite.fycore.util.Logging;
 
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ public class UpdertStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException {
+    public void query() throws InvalidStatementException, InvalidStatementException {
         if (defaults.isEmpty() || condition == null) {
             throw new InvalidStatementException("Invalid UpdertStatement");
         }

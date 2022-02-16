@@ -56,19 +56,19 @@ public class ParkourCommand extends FyCommand {
             send(sender, "");
             send(sender, "<dark_gray><strikethrough>---------------<reset> " + WITP.NAME + " <dark_gray><strikethrough>---------------<reset>");
             send(sender, "");
-            send(sender, "<gray>/witp <dark_gray>- Main command");
+            send(sender, "<gray>/parkour <dark_gray>- Main command");
             if (sender.hasPermission("witp.join")) {
-                send(sender, "<gray>/witp join <dark_gray>- Join the game on this server");
-                send(sender, "<gray>/witp leave <dark_gray>- Leave the game on this server");
+                send(sender, "<gray>/parkour join <dark_gray>- Join the game on this server");
+                send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
             }
             if (sender.hasPermission("witp.menu")) {
-                send(sender, "<gray>/witp menu <dark_gray>- Open the customization menu");
+                send(sender, "<gray>/parkour menu <dark_gray>- Open the customization menu");
             }
             if (sender.hasPermission("witp.gamemode")) {
-                send(sender, "<gray>/witp gamemode <dark_gray>- Open the gamemode menu");
+                send(sender, "<gray>/parkour gamemode <dark_gray>- Open the gamemode menu");
             }
             if (sender.hasPermission("witp.leaderboard")) {
-                send(sender, "<gray>/witp leaderboard <dark_gray>- Open the leaderboard");
+                send(sender, "<gray>/parkour leaderboard <dark_gray>- Open the leaderboard");
             }
 
             if (sender.hasPermission("witp.schematic")) {
@@ -182,18 +182,8 @@ public class ParkourCommand extends FyCommand {
                         return true;
                     }
 
-                    try {
-                        ParkourPlayer pp = ParkourPlayer.register(player, null);
-                        WITP.getDivider().generate(pp);
-                    } catch (Throwable throwable) {
-                        Logging.stack("Error while joining player " + player.getName(),
-                                "Please try again or report this error to the developer!", throwable);
-                    }
-                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send join message after join so player gets notified
-                        for (ParkourUser other : ParkourUser.getUsers()) {
-                            other.sendTranslated("join", player.getName());
-                        }
-                    }
+                    ParkourPlayer pp = ParkourPlayer.join(player);
+                    WITP.getDivider().generate(pp);
 
                     return true;
                 }
@@ -201,23 +191,7 @@ public class ParkourCommand extends FyCommand {
                     if (!cooldown(sender, "leave", 2500)) {
                         return true;
                     }
-                    ParkourUser pp = ParkourUser.getUser(player);
-                    if (pp == null) {
-                        return true;
-                    }
-
-                    if (Option.JOIN_LEAVE_MESSAGES.get()) { // send leave message before leave so player gets notified
-                        for (ParkourUser other : ParkourUser.getUsers()) {
-                            other.sendTranslated("leave", player.getName());
-                        }
-                    }
-
-                    try {
-                        ParkourUser.unregister(pp, true, true, true);
-                    } catch (Throwable throwable) {
-                        Logging.stack("Error while unregistering player " + player.getName(),
-                                "Please try again or report this error to the developer!", throwable);
-                    }
+                    ParkourUser.leave(player);
 
                     return true;
                 }
@@ -232,7 +206,10 @@ public class ParkourCommand extends FyCommand {
                 case "gamemode":
                 case "gm": {
                     ParkourUser user = ParkourUser.getUser(player);
-                    if (user != null && user.alertCheckPermission("witp.gamemode")) {
+                    if (user != null) {
+                        if (Option.PERMISSIONS.get() && !player.hasPermission("witp.gamemode")) {
+                            return true;
+                        }
                         ParkourMenu.openGamemodeMenu(user);
                     }
                     return true;
@@ -326,19 +303,8 @@ public class ParkourCommand extends FyCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        if (ParkourUser.getUser(other) != null) {
-                            continue;
-                        }
-
-                        try {
-                            ParkourPlayer pp = ParkourPlayer.register(other, null);
-                            WITP.getDivider().generate(pp);
-                        } catch (Throwable throwable) {
-                            Logging.stack("Error while joining player " + other.getName(),
-                                    "Please try again or report this error to the developer!", throwable);
-                            send(sender, WITP.PREFIX + "<red>There was an error while trying to kick everyone! Please check your console.");
-                            return true;
-                        }
+                        ParkourPlayer pp = ParkourPlayer.join(other);
+                        WITP.getDivider().generate(pp);
                     }
                     send(sender, WITP.PREFIX + "Succesfully force joined everyone");
                     return true;
@@ -349,29 +315,17 @@ public class ParkourCommand extends FyCommand {
                     send(sender, WITP.PREFIX + "That player isn't online!");
                     return true;
                 }
-                try {
-                    ParkourPlayer pp = ParkourPlayer.register(other, null);
-                    WITP.getDivider().generate(pp);
-                } catch (Throwable throwable) {
-                    Logging.stack("Error while joining player " + other.getName(),
-                            "Please try again or report this error to the developer!", throwable);
-                }
 
+                ParkourPlayer pp = ParkourPlayer.join(other);
+                WITP.getDivider().generate(pp);
+                return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission("witp.forceleave")) {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forceleave.everyone")) {
                     for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
-                        try {
-                            other.sendTranslated("leave");
-                            ParkourUser.unregister(other, true, true, true);
-                        } catch (Throwable throwable) {
-                            Logging.stack("Error while unregistering player " + other.getPlayer().getName(),
-                                    "Please try again or report this error to the developer!", throwable);
-                            send(sender, WITP.PREFIX + "<red>There was an error while trying to kick everyone! Please check your console.");
-                            return true;
-                        }
+                        ParkourUser.leave(other);
                     }
-                    send(sender, WITP.PREFIX + "Succesfully force kicked everyone");
+                    send(sender, WITP.PREFIX + "Successfully force kicked everyone!");
                     return true;
                 }
 
@@ -387,12 +341,8 @@ public class ParkourCommand extends FyCommand {
                     return true;
                 }
 
-                try {
-                    ParkourUser.unregister(user, true, true, true);
-                } catch (Throwable throwable) {
-                    Logging.stack("Error while unregistering player " + other.getName(),
-                            "Please try again or report this error to the developer!", throwable);
-                }
+                ParkourUser.leave(user);
+                return true;
             } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
                 if (!cooldown(sender, "recoverinventory", 2500)) {
                     return true;

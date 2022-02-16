@@ -1,6 +1,7 @@
 package dev.efnilite.witp.player;
 
 import com.google.gson.annotations.Expose;
+import dev.efnilite.fycore.sql.InvalidStatementException;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.ParkourOption;
@@ -14,12 +15,12 @@ import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InsertStatement;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import dev.efnilite.witp.util.sql.UpdertStatement;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -280,9 +280,8 @@ public class ParkourPlayer extends ParkourUser {
                     .setValue("hstime", generator.getTime()).setValue("scoreDiff", calculateDifficultyScore());
             try {
                 statement.query();
-            } catch (InvalidStatementException ex) {
-                Logging.stack("Error while saving game of player " + player.getName(),
-                        "Please report this error to the developer!", ex);
+            } catch (InvalidStatementException throwables) {
+                throwables.printStackTrace();
             }
         }
     }
@@ -353,54 +352,36 @@ public class ParkourPlayer extends ParkourUser {
      * Registers a player
      * Doesn't use async reading because the system immediately needs the data.
      *
-     * @param   player
-     *          The player
-     *
-     * @param   previousData
-     *          Previous PreviousData which will persist to this instance
-     *
-     * @throws  IOException
-     *          Thrown if the reader fails or the getting fails
-     */
-    public static @NotNull ParkourPlayer register(@NotNull Player player, @Nullable PreviousData previousData) throws IOException, SQLException {
-        return register(new ParkourPlayer(player, previousData));
-    }
-
-    /**
-     * Registers a player
-     * Doesn't use async reading because the system immediately needs the data.
-     *
      * @param   pp
      *          The player
-     *
-     * @throws  IOException
-     *          Thrown if the reader fails or the getting fails
      */
-    public static ParkourPlayer register(@NotNull ParkourPlayer pp) throws IOException, SQLException {
-        if (players.get(pp.player) == null) {
-            UUID uuid = pp.getPlayer().getUniqueId();
-            JOIN_COUNT++;
-            if (!Option.SQL.get()) {
-                File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
-                if (data.exists()) {
-                    Logging.verbose("Reading player data..");
+    @ApiStatus.Internal
+    protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
+        UUID uuid = pp.getPlayer().getUniqueId();
+        JOIN_COUNT++;
+        if (!Option.SQL.get()) {
+            File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
+            if (data.exists()) {
+                try {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang, from.blockLead,
-                            from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage,
-                            from.showScoreboard, from.highScoreDifficulty);
+                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang, from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.highScoreDifficulty);
                     reader.close();
-                } else {
-                    Logging.verbose("Setting new player data..");
-                    pp.resetPlayerPreferences();
+                } catch (Throwable throwable) {
+                    Logging.stack("Error while reading file of player " + pp.player.getName(),
+                            "Please try again or report this error to the developer!", throwable);
                 }
-
-                players.put(pp.player, pp);
-                pp.saveStats();
             } else {
-                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
-                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
+                Logging.verbose("Setting new player data..");
+                pp.resetPlayerPreferences();
+            }
+
+            players.put(pp.player, pp);
+            pp.saveStats();
+        } else {
+            try {
+                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players").addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 String highScoreTime;
@@ -417,14 +398,13 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
 
-                SelectStatement options = new SelectStatement(WITP.getDatabase(),Option.SQL_PREFIX.get() + "options")
-                        .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                                "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
+                SelectStatement options = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options").addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
+                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings(highscore, Integer.parseInt((String) objects.get(8)), (String) objects.get(0), highScoreTime,
-                            Option.DEFAULT_LANG.get(),
+                    pp.setSettings(highscore, Integer.parseInt((String) objects.get(8)),
+                            (String) objects.get(0), highScoreTime, Option.DEFAULT_LANG.get(),
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
@@ -433,9 +413,12 @@ public class ParkourPlayer extends ParkourUser {
                     pp.resetPlayerPreferences();
                     pp.saveStats();
                 }
-
-                players.put(pp.player, pp);
+            } catch (Throwable throwable) {
+                Logging.stack("Error while reading SQL data of player " + pp.player.getName(),
+                        "Please try again or report this error to the developer!", throwable);
             }
+
+            players.put(pp.player, pp);
         }
         return pp;
     }

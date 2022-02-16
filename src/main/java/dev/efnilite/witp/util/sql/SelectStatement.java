@@ -1,5 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
+import dev.efnilite.fycore.sql.InvalidStatementException;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
@@ -32,7 +33,7 @@ public class SelectStatement extends Statement {
     }
 
     @Override
-    public void query() {
+    public void query() throws InvalidStatementException, InvalidStatementException {
         throw new IllegalStateException("Wrong method usage in SelectStatement");
     }
 

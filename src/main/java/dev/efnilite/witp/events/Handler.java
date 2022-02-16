@@ -13,7 +13,6 @@ import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -32,8 +31,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Handler implements EventWatcher {
@@ -41,17 +38,17 @@ public class Handler implements EventWatcher {
     /**
      * If a player quits and rejoins, give them their stuff back
      */
-    private final HashMap<String, PreviousData> quitInventoryData = new HashMap<>();
+    private final HashMap<String, PreviousData> quitPreviousData = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
 
-        PreviousData data = quitInventoryData.get(playerName);
+        PreviousData data = quitPreviousData.get(playerName);
         if (data != null) {
             data.apply(false);
-            quitInventoryData.remove(playerName);
+            quitPreviousData.remove(playerName);
         }
 
         // OP join messages
@@ -78,21 +75,12 @@ public class Handler implements EventWatcher {
                 return;
             }
 
-            try {
-                ParkourPlayer pp = ParkourPlayer.register(player, null);
-                WITP.getDivider().generate(pp);
-            } catch (IOException | SQLException ex) {
-                Logging.stack("Error while joining player " + player.getName(),
-                        "Please try again or report this error to the developer!", ex);
-            }
-
-            // Join message
             if (Option.JOIN_LEAVE_MESSAGES.get()) {
                 event.setJoinMessage(null);
-                for (ParkourUser other : ParkourUser.getUsers()) {
-                    other.sendTranslated("join", player.getName());
-                }
             }
+
+            ParkourPlayer pp = ParkourPlayer.join(player);
+            WITP.getDivider().generate(pp);
         } else if (player.getWorld().getUID().equals(WITP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(WITP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {
@@ -138,22 +126,16 @@ public class Handler implements EventWatcher {
 
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             event.setQuitMessage(null);
-            for (ParkourUser other : ParkourUser.getUsers()) {
-                other.sendTranslated("leave", player.getName());
-            }
         }
+
         if (Option.INVENTORY_HANDLING.get()) {
             PreviousData data = user.getPreviousData();
             if (data != null)  {
-                quitInventoryData.put(playerName, data);
+                quitPreviousData.put(playerName, data);
             }
         }
-        try {
-            ParkourPlayer.unregister(user, true, false, true);
-        } catch (IOException | InvalidStatementException ex) {
-            Logging.stack("Error while unregistering player " + playerName,
-                    "Please try again or report this error to the developer!", ex);
-        }
+
+        ParkourPlayer.leave(user);
     }
 
     @EventHandler
@@ -258,12 +240,7 @@ public class Handler implements EventWatcher {
             if (held == menu) {
                 player.getGenerator().menu();
             } else if (held == quit) {
-                try {
-                    ParkourUser.unregister(player, true, false, true);
-                } catch (IOException | InvalidStatementException ex) {
-                    Logging.stack("Error while unregistering player " + event.getPlayer().getName(),
-                            "Please try again or report this error to the developer!", ex);
-                }
+                ParkourUser.leave(player);
             }
         }
     }
@@ -272,12 +249,7 @@ public class Handler implements EventWatcher {
     public void onSwitch(PlayerChangedWorldEvent event) {
         ParkourUser user = ParkourUser.getUser(event.getPlayer());
         if (event.getFrom().getUID() == WITP.getWorldHandler().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
-            try {
-                ParkourUser.unregister(user, false, false, true);
-            } catch (IOException | InvalidStatementException ex) {
-                Logging.stack("Error while unregistering player " + event.getPlayer().getName(),
-                        "Please try again or report this error to the developer!", ex);
-            }
+            ParkourUser.unregister(user, false, false, true);
         }
     }
 }

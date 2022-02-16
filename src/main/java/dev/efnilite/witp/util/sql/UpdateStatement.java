@@ -1,5 +1,7 @@
 package dev.efnilite.witp.util.sql;
 
+import dev.efnilite.fycore.sql.InvalidStatementException;
+
 import java.util.LinkedHashMap;
 
 public class UpdateStatement extends Statement {
@@ -23,7 +25,7 @@ public class UpdateStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException {
+    public void query() throws InvalidStatementException, InvalidStatementException {
         if (condition == null || values.isEmpty()) {
             throw new InvalidStatementException("Invalid UpdateStatement");
         }

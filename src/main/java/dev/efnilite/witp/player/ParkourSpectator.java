@@ -6,7 +6,6 @@ import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -15,7 +14,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +31,7 @@ public class ParkourSpectator extends ParkourUser {
         this.locale = player.locale;
 
         if (player instanceof ParkourPlayer) {
-            try {
-                ParkourPlayer.unregister(player, false, false, true);
-            } catch (IOException | InvalidStatementException ex) {
-                Logging.stack("Error while unregistering player " + this.player.getName(),
-                        "Please try again or report this error to the developer!", ex);
-            }
+            unregister(player, false, false, true);
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
             spectator.watching.removeSpectators(spectator);
@@ -51,20 +44,6 @@ public class ParkourSpectator extends ParkourUser {
         watching.getGenerator().addSpectator(this);
         this.player.teleport(watching.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         sendTranslated("spectator");
-    }
-
-    /**
-     * Checks the distance between the person the spectator is watching and the spectator.
-     * If the distance is more than 30 blocks, the player gets teleported back.
-     */
-    public void checkDistance() {
-        Entity target = player.getSpectatorTarget();
-        if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
-            player.setSpectatorTarget(null);
-            player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            player.setSpectatorTarget(target);
-        }
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
     @Override
@@ -94,6 +73,20 @@ public class ParkourSpectator extends ParkourUser {
             }
             board.updateLines(list);
         }
+    }
+
+    /**
+     * Checks the distance between the person the spectator is watching and the spectator.
+     * If the distance is more than 30 blocks, the player gets teleported back.
+     */
+    public void checkDistance() {
+        Entity target = player.getSpectatorTarget();
+        if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
+            player.setSpectatorTarget(null);
+            player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            player.setSpectatorTarget(target);
+        }
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
     public ParkourGenerator getWatching() {

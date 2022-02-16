@@ -9,14 +9,15 @@ import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import fr.mrmicky.fastboard.FastBoard;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,16 +64,105 @@ public abstract class ParkourUser {
     public abstract void updateScoreboard();
 
     /**
-     * Unregisters a ParkourPlayer
+     * Joins a player. This sends a join message while using {@link #register(Player)}
      *
      * @param   player
-     *          The ParkourPlayer
+     *          The player
      *
-     * @throws  IOException
-     *          When saving the player's file goes wrong
+     * @return the newly registered ParkourPlayer instance.
      */
-    public static void unregister(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync)
-            throws IOException, InvalidStatementException {
+    public static @NotNull ParkourPlayer join(@NotNull Player player) {
+        ParkourPlayer pp = register(player);
+
+        if (Option.JOIN_LEAVE_MESSAGES.get()) {
+            pp.sendTranslated("join");
+            for (ParkourUser to : getUsers()) {
+                to.sendTranslated("player-join");
+            }
+        }
+
+        return pp;
+    }
+
+    /**
+     * Registers a player. This may be used to internally register a player without a joining message.
+     * Doesn't use async reading because the system immediately needs the data.
+     *
+     * @param   player
+     *          The player
+     */
+    public static @NotNull ParkourPlayer register(@NotNull Player player) {
+        PreviousData data = null;
+        ParkourUser existing = getUser(player);
+        if (existing instanceof ParkourPlayer) { // if there's already a parkourplayer active, return that instance to prevent duplicates
+            return (ParkourPlayer) existing;
+        }
+        if (existing != null) {
+            data = existing.getPreviousData();
+        }
+
+        return ParkourPlayer.register0(new ParkourPlayer(player, data));
+    }
+
+    /**
+     * This is the same as {@link #leave(ParkourUser)}, but instead for a Bukkit player instance.
+     *
+     * @see #leave(ParkourUser)
+     *
+     * @param   player
+     *          The Bukkit player instance that will be removed from the game if the player is active.
+     */
+    public static void leave(@NotNull Player player) {
+        ParkourUser user = getUser(player);
+        if (user == null) {
+            return;
+        }
+        leave(user);
+    }
+
+    /**
+     * Makes a player leave. This sends a leave message to all other active Parkour players.
+     * This uses {@link #unregister(ParkourUser, boolean, boolean, boolean)}, but with preset values.
+     * Leaving always makes the player go back to their previous position, they will always be kicked if this plugin
+     * is running Bungeecord mode, and their data will always be automatically saved. If you want to unregister a
+     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean, boolean)}.
+     *
+     * @param   user
+     *          The user instance
+     */
+    public static void leave(@NotNull ParkourUser user) {
+        if (Option.JOIN_LEAVE_MESSAGES.get()) {
+            user.sendTranslated("leave");
+            for (ParkourUser to : getUsers()) {
+                to.sendTranslated("player-leave");
+            }
+        }
+
+        unregister(user, true, true, true);
+    }
+
+    /**
+     * Unregisters a Parkour user instance.
+     *
+     * @param   user
+     *          The user to unregister.
+     *
+     * @param   restorePreviousData
+     *          Whether to restore the data from before the player joined the parkour.
+     *
+     * @param   kickIfBungee
+     *          Whether to kick the player if Bungeecord mode is enabled.
+     *
+     * @param   saveAsync
+     *          Whether to save player data asynchronously. This is recommended to be true
+     *          at all times, unless your plugin is in the process of disabling.
+     */
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
+        unregister0(user, restorePreviousData, kickIfBungee, saveAsync);
+    }
+
+    @ApiStatus.Internal
+    protected static void unregister0(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
         Player pl = player.getPlayer();
 
         try {
@@ -83,7 +173,7 @@ public abstract class ParkourUser {
                 ParkourGenerator generator = pp.getGenerator();
                 // remove spectators
                 for (ParkourSpectator spectator : generator.getSpectators()) {
-                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer(), spectator.previousData);
+                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
                     WITP.getDivider().generate(spp);
 
                     generator.removeSpectators(spectator);
@@ -102,8 +192,8 @@ public abstract class ParkourUser {
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
             Logging.stack("Error while trying to make player " + player.getPlayer().getName() + " leave",
-                    "Please report this error to the developer. Inventory will still be set", throwable);
-            player.send("&4&l> &cThere was an error while trying to handle leaving.");
+                    "Please report this error to the developer. Previous data will still be set.", throwable);
+            player.send(WITP.PREFIX + "<red>There was an error while trying to handle leaving.");
         }
 
         players.remove(pl);
@@ -131,48 +221,6 @@ public abstract class ParkourUser {
                 }
             }
         }
-    }
-
-    public boolean alertCheckPermission(String perm) {
-        if (Option.PERMISSIONS.get()) {
-            boolean check = player.hasPermission(perm);
-            if (!check) {
-                sendTranslated("cant-do");
-            }
-            return check;
-        }
-        return true;
-    }
-
-    /**
-     * Teleports the player asynchronously, which helps with unloaded chunks (?)
-     *
-     * @param   to
-     *          Where the player will be teleported to
-     */
-    public void teleport(@NotNull Location to) {
-        player.leaveVehicle();
-        if (to.getWorld() != null) {
-            to.getWorld().getChunkAt(to);
-        }
-        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
-    }
-
-    /**
-     * Gets a user from a Bukkit Player
-     *
-     * @param   player
-     *          The Bukkit Player
-     *
-     * @return the associated {@link ParkourUser}
-     */
-    public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        for (ParkourUser user : users.values()) {
-            if (user.player.getUniqueId() == player.getUniqueId()) {
-                return user;
-            }
-        }
-        return null;
     }
 
     /**
@@ -258,26 +306,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Sends a message or array of it - coloured allowed, using the and sign
-     *
-     * @param   messages
-     *          The message
-     */
-    public void send(String... messages) {
-        for (String msg : messages) {
-            player.sendMessage(Util.color(msg));
-        }
-    }
-
-    public static List<ParkourUser> getUsers() {
-        return new ArrayList<>(users.values());
-    }
-
-    public static List<ParkourPlayer> getActivePlayers() {
-        return new ArrayList<>(players.values());
-    }
-
-    /**
      * Gets an instance of a {@link Highscore} with the player's uuid
      *
      * @param   uuid
@@ -312,6 +340,56 @@ public abstract class ParkourUser {
     public static int getRank(UUID player) {
         return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
     }
+    /**
+     * Gets a user from a Bukkit Player
+     *
+     * @param   player
+     *          The Bukkit Player
+     *
+     * @return the associated {@link ParkourUser}
+     */
+    public static @Nullable ParkourUser getUser(@NotNull Player player) {
+        for (ParkourUser user : users.values()) {
+            if (user.player.getUniqueId() == player.getUniqueId()) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static List<ParkourUser> getUsers() {
+        return new ArrayList<>(users.values());
+    }
+
+    public static List<ParkourPlayer> getActivePlayers() {
+        return new ArrayList<>(players.values());
+    }
+
+    /**
+     * Teleports the player asynchronously, which helps with unloaded chunks (?)
+     *
+     * @param   to
+     *          Where the player will be teleported to
+     */
+    public void teleport(@NotNull Location to) {
+        player.leaveVehicle();
+        if (to.getWorld() != null) {
+            to.getWorld().getChunkAt(to);
+        }
+        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    }
+
+    /**
+     * Sends a message or array of it - coloured allowed, using the and sign
+     *
+     * @param   messages
+     *          The message
+     */
+    public void send(String... messages) {
+        for (String msg : messages) {
+            player.sendMessage(Util.color(msg));
+        }
+    }
 
     /**
      * Gets a message from messages-v3.yml
@@ -324,7 +402,13 @@ public abstract class ParkourUser {
      */
     public void sendTranslated(String path, String... replaceable) {
         path = "messages." + this.locale + "." + path;
-        send(replace(WITP.getConfiguration().getString("lang", path), replaceable));
+
+        String message = getTranslated(path, replaceable);
+        if (WITP.getPlaceholderHook() == null) {
+            send(message);
+        } else {
+            send(PlaceholderAPI.setPlaceholders(player, message));
+        }
     }
 
     /**
@@ -340,15 +424,13 @@ public abstract class ParkourUser {
      */
     public String getTranslated(String path, String... replaceable) {
         path = "messages." + locale + "." + path;
-        return replace(WITP.getConfiguration().getString("lang", path), replaceable);
-    }
+        String message = WITP.getConfiguration().getString("lang", path);
 
-    // Replaces %s, etc. with replaceable arguments
-    private String replace(String string, String... replaceable) {
         for (String s : replaceable) {
-            string = string.replaceFirst("%[a-z]", s);
+            message = message.replaceFirst("%[a-z]", s);
         }
-        return string;
+
+        return message;
     }
 
     /**

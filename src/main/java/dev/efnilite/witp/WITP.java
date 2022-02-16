@@ -24,7 +24,6 @@ import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.Database;
-import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -32,8 +31,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
 
 /**
  * Main class
@@ -156,12 +153,7 @@ public final class WITP extends FyPlugin {
     @Override
     public void disable() {
         for (ParkourUser user : ParkourUser.getUsers()) {
-            try {
-                ParkourUser.unregister(user, true, false, false);
-            } catch (IOException | InvalidStatementException ex) {
-                Logging.stack("Error while unregistering player " + user.getPlayer().getName(),
-                        "Please report this error to the developer!", ex);
-            }
+            ParkourUser.unregister(user, true, false, false);
         }
 
         if (database != null) {

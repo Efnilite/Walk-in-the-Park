@@ -1,8 +1,10 @@
 package dev.efnilite.witp.api;
 
 import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.sql.InvalidStatementException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Main API accessor.
+ *
+ * @see ParkourMenu
+ * @see ParkourUser
+ */
+@SuppressWarnings("unused")
 public class ParkourAPI {
 
     private ParkourAPI() throws IllegalAccessException {
@@ -27,7 +36,8 @@ public class ParkourAPI {
     }
 
     /**
-     * Registers a player and makes a player join the world
+     * Registers a player and makes a player join the world.
+     * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#register(Player)}.
      *
      * @param   player
      *          The player
@@ -36,21 +46,23 @@ public class ParkourAPI {
      * @throws  IOException
      *          If something goes wrong with reading the player's file
      */
+    @Deprecated
     public static @NotNull ParkourPlayer registerPlayer(@NotNull Player player) throws IOException, SQLException {
-        return ParkourPlayer.register(player, null);
+        return ParkourPlayer.register(player);
     }
 
     /**
      * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
+     * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
      *
      * @param   player
      *          The Bukkit version of the player
      *
      * @param   sendBack
      *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
-     *          
-     * @throws IOException If saving the file of the player goes wrong
+     *
      */
+    @Deprecated
     public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException, InvalidStatementException {
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp == null) {
@@ -62,6 +74,7 @@ public class ParkourAPI {
 
     /**
      * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
+     * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
      *
      * @param   player
      *          The player
@@ -71,6 +84,7 @@ public class ParkourAPI {
      *
      * @throws IOException If saving the file of the player goes wrong
      */
+    @Deprecated
     public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException, InvalidStatementException {
         ParkourPlayer.unregister(player, sendBack, false, true);
     }
