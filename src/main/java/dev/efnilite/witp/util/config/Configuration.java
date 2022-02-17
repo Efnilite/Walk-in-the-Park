@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.config;
 
-import dev.efnilite.fycore.config.ConfigUpdater;
+import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
@@ -34,7 +34,7 @@ public class Configuration {
     /**
      * Create a new instance
      */
-    public Configuration(Plugin plugin) { // todo move to json since yaml sucks
+    public Configuration(Plugin plugin) {
         this.plugin = plugin;
         files = new HashMap<>();
 
@@ -53,7 +53,7 @@ public class Configuration {
 
         for (String file : defaultFiles) { // todo add for lang
             try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles.list"));
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles"));
             } catch (IOException ex) {
                 Logging.stack("Error while trying to update file " + file,
                         "Delete this file. If the problem persists, please report this error to the developer!", ex);

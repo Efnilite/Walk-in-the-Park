@@ -6,7 +6,6 @@ import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.ParkourAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -35,20 +34,16 @@ import java.util.UUID;
 
 /**
  * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
- * besides Spectator Mode. Please not that this is NOT the same as {@link ParkourUser} itself.
+ * besides Spectator Mode. Please note that this is NOT the same as {@link ParkourUser} itself.
  *
  * @author Efnilite
  */
 public class ParkourPlayer extends ParkourUser {
 
-    // Player data used in saving
     public @Expose Integer highScore;
     public @Expose String highScoreTime;
-
     public @Expose String name; // for fixing null in leaderboard
     public @Expose Double schematicDifficulty;
-
-    // ---------- Options ----------
     public @Expose Integer blockLead;
     public @Expose Boolean useScoreDifficulty;
     public @Expose String highScoreDifficulty;
@@ -61,6 +56,9 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String style;
     public @Expose String lang;
 
+    /**
+     * The instant in ms in which the player joined.
+     */
     public final long joinTime;
 
     public UUID uuid;
@@ -69,7 +67,7 @@ public class ParkourPlayer extends ParkourUser {
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
-     * If you are using the API, please use {@link ParkourAPI#registerPlayer(Player)} instead
+     * If you are using the API, please use {@link ParkourPlayer#register(Player)} instead
      */
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
@@ -174,11 +172,11 @@ public class ParkourPlayer extends ParkourUser {
 
     /**
      * Returns a random material from the possible styles
-     * @see DefaultGenerator#generate()
+     * @see DefaultGenerator#selectBlockData()
      *
      * @return a random material
      */
-    public Material randomMaterial() {
+    public Material getRandomMaterial() {
         return WITP.getRegistry().getTypeFromStyle(style).get(style);
     }
 
@@ -330,7 +328,6 @@ public class ParkourPlayer extends ParkourUser {
         return scoreMap.get(player);
     }
 
-
     /**
      * Gets the player at a certain place
      * Note: places are indicated in normal fashion (a.k.a. #1 is the first)
@@ -349,13 +346,7 @@ public class ParkourPlayer extends ParkourUser {
         return null;
     }
 
-    /**
-     * Registers a player
-     * Doesn't use async reading because the system immediately needs the data.
-     *
-     * @param   pp
-     *          The player
-     */
+    // Internal registering service
     @ApiStatus.Internal
     protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
         UUID uuid = pp.getPlayer().getUniqueId();

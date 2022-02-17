@@ -9,8 +9,6 @@ import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-;
-
 /**
  * The default parkour gamemode
  */

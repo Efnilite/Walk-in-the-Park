@@ -5,309 +5,309 @@
 # Item materials need be from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 
 items:
-    general:
-        quit:
-            item: barrier
-        close:
-            item: arrow
-        menu:
-            item: compass
+  general:
+    quit:
+      item: barrier
+    close:
+      item: arrow
+    menu:
+      item: compass
+
+  styles:
+    default:
+      item: poppy
+
+  gamemodes:
+    default:
+      item: barrel
+    spectator:
+      item: glass
+    search:
+      item: paper
+
+  # Options for the options in the menu
+  options:
+    cant-change:
+      item: barrier
 
     styles:
-        default:
-            item: poppy
+      item: crafting_table
+      # Changing enabled always overwrites the permission system
+      enabled: true
+    leads:
+      item: feather
+      enabled: true
+      default: 4
+    time:
+      item: clock
+      enabled: true
+      default: 6000 # time is in ticks
 
-    gamemodes:
-        default:
-            item: barrel
-        spectator:
-            item: glass
-        search:
-            item: paper
+    score-difficulty:
+      enabled: true
+      default: true
+    schematic-difficulty:
+      enabled: true
+      default: 0.2
+    particles-and-sound:
+      enabled: true
+      default: true
+    show-scoreboard:
+      enabled: true
+      default: true
+    fall-message:
+      enabled: true
+      default: true
+    special-blocks:
+      enabled: true
+      default: true
+    use-schematics:
+      enabled: true
+      default: true
+    schematics:
+      item: scaffolding
+      enabled: true
+      default: true
 
-    # Options for the options in the menu
-    options:
-        cant-change:
-            item: barrier
-
-        styles:
-            item: crafting_table
-            # Changing enabled always overwrites the permission system
-            enabled: true
-        leads:
-            item: feather
-            enabled: true
-            default: 4
-        time:
-            item: clock
-            enabled: true
-            default: 6000 # time is in ticks
-
-        score-difficulty:
-            enabled: true
-            default: true
-        schematic-difficulty:
-            enabled: true
-            default: 0.2
-        particles-and-sound:
-            enabled: true
-            default: true
-        show-scoreboard:
-            enabled: true
-            default: true
-        fall-message:
-            enabled: true
-            default: true
-        special-blocks:
-            enabled: true
-            default: true
-        use-schematics:
-            enabled: true
-            default: true
-        schematics:
-            item: scaffolding
-            enabled: true
-            default: true
-
-        gamemode:
-            item: allium
-            enabled: true
-        leaderboard:
-            item: gold_block
-            enabled: true
-        language:
-            item: writable_book
-            enabled: true
+    gamemode:
+      item: allium
+      enabled: true
+    leaderboard:
+      item: gold_block
+      enabled: true
+    language:
+      item: writable_book
+      enabled: true
 
 locale:
 
-    # English (English), provided by Efnilite
-    en:
-        general:
-            quit:
-                name: '<#9F0000><bold>Quit'
-                lore: ''
-            close:
-                name: '<red><bold>Close'
-                lore: ''
-            menu:
-                name: '<red><bold>Options'
-                lore: ''
-        gamemodes:
-            default:
-                name: '<#6693E7><bold>Normal'
-                lore: '<gray>Play the game like normal.'
-            spectator:
-                name: '<#6693E7><bold>Spectate'
-                lore: '<gray>Spectate another player.'
-            spectator-head:
-                name: '<#6693E7><bold>%p'
-                lore: '<gray>Click to spectate.'
-        options:
-            cant-change:
-                name: '<dark_red><bold>You cant change this right now!'
-                lore: '<gray>You have a score above 0,||<gray>which means you cant change this setting.'
+  # English (English), provided by Efnilite
+  en:
+    general:
+      quit:
+        name: '<#9F0000><bold>Quit'
+        lore: ''
+      close:
+        name: '<red><bold>Close'
+        lore: ''
+      menu:
+        name: '<red><bold>Options'
+        lore: ''
+    gamemodes:
+      default:
+        name: '<#6693E7><bold>Normal'
+        lore: '<gray>Play the game like normal.'
+      spectator:
+        name: '<#6693E7><bold>Spectate'
+        lore: '<gray>Spectate another player.'
+      spectator-head:
+        name: '<#6693E7><bold>%p'
+        lore: '<gray>Click to spectate.'
+    options:
+      cant-change:
+        name: '<dark_red><bold>You cant change this right now!'
+        lore: '<gray>You have a score above 0,||<gray>which means you cant change this setting.'
 
-            styles:
-                name: '<#6693E7><bold>Style'
-                lore: '<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used.'
-            leads:
-                name: '<#6693E7><bold>Lead'
-                lore: '<#5574AF>Currently: <gray>%s blocks||<gray>How many blocks will||<gray>be generated in front of you.'
-            time:
-                name: '<#6693E7><bold>Time'
-                lore: '<#5574AF>Currently: <gray>%s||<gray>Your current visual time.'
+      styles:
+        name: '<#6693E7><bold>Style'
+        lore: '<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used.'
+      leads:
+        name: '<#6693E7><bold>Lead'
+        lore: '<#5574AF>Currently: <gray>%s blocks||<gray>How many blocks will||<gray>be generated in front of you.'
+      time:
+        name: '<#6693E7><bold>Time'
+        lore: '<#5574AF>Currently: <gray>%s||<gray>Your current visual time.'
 
-            schematic-difficulty:
-                name: '<#6693E7><bold>Schematic difficulty'
-                lore: '<#5574AF>Currently: <gray>%s||<gray>The difficulty of schematics'
-                values: [easy, medium, hard, very hard] # Make sure it's the same order every time!
-            use-schematics:
-                name: 'Use schematics'
-                lore: '<gray>Currently: %s||<gray>If enabled static schematics||<gray>will appear throughout the parkour.'
-            schematics:
-                name: '<#6693E7><bold>Schematics'
-                lore: '<gray>Change schematic settings'
+      schematic-difficulty:
+        name: '<#6693E7><bold>Schematic difficulty'
+        lore: '<#5574AF>Currently: <gray>%s||<gray>The difficulty of schematics'
+        values: [easy, medium, hard, very hard] # Make sure it's the same order every time!
+      use-schematics:
+        name: 'Use schematics'
+        lore: '<gray>Currently: %s||<gray>If enabled static schematics||<gray>will appear throughout the parkour.'
+      schematics:
+        name: '<#6693E7><bold>Schematics'
+        lore: '<gray>Change schematic settings'
 
-            show-scoreboard:
-                name: 'Show scoreboard'
-                lore: '<gray>Currently: %s||<gray>If enabled shows the scoreboard.'
-            fall-message:
-                name: 'Show fall message'
-                lore: '<gray>Currently: %s||<gray>If enabled shows a message when you fall||<gray>with extra info.'
-            particles-and-sound:
-                name: 'Use particles and sounds'
-                lore: '<gray>Currently: %s||<gray>If enabled every generated block||<gray>will show particles and play a sound.'
-            special-blocks:
-                name: 'Use special blocks'
-                lore: '<gray>Currently: %s||<gray>If enabled uses special blocks like ice and slabs.'
-            score-difficulty:
-                name: 'Score difficulty'
-                lore: '<gray>Currently: %s||<gray>When enabled, the higher score you have||<gray>the more difficult it gets.'
+      show-scoreboard:
+        name: 'Show scoreboard'
+        lore: '<gray>Currently: %s||<gray>If enabled shows the scoreboard.'
+      fall-message:
+        name: 'Show fall message'
+        lore: '<gray>Currently: %s||<gray>If enabled shows a message when you fall||<gray>with extra info.'
+      particles-and-sound:
+        name: 'Use particles and sounds'
+        lore: '<gray>Currently: %s||<gray>If enabled every generated block||<gray>will show particles and play a sound.'
+      special-blocks:
+        name: 'Use special blocks'
+        lore: '<gray>Currently: %s||<gray>If enabled uses special blocks like ice and slabs.'
+      score-difficulty:
+        name: 'Score difficulty'
+        lore: '<gray>Currently: %s||<gray>When enabled, the higher score you have||<gray>the more difficult it gets.'
 
-            gamemode:
-                name: '<#6693E7><bold>Gamemode'
-                lore: ''
-            leaderboard:
-                name: '<#6693E7><bold>Leaderboard'
-                lore: '<#5574AF>Rank: <gray>%s'
-            leaderboard-head:
-                name: '<#6693E7><bold>#%r - %p'
-                lore: '<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0'
-            language:
-                name: '<#6693E7><bold>Language'
-                lore: '<#5574AF>Currently: <gray>%s'
+      gamemode:
+        name: '<#6693E7><bold>Gamemode'
+        lore: ''
+      leaderboard:
+        name: '<#6693E7><bold>Leaderboard'
+        lore: '<#5574AF>Rank: <gray>%s'
+      leaderboard-head:
+        name: '<#6693E7><bold>#%r - %p'
+        lore: '<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0'
+      language:
+        name: '<#6693E7><bold>Language'
+        lore: '<#5574AF>Currently: <gray>%s'
 
-    # Nederlands (Dutch), provided by Efnilite
-    nl:
-        general:
-            quit:
-                name: '<#9F0000><bold>Stoppen'
-                lore: ''
-            close:
-                name: '<red><bold>Sluiten'
-                lore: ''
-            menu:
-                name: '<red><bold>Instellingen'
-                lore: ''
-        gamemodes:
-            default:
-                name: '<#6693E7><bold>Normaal'
-                lore: '<gray>Speel dit spel zoals je normaal doet.'
-            spectator:
-                name: '<#6693E7><bold>Toekijken'
-                lore: '<gray>Kijk een andere speler toe.'
-            spectator-head:
-                name: '<#6693E7><bold>%p'
-                lore: '<gray>Klik om toe te kijken.'
-        options:
-            cant-change:
-                name: '<dark_red><bold>Je kan dit nu niet veranderen!'
-                lore: '<gray>Je hebt een score hoger dan 0,||<gray>wat betekent dat je dit niet kan veranderen.'
+  # Nederlands (Dutch), provided by Efnilite
+  nl:
+    general:
+      quit:
+        name: '<#9F0000><bold>Stoppen'
+        lore: ''
+      close:
+        name: '<red><bold>Sluiten'
+        lore: ''
+      menu:
+        name: '<red><bold>Instellingen'
+        lore: ''
+    gamemodes:
+      default:
+        name: '<#6693E7><bold>Normaal'
+        lore: '<gray>Speel dit spel zoals je normaal doet.'
+      spectator:
+        name: '<#6693E7><bold>Toekijken'
+        lore: '<gray>Kijk een andere speler toe.'
+      spectator-head:
+        name: '<#6693E7><bold>%p'
+        lore: '<gray>Klik om toe te kijken.'
+    options:
+      cant-change:
+        name: '<dark_red><bold>Je kan dit nu niet veranderen!'
+        lore: '<gray>Je hebt een score hoger dan 0,||<gray>wat betekent dat je dit niet kan veranderen.'
 
-            styles:
-                name: '<#6693E7><bold>Stijl'
-                lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>Kies welke blokken er worden gebruikt.'
-            leads:
-                name: '<#6693E7><bold>Voorsprong'
-                lore: '<#5574AF>Huidige waarde: <gray>%s blokken||<gray>Hoeveel blokken er voor je||<gray>zullen worden gegenereerd.'
-            time:
-                name: '<#6693E7><bold>Tijd'
-                lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>De huidige visuele tijd.'
+      styles:
+        name: '<#6693E7><bold>Stijl'
+        lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>Kies welke blokken er worden gebruikt.'
+      leads:
+        name: '<#6693E7><bold>Voorsprong'
+        lore: '<#5574AF>Huidige waarde: <gray>%s blokken||<gray>Hoeveel blokken er voor je||<gray>zullen worden gegenereerd.'
+      time:
+        name: '<#6693E7><bold>Tijd'
+        lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>De huidige visuele tijd.'
 
-            schematic-difficulty:
-                name: '<#6693E7><bold>Schematicmoeilijkheid'
-                lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>De moeilijkheid van schematics'
-                values: [makkelijk, medium, moeilijk, erg moeilijk] # Make sure it's the same order every time!
-            use-schematics:
-                name: 'Schematics gebruiken'
-                lore: '<gray>Huidige waarde: %s||<gray>Als dit aan staat verschijnen er||<gray>statische schematics door het parkour.'
-            schematics:
-                name: '<#6693E7><bold>Schematics'
-                lore: '<gray>Verander de schematicinstellingen'
+      schematic-difficulty:
+        name: '<#6693E7><bold>Schematicmoeilijkheid'
+        lore: '<#5574AF>Huidige waarde: <gray>%s||<gray>De moeilijkheid van schematics'
+        values: [makkelijk, medium, moeilijk, erg moeilijk] # Make sure it's the same order every time!
+      use-schematics:
+        name: 'Schematics gebruiken'
+        lore: '<gray>Huidige waarde: %s||<gray>Als dit aan staat verschijnen er||<gray>statische schematics door het parkour.'
+      schematics:
+        name: '<#6693E7><bold>Schematics'
+        lore: '<gray>Verander de schematicinstellingen'
 
-            show-scoreboard:
-                name: 'Scorebord laten zien'
-                lore: '<gray>Huidige waarde: %s||<gray>Laat het scorebord zien.'
-            fall-message:
-                name: 'Valbericht laten zien'
-                lore: '<gray>Huidige waarde: %s||<gray>Laat een bericht zien||<gray>als je valt.'
-            particles-and-sound:
-                name: 'Particles en geluiden gebruiken'
-                lore: '<gray>Huidige waarde: %s||<gray>Elk gegenereerd blok zal particles||<gray>laten zien en geluiden afspelen.'
-            special-blocks:
-                name: 'Speciale blokken gebruiken'
-                lore: '<gray>Huidige waarde: %s||<gray>Gebruik speciale blokken zoals ijs, hekken en slabs.'
-            score-difficulty:
-                name: 'Scoremoeilijkheid'
-                lore: '<gray>Huidige waarde: %s||<gray>Hoe hoger je score,||<gray>hoe moeilijker het parkour.'
+      show-scoreboard:
+        name: 'Scorebord laten zien'
+        lore: '<gray>Huidige waarde: %s||<gray>Laat het scorebord zien.'
+      fall-message:
+        name: 'Valbericht laten zien'
+        lore: '<gray>Huidige waarde: %s||<gray>Laat een bericht zien||<gray>als je valt.'
+      particles-and-sound:
+        name: 'Particles en geluiden gebruiken'
+        lore: '<gray>Huidige waarde: %s||<gray>Elk gegenereerd blok zal particles||<gray>laten zien en geluiden afspelen.'
+      special-blocks:
+        name: 'Speciale blokken gebruiken'
+        lore: '<gray>Huidige waarde: %s||<gray>Gebruik speciale blokken zoals ijs, hekken en slabs.'
+      score-difficulty:
+        name: 'Scoremoeilijkheid'
+        lore: '<gray>Huidige waarde: %s||<gray>Hoe hoger je score,||<gray>hoe moeilijker het parkour.'
 
-            gamemode:
-                name: '<#6693E7><bold>Speelmodes'
-                lore: ''
-            leaderboard:
-                name: '<#6693E7><bold>Scorebord'
-                lore: '<#5574AF>Rang: <gray>%s'
-            leaderboard-head:
-                name: '<#6693E7><bold>#%r - %p'
-                lore: '<#5574AF>Score: <gray>%s||<#5574AF>Tijd: <gray>%t||<#5574AF>Moeilijkheid: <gray>%d<dark_gray>/1.0'
-            language:
-                name: '<#6693E7><bold>Taal'
-                lore: '<#5574AF>Huidige waarde: <gray>%s'
+      gamemode:
+        name: '<#6693E7><bold>Speelmodes'
+        lore: ''
+      leaderboard:
+        name: '<#6693E7><bold>Scorebord'
+        lore: '<#5574AF>Rang: <gray>%s'
+      leaderboard-head:
+        name: '<#6693E7><bold>#%r - %p'
+        lore: '<#5574AF>Score: <gray>%s||<#5574AF>Tijd: <gray>%t||<#5574AF>Moeilijkheid: <gray>%d<dark_gray>/1.0'
+      language:
+        name: '<#6693E7><bold>Taal'
+        lore: '<#5574AF>Huidige waarde: <gray>%s'
 
-    # Francais (French), provided by NoaLUNE/Efnilite
-    fr:
-        general:
-            quit:
-                name: '<#9F0000><bold>Quitter'
-                lore: ''
-            close:
-                name: '<red><bold>Fermer'
-                lore: ''
-            menu:
-                name: '<red><bold>Paramètres'
-                lore: ''
-        gamemodes:
-            default:
-                name: '<#6693E7><bold>Normal'
-                lore: '<gray>Jouer le jeu normalement.'
-            spectator:
-                name: '<#6693E7><bold>Spectateur'
-                lore: '<gray>Regarder un autre joueur.'
-            spectator-head:
-                name: '<#6693E7><bold>%p'
-                lore: '<gray>Cliquez pour regarder.'
-        options:
-            cant-change:
-                name: '<dark_red><bold>Il n est pas possible de modifier ce paramètre en ce moment!'
-                lore: '<gray>Il n est pas possible de modifier ce paramètre||<gray>en ayant un score supérieur à 0.'
+  # Francais (French), provided by NoaLUNE/Efnilite
+  fr:
+    general:
+      quit:
+        name: '<#9F0000><bold>Quitter'
+        lore: ''
+      close:
+        name: '<red><bold>Fermer'
+        lore: ''
+      menu:
+        name: '<red><bold>Paramètres'
+        lore: ''
+    gamemodes:
+      default:
+        name: '<#6693E7><bold>Normal'
+        lore: '<gray>Jouer le jeu normalement.'
+      spectator:
+        name: '<#6693E7><bold>Spectateur'
+        lore: '<gray>Regarder un autre joueur.'
+      spectator-head:
+        name: '<#6693E7><bold>%p'
+        lore: '<gray>Cliquez pour regarder.'
+    options:
+      cant-change:
+        name: '<dark_red><bold>Il n est pas possible de modifier ce paramètre en ce moment!'
+        lore: '<gray>Il n est pas possible de modifier ce paramètre||<gray>en ayant un score supérieur à 0.'
 
-            styles:
-                name: '<#6693E7><bold>Style'
-                lore: '<#5574AF>Actuellement: <gray>%s||<gray>Choisissez quels blocs seront utilisès.'
-            leads:
-                name: '<#6693E7><bold>Avance'
-                lore: '<#5574AF>Actuellement: <gray>%s blocks||<gray>Combien de blocs seront généré devant vous.'
-            time:
-                name: '<#6693E7><bold>Temps'
-                lore: '<#5574AF>Actuellement: <gray>%s||<gray>Votre temps actuel (visuel).'
+      styles:
+        name: '<#6693E7><bold>Style'
+        lore: '<#5574AF>Actuellement: <gray>%s||<gray>Choisissez quels blocs seront utilisès.'
+      leads:
+        name: '<#6693E7><bold>Avance'
+        lore: '<#5574AF>Actuellement: <gray>%s blocks||<gray>Combien de blocs seront généré devant vous.'
+      time:
+        name: '<#6693E7><bold>Temps'
+        lore: '<#5574AF>Actuellement: <gray>%s||<gray>Votre temps actuel (visuel).'
 
-            schematic-difficulty:
-                name: '<#6693E7><bold>Difficulté schematic'
-                lore: '<#5574AF>Actuellement: <gray>%s||<gray>La difficulté des schematics'
-                values: [facile, moyen, difficile, très difficile] # Make sure it's the same order every time!
-            use-schematics:
-                name: 'Utilisez schematics'
-                lore: '<gray>Actuellement: %s||<gray>Des schematics statiques||<gray>apparaîtront tout au long du parkour, si activé.'
-            schematics:
-                name: '<#6693E7><bold>Schematics'
-                lore: '<gray>Modifier les paramètres schematics'
+      schematic-difficulty:
+        name: '<#6693E7><bold>Difficulté schematic'
+        lore: '<#5574AF>Actuellement: <gray>%s||<gray>La difficulté des schematics'
+        values: [facile, moyen, difficile, très difficile] # Make sure it's the same order every time!
+      use-schematics:
+        name: 'Utilisez schematics'
+        lore: '<gray>Actuellement: %s||<gray>Des schematics statiques||<gray>apparaîtront tout au long du parkour, si activé.'
+      schematics:
+        name: '<#6693E7><bold>Schematics'
+        lore: '<gray>Modifier les paramètres schematics'
 
-            show-scoreboard:
-                name: 'Show scoreboard'
-                lore: '<gray>Actuellement: %s||<gray>Affiche le tableau de scores si activé.'
-            fall-message:
-                name: 'Show fall message'
-                lore: '<gray>Actuellement: %s||<gray>Affiche un message lorsque vous tombez si activé.'
-            particles-and-sound:
-                name: 'Utiliser particules et sons'
-                lore: '<gray>Actuellement: %s||<gray>Chaque bloc généré affichera||<gray>des particules et émettra un son.'
-            special-blocks:
-                name: 'Utiliser des blocks spéciaux'
-                lore: '<gray>Actuellement: %s||<gray>Utilisez des blocs spéciaux||<gray>comme la glace et les dalles si activés.'
-            score-difficulty:
-                name: 'Difficulté du score'
-                lore: '<gray>Actuellement: %s||<gray>Plus votre score est élevé,||<gray>plus il devient difficile si activé'
+      show-scoreboard:
+        name: 'Show scoreboard'
+        lore: '<gray>Actuellement: %s||<gray>Affiche le tableau de scores si activé.'
+      fall-message:
+        name: 'Show fall message'
+        lore: '<gray>Actuellement: %s||<gray>Affiche un message lorsque vous tombez si activé.'
+      particles-and-sound:
+        name: 'Utiliser particules et sons'
+        lore: '<gray>Actuellement: %s||<gray>Chaque bloc généré affichera||<gray>des particules et émettra un son.'
+      special-blocks:
+        name: 'Utiliser des blocks spéciaux'
+        lore: '<gray>Actuellement: %s||<gray>Utilisez des blocs spéciaux||<gray>comme la glace et les dalles si activés.'
+      score-difficulty:
+        name: 'Difficulté du score'
+        lore: '<gray>Actuellement: %s||<gray>Plus votre score est élevé,||<gray>plus il devient difficile si activé'
 
-            gamemode:
-                name: '<#6693E7><bold>Mode de jeu'
-                lore: ''
-            leaderboard:
-                name: '<#6693E7><bold>Tableau de classement'
-                lore: '<#5574AF>Rang: <gray>%s'
-            leaderboard-head:
-                name: '<#6693E7><bold>#%r - %p'
-                lore: '<#5574AF>Score: <gray>%s||<#5574AF>Temps: <gray>%t||<#5574AF>Difficulté: <gray>%d<dark_gray>/1.0'
-            language:
-                name: '<#6693E7><bold>Langage'
-                lore: '<#5574AF>Actuellement: <gray>%s'
+      gamemode:
+        name: '<#6693E7><bold>Mode de jeu'
+        lore: ''
+      leaderboard:
+        name: '<#6693E7><bold>Tableau de classement'
+        lore: '<#5574AF>Rang: <gray>%s'
+      leaderboard-head:
+        name: '<#6693E7><bold>#%r - %p'
+        lore: '<#5574AF>Score: <gray>%s||<#5574AF>Temps: <gray>%t||<#5574AF>Difficulté: <gray>%d<dark_gray>/1.0'
+      language:
+        name: '<#6693E7><bold>Langage'
+        lore: '<#5574AF>Actuellement: <gray>%s'

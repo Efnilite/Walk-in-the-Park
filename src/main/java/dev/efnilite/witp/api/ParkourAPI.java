@@ -36,7 +36,6 @@ public class ParkourAPI {
     }
 
     /**
-     * Registers a player and makes a player join the world.
      * Deprecated. Use {@link ParkourUser#register(Player)}.
      *
      * @param   player
@@ -50,7 +49,6 @@ public class ParkourAPI {
     }
 
     /**
-     * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
      * Deprecated. Use {@link ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
      *
      * @param   player
@@ -71,7 +69,6 @@ public class ParkourAPI {
     }
 
     /**
-     * Unregisters a player and kicks the player from the world (or sends them back to the server assigned in config.yml)
      * Deprecated. Use {@link dev.efnilite.witp.player.ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
      *
      * @param   player

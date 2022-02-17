@@ -60,7 +60,7 @@ public class ParkourSpectator extends ParkourUser {
                 Logging.error("Scoreboard lines are null! Check your config!");
                 return;
             }
-            Integer rank = ParkourPlayer.getHighScoreValue(watching.getPlayer().uuid);
+            Integer rank = ParkourPlayer.getHighScoreValue(watching.getPlayer().getUUID());
             UUID one = ParkourPlayer.getAtPlace(1);
             Integer top = 0;
             Highscore highscore = null;

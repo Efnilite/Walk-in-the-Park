@@ -76,7 +76,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return pp.style;
                 case "time_pref":
                 case "time_preference":
-                    return Integer.toString(pp.selectedTime); // todo make this readable instead of number
+                    return Integer.toString(pp.selectedTime);
                 case "scoreboard":
                     return pp.showScoreboard.toString();
                 case "difficulty":
@@ -104,16 +104,16 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "leader":
             case "record_player":
                 UUID recordPlayer = ParkourPlayer.getAtPlace(1);
-                return recordPlayer == null ? "N/A" : Bukkit.getOfflinePlayer(recordPlayer).getName();
+                return recordPlayer == null ? "?" : Bukkit.getOfflinePlayer(recordPlayer).getName();
             case "leader_score":
             case "record_score":
             case "record":
                 UUID uuid = ParkourPlayer.getAtPlace(1);
                 if (uuid == null) {
-                    return "N/A";
+                    return "?";
                 }
                 Integer score = ParkourPlayer.getHighScoreValue(uuid);
-                return score == null ? "N/A" : Integer.toString(score);
+                return score == null ? "?" : Integer.toString(score);
             default:
                 if (params.contains("player_rank_")) {
                     String replaced = params.replace("player_rank_", "");
@@ -121,15 +121,15 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     if (rank > 0) {
                         UUID uuidRank = ParkourPlayer.getAtPlace(rank);
                         if (uuidRank == null) {
-                            return "N/A";
+                            return "?";
                         }
                         Highscore highscore = ParkourPlayer.getHighScore(uuidRank);
                         if (highscore == null) {
-                            return "N/A";
+                            return "?";
                         }
-                        return highscore.name == null ? "N/A" : highscore.name;
+                        return highscore.name == null ? "?" : highscore.name;
                     } else {
-                        return "N/A";
+                        return "?";
                     }
                 } else if (params.contains("score_rank_")) {
                     String replaced = params.replace("score_rank_", "");
@@ -137,12 +137,12 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     if (rank > 0) {
                         UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
                         if (uuidRank1 == null) {
-                            return "N/A";
+                            return "?";
                         }
                         Integer score1 = ParkourPlayer.getHighScoreValue(uuidRank1);
-                        return score1 == null ? "N/A" : Integer.toString(score1);
+                        return score1 == null ? "?" : Integer.toString(score1);
                     } else {
-                        return "N/A";
+                        return "?";
                     }
                 } else if (params.contains("time_rank_")) {
                     String replaced = params.replace("time_rank_", "");
@@ -150,12 +150,12 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     if (rank > 0) {
                         UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
                         if (uuidRank1 == null) {
-                            return "N/A";
+                            return "?";
                         }
                         String time = ParkourPlayer.getHighScoreTime(uuidRank1);
-                        return time == null ? "N/A" : time;
+                        return time == null ? "?" : time;
                     } else {
-                        return "N/A";
+                        return "?";
                     }
                 }
         }

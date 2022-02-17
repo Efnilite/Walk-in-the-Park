@@ -7,16 +7,16 @@
 
 scoreboard:
 
-    # Whether the scoreboard is enabled or not.
-    # Disable this if you want to use another scoreboard plugin!
-    enabled: true
+  # Whether the scoreboard is enabled or not.
+  # Disable this if you want to use another scoreboard plugin!
+  enabled: true
 
-    # You can use PlaceholderAPI placeholders with this scoreboard!
-    title: "<gradient:#002A41>Infinite Parkour</gradient:#0072B3>"
-    lines:
-        - "&a"
-        - "<#0072B3>Score <white>%score%"
-        - "<#0072B3>Time <white>%time%"
-        - "<#0072B3>Highscore <white>%highscore%"
-        - "&b"
-        - "<#80C7FD><bold>server.ip"
+  # You can use PlaceholderAPI placeholders with this scoreboard!
+  title: "<gradient:#002A41>Infinite Parkour</gradient:#0072B3>"
+  lines:
+    - "&a"
+    - "<#0072B3>Score <white>%score%"
+    - "<#0072B3>Time <white>%time%"
+    - "<#0072B3>Highscore <white>%highscore%"
+    - "&b"
+    - "<#80C7FD><bold>server.ip"

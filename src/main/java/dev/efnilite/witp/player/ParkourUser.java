@@ -80,6 +80,10 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             pp.sendTranslated("join");
             for (ParkourUser to : getUsers()) {
+                if (to.getUUID().equals(player.getUniqueId())) {
+                    continue;
+                }
+
                 to.sendTranslated("player-join", player.getName());
             }
         }
@@ -137,6 +141,10 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             user.sendTranslated("leave");
             for (ParkourUser to : getUsers()) {
+                if (to.getUUID().equals(user.getUUID())) {
+                    continue;
+                }
+
                 to.sendTranslated("player-leave", user.player.getName());
             }
         }
@@ -164,6 +172,7 @@ public abstract class ParkourUser {
         unregister0(user, restorePreviousData, kickIfBungee, saveAsync);
     }
 
+    // Internal unregistering service
     @ApiStatus.Internal
     protected static void unregister0(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
         Player pl = player.getPlayer();
@@ -464,7 +473,7 @@ public abstract class ParkourUser {
     /**
      * Gets the previous data of the player
      *
-     * @return the previousdata of the player
+     * @return the {@link PreviousData} of the player
      */
     public PreviousData getPreviousData() {
         return previousData;

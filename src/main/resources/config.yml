@@ -32,230 +32,230 @@ join-leave-messages: true
 
 # Options about Bungeecord/autojoining
 bungeecord:
-    # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
-    # !! If this is disabled, you have to use /witp join to join and /witp leave to leave. !!
-    enabled: false
+  # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
+  # !! If this is disabled, you have to use /witp join to join and /witp leave to leave. !!
+  enabled: false
 
-    # The server the players will be returned to after the game is done
-    return_server: 'Lobby'
+  # The server the players will be returned to after the game is done
+  return_server: 'Lobby'
 
-    # If go back is enabled
-    go-back-enabled: false
+  # If go back is enabled
+  go-back-enabled: false
 
-    # The place players will go back to if they leave, if Bungeecord is disabled and the go-back option is enabled
-    # You need to retain this format, or else it won't work: '(x,y,z,world)'
-    go-back: '(0,100,0,world)'
+  # The place players will go back to if they leave, if Bungeecord is disabled and the go-back option is enabled
+  # You need to retain this format, or else it won't work: '(x,y,z,world)'
+  go-back: '(0,100,0,world)'
 
 # Options for MySQL
 sql:
-    enabled: false
-    url: 'localhost'
-    port: 3306
-    username: 'efnilite'
-    password: 'password'
+  enabled: false
+  url: 'localhost'
+  port: 3306
+  username: 'efnilite'
+  password: 'password'
 
-    # Logs all games
-    # !! Warning: Might take up a lot of storage
-    # Does not count games with a score of 0
-    game-logs: false
+  # Logs all games
+  # !! Warning: Might take up a lot of storage
+  # Does not count games with a score of 0
+  game-logs: false
 
-    # Using an existing database might overwrite data. Be cautious!
-    database: 'witp'
+  # Using an existing database might overwrite data. Be cautious!
+  database: 'witp'
 
-    # The prefix given to any table names (default '', so nothing, example: 'witp-player', the prefix would be 'witp-')
-    prefix: ''
+  # The prefix given to any table names (default '', so nothing, example: 'witp-player', the prefix would be 'witp-')
+  prefix: ''
 
 # Options for the world
 world:
-    # The world in which the personal parkours will take place
-    name: 'witp'
+  # The world in which the personal parkours will take place
+  name: 'witp'
 
-    # Deletes the world on reload/restart of the server.
-    # This makes sure there are no ghost blocks left when a server crash occurs.
-    # Disable this if you want to have a static map.
-    delete-on-reload: true
+  # Deletes the world on reload/restart of the server.
+  # This makes sure there are no ghost blocks left when a server crash occurs.
+  # Disable this if you want to have a static map.
+  delete-on-reload: true
 
-    # The world players will be teleported to if they accidentally join the WITP world without being a player
-    fall-back: 'world'
+  # The world players will be teleported to if they accidentally join the WITP world without being a player
+  fall-back: 'world'
 
 options:
 
-    # If the options menu is enabled
-    enabled: true
+  # If the options menu is enabled
+  enabled: true
 
-    # Options for the leads
-    leads:
+  # Options for the leads
+  leads:
 
-        # The amounts of the lead
-        # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
-        # Also must be above 1
-        amount:
-            - 1
-            - 2
-            - 3
-            - 4
-            - 5
-            - 6
-            - 10
+    # The amounts of the lead
+    # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
+    # Also must be above 1
+    amount:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 10
 
-    # Options for the time
-    time:
+  # Options for the time
+  time:
 
-        # Selects the time format.
-        # Choose between:
-        # 24 - 24 hour clock. (00:00, 12:00, 23:59)
-        # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
-        format: 24
+    # Selects the time format.
+    # Choose between:
+    # 24 - 24 hour clock. (00:00, 12:00, 23:59)
+    # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
+    format: 24
 
-    # Enables/disables the inventory handling system
-    inventory-handling: true
+  # Enables/disables the inventory handling system
+  inventory-handling: true
 
-    # Logs inventories of the players that join to the inventories/ folder.
-    # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
-    # inventories of players to be lost if this is set to false!
-    # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
-    inventory-saving: true
+  # Logs inventories of the players that join to the inventories/ folder.
+  # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
+  # inventories of players to be lost if this is set to false!
+  # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
+  inventory-saving: true
 
-    # Alternate inventory saving command
-    # Example: /inventory save %player%
-    # This command will be executed by console.
-    alt-inventory-saving-command: ''
+  # Alternate inventory saving command
+  # Example: /inventory save %player%
+  # This command will be executed by console.
+  alt-inventory-saving-command: ''
 
-    # Enables/disables the health handling system
-    # Disable this if you're experiencing errors with max health, etc.
-    health-handling: true
+  # Enables/disables the health handling system
+  # Disable this if you're experiencing errors with max health, etc.
+  health-handling: true
 
-    # Saves things like health and max health for when a player joins the parkour.
-    save-stats: true
+  # Saves things like health and max health for when a player joins the parkour.
+  save-stats: true
 
-    # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
-    hotbar-quit-item: false
+  # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
+  hotbar-quit-item: false
 
 # Options for permissions.
 # These permissions are used to determine which things the player can change.
 # List: https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions
 permissions:
 
-    # If permissions are enabled
-    enabled: false
+  # If permissions are enabled
+  enabled: false
 
-    # Gives every style a permission. The permission is the name of the style:
-    # witp.styles.<style> - example: witp.styles.red
-    per-style: false
+  # Gives every style a permission. The permission is the name of the style:
+  # witp.styles.<style> - example: witp.styles.red
+  per-style: false
 
 # Options for focus mode.
 focus-mode:
 
-    # If focus mode is enabled players can't use commands while in parkour.
-    # Note: this might not work on all commands because.. Minecraft.
-    enabled: false
+  # If focus mode is enabled players can't use commands while in parkour.
+  # Note: this might not work on all commands because.. Minecraft.
+  enabled: false
 
-    # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
-    # If you want to disable the default whitelisted commands you can remove every item in the list below.
-    whitelist:
-        - 'witp'
-        - 'parkour'
-        - 'msg'
-        - 'r'
-        - 'w'
-        - 'whisper'
-        - 'reply'
-        - 'message'
+  # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
+  # If you want to disable the default whitelisted commands you can remove every item in the list below.
+  whitelist:
+    - 'witp'
+    - 'parkour'
+    - 'msg'
+    - 'r'
+    - 'w'
+    - 'whisper'
+    - 'reply'
+    - 'message'
 
 # The different styles players can select
 styles:
 
-    # The default style
-    default: 'red'
+  # The default style
+  default: 'red'
 
-    # The list of all available styles, which you can add to if you want.
-    # For changes, you have to restart or reload your server.
-    list:
-        red: [red_wool, red_stained_glass, red_concrete, red_terracotta]
-        blue: [blue_wool, blue_stained_glass, blue_concrete, blue_terracotta]
-        light blue: [light_blue_wool, light_blue_stained_glass, light_blue_concrete, light_blue_terracotta]
-        green: [green_wool, green_stained_glass, green_concrete, green_terracotta]
-        lime: [lime_wool, lime_stained_glass, lime_concrete, lime_terracotta]
-        cyan: [cyan_wool, cyan_stained_glass, cyan_concrete, cyan_terracotta]
-        purple: [purple_wool, purple_stained_glass, purple_concrete, purple_terracotta]
-        yellow: [yellow_wool, yellow_stained_glass, yellow_concrete, yellow_terracotta]
-        gray: [gray_wool, gray_stained_glass, gray_concrete, gray_terracotta]
-        end: [end_stone, end_stone_bricks, purpur_block, purpur_pillar]
-        nether: [netherrack, nether_bricks, red_nether_bricks, chiseled_nether_bricks, nether_wart_block, nether_gold_ore, netherite_block, basalt]
-        quartz: [smooth_quartz, chiseled_quartz_block, quartz_block, quartz_bricks, quartz_pillar]
-        ocean: [prismarine, prismarine_bricks, dark_prismarine, sea_lantern]
-        redstone: [observer, dispenser, redstone_block, piston, sticky_piston, redstone_lamp, target]
-        overworld: [grass_block, stone, cobblestone, oak_log]
-        ores: [diamond_ore, gold_ore, iron_ore, coal_ore, nether_gold_ore, lapis_ore, redstone_ore, emerald_ore, nether_quartz_ore]
-        wood: [oak_planks, spruce_planks, jungle_planks, acacia_planks, birch_planks, dark_oak_planks, oak_log, spruce_log, jungle_log, birch_log, acacia_log, dark_oak_log]
-
-        # Provided by RustyDagger
-        rainbow: [red_wool, blue_wool, orange_wool, magenta_wool, lime_wool, purple_wool, yellow_concrete, orange_concrete, lime_concrete, light_blue_concrete, yellow_stained_glass, white_stained_glass, magenta_stained_glass, light_blue_stained_glass]
-        glow: [glowstone, jack_o_lantern, beacon, sea_lantern, crying_obsidian, shroomlight]
+  # The list of all available styles, which you can add to if you want.
+  # For changes, you have to restart or reload your server.
+  list:
+    red: [red_wool, red_stained_glass, red_concrete, red_terracotta]
+    blue: [blue_wool, blue_stained_glass, blue_concrete, blue_terracotta]
+    light blue: [light_blue_wool, light_blue_stained_glass, light_blue_concrete, light_blue_terracotta]
+    green: [green_wool, green_stained_glass, green_concrete, green_terracotta]
+    lime: [lime_wool, lime_stained_glass, lime_concrete, lime_terracotta]
+    cyan: [cyan_wool, cyan_stained_glass, cyan_concrete, cyan_terracotta]
+    purple: [purple_wool, purple_stained_glass, purple_concrete, purple_terracotta]
+    yellow: [yellow_wool, yellow_stained_glass, yellow_concrete, yellow_terracotta]
+    gray: [gray_wool, gray_stained_glass, gray_concrete, gray_terracotta]
+    end: [end_stone, end_stone_bricks, purpur_block, purpur_pillar]
+    nether: [netherrack, nether_bricks, red_nether_bricks, chiseled_nether_bricks, nether_wart_block, nether_gold_ore, netherite_block, basalt]
+    quartz: [smooth_quartz, chiseled_quartz_block, quartz_block, quartz_bricks, quartz_pillar]
+    ocean: [prismarine, prismarine_bricks, dark_prismarine, sea_lantern]
+    redstone: [observer, dispenser, redstone_block, piston, sticky_piston, redstone_lamp, target]
+    overworld: [grass_block, stone, cobblestone, oak_log]
+    ores: [diamond_ore, gold_ore, iron_ore, coal_ore, nether_gold_ore, lapis_ore, redstone_ore, emerald_ore, nether_quartz_ore]
+    wood: [oak_planks, spruce_planks, jungle_planks, acacia_planks, birch_planks, dark_oak_planks, oak_log, spruce_log, jungle_log, birch_log, acacia_log, dark_oak_log]
+    
+    # Provided by RustyDagger
+    rainbow: [red_wool, blue_wool, orange_wool, magenta_wool, lime_wool, purple_wool, yellow_concrete, orange_concrete, lime_concrete, light_blue_concrete, yellow_stained_glass, white_stained_glass, magenta_stained_glass, light_blue_stained_glass]
+    glow: [glowstone, jack_o_lantern, beacon, sea_lantern, crying_obsidian, shroomlight]
 
 # Options for scoring
 scoring:
 
-    # Gives the player a point when a block is set to air, not when a player jumps on it
-    all-points: false
+  # Gives the player a point when a block is set to air, not when a player jumps on it
+  all-points: false
 
 # Options for custom rewards
 rewards:
-    # If rewards are enabled
-    enabled: false
+  # If rewards are enabled
+  enabled: false
 
-    # The intervals at which they get a reward
-    # (so for every 50 blocks the player jumps, they get a reward)
-    # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
-    # Setting this to -1 will never result in rewards for Vault/commands
-    interval: 50
+  # The intervals at which they get a reward
+  # (so for every 50 blocks the player jumps, they get a reward)
+  # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
+  # Setting this to -1 will never result in rewards for Vault/commands
+  interval: 50
 
-    # The same as interval, but instead at scores.
-    # So when the player reaches, for example, 50 points, the rewards system is triggered.
-    # In the string you add executable commands when they reach this score
-    # ;; is used for separating commands
-    # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
-    scores:
-        - '50;;tellraw @a "hey there";;second command'
-        - '100;;give %player% golden_apple'
-        - '200' # no command means it only does the command and Vault reward.
+  # The same as interval, but instead at scores.
+  # So when the player reaches, for example, 50 points, the rewards system is triggered.
+  # In the string you add executable commands when they reach this score
+  # ;; is used for separating commands
+  # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
+  scores:
+    - '50;;tellraw @a "hey there";;second command'
+    - '100;;give %player% golden_apple'
+    - '200' # no command means it only does the command and Vault reward.
 
-    # If the player gets the rewards in the 'scores' section AFTER leaving the parkour (true is afterwards)
-    leave-rewards: false
+  # If the player gets the rewards in the 'scores' section AFTER leaving the parkour (true is afterwards)
+  leave-rewards: false
 
-    # The same as scores, but players can only achieve this once
-    # (!!!) Work in progress // not added yet.
-    one-time-scores:
-        - '1000;;say "Well done!"'
+  # The same as scores, but players can only achieve this once
+  # (!!!) Work in progress // not added yet.
+  one-time-scores:
+    - '1000;;say "Well done!"'
 
-    # The commands that will be executed if the interval is met.
-    # Use %player% to get the player
-    # '' means no command
-    command:
-        - ''
+  # The commands that will be executed if the interval is met.
+  # Use %player% to get the player
+  # '' means no command
+  command:
+    - ''
 
-    # The amount of money players will receive as Vault currency
-    vault-reward: 5
+  # The amount of money players will receive as Vault currency
+  vault-reward: 5
 
-    # The message you get after the interval is met
+  # The message you get after the interval is met
     # '' means no message
-    message: '&6+5 coins'
+  message: '&6+5 coins'
 
 # Options for particles/sounds
 particles:
 
-    # Particle shape
-    # The shape of the particle that will appear
-    # Possible options: dot (this is the original shape), box, circle
-    particle-shape: 'box'
+  # Particle shape
+  # The shape of the particle that will appear
+  # Possible options: dot (this is the original shape), box, circle
+  particle-shape: 'box'
 
-    # The particle type
-    # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
-    particle-type: 'SPELL_INSTANT'
+  # The particle type
+  # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
+  particle-type: 'SPELL_INSTANT'
 
-    # The sound type
-    # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
-    sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
+  # The sound type
+  # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
+  sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
 
-    # The pitch of the sound
-    sound-pitch: 3
+  # The pitch of the sound
+  sound-pitch: 3

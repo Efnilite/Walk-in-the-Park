@@ -47,6 +47,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends DefaultGeneratorBase {
 
+    /**
+     * Prevents generation delay.
+     */
+    private ChunkLoader chunkLoader = new ChunkLoader();
     private BukkitRunnable task;
 
     private boolean isSpecial;
@@ -84,7 +88,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     protected List<Block> schematicBlocks;
 
     /**
-     * The count total. Always bigger (or the same) than the positionIndexPlayer
+     * The count total. This is always bigger (or the same) than the positionIndexPlayer
      */
     protected int positionIndexTotal;
 
@@ -164,7 +168,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public BlockData selectBlockData() {
-        return player.randomMaterial().createBlockData();
+        return player.getRandomMaterial().createBlockData();
     }
 
     @Override
@@ -201,7 +205,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         }
 
-        if (mostRecentBlock.getBlock().getType() == Material.QUARTZ_SLAB) { // slabs cant go higher than one
+        if (mostRecentBlock.getBlock().getType() == Material.QUARTZ_SLAB) { // slabs can't go higher than one
             height = Math.min(height, 0);
         }
 
@@ -270,7 +274,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         Location playerLocation = player.getLocation();
 
-        if (playerLocation.getWorld() != playerSpawn.getWorld()) { // sometimes player worlds dont match (somehow)
+        if (playerLocation.getWorld() != playerSpawn.getWorld()) { // sometimes player worlds don't match (somehow)
             player.teleport(playerSpawn);
             return;
         }

@@ -14,6 +14,7 @@ import java.util.Random;
 /**
  * In-built VoidGenerator for Bukkit worlds (without MV)
  */
+@SuppressWarnings("deprecation") // generateChunkData is used for <1.18 versions
 public class VoidGenerator extends ChunkGenerator {
 
     @Override

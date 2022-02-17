@@ -53,7 +53,6 @@ public class Schematic {
      */
     private File file;
 
-
     /**
      * Whether this schematic is supported on the current version.
      * (if this schematic features an unknown material it will be declared as unsupported)

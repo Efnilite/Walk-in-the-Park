@@ -30,9 +30,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 
+/**
+ * Internal event handler
+ */
+@ApiStatus.Internal
 public class Handler implements EventWatcher {
 
     /**

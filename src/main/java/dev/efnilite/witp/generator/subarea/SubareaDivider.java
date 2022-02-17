@@ -47,8 +47,12 @@ public class SubareaDivider {
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
      * it just picks an old one without any players.
      */
-    private volatile Queue<Vector2D> cachedPoints = new LinkedList<>(); // volatile to reduce chance of thread collision
-    private volatile HashMap<ParkourPlayer, Vector2D> activePoints = new HashMap<>();
+    private final Queue<Vector2D> cachedPoints = new LinkedList<>(); // final to reduce chance of thread collision
+
+    /**
+     * Currently active points
+     */
+    private final HashMap<ParkourPlayer, Vector2D> activePoints = new HashMap<>();
 
     /**
      * New instance of the SubareaDivider
@@ -135,7 +139,7 @@ public class SubareaDivider {
 
     /**
      * Removes a player from the registry
-     * If you're using the API, please use {@link ParkourAPI#unregisterPlayer(ParkourPlayer, boolean)}} instead!
+     * If you're using the API, please use {@link ParkourPlayer#register(Player)} instead!
      *
      * @param   player
      *          The player
@@ -190,7 +194,7 @@ public class SubareaDivider {
                     chunk.setForceLoaded(true);
                 }
             }
-        } catch (Throwable ignored) {} // ignored if chunks cant be requested
+        } catch (Throwable ignored) {} // ignored if chunks can't be requested
 
         // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().getDimensions();

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Stores schematics so they don't have to be read every time
+ * Stores schematics, so they don't have to be read every time
  */
 public class SchematicCache {
 
