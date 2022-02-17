@@ -373,6 +373,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         positionIndexTotal = 0;
         positionIndexMap.clear();
 
+        chunkLoader.removeAll();
         waitForSchematicCompletion = false;
         player.saveGame();
         deleteStructure();
@@ -474,6 +475,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
 
             Block selectedBlock = blocks.get(0);
+            chunkLoader.updateRadius(selectedBlock.getChunk(), 2);
             setBlock(selectedBlock, selectedBlockData);
             new BlockGenerateEvent(selectedBlock, this, player).call();
 
