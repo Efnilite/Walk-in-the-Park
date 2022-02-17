@@ -67,7 +67,7 @@ public abstract class ParkourUser {
     public abstract void updateScoreboard();
 
     /**
-     * Joins a player. This sends a join message while using {@link #register(Player)}
+     * Joins a player. This sends a join message while using {@link #register(Player)}.
      *
      * @param   player
      *          The player
@@ -94,18 +94,19 @@ public abstract class ParkourUser {
     /**
      * Registers a player. This may be used to internally register a player without a joining message.
      * Doesn't use async reading because the system immediately needs the data.
+     * This automatically unregisters the player if it is already registered.
      *
      * @param   player
      *          The player
+     *
+     * @return the ParkourPlayer instance of the newly joined player
      */
     public static @NotNull ParkourPlayer register(@NotNull Player player) {
         PreviousData data = null;
         ParkourUser existing = getUser(player);
-        if (existing instanceof ParkourPlayer) { // if there's already a parkourplayer active, return that instance to prevent duplicates
-            return (ParkourPlayer) existing;
-        }
         if (existing != null) {
             data = existing.getPreviousData();
+            unregister(existing, false, false, true);
         }
 
         return ParkourPlayer.register0(new ParkourPlayer(player, data));

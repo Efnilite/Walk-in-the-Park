@@ -290,7 +290,7 @@ public class SubareaDivider {
      *
      * @return the vector in the middle
      */
-    private Vector getEstimatedCenter(Vector2D vector, double borderSize) {
+    public Vector getEstimatedCenter(Vector2D vector, double borderSize) {
         int size = (int) borderSize;
         return new Vector(vector.x * size, 150, vector.y * size);
     }

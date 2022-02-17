@@ -4,6 +4,7 @@ import dev.efnilite.fycore.inventory.Menu;
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
+import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
@@ -27,7 +28,14 @@ public class DefaultGamemode implements Gamemode {
     @Override
     public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
         player.closeInventory();
-        ParkourUser.unregister(user, false, false, true);
+
+        if (user instanceof ParkourPlayer) {
+            ParkourPlayer pp = (ParkourPlayer) user;
+            if (pp.getGenerator() instanceof DefaultGenerator) {
+                return;
+            }
+        }
+
         ParkourPlayer pp = ParkourPlayer.register(player);
         WITP.getDivider().generate(pp);
     }
