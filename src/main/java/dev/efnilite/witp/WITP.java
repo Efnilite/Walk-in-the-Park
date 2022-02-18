@@ -23,7 +23,7 @@ import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
-import dev.efnilite.witp.util.sql.Database;
+import dev.efnilite.witp.util.sql.SQLManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -46,7 +46,7 @@ public final class WITP extends FyPlugin {
     public static boolean OUTDATED = false;
     private static Gson gson;
     private static WITP instance;
-    private static Database database;
+    private static SQLManager sqlManager;
     private static Registry registry;
     private static SubareaDivider divider;
     private static WorldHandler worldHandler;
@@ -108,9 +108,8 @@ public final class WITP extends FyPlugin {
 
         try {
             if (Option.SQL.get()) {
-                database = new Database();
-                database.connect(Option.SQL_URL.get(), Option.SQL_PORT.get(), Option.SQL_DB.get(),
-                        Option.SQL_USERNAME.get(), Option.SQL_PASSWORD.get());
+                sqlManager = new SQLManager();
+                sqlManager.connect();
             }
             ParkourUser.initHighScores();
         } catch (Throwable throwable) {
@@ -156,8 +155,8 @@ public final class WITP extends FyPlugin {
             ParkourUser.unregister(user, true, false, false);
         }
 
-        if (database != null) {
-            database.close();
+        if (sqlManager != null) {
+            sqlManager.close();
         }
 
         if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
@@ -222,8 +221,8 @@ public final class WITP extends FyPlugin {
         return registry;
     }
 
-    public static Database getDatabase() {
-        return database;
+    public static SQLManager getSqlManager() {
+        return sqlManager;
     }
 
     public static SubareaDivider getDivider() {

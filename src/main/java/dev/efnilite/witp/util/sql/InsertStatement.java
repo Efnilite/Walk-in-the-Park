@@ -8,7 +8,7 @@ public class InsertStatement extends Statement {
 
     private final LinkedHashMap<String, Object> values;
 
-    public InsertStatement(Database database, String table) {
+    public InsertStatement(SQLManager database, String table) {
         super(database, table);
         this.values = new LinkedHashMap<>();
     }
@@ -19,7 +19,7 @@ public class InsertStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException, InvalidStatementException {
+    public void query() throws InvalidStatementException {
         if (values.isEmpty()) {
             throw new InvalidStatementException("Invalid InsertStatement");
         }
@@ -48,6 +48,6 @@ public class InsertStatement extends Statement {
             }
         }
         statement.append(");");
-        database.query(statement.toString());
+        manager.sendQuery(statement.toString());
     }
 }

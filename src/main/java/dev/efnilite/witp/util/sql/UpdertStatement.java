@@ -16,7 +16,7 @@ public class UpdertStatement extends Statement {
     private final LinkedHashMap<String, Object> defaults;
     private String condition;
 
-    public UpdertStatement(Database database, String table) {
+    public UpdertStatement(SQLManager database, String table) {
         super(database, table);
         this.defaults = new LinkedHashMap<>();
     }
@@ -32,24 +32,24 @@ public class UpdertStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException, InvalidStatementException {
+    public void query() throws InvalidStatementException {
         if (defaults.isEmpty() || condition == null) {
             throw new InvalidStatementException("Invalid UpdertStatement");
         }
-        SelectStatement statement = new SelectStatement(database, table);
+        SelectStatement statement = new SelectStatement(manager, table);
         statement.addColumns("*").addCondition(condition);
         try {
             HashMap<String, List<Object>> map = statement.fetch();
             String key = condition.split("=")[1].replaceAll("[' ]", "");
             List<Object> objects = map != null ? map.get(key) : null;
             if (objects == null) {
-                InsertStatement insert = new InsertStatement(database, table);
+                InsertStatement insert = new InsertStatement(manager, table);
                 for (String skey : defaults.keySet()) {
                     insert.setValue(skey, defaults.get(skey));
                 }
                 insert.query();
             } else {
-                UpdateStatement update = new UpdateStatement(database, table);
+                UpdateStatement update = new UpdateStatement(manager, table);
                 for (String skey : defaults.keySet()) {
                     update.setValue(skey, defaults.get(skey));
                 }

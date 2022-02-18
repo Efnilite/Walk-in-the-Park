@@ -4,11 +4,11 @@ import dev.efnilite.fycore.sql.InvalidStatementException;
 
 public abstract class Statement {
 
-    protected Database database;
+    protected SQLManager manager;
     protected String table;
 
-    public Statement(Database database, String table) {
-        this.database = database;
+    public Statement(SQLManager manager, String table) {
+        this.manager = manager;
         this.table = table;
     }
 

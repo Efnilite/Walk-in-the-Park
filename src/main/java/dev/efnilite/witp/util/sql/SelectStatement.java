@@ -16,7 +16,7 @@ public class SelectStatement extends Statement {
     private final List<String> columns;
     private String condition;
 
-    public SelectStatement(Database database, String table) {
+    public SelectStatement(SQLManager database, String table) {
         super(database, table);
         this.columns = new ArrayList<>();
         this.condition = null;
@@ -33,7 +33,7 @@ public class SelectStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException, InvalidStatementException {
+    public void query() {
         throw new IllegalStateException("Wrong method usage in SelectStatement");
     }
 
@@ -65,7 +65,7 @@ public class SelectStatement extends Statement {
         statement.append(";");
         LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
 
-        PreparedStatement preparedStatement = database.resultQuery(statement.toString());
+        PreparedStatement preparedStatement = manager.getConnection().prepareStatement(statement.toString());
         if (preparedStatement == null) {
             return null;
         }

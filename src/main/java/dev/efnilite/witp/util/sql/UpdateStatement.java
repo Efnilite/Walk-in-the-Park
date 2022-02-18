@@ -9,8 +9,8 @@ public class UpdateStatement extends Statement {
     private String condition;
     private final LinkedHashMap<String, Object> values;
 
-    public UpdateStatement(Database database, String table) {
-        super(database, table);
+    public UpdateStatement(SQLManager manager, String table) {
+        super(manager, table);
         this.values = new LinkedHashMap<>();
     }
 
@@ -25,7 +25,7 @@ public class UpdateStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException, InvalidStatementException {
+    public void query() throws InvalidStatementException {
         if (condition == null || values.isEmpty()) {
             throw new InvalidStatementException("Invalid UpdateStatement");
         }
@@ -46,6 +46,6 @@ public class UpdateStatement extends Statement {
             }
         }
         statement.append(" WHERE ").append(condition).append(";");
-        database.query(statement.toString());
+        manager.sendQuery(statement.toString());
     }
 }

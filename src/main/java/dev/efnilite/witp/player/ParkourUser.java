@@ -78,7 +78,7 @@ public abstract class ParkourUser {
         ParkourPlayer pp = register(player);
 
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
-            pp.sendTranslated("join");
+            pp.sendTranslated("join", player.getName());
             for (ParkourUser to : getUsers()) {
                 if (to.getUUID().equals(player.getUniqueId())) {
                     continue;
@@ -140,7 +140,7 @@ public abstract class ParkourUser {
      */
     public static void leave(@NotNull ParkourUser user) {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
-            user.sendTranslated("leave");
+            user.sendTranslated("leave", user.getPlayer().getName());
             for (ParkourUser to : getUsers()) {
                 if (to.getUUID().equals(user.getUUID())) {
                     continue;
@@ -244,7 +244,7 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
+            SelectStatement per = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                     .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {

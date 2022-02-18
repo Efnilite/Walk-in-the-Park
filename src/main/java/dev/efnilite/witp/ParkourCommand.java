@@ -91,7 +91,7 @@ public class ParkourCommand extends FyCommand {
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
                     }
-                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
+                    if (!sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
@@ -108,7 +108,7 @@ public class ParkourCommand extends FyCommand {
                     if (!cooldown(sender, "reset", 2500)) {
                         return true;
                     }
-                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
+                    if (!sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
@@ -127,7 +127,7 @@ public class ParkourCommand extends FyCommand {
                     if (!cooldown(sender, "migrate", 2500)) {
                         return true;
                     }
-                    if (Option.PERMISSIONS.get() && !sender.hasPermission("witp.reload")) {
+                    if (!sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL.get()) {
@@ -222,7 +222,7 @@ public class ParkourCommand extends FyCommand {
                     ParkourMenu.openLeaderboardMenu(ParkourUser.getUser(player), player);
                     break;
                 case "schematic":
-                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.schematic")) {
+                    if (!player.hasPermission("witp.schematic")) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }

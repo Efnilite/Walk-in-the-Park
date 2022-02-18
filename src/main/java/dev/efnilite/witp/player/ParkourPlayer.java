@@ -223,13 +223,13 @@ public class ParkourPlayer extends ParkourUser {
                         highScoreDifficulty = highScoreDifficulty.substring(0, 3);
                     }
 
-                    UpdertStatement statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
+                    UpdertStatement statement = new UpdertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                             .setDefault("uuid", uuid.toString()).setDefault("name", name)
                             .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
                             .setDefault("lang" , locale).setDefault("hsdiff", highScoreDifficulty)
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
-                    statement = new UpdertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
+                    statement = new UpdertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
                             .setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
@@ -273,7 +273,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public void saveGame() {
         if (Option.GAMELOGS.get() && Option.SQL.get() && generator.getScore() > 0) {
-            InsertStatement statement = new InsertStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "game-history")
+            InsertStatement statement = new InsertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "game-history")
                     .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
                     .setValue("name", player.getName()).setValue("score", generator.getScore())
                     .setValue("hstime", generator.getTime()).setValue("scoreDiff", calculateDifficultyScore());
@@ -375,7 +375,7 @@ public class ParkourPlayer extends ParkourUser {
             pp.saveStats();
         } else {
             try {
-                SelectStatement select = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "players")
+                SelectStatement select = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
@@ -393,7 +393,7 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
 
-                SelectStatement options = new SelectStatement(WITP.getDatabase(), Option.SQL_PREFIX.get() + "options")
+                SelectStatement options = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
                         "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
