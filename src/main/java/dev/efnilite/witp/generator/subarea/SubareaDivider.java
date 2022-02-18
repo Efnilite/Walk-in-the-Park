@@ -6,7 +6,6 @@ import dev.efnilite.fycore.util.Version;
 import dev.efnilite.fycore.vector.Vector2D;
 import dev.efnilite.fycore.vector.Vector3D;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.api.ParkourAPI;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -255,7 +254,7 @@ public class SubareaDivider {
         player.setGameMode(GameMode.ADVENTURE);
         if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
             player.getInventory().clear();
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.menu").build();
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
             if (mat == null) {
                 Logging.error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
@@ -264,7 +263,7 @@ public class SubareaDivider {
             }
         }
         if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.locale, "general.quit").build();
+            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit").build();
             if (mat == null) {
                 Logging.error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());

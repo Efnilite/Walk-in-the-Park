@@ -7,6 +7,8 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.session.Session;
+import dev.efnilite.witp.session.SingleSession;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.SelectStatement;
@@ -35,12 +37,27 @@ import java.util.*;
  */
 public abstract class ParkourUser {
 
-    public String locale;
-    protected FastBoard board;
-    protected PreviousData previousData;
-    protected final Player player;
-
     public static int JOIN_COUNT;
+
+    /**
+     * This user's locale
+     */
+    protected String locale;
+
+    /**
+     * This user's scoreboard
+     */
+    protected FastBoard board;
+
+    /**
+     * This user's PreviousData
+     */
+    protected PreviousData previousData;
+
+    /**
+     * The Bukkit player instance associated with this user.
+     */
+    protected final Player player;
 
     public static Map<UUID, Integer> highScores = new LinkedHashMap<>();
     protected static volatile Map<UUID, Highscore> scoreMap = new LinkedHashMap<>();
@@ -54,6 +71,7 @@ public abstract class ParkourUser {
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
+
         if (Option.SCOREBOARD.get()) {
             this.board = new FastBoard(player);
         }
@@ -175,38 +193,40 @@ public abstract class ParkourUser {
 
     // Internal unregistering service
     @ApiStatus.Internal
-    protected static void unregister0(@NotNull ParkourUser player, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
-        Player pl = player.getPlayer();
+    protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
+        Player pl = user.getPlayer();
 
         try {
-            new PlayerLeaveEvent(player).call();
-            if (player instanceof ParkourPlayer) {
-                ParkourPlayer pp = (ParkourPlayer) player;
+            new PlayerLeaveEvent(user).call();
+            Session session = user.getSession();
+
+            if (user instanceof ParkourPlayer) {
+                ParkourPlayer pp = (ParkourPlayer) user;
 
                 ParkourGenerator generator = pp.getGenerator();
                 // remove spectators
-                for (ParkourSpectator spectator : generator.getSpectators()) {
+                for (ParkourSpectator spectator : session.getSpectators()) {
                     ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
                     WITP.getDivider().generate(spp);
 
-                    generator.removeSpectators(spectator);
+                    session.removeSpectators(spectator);
                 }
 
                 // reset generator (remove blocks) and delete island
                 generator.reset(false);
                 WITP.getDivider().leave(pp);
                 pp.save(saveAsync);
-            } else if (player instanceof ParkourSpectator) {
-                ParkourSpectator spectator = (ParkourSpectator) player;
-                spectator.watching.removeSpectators(spectator);
+            } else if (user instanceof ParkourSpectator) {
+                ParkourSpectator spectator = (ParkourSpectator) user;
+                spectator.watching.getPlayer().getSession().removeSpectators(spectator);
             }
-            if (player.getBoard() != null && !player.getBoard().isDeleted()) {
-                player.getBoard().delete();
+            if (user.getBoard() != null && !user.getBoard().isDeleted()) {
+                user.getBoard().delete();
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
-            Logging.stack("Error while trying to make player " + player.getPlayer().getName() + " leave",
+            Logging.stack("Error while trying to make player " + user.getPlayer().getName() + " leave",
                     "Please report this error to the developer. Previous data will still be set.", throwable);
-            player.send(WITP.PREFIX + "<red>There was an error while trying to handle leaving.");
+            user.send(WITP.PREFIX + "<red>There was an error while trying to handle leaving.");
         }
 
         players.remove(pl);
@@ -216,21 +236,21 @@ public abstract class ParkourUser {
             Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
-        if (player.getPreviousData() == null) {
-            Logging.warn("No previous data found for " + player.getPlayer().getName());
+        if (user.getPreviousData() == null) {
+            Logging.warn("No previous data found for " + user.getPlayer().getName());
             return;
         } else {
-            player.getPreviousData().apply(sendBack);
+            user.getPreviousData().apply(sendBack);
         }
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
 
-        if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && player instanceof ParkourPlayer) {
-            ParkourPlayer pp = (ParkourPlayer) player;
+        if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && user instanceof ParkourPlayer) {
+            ParkourPlayer pp = (ParkourPlayer) user;
             if (pp.getGenerator() instanceof DefaultGenerator) {
                 for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                            command.replace("%player%", player.getPlayer().getName()));
+                            command.replace("%player%", user.getPlayer().getName()));
                 }
             }
         }
@@ -445,6 +465,16 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Sets this player's locale
+     *
+     * @param   locale
+     *          The locale
+     */
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    /**
      * Gets the scoreboard of the player
      *
      * @return the {@link FastBoard} of the player
@@ -472,6 +502,15 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Gets this player's session by retrieving it from the session pool.
+     *
+     * @return the current player's {@link Session}
+     */
+    public Session getSession() {
+        return Session.getSession(getUUID());
+    }
+
+    /**
      * Gets the previous data of the player
      *
      * @return the {@link PreviousData} of the player
@@ -487,5 +526,14 @@ public abstract class ParkourUser {
      */
     public @NotNull Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Returns the player's locale
+     *
+     * @return the locale
+     */
+    public @NotNull String getLocale() {
+        return locale;
     }
 }

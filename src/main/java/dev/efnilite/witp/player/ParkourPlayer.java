@@ -11,6 +11,7 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InsertStatement;
@@ -72,6 +73,7 @@ public class ParkourPlayer extends ParkourUser {
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
         Logging.verbose("Init of Player " + player.getName());
+
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.joinTime = System.currentTimeMillis();

@@ -46,7 +46,7 @@ public class SpectatorGamemode implements Gamemode {
                 continue;
             }
 
-            Item item = WITP.getConfiguration().getFromItemData(user.locale,
+            Item item = WITP.getConfiguration().getFromItemData(user.getLocale(),
                     "gamemodes.spectator-head", bukkitPlayer.getName());
 
             // Player head gathering
@@ -77,7 +77,7 @@ public class SpectatorGamemode implements Gamemode {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((event) -> spectator.page(-1)))
 
-                .item(31, WITP.getConfiguration().getFromItemData(user.locale, "general.close")
+                .item(31, WITP.getConfiguration().getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> player.closeInventory()))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

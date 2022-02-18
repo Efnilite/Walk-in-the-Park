@@ -4,12 +4,10 @@ import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,10 +36,10 @@ public class ParkourSpectator extends ParkourUser {
             unregister(player, false, false, true);
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
-            spectator.watching.removeSpectators(spectator);
+            Session.getSession(spectator.watching.getPlayer().getUUID()).removeSpectators(spectator);
         }
 
-        watching.getGenerator().addSpectator(this);
+        Session.getSession(this.getUUID()).addSpectators(this);
 
         this.watching = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
@@ -77,20 +75,6 @@ public class ParkourSpectator extends ParkourUser {
             }
             board.updateLines(list);
         }
-    }
-
-    /**
-     * Checks the distance between the person the spectator is watching and the spectator.
-     * If the distance is more than 30 blocks, the player gets teleported back.
-     */
-    public void checkDistance() {
-        Entity target = player.getSpectatorTarget();
-        if (watching.getPlayer().getLocation().distance(player.getLocation()) > 30) {
-            player.setSpectatorTarget(null);
-            player.teleport(watching.getPlayer().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            player.setSpectatorTarget(target);
-        }
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getTranslated("spectator-bar")));
     }
 
     /**

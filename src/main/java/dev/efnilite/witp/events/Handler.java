@@ -239,8 +239,8 @@ public class Handler implements EventWatcher {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && System.currentTimeMillis() - player.joinTime > 1000) {
             event.setCancelled(true);
-            Material menu = WITP.getConfiguration().getFromItemData(player.locale, "general.menu").build().getType();
-            Material quit = WITP.getConfiguration().getFromItemData(player.locale, "general.quit").build().getType();
+            Material menu = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType();
+            Material quit = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.quit").build().getType();
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {
                 player.getGenerator().menu();

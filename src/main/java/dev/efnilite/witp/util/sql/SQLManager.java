@@ -4,7 +4,6 @@ import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

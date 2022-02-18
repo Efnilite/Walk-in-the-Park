@@ -7,6 +7,7 @@ import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.session.Session;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,7 @@ public class DefaultGamemode implements Gamemode {
         }
 
         ParkourPlayer pp = ParkourPlayer.register(player);
+        Session.createSession(pp);
         WITP.getDivider().generate(pp);
     }
 }

@@ -36,6 +36,7 @@ import java.util.*;
 /**
  * Handles all menu-related activities
  *
+ * @since v3.0.0
  * @author Efnilite
  */
 public class ParkourMenu {
@@ -51,11 +52,11 @@ public class ParkourMenu {
 
         Configuration config = WITP.getConfiguration();
         PagedMenu gamemode = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.gamemode.name")));
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.gamemode.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
-            Item item = gm.getItem(user.locale);
+            Item item = gm.getItem(user.getLocale());
             items.add(new Item(item.getMaterial(), item.getName())
                     .click((event) -> gm.handleItemClick(user.getPlayer(), user, event.getMenu())));
         }
@@ -70,7 +71,7 @@ public class ParkourMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((event) -> gamemode.page(-1)))
 
-                .item(31, config.getFromItemData(user.locale, "general.close")
+                .item(31, config.getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> user.getPlayer().closeInventory()))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -96,7 +97,7 @@ public class ParkourMenu {
         List<UUID> uuids = new ArrayList<>(sorted.keySet());
 
         // init vars
-        String locale = user == null ? Option.DEFAULT_LANG.get() : user.locale;
+        String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
         Configuration config = WITP.getConfiguration();
         PagedMenu leaderboard = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
@@ -175,12 +176,12 @@ public class ParkourMenu {
         Configuration config = WITP.getConfiguration();
 
         Menu main = new Menu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".general.menu.name")));
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")));
 
         // ---------- top row ----------
 
         if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
-            main.item(0, config.getFromItemData(user.locale, "options." + ParkourOption.STYLES.getName(), user.style)
+            main.item(0, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
                     .click((event) -> {
                             if (WITP.getRegistry().getStyleTypes().size() == 1) {
                                 openSingleStyleMenu(user, WITP.getRegistry().getStyleTypes().get(0), disabledOptions);
@@ -194,7 +195,7 @@ public class ParkourMenu {
             SliderItem item = new SliderItem()
                     .initial(leads.indexOf(user.blockLead)); // initial value of the player
 
-            Item displayItem = config.getFromItemData(user.locale, "options." + ParkourOption.LEADS.getName());
+            Item displayItem = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADS.getName());
             int slot = 0;
             for (int value : leads) {
                 item.add(slot, displayItem.clone()
@@ -211,7 +212,7 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.SCHEMATICS, disabledOptions)) {
-            main.item(2, config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATICS.getName())
+            main.item(2, config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATICS.getName())
                     .click((event) -> openSchematicMenu(user, disabledOptions)));
         }
 
@@ -220,7 +221,7 @@ public class ParkourMenu {
             // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
             List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
 
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.TIME.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.TIME.getName());
 
             main.item(3, new SliderItem()
                     .initial(times.indexOf(user.selectedTime))
@@ -261,7 +262,7 @@ public class ParkourMenu {
         // ---------- bottom row ----------
 
         if (checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabledOptions) && Option.SCOREBOARD.get()) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SHOW_SCOREBOARD.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_SCOREBOARD.getName());
 
             main.item(9, new SliderItem()
                     .initial(user.showScoreboard ? 0 : 1)
@@ -287,7 +288,7 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
 
             main.item(10, new SliderItem()
                     .initial(user.showFallMessage ? 0 : 1)
@@ -308,7 +309,7 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.PARTICLES_AND_SOUND, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
 
             main.item(11, new SliderItem()
                     .initial(user.useParticlesAndSound ? 0 : 1)
@@ -329,7 +330,7 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SPECIAL_BLOCKS.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SPECIAL_BLOCKS.getName());
 
             main.item(12, new SliderItem()
                     .initial(user.useSpecialBlocks ? 0 : 1)
@@ -356,7 +357,7 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCORE_DIFFICULTY.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCORE_DIFFICULTY.getName());
 
             main.item(13, new SliderItem()
                     .initial(user.useScoreDifficulty ? 0 : 1)
@@ -383,13 +384,13 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.GAMEMODE.getName());
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
 
             main.item(19, item.click((event) -> openGamemodeMenu(user)));
         }
 
         if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LEADERBOARD.getName())
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
                     .modifyLore(line -> // #%n (%s)
                             line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
                                     user.highScore.toString()) + ")");
@@ -401,9 +402,9 @@ public class ParkourMenu {
         }
 
         if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
-            Item item = config.getFromItemData(user.locale, "options." + ParkourOption.LANGUAGE.getName())
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
                     .modifyLore(line ->
-                            line.replace("%s", user.locale));
+                            line.replace("%s", user.getLocale()));
 
             main.item(21, item.click((event) -> openLangMenu(user, disabledOptions)));
         }
@@ -412,10 +413,10 @@ public class ParkourMenu {
         main
                 .distributeRowEvenly(0, 1, 2, 3)
 
-                .item(28, config.getFromItemData(user.locale, "general.close")
+                .item(28, config.getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> user.getPlayer().closeInventory()))
 
-                .item(29, config.getFromItemData(user.locale, "general.quit")
+                .item(29, config.getFromItemData(user.getLocale(), "general.quit")
                         .click((event) -> ParkourPlayer.leave(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -437,16 +438,16 @@ public class ParkourMenu {
 
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.language.name")));
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.language.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Option.LANGUAGES.get()) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + lang);
 
             items.add(item
-                    .glowing(user.locale.equals(lang))
+                    .glowing(user.getLocale().equals(lang))
                     .click((event) -> {
-                        user.locale = lang;
+                        user.setLocale(lang);
                         user.lang = lang;
                         openMainMenu(user, disabledOptions);
                     }));
@@ -462,7 +463,7 @@ public class ParkourMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((event) -> style.page(-1)))
 
-                .item(31, config.getFromItemData(user.locale, "general.close")
+                .item(31, config.getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> openMainMenu(user, disabledOptions)))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
@@ -487,7 +488,7 @@ public class ParkourMenu {
 
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.styles.name")));
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -512,7 +513,7 @@ public class ParkourMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((event) -> style.page(-1)))
 
-                .item(31, config.getFromItemData(user.locale, "general.close")
+                .item(31, config.getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> openMainMenu(user, disabledOptions)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -534,12 +535,12 @@ public class ParkourMenu {
 
         // init menu
         Menu schematics = new Menu(3, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.locale + ".options.schematics.name")));
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.schematics.name")));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
-        List<String> values = config.getStringList("items", "locale." + user.locale + ".options.schematic-difficulty.values");
+        List<String> values = config.getStringList("items", "locale." + user.getLocale() + ".options.schematic-difficulty.values");
 
-        Item item = config.getFromItemData(user.locale, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
+        Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
         schematics.item(10, new SliderItem()
                 .initial(difficulties.indexOf(user.schematicDifficulty))
@@ -580,7 +581,7 @@ public class ParkourMenu {
                             return false;
                         }));
 
-        item = config.getFromItemData(user.locale, "options." + ParkourOption.USE_SCHEMATICS.getName());
+        item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.USE_SCHEMATICS.getName());
 
         schematics
                 .distributeRowEvenly(0, 1, 2)
@@ -608,7 +609,7 @@ public class ParkourMenu {
                                     return false;
                                 }))
 
-                .item(26, config.getFromItemData(user.locale, "general.close")
+                .item(26, config.getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> openMainMenu(user, disabledOptions)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
@@ -619,7 +620,7 @@ public class ParkourMenu {
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private static boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(WITP.getConfiguration().getFromItemData(player.locale, "options.cant-change")
+            event.getMenu().item(event.getSlot(), new TimedItem(WITP.getConfiguration().getFromItemData(player.getLocale(), "options.cant-change")
                     .click((event1) -> {
 
                     }), event, 5 * 20));

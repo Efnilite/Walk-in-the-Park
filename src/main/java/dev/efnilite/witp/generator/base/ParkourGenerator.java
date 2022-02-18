@@ -143,49 +143,6 @@ public abstract class ParkourGenerator {
     public abstract void generate();
 
     /**
-     * Removes one or more spectators from this player
-     *
-     * @param   spectators
-     *          The spectator(s)
-     */
-    public void removeSpectators(ParkourSpectator... spectators) {
-        for (ParkourSpectator spectator : spectators) {
-            this.spectators.remove(spectator.getUUID());
-        }
-    }
-
-    /**
-     * Adds one or more spectators to this player
-     *
-     * @param   spectators
-     *          The spectator(s)
-     */
-    public void addSpectator(ParkourSpectator... spectators) {
-        for (ParkourSpectator spectator : spectators) {
-            this.spectators.put(spectator.getUUID(), spectator);
-        }
-    }
-
-    /**
-     * Updates the stats for spectators
-     */
-    public void updateSpectators() {
-        for (ParkourSpectator spectator : spectators.values()) {
-            spectator.checkDistance();
-            spectator.updateScoreboard();
-        }
-    }
-
-    /**
-     * Gets the map of spectators
-     *
-     * @return the spectators
-     */
-    public List<ParkourSpectator> getSpectators() {
-        return new ArrayList<>(spectators.values());
-    }
-
-    /**
      * If the vector is near the border
      *
      * @param vector The vector
