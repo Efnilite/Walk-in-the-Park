@@ -27,6 +27,8 @@ public class ChunkLoader {
             return;
         }
 
+        chunk.load();
+
         Block toUpdate = chunk.getBlock(0, chunk.getWorld().getMaxHeight() - 1, 0);
         toUpdate.setType(Material.BARRIER, true);
         blocks.put(chunk, toUpdate);

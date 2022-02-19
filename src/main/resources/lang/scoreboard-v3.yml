@@ -4,6 +4,7 @@
 # %score% - the score of the player
 # %time% - the player's current time
 # %highscore% - the player's high score
+# %session% - the current session id
 
 scoreboard:
 

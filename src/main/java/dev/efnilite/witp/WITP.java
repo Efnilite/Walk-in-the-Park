@@ -74,9 +74,6 @@ public final class WITP extends FyPlugin {
 
         divider = new SubareaDivider();
 
-        worldHandler = new WorldHandler();
-        worldHandler.createWorld();
-
         // ----- Hooks and Bungee -----
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -91,6 +88,11 @@ public final class WITP extends FyPlugin {
         if (Option.BUNGEECORD.get()) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
+
+        // ----- Worlds -----
+
+        worldHandler = new WorldHandler();
+        worldHandler.createWorld();
 
         // ----- Registry -----
 

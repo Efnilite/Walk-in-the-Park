@@ -11,6 +11,7 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.*;
@@ -157,6 +158,8 @@ public class SubareaDivider {
         for (Block block : data.blocks) {
             block.setType(Material.AIR, false);
         }
+
+        Session.removeSession(player.getUUID());
     }
 
     // https://math.stackexchange.com/a/163101
@@ -241,6 +244,8 @@ public class SubareaDivider {
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
+
+        Session.createSession(pp);
 
         setup(to, pp);
     }

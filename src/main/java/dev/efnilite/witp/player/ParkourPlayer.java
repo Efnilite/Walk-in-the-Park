@@ -11,7 +11,6 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InsertStatement;
@@ -153,14 +152,16 @@ public class ParkourPlayer extends ParkourUser {
                         .replace("%time%", generator.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
-                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                        .replace("%session%", getSession().getSessionId()));
             }
             title = translatePlaceholders(player, title);
             board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
                     .replace("%time%", generator.getTime())
                     .replace("%highscore%", rank != null ? rank.toString() : "0")
                     .replace("%topscore%", top != null ? top.toString() : "0")
-                    .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                    .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                    .replace("%session%", getSession().getSessionId()));
             board.updateLines(list);
         }
     }

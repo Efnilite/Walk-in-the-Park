@@ -30,21 +30,20 @@ public class ParkourSpectator extends ParkourUser {
         Logging.verbose("New ParkourSpectator init " + this.player.getName());
 
         this.locale = player.locale;
+        this.watching = watching.getGenerator();
 
         // Unregister if player is already active
         if (player instanceof ParkourPlayer) {
             unregister(player, false, false, true);
         } else if (player instanceof ParkourSpectator) {
             ParkourSpectator spectator = (ParkourSpectator) player;
-            Session.getSession(spectator.watching.getPlayer().getUUID()).removeSpectators(spectator);
+            player.getSession().removeSpectators(spectator);
         }
 
-        Session.getSession(this.getUUID()).addSpectators(this);
-
-        this.watching = watching.getGenerator();
         this.player.setGameMode(GameMode.SPECTATOR);
         this.player.teleport(watching.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
+        getSession().addSpectators(this);
         sendTranslated("spectator");
     }
 
@@ -71,10 +70,16 @@ public class ParkourSpectator extends ParkourUser {
                         .replace("%time%", watching.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
-                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A"));
+                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                        .replace("%session%" , getSession().getSessionId()));
             }
             board.updateLines(list);
         }
+    }
+
+    @Override
+    public Session getSession() {
+        return watching.getPlayer().getSession();
     }
 
     /**

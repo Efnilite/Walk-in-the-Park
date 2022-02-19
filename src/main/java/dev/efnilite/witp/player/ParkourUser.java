@@ -8,7 +8,6 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.session.Session;
-import dev.efnilite.witp.session.SingleSession;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.SelectStatement;
@@ -94,6 +93,7 @@ public abstract class ParkourUser {
      */
     public static @NotNull ParkourPlayer join(@NotNull Player player) {
         ParkourPlayer pp = register(player);
+        WITP.getDivider().generate(pp);
 
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             pp.sendTranslated("join", player.getName());

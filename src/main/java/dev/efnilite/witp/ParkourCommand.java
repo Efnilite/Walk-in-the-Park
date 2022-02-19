@@ -182,9 +182,7 @@ public class ParkourCommand extends FyCommand {
                         return true;
                     }
 
-                    ParkourPlayer pp = ParkourPlayer.join(player);
-                    WITP.getDivider().generate(pp);
-
+                    ParkourPlayer.join(player);
                     return true;
                 }
                 case "leave": {
@@ -303,8 +301,7 @@ public class ParkourCommand extends FyCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        ParkourPlayer pp = ParkourPlayer.join(other);
-                        WITP.getDivider().generate(pp);
+                        ParkourPlayer.join(other);
                     }
                     send(sender, WITP.PREFIX + "Succesfully force joined everyone");
                     return true;
@@ -316,8 +313,7 @@ public class ParkourCommand extends FyCommand {
                     return true;
                 }
 
-                ParkourPlayer pp = ParkourPlayer.join(other);
-                WITP.getDivider().generate(pp);
+                ParkourPlayer.join(other);
                 return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission("witp.forceleave")) {
 

@@ -18,7 +18,6 @@ import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
-import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.*;

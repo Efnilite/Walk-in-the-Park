@@ -84,8 +84,7 @@ public class Handler implements EventWatcher {
                 event.setJoinMessage(null);
             }
 
-            ParkourPlayer pp = ParkourPlayer.join(player);
-            WITP.getDivider().generate(pp);
+            ParkourPlayer.join(player);
         } else if (player.getWorld().getUID().equals(WITP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(WITP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {

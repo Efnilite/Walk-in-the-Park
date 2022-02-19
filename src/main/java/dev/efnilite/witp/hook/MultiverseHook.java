@@ -54,6 +54,8 @@ public class MultiverseHook {
         world.setAllowAnimalSpawn(false);
         world.setAllowMonsterSpawn(false);
 
+        world.setKeepSpawnInMemory(true);
+
         return world.getCBWorld();
     }
 }

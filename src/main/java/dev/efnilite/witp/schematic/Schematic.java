@@ -189,7 +189,7 @@ public class Schematic {
             return;
         }
         Logging.verbose("Reading schematic " + file.getName() + "...");
-        Time.timerStart("individualSchemRead");
+        Time.timerStart("schematicRead");
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
@@ -201,7 +201,6 @@ public class Schematic {
             return;
         }
         this.read = true;
-
 
         // -- Makes palette --
 
@@ -260,7 +259,7 @@ public class Schematic {
 
         Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
-        Logging.verbose("Finished reading in " + Time.timerEnd("individualSchemRead") + "ms!");
+        Logging.verbose("Finished reading in " + Time.timerEnd("schematicRead") + "ms!");
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
