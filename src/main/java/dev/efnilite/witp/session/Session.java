@@ -3,6 +3,7 @@ package dev.efnilite.witp.session;
 import com.google.common.annotations.Beta;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,6 +96,23 @@ public interface Session {
      * @return the Session id.
      */
     @NotNull String getSessionId();
+
+    /**
+     * Automatically assigns an unregistered player to this session, based
+     * on the return values of {@link #isAcceptingPlayers()} and {@link #isAcceptingSpectators()}.
+     * This is done very discretely. If you want to add your own checks for spectators, etc.,
+     * overriding this method is most effective.
+     *
+     * @param   player
+     *          The player to force to join
+     */
+    default void join(Player player) {
+        if (isAcceptingPlayers()) {
+            addPlayers(new ParkourPlayer(player, null));
+        } else if (isAcceptingSpectators()) {
+//            addSpectators(new ParkourSpectator(player, null, null)); todo
+        }
+    }
 
     /**
      * Generates this Session's id.

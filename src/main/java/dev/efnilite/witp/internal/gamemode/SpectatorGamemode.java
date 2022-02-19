@@ -36,7 +36,6 @@ public class SpectatorGamemode implements Gamemode {
     @Override
     public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
         PagedMenu spectator = new PagedMenu(4, "<white>Select a player");
-        player.closeInventory();
 
         List<MenuItem> display = new ArrayList<>();
 
@@ -62,7 +61,8 @@ public class SpectatorGamemode implements Gamemode {
 
             display.add(item.click((event) -> {
                 if (ParkourUser.getActivePlayers().contains(pp)) {
-                    new ParkourSpectator(user, pp, user.getPreviousData());
+                    ParkourUser.unregister(user, false, false, true);
+                    new ParkourSpectator(player, pp.getSession(), user.getPreviousData());
                 }
             }));
         }

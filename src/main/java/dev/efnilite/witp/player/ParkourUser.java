@@ -218,7 +218,8 @@ public abstract class ParkourUser {
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator) {
                 ParkourSpectator spectator = (ParkourSpectator) user;
-                spectator.watching.getPlayer().getSession().removeSpectators(spectator);
+                spectator.stopClosestChecker();
+                spectator.getSession().removeSpectators(spectator);
             }
             if (user.getBoard() != null && !user.getBoard().isDeleted()) {
                 user.getBoard().delete();

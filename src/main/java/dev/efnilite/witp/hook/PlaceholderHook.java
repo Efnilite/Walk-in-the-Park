@@ -57,7 +57,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
         if (user instanceof ParkourPlayer) {
             pp = (ParkourPlayer) user;
         } else if (user instanceof ParkourSpectator) {
-            pp = ((ParkourSpectator) user).getWatching();
+            pp = ((ParkourSpectator) user).getClosest();
         }
 
         if (pp != null) {

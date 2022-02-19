@@ -27,7 +27,7 @@ public class SingleSession implements Session {
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {
             Player bukkitPlayer =  spectator.getPlayer();
-            Player watchingPlayer =  spectator.getWatching().getPlayer();
+            Player watchingPlayer =  spectator.getClosest().getPlayer();
 
             Entity target = bukkitPlayer.getSpectatorTarget();
 

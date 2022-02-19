@@ -1,7 +1,7 @@
 package dev.efnilite.witp.generator.base;
 
 /**
- * Options for Generators
+ * Options for {@link ParkourGenerator}s.
  */
 public enum GeneratorOption {
 
