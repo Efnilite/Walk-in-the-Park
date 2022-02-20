@@ -27,4 +27,4 @@ target/
 .run/
 run/
 WITP.iml
-src/main/java/dev/efnilite/witpex
+ipex/

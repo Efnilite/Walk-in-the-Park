@@ -6,7 +6,12 @@
 
     <groupId>dev.efnilite</groupId>
     <artifactId>WITP</artifactId>
+    <packaging>pom</packaging>
     <version>3.0.2</version>
+    <modules>
+        <module>ipex</module>
+        <module>witp</module>
+    </modules>
 
     <properties>
         <java.version>11</java.version>
