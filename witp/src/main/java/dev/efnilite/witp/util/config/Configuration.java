@@ -22,6 +22,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * An utilities class for the Configuration
@@ -29,41 +30,62 @@ import java.util.*;
 public class Configuration {
 
     private final Plugin plugin;
-    private final HashMap<String, FileConfiguration> files;
+    private final Map<String, FileConfiguration> files = new HashMap<>();
 
     /**
      * Create a new instance
      */
     public Configuration(Plugin plugin) {
         this.plugin = plugin;
-        files = new HashMap<>();
 
-        String[] defaultFiles = new String[]{"config.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml"};
+        List<String> defaultFiles = Arrays.asList("config.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
+        List<File> asFiles = defaultFiles // convert file names to file instances
+                .stream()
+                .map(name -> new File(plugin.getDataFolder(), name))
+                .collect(Collectors.toList());
 
-        File folder = plugin.getDataFolder();
-        if (!new File(folder, defaultFiles[0]).exists() || !new File(folder, defaultFiles[1]).exists() || !new File(folder, defaultFiles[2]).exists() ||
-                !new File(folder, defaultFiles[3]).exists() || !new File(folder, defaultFiles[4]).exists() || !new File(folder, defaultFiles[5]).exists()) {
-            plugin.getDataFolder().mkdirs();
+        for (File file : asFiles) {
+            if (!file.exists()) {
+                plugin.getDataFolder().mkdirs();
 
-            for (String file : defaultFiles) {
-                plugin.saveResource(file, false);
+                plugin.saveResource(file.getName(), false);
+                Logging.info("Created config file " + file.getName());
             }
-            Logging.info("Downloaded all config files");
         }
 
-        for (String file : defaultFiles) { // todo add for lang
+        // Config files without languages
+        for (String file : Arrays.asList("config.yml", "generation.yml", "schematics.yml", "lang/scoreboard-v3.yml")) {
             try {
                 ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles"));
             } catch (IOException ex) {
-                Logging.stack("Error while trying to update file " + file,
+                Logging.stack("Error while trying to update config file " + file,
                         "Delete this file. If the problem persists, please report this error to the developer!", ex);
             }
         }
+
+        // Lang files
+        for (String file : Arrays.asList("lang/messages-v3.yml", "lang/items-v3.yml")) {
+            // Load included and user file and if there are any differences, exempt them from updating
+            FileConfiguration included = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/" + file));
+            FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/" + file));
+//            List<String> langs = Util.getNode(c, "messages");
+
+            try {
+                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.emptyList());
+            } catch (IOException ex) {
+                Logging.stack("Error while trying to update language file " + file,
+                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
+            }
+        }
+
         reload();
         schematics();
         Logging.info("Loaded all config files");
     }
 
+    /**
+     * Maps all files to aliases.
+     */
     public void reload() {
         files.put("lang", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/messages-v3.yml")));
         files.put("items", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/items-v3.yml")));

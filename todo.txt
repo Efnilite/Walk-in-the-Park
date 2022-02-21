@@ -1,17 +1,9 @@
 Walk in the Park
 
-v3.0.1
-API
-There have been internal changes in the way player join and leave handling works.
-Please visit the ParkourUser class for the most recent methods.
-
-- Improve /witp help for users
-- Fix Scoreboard option being customizable with custom scoreboard
-- Fix join messages not appearing
-- Fix PlayerScoreEvent not calling when all points mode is enabled
-- Fix block generation delay
-- Add PAPI placeholder support to all messages
-- Add player-specific join messages
+v3.0.3
+- Add spectator join/leave messages
+- Add custom language support
+- Fix Multiverse reporting a missing world
 
 High priority:
 - Optimize ram with schematics (async?)

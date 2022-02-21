@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
     <version>3.0.2</version>
     <modules>
-        <module>ipex</module>
         <module>witp</module>
+        <module>ipex</module>
     </modules>
 
     <properties>

@@ -9,6 +9,12 @@ import dev.efnilite.witp.player.profile.Profile;
 
 import java.io.FileReader;
 
+/**
+ * Class to migrate legacy player settings to the new {@link Profile} system.
+ * todo
+ *
+ * @author Efnilite
+ */
 public class LegacyPlayerSettings {
 
     public @Expose Integer highScore;
@@ -27,6 +33,14 @@ public class LegacyPlayerSettings {
     public @Expose String style;
     public @Expose String lang;
 
+    /**
+     * Migrates a legacy json file to a {@link Profile}.
+     *
+     * @param   file
+     *          The file
+     *
+     * @return the updated {@link Profile} instance.
+     */
     public static Profile migrate(String file) {
         try {
             FileReader reader = new FileReader(file);
@@ -53,5 +67,4 @@ public class LegacyPlayerSettings {
             return null;
         }
     }
-
 }
