@@ -8,7 +8,6 @@ public enum ParkourOption {
     STYLES("styles", "witp.option.styles"),
     LEADS("leads", "witp.option.leads"),
     TIME("time", "witp.option.time"),
-    DIMENSION("dimension", "witp.option.dimension"),
     SCHEMATICS("schematics", "witp.option.schematics"),
     USE_SCHEMATICS("use-schematics", "witp.option.use-schematics"),
     SCHEMATIC_DIFFICULTY("schematic-difficulty", "witp.option.schematic-difficulty"),

@@ -44,6 +44,27 @@ public class ParkourSpectator extends ParkourUser {
         runClosestChecker();
     }
 
+    /**
+     * Registers a ParkourSpectator.
+     *
+     * @param   player
+     *          The player that will become the ParkourSpectator
+     *
+     * @param   session
+     *          The session to spectate
+     *
+     * @return the created instance.
+     */
+    public static ParkourSpectator spectateSession(@NotNull Player player, @NotNull Session session) {
+        ParkourUser user = getUser(player);
+        if (user != null) {
+            ParkourUser.unregister(user, false, false, true);
+            return new ParkourSpectator(player, session, user.getPreviousData());
+        } else {
+            return new ParkourSpectator(player, session, null);
+        }
+    }
+
     @Override
     public void updateScoreboard() {
         if (Option.SCOREBOARD.get() && board != null) {

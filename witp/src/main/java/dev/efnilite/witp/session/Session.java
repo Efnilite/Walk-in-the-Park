@@ -8,10 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -98,10 +95,28 @@ public interface Session {
     @NotNull String getSessionId();
 
     /**
+     * Sets the Session visibility.
+     *
+     * @param   visibility
+     *          The visibility.
+     */
+    void setVisibility(SessionVisibility visibility);
+
+    /**
+     * Returns the Session visibility.
+     *
+     * @see SessionVisibility
+     *
+     * @return the session visibility.
+     */
+    SessionVisibility getVisibility();
+
+    /**
      * Automatically assigns an unregistered player to this session, based
      * on the return values of {@link #isAcceptingPlayers()} and {@link #isAcceptingSpectators()}.
      * This is done very discretely. If you want to add your own checks for spectators, etc.,
      * overriding this method is most effective.
+     * Does not preserve {@link dev.efnilite.witp.player.data.PreviousData}
      *
      * @param   player
      *          The player to force to join
@@ -110,7 +125,7 @@ public interface Session {
         if (isAcceptingPlayers()) {
             addPlayers(new ParkourPlayer(player, null));
         } else if (isAcceptingSpectators()) {
-//            addSpectators(new ParkourSpectator(player, null, null)); todo
+            addSpectators(ParkourSpectator.spectateSession(player, this));
         }
     }
 
@@ -204,6 +219,15 @@ public interface Session {
     }
 
     /**
+     * Gets a list of all active sessions
+     *
+     * @return all sessions
+     */
+    static List<Session> getSessions() {
+        return Manager.getSessions();
+    }
+
+    /**
      * Manager class for all sessions
      */
     @ApiStatus.Internal
@@ -235,6 +259,10 @@ public interface Session {
         // Gets the session using the internal ID
         static Session getSession(String id) {
             return sessions.get(id);
+        }
+
+        public static List<Session> getSessions() {
+            return new ArrayList<>(sessions.values());
         }
     }
 }

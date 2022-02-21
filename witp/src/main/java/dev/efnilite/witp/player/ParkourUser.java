@@ -7,6 +7,7 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.player.profile.Profile;
 import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
@@ -37,6 +38,11 @@ import java.util.*;
 public abstract class ParkourUser {
 
     public static int JOIN_COUNT;
+
+    /**
+     * The settings of this player
+     */
+    protected Profile profile;
 
     /**
      * This user's locale
@@ -455,7 +461,7 @@ public abstract class ParkourUser {
      * @return the coloured and replaced string
      */
     public String getTranslated(String path, String... replaceable) {
-        path = "messages." + locale + "." + path;
+        path = "messages." + getLocale() + "." + path;
         String message = WITP.getConfiguration().getString("lang", path);
 
         for (String s : replaceable) {
@@ -535,6 +541,10 @@ public abstract class ParkourUser {
      * @return the locale
      */
     public @NotNull String getLocale() {
+        if (locale == null) {
+            locale = Option.DEFAULT_LANG.get();
+        }
+
         return locale;
     }
 }

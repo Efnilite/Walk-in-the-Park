@@ -13,11 +13,14 @@ messages:
 
   # English (English), provided by Efnilite
   en:
-    join: '<green><bold>+ <gray>You joined Infinite Parkour.'
-    leave: '<red><bold>- <gray>You left Infinite Parkour.'
+    join: '<green><bold>+ <gray>You joined Infinite Parkour'
+    leave: '<red><bold>- <gray>You left Infinite Parkour'
 
-    player-join: '<green><bold>+ <gray>%p'
+    player-join: '<dark_green><bold>+ <gray>%p'
     player-leave: '<red><bold>- <gray>%p'
+
+    spectator-join: '<dark_green><bold>+ <gray>%p started spectating you'
+    spectator-leave: '<red><bold>- <gray>%p stopped spectating you'
 
     cant-do: '<dark_red><bold>> <gray>You can''t do this right now.'
     customize-menu: '<green><bold>> <gray>Customize your parkour experience by using "/parkour menu".'
@@ -40,6 +43,9 @@ messages:
     player-join: '<green><bold>+ <gray>%p'
     player-leave: '<red><bold>- <gray>%p'
 
+    spectator-join: '<dark_green><bold>+ <gray>%p is je nu toe aan het kijken'
+    spectator-leave: '<red><bold>- <gray>%p is gestopt met je toe te kijken'
+
     cant-do: '<dark_red><bold>> <gray>Je kan dit nu niet doen.'
     customize-menu: '<green><bold>> <gray>Personaliseer je ervaring met "/parkour menu".'
     spectator: '<#4CB3FF>Je bent nu een spectator. Gebruik "/parkour gm" om je speelmode te veranderen.'
@@ -60,6 +66,9 @@ messages:
 
     player-join: '<green><bold>+ &7%p'
     player-leave: '<red><bold>- &7%p'
+
+    spectator-join: '<dark_green><bold>+ <gray>%p a commencé à vous observer'
+    spectator-leave: '<red><bold>- <gray>%p a arrêté de vous observer'
 
     cant-do: '<dark_red><bold>> <gray>Il n''est pas possible de modifier ce paramètre en ce moment'
     customize-menu: '&a&l> &7Personnaliser votre expérience de parkour en utilisant "/parkour menu".'

@@ -61,8 +61,7 @@ public class SpectatorGamemode implements Gamemode {
 
             display.add(item.click((event) -> {
                 if (ParkourUser.getActivePlayers().contains(pp)) {
-                    ParkourUser.unregister(user, false, false, true);
-                    new ParkourSpectator(player, pp.getSession(), user.getPreviousData());
+                    ParkourSpectator.spectateSession(player, pp.getSession());
                 }
             }));
         }

@@ -19,6 +19,7 @@ import java.util.*;
 @Beta
 public class SingleSession implements Session {
 
+    private SessionVisibility visibility = SessionVisibility.PUBLIC;
     private final String sessionId = generateSessionId();
     private final Map<UUID, ParkourPlayer> players = new HashMap<>();
     private final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
@@ -45,6 +46,10 @@ public class SingleSession implements Session {
     @Override
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
+            for (ParkourPlayer player : players.values()) {
+                player.sendTranslated("spectator-join", spectator.getPlayer().getName());
+            }
+
             this.spectators.put(spectator.getUUID(), spectator);
         }
     }
@@ -52,6 +57,10 @@ public class SingleSession implements Session {
     @Override
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
+            for (ParkourPlayer player : players.values()) {
+                player.sendTranslated("spectator-leave", spectator.getPlayer().getName());
+            }
+
             this.spectators.remove(spectator.getUUID());
         }
     }
@@ -96,5 +105,15 @@ public class SingleSession implements Session {
     @NotNull
     public String getSessionId() {
         return sessionId;
+    }
+
+    @Override
+    public void setVisibility(SessionVisibility visibility) {
+        this.visibility = visibility;
+    }
+
+    @Override
+    public SessionVisibility getVisibility() {
+        return visibility;
     }
 }
