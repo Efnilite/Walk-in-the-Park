@@ -20,11 +20,12 @@ public class WorldHandler {
      * Creates the parkour world with the name given in the config.
      */
     public void createWorld() {
+        String name = Option.WORLD_NAME.get();
+
         if (!Option.DELETE_ON_RELOAD.get()) {
+            world = Bukkit.getWorld(name);
             return;
         }
-
-        String name = Option.WORLD_NAME.get();
 
         if (WITP.getMultiverseHook() != null) { // if multiverse isn't detected
             world = WITP.getMultiverseHook().createWorld(name);

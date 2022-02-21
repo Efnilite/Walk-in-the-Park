@@ -50,7 +50,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     /**
      * Prevents generation delay.
      */
-    private ChunkLoader chunkLoader = new ChunkLoader();
+    private final ChunkLoader chunkLoader = new ChunkLoader();
     private BukkitRunnable task;
 
     private boolean isSpecial;
