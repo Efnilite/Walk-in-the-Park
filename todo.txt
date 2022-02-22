@@ -2,8 +2,8 @@ Walk in the Park
 
 v3.0.3
 - Add spectator join/leave messages
-- Add custom language support
-- Fix Multiverse reporting a missing world
+- Add Sessions (internal)
+- Fix several world issues
 
 High priority:
 - Optimize ram with schematics (async?)

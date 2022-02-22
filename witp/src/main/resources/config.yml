@@ -67,6 +67,7 @@ sql:
 
 # Options for the world
 world:
+
   # The world in which the personal parkours will take place
   name: 'witp'
 

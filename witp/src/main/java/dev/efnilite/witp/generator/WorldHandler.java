@@ -21,11 +21,25 @@ public class WorldHandler {
      */
     public void createWorld() {
         String name = Option.WORLD_NAME.get();
+        World world = Bukkit.getWorld(name);
 
         if (!Option.DELETE_ON_RELOAD.get()) {
-            world = Bukkit.getWorld(name);
+            if (world == null) {
+                create();
+            }
             return;
         }
+
+        if (world == null) { // on crash prevent loading twice
+            deleteWorld();
+            create();
+        } else {
+            Logging.warn("Crash detected! If there are any blocks left in the Parkour world, reload your server.");
+        }
+    }
+
+    private void create() {
+        String name = Option.WORLD_NAME.get();
 
         if (WITP.getMultiverseHook() != null) { // if multiverse isn't detected
             world = WITP.getMultiverseHook().createWorld(name);

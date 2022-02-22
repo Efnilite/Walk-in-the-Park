@@ -176,6 +176,7 @@ public final class WITP extends FyPlugin {
                 }
             }
         }
+
         worldHandler.deleteWorld();
     }
 

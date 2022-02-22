@@ -14,15 +14,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * An utilities class for the Configuration
@@ -39,17 +36,14 @@ public class Configuration {
         this.plugin = plugin;
 
         List<String> defaultFiles = Arrays.asList("config.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
-        List<File> asFiles = defaultFiles // convert file names to file instances
-                .stream()
-                .map(name -> new File(plugin.getDataFolder(), name))
-                .collect(Collectors.toList());
+        for (String name : defaultFiles) {
+            File file = new File(plugin.getDataFolder(), name);
 
-        for (File file : asFiles) {
             if (!file.exists()) {
                 plugin.getDataFolder().mkdirs();
 
-                plugin.saveResource(file.getName(), false);
-                Logging.info("Created config file " + file.getName());
+                plugin.saveResource(name, false);
+                Logging.info("Created config file " + name);
             }
         }
 
@@ -63,24 +57,42 @@ public class Configuration {
             }
         }
 
-        // Lang files
-        for (String file : Arrays.asList("lang/messages-v3.yml", "lang/items-v3.yml")) {
-            // Load included and user file and if there are any differences, exempt them from updating
-            FileConfiguration included = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/" + file));
-            FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/" + file));
-//            List<String> langs = Util.getNode(c, "messages");
-
-            try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.emptyList());
-            } catch (IOException ex) {
-                Logging.stack("Error while trying to update language file " + file,
-                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
-            }
-        }
+        checkUserLanguages("lang/messages-v3.yml", "messages");
+        checkUserLanguages("lang/items-v3.yml", "locale");
 
         reload();
         schematics();
         Logging.info("Loaded all config files");
+    }
+
+    private void checkUserLanguages(String file, String beginPath) {
+        // Load included and user file and if there are any differences, exempt them from updating
+        InputStream stream = plugin.getResource(file);
+        if (stream == null) {
+            throw new IllegalArgumentException("Invalid plugin resource " + file);
+        }
+
+        FileConfiguration included = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
+        FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), file));
+        List<String> includedLangs = Util.getNode(included, beginPath);
+        List<String> userLangs = Util.getNode(user, beginPath);
+
+        // Add all differences to list
+        List<String> toNotUpdate = new ArrayList<>();
+        if (includedLangs != null && userLangs != null) {
+            for (String userLang : userLangs) {
+                if (!includedLangs.contains(userLang)) {
+                    toNotUpdate.add(beginPath + "." + userLang);
+                }
+            }
+        }
+
+        try {
+            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), toNotUpdate);
+        } catch (IOException ex) {
+            Logging.stack("Error while trying to update language file " + file,
+                    "Delete this file. If the problem persists, please report this error to the developer!", ex);
+        }
     }
 
     /**
@@ -194,6 +206,23 @@ public class Configuration {
         }
 
         return Util.color(string);
+    }
+
+    public @NotNull String getLang(@NotNull String file, @NotNull String path) {
+        String string = getFile(file).getString(path);
+
+        if (string == null) {
+            repairPaths();
+            Logging.stack("Option at path " + path + " with file " + file + " is null", "Please check your config values");
+            return "";
+        }
+
+        return Util.color(string);
+    }
+
+    // todo implement
+    private void repairPaths() {
+
     }
 
     /**

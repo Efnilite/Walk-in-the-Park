@@ -245,7 +245,6 @@ public abstract class ParkourUser {
         }
         if (user.getPreviousData() == null) {
             Logging.warn("No previous data found for " + user.getPlayer().getName());
-            return;
         } else {
             user.getPreviousData().apply(sendBack);
         }
@@ -462,7 +461,7 @@ public abstract class ParkourUser {
      */
     public String getTranslated(String path, String... replaceable) {
         path = "messages." + getLocale() + "." + path;
-        String message = WITP.getConfiguration().getString("lang", path);
+        String message = WITP.getConfiguration().getLang("lang", path);
 
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);

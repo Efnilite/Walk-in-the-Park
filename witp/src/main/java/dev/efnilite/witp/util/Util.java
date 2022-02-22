@@ -166,13 +166,10 @@ public class Util {
      * @return a vector that indicates the direction
      */
     public static Direction getDirection(@Nullable String face) {
-        if (face == null) {
-            return null;
-        }
         try {
-            return Direction.valueOf(face.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            Logging.error(face + " is not a direction! Defaulting to east.");
+            return Direction.valueOf(face == null ? "-" : face.toUpperCase());
+        } catch (Throwable throwable) {
+            Logging.stack(face + " is not a direction!", "Please check generation.yml", throwable);
             return Direction.EAST;
         }
     }
