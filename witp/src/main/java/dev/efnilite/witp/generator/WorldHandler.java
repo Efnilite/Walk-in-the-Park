@@ -34,6 +34,7 @@ public class WorldHandler {
             deleteWorld();
             create();
         } else {
+            this.world = world;
             Logging.warn("Crash detected! If there are any blocks left in the Parkour world, reload your server.");
         }
     }
@@ -119,6 +120,12 @@ public class WorldHandler {
      * @return the Bukkit world wherein WITP is currently active.
      */
     public World getWorld() {
+        if (world == null) {
+            world = Bukkit.getWorld(Option.WORLD_NAME.get());
+            if (world == null) {
+                Logging.stack("World is null", "Please delete the WITP world and reload/restart your server");
+            }
+        }
         return world;
     }
 }
