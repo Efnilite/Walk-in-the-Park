@@ -48,6 +48,9 @@ public class SelectStatement extends Statement {
         if (columns.isEmpty()) {
             throw new InvalidStatementException("Invalid SelectStatement");
         }
+
+        manager.validateConnection();
+
         StringBuilder statement = new StringBuilder("SELECT ");
         int i = 0;
         int im = columns.size();

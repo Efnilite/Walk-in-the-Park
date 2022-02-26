@@ -6,6 +6,7 @@ WVoidGen is now outdated. Please visit the wiki for more info about using WITP w
 - Fix Session being null
 - Fix block generation delay
 - Fix void generation not being supported by version
+- Fix reading from SQL causing timeout error
 
 High priority:
 - Optimize ram with schematics (async?)
