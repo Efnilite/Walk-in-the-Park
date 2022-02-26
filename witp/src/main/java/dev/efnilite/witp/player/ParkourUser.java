@@ -211,11 +211,13 @@ public abstract class ParkourUser {
 
                 ParkourGenerator generator = pp.getGenerator();
                 // remove spectators
-                for (ParkourSpectator spectator : session.getSpectators()) {
-                    ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                    WITP.getDivider().generate(spp);
+                if (session != null) {
+                    for (ParkourSpectator spectator : session.getSpectators()) {
+                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                        WITP.getDivider().generate(spp);
 
-                    session.removeSpectators(spectator);
+                        session.removeSpectators(spectator);
+                    }
                 }
 
                 // reset generator (remove blocks) and delete island
@@ -225,7 +227,9 @@ public abstract class ParkourUser {
             } else if (user instanceof ParkourSpectator) {
                 ParkourSpectator spectator = (ParkourSpectator) user;
                 spectator.stopClosestChecker();
-                spectator.getSession().removeSpectators(spectator);
+                if (session != null) {
+                    spectator.getSession().removeSpectators(spectator);
+                }
             }
             if (user.getBoard() != null && !user.getBoard().isDeleted()) {
                 user.getBoard().delete();

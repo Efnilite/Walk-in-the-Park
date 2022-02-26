@@ -1,9 +1,9 @@
 package dev.efnilite.witp.api;
 
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +44,7 @@ public abstract class StyleType {
      *
      * @return the item.
      */
-    public abstract @NotNull ItemStack getItem(String locale);
+    public abstract @NotNull Item getItem(String locale);
 
     /**
      * Gets a random material from a style

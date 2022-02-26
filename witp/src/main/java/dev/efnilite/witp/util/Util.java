@@ -43,21 +43,6 @@ public class Util {
     }
 
     /**
-     * Returns the active void generator plugin
-     *
-     * @return the void generator currently in use
-     */
-    public static @Nullable String getVoidGenerator() {
-        if (Bukkit.getPluginManager().getPlugin("WVoidGen") != null) {
-            return "WVoidGen";
-        } else if (Bukkit.getPluginManager().getPlugin("VoidGen") != null) {
-            return "VoidGen";
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Random ID for game logging
      *
      * @return a string with a random ID

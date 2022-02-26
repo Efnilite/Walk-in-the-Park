@@ -1,10 +1,10 @@
-package dev.efnilite.witp.generator;
+package dev.efnilite.witp.world;
 
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.util.VoidGenerator;
 import dev.efnilite.witp.util.config.Option;
+import dev.efnilite.witp.world.generation.VoidGenerator;
 import org.bukkit.*;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class WorldHandler {
                 WorldCreator creator = new WorldCreator(name)
                         .generateStructures(false)
                         .type(WorldType.NORMAL)
-                        .generator(new VoidGenerator()) // to fix No keys in MapLayer etc.
+                        .generator(VoidGenerator.getGenerator()) // to fix No keys in MapLayer etc.
                         .environment(World.Environment.NORMAL);
 
                 world = Bukkit.createWorld(creator);

@@ -1,8 +1,8 @@
 package dev.efnilite.witp.session;
 
-import com.google.common.annotations.Beta;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
+import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @since v3.0.3
  * @author Efnilite
  */
-@Beta
 public interface Session {
 
     /**
@@ -116,7 +115,7 @@ public interface Session {
      * on the return values of {@link #isAcceptingPlayers()} and {@link #isAcceptingSpectators()}.
      * This is done very discretely. If you want to add your own checks for spectators, etc.,
      * overriding this method is most effective.
-     * Does not preserve {@link dev.efnilite.witp.player.data.PreviousData}
+     * Does not preserve {@link dev.efnilite.witp.player.data.PreviousData}.
      *
      * @param   player
      *          The player to force to join
@@ -150,19 +149,16 @@ public interface Session {
     }
 
     /**
-     * Creates a new player session.
+     * Registers a new player session.
      *
-     * @param   player
+     * @param   user
      *          The ParkourPlayer to associate this new session with.
      *
-     * @return the created instance.
+     * @param   session
+     *          The session.
      */
-    static @NotNull Session createSession(@NotNull ParkourPlayer player) {
-        Session session = new SingleSession();
-        session.addPlayers(player);
-
-        Manager.put(player.getUUID(), session); // update session pool
-        return session;
+    static void addToSession(@NotNull ParkourUser user, @NotNull Session session) {
+        Manager.put(user.getUUID(), session); // update session pool
     }
 
     /**
@@ -171,27 +167,17 @@ public interface Session {
      * @param   uuid
      *          The id of the session.
      */
-    static void removeSession(@NotNull UUID uuid) {
+    static void removeFromSession(@NotNull UUID uuid) {
         Session session = getSession(uuid);
         if (session == null) {
             return;
         }
 
         if (session.getPlayers().size() == 1 && session.getSpectators().size() == 0) { // if there are no other players/spectators, close session
-            closeSession(session.getSessionId());
+            Manager.close(session.getSessionId());
         }
 
         Manager.remove(uuid);
-    }
-
-    /**
-     * Closes a session associated with an id.
-     *
-     * @param   id
-     *          The id of the session.
-     */
-    static void closeSession(String id) {
-        Manager.close(id);
     }
 
     /**
@@ -236,18 +222,18 @@ public interface Session {
         private static final Map<UUID, String> sessionIds = new HashMap<>();
         private static final Map<String, Session> sessions = new HashMap<>();
 
-        static void put(UUID uuid, Session session) {
+        static synchronized void put(UUID uuid, Session session) {
             String id = session.getSessionId();
 
             sessions.put(id, session);
             sessionIds.put(uuid, id);
         }
 
-        static void remove(UUID uuid) {
+        static synchronized void remove(UUID uuid) {
             sessionIds.remove(uuid);
         }
 
-        static void close(String id) {
+        static synchronized void close(String id) {
             sessions.remove(id);
         }
 

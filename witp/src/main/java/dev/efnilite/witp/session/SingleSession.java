@@ -1,6 +1,5 @@
 package dev.efnilite.witp.session;
 
-import com.google.common.annotations.Beta;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import net.md_5.bungee.api.ChatMessageType;
@@ -16,7 +15,6 @@ import java.util.*;
  *
  * @author Efnilite
  */
-@Beta
 public class SingleSession implements Session {
 
     private SessionVisibility visibility = SessionVisibility.PUBLIC;
@@ -51,6 +49,7 @@ public class SingleSession implements Session {
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
+            Session.addToSession(spectator, this);
         }
     }
 
@@ -62,6 +61,7 @@ public class SingleSession implements Session {
             }
 
             this.spectators.remove(spectator.getUUID());
+            Session.removeFromSession(spectator.getUUID());
         }
     }
 

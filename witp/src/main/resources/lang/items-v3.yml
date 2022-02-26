@@ -22,8 +22,6 @@ items:
       item: barrel
     spectator:
       item: glass
-    search:
-      item: paper
 
   # Options for the options in the menu
   options:

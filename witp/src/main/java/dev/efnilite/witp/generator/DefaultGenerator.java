@@ -23,9 +23,7 @@ import dev.efnilite.witp.util.config.Option;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.Wall;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
@@ -47,10 +45,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends DefaultGeneratorBase {
 
-    /**
-     * Prevents generation delay.
-     */
-    private final ChunkLoader chunkLoader = new ChunkLoader();
     private BukkitRunnable task;
 
     private boolean isSpecial;
@@ -373,7 +367,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         positionIndexTotal = 0;
         positionIndexMap.clear();
 
-        chunkLoader.removeAll();
         waitForSchematicCompletion = false;
         player.saveGame();
         deleteStructure();
@@ -475,7 +468,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
 
             Block selectedBlock = blocks.get(0);
-            chunkLoader.updateRadius(selectedBlock.getChunk(), 2);
             setBlock(selectedBlock, selectedBlockData);
             new BlockGenerateEvent(selectedBlock, this, player).call();
 
@@ -613,14 +605,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     protected void setBlock(Block block, BlockData data) {
-        block.getWorld().getChunkAt(block);
-
-        if (data instanceof Fence || data instanceof Wall) {
-            block.setType(data.getMaterial(), true);
-        } else {
-            block.setBlockData(data, false); // todo maybe add packet block change to instantly update it?
-        }
-        player.getPlayer().sendBlockChange(block.getLocation(), data);
+        block.setType(Material.STONE, false); // todo
     }
 
     /**

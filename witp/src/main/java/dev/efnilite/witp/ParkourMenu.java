@@ -183,9 +183,11 @@ public class ParkourMenu {
         if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
             main.item(0, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
                     .click((event) -> {
-                            if (WITP.getRegistry().getStyleTypes().size() == 1) {
-                                openSingleStyleMenu(user, WITP.getRegistry().getStyleTypes().get(0), disabledOptions);
-                            }
+                        if (WITP.getRegistry().getStyleTypes().size() == 1) {
+                            openSingleStyleMenu(user, WITP.getRegistry().getStyleTypes().get(0), disabledOptions);
+                        } else {
+                            openStylesMenu(user, disabledOptions);
+                        }
                     }));
         }
 
@@ -468,6 +470,39 @@ public class ParkourMenu {
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .animation(new WaveWestAnimation())
+                .open(user.getPlayer());
+    }
+
+    public static void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
+        Configuration config = WITP.getConfiguration();
+
+        // init menu
+        PagedMenu style = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
+
+        List<MenuItem> items = new ArrayList<>();
+        for (StyleType type : WITP.getRegistry().getStyleTypes()) {
+            Item item = type.getItem(user.getLocale());
+
+            items.add(item
+                    .click((event) -> openSingleStyleMenu(user, type, disabledOptions)));
+        }
+
+        style
+                .displayRows(0, 1)
+                .addToDisplay(items)
+
+                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                        .click((event) -> style.page(1)))
+
+                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                        .click((event) -> style.page(-1)))
+
+                .item(31, config.getFromItemData(user.getLocale(), "general.close")
+                        .click((event) -> openMainMenu(user, disabledOptions)))
+
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new RandomAnimation())
                 .open(user.getPlayer());
     }
 

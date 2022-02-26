@@ -1,9 +1,9 @@
 package dev.efnilite.witp.internal.style;
 
+import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.StyleType;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,8 +17,8 @@ public class DefaultStyleType extends StyleType {
     }
 
     @Override
-    public @NotNull ItemStack getItem(String locale) {
-        return WITP.getConfiguration().getFromItemData(locale, "styles.default").build();
+    public @NotNull Item getItem(String locale) {
+        return WITP.getConfiguration().getFromItemData(locale, "styles.default");
     }
 
     @Override

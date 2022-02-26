@@ -3,7 +3,7 @@ package dev.efnilite.witp.hook;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import dev.efnilite.witp.util.Util;
+import dev.efnilite.witp.world.generation.VoidGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -47,7 +47,7 @@ public class MultiverseHook {
      * @return the Bukkit version of this world
      */
     public World createWorld(String worldName) {
-        manager.addWorld(worldName, World.Environment.NORMAL, null, WorldType.FLAT, false, Util.getVoidGenerator());
+        manager.addWorld(worldName, World.Environment.NORMAL, null, WorldType.FLAT, false, VoidGenerator.getMultiverseGenerator());
         MultiverseWorld world = manager.getMVWorld(worldName);
 
         // -= Optimizations to reduce memory usage =-

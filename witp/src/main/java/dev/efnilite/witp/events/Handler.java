@@ -1,5 +1,6 @@
 package dev.efnilite.witp.events;
 
+import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.event.EventWatcher;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
@@ -13,10 +14,7 @@ import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import dev.efnilite.witp.world.generation.VoidGenerator;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -58,19 +56,16 @@ public class Handler implements EventWatcher {
 
         // OP join messages
         if (player.isOp() && WITP.OUTDATED) {
-            BaseComponent[] message = new ComponentBuilder()
-                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Efnilite/Walk-in-the-Park/releases/latest"))
-                    .append("> ").color(ChatColor.DARK_RED).bold(true)
-                    .append("Your WITP version is outdated. ").color(ChatColor.GRAY).bold(false)
-                    .append("Click here").color(ChatColor.DARK_RED).underlined(true)
-                    .append(" to visit the latest version!").color(ChatColor.GRAY).underlined(false)
-                    .create();
-
-            player.spigot().sendMessage(message);
+            Message.send(player, "");
+            Message.send(player, WITP.PREFIX + "Your Walk in the Park build is outdated. Updates usually fix crucial bugs. Please update.");
+            Message.send(player, "");
         }
-        if (player.isOp() && WITP.getMultiverseHook() != null && Util.getVoidGenerator() == null) {
-            player.sendMessage(Util.color("&4&l> &7You're running Multiverse &4without&7 support for creating void worlds. " +
-                    "Go to the wiki to add support for this."));
+        if (player.isOp() && WITP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {
+            Message.send(player, "");
+            Message.send(player, WITP.PREFIX + "You are running Multiverse without VoidGen.");
+            Message.send(player, WITP.PREFIX + "This causes extreme lag spikes and performance issues while playing.");
+            Message.send(player, WITP.PREFIX + "Please visit the wiki to fix this.");
+            Message.send(player, "");
         }
 
         // Bungeecord joining
@@ -94,7 +89,7 @@ public class Handler implements EventWatcher {
                 Logging.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(Option.WORLD_NAME.get()))) {
-                        player.sendMessage(Util.color("&cThere was an error while trying to get a world"));
+                        Message.send(player, WITP.PREFIX + "<red>There was an error while trying to find the parkour world.");
                         player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
                     }
