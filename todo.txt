@@ -1,9 +1,11 @@
 Walk in the Park
 
-v3.0.3
-- Add spectator join/leave messages
-- Add Sessions (internal)
-- Fix several world issues
+v3.0.4
+WVoidGen is now outdated. Please visit the wiki for more info about using WITP with Multiverse.
+
+- Fix Session being null
+- Fix block generation delay
+- Fix void generation not being supported by version
 
 High priority:
 - Optimize ram with schematics (async?)

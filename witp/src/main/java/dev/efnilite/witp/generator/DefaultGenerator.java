@@ -23,6 +23,8 @@ import dev.efnilite.witp.util.config.Option;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Fence;
+import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -605,7 +607,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     protected void setBlock(Block block, BlockData data) {
-        block.setType(Material.STONE, false); // todo
+        if (data instanceof Fence || data instanceof GlassPane) {
+            block.setType(data.getMaterial(), true);
+        } else {
+            block.setBlockData(data, false);
+        }
     }
 
     /**
