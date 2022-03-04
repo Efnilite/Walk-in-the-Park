@@ -201,13 +201,13 @@ public class Handler implements EventWatcher {
                 } else {
                     Location pos2 = ParkourCommand.selections.get(player).getPos2();
                     if (pos2 == null) {
-                        ParkourCommand.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
+                        Message.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
                         return;
                     }
                     ParkourCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
                     Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                ParkourCommand.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
+                Message.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
                 break;
             case RIGHT_CLICK_BLOCK:
                 event.setCancelled(true);
@@ -216,13 +216,13 @@ public class Handler implements EventWatcher {
                 } else {
                     Location pos1 = ParkourCommand.selections.get(player).getPos1();
                     if (pos1 == null) {
-                        ParkourCommand.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
+                        Message.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
                         return;
                     }
                     ParkourCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
                     Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                ParkourCommand.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
+                Message.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
                 break;
         }
     }

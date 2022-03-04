@@ -527,6 +527,10 @@ public class ParkourMenu {
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
+            if (Option.PERMISSIONS_STYLES.get() && !user.getPlayer().hasPermission("witp")) {
+                continue;
+            }
+
             Material material = Util.getRandom(styleType.styles.get(name));
             Item item = new Item(material, "<#238681><bold>" + name); // todo add enchantment on select
 

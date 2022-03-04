@@ -30,20 +30,23 @@ update-checker: true
 # Whether players should receive a message when a player joins
 join-leave-messages: true
 
-# Options about Bungeecord/autojoining
+# Bungeecord settings
+# This is also useful for servers who only want to run this plugin.
 bungeecord:
-  # Enabling this will make players who join the server (that's running this plugin) automatically join the game on that server
-  # !! If this is disabled, you have to use /witp join to join and /witp leave to leave. !!
+
+  # Autojoin mode
+  # Enabling this will make players who join the server automatically join the parkour
   enabled: false
 
-  # The server the players will be returned to after the game is done
+  # The server the players will be returned to after leave
   return_server: 'Lobby'
 
-  # If go back is enabled
+  # Whether players should be teleported to a specific location after leaving
   go-back-enabled: false
 
-  # The place players will go back to if they leave, if Bungeecord is disabled and the go-back option is enabled
-  # You need to retain this format, or else it won't work: '(x,y,z,world)'
+  # The place players will go back to when they leave
+  # Only applies if Autojoin mode is disabled and the go-back option is enabled.
+  # Syntax: '(x,y,z,worldName)'
   go-back: '(0,100,0,world)'
 
 # Options for MySQL databases
@@ -65,10 +68,10 @@ sql:
   # The prefix given to any table names (default '', so nothing, example: 'witp-player', the prefix would be 'witp-')
   prefix: ''
 
-# Options for the world
+# World settings
 world:
 
-  # The world in which the personal parkours will take place
+  # The world in which the Parkours will take place
   name: 'witp'
 
   # Deletes the world on reload/restart of the server.
@@ -99,7 +102,7 @@ options:
       - 6
       - 10
 
-  # Options for the time
+  # Options for the time option
   time:
 
     # Selects the time format.
@@ -134,14 +137,16 @@ options:
 
 # Options for permissions.
 # These permissions are used to determine which things the player can change.
-# List: https://github.com/Efnilite/Walk-in-the-Park/wiki/Permissions
+# Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
 permissions:
 
-  # If permissions are enabled
+  # If permission handling is enabled
   enabled: false
 
-  # Gives every style a permission. The permission is the name of the style:
-  # witp.styles.<style> - example: witp.styles.red
+  # Per style permission
+  # Gives every style a permission. The permission is the name of the style.
+  # Syntax: witp.option.styles.<style> - example: witp.option.styles.red
+  # Useful for servers with ranks.
   per-style: false
 
 # Options for focus mode.
@@ -189,7 +194,7 @@ styles:
     overworld: [grass_block, stone, cobblestone, oak_log]
     ores: [diamond_ore, gold_ore, iron_ore, coal_ore, nether_gold_ore, lapis_ore, redstone_ore, emerald_ore, nether_quartz_ore]
     wood: [oak_planks, spruce_planks, jungle_planks, acacia_planks, birch_planks, dark_oak_planks, oak_log, spruce_log, jungle_log, birch_log, acacia_log, dark_oak_log]
-    
+
     # Provided by RustyDagger
     rainbow: [red_wool, blue_wool, orange_wool, magenta_wool, lime_wool, purple_wool, yellow_concrete, orange_concrete, lime_concrete, light_blue_concrete, yellow_stained_glass, white_stained_glass, magenta_stained_glass, light_blue_stained_glass]
     glow: [glowstone, jack_o_lantern, beacon, sea_lantern, crying_obsidian, shroomlight]
@@ -197,20 +202,24 @@ styles:
 # Options for scoring
 scoring:
 
-  # Gives the player a point when a block is set to air, not when a player jumps on it
+  # Give all points
+  # If a player skips a block jump, it will still give points for that block.
   all-points: false
 
 # Options for custom rewards
 rewards:
+
   # If rewards are enabled
   enabled: false
 
-  # The intervals at which they get a reward
+  # Reward interval
+  # The intervals at which players get a reward
   # (so for every 50 blocks the player jumps, they get a reward)
   # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
   # Setting this to -1 will never result in rewards for Vault/commands
   interval: 50
 
+  # Score commands
   # The same as interval, but instead at scores.
   # So when the player reaches, for example, 50 points, the rewards system is triggered.
   # In the string you add executable commands when they reach this score
@@ -239,7 +248,7 @@ rewards:
   vault-reward: 5
 
   # The message you get after the interval is met
-    # '' means no message
+  # '' means no message
   message: '&6+5 coins'
 
 # Options for particles/sounds
@@ -247,16 +256,17 @@ particles:
 
   # Particle shape
   # The shape of the particle that will appear
-  # Possible options: dot (this is the original shape), box, circle
+  # Possible options: dot, box, circle
   particle-shape: 'box'
 
   # The particle type
-  # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html or else it won't work
+  # You can find all particle types at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
   particle-type: 'SPELL_INSTANT'
 
-  # The sound type
-  # Use this list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html or else it won't work
+  # Sound type
+  # You can find all sounds at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
   sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
 
-  # The pitch of the sound
+  # Sound pitch
+  # The pitch of the played sound
   sound-pitch: 3

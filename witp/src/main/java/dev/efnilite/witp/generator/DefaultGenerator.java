@@ -12,8 +12,6 @@ import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.base.DefaultGeneratorBase;
 import dev.efnilite.witp.generator.base.GeneratorOption;
-import dev.efnilite.witp.generator.subarea.Direction;
-import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
@@ -37,11 +35,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The class that generates the parkour, which each {@link ParkourPlayer} has.<br>
- * <p>
- * Important notice: tempering with details in this class could result in complete malfunction of code since
- * this class has been meticulously made using a lot of cross-references. Same goes for
- * {@link SubareaDivider}.
+ * The class that generates the parkour, which each {@link ParkourPlayer} has.
  *
  * @author Efnilite
  */

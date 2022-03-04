@@ -1,5 +1,6 @@
 package dev.efnilite.witp.schematic;
 
+import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Time;
@@ -172,7 +173,7 @@ public class Schematic {
                         if (player == null) {
                             return;
                         }
-                        player.sendMessage(Util.color("&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!"));
+                        Message.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!");
                     } catch (IOException ex) {
                         Logging.stack("Error while saving data of player " + (player == null ? "?" : player.getName()),
                                 "Please try again or report this error to the developer!", ex);

@@ -5,7 +5,7 @@ import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Particle;

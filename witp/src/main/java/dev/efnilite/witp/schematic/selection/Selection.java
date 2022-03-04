@@ -63,6 +63,12 @@ public class Selection {
         this.world = world;
     }
 
+    /**
+     * Checks the completeness of this selection.
+     * If both positions are not null, this returns true.
+     *
+     * @return true if all variables are set, false if not
+     */
     public boolean isComplete() {
         return pos1 != null && pos2 != null && world != null;
     }

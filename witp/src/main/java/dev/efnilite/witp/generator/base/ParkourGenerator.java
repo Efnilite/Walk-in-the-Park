@@ -1,7 +1,7 @@
 package dev.efnilite.witp.generator.base;
 
-import dev.efnilite.witp.generator.subarea.AreaData;
-import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.generator.AreaData;
+import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
 import dev.efnilite.witp.util.Stopwatch;
@@ -95,7 +95,7 @@ public abstract class ParkourGenerator {
     public abstract void particles(List<Block> applyTo);
 
     /**
-     * Implementable method for selecting materials used to set the blocks used in {@link #selectBlocks()}
+     * Implementable method for selecting materials used to set the blocks used in {@link #selectBlocks()}.
      */
     public abstract BlockData selectBlockData();
 
@@ -133,7 +133,7 @@ public abstract class ParkourGenerator {
     public abstract void startTick();
 
     /**
-     * Method that gets run every game tick (every 2 ticks)
+     * Method that gets run every game tick
      */
     public abstract void tick();
 

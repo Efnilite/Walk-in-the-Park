@@ -1,7 +1,7 @@
 package dev.efnilite.witp.schematic;
 
 import dev.efnilite.fycore.vector.Vector3D;
-import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,5 +1,6 @@
 package dev.efnilite.witp.player;
 
+import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
@@ -430,7 +431,7 @@ public abstract class ParkourUser {
      */
     public void send(String... messages) {
         for (String msg : messages) {
-            player.sendMessage(Util.color(msg));
+            Message.send(player, msg);
         }
     }
 

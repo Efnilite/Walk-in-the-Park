@@ -49,8 +49,6 @@ public class SelectStatement extends Statement {
             throw new InvalidStatementException("Invalid SelectStatement");
         }
 
-        manager.validateConnection();
-
         StringBuilder statement = new StringBuilder("SELECT ");
         int i = 0;
         int im = columns.size();
@@ -68,6 +66,7 @@ public class SelectStatement extends Statement {
         statement.append(";");
         LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
 
+        manager.validateConnection();
         PreparedStatement preparedStatement = manager.getConnection().prepareStatement(statement.toString());
         if (preparedStatement == null) {
             return null;

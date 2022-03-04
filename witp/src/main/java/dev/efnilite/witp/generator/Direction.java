@@ -1,4 +1,4 @@
-package dev.efnilite.witp.generator.subarea;
+package dev.efnilite.witp.generator;
 
 public enum Direction {
 

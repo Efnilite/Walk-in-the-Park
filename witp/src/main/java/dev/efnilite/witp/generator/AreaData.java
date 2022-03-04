@@ -1,4 +1,4 @@
-package dev.efnilite.witp.generator.subarea;
+package dev.efnilite.witp.generator;
 
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;

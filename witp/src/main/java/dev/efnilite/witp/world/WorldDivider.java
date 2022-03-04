@@ -1,4 +1,4 @@
-package dev.efnilite.witp.generator.subarea;
+package dev.efnilite.witp.world;
 
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
@@ -6,6 +6,7 @@ import dev.efnilite.fycore.util.Version;
 import dev.efnilite.fycore.vector.Vector2D;
 import dev.efnilite.fycore.vector.Vector3D;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.AreaData;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -27,15 +28,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 /**
- * Divides the empty world into sections so there can be an infinite amount of players in 1 world/**
- *
- * Important notice: tempering with details in this class could result in complete malfunction of code since
- * this class has been meticulously made using a lot of cross-references. Same goes for
- * {@link DefaultGenerator}.
+ * Divides the Parkour world into sections so there can be an infinite amount of players in 1 world.
  *
  * @author Efnilite
  */
-public class SubareaDivider {
+public class WorldDivider {
 
     private final Schematic spawnIsland;
 
@@ -61,8 +58,8 @@ public class SubareaDivider {
      * Note: initiating another instance of this class might lead to serious problems
      */
     @SuppressWarnings("ConstantConditions")
-    public SubareaDivider() {
-        Logging.verbose("Initializing SubareaDivider");
+    public WorldDivider() {
+        Logging.verbose("Initializing WorldDivider");
         FileConfiguration gen = WITP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");

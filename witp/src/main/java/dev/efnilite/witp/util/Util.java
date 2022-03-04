@@ -5,7 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.generator.subarea.Direction;
+import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.config.Option;
 import net.milkbowl.vault.economy.Economy;
@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -150,7 +151,7 @@ public class Util {
      *
      * @return a vector that indicates the direction
      */
-    public static Direction getDirection(@Nullable String face) {
+    public static @NotNull Direction getDirection(@Nullable String face) {
         try {
             return Direction.valueOf(face == null ? "-" : face.toUpperCase());
         } catch (Throwable throwable) {
@@ -338,7 +339,7 @@ public class Util {
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }
-        sender.sendMessage(message);
+        Message.send(sender, message);
     }
 
     /**

@@ -11,7 +11,6 @@ import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.GeneratorOption;
-import dev.efnilite.witp.generator.subarea.SubareaDivider;
 import dev.efnilite.witp.hook.MultiverseHook;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.internal.gamemode.DefaultGamemode;
@@ -23,6 +22,7 @@ import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.SQLManager;
+import dev.efnilite.witp.world.WorldDivider;
 import dev.efnilite.witp.world.WorldHandler;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -48,7 +48,7 @@ public final class WITP extends FyPlugin {
     private static WITP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
-    private static SubareaDivider divider;
+    private static WorldDivider divider;
     private static WorldHandler worldHandler;
     private static Configuration configuration;
 
@@ -72,7 +72,7 @@ public final class WITP extends FyPlugin {
         configuration = new Configuration(this);
         Option.init(true);
 
-        divider = new SubareaDivider();
+        divider = new WorldDivider();
 
         // ----- Hooks and Bungee -----
 
@@ -228,7 +228,7 @@ public final class WITP extends FyPlugin {
         return sqlManager;
     }
 
-    public static SubareaDivider getDivider() {
+    public static WorldDivider getDivider() {
         return divider;
     }
 
