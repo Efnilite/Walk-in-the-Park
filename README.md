@@ -19,7 +19,7 @@ Maven
 <dependency>
     <groupId>com.github.Efnilite</groupId>
     <artifactId>Walk-in-the-Park</artifactId>
-    <version>v3.0.3</version>
+    <version>version</version>
 </dependency>
 ```
 
