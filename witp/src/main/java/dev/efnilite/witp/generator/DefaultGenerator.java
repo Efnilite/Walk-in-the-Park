@@ -208,7 +208,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return Collections.emptyList();
         }
 
-        return Collections.singletonList(possible.get(random.nextInt(possible.size())));
+        return List.of(possible.get(random.nextInt(possible.size())));
     }
 
     @Override
@@ -438,7 +438,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             BlockData selectedBlockData = selectBlockData();
 
             if (isSpecial && player.useSpecialBlocks) { // if special
-                switch (getRandomChance(specialChances)) {
+                int value = getRandomChance(specialChances);
+                switch (value) {
                     case 0: // ice
                         selectedBlockData = Material.PACKED_ICE.createBlockData();
                         break;
@@ -451,6 +452,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         break;
                     case 3: // fence
                         selectedBlockData = Material.OAK_FENCE.createBlockData();
+                        break;
+                    default:
+                        selectedBlockData = Material.STONE.createBlockData();
+                        Logging.stack("Invalid special block ID " + value, "Please report this error to the developer!");
                         break;
                 }
                 specialType = selectedBlockData.getMaterial();
@@ -472,7 +477,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
             mostRecentBlock = selectedBlock.getLocation().clone();
 
-            particles(Collections.singletonList(selectedBlock));
+            particles(List.of(selectedBlock));
 
             if (schematicCooldown > 0) {
                 schematicCooldown--;
@@ -535,6 +540,18 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Generates a specific amount of blocks ahead of the player
+     *
+     * @param   amount
+     *          The amount
+      */
+    public void generate(int amount) {
+        for (int i = 0; i < amount; i++) {
+            generate();
         }
     }
 
@@ -704,12 +721,5 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         blockSpawn = block.clone();
         mostRecentBlock = block.clone();
         generate(player.blockLead);
-    }
-
-    // Generates in a loop
-    public void generate(int amount) {
-        for (int i = 0; i < amount; i++) {
-            generate();
-        }
     }
 }

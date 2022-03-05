@@ -232,13 +232,14 @@ public class Handler implements EventWatcher {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && System.currentTimeMillis() - player.joinTime > 1000) {
-            event.setCancelled(true);
             Material menu = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType();
             Material quit = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.quit").build().getType();
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {
+                event.setCancelled(true);
                 player.getGenerator().menu();
             } else if (held == quit) {
+                event.setCancelled(true);
                 ParkourUser.leave(player);
             }
         }

@@ -51,13 +51,14 @@ public class Configuration {
         }
 
         // Config files without languages
-        for (String file : Arrays.asList("config.yml", "generation.yml", "schematics.yml", "lang/scoreboard-v3.yml")) {
-            try {
-                ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), Collections.singletonList("styles"));
-            } catch (IOException ex) {
-                Logging.stack("Error while trying to update config file " + file,
-                        "Delete this file. If the problem persists, please report this error to the developer!", ex);
-            }
+        try {
+            ConfigUpdater.update(plugin, "config.yml", new File(plugin.getDataFolder(), "config.yml"), List.of("styles"));
+            ConfigUpdater.update(plugin, "generation.yml", new File(plugin.getDataFolder(), "generation.yml"), new ArrayList<>());
+            ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
+            ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
+        } catch (IOException ex) {
+            Logging.stack("Error while trying to update a config file",
+                    "Delete all config files and reload/restart. If the problem persists, please report this error to the developer!", ex);
         }
 
         checkUserLanguages("lang/messages-v3.yml", "messages");

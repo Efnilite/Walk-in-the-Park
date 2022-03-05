@@ -5,7 +5,6 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ public class VoidGenerator_v1_17 extends VoidGenerator {
         @Override
         @NotNull
         public List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
-            return Collections.singletonList(Biome.PLAINS);
+            return List.of(Biome.PLAINS);
         }
     }
 
