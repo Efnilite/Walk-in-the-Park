@@ -601,7 +601,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (Option.REWARDS_MONEY.getAsDouble() != 0) {
                 Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY.getAsDouble());
             }
-            if (Option.REWARDS_MESSAGE.get() != null) {
+            if (Option.REWARDS_MESSAGE != null) {
                 player.send(Option.REWARDS_MESSAGE.get());
             }
         }

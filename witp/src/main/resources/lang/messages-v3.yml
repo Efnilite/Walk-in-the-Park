@@ -13,7 +13,7 @@ messages:
 
   # English (English), provided by Efnilite
   en:
-    join: '<green><bold>+ <gray>You joined Infinite Parkour'
+    join: '<dark_green><bold>+ <gray>You joined Infinite Parkour'
     leave: '<red><bold>- <gray>You left Infinite Parkour'
 
     player-join: '<dark_green><bold>+ <gray>%p'
@@ -37,7 +37,7 @@ messages:
 
   # Nederlands (Dutch), provided by Efnilite
   nl:
-    join: '<green><bold>+ <gray>Je bent Infinite Parkour gejoined.'
+    join: '<dark_green><bold>+ <gray>Je bent Infinite Parkour gejoined.'
     leave: '<red><bold>- <gray>Je bent Infinite Parkour geleaved.'
 
     player-join: '<green><bold>+ <gray>%p'
@@ -61,7 +61,7 @@ messages:
 
   # Francais (French), provided by NoaLUNE/Efnilite
   fr:
-    join: '<green><bold>+ <gray>Vous avez rejoint Infinite Parkour.'
+    join: '<dark_green><bold>+ <gray>Vous avez rejoint Infinite Parkour.'
     leave: '<red><bold>- <gray>Vous avez quitté Infinite Parkour.'
 
     player-join: '<green><bold>+ &7%p'

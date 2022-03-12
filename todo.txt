@@ -1,12 +1,10 @@
 Walk in the Park
 
-v3.0.4
+v3.0.6
 WVoidGen is now outdated. Please visit the wiki for more info about using WITP with Multiverse.
 
-- Fix Session being null
-- Fix block generation delay
-- Fix void generation not being supported by version
-- Fix reading from SQL causing timeout error
+- Fix session storing to remove a bunch of null errors
+- Fix reward message causing null errors
 
 High priority:
 - Optimize ram with schematics (async?)

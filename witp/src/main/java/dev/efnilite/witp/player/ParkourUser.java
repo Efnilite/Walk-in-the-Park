@@ -8,7 +8,6 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.player.profile.Profile;
 import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
@@ -41,9 +40,9 @@ public abstract class ParkourUser {
     public static int JOIN_COUNT;
 
     /**
-     * The settings of this player
+     * This user's session id
      */
-    protected Profile profile;
+    protected String sessionId;
 
     /**
      * This user's locale
@@ -486,6 +485,16 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Sets the player's session id
+     *
+     * @param   sessionId
+     *          The session id
+     */
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    /**
      * Gets the scoreboard of the player
      *
      * @return the {@link FastBoard} of the player
@@ -518,7 +527,7 @@ public abstract class ParkourUser {
      * @return the current player's {@link Session}
      */
     public Session getSession() {
-        return Session.getSession(getUUID());
+        return Session.getSession(sessionId);
     }
 
     /**

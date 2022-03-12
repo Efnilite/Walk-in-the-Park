@@ -2,13 +2,15 @@ package dev.efnilite.witp.session;
 
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
-import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -149,35 +151,19 @@ public interface Session {
     }
 
     /**
-     * Registers a new player session.
-     *
-     * @param   user
-     *          The ParkourPlayer to associate this new session with.
-     *
-     * @param   session
-     *          The session.
+     * Registers this session
      */
-    static void addToSession(@NotNull ParkourUser user, @NotNull Session session) {
-        Manager.put(user.getUUID(), session); // update session pool
+    default void register() {
+        Manager.register(this);
     }
 
     /**
-     * Closes a session associated with an id.
-     *
-     * @param   uuid
-     *          The id of the session.
+     * Unregisters this session, only if there is one player and 0 spectators
      */
-    static void removeFromSession(@NotNull UUID uuid) {
-        Session session = getSession(uuid);
-        if (session == null) {
-            return;
+    default void unregister() {
+        if (getPlayers().isEmpty() && getSpectators().isEmpty()) { // if there are no other players/spectators, close session
+            Manager.unregister(this);
         }
-
-        if (session.getPlayers().size() == 1 && session.getSpectators().size() == 0) { // if there are no other players/spectators, close session
-            Manager.close(session.getSessionId());
-        }
-
-        Manager.remove(uuid);
     }
 
     /**
@@ -190,18 +176,6 @@ public interface Session {
      */
     static @Nullable Session getSession(String id) {
         return Manager.getSession(id);
-    }
-
-    /**
-     * Returns the session a player is currently in. UUID-based.
-     *
-     * @param   uuid
-     *          The uuid of the player. A 6-character string.
-     *
-     * @return the Session instance. Null if not found.
-     */
-    static @Nullable Session getSession(UUID uuid) {
-        return Manager.getSession(Manager.getId(uuid));
     }
 
     /**
@@ -219,27 +193,14 @@ public interface Session {
     @ApiStatus.Internal
     class Manager {
 
-        private static final Map<UUID, String> sessionIds = new HashMap<>();
         private static final Map<String, Session> sessions = new HashMap<>();
 
-        static synchronized void put(UUID uuid, Session session) {
-            String id = session.getSessionId();
-
-            sessions.put(id, session);
-            sessionIds.put(uuid, id);
+        static synchronized void register(Session session) {
+            sessions.put(session.getSessionId(), session);
         }
 
-        static synchronized void remove(UUID uuid) {
-            sessionIds.remove(uuid);
-        }
-
-        static synchronized void close(String id) {
-            sessions.remove(id);
-        }
-
-        // Gets the ID of a session using a player's uuid
-        static String getId(UUID uuid) {
-            return sessionIds.get(uuid);
+        static synchronized void unregister(Session session) {
+            sessions.remove(session.getSessionId());
         }
 
         // Gets the session using the internal ID
@@ -247,7 +208,7 @@ public interface Session {
             return sessions.get(id);
         }
 
-        public static List<Session> getSessions() {
+        static List<Session> getSessions() {
             return new ArrayList<>(sessions.values());
         }
     }

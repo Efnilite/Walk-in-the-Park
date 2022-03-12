@@ -49,7 +49,7 @@ public class SingleSession implements Session {
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
-            Session.addToSession(spectator, this);
+            spectator.setSessionId(getSessionId());
         }
     }
 
@@ -61,7 +61,7 @@ public class SingleSession implements Session {
             }
 
             this.spectators.remove(spectator.getUUID());
-            Session.removeFromSession(spectator.getUUID());
+            unregister();
         }
     }
 

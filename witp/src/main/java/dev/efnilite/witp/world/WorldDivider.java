@@ -157,7 +157,9 @@ public class WorldDivider {
             block.setType(Material.AIR, false);
         }
 
-        Session.removeFromSession(player.getUUID());
+        Session session = player.getSession();
+        session.removePlayers(player);
+        session.unregister();
     }
 
     // https://math.stackexchange.com/a/163101
@@ -243,10 +245,15 @@ public class WorldDivider {
             ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
         }
 
+        // create session
         Session session = new SingleSession();
         session.addPlayers(pp);
-        Session.addToSession(pp, session);
+        session.register();
 
+        // set session id for player
+        pp.setSessionId(session.getSessionId());
+
+        // setup inventory, etc.
         setup(to, pp);
     }
 
