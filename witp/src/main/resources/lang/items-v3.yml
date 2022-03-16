@@ -309,3 +309,80 @@ locale:
       language:
         name: '<#6693E7><bold>Langage'
         lore: '<#5574AF>Actuellement: <gray>%s'
+
+  # Traditional Chinese (Traditional Chinese), provided by Efina
+  zh-tw:
+    general:
+      quit:
+        name: '<#9F0000><bold>離開'
+        lore: ''
+      close:
+        name: '<red><bold>關閉'
+        lore: ''
+      menu:
+        name: '<red><bold>選項'
+        lore: ''
+    gamemodes:
+      default:
+        name: '<#6693E7><bold>普通'
+        lore: '<gray>就像平常一樣的玩遊戲。'
+      spectator:
+        name: '<#6693E7><bold>觀察者'
+        lore: '<gray>觀察其他玩家。'
+      spectator-head:
+        name: '<#6693E7><bold>%p'
+        lore: '<gray>點擊進行觀察。'
+    options:
+      cant-change:
+        name: '<dark_red><bold>你現在不能更改此設置！'
+        lore: '<gray>你的分數高於0||<gray>這也意味著你無法更改此設置。'
+
+      styles:
+        name: '<#6693E7><bold>風格'
+        lore: '<#5574AF>目前: <gray>%s||<gray>選擇將使用哪些方塊。'
+      leads:
+        name: '<#6693E7><bold>領先'
+        lore: '<#5574AF>目前: <gray>%s 格方塊||<gray>在你面前會||<gray>生成多少個方塊。'
+      time:
+        name: '<#6693E7><bold>時間'
+        lore: '<#5574AF>目前: <gray>%s||<gray>你目前的時間顯示樣式。'
+
+      schematic-difficulty:
+        name: '<#6693E7><bold>結構難度'
+        lore: '<#5574AF>目前: <gray>%s||<gray>難度的結構'
+        values: [簡單, 普通, 困難, 非常困難] # Make sure it's the same order every time!
+      use-schematics:
+        name: '使用結構'
+        lore: '<gray>目前: %s||<gray>如果啟用靜態結構||<gray>將會出現在整個跑酷中。'
+      schematics:
+        name: '<#6693E7><bold>結構'
+        lore: '<gray>變更結構設定'
+
+      show-scoreboard:
+        name: '顯示計分板'
+        lore: '<gray>目前: %s||<gray>如果啟用將會顯示計分板。'
+      fall-message:
+        name: '顯示掉落訊息'
+        lore: '<gray>目前: %s||<gray>如果啟用，將會在你掉落時||<gray>顯示額外訊息。'
+      particles-and-sound:
+        name: '顯示粒子效果與聲音'
+        lore: '<gray>目前: %s||<gray>如果啟用，每個生成的方塊||<gray>將會顯示粒子效果並播放聲音。'
+      special-blocks:
+        name: '使用特殊方塊'
+        lore: '<gray>目前: %s||<gray>如果啟用，將會使用特殊的方塊，例如冰塊與半磚'
+      score-difficulty:
+        name: '分數難度'
+        lore: '<gray>目前: %s||<gray>啟用後，你的分數越高||<gray>難度也會越高。'
+
+      gamemode:
+        name: '<#6693E7><bold>遊戲模式'
+        lore: ''
+      leaderboard:
+        name: '<#6693E7><bold>排行榜'
+        lore: '<#5574AF>排名: <gray>%s'
+      leaderboard-head:
+        name: '<#6693E7><bold>#%r - %p'
+        lore: '<#5574AF>分數: <gray>%s||<#5574AF>時間: <gray>%t||<#5574AF>難度: <gray>%d<dark_gray>/1.0'
+      language:
+        name: '<#6693E7><bold>語言'
+        lore: '<#5574AF>目前: <gray>%s'
