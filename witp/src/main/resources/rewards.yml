@@ -1,0 +1,44 @@
+# ----------- Rewards -----------
+# Each command needs a separate line.
+# Reward commands are executed by the console.
+# Use %player% to get the player's name.
+# Use %display% to get the player's display name.
+#
+# Custom reward syntaxes:
+# send:<bold>test - sends a message
+# vault:-87 - deposits a specific amount of money (Vault required)
+
+# Are rewards enabled?
+enabled: false
+
+# Should players receive their rewards when they leave?
+# If you have inventory handling enabled, it is recommended to put this to true.
+rewards-on-leave: true
+
+# Score rewards
+# Rewards when a player reaches a specific score
+score-rewards:
+  420:
+    - "send:gj"
+
+# Interval rewards
+# Rewards which will be given at certain intervals.
+# An interval of 10 means a player will get a reward at 10, 20, 30, etc.
+interval-rewards:
+  10:
+    - "/witpreward10"
+    - "send:<green>Good job!"
+
+# One time rewards
+# Rewards which players will receive just once.
+# These are based on the score required.
+# Changing the commands when a player already has achieved this score will not give it to them again.
+one-time-rewards:
+  2022:
+    - "/currentyear"
+    - "vault:100"
+  2023:
+    - "send:&r"
+    - "send:<red><bold>Time travelling is illegal!"
+    - "send:&r"
+    - "vault:-100"

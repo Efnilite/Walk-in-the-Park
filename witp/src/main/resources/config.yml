@@ -206,7 +206,9 @@ scoring:
   # If a player skips a block jump, it will still give points for that block.
   all-points: false
 
-# Options for custom rewards
+# --- This section has been moved to rewards.yml ---
+# --- Please move all your commands to rewards.yml ---
+# --- This section will be deleted in future versions ---
 rewards:
 
   # If rewards are enabled

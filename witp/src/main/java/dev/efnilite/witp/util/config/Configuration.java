@@ -5,6 +5,7 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Material;
@@ -38,7 +39,8 @@ public class Configuration {
     public Configuration(Plugin plugin) {
         this.plugin = plugin;
 
-        List<String> defaultFiles = Arrays.asList("config.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
+        List<String> defaultFiles = Arrays.asList("config.yml", "rewards.yml", "generation.yml", "schematics.yml",
+                "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
         for (String name : defaultFiles) {
             File file = new File(plugin.getDataFolder(), name);
 
@@ -65,6 +67,10 @@ public class Configuration {
         checkUserLanguages("lang/items-v3.yml", "locale");
 
         reload();
+
+        // read rewards file
+        RewardReader.readRewards();
+
         schematics();
         Logging.info("Loaded all config files");
     }
@@ -108,6 +114,7 @@ public class Configuration {
         files.put("scoreboard", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/scoreboard-v3.yml")));
 
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
+        files.put("rewards", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/rewards.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("schematics", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
     }
