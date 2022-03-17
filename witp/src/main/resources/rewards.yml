@@ -2,7 +2,7 @@
 # Each command needs a separate line.
 # Reward commands are executed by the console.
 # Use %player% to get the player's name.
-# Use %display% to get the player's display name.
+# Use %player-name% to get the player's display name (includes groups).
 #
 # Custom reward syntaxes:
 # send:<bold>test - sends a message
@@ -13,7 +13,7 @@ enabled: false
 
 # Should players receive their rewards when they leave?
 # If you have inventory handling enabled, it is recommended to put this to true.
-rewards-on-leave: true
+get-on-leave: true
 
 # Score rewards
 # Rewards when a player reaches a specific score

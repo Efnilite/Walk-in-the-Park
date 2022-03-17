@@ -55,6 +55,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose Integer selectedTime;
     public @Expose String style;
     public @Expose String lang;
+    public @Expose List<String> collectedRewards;
 
     /**
      * The instant in ms in which the player joined.

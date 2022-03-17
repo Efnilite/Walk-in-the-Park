@@ -13,6 +13,8 @@ import dev.efnilite.witp.events.PlayerScoreEvent;
 import dev.efnilite.witp.generator.base.DefaultGeneratorBase;
 import dev.efnilite.witp.generator.base.GeneratorOption;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.reward.RewardReader;
+import dev.efnilite.witp.reward.RewardString;
 import dev.efnilite.witp.schematic.Schematic;
 import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
@@ -565,44 +567,43 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         return map.get(index);
     }
 
-    private void checkRewards() {
-        if (!Option.REWARDS.get()) {
+    /**
+     * Checks a player's rewards and gives them if necessary
+     */
+    public void checkRewards() {
+        // if disabled dont continue
+        if (!RewardReader.REWARDS_ENABLED.get()) {
             return;
         }
 
-        // Rewards
-        HashMap<Integer, List<String>> scores = Option.REWARDS_SCORES;
-        if (!scores.isEmpty() && scores.containsKey(score) && scores.get(score) != null) {
-            List<String> commands = scores.get(score);
-            if (commands != null) {
-                if (Option.LEAVE_REWARDS.get()) {
-                    rewardsLeaveList.addAll(commands);
+        // check generic score rewards
+        List<RewardString> strings = RewardReader.SCORE_REWARDS.get(score);
+        if (strings != null) {
+            if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
+                rewardsLeaveList.addAll(strings);
+            } else {
+                strings.forEach(s -> s.execute(player));
+            }
+        }
+
+        for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
+            if (score % interval == 0) {
+                strings = RewardReader.INTERVAL_REWARDS.get(interval);
+                if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
+                    rewardsLeaveList.addAll(strings);
                 } else {
-                    for (String command : commands) {
-                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getPlayer().getName()));
-                    }
+                    strings.forEach(s -> s.execute(player));
                 }
             }
         }
 
-        // Interval rewards
-        if (Option.REWARDS_INTERVAL.get() > 0 && totalScore % Option.REWARDS_INTERVAL.get() == 0) {
-            if (Option.INTERVAL_REWARDS_SCORES != null) {
-                for (String command : Option.INTERVAL_REWARDS_SCORES) {
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                            command.replace("%player%", player.getPlayer().getName()));
-                }
-            }
-            if (Option.REWARDS_COMMANDS.get() != null) {
-                for (String command : Option.REWARDS_COMMANDS.get()) {
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getPlayer().getName()));
-                }
-            }
-            if (Option.REWARDS_MONEY.getAsDouble() != 0) {
-                Util.depositPlayer(player.getPlayer(), Option.REWARDS_MONEY.getAsDouble());
-            }
-            if (Option.REWARDS_MESSAGE != null) {
-                player.send(Option.REWARDS_MESSAGE.get());
+        // todo add to list of player
+        strings = RewardReader.ONE_TIME_REWARDS.get(score);
+        if (strings != null) {
+            if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
+                rewardsLeaveList.addAll(strings);
+            } else {
+                strings.forEach(s -> s.execute(player));
             }
         }
     }

@@ -2,6 +2,7 @@ package dev.efnilite.witp.generator.base;
 
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.reward.RewardString;
 import dev.efnilite.witp.util.config.Option;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public abstract class DefaultGeneratorBase extends ParkourGenerator {
     /**
      * List of all commands
      */
-    protected final List<String> rewardsLeaveList;
+    protected final List<RewardString> rewardsLeaveList;
 
     /**
      * The chances of which distance the jump should have
@@ -214,7 +215,7 @@ public abstract class DefaultGeneratorBase extends ParkourGenerator {
         }
     }
 
-    public List<String> getLeaveRewards() {
+    public List<RewardString> getLeaveRewards() {
         return rewardsLeaveList;
     }
 }

@@ -1,5 +1,6 @@
 package dev.efnilite.witp.reward;
 
+import dev.efnilite.fycore.config.ConfigOption;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,6 +20,16 @@ import java.util.Map;
 public class RewardReader {
 
     private static FileConfiguration rewards;
+
+    /**
+     * Are rewards enabled?
+     */
+    public static ConfigOption<Boolean> REWARDS_ENABLED;
+
+    /**
+     * Should players get rewards when they leave, instead of immediately?
+     */
+    public static ConfigOption<Boolean> REWARDS_GET_ON_LEAVE;
 
     /**
      * A map with all Score-type score rewards.
@@ -43,6 +54,10 @@ public class RewardReader {
      */
     public static void readRewards() {
         rewards = WITP.getConfiguration().getFile("rewards");
+
+        // init options
+        REWARDS_ENABLED = new ConfigOption<>(rewards, "enabled");
+        REWARDS_GET_ON_LEAVE = new ConfigOption<>(rewards, "get-on-leave");
 
         // loop over interval rewards
         for (String interval : getNodes("interval-rewards")) {

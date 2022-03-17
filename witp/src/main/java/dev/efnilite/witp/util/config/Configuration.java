@@ -5,7 +5,6 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
-import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Material;
@@ -67,9 +66,6 @@ public class Configuration {
         checkUserLanguages("lang/items-v3.yml", "locale");
 
         reload();
-
-        // read rewards file
-        RewardReader.readRewards();
 
         schematics();
         Logging.info("Loaded all config files");

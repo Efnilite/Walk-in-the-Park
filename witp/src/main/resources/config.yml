@@ -210,23 +210,12 @@ scoring:
 # --- Please move all your commands to rewards.yml ---
 # --- This section will be deleted in future versions ---
 rewards:
-
-  # If rewards are enabled
   enabled: false
 
   # Reward interval
-  # The intervals at which players get a reward
-  # (so for every 50 blocks the player jumps, they get a reward)
-  # (this means doing a run of 27 and 23 will still get you coins even though you haven't had a score of 50)
-  # Setting this to -1 will never result in rewards for Vault/commands
   interval: 50
 
   # Score commands
-  # The same as interval, but instead at scores.
-  # So when the player reaches, for example, 50 points, the rewards system is triggered.
-  # In the string you add executable commands when they reach this score
-  # ;; is used for separating commands
-  # Currently, giving items with NBT isn't supported due to YAML - I'm still working on fixing this
   scores:
     - '50;;tellraw @a "hey there";;second command'
     - '100;;give %player% golden_apple'

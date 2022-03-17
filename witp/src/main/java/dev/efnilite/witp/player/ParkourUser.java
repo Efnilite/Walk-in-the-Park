@@ -8,13 +8,13 @@ import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.SelectStatement;
 import fr.mrmicky.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -255,13 +255,11 @@ public abstract class ParkourUser {
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
 
-        if (Option.REWARDS.get() && Option.LEAVE_REWARDS.get() && user instanceof ParkourPlayer) {
+        // give leave rewards
+        if (RewardReader.REWARDS_ENABLED.get() && RewardReader.REWARDS_GET_ON_LEAVE.get() && user instanceof ParkourPlayer) {
             ParkourPlayer pp = (ParkourPlayer) user;
             if (pp.getGenerator() instanceof DefaultGenerator) {
-                for (String command : ((DefaultGenerator) pp.getGenerator()).getLeaveRewards()) {
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                            command.replace("%player%", user.getPlayer().getName()));
-                }
+                ((DefaultGenerator) pp.getGenerator()).getLeaveRewards().forEach(s -> s.execute(user));
             }
         }
     }

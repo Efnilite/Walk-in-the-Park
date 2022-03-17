@@ -33,6 +33,12 @@ public class RewardString {
             return;
         }
 
+        // Check for placeholders
+        if (string.toLowerCase().contains("%player%")) {
+            string = string.replaceAll("%player%", user.getPlayer().getName());
+        }
+
+        // Check for command types
         if (string.toLowerCase().contains("send:")) {
             string = string.replaceFirst("send:", "");
             user.send(string);

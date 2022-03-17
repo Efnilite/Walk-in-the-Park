@@ -29,6 +29,7 @@ public class Option {
     private static FileConfiguration scoreboard;
 
     // Config stuff
+    public static ConfigOption<Boolean> ALL_POINTS;
     public static ConfigOption<Boolean> INVENTORY_HANDLING;
     public static ConfigOption<Boolean> PERMISSIONS;
     public static ConfigOption<Boolean> FOCUS_MODE;
@@ -55,7 +56,6 @@ public class Option {
     public static ConfigOption<Boolean> ENABLE_JOINING;
     public static ConfigOption<Boolean> PERMISSIONS_STYLES;
     public static ConfigOption<Boolean> SAVE_STATS;
-    public static ConfigOption<Boolean> LEAVE_REWARDS;
     public static ConfigOption<Boolean> OPTIONS_ENABLED;
     public static ConfigOption<Boolean> HEALTH_HANDLING;
     public static ConfigOption<Boolean> INVENTORY_SAVING;
@@ -79,7 +79,6 @@ public class Option {
 
         initSql();
         initEnums();
-        initRewards();
         initScoreboard();
         initGeneration();
         initAdvancedGeneration();
@@ -153,9 +152,11 @@ public class Option {
 
         // Bungeecord
         GO_BACK = new ConfigOption<>(config, "bungeecord.go-back-enabled");
+        BUNGEECORD = new ConfigOption<>(config, "bungeecord.enabled");
 
         // Generation
         HEADING = new ConfigOption<>(Util.getDirection(generation.getString("advanced.island.parkour.heading")));
+        ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
 
         if (init) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");
@@ -294,64 +295,6 @@ public class Option {
         MAXED_TWO_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.4-block");
-    }
-
-    // --------------------------------------------------------------
-    // Rewards
-
-    public static ConfigOption<Boolean> ALL_POINTS;
-    public static ConfigOption<Boolean> REWARDS;
-    public static HashMap<Integer, List<String>> REWARDS_SCORES;
-    public static HashMap<Integer, List<String>> ON_LEAVE_REWARDS_SCORES;
-    public static List<String> INTERVAL_REWARDS_SCORES;
-    public static ConfigOption<Integer> REWARDS_INTERVAL;
-    public static ConfigOption<Double> REWARDS_MONEY;
-    public static ConfigOption<List<String>> REWARDS_COMMANDS;
-    public static ConfigOption<String> REWARDS_MESSAGE;
-
-    private static void initRewards() {
-        List<String> intervals = config.getStringList("rewards.scores");
-        REWARDS_SCORES = new HashMap<>();
-        for (String key : intervals) {
-            String[] values = key.split(";;");
-            if (values.length > 1) {
-                List<String> commands = new ArrayList<>(Arrays.asList(values));
-                commands.remove(0);
-                REWARDS_SCORES.put(Integer.parseInt(values[0]), commands);
-            } else {
-                REWARDS_SCORES.put(Integer.parseInt(values[0]), null);
-            }
-        }
-
-        List<String> intervals1 = config.getStringList("rewards.on-leave-scores");
-        ON_LEAVE_REWARDS_SCORES = new HashMap<>();
-        for (String key : intervals1) {
-            String[] values = key.split(";;");
-            if (values.length > 1) {
-                List<String> commands = new ArrayList<>(Arrays.asList(values));
-                commands.remove(0);
-                ON_LEAVE_REWARDS_SCORES.put(Integer.parseInt(values[0]), commands);
-            } else {
-                ON_LEAVE_REWARDS_SCORES.put(Integer.parseInt(values[0]), null);
-            }
-        }
-
-        List<String> intervals2 = config.getStringList("rewards.command");
-        INTERVAL_REWARDS_SCORES = new ArrayList<>();
-        INTERVAL_REWARDS_SCORES.addAll(intervals2);
-
-        BUNGEECORD = new ConfigOption<>(config, "bungeecord.enabled");
-        REWARDS = new ConfigOption<>(config, "rewards.enabled");
-        REWARDS_MONEY = new ConfigOption<>(config, "rewards.vault-reward");
-        REWARDS_INTERVAL = new ConfigOption<>(config, "rewards.interval");
-        REWARDS_COMMANDS = new ConfigOption<>(config, "rewards.command");
-        REWARDS_MESSAGE = new ConfigOption<>(config, "rewards.message");
-        if (REWARDS_MESSAGE.get().equalsIgnoreCase("null") || REWARDS_MESSAGE.get().equals("''") || REWARDS_MESSAGE.get().equals("")) {
-            REWARDS_MESSAGE = null;
-        }
-
-        LEAVE_REWARDS = new ConfigOption<>(config, "rewards.leave-rewards");
-        ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
     }
 
     // --------------------------------------------------------------
