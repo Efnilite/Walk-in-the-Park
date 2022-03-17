@@ -720,6 +720,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         lastStandingPlayerLocation = spawn.clone();
         blockSpawn = block.clone();
         mostRecentBlock = block.clone();
-        generate(player.blockLead);
+        generate(player.blockLead + 1);
     }
 }

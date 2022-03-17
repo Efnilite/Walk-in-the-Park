@@ -53,8 +53,7 @@ public class MultiverseHook {
         // -= Optimizations to reduce memory usage =-
         world.setAllowAnimalSpawn(false);
         world.setAllowMonsterSpawn(false);
-
-        world.setKeepSpawnInMemory(true);
+        world.setKeepSpawnInMemory(false);
 
         return world.getCBWorld();
     }
