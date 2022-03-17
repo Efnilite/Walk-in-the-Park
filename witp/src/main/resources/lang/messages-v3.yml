@@ -82,3 +82,27 @@ messages:
       miss: '<gray>Vous avez raté votre meilleur score de %s points'
       beat: '<gray>Vous avez battu votre meilleur score en %s points!'
       tied: '<gray>Vous avez égalé votre meilleur score!'
+
+  # Traditional Chinese (Traditional Chinese), provided by Efina
+  zh-tw:
+    join: '<dark_green><bold>+ <gray>你加入了無限跑酷'
+    leave: '<red><bold>- <gray>你離開了無限跑酷'
+
+    player-join: '<dark_green><bold>+ <gray>%p'
+    player-leave: '<red><bold>- <gray>%p'
+
+    spectator-join: '<dark_green><bold>+ <gray>%p 開始觀察你'
+    spectator-leave: '<red><bold>- <gray>%p 停止觀察你'
+
+    cant-do: '<dark_red><bold>> <gray>你現在不能這樣做。'
+    customize-menu: '<green><bold>> <gray>通過輸入 "/parkour menu" 來自定義你的跑酷體驗。'
+    spectator: '<#4CB3FF>你目前是觀察者模式。 你可以輸入 "/parkour gm" 來離開/改變你的遊戲模式。'
+    spectator-bar: '<#4CB3FF>你目前是觀察者模式 <dark_gray>• <#4CB3FF>輸入 "/parkour gm" 來離開。'
+    divider: '<dark_gray><strikethrough>-----------------------------------'
+    score: '<#80C7FD><bold>分數 <white>%s'
+    time: '<#80C7FD><bold>時間 <white>%s'
+    highscore: '<#80C7FD><bold>最高分數 <white>%s'
+    message:
+      miss: '<gray>你與你的最高分數相差了 %s 分！'
+      beat: '<gray>你以 %s 分打破了你的最高分數！'
+      tied: '<gray>你追平了你的最高分數！'
