@@ -133,6 +133,9 @@ public class SQLManager {
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` DROP COLUMN `time`");
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `selectedTime` INT NOT NULL");
 
+        // v3.1.0
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `collectedRewards` MEDIUMTEXT");
+
         Logging.info("Initialized database");
     }
 

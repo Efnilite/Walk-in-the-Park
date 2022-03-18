@@ -27,10 +27,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
@@ -85,7 +82,7 @@ public class ParkourPlayer extends ParkourUser {
 
     public void setSettings(Integer highScore, Integer selectedTime, String style, String highScoreTime, String lang,
                             Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
-                            Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty) {
+                            Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty, String collectedRewards) {
 
         // General defaults
         this.schematicDifficulty = 0.2; // todo add file support
@@ -93,6 +90,7 @@ public class ParkourPlayer extends ParkourUser {
         this.highScore = orDefault(highScore, 0);
         this.highScoreTime = orDefault(highScoreTime, "0.0s");
         this.highScoreDifficulty = orDefault(highScoreDifficulty, "?");
+        this.collectedRewards = orDefault(collectedRewards != null ? Arrays.asList(collectedRewards.split(",")) : null, new ArrayList<>());
 
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE.get());
@@ -123,7 +121,7 @@ public class ParkourPlayer extends ParkourUser {
     private void resetPlayerPreferences() {
         setSettings(null, null, null, null, null, null,
                 null, null, null, null, null,
-                null, null);
+                null, null, null);
     }
 
     /**
@@ -364,7 +362,8 @@ public class ParkourPlayer extends ParkourUser {
 
                     pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang,
                             from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic,
-                            from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.highScoreDifficulty);
+                            from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.highScoreDifficulty,
+                            from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
                     Logging.stack("Error while reading file of player " + pp.player.getName(),
@@ -399,7 +398,7 @@ public class ParkourPlayer extends ParkourUser {
 
                 SelectStatement options = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime").addCondition("uuid = '" + uuid + "'");
+                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
@@ -408,7 +407,7 @@ public class ParkourPlayer extends ParkourUser {
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
-                            translateSqlBoolean((String) objects.get(7)), highScoreDifficulty);
+                            translateSqlBoolean((String) objects.get(7)), highScoreDifficulty, (String) objects.get(9));
                 } else {
                     pp.resetPlayerPreferences();
                     pp.saveStats();

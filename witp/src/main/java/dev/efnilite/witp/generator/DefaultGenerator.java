@@ -597,13 +597,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         }
 
-        // todo add to list of player
         strings = RewardReader.ONE_TIME_REWARDS.get(score);
         if (strings != null) {
             if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
                 rewardsLeaveList.addAll(strings);
+                player.collectedRewards.add(Integer.toString(score));
             } else {
-                strings.forEach(s -> s.execute(player));
+                strings.forEach(s -> {
+                    s.execute(player);
+                    player.collectedRewards.add(Integer.toString(score));
+                });
             }
         }
     }
