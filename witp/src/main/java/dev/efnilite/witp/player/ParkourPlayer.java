@@ -87,10 +87,18 @@ public class ParkourPlayer extends ParkourUser {
         // General defaults
         this.schematicDifficulty = 0.2; // todo add file support
 
+        this.collectedRewards = new ArrayList<>();
+        if (collectedRewards != null) {
+            for (String s : collectedRewards.split(",")) {
+                if (!s.isEmpty() && !this.collectedRewards.contains(s)) { // prevent empty strings and duplicates
+                    this.collectedRewards.add(s);
+                }
+            }
+        }
+
         this.highScore = orDefault(highScore, 0);
         this.highScoreTime = orDefault(highScoreTime, "0.0s");
         this.highScoreDifficulty = orDefault(highScoreDifficulty, "?");
-        this.collectedRewards = orDefault(collectedRewards != null ? Arrays.asList(collectedRewards.split(",")) : null, new ArrayList<>());
 
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE.get());
@@ -237,6 +245,7 @@ public class ParkourPlayer extends ParkourUser {
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
                             .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
                             .setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard)
+                            .setDefault("collectedRewards", String.join(",", collectedRewards))
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {

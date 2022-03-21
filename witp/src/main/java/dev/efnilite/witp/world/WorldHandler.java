@@ -35,7 +35,9 @@ public class WorldHandler {
             create();
         } else {
             this.world = world;
-            Logging.warn("Crash detected! If there are any blocks left in the Parkour world, reload your server.");
+            Logging.warn("## ");
+            Logging.warn("## Crash detected! If there are any blocks left in the Parkour world, reload your server.");
+            Logging.warn("## ");
         }
     }
 

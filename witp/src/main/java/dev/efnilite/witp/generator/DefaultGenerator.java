@@ -20,7 +20,10 @@ import dev.efnilite.witp.schematic.SchematicAdjuster;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
@@ -598,16 +601,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         strings = RewardReader.ONE_TIME_REWARDS.get(score);
-        if (strings != null) {
+        if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
             if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
                 rewardsLeaveList.addAll(strings);
-                player.collectedRewards.add(Integer.toString(score));
             } else {
-                strings.forEach(s -> {
-                    s.execute(player);
-                    player.collectedRewards.add(Integer.toString(score));
-                });
+                strings.forEach(s -> s.execute(player));
             }
+            player.collectedRewards.add(Integer.toString(score));
         }
     }
 

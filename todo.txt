@@ -1,18 +1,8 @@
 Walk in the Park
 
-v3.0.6
-WVoidGen is now outdated. Please visit the wiki for more info about using WITP with Multiverse.
-
-- Fix session storing to remove a bunch of null errors
-- Fix reward message causing null errors
-
-High priority:
-- Optimize ram with schematics (async?)
-
-Medium priority:
-- Add one-time rewards
-
-Low priority:
-- Option for particles shape
-- Option for particle colour
-- Customize main command
+v3.1.0
+- Reworked rewards system
+  > In a few versions, the rewards in config.yml will be removed. Please move your rewards to rewards.yml.
+- Added Traditional Chinese (thanks to @xMikux)
+- Fixed a lead of 1 not working for the first block
+- Fixed Multiverse keeping spawn loaded

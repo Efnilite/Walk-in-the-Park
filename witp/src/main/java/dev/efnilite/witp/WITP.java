@@ -18,7 +18,6 @@ import dev.efnilite.witp.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.witp.internal.style.DefaultStyleType;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
-import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
@@ -71,8 +70,6 @@ public final class WITP extends FyPlugin {
         // ----- Configurations -----
 
         configuration = new Configuration(this);
-        // read rewards file
-        RewardReader.readRewards();
 
         Option.init(true);
 

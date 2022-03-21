@@ -16,7 +16,7 @@ public class RewardString {
     /**
      * The string, as read from rewards.yml
      */
-    private String string;
+    private final String string;
 
     public RewardString(@NotNull String string) {
         this.string = string;
@@ -29,9 +29,10 @@ public class RewardString {
      *          The user, which to give this reward to
      */
     public void execute(@NotNull ParkourUser user) {
-        if (string == null || string.isEmpty()) {
+        if (string.isEmpty()) {
             return;
         }
+        String string = this.string;
 
         // Check for placeholders
         if (string.toLowerCase().contains("%player%")) {

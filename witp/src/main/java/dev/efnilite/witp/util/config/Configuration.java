@@ -5,6 +5,7 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Material;
@@ -113,6 +114,9 @@ public class Configuration {
         files.put("rewards", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/rewards.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("schematics", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
+
+        // read rewards file
+        RewardReader.readRewards(files.get("rewards"));
     }
 
     /**

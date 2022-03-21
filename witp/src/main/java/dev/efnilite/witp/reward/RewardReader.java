@@ -2,7 +2,6 @@ package dev.efnilite.witp.reward;
 
 import dev.efnilite.fycore.config.ConfigOption;
 import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.witp.WITP;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -52,12 +51,16 @@ public class RewardReader {
     /**
      * Reads the rewards from the rewards.yml file
      */
-    public static void readRewards() {
-        rewards = WITP.getConfiguration().getFile("rewards");
+    public static void readRewards(FileConfiguration config) {
+        rewards = config;
 
         // init options
         REWARDS_ENABLED = new ConfigOption<>(rewards, "enabled");
         REWARDS_GET_ON_LEAVE = new ConfigOption<>(rewards, "get-on-leave");
+
+        SCORE_REWARDS.clear();
+        INTERVAL_REWARDS.clear();
+        ONE_TIME_REWARDS.clear();
 
         // loop over interval rewards
         for (String interval : getNodes("interval-rewards")) {

@@ -5,6 +5,7 @@
 # Use %player-name% to get the player's display name (includes groups).
 #
 # Custom reward syntaxes:
+# %player% - the player's name
 # send:<bold>test - sends a message
 # vault:-87 - deposits a specific amount of money (Vault required)
 
@@ -13,7 +14,7 @@ enabled: false
 
 # Should players receive their rewards when they leave?
 # If you have inventory handling enabled, it is recommended to put this to true.
-get-on-leave: true
+get-on-leave: false
 
 # Score rewards
 # Rewards when a player reaches a specific score
@@ -34,6 +35,8 @@ interval-rewards:
 # These are based on the score required.
 # Changing the commands when a player already has achieved this score will not give it to them again.
 one-time-rewards:
+  1:
+    - "send:You made your first jump!"
   2022:
     - "/currentyear"
     - "vault:100"

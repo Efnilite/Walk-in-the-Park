@@ -137,9 +137,9 @@ public class Util {
                 } else {
                     Logging.error("There was an error while trying to fetch the Vault economy!");
                 }
-                return;
+            } else {
+                economy.depositPlayer(player, amount);
             }
-            economy.depositPlayer(player, amount);
         }
     }
 
