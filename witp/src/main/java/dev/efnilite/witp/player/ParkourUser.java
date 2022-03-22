@@ -4,11 +4,9 @@ import dev.efnilite.fycore.chat.Message;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
-import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
-import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
@@ -251,17 +249,13 @@ public abstract class ParkourUser {
             Logging.warn("No previous data found for " + user.getPlayer().getName());
         } else {
             user.getPreviousData().apply(sendBack);
+
+            if (user instanceof ParkourPlayer) {
+                user.getPreviousData().giveRewards((ParkourPlayer) user);
+            }
         }
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
-
-        // give leave rewards
-        if (RewardReader.REWARDS_ENABLED.get() && RewardReader.REWARDS_GET_ON_LEAVE.get() && user instanceof ParkourPlayer) {
-            ParkourPlayer pp = (ParkourPlayer) user;
-            if (pp.getGenerator() instanceof DefaultGenerator) {
-                ((DefaultGenerator) pp.getGenerator()).getLeaveRewards().forEach(s -> s.execute(user));
-            }
-        }
     }
 
     /**

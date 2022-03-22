@@ -11,6 +11,7 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
+import dev.efnilite.witp.reward.RewardString;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.sql.InsertStatement;
@@ -27,7 +28,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
@@ -55,13 +59,16 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose List<String> collectedRewards;
 
     /**
+     * The uuid of the player
+     */
+    public UUID uuid;
+    protected ParkourGenerator generator;
+    protected File file;
+
+    /**
      * The instant in ms in which the player joined.
      */
-    public final long joinTime;
-
-    public UUID uuid;
-    private ParkourGenerator generator;
-    private File file;
+    protected final long joinTime;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -478,5 +485,9 @@ public class ParkourPlayer extends ParkourUser {
 
     public void setBoard(FastBoard board) {
         this.board = board;
+    }
+
+    public long getJoinTime() {
+        return joinTime;
     }
 }

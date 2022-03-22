@@ -3,6 +3,8 @@ package dev.efnilite.witp.player.data;
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.player.ParkourPlayer;
+import dev.efnilite.witp.reward.RewardString;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.GameMode;
@@ -13,6 +15,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class for storing previous data of players
+ */
 public class PreviousData {
 
     private double health;
@@ -22,6 +30,8 @@ public class PreviousData {
     private final Player player;
     private final GameMode gamemode;
     private final Location location;
+
+    private final List<RewardString> rewardsLeaveList = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
         Logging.verbose("New PreviousData instance for player " + player.getName());
@@ -38,10 +48,12 @@ public class PreviousData {
             this.health = player.getHealth();
             this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         }
+
         if (Option.HEALTH_HANDLING.get()) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
+
         if (Option.INVENTORY_HANDLING.get()) {
             this.inventoryData = new InventoryData(player);
             this.inventoryData.saveInventory();
@@ -49,6 +61,7 @@ public class PreviousData {
                 this.inventoryData.saveFile();
             }
         }
+
         if (Version.isHigherOrEqual(Version.V1_13)) {
             for (PotionEffectType value : PotionEffectType.values()) {
                 player.removePotionEffect(value);
@@ -86,5 +99,25 @@ public class PreviousData {
         if (inventoryData != null) {
             inventoryData.apply(false);
         }
+    }
+
+    /**
+     * Adds a reward to the leave list
+     *
+     * @param   string
+     *          The reward to give on leave
+     */
+    public void addReward(RewardString string) {
+        rewardsLeaveList.add(string);
+    }
+
+    /**
+     * Applies the rewards stored in the leave list
+     *
+     * @param   player
+     *          The player to apply these rewards to
+     */
+    public void giveRewards(@NotNull ParkourPlayer player) {
+        rewardsLeaveList.forEach(s -> s.execute(player, false));
     }
 }

@@ -26,11 +26,6 @@ public class RewardReader {
     public static ConfigOption<Boolean> REWARDS_ENABLED;
 
     /**
-     * Should players get rewards when they leave, instead of immediately?
-     */
-    public static ConfigOption<Boolean> REWARDS_GET_ON_LEAVE;
-
-    /**
      * A map with all Score-type score rewards.
      * The key is the score, and the value are the commands that will be executed once this score is reached.
      */
@@ -56,7 +51,6 @@ public class RewardReader {
 
         // init options
         REWARDS_ENABLED = new ConfigOption<>(rewards, "enabled");
-        REWARDS_GET_ON_LEAVE = new ConfigOption<>(rewards, "get-on-leave");
 
         SCORE_REWARDS.clear();
         INTERVAL_REWARDS.clear();

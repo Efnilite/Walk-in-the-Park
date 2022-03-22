@@ -575,38 +575,26 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public void checkRewards() {
         // if disabled dont continue
-        if (!RewardReader.REWARDS_ENABLED.get()) {
+        if (!RewardReader.REWARDS_ENABLED.get() && score > 0) {
             return;
         }
 
         // check generic score rewards
         List<RewardString> strings = RewardReader.SCORE_REWARDS.get(score);
         if (strings != null) {
-            if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
-                rewardsLeaveList.addAll(strings);
-            } else {
-                strings.forEach(s -> s.execute(player));
-            }
+            strings.forEach(s -> s.execute(player));
         }
 
         for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
             if (score % interval == 0) {
                 strings = RewardReader.INTERVAL_REWARDS.get(interval);
-                if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
-                    rewardsLeaveList.addAll(strings);
-                } else {
-                    strings.forEach(s -> s.execute(player));
-                }
+                strings.forEach(s -> s.execute(player));
             }
         }
 
         strings = RewardReader.ONE_TIME_REWARDS.get(score);
         if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
-            if (RewardReader.REWARDS_GET_ON_LEAVE.get()) {
-                rewardsLeaveList.addAll(strings);
-            } else {
-                strings.forEach(s -> s.execute(player));
-            }
+            strings.forEach(s -> s.execute(player));
             player.collectedRewards.add(Integer.toString(score));
         }
     }
@@ -694,6 +682,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     private double[] getBounds(Direction direction, double range) {
+        // todo fix
         switch (direction) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
             default: // east
                 // - 1/2 pi to 1/2 pi
