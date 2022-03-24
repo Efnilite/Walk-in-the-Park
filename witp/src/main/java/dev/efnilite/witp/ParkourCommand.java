@@ -206,7 +206,7 @@ public class ParkourCommand extends FyCommand {
                 case "gm": {
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null) {
-                        if (Option.PERMISSIONS.get() && !player.hasPermission("witp.gamemode")) {
+                        if (Option.PERMISSIONS.get() && !player.hasPermission(ParkourOption.GAMEMODE.getPermission())) {
                             return true;
                         }
                         ParkourMenu.openGamemodeMenu(user);
@@ -214,14 +214,14 @@ public class ParkourCommand extends FyCommand {
                     return true;
                 }
                 case "leaderboard":
-                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.leaderboard")) {
+                    if (Option.PERMISSIONS.get() && !player.hasPermission(ParkourOption.LEADERBOARD.getPermission())) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
                     ParkourMenu.openLeaderboardMenu(ParkourUser.getUser(player), player);
                     break;
                 case "schematic":
-                    if (!player.hasPermission("witp.schematic")) {
+                    if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
