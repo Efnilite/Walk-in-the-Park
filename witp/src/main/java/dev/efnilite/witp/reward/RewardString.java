@@ -23,27 +23,12 @@ public class RewardString {
     }
 
     /**
-     * Executes a RewardString while checking for the "leave:" parameter.
-     *
-     * @see #execute(ParkourPlayer, boolean)
+     * Parses and executes this reward
      *
      * @param   player
      *          The player to which to give this reward to
      */
     public void execute(@NotNull ParkourPlayer player) {
-        this.execute(player, true);
-    }
-
-    /**
-     * Parses and executes this reward
-     *
-     * @param   player
-     *          The player to which to give this reward to
-     *
-     * @param   checkExecuteNow
-     *          Should it check for the "leave:" parameter?
-     */
-    public void execute(@NotNull ParkourPlayer player, boolean checkExecuteNow) {
         if (string.isEmpty()) {
             return;
         }
@@ -54,39 +39,29 @@ public class RewardString {
             string = string.replaceAll("%player%", player.getPlayer().getName());
         }
 
-        boolean executeNow = true; // should the command be executed now or later?
-        if (checkExecuteNow && string.toLowerCase().contains("leave:")) { // leave:
+        if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            executeNow = false;
+            player.getPreviousData().addReward(new RewardString(string));
+            return;
         }
 
         // Check for command types
         if (string.toLowerCase().contains("send:")) {
             string = string.replaceFirst("send:", "");
 
-            if (executeNow) {
-                player.send(string);
-            } else {
-                player.getPreviousData().addReward(this);
-            }
+            player.send(string);
+
         } else if (string.toLowerCase().contains("vault:")) {
             string = string.replaceFirst("vault:", "");
 
-            if (executeNow) {
-                try {
-                    Util.depositPlayer(player.getPlayer(), Double.parseDouble(string));
-                } catch (NumberFormatException ex) {
-                    Logging.stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
-                }
-            } else {
-                player.getPreviousData().addReward(this);
+            try {
+                Util.depositPlayer(player.getPlayer(), Double.parseDouble(string));
+            } catch (NumberFormatException ex) {
+                Logging.stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
             }
+
         } else {
-            if (executeNow) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string);
-            } else {
-                player.getPreviousData().addReward(this);
-            }
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string);
         }
     }
 }

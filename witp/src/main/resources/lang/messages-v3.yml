@@ -3,9 +3,8 @@
 # Some messages contain placeholders.
 # %p is the player.
 # %[a-z] is a value that can get replaced.
-# Colouring is also available.
-# &a, &b, &1, &2 or <name> - Regular colours
-# <#123456> - Hex colours
+#
+# Learn more about colouring: https://github.com/Efnilite/fyCore/wiki/Colouring
 
 messages:
 

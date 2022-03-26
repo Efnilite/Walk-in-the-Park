@@ -118,6 +118,6 @@ public class PreviousData {
      *          The player to apply these rewards to
      */
     public void giveRewards(@NotNull ParkourPlayer player) {
-        rewardsLeaveList.forEach(s -> s.execute(player, false));
+        rewardsLeaveList.forEach(s -> s.execute(player));
     }
 }

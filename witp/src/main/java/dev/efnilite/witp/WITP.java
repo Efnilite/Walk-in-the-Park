@@ -18,6 +18,7 @@ import dev.efnilite.witp.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.witp.internal.style.DefaultStyleType;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
+import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.util.UpdateChecker;
 import dev.efnilite.witp.util.config.Configuration;
 import dev.efnilite.witp.util.config.Option;
@@ -141,6 +142,7 @@ public final class WITP extends FyPlugin {
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL.get())));
         metrics.addCustomChart(new SimplePie("using_logs", () -> Boolean.toString(Option.GAMELOGS.get())));
+        metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED.get())));
         metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.get().size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;

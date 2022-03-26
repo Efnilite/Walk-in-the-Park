@@ -1,8 +1,9 @@
 # ----------- Items v3 -----------
-# Options to change all the items.
+# Options to customize all (menu) items.
 # In lores, '||' is used to create a new line.
-# Colours can be created using '&', '<name>' or hex '<#abcdef>'.
-# Item materials need be from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+#
+# List of all item materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Learn more about colouring: https://github.com/Efnilite/fyCore/wiki/Colouring
 
 items:
   general:
