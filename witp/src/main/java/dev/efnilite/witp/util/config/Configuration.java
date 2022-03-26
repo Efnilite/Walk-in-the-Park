@@ -95,7 +95,7 @@ public class Configuration {
         }
 
         try {
-            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), toNotUpdate);
+            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), "messages.xx");
         } catch (IOException ex) {
             Logging.stack("Error while trying to update language file " + file,
                     "Delete this file. If the problem persists, please report this error to the developer!", ex);

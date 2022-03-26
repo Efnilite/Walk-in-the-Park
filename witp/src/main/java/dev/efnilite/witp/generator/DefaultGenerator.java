@@ -586,7 +586,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
-            if (score % interval == 0) {
+            if (totalScore % interval == 0) {
                 strings = RewardReader.INTERVAL_REWARDS.get(interval);
                 strings.forEach(s -> s.execute(player));
             }
