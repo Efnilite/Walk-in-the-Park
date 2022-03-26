@@ -39,7 +39,7 @@ public class Configuration {
     public Configuration(Plugin plugin) {
         this.plugin = plugin;
 
-        List<String> defaultFiles = Arrays.asList("config.yml", "rewards.yml", "generation.yml", "schematics.yml",
+        List<String> defaultFiles = Arrays.asList("config.yml", "rewards-v2.yml", "generation.yml", "schematics.yml",
                 "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
         for (String name : defaultFiles) {
             File file = new File(plugin.getDataFolder(), name);
@@ -95,7 +95,9 @@ public class Configuration {
         }
 
         try {
-            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), "messages.xx");
+            // todo fix this
+            // somehow
+            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), toNotUpdate);
         } catch (IOException ex) {
             Logging.stack("Error while trying to update language file " + file,
                     "Delete this file. If the problem persists, please report this error to the developer!", ex);
@@ -111,7 +113,7 @@ public class Configuration {
         files.put("scoreboard", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/lang/scoreboard-v3.yml")));
 
         files.put("config", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/config.yml")));
-        files.put("rewards", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/rewards.yml")));
+        files.put("rewards", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/rewards-v2.yml")));
         files.put("generation", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/generation.yml")));
         files.put("schematics", YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + "/schematics.yml")));
 

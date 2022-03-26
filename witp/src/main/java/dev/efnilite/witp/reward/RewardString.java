@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class RewardString {
 
     /**
-     * The string, as read from rewards.yml
+     * The string, as read from rewards-v2.yml
      */
     private final String string;
 
@@ -76,7 +76,7 @@ public class RewardString {
                 try {
                     Util.depositPlayer(player.getPlayer(), Double.parseDouble(string));
                 } catch (NumberFormatException ex) {
-                    Logging.stack(string + " is not a valid money reward", "Check your rewards.yml file for incorrect numbers");
+                    Logging.stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
                 }
             } else {
                 player.getPreviousData().addReward(this);

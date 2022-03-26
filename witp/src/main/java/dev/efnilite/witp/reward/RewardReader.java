@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class that reads the rewards.yml file and puts them in the variables listed below.
+ * Class that reads the rewards-v2.yml file and puts them in the variables listed below.
  *
  * @author Efnilite
  */
@@ -44,7 +44,7 @@ public class RewardReader {
     public static Map<Integer, List<RewardString>> ONE_TIME_REWARDS = new HashMap<>();
 
     /**
-     * Reads the rewards from the rewards.yml file
+     * Reads the rewards from the rewards-v2.yml file
      */
     public static void readRewards(FileConfiguration config) {
         rewards = config;
@@ -70,7 +70,7 @@ public class RewardReader {
             try {
                 INTERVAL_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards.yml file for incorrect numbers");
+                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
             }
         }
 
@@ -85,7 +85,7 @@ public class RewardReader {
             try {
                 SCORE_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards.yml file for incorrect numbers");
+                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
             }
         }
 
@@ -100,7 +100,7 @@ public class RewardReader {
             try {
                 ONE_TIME_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards.yml file for incorrect numbers");
+                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
             }
         }
     }

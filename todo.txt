@@ -1,8 +1,7 @@
 Walk in the Park
 
 v3.1.0
-- Reworked rewards system
-  > In a few versions, the rewards in config.yml will be removed. Please move your rewards to rewards.yml.
-- Added Traditional Chinese (thanks to @xMikux)
-- Fixed a lead of 1 not working for the first block
-- Fixed Multiverse keeping spawn loaded
+- Updated Rewards file and system
+  > Improved support for customizing leaving commands and other general improvements.
+  > File has been renamed to rewards-v2.yml. Please migrate your rewards to this new file.
+- Fixed command permissions being outdated
