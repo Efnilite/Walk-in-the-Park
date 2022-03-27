@@ -715,4 +715,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         mostRecentBlock = block.clone();
         generate(player.blockLead + 1);
     }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
 }

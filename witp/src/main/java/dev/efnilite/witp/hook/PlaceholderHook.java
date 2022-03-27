@@ -1,6 +1,7 @@
 package dev.efnilite.witp.hook;
 
 import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
@@ -84,6 +85,16 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 case "difficulty_string":
                     return Util.parseDifficulty(pp.schematicDifficulty);
                 default:
+                    if (params.contains("score_until_") && generator instanceof DefaultGenerator) {
+                        DefaultGenerator defaultGenerator = (DefaultGenerator) generator;
+                        String replaced = params.replace("score_until_", "");
+                        int interval = Integer.parseInt(replaced);
+                        if (interval > 0) {
+                            return Integer.toString(interval - (defaultGenerator.getTotalScore() % interval)); // 100 - (5 % 100) = 95
+                        } else {
+                            return "0";
+                        }
+                    }
                     break;
             }
         }
