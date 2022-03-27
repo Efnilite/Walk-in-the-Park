@@ -305,24 +305,64 @@ public abstract class ParkourUser {
         }
     }
 
-    public static void resetHighScores() throws IOException {
+    /**
+     * Resets all known highscores.
+     *
+     * @return true if success. false if the resetting failed.
+     */
+    public static boolean resetHighScores() {
         for (ParkourPlayer player : ParkourPlayer.getActivePlayers()) { // active players
             player.setHighScore(player.name, 0, "0.0s", "0.0");
         }
 
-        File folder = new File(WITP.getInstance().getDataFolder() + "/players/"); // update files
-        if (!(folder.exists())) {
-            folder.mkdirs();
-            return;
+        File folder = new File(WITP.getInstance().getDataFolder(), "players/"); // update files
+
+        try {
+            for (File file : folder.listFiles()) {
+                FileReader reader = new FileReader(file);
+                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                from.uuid = UUID.fromString(file.getName().replace(".json", ""));
+                from.setHighScore(from.name, 0, "0.0s", "0.0");
+                from.save(true);
+                reader.close();
+            }
+        } catch (Throwable throwable) {
+            Logging.stack("Error while trying to reset the high scores!",
+                    "Please try again or report this error to the developer!", throwable);
+            return false;
         }
-        for (File file : folder.listFiles()) {
-            FileReader reader = new FileReader(file);
-            ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
-            from.uuid = UUID.fromString(file.getName().replace(".json", ""));
-            from.setHighScore(from.name, 0, "0.0s", "0.0");
-            from.save(true);
-            reader.close();
+        return true;
+    }
+
+    /**
+     * Resets a specific player's highscore
+     *
+     * @param   uuid
+     *          The uuid
+     *
+     * @return true if success. false if resetting failed.
+     */
+    public static boolean resetHighscore(UUID uuid) {
+        ParkourPlayer player = ParkourPlayer.getPlayer(uuid);
+        if (player != null) {
+            player.setHighScore(player.name, 0, "0.0s", "0.0");
+        } else {
+            File file = new File(WITP.getInstance().getDataFolder(), "players/" + uuid.toString() + ".json");
+
+            try {
+                FileReader reader = new FileReader(file);
+                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                from.uuid = UUID.fromString(file.getName().replace(".json", ""));
+                from.setHighScore(from.name, 0, "0.0s", "0.0");
+                from.save(true);
+                reader.close();
+            } catch (Throwable throwable) {
+                Logging.stack("Error while trying to reset the high scores!",
+                        "Please try again or report this error to the developer!", throwable);
+                return false;
+            }
         }
+        return true;
     }
 
     /**
@@ -375,6 +415,23 @@ public abstract class ParkourUser {
     public static int getRank(UUID player) {
         return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
     }
+
+    /**
+     * Gets a user from their UUID
+     *
+     * @param   uuid the user's UUID
+     *
+     * @return the ParkourUser instance associated with this uuid. Returns null if there isn't an active player.
+     */
+    public static @Nullable ParkourUser getUser(@NotNull UUID uuid) {
+        for (ParkourUser user : users.values()) {
+            if (user.player.getUniqueId() == uuid) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     /**
      * Gets a user from a Bukkit Player
      *
@@ -384,12 +441,7 @@ public abstract class ParkourUser {
      * @return the associated {@link ParkourUser}
      */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        for (ParkourUser user : users.values()) {
-            if (user.player.getUniqueId() == player.getUniqueId()) {
-                return user;
-            }
-        }
-        return null;
+        return getUser(player.getUniqueId());
     }
 
     public static List<ParkourUser> getUsers() {

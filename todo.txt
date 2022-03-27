@@ -1,7 +1,6 @@
 Walk in the Park
 
 v3.1.0
-- Updated Rewards file and system
-  > Improved support for customizing leaving commands and other general improvements.
-  > File has been renamed to rewards-v2.yml. Please migrate your rewards to this new file.
-- Fixed command permissions being outdated
+- Added async resetting all high scores
+- Added resetting of high score of a single player (/witp reset)
+- Improved permissions of commands

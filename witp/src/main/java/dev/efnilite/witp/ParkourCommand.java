@@ -6,6 +6,7 @@ import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.particle.ParticleData;
 import dev.efnilite.fycore.particle.Particles;
 import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.fycore.util.Task;
 import dev.efnilite.fycore.util.Time;
 import dev.efnilite.fycore.util.Version;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -16,10 +17,7 @@ import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.util.inventory.PersistentUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -71,14 +69,21 @@ public class ParkourCommand extends FyCommand {
             if (sender.hasPermission("witp.leaderboard")) {
                 Message.send(sender, "<gray>/parkour leaderboard <dark_gray>- Open the leaderboard");
             }
-
             if (sender.hasPermission("witp.schematic")) {
                 Message.send(sender, "<gray>/witp schematic <dark_gray>- Create a schematic");
             }
             if (sender.hasPermission("witp.reload")) {
                 Message.send(sender, "<gray>/witp reload <dark_gray>- Reloads the messages-v3.yml file");
                 Message.send(sender, "<gray>/witp migrate <dark_gray>- Migrate your Json files to MySQL");
-                Message.send(sender, "<gray>/witp reset <dark_gray>- Resets all highscores. <red>Be careful when using!");
+            }
+            if (sender.hasPermission("witp.reset")) {
+                Message.send(sender, "<gray>/witp reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
+            }
+            if (sender.hasPermission("witp.forcejoin")) {
+                Message.send(sender, "<gray>/witp forcejoin <everyone/player> <dark_gray>- Forces a player or everyone to join");
+            }
+            if (sender.hasPermission("witp.forceleave")) {
+                Message.send(sender, "<gray>/witp forceleave <everyone/player> <dark_gray>- Forces a player or everyone to leave");
             }
             if (sender.hasPermission("witp.recoverinventory")) {
                 Message.send(sender, "<gray>/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
@@ -104,25 +109,6 @@ public class ParkourCommand extends FyCommand {
                     Option.init(false);
 
                     Message.send(sender, WITP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
-                    return true;
-                case "reset":
-                    if (!cooldown(sender, "reset", 2500)) {
-                        return true;
-                    }
-                    if (!sender.hasPermission("witp.reload")) {
-                        Util.sendDefaultLang(sender, "cant-do");
-                        return true;
-                    }
-
-                    try {
-                        ParkourUser.resetHighScores();
-                        Message.send(sender, WITP.PREFIX + "Successfully reset all high scores in memory and the files.");
-                    } catch (Throwable throwable) {
-                        Logging.stack("Error while trying to reset the high scores!",
-                                "Please try again or report this error to the developer!", throwable);
-                        Message.send(sender, WITP.PREFIX + "<red>There was an error while trying to reset high scores.");
-                    }
-
                     return true;
                 case "migrate":
                     if (!cooldown(sender, "migrate", 2500)) {
@@ -366,6 +352,50 @@ public class ParkourCommand extends FyCommand {
                         Message.send(sender, WITP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
                     }
                 });
+            } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("witp.reset")) {
+                if (!cooldown(sender, "reset", 2500)) {
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
+                    new Task().async().execute(() -> {
+                        if (ParkourUser.resetHighScores()) {
+                            Message.send(sender, WITP.PREFIX + "Successfully reset all high scores in memory and the files.");
+                        } else {
+                            Message.send(sender, WITP.PREFIX + "<red>There was an error while trying to reset high scores.");
+                        }
+                    }).run();
+                } else {
+                    UUID uuid = null;
+
+                    // Check online players
+                    Player online = Bukkit.getPlayer(args[1]);
+                    if (online != null) {
+                        uuid = online.getUniqueId();
+                    }
+
+                    // Check uuid
+                    if (args[1].contains("-")) {
+                        uuid = UUID.fromString(args[1]);
+                    }
+
+                    // Check offline player
+                    if (uuid == null) {
+                        OfflinePlayer offline = Bukkit.getOfflinePlayer(args[1]);
+                        uuid = offline.getUniqueId();
+                    }
+
+                    UUID finalUuid = uuid;
+                    new Task().async().execute(() -> {
+                        if (ParkourUser.resetHighscore(finalUuid)) {
+                            Message.send(sender, WITP.PREFIX + "Successfully reset the high score of " + args[1] + " in memory and the files.");
+                        } else {
+                            Message.send(sender, WITP.PREFIX + "<red>There was an error while trying to reset " + args[1] + "'s high score.");
+                        }
+                    }).run();
+                }
+
+                return true;
             }
         }
         return true;
@@ -401,25 +431,26 @@ public class ParkourCommand extends FyCommand {
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("search")) {
+            if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("witp.reload")) {
+                completions.add("everyone");
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
                     completions.add(pp.getPlayer().getName());
                 }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
             } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission("witp.forcejoin")) {
-                for (Player pl : Bukkit.getOnlinePlayers()) {
-                    completions.add(pl.getName());
-                }
                 if (sender.hasPermission("witp.forcejoin.everyone")) {
                     completions.add("everyone");
                 }
-            } else if (args[0].equalsIgnoreCase("forceleave") && sender.hasPermission("witp.forceleave")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }
+            } else if (args[0].equalsIgnoreCase("forceleave") && sender.hasPermission("witp.forceleave")) {
                 if (sender.hasPermission("witp.forceleave.everyone")) {
                     completions.add("everyone");
+                }
+                for (Player pl : Bukkit.getOnlinePlayers()) {
+                    completions.add(pl.getName());
                 }
             } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission("witp.recoverinventory")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {

@@ -442,19 +442,32 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     /**
-     * Gets a ParkourPlayer from a regular Player
+     * Gets a ParkourPlayer from their UUID
      *
-     * @param   player
-     *          The Bukkit Player
+     * @param   uuid
+     *          The uuid
+     *
      * @return the ParkourPlayer
      */
-    public static @Nullable ParkourPlayer getPlayer(Player player) {
+    public static @Nullable ParkourPlayer getPlayer(UUID uuid) {
         for (Player p : players.keySet()) {
-            if (p == player) {
+            if (p.getUniqueId() == uuid) {
                 return players.get(p);
             }
         }
         return null;
+    }
+
+    /**
+     * Gets a ParkourPlayer from a regular Player
+     *
+     * @param   player
+     *          The Bukkit Player
+     *
+     * @return the ParkourPlayer
+     */
+    public static @Nullable ParkourPlayer getPlayer(Player player) {
+        return getPlayer(player.getUniqueId());
     }
 
     /**
