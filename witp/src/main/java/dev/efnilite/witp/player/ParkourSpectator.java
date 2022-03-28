@@ -2,6 +2,8 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.fycore.util.Logging;
 import dev.efnilite.fycore.util.Task;
+import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
 import dev.efnilite.witp.session.Session;
@@ -68,7 +70,9 @@ public class ParkourSpectator extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (Option.SCOREBOARD.get() && board != null) {
-            board.updateTitle(Util.color(Option.SCOREBOARD_TITLE.get()));
+            String title = Util.color(Option.SCOREBOARD_TITLE.get());
+            title = translatePlaceholders(closest, title); // add support for PAPI placeholders in scoreboard
+
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
             if (lines == null) {
@@ -84,6 +88,7 @@ public class ParkourSpectator extends ParkourUser {
                 highscore = scoreMap.get(one);
             }
             for (String s : lines) {
+                s = translatePlaceholders(closest, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
                         .replace("%time%", closest.getGenerator().getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
@@ -91,8 +96,17 @@ public class ParkourSpectator extends ParkourUser {
                         .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
                         .replace("%session%" , getSession().getSessionId()));
             }
+
+            board.updateTitle(title);
             board.updateLines(list);
         }
+    }
+
+    private String translatePlaceholders(ParkourUser user, String string) {
+        if (WITP.getPlaceholderHook() == null) {
+            return string;
+        }
+        return PlaceholderHook.translate(user.getPlayer(), string);
     }
 
     /**
