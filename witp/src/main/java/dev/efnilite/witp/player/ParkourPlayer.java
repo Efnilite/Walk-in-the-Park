@@ -120,7 +120,7 @@ public class ParkourPlayer extends ParkourUser {
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
         this.selectedTime = orDefault(selectedTime, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
 
-        updateVisualTime();
+        updateVisualTime(selectedTime);
         updateScoreboard();
     }
 
@@ -480,15 +480,6 @@ public class ParkourPlayer extends ParkourUser {
             generator = WITP.getVersionGenerator(this);
         }
         return generator;
-    }
-
-    public void updateVisualTime() {
-        int newTime = 18000 + selectedTime;
-        if (newTime >= 24000) {
-            newTime -= 24000;
-        }
-
-        player.setPlayerTime(newTime, false);
     }
 
     public void setGenerator(ParkourGenerator generator) {

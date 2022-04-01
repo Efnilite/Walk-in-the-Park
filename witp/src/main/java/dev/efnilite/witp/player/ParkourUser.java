@@ -519,6 +519,21 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Updates the player's visual time.
+     *
+     * @param   selectedTime
+     *          The selected time is the 24-hour format with 3 extra zeroes on the end.
+     */
+    public void updateVisualTime(int selectedTime) {
+        int newTime = 18000 + selectedTime;
+        if (newTime >= 24000) {
+            newTime -= 24000;
+        }
+
+        player.setPlayerTime(newTime, false);
+    }
+
+    /**
      * Sets this player's locale
      *
      * @param   locale

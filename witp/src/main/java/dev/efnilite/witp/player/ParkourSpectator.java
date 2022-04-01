@@ -40,6 +40,7 @@ public class ParkourSpectator extends ParkourUser {
         this.closest = session.getPlayers().get(0);
         this.player.setGameMode(GameMode.SPECTATOR);
         this.player.teleport(closest.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        this.player.setFlying(true);
 
         session.addSpectators(this);
         sendTranslated("spectator");
@@ -134,6 +135,8 @@ public class ParkourSpectator extends ParkourUser {
                         }
 
                         setClosest(closest == null ? session.getPlayers().get(0) : closest);
+
+                        updateVisualTime(getClosest().selectedTime);
                     }
                 })
                 .repeat(10)
