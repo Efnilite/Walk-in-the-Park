@@ -158,10 +158,12 @@ public abstract class ParkourGenerator {
     }
 
     /**
-     * Updates the time
+     * Updates the stopwatch time and visual time for the player
      */
     public void updateTime() {
         time = stopwatch.toString();
+
+        player.updateVisualTime(player.selectedTime);
     }
 
     /**
