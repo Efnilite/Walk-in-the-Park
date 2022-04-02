@@ -120,7 +120,6 @@ public class ParkourPlayer extends ParkourUser {
         this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS.getName())));
         this.selectedTime = orDefault(selectedTime, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME.getName())));
 
-        updateVisualTime(selectedTime);
         updateScoreboard();
     }
 

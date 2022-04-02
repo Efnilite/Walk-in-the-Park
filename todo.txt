@@ -1,6 +1,11 @@
 Walk in the Park
 
-v3.1.0
-- Added async resetting all high scores
-- Added resetting of high score of a single player (/witp reset)
-- Improved permissions of commands
+v3.1.2
+- Added /witp reset <everyone/player> command for easy resetting of specific player scores
+- Added %witp_score_until_x% placeholder so players can see in how many jumps they get a reward
+- Fixed /witp forceleave and /witp forcejoin not being displayed in the command help message
+- Fixed rewards not having PAPI placeholder support
+- Fixed spectators scoreboard not having PAPI placeholders support
+- Fixed spectators' visual time not updating
+- Fixed spectators falling in the void
+- Fixed visual time not updating when not having set it in the same session
