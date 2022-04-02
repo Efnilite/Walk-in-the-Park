@@ -113,7 +113,7 @@ public class Dimensions {
         return minumum;
     }
 
-    public Vector3D getDimensions() {
+    public Vector3D toVector3D() {
         return new Vector3D(width, height, length);
     }
 

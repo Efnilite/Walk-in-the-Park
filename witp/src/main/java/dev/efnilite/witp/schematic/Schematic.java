@@ -88,11 +88,42 @@ public class Schematic {
         this.isSupported = true;
     }
 
+    /**
+     * Gets a schematic from its file name.
+     *
+     * @param   fileName
+     *          The name of the file
+     *
+     * @return the instance of this class
+     */
     public Schematic file(@NotNull String fileName) {
         File folder = new File(WITP.getInstance().getDataFolder(), "schematics");
         folder.mkdirs();
+
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";
         file = new File(folder, fileName);
+
+        return this;
+    }
+
+    /**
+     * Gets a Schematic from a path and filename. Used for external schematics.
+     *
+     * @param   path
+     *          The folder which the file is in
+     *
+     * @param   fileName
+     *          The file name
+     *
+     * @return the instance of his class
+     */
+    public Schematic file(@NotNull String path, @NotNull String fileName) {
+        File folder = new File(path);
+        folder.mkdirs();
+
+        fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";
+        file = new File(folder, fileName);
+
         return this;
     }
 
@@ -281,7 +312,7 @@ public class Schematic {
     public List<Block> paste(Location at, RotationAngle angle) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector()));
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector()));
 
         Location min = dimensions.getMinimumPoint();
         List<Block> affectedBlocks = new ArrayList<>();
@@ -314,7 +345,7 @@ public class Schematic {
      */
     public @Nullable List<Block> pasteAdjusted(Location at, RotationAngle angle) {
         read();
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.getDimensions().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
 
         // -- Preparing for paste --
 

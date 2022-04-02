@@ -104,9 +104,7 @@ public final class WITP extends FyPlugin {
         registry.register(new SpectatorGamemode());
         registry.registerType(new DefaultStyleType());
 
-        for (String style : Option.STYLES.get()) {
-            registry.getStyleType("default").addConfigStyle(style);
-        }
+        registry.getStyleType("default").addConfigStyles("styles.list", configuration.getFile("config"));
 
         // ----- SQL and data -----
 

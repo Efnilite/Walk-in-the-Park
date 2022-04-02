@@ -165,7 +165,7 @@ public class ParkourPlayer extends ParkourUser {
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
                         .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
-                        .replace("%session%", getSession().getSessionId()));
+                        .replace("%session%", getSessionId()));
             }
             title = translatePlaceholders(player, title);
             board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
@@ -173,7 +173,7 @@ public class ParkourPlayer extends ParkourUser {
                     .replace("%highscore%", rank != null ? rank.toString() : "0")
                     .replace("%topscore%", top != null ? top.toString() : "0")
                     .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
-                    .replace("%session%", getSession().getSessionId()));
+                    .replace("%session%", getSessionId()));
             board.updateLines(list);
         }
     }

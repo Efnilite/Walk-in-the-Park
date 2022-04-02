@@ -1,14 +1,12 @@
 package dev.efnilite.witp.generator.base;
 
-import dev.efnilite.witp.generator.AreaData;
 import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
+import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Stopwatch;
-import dev.efnilite.witp.util.config.Option;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,14 +22,9 @@ public abstract class ParkourGenerator {
     protected int score;
 
     /**
-     * At which range the direction of the parkour will change for players.
+     * The zone in which the parkour can take place.
      */
-    protected int borderWarning = 50;
-
-    /**
-     * Area data
-     */
-    protected AreaData data;
+    protected Selection zone;
 
     /**
      * The time of the player's current session
@@ -49,11 +42,6 @@ public abstract class ParkourGenerator {
      * Generator options
      */
     protected List<GeneratorOption> generatorOptions;
-
-    /**
-     * The offset of the border
-     */
-    protected final double borderOffset;
 
     /**
      * The random for this Thread, which is useful in randomly generating parkour
@@ -80,7 +68,6 @@ public abstract class ParkourGenerator {
         this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
-        this.borderOffset = Option.BORDER_SIZE.get() / 2.0;
         this.random = ThreadLocalRandom.current();
 
         player.setGenerator(this);
@@ -143,21 +130,6 @@ public abstract class ParkourGenerator {
     public abstract void generate();
 
     /**
-     * If the vector is near the border
-     *
-     * @param vector The vector
-     */
-    public boolean isNearBorder(Vector vector) {
-        Vector xBorder = vector.clone();
-        Vector zBorder = vector.clone();
-
-        xBorder.setX(borderOffset);
-        zBorder.setZ(borderOffset);
-
-        return vector.distance(xBorder) < borderWarning || vector.distance(zBorder) < borderWarning;
-    }
-
-    /**
      * Updates the stopwatch time and visual time for the player
      */
     public void updateTime() {
@@ -185,15 +157,6 @@ public abstract class ParkourGenerator {
     }
 
     /**
-     * Gets the border offset
-     *
-     * @return the border offset
-     */
-    public double getBorderOffset() {
-        return borderOffset;
-    }
-
-    /**
      * Gets the current time
      *
      * @return the player's current time
@@ -202,11 +165,7 @@ public abstract class ParkourGenerator {
         return time;
     }
 
-    public void setData(AreaData data) {
-        this.data = data;
-    }
-
-    public AreaData getData() {
-        return data;
+    public void setZone(Selection zone) {
+        this.zone = zone;
     }
 }

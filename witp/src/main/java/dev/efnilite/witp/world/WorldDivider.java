@@ -12,6 +12,7 @@ import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.schematic.RotationAngle;
 import dev.efnilite.witp.schematic.Schematic;
+import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.session.Session;
 import dev.efnilite.witp.session.SingleSession;
 import dev.efnilite.witp.util.Util;
@@ -21,7 +22,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +66,7 @@ public class WorldDivider {
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
         this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
 
-        this.spawnIsland = new Schematic().file("spawn-island.witp");
+        this.spawnIsland = new Schematic().file(WITP.getInstance().getDataFolder() + "/schematics/spawn-island.witp");
     }
 
     /**
@@ -149,12 +149,14 @@ public class WorldDivider {
         activePoints.remove(player);
         Logging.verbose("Cached point " + point);
 
-        AreaData data = player.getGenerator().getData();
-        for (Chunk spawnChunk : data.spawnChunks) {
-            spawnChunk.setForceLoaded(false);
-        }
-        for (Block block : data.blocks) {
-            block.setType(Material.AIR, false);
+        if (player.getGenerator() instanceof DefaultGenerator) {
+            AreaData data = ((DefaultGenerator) player.getGenerator()).getData();
+            for (Chunk spawnChunk : data.spawnChunks) {
+                spawnChunk.setForceLoaded(false);
+            }
+            for (Block block : data.blocks) {
+                block.setType(Material.AIR, false);
+            }
         }
 
         Session session = player.getSession();
@@ -187,7 +189,10 @@ public class WorldDivider {
 
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
         World world = WITP.getWorldHandler().getWorld();
-        Location spawn = getEstimatedCenter(point, Option.BORDER_SIZE.get()).toLocation(world).clone();
+
+        double borderSize = Option.BORDER_SIZE.getAsDouble();
+
+        Location spawn = getEstimatedCenter(point, borderSize).toLocation(world).clone();
         List<Chunk> chunks = new ArrayList<>();
         try {
             chunks = getChunksAround(spawn.getChunk(), 1);
@@ -199,13 +204,9 @@ public class WorldDivider {
         } catch (Throwable ignored) {} // ignored if chunks can't be requested
 
         // --- Schematic pasting ---
-        Vector3D dimension = spawnIsland.getDimensions().getDimensions();
+        Vector3D dimension = spawnIsland.getDimensions().toVector3D();
         spawn.setY(spawn.getY() - dimension.y);
         List<Block> blocks = spawnIsland.paste(spawn, RotationAngle.ANGLE_0);
-
-        Location min = spawn.clone();
-        min.setX(min.getX() - (dimension.x / 2.0));
-        min.setZ(min.getZ() - (dimension.z / 2.0));
 
         Location to = null;
         Location parkourBegin = null;
@@ -240,9 +241,18 @@ public class WorldDivider {
             createIsland(pp, point);
         }
 
-        pp.getGenerator().setData(new AreaData(blocks, chunks));
+        // get the min and max locations
+        Location min = spawn.clone().subtract(borderSize / 2, 0, borderSize / 2);
+        Location max = spawn.clone().add(borderSize / 2, 0, borderSize / 2);
+
+        // set the proper zone
+        pp.getGenerator().setZone(new Selection(min, max));
+
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
-            ((DefaultGenerator) pp.getGenerator()).generateFirst(to.clone(), parkourBegin.clone());
+            DefaultGenerator defaultGenerator = (DefaultGenerator) pp.getGenerator();
+
+            defaultGenerator.setData(new AreaData(blocks, chunks));
+            defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
         }
 
         // create session
@@ -301,8 +311,8 @@ public class WorldDivider {
      *
      * @return the vector in the middle
      */
-    public Vector getEstimatedCenter(Vector2D vector, double borderSize) {
+    public Vector3D getEstimatedCenter(Vector2D vector, double borderSize) {
         int size = (int) borderSize;
-        return new Vector(vector.x * size, 150, vector.y * size);
+        return new Vector3D(vector.x * size, 150, vector.y * size);
     }
 }

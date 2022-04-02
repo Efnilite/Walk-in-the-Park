@@ -590,6 +590,15 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Gets this player's session id
+     *
+     * @return the session id
+     */
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    /**
      * Gets the previous data of the player
      *
      * @return the {@link PreviousData} of the player

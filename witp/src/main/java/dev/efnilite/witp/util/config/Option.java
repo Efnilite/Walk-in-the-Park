@@ -51,7 +51,6 @@ public class Option {
     public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
 
     public static ConfigOption<String> DEFAULT_STYLE;
-    public static ConfigOption<List<String>> STYLES;
 
     public static ConfigOption<Boolean> ENABLE_JOINING;
     public static ConfigOption<Boolean> PERMISSIONS_STYLES;
@@ -133,7 +132,6 @@ public class Option {
         DEFAULT_LANG = new ConfigOption<>(lang, "messages.default");
 
         DEFAULT_STYLE = new ConfigOption<>(config, "styles.default");
-        STYLES = new ConfigOption<>(Util.getNode(config, "styles.list"));
 
         // Config stuff
 

@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 /**
- * A 3D cuboid selection.
+ * A 3D rectangle selection.
  *
  * Taken from: Efnilite/Redaktor
  *
@@ -46,7 +46,7 @@ public class Selection {
     }
 
     /**
-     * The preferred CuboidSelection constructor
+     * The preferred Selection constructor
      *
      * @param   pos1
      *          The first position of the selection
@@ -74,8 +74,7 @@ public class Selection {
     }
 
     /**
-     * Shifts the cuboid
-     * <p>
+     * Shifts the selection.
      * Sets the minimum location and auto adjusts the max location
      * to the same as this selection instance
      *
@@ -104,6 +103,20 @@ public class Selection {
      */
     public Location getMinimumPoint() {
         return new Location(world, Math.min(pos1.getBlockX(), pos2.getBlockX()), Math.min(pos1.getBlockY(), pos2.getBlockY()), Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
+    }
+
+    /**
+     * Returns the distance from a specific location to the axes of this selection.
+     * The axes in the selection is in this case the minimum point, thus negative values are impossible.
+     *
+     * @param   other
+     *          The other location which to compare with
+     *
+     * @return an array of distances to each of the axes in the following order: x, y, z
+     */
+    public double[] distanceToAxes(Location other) {
+        Location min = getMinimumPoint();
+        return new double[] { other.getBlockX() - min.getBlockX(), other.getBlockY() - min.getBlockY(), other.getBlockZ() - min.getBlockZ() };
     }
 
     /**

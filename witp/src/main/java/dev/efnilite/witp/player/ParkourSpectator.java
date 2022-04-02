@@ -95,7 +95,7 @@ public class ParkourSpectator extends ParkourUser {
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
                         .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
-                        .replace("%session%" , getSession().getSessionId()));
+                        .replace("%session%" , getSessionId()));
             }
 
             board.updateTitle(title);

@@ -2,8 +2,9 @@ package dev.efnilite.witp.api;
 
 import dev.efnilite.fycore.inventory.item.Item;
 import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.util.Util;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,13 +58,25 @@ public abstract class StyleType {
     public abstract Material get(String style);
 
     /**
-     * Adds a style from config
+     * Reads a specific file at a specific path to get all the styles.
      *
-     * @param   name
-     *          The config name of this style
+     * @param   path
+     *          The path at which the styles are in the config
+     *
+     * @param   file
+     *          The file to read from
      */
-    public void addConfigStyle(@NotNull String name) {
-        styles.put(name.toLowerCase(), getPossibleMaterials(name));
+    public void addConfigStyles(@NotNull String path, @NotNull FileConfiguration file) {
+        List<String> list = Util.getNode(file, path);
+
+        if (list == null || list.isEmpty()) {
+            Logging.error("Style path " + path + " not found");
+            return;
+        }
+
+        for (String style : list) { // get all styles in the path
+            styles.put(style, getPossibleMaterials(style, path, file));
+        }
     }
 
     /**
@@ -79,16 +92,16 @@ public abstract class StyleType {
         styles.put(name.toLowerCase(), materials);
     }
 
-    private @Nullable List<Material> getPossibleMaterials(String style) {
-        if (style == null) {
-            return null;
-        }
+    @Nullable
+    private List<Material> getPossibleMaterials(@NotNull String name, @NotNull String path, @NotNull FileConfiguration file) {
         List<Material> materials = new ArrayList<>();
-        String possible = WITP.getConfiguration().getFile("config").getString("styles.list." + style);
+        String possible = file.getString(path + "." + name);
+
         if (possible == null) {
-            Logging.warn("Style '" + style + "' doesn't exist in config.yml but is registered!");
+            Logging.warn("Style at path " + path + " doesn't exist but is registered!");
             return null;
         }
+
         for (String material : possible.replaceAll("[\\[\\]]", "").split(", ")) {
             Material mat = Material.getMaterial(material.toUpperCase());
             if (mat == null) {

@@ -51,8 +51,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     private boolean isSpecial;
     private Material specialType;
 
-    protected int totalScore;
-    protected int schematicCooldown;
     protected boolean deleteStructure;
     protected boolean stopped;
     protected boolean waitForSchematicCompletion;
@@ -66,16 +64,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * The last location the player was found standing in
      */
     protected Location lastStandingPlayerLocation;
-
-    /**
-     * Where the player spawns on reset
-     */
-    protected Location playerSpawn;
-
-    /**
-     * Where blocks from schematics spawn
-     */
-    protected Location blockSpawn;
 
     /**
      * A list of blocks from the (possibly) spawned structure
@@ -171,8 +159,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int height;
         int gap = getRandomChance(distanceChances) + 1;
 
-        int deltaYMax = Option.MAX_Y.get() - mostRecentBlock.getBlockY();
-        int deltaYMin = mostRecentBlock.getBlockY() - Option.MIN_Y.get();
+        int deltaYMax = zone.getMaximumPoint().getBlockY() - mostRecentBlock.getBlockY();
+        int deltaYMin = mostRecentBlock.getBlockY() - zone.getMinimumPoint().getBlockY();
 
         if (deltaYMax < 0) {
             height = -1;
@@ -436,7 +424,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
-            if (isNearBorder(mostRecentBlock.clone().toVector()) && score > 0) {
+            if (isNearingEdge(mostRecentBlock) && score > 0) {
                 heading = heading.turnRight(); // reverse heading if close to border
             }
 
@@ -488,7 +476,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 schematicCooldown--;
             }
         } else if (type == 1) {
-            if (isNearBorder(mostRecentBlock.clone().toVector()) && score > 0) {
+            if (isNearingEdge(mostRecentBlock) && score > 0) {
                 generate(); // generate a normal block
                 return;
             }
