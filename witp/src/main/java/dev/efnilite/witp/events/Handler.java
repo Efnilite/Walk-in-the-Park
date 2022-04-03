@@ -105,7 +105,7 @@ public class Handler implements EventWatcher {
         Player player = event.getPlayer();
 
         ParkourUser user = ParkourUser.getUser(player);
-        if (user == null) {
+        if (user == null) { // the player who teleported is null
             return;
         }
 
