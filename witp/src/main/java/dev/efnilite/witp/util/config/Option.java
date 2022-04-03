@@ -30,6 +30,8 @@ public class Option {
 
     // Config stuff
     public static ConfigOption<Boolean> ALL_POINTS;
+    public static ConfigOption<Boolean> REWARDS_USE_TOTAL_SCORE;
+
     public static ConfigOption<Boolean> INVENTORY_HANDLING;
     public static ConfigOption<Boolean> PERMISSIONS;
     public static ConfigOption<Boolean> FOCUS_MODE;
@@ -154,7 +156,10 @@ public class Option {
 
         // Generation
         HEADING = new ConfigOption<>(Util.getDirection(generation.getString("advanced.island.parkour.heading")));
+
+        // Scoring
         ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
+        REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "rewards-use-total-score");
 
         if (init) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");

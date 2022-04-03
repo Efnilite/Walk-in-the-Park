@@ -573,8 +573,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             strings.forEach(s -> s.execute(player));
         }
 
+        // gets the correct type of score to check based on the config option
+        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE.get() ? totalScore : score;
         for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
-            if (totalScore % interval == 0) {
+            if (typeToCheck % interval == 0) {
                 strings = RewardReader.INTERVAL_REWARDS.get(interval);
                 strings.forEach(s -> s.execute(player));
             }

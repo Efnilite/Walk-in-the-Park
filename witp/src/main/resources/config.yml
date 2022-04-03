@@ -206,6 +206,11 @@ scoring:
   # If a player skips a block jump, it will still give points for that block.
   all-points: false
 
+  # Rewards use total score
+  # Whether interval rewards should use the total score of a session or not.
+  # The total score doesn't reset when a player falls.
+  rewards-use-total-score: false
+
 # --- This section has been moved to rewards.yml ---
 # --- Please move all your commands to rewards.yml ---
 # --- This section will be deleted in future versions ---
