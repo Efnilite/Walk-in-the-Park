@@ -527,7 +527,7 @@ public class ParkourMenu {
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
-            if (Option.PERMISSIONS_STYLES.get() && !user.getPlayer().hasPermission("witp")) {
+            if (Option.PERMISSIONS_STYLES.get() && !user.getPlayer().hasPermission(ParkourOption.STYLES.getName() + "." + name.toLowerCase())) {
                 continue;
             }
 

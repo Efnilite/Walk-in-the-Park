@@ -31,6 +31,7 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Internal event handler
@@ -193,6 +194,7 @@ public class Handler implements EventWatcher {
             return;
         }
         Location location = event.getClickedBlock().getLocation();
+
         switch (action) {
             case LEFT_CLICK_BLOCK:
                 event.setCancelled(true);
@@ -209,6 +211,7 @@ public class Handler implements EventWatcher {
                 }
                 Message.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
                 break;
+
             case RIGHT_CLICK_BLOCK:
                 event.setCancelled(true);
                 if (ParkourCommand.selections.get(player) == null) {
@@ -247,8 +250,17 @@ public class Handler implements EventWatcher {
 
     @EventHandler
     public void onSwitch(PlayerChangedWorldEvent event) {
-        ParkourUser user = ParkourUser.getUser(event.getPlayer());
-        if (event.getFrom().getUID() == WITP.getWorldHandler().getWorld().getUID() && user != null && user.getPlayer().getTicksLived() > 100) {
+        Player player = event.getPlayer();
+        ParkourUser user = ParkourUser.getUser(player);
+        UUID parkourWorld = WITP.getWorldHandler().getWorld().getUID();
+
+        // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
+        if (player.getWorld().getUID() == parkourWorld && user == null && !player.isOp()) {
+            player.kickPlayer("");
+        } // todo test
+
+        // leaving world will unregister player
+        if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {
             ParkourUser.unregister(user, false, false, true);
         }
     }

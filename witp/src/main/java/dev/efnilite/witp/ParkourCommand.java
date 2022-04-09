@@ -281,7 +281,7 @@ public class ParkourCommand extends FyCommand {
                         Message.send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
                         Schematic schematic = new Schematic(selection);
-                        schematic.file(WITP.getInstance().getDataFolder() + "/schematics", "parkour-" + code).save(player);
+                        schematic.file("parkour-" + code).save(player);
                         return true;
                 }
             } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission("witp.forcejoin")) {

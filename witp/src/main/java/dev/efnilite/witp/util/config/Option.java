@@ -159,7 +159,7 @@ public class Option {
 
         // Scoring
         ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
-        REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "rewards-use-total-score");
+        REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "scoring.rewards-use-total-score");
 
         if (init) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");

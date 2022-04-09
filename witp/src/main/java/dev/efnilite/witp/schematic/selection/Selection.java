@@ -128,6 +128,11 @@ public class Selection {
         return new Dimensions(pos1, pos2);
     }
 
+    @Override
+    public String toString() {
+        return pos1.toString() + " to " + pos2.toString(); //
+    }
+
     public Location getPos1() {
         return pos1;
     }

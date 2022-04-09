@@ -159,12 +159,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int height;
         int gap = getRandomChance(distanceChances) + 1;
 
-        int deltaYMax = zone.getMaximumPoint().getBlockY() - mostRecentBlock.getBlockY();
-        int deltaYMin = mostRecentBlock.getBlockY() - zone.getMinimumPoint().getBlockY();
+        int zoneMax = zone.getMaximumPoint().getBlockY(); // todo fix
+        int zoneMin = zone.getMinimumPoint().getBlockY();
+        int mostRecentY = mostRecentBlock.getBlockY();
 
-        if (deltaYMax < 0) {
+        System.out.println(mostRecentY + " | " + zoneMax + " | " + zoneMin);
+
+        if (mostRecentY > zoneMax) { // 204 > 200
             height = -1;
-        } else if (deltaYMin < 0) {
+        } else if (zoneMin > mostRecentY) { // 100 > 99
             height = 1;
         } else {
             height = getRandomChance(heightChances);

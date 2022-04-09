@@ -66,7 +66,7 @@ public class WorldDivider {
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
         this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
 
-        this.spawnIsland = new Schematic().file(WITP.getInstance().getDataFolder() + "/schematics/spawn-island.witp");
+        this.spawnIsland = new Schematic().file("spawn-island.witp");
     }
 
     /**
@@ -190,9 +190,10 @@ public class WorldDivider {
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
         World world = WITP.getWorldHandler().getWorld();
 
-        double borderSize = Option.BORDER_SIZE.getAsDouble();
+        double borderSize = Option.BORDER_SIZE.get();
 
         Location spawn = getEstimatedCenter(point, borderSize).toLocation(world).clone();
+
         List<Chunk> chunks = new ArrayList<>();
         try {
             chunks = getChunksAround(spawn.getChunk(), 1);
@@ -244,6 +245,9 @@ public class WorldDivider {
         // get the min and max locations
         Location min = spawn.clone().subtract(borderSize / 2, 0, borderSize / 2);
         Location max = spawn.clone().add(borderSize / 2, 0, borderSize / 2);
+
+        min.setY(Option.MIN_Y.get());
+        max.setY(Option.MAX_Y.get());
 
         // set the proper zone
         pp.getGenerator().setZone(new Selection(min, max));
