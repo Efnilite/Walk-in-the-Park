@@ -163,8 +163,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int zoneMin = zone.getMinimumPoint().getBlockY();
         int mostRecentY = mostRecentBlock.getBlockY();
 
-        System.out.println(mostRecentY + " | " + zoneMax + " | " + zoneMin);
-
         if (mostRecentY > zoneMax) { // 204 > 200
             height = -1;
         } else if (zoneMin > mostRecentY) { // 100 > 99
