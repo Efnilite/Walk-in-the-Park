@@ -151,11 +151,17 @@ public class WorldDivider {
 
         if (player.getGenerator() instanceof DefaultGenerator) {
             AreaData data = ((DefaultGenerator) player.getGenerator()).getData();
-            for (Chunk spawnChunk : data.spawnChunks) {
-                spawnChunk.setForceLoaded(false);
-            }
-            for (Block block : data.blocks) {
-                block.setType(Material.AIR, false);
+
+            if (data != null) {
+                for (Chunk spawnChunk : data.spawnChunks) {
+                    spawnChunk.setForceLoaded(false);
+                }
+                for (Block block : data.blocks) {
+                    block.setType(Material.AIR, false);
+                }
+            } else {
+                Logging.warn("Could not find data on leave for player " + player.getPlayer().getName());
+                Logging.warn("If any floating islands appear in the parkour world, try to reload the server to fix the issue.");
             }
         }
 
