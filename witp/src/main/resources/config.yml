@@ -211,42 +211,6 @@ scoring:
   # The total score doesn't reset when a player falls.
   rewards-use-total-score: false
 
-# --- This section has been moved to rewards.yml ---
-# --- Please move all your commands to rewards.yml ---
-# --- This section will be deleted in future versions ---
-rewards:
-  enabled: false
-
-  # Reward interval
-  interval: 50
-
-  # Score commands
-  scores:
-    - '50;;tellraw @a "hey there";;second command'
-    - '100;;give %player% golden_apple'
-    - '200' # no command means it only does the command and Vault reward.
-
-  # If the player gets the rewards in the 'scores' section AFTER leaving the parkour (true is afterwards)
-  leave-rewards: false
-
-  # The same as scores, but players can only achieve this once
-  # (!!!) Work in progress // not added yet.
-  one-time-scores:
-    - '1000;;say "Well done!"'
-
-  # The commands that will be executed if the interval is met.
-  # Use %player% to get the player
-  # '' means no command
-  command:
-    - ''
-
-  # The amount of money players will receive as Vault currency
-  vault-reward: 5
-
-  # The message you get after the interval is met
-  # '' means no message
-  message: '&6+5 coins'
-
 # Options for particles/sounds
 particles:
 
