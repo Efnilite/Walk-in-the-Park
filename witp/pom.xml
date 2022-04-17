@@ -45,17 +45,17 @@
                             <relocations>
                                 <relocation>
                                     <pattern>dev.efnilite.fycore</pattern>
-                                    <shadedPattern>dev.efnilite.witp.fycore</shadedPattern>
+                                    <shadedPattern>dev.efnilite.ip.fycore</shadedPattern>
                                 </relocation>
 
                                 <relocation>
                                     <pattern>fr.mrmicky.fastboard</pattern>
-                                    <shadedPattern>dev.efnilite.witp.util.fastboard</shadedPattern>
+                                    <shadedPattern>dev.efnilite.ip.util.fastboard</shadedPattern>
                                 </relocation>
 
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>dev.efnilite.witp.util.bstats</shadedPattern>
+                                    <shadedPattern>dev.efnilite.ip.util.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

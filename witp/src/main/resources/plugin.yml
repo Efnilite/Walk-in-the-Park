@@ -3,9 +3,9 @@ description: 'Infinitely automatically generating parkour plugin.'
 author: Efnilite, Ice_Pancake
 version: 3.2.2
 api-version: 1.16
-main: dev.efnilite.witp.WITP
+main: dev.efnilite.ip.IP
 softdepend: [Vault, PlaceholderAPI, ProtocolAPI, Multiverse-Core, HolographicDisplays, NoteBlockAPI, WVoidGen, VoidGen]
 commands:
     witp:
-        aliases: [parkour]
+        aliases: [parkour, ip]
         description: Main command
