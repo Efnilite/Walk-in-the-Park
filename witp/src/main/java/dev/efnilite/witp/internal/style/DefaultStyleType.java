@@ -1,6 +1,6 @@
 package dev.efnilite.witp.internal.style;
 
-import dev.efnilite.fycore.inventory.item.Item;
+import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.StyleType;
 import org.bukkit.Material;

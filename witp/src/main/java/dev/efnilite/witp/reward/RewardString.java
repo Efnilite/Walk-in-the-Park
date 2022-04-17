@@ -1,6 +1,6 @@
 package dev.efnilite.witp.reward;
 
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Bukkit;

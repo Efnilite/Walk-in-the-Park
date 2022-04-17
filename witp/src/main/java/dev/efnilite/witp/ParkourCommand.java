@@ -1,14 +1,14 @@
 package dev.efnilite.witp;
 
-import dev.efnilite.fycore.chat.Message;
-import dev.efnilite.fycore.command.FyCommand;
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.particle.ParticleData;
-import dev.efnilite.fycore.particle.Particles;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
-import dev.efnilite.fycore.util.Time;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.command.ViCommand;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.particle.ParticleData;
+import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Time;
+import dev.efnilite.vilib.util.Version;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.InventoryData;
@@ -29,7 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-public class ParkourCommand extends FyCommand {
+public class ParkourCommand extends ViCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
     private ItemStack wand;

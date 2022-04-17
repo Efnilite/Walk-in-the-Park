@@ -1,8 +1,8 @@
 package dev.efnilite.witp.util.config;
 
-import dev.efnilite.fycore.config.ConfigOption;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.config.ConfigOption;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
 import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Direction;

@@ -141,9 +141,9 @@
         <!-- Dependencies that will be compiled with the jar -->
 
         <dependency>
-            <groupId>com.github.Efnilite</groupId>
-            <artifactId>fyCore</artifactId>
-            <version>e2481269a1</version>
+            <groupId>com.github.ViStudios</groupId>
+            <artifactId>vilib</artifactId>
+            <version>8cd900ff2d</version>
             <scope>compile</scope>
         </dependency>
 

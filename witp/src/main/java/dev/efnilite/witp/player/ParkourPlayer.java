@@ -1,9 +1,9 @@
 package dev.efnilite.witp.player;
 
 import com.google.gson.annotations.Expose;
-import dev.efnilite.fycore.sql.InvalidStatementException;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
+import dev.efnilite.vilib.sql.InvalidStatementException;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;

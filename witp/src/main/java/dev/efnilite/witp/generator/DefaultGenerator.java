@@ -1,10 +1,10 @@
 package dev.efnilite.witp.generator;
 
-import dev.efnilite.fycore.particle.ParticleData;
-import dev.efnilite.fycore.particle.Particles;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.particle.ParticleData;
+import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Version;
 import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;

@@ -1,7 +1,7 @@
 package dev.efnilite.witp.player.data;
 
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.reward.RewardString;

@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.fycore.sql.InvalidStatementException;
+import dev.efnilite.vilib.sql.InvalidStatementException;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;

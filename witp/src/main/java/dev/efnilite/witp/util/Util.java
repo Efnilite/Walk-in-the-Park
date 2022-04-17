@@ -2,8 +2,8 @@ package dev.efnilite.witp.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import dev.efnilite.fycore.chat.Message;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.player.ParkourUser;

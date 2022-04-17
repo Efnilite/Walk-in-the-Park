@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.fycore.sql.InvalidStatementException;
+import dev.efnilite.vilib.sql.InvalidStatementException;
 
 public abstract class Statement {
 

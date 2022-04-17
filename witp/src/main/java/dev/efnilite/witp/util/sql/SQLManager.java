@@ -1,6 +1,6 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Bukkit;

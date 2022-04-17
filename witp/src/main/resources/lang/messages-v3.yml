@@ -105,3 +105,27 @@ messages:
       miss: '<gray>你與你的最高分數相差了 %s 分！'
       beat: '<gray>你以 %s 分打破了你的最高分數！'
       tied: '<gray>你追平了你的最高分數！'
+
+  # Simplified Chinese (Simplified Chinese), provided by Konsheng
+  zh-cn:
+    join: '<dark_green><bold>+ <gray>您已加入无限跑酷'
+    leave: '<red><bold>- <gray>您已离开无限跑酷'
+
+    player-join: '<dark_green><bold>+ <gray>%p'
+    player-leave: '<red><bold>- <gray>%p'
+
+    spectator-join: '<dark_green><bold>+ <gray>%p 开始旁观你'
+    spectator-leave: '<red><bold>- <gray>%p 停止旁观你'
+
+    cant-do: '<dark_red><bold>> <gray>你现在不能这样做'
+    customize-menu: '<green><bold>> <gray>通过输入 "/parkour menu" 来自定义你的跑酷体验'
+    spectator: '<#4CB3FF>你目前是旁观者模式，你可以输入 "/parkour gm" 来离开/改变你的游戏模式'
+    spectator-bar: '<#4CB3FF>你目前是旁观者模式 <dark_gray>• <#4CB3FF>输入 "/parkour gm" 以离开'
+    divider: '<dark_gray><strikethrough>-----------------------------------'
+    score: '<#80C7FD><bold>分数 <white>%s'
+    time: '<#80C7FD><bold>时间 <white>%s'
+    highscore: '<#80C7FD><bold>最高分数 <white>%s'
+    message:
+      miss: '<gray>你与你的最高分数相差了 %s 分'
+      beat: '<gray>你以 %s 分打破了你的最高分数'
+      tied: '<gray>你追平了你的最高分数'

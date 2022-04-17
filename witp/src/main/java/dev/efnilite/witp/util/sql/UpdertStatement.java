@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.sql;
 
-import dev.efnilite.fycore.sql.InvalidStatementException;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.sql.InvalidStatementException;
+import dev.efnilite.vilib.util.Logging;
 
 import java.sql.SQLException;
 import java.util.HashMap;

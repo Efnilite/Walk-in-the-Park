@@ -1,12 +1,12 @@
 package dev.efnilite.witp.internal.gamemode;
 
-import dev.efnilite.fycore.inventory.Menu;
-import dev.efnilite.fycore.inventory.PagedMenu;
-import dev.efnilite.fycore.inventory.animation.SplitMiddleInAnimation;
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.inventory.item.MenuItem;
-import dev.efnilite.fycore.util.SkullSetter;
-import dev.efnilite.fycore.util.Unicodes;
+import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.PagedMenu;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.inventory.item.MenuItem;
+import dev.efnilite.vilib.util.SkullSetter;
+import dev.efnilite.vilib.util.Unicodes;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;

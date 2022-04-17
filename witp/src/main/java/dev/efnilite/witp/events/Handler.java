@@ -1,10 +1,10 @@
 package dev.efnilite.witp.events;
 
-import dev.efnilite.fycore.chat.Message;
-import dev.efnilite.fycore.event.EventWatcher;
-import dev.efnilite.fycore.particle.ParticleData;
-import dev.efnilite.fycore.particle.Particles;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.event.EventWatcher;
+import dev.efnilite.vilib.particle.ParticleData;
+import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.ParkourCommand;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;

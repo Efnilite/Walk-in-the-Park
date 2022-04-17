@@ -1,7 +1,7 @@
 package dev.efnilite.witp.internal.gamemode;
 
-import dev.efnilite.fycore.inventory.Menu;
-import dev.efnilite.fycore.inventory.item.Item;
+import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.generator.DefaultGenerator;

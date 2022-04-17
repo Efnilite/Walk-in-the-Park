@@ -1,7 +1,7 @@
 package dev.efnilite.witp.reward;
 
-import dev.efnilite.fycore.config.ConfigOption;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.config.ConfigOption;
+import dev.efnilite.vilib.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;

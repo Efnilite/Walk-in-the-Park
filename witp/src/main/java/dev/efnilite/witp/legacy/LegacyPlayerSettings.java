@@ -1,7 +1,7 @@
 package dev.efnilite.witp.legacy;
 
 import com.google.gson.annotations.Expose;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.ParkourOption;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.profile.PlayerProfile;

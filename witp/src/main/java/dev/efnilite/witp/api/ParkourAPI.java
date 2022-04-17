@@ -1,7 +1,7 @@
 package dev.efnilite.witp.api;
 
-import dev.efnilite.fycore.sql.InvalidStatementException;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.sql.InvalidStatementException;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.ParkourMenu;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;

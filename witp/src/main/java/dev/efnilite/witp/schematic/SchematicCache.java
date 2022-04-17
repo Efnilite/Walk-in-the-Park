@@ -1,8 +1,8 @@
 package dev.efnilite.witp.schematic;
 
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
-import dev.efnilite.fycore.util.Time;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Time;
 import dev.efnilite.witp.WITP;
 
 import java.io.File;

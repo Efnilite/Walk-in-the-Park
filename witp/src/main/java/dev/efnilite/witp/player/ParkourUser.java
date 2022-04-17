@@ -1,7 +1,7 @@
 package dev.efnilite.witp.player;
 
-import dev.efnilite.fycore.chat.Message;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.base.ParkourGenerator;

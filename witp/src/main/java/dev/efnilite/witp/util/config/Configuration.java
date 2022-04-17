@@ -1,9 +1,9 @@
 package dev.efnilite.witp.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.schematic.SchematicCache;

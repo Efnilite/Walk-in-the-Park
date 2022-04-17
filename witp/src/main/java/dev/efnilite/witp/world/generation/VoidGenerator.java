@@ -1,7 +1,7 @@
 package dev.efnilite.witp.world.generation;
 
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.Nullable;

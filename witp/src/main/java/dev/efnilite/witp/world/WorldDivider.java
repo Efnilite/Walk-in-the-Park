@@ -1,10 +1,10 @@
 package dev.efnilite.witp.world;
 
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Version;
-import dev.efnilite.fycore.vector.Vector2D;
-import dev.efnilite.fycore.vector.Vector3D;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
+import dev.efnilite.vilib.vector.Vector2D;
+import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.AreaData;
 import dev.efnilite.witp.generator.DefaultGenerator;

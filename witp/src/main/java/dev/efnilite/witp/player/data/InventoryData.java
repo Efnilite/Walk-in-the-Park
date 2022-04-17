@@ -1,9 +1,9 @@
 package dev.efnilite.witp.player.data;
 
 import com.google.gson.annotations.Expose;
-import dev.efnilite.fycore.serialization.ItemSerializer;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
+import dev.efnilite.vilib.serialization.ItemSerializer;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Bukkit;

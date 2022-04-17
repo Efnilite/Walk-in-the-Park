@@ -1,10 +1,10 @@
 package dev.efnilite.witp.schematic;
 
-import dev.efnilite.fycore.chat.Message;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
-import dev.efnilite.fycore.util.Time;
-import dev.efnilite.fycore.vector.Vector3D;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Time;
+import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;

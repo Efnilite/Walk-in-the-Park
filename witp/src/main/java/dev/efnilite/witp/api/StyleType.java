@@ -1,7 +1,7 @@
 package dev.efnilite.witp.api;
 
-import dev.efnilite.fycore.inventory.item.Item;
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

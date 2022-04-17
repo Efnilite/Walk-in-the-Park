@@ -1,6 +1,6 @@
 package dev.efnilite.witp.schematic.selection;
 
-import dev.efnilite.fycore.vector.Vector3D;
+import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.witp.util.Util;
 import org.bukkit.Location;
 

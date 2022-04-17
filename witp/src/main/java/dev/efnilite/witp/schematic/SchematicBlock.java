@@ -1,6 +1,6 @@
 package dev.efnilite.witp.schematic;
 
-import dev.efnilite.fycore.vector.Vector3D;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 

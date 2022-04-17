@@ -387,3 +387,80 @@ locale:
       language:
         name: '<#6693E7><bold>語言'
         lore: '<#5574AF>目前: <gray>%s'
+
+  # Simplified Chinese (Simplified Chinese), provided by Konsheng
+  zh-cn:
+    general:
+      quit:
+        name: '<#9F0000><bold>离开'
+        lore: ''
+      close:
+        name: '<red><bold>关闭'
+        lore: ''
+      menu:
+        name: '<red><bold>选项'
+        lore: ''
+    gamemodes:
+      default:
+        name: '<#6693E7><bold>普通'
+        lore: '<gray>就像平常一样的玩游戏'
+      spectator:
+        name: '<#6693E7><bold>旁观者'
+        lore: '<gray>旁观其他玩家'
+      spectator-head:
+        name: '<#6693E7><bold>%p'
+        lore: '<gray>点击进行旁观'
+    options:
+      cant-change:
+        name: '<dark_red><bold>你现在不能更改此设置'
+        lore: '<gray>你的分数高于0||<gray>这也意味着你无法更改此设置'
+
+      styles:
+        name: '<#6693E7><bold>风格'
+        lore: '<#5574AF>当前: <gray>%s||<gray>选择将使用哪些方块'
+      leads:
+        name: '<#6693E7><bold>领先'
+        lore: '<#5574AF>当前: <gray>%s 格方块||<gray>在你面前会||<gray>生成多少个方块'
+      time:
+        name: '<#6693E7><bold>时间'
+        lore: '<#5574AF>当前: <gray>%s||<gray>你目前的时间显示样式'
+
+      schematic-difficulty:
+        name: '<#6693E7><bold>结构难度'
+        lore: '<#5574AF>当前: <gray>%s||<gray>难度的结构'
+        values: [简单, 普通, 困难, 非常困难]
+      use-schematics:
+        name: '使用结构'
+        lore: '<gray>当前: %s||<gray>如果启用静态结构||<gray>将会出现在整个跑酷中'
+      schematics:
+        name: '<#6693E7><bold>结构'
+        lore: '<gray>变更结构设定'
+
+      show-scoreboard:
+        name: '显示计分板'
+        lore: '<gray>目前: %s||<gray>如果启用将会显示计分板'
+      fall-message:
+        name: '显示掉落信息'
+        lore: '<gray>目前: %s||<gray>如果启用，将会在你掉落时||<gray>显示额外信息'
+      particles-and-sound:
+        name: '显示粒子效果与声音'
+        lore: '<gray>目前: %s||<gray>如果启用，每个生成的方块||<gray>将会显示粒子效果并播放声音'
+      special-blocks:
+        name: '使用特殊方块'
+        lore: '<gray>目前: %s||<gray>如果启用，将会使用特殊的方块，例如冰块或半砖'
+      score-difficulty:
+        name: '分数难度'
+        lore: '<gray>目前: %s||<gray>启用后，你的分数越高||<gray>难度也会越高'
+
+      gamemode:
+        name: '<#6693E7><bold>游戏模式'
+        lore: ''
+      leaderboard:
+        name: '<#6693E7><bold>排行榜'
+        lore: '<#5574AF>排名: <gray>%s'
+      leaderboard-head:
+        name: '<#6693E7><bold>#%r - %p'
+        lore: '<#5574AF>分数: <gray>%s||<#5574AF>时间: <gray>%t||<#5574AF>难道: <gray>%d<dark_gray>/1.0'
+      language:
+        name: '<#6693E7><bold>语言'
+        lore: '<#5574AF>当前: <gray>%s'

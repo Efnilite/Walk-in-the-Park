@@ -2,11 +2,11 @@ package dev.efnilite.witp;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.efnilite.fycore.FyPlugin;
-import dev.efnilite.fycore.util.Logging;
-import dev.efnilite.fycore.util.Task;
-import dev.efnilite.fycore.util.Time;
-import dev.efnilite.fycore.util.Version;
+import dev.efnilite.vilib.ViPlugin;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Time;
+import dev.efnilite.vilib.util.Version;
 import dev.efnilite.witp.api.Registry;
 import dev.efnilite.witp.events.Handler;
 import dev.efnilite.witp.generator.DefaultGenerator;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Efnilite
  * Copyright (c) 2020-2022
  */
-public final class WITP extends FyPlugin {
+public final class WITP extends ViPlugin {
 
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";

@@ -1,6 +1,6 @@
 package dev.efnilite.witp.api;
 
-import dev.efnilite.fycore.util.Logging;
+import dev.efnilite.vilib.util.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

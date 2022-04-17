@@ -1,7 +1,7 @@
 package dev.efnilite.witp.api;
 
-import dev.efnilite.fycore.inventory.Menu;
-import dev.efnilite.fycore.inventory.item.Item;
+import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
