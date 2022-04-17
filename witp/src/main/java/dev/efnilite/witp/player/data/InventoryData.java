@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.vilib.serialization.ItemSerializer;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class InventoryData {
 
     public InventoryData(Player player) {
         this.player = player;
-        this.file = new File(WITP.getInstance().getDataFolder() + "/inventories", player.getUniqueId() + ".json");
+        this.file = new File(IP.getInstance().getDataFolder() + "/inventories", player.getUniqueId() + ".json");
     }
 
     /**
@@ -66,7 +66,7 @@ public class InventoryData {
                             return;
                         }
                         FileReader reader = new FileReader(file);
-                        InventoryData data = WITP.getGson().fromJson(reader, InventoryData.class);
+                        InventoryData data = IP.getGson().fromJson(reader, InventoryData.class);
                         data.player = player;
                         data.file = file;
                         successfulCallback.accept(data);
@@ -87,14 +87,14 @@ public class InventoryData {
                 .execute(() -> {
                     try {
                         if (!file.exists()) {
-                            File folder = new File(WITP.getInstance().getDataFolder() + "/inventories");
+                            File folder = new File(IP.getInstance().getDataFolder() + "/inventories");
                             if (!folder.exists()) {
                                 folder.mkdirs();
                             }
                             file.createNewFile();
                         }
                         FileWriter writer = new FileWriter(file);
-                        WITP.getGson().toJson(this, writer);
+                        IP.getGson().toJson(this, writer);
                         writer.flush();
                         writer.close();
                     } catch (IOException ex) {

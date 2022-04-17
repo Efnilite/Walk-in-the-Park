@@ -53,7 +53,7 @@ public class ParkourCommand extends ViCommand {
         if (args.length == 0) {
             // Help menu
             Message.send(sender, "");
-            Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + WITP.NAME + " <dark_gray><strikethrough>---------------<reset>");
+            Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
             Message.send(sender, "");
             Message.send(sender, "<gray>/parkour <dark_gray>- Main command");
             if (sender.hasPermission("witp.join")) {
@@ -103,12 +103,12 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     Time.timerStart("reload");
-                    Message.send(sender, WITP.PREFIX + "Reloading config files..");
+                    Message.send(sender, IP.PREFIX + "Reloading config files..");
 
-                    WITP.getConfiguration().reload();
+                    IP.getConfiguration().reload();
                     Option.init(false);
 
-                    Message.send(sender, WITP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
+                    Message.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
                     return true;
                 case "migrate":
                     if (!cooldown(sender, "migrate", 2500)) {
@@ -118,12 +118,12 @@ public class ParkourCommand extends ViCommand {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL.get()) {
-                        Message.send(sender, WITP.PREFIX + "You have disabled SQL support in the config!");
+                        Message.send(sender, IP.PREFIX + "You have disabled SQL support in the config!");
                         return true;
                     }
 
                     Time.timerStart("migrate");
-                    File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+                    File folder = new File(IP.getInstance().getDataFolder() + "/players/");
                     if (!folder.exists()) {
                         folder.mkdirs();
                         return true;
@@ -134,15 +134,15 @@ public class ParkourCommand extends ViCommand {
                             reader = new FileReader(file);
                         } catch (FileNotFoundException ex) {
                             Logging.stack("Could not find file to migrate", "Please try again!", ex);
-                            Message.send(sender, WITP.PREFIX + "<red>Could not find that file, try again!");
+                            Message.send(sender, IP.PREFIX + "<red>Could not find that file, try again!");
                             return true;
                         }
-                        ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                        ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                         String name = file.getName();
                         from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
                         from.save(true);
                     }
-                    Message.send(sender, WITP.PREFIX + "Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
+                    Message.send(sender, IP.PREFIX + "Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
                     return true;
             }
             if (player == null) {
@@ -248,7 +248,7 @@ public class ParkourCommand extends ViCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        Message.send(player, WITP.PREFIX + "Position 1 was set to " + Util.toString(player.getLocation(), true));
+                        Message.send(player, IP.PREFIX + "Position 1 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "pos2":
                         if (selections.get(player) == null) {
@@ -259,7 +259,7 @@ public class ParkourCommand extends ViCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        Message.send(player, WITP.PREFIX + "Position 2 was set to " + Util.toString(player.getLocation(), true));
+                        Message.send(player, IP.PREFIX + "Position 2 was set to " + Util.toString(player.getLocation(), true));
                         return true;
                     case "save":
                         if (!cooldown(sender, "schematic-save", 2500)) {
@@ -290,13 +290,13 @@ public class ParkourCommand extends ViCommand {
                     for (Player other : Bukkit.getOnlinePlayers()) {
                         ParkourPlayer.join(other);
                     }
-                    Message.send(sender, WITP.PREFIX + "Succesfully force joined everyone");
+                    Message.send(sender, IP.PREFIX + "Succesfully force joined everyone");
                     return true;
                 }
 
                 Player other = Bukkit.getPlayer(args[1]);
                 if (other == null) {
-                    Message.send(sender, WITP.PREFIX + "That player isn't online!");
+                    Message.send(sender, IP.PREFIX + "That player isn't online!");
                     return true;
                 }
 
@@ -308,19 +308,19 @@ public class ParkourCommand extends ViCommand {
                     for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
                         ParkourUser.leave(other);
                     }
-                    Message.send(sender, WITP.PREFIX + "Successfully force kicked everyone!");
+                    Message.send(sender, IP.PREFIX + "Successfully force kicked everyone!");
                     return true;
                 }
 
                 Player other = Bukkit.getPlayer(args[1]);
                 if (other == null) {
-                    Message.send(sender, WITP.PREFIX + "That player isn't online!");
+                    Message.send(sender, IP.PREFIX + "That player isn't online!");
                     return true;
                 }
 
                 ParkourUser user = ParkourUser.getUser(other);
                 if (user == null) {
-                    Message.send(sender, WITP.PREFIX + "That player isn't currently playing!");
+                    Message.send(sender, IP.PREFIX + "That player isn't currently playing!");
                     return true;
                 }
 
@@ -332,24 +332,24 @@ public class ParkourCommand extends ViCommand {
                 }
                 Player arg1 = Bukkit.getPlayer(args[1]);
                 if (arg1 == null) {
-                    Message.send(sender, WITP.PREFIX + "That player isn't online!");
+                    Message.send(sender, IP.PREFIX + "That player isn't online!");
                     return true;
                 }
 
                 InventoryData data = new InventoryData(arg1);
                 data.readFile(readData -> {
                     if (readData != null) {
-                        Message.send(sender, WITP.PREFIX + "Successfully recovered the inventory of " + arg1.getName() + " from their file");
+                        Message.send(sender, IP.PREFIX + "Successfully recovered the inventory of " + arg1.getName() + " from their file");
                         if (readData.apply(true)) {
-                            Message.send(sender, WITP.PREFIX + "Giving " + arg1.getName() + " their items now...");
+                            Message.send(sender, IP.PREFIX + "Giving " + arg1.getName() + " their items now...");
                         } else {
-                            Message.send(sender, WITP.PREFIX + "<red>There was an error decoding an item of " + arg1.getName());
-                            Message.send(sender, WITP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
+                            Message.send(sender, IP.PREFIX + "<red>There was an error decoding an item of " + arg1.getName());
+                            Message.send(sender, IP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
                                     "Check the console for more information.");
                         }
                     } else {
-                        Message.send(sender, WITP.PREFIX + "<red>There was an error recovering the inventory of " + arg1.getName() + " from their file");
-                        Message.send(sender, WITP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
+                        Message.send(sender, IP.PREFIX + "<red>There was an error recovering the inventory of " + arg1.getName() + " from their file");
+                        Message.send(sender, IP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
                     }
                 });
             } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("witp.reset")) {
@@ -360,9 +360,9 @@ public class ParkourCommand extends ViCommand {
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
                     new Task().async().execute(() -> {
                         if (ParkourUser.resetHighScores()) {
-                            Message.send(sender, WITP.PREFIX + "Successfully reset all high scores in memory and the files.");
+                            Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
                         } else {
-                            Message.send(sender, WITP.PREFIX + "<red>There was an error while trying to reset high scores.");
+                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset high scores.");
                         }
                     }).run();
                 } else {
@@ -388,9 +388,9 @@ public class ParkourCommand extends ViCommand {
                     UUID finalUuid = uuid;
                     new Task().async().execute(() -> {
                         if (ParkourUser.resetHighscore(finalUuid)) {
-                            Message.send(sender, WITP.PREFIX + "Successfully reset the high score of " + args[1] + " in memory and the files.");
+                            Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + args[1] + " in memory and the files.");
                         } else {
-                            Message.send(sender, WITP.PREFIX + "<red>There was an error while trying to reset " + args[1] + "'s high score.");
+                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset " + args[1] + "'s high score.");
                         }
                     }).run();
                 }

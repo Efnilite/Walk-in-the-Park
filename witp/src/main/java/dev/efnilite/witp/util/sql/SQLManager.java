@@ -1,7 +1,7 @@
 package dev.efnilite.witp.util.sql;
 
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.util.config.Option;
 import org.bukkit.Bukkit;
 
@@ -51,7 +51,7 @@ public class SQLManager {
             Logging.info("Successfully connected");
         } catch (Throwable throwable) {
             Logging.stack("Could not connect to SQL database", "Check your SQL settings in the config", throwable);
-            Bukkit.getPluginManager().disablePlugin(WITP.getInstance()); // disable plugin since data handling without db will go horribly wrong
+            Bukkit.getPluginManager().disablePlugin(IP.getInstance()); // disable plugin since data handling without db will go horribly wrong
         }
     }
 

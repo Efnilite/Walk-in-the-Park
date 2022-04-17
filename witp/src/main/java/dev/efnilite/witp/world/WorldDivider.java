@@ -5,7 +5,7 @@ import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
 import dev.efnilite.vilib.vector.Vector2D;
 import dev.efnilite.vilib.vector.Vector3D;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.generator.AreaData;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
@@ -60,7 +60,7 @@ public class WorldDivider {
     @SuppressWarnings("ConstantConditions")
     public WorldDivider() {
         Logging.verbose("Initializing WorldDivider");
-        FileConfiguration gen = WITP.getConfiguration().getFile("generation");
+        FileConfiguration gen = IP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
         this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
@@ -172,7 +172,7 @@ public class WorldDivider {
 
     // https://math.stackexchange.com/a/163101
     public List<Chunk> getChunksAround(Chunk base, int radius) {
-        World world = WITP.getWorldHandler().getWorld();
+        World world = IP.getWorldHandler().getWorld();
 
         int lastOfRadius = 2 * radius + 1;
         int baseX = base.getX();
@@ -194,7 +194,7 @@ public class WorldDivider {
     }
 
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
-        World world = WITP.getWorldHandler().getWorld();
+        World world = IP.getWorldHandler().getWorld();
 
         double borderSize = Option.BORDER_SIZE.get();
 
@@ -286,7 +286,7 @@ public class WorldDivider {
         player.setGameMode(GameMode.ADVENTURE);
         if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
             player.getInventory().clear();
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
+            ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
             if (mat == null) {
                 Logging.error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
@@ -295,7 +295,7 @@ public class WorldDivider {
             }
         }
         if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
-            ItemStack mat = WITP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit").build();
+            ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit").build();
             if (mat == null) {
                 Logging.error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());

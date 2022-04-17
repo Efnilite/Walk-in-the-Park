@@ -4,7 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.util.config.Option;
@@ -79,7 +79,7 @@ public class Util {
      */
     public static double getDifficulty(String fileName) {
         int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
-        return WITP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
+        return IP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
     }
 
     public static String parseDifficulty(double difficulty) {
@@ -174,7 +174,7 @@ public class Util {
         out.writeUTF("Connect");
         out.writeUTF(server);
         try {
-            player.sendPluginMessage(WITP.getInstance(), "BungeeCord", out.toByteArray());
+            player.sendPluginMessage(IP.getInstance(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
             Logging.error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
             player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
@@ -335,7 +335,7 @@ public class Util {
      *          The path
      */
     public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
-        String message = WITP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
+        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }

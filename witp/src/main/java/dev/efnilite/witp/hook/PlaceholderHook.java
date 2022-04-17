@@ -1,6 +1,6 @@
 package dev.efnilite.witp.hook;
 
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -45,7 +45,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return WITP.getInstance().getDescription().getVersion();
+        return IP.getInstance().getDescription().getVersion();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 return Integer.toString(value);
             case "version":
             case "ver":
-                return WITP.getInstance().getDescription().getVersion();
+                return IP.getInstance().getDescription().getVersion();
             case "leader":
             case "record_player":
                 UUID recordPlayer = ParkourPlayer.getAtPlace(1);

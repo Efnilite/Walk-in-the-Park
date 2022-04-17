@@ -7,7 +7,7 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourSpectator;
@@ -30,7 +30,7 @@ public class SpectatorGamemode implements Gamemode {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return WITP.getConfiguration().getFromItemData(locale, "gamemodes.spectator");
+        return IP.getConfiguration().getFromItemData(locale, "gamemodes.spectator");
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SpectatorGamemode implements Gamemode {
                 continue;
             }
 
-            Item item = WITP.getConfiguration().getFromItemData(user.getLocale(),
+            Item item = IP.getConfiguration().getFromItemData(user.getLocale(),
                     "gamemodes.spectator-head", bukkitPlayer.getName());
 
             // Player head gathering
@@ -76,7 +76,7 @@ public class SpectatorGamemode implements Gamemode {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click((event) -> spectator.page(-1)))
 
-                .item(31, WITP.getConfiguration().getFromItemData(user.getLocale(), "general.close")
+                .item(31, IP.getConfiguration().getFromItemData(user.getLocale(), "general.close")
                         .click((event) -> player.closeInventory()))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

@@ -2,7 +2,7 @@ package dev.efnilite.witp.player.data;
 
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.reward.RewardString;
 import dev.efnilite.witp.util.Util;
@@ -77,7 +77,7 @@ public class PreviousData {
 
             if (teleportBack) {
                 if (Option.GO_BACK.get()) {
-                    Location to = Util.parseLocation(WITP.getConfiguration().getString("config", "bungeecord.go-back"));
+                    Location to = Util.parseLocation(IP.getConfiguration().getString("config", "bungeecord.go-back"));
                     player.teleport(to);
                 } else {
                     player.teleport(location);

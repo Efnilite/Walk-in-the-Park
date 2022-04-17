@@ -2,8 +2,8 @@ package dev.efnilite.witp.legacy;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourOption;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.profile.PlayerProfile;
 import dev.efnilite.witp.player.profile.Profile;
 
@@ -45,7 +45,7 @@ public class LegacyPlayerSettings {
         try {
             FileReader reader = new FileReader(file);
             Profile profile = new PlayerProfile();
-            LegacyPlayerSettings legacy = WITP.getGson().fromJson(reader, LegacyPlayerSettings.class);
+            LegacyPlayerSettings legacy = IP.getGson().fromJson(reader, LegacyPlayerSettings.class);
 
             profile.setSetting(ParkourOption.LANGUAGE.getName(), legacy.lang);
             profile.setSetting(ParkourOption.STYLES.getName(), legacy.style);

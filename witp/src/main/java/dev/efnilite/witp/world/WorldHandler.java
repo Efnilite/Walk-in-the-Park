@@ -2,7 +2,7 @@ package dev.efnilite.witp.world;
 
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.util.config.Option;
 import dev.efnilite.witp.world.generation.VoidGenerator;
 import org.bukkit.*;
@@ -44,8 +44,8 @@ public class WorldHandler {
     private void create() {
         String name = Option.WORLD_NAME.get();
 
-        if (WITP.getMultiverseHook() != null) { // if multiverse isn't detected
-            world = WITP.getMultiverseHook().createWorld(name);
+        if (IP.getMultiverseHook() != null) { // if multiverse isn't detected
+            world = IP.getMultiverseHook().createWorld(name);
         } else {
             try {
                 WorldCreator creator = new WorldCreator(name)
@@ -76,8 +76,8 @@ public class WorldHandler {
 
         String name = Option.WORLD_NAME.get();
 
-        if (WITP.getMultiverseHook() != null) {
-            WITP.getMultiverseHook().deleteWorld(name);
+        if (IP.getMultiverseHook() != null) {
+            IP.getMultiverseHook().deleteWorld(name);
         } else {
             Bukkit.unloadWorld(name, false);
             File folder = new File(name);

@@ -3,8 +3,8 @@ package dev.efnilite.witp.util.config;
 import dev.efnilite.vilib.config.ConfigOption;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourOption;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.Direction;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
@@ -72,11 +72,11 @@ public class Option {
     public static ConfigOption<String> WORLD_NAME;
 
     public static void init(boolean init) {
-        scoreboard = WITP.getConfiguration().getFile("scoreboard");
-        generation = WITP.getConfiguration().getFile("generation");
-        config = WITP.getConfiguration().getFile("config");
-        lang = WITP.getConfiguration().getFile("lang");
-        items = WITP.getConfiguration().getFile("items");
+        scoreboard = IP.getConfiguration().getFile("scoreboard");
+        generation = IP.getConfiguration().getFile("generation");
+        config = IP.getConfiguration().getFile("config");
+        lang = IP.getConfiguration().getFile("lang");
+        items = IP.getConfiguration().getFile("items");
 
         initSql();
         initEnums();

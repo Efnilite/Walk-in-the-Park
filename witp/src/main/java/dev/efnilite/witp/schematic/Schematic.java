@@ -5,7 +5,7 @@ import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.vector.Vector3D;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.schematic.selection.Dimensions;
 import dev.efnilite.witp.schematic.selection.Selection;
 import dev.efnilite.witp.util.Util;
@@ -97,7 +97,7 @@ public class Schematic {
      * @return the instance of this class
      */
     public Schematic file(@NotNull String fileName) {
-        File folder = new File(WITP.getInstance().getDataFolder(), "schematics");
+        File folder = new File(IP.getInstance().getDataFolder(), "schematics");
         folder.mkdirs();
 
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";

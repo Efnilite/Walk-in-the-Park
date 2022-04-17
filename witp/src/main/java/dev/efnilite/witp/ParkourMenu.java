@@ -48,14 +48,14 @@ public class ParkourMenu {
      *          The ParkourUser instance
      */
     public static void openGamemodeMenu(ParkourUser user) {
-        WITP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
+        IP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
 
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
         PagedMenu gamemode = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.gamemode.name")));
 
         List<MenuItem> items = new ArrayList<>();
-        for (Gamemode gm : WITP.getRegistry().getGamemodes()) {
+        for (Gamemode gm : IP.getRegistry().getGamemodes()) {
             Item item = gm.getItem(user.getLocale());
             items.add(new Item(item.getMaterial(), item.getName())
                     .click((event) -> gm.handleItemClick(user.getPlayer(), user, event.getMenu())));
@@ -98,7 +98,7 @@ public class ParkourMenu {
 
         // init vars
         String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
         PagedMenu leaderboard = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
         List<MenuItem> items = new ArrayList<>();
@@ -173,7 +173,7 @@ public class ParkourMenu {
      */
     public static void openMainMenu(ParkourPlayer user, ParkourOption... disabledOptions)  {
         Player player = user.getPlayer();
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
 
         Menu main = new Menu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")));
@@ -183,8 +183,8 @@ public class ParkourMenu {
         if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
             main.item(0, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
                     .click((event) -> {
-                        if (WITP.getRegistry().getStyleTypes().size() == 1) {
-                            openSingleStyleMenu(user, WITP.getRegistry().getStyleTypes().get(0), disabledOptions);
+                        if (IP.getRegistry().getStyleTypes().size() == 1) {
+                            openSingleStyleMenu(user, IP.getRegistry().getStyleTypes().get(0), disabledOptions);
                         } else {
                             openStylesMenu(user, disabledOptions);
                         }
@@ -436,7 +436,7 @@ public class ParkourMenu {
      *          Options which are disabled
      */
     public static void openLangMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
 
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
@@ -474,14 +474,14 @@ public class ParkourMenu {
     }
 
     public static void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
 
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
 
         List<MenuItem> items = new ArrayList<>();
-        for (StyleType type : WITP.getRegistry().getStyleTypes()) {
+        for (StyleType type : IP.getRegistry().getStyleTypes()) {
             Item item = type.getItem(user.getLocale());
 
             items.add(item
@@ -519,7 +519,7 @@ public class ParkourMenu {
      *          Disabled options
      */
     public static void openSingleStyleMenu(ParkourPlayer user, StyleType styleType, ParkourOption... disabledOptions) {
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
 
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
@@ -571,7 +571,7 @@ public class ParkourMenu {
      *          Options which are disabled
      */
     public static void openSchematicMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
-        Configuration config = WITP.getConfiguration();
+        Configuration config = IP.getConfiguration();
 
         // init menu
         Menu schematics = new Menu(3, "<white>" +
@@ -660,7 +660,7 @@ public class ParkourMenu {
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private static boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(WITP.getConfiguration().getFromItemData(player.getLocale(), "options.cant-change")
+            event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player.getLocale(), "options.cant-change")
                     .click((event1) -> {
 
                     }), event, 5 * 20));
@@ -677,7 +677,7 @@ public class ParkourMenu {
 
     // check if option is allowed to be displayed
     private static boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
-        boolean enabled = WITP.getConfiguration().getFile("items").getBoolean("items.options." + option.getName() + ".enabled");
+        boolean enabled = IP.getConfiguration().getFile("items").getBoolean("items.options." + option.getName() + ".enabled");
         if (!enabled || Arrays.asList(disabled).contains(option)) {
             return false;
         } else {

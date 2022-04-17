@@ -2,7 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.hook.PlaceholderHook;
 import dev.efnilite.witp.player.data.Highscore;
 import dev.efnilite.witp.player.data.PreviousData;
@@ -104,7 +104,7 @@ public class ParkourSpectator extends ParkourUser {
     }
 
     private String translatePlaceholders(ParkourUser user, String string) {
-        if (WITP.getPlaceholderHook() == null) {
+        if (IP.getPlaceholderHook() == null) {
             return string;
         }
         return PlaceholderHook.translate(user.getPlayer(), string);

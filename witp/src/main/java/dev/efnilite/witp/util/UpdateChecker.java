@@ -2,7 +2,7 @@ package dev.efnilite.witp.util;
 
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +25,10 @@ public class UpdateChecker {
                                 "Please report this error to the developer!", ex);
                         return;
                     }
-                    if (!WITP.getInstance().getDescription().getVersion().equals(latest)) {
+                    if (!IP.getInstance().getDescription().getVersion().equals(latest)) {
                         Logging.info("A new version of WITP is available to download!");
                         Logging.info("Newest version: " + latest);
-                        WITP.OUTDATED = true;
+                        IP.OUTDATED = true;
                     } else {
                         Logging.info("WITP is currently up-to-date!");
                     }

@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.vilib.sql.InvalidStatementException;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourOption;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.hook.PlaceholderHook;
@@ -81,7 +81,7 @@ public class ParkourPlayer extends ParkourUser {
         this.name = player.getName();
         this.joinTime = System.currentTimeMillis();
 
-        this.file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+        this.file = new File(IP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.locale = Option.DEFAULT_LANG.get();
         this.lang = locale;
     }
@@ -179,7 +179,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private String translatePlaceholders(Player player, String string) {
-        if (WITP.getPlaceholderHook() == null) {
+        if (IP.getPlaceholderHook() == null) {
             return string;
         }
         return PlaceholderHook.translate(player, string);
@@ -192,7 +192,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return a random material
      */
     public Material getRandomMaterial() {
-        return WITP.getRegistry().getTypeFromStyle(style).get(style);
+        return IP.getRegistry().getTypeFromStyle(style).get(style);
     }
 
     /**
@@ -238,13 +238,13 @@ public class ParkourPlayer extends ParkourUser {
                         highScoreDifficulty = highScoreDifficulty.substring(0, 3);
                     }
 
-                    UpdertStatement statement = new UpdertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
+                    UpdertStatement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                             .setDefault("uuid", uuid.toString()).setDefault("name", name)
                             .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
                             .setDefault("lang" , locale).setDefault("hsdiff", highScoreDifficulty)
                             .setCondition("`uuid` = '" + uuid.toString() + "'");
                     statement.query();
-                    statement = new UpdertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
+                    statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
                             .setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
@@ -255,17 +255,17 @@ public class ParkourPlayer extends ParkourUser {
                     statement.query();
                 } else {
                     if (file == null) {
-                        file = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                        file = new File(IP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
                     }
                     if (!file.exists()) {
-                        File folder = new File(WITP.getInstance().getDataFolder() + "/players");
+                        File folder = new File(IP.getInstance().getDataFolder() + "/players");
                         if (!folder.exists()) {
                             folder.mkdirs();
                         }
                         file.createNewFile();
                     }
                     FileWriter writer = new FileWriter(file);
-                    WITP.getGson().toJson(ParkourPlayer.this, writer);
+                    IP.getGson().toJson(ParkourPlayer.this, writer);
                     writer.flush();
                     writer.close();
                 }
@@ -289,7 +289,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public void saveGame() {
         if (Option.GAMELOGS.get() && Option.SQL.get() && generator.getScore() > 0) {
-            InsertStatement statement = new InsertStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "game-history")
+            InsertStatement statement = new InsertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "game-history")
                     .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
                     .setValue("name", player.getName()).setValue("score", generator.getScore())
                     .setValue("hstime", generator.getTime()).setValue("scoreDiff", calculateDifficultyScore());
@@ -368,11 +368,11 @@ public class ParkourPlayer extends ParkourUser {
         UUID uuid = pp.getPlayer().getUniqueId();
         JOIN_COUNT++;
         if (!Option.SQL.get()) {
-            File data = new File(WITP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
+            File data = new File(IP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
             if (data.exists()) {
                 try {
                     FileReader reader = new FileReader(data);
-                    ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                    ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
                     pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang,
                             from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty, from.useSchematic,
@@ -392,7 +392,7 @@ public class ParkourPlayer extends ParkourUser {
             pp.saveStats();
         } else {
             try {
-                SelectStatement select = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
+                SelectStatement select = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                         .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
                 HashMap<String, List<Object>> map = select.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
@@ -410,7 +410,7 @@ public class ParkourPlayer extends ParkourUser {
                     return pp;
                 }
 
-                SelectStatement options = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
+                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
                         "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards").addCondition("uuid = '" + uuid + "'");
                 map = options.fetch();
@@ -476,7 +476,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public @NotNull ParkourGenerator getGenerator() {
         if (generator == null) {
-            generator = WITP.getVersionGenerator(this);
+            generator = IP.getVersionGenerator(this);
         }
         return generator;
     }

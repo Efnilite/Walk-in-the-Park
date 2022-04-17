@@ -34,19 +34,19 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Main class
+ * Main class of Infinite Parkour
  *
  * @author Efnilite
  * Copyright (c) 2020-2022
  */
-public final class WITP extends ViPlugin {
+public final class IP extends ViPlugin {
 
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
 
     public static boolean OUTDATED = false;
     private static Gson gson;
-    private static WITP instance;
+    private static IP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
     private static WorldDivider divider;
@@ -241,7 +241,7 @@ public final class WITP extends ViPlugin {
         return gson;
     }
 
-    public static WITP getInstance() {
+    public static IP getInstance() {
         return instance;
     }
 }

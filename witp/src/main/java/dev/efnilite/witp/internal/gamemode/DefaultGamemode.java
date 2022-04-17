@@ -2,7 +2,7 @@ package dev.efnilite.witp.internal.gamemode;
 
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.api.Gamemode;
 import dev.efnilite.witp.generator.DefaultGenerator;
 import dev.efnilite.witp.player.ParkourPlayer;
@@ -22,7 +22,7 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return WITP.getConfiguration().getFromItemData(locale, "gamemodes.default");
+        return IP.getConfiguration().getFromItemData(locale, "gamemodes.default");
     }
 
     @Override
@@ -37,6 +37,6 @@ public class DefaultGamemode implements Gamemode {
         }
 
         ParkourPlayer pp = ParkourPlayer.register(player);
-        WITP.getDivider().generate(pp);
+        IP.getDivider().generate(pp);
     }
 }

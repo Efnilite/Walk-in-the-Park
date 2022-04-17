@@ -2,7 +2,7 @@ package dev.efnilite.witp.player;
 
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.events.PlayerLeaveEvent;
 import dev.efnilite.witp.generator.base.ParkourGenerator;
 import dev.efnilite.witp.player.data.Highscore;
@@ -97,7 +97,7 @@ public abstract class ParkourUser {
      */
     public static @NotNull ParkourPlayer join(@NotNull Player player) {
         ParkourPlayer pp = register(player);
-        WITP.getDivider().generate(pp);
+        IP.getDivider().generate(pp);
 
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             pp.sendTranslated("join", player.getName());
@@ -212,7 +212,7 @@ public abstract class ParkourUser {
                 if (session != null) {
                     for (ParkourSpectator spectator : session.getSpectators()) {
                         ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
-                        WITP.getDivider().generate(spp);
+                        IP.getDivider().generate(spp);
 
                         session.removeSpectators(spectator);
                     }
@@ -220,7 +220,7 @@ public abstract class ParkourUser {
 
                 // reset generator (remove blocks) and delete island
                 generator.reset(false);
-                WITP.getDivider().leave(pp);
+                IP.getDivider().leave(pp);
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator) {
                 ParkourSpectator spectator = (ParkourSpectator) user;
@@ -235,14 +235,14 @@ public abstract class ParkourUser {
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
             Logging.stack("Error while trying to make player " + user.getPlayer().getName() + " leave",
                     "Please report this error to the developer. Previous data will still be set.", throwable);
-            user.send(WITP.PREFIX + "<red>There was an error while trying to handle leaving.");
+            user.send(IP.PREFIX + "<red>There was an error while trying to handle leaving.");
         }
 
         players.remove(pl);
         users.remove(pl.getUniqueId());
 
         if (sendBack && Option.BUNGEECORD.get() && kickIfBungee) {
-            Util.sendPlayer(pl, WITP.getConfiguration().getString("config", "bungeecord.return_server"));
+            Util.sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
         if (user.getPreviousData() == null) {
@@ -266,7 +266,7 @@ public abstract class ParkourUser {
      */
     public static void fetchHighScores() throws IOException, SQLException {
         if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(WITP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
+            SelectStatement per = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                     .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
@@ -282,14 +282,14 @@ public abstract class ParkourUser {
                 }
             }
         } else {
-            File folder = new File(WITP.getInstance().getDataFolder() + "/players/");
+            File folder = new File(IP.getInstance().getDataFolder() + "/players/");
             if (!(folder.exists())) {
                 folder.mkdirs();
                 return;
             }
             for (File file : folder.listFiles()) {
                 FileReader reader = new FileReader(file);
-                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                 if (from == null) {
                     continue;
                 }
@@ -315,12 +315,12 @@ public abstract class ParkourUser {
             player.setHighScore(player.name, 0, "0.0s", "0.0");
         }
 
-        File folder = new File(WITP.getInstance().getDataFolder(), "players/"); // update files
+        File folder = new File(IP.getInstance().getDataFolder(), "players/"); // update files
 
         try {
             for (File file : folder.listFiles()) {
                 FileReader reader = new FileReader(file);
-                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                 from.uuid = UUID.fromString(file.getName().replace(".json", ""));
                 from.setHighScore(from.name, 0, "0.0s", "0.0");
                 from.save(true);
@@ -347,11 +347,11 @@ public abstract class ParkourUser {
         if (player != null) {
             player.setHighScore(player.name, 0, "0.0s", "0.0");
         } else {
-            File file = new File(WITP.getInstance().getDataFolder(), "players/" + uuid.toString() + ".json");
+            File file = new File(IP.getInstance().getDataFolder(), "players/" + uuid.toString() + ".json");
 
             try {
                 FileReader reader = new FileReader(file);
-                ParkourPlayer from = WITP.getGson().fromJson(reader, ParkourPlayer.class);
+                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                 from.uuid = UUID.fromString(file.getName().replace(".json", ""));
                 from.setHighScore(from.name, 0, "0.0s", "0.0");
                 from.save(true);
@@ -489,7 +489,7 @@ public abstract class ParkourUser {
      */
     public void sendTranslated(String path, String... replaceable) {
         String message = getTranslated(path, replaceable);
-        if (WITP.getPlaceholderHook() == null) {
+        if (IP.getPlaceholderHook() == null) {
             send(message);
         } else {
             send(PlaceholderAPI.setPlaceholders(player, message));
@@ -509,7 +509,7 @@ public abstract class ParkourUser {
      */
     public String getTranslated(String path, String... replaceable) {
         path = "messages." + getLocale() + "." + path;
-        String message = WITP.getConfiguration().getLang("lang", path);
+        String message = IP.getConfiguration().getLang("lang", path);
 
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);

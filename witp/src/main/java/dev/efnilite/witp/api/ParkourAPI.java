@@ -2,8 +2,8 @@ package dev.efnilite.witp.api;
 
 import dev.efnilite.vilib.sql.InvalidStatementException;
 import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourMenu;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class ParkourAPI {
      * @return the {@link Registry} class
      */
     public static Registry getRegistry() {
-        return WITP.getRegistry();
+        return IP.getRegistry();
     }
 
     /**

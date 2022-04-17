@@ -5,8 +5,8 @@ import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Version;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourMenu;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.events.BlockGenerateEvent;
 import dev.efnilite.witp.events.PlayerFallEvent;
 import dev.efnilite.witp.events.PlayerScoreEvent;
@@ -482,7 +482,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 return;
             }
 
-            File folder = new File(WITP.getInstance().getDataFolder() + "/schematics/");
+            File folder = new File(IP.getInstance().getDataFolder() + "/schematics/");
             List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
             File file = null;
             if (!files.isEmpty()) {

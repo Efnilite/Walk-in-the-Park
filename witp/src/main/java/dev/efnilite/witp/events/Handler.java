@@ -5,8 +5,8 @@ import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.ParkourCommand;
-import dev.efnilite.witp.WITP;
 import dev.efnilite.witp.player.ParkourPlayer;
 import dev.efnilite.witp.player.ParkourUser;
 import dev.efnilite.witp.player.data.PreviousData;
@@ -56,16 +56,16 @@ public class Handler implements EventWatcher {
         }
 
         // OP join messages
-        if (player.isOp() && WITP.OUTDATED) {
+        if (player.isOp() && IP.OUTDATED) {
             Message.send(player, "");
-            Message.send(player, WITP.PREFIX + "Your Walk in the Park build is outdated. Updates usually fix crucial bugs. Please update.");
+            Message.send(player, IP.PREFIX + "Your Walk in the Park build is outdated. Updates usually fix crucial bugs. Please update.");
             Message.send(player, "");
         }
-        if (player.isOp() && WITP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {
+        if (player.isOp() && IP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {
             Message.send(player, "");
-            Message.send(player, WITP.PREFIX + "You are running Multiverse without VoidGen.");
-            Message.send(player, WITP.PREFIX + "This causes extreme lag spikes and performance issues while playing.");
-            Message.send(player, WITP.PREFIX + "Please visit the wiki to fix this.");
+            Message.send(player, IP.PREFIX + "You are running Multiverse without VoidGen.");
+            Message.send(player, IP.PREFIX + "This causes extreme lag spikes and performance issues while playing.");
+            Message.send(player, IP.PREFIX + "Please visit the wiki to fix this.");
             Message.send(player, "");
         }
 
@@ -81,8 +81,8 @@ public class Handler implements EventWatcher {
             }
 
             ParkourPlayer.join(player);
-        } else if (player.getWorld().getUID().equals(WITP.getWorldHandler().getWorld().getUID())) {
-            World fallback = Bukkit.getWorld(WITP.getConfiguration().getString("config", "world.fall-back"));
+        } else if (player.getWorld().getUID().equals(IP.getWorldHandler().getWorld().getUID())) {
+            World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {
                 // If players who left in the world end up in the world itself while not being a player
                 player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -90,7 +90,7 @@ public class Handler implements EventWatcher {
                 Logging.error("There is no backup world! Selecting one at random...");
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(Option.WORLD_NAME.get()))) {
-                        Message.send(player, WITP.PREFIX + "<red>There was an error while trying to find the parkour world.");
+                        Message.send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
                         player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
                     }
@@ -235,8 +235,8 @@ public class Handler implements EventWatcher {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && System.currentTimeMillis() - player.getJoinTime() > 1000) {
-            Material menu = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType();
-            Material quit = WITP.getConfiguration().getFromItemData(player.getLocale(), "general.quit").build().getType();
+            Material menu = IP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType();
+            Material quit = IP.getConfiguration().getFromItemData(player.getLocale(), "general.quit").build().getType();
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {
                 event.setCancelled(true);
@@ -252,7 +252,7 @@ public class Handler implements EventWatcher {
     public void onSwitch(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        UUID parkourWorld = WITP.getWorldHandler().getWorld().getUID();
+        UUID parkourWorld = IP.getWorldHandler().getWorld().getUID();
 
         // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
         if (player.getWorld().getUID() == parkourWorld && user == null && !player.isOp()) {

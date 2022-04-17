@@ -4,7 +4,7 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.witp.WITP;
+import dev.efnilite.witp.IP;
 import dev.efnilite.witp.reward.RewardReader;
 import dev.efnilite.witp.schematic.SchematicCache;
 import dev.efnilite.witp.util.Util;
@@ -125,7 +125,7 @@ public class Configuration {
      * Downloads the structures
      */
     private void schematics() {
-        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists() || !WITP.versionSupportsSchematics()) {
+        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists() || !IP.versionSupportsSchematics()) {
             return;
         }
         String[] schematics = new String[]{"spawn-island.witp"};
