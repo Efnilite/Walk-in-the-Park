@@ -465,8 +465,20 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the ParkourPlayer
      */
-    public static @Nullable ParkourPlayer getPlayer(Player player) {
-        return getPlayer(player.getUniqueId());
+    public static @Nullable ParkourPlayer getPlayer(@Nullable Player player) {
+        return player == null ? null : getPlayer(player.getUniqueId());
+    }
+
+    /**
+     * Returns whether a player is currently active.
+     *
+     * @param   player
+     *          The player
+     *
+     * @return true if the player is registered, false if not.
+     */
+    public static boolean isActive(@Nullable Player player) {
+        return player != null && players.containsKey(player);
     }
 
     /**

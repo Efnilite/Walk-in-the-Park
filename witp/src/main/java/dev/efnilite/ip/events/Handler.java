@@ -235,7 +235,7 @@ public class Handler implements EventWatcher {
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && System.currentTimeMillis() - player.getJoinTime() > 1000) {
-            Material menu = IP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType();
+            Material menu = IP.getConfiguration().getFromItemData(player.getLocale(), "general.menu").build().getType(); // todo optimize (caching?)
             Material quit = IP.getConfiguration().getFromItemData(player.getLocale(), "general.quit").build().getType();
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {

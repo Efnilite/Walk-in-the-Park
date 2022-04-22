@@ -159,7 +159,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int height;
         int gap = getRandomChance(distanceChances) + 1;
 
-        int zoneMax = zone.getMaximumPoint().getBlockY(); // todo fix
+        int zoneMax = zone.getMaximumPoint().getBlockY();
         int zoneMin = zone.getMinimumPoint().getBlockY();
         int mostRecentY = mostRecentBlock.getBlockY();
 
@@ -222,7 +222,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        ParkourMenu.openMainMenu(player);
+        ParkourMenu.openSettingsMenu(player);
     }
 
     @Override

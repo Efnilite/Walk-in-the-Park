@@ -1,5 +1,6 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -51,48 +52,19 @@ public class ParkourCommand extends ViCommand {
         }
 
         if (args.length == 0) {
-            // Help menu
-            Message.send(sender, "");
-            Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
-            Message.send(sender, "");
-            Message.send(sender, "<gray>/parkour <dark_gray>- Main command");
-            if (sender.hasPermission("witp.join")) {
-                Message.send(sender, "<gray>/parkour join <dark_gray>- Join the game on this server");
-                Message.send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
+            // Main menu
+            if (player == null) {
+                sendHelpMessages(sender);
+            } else if (player.hasPermission("witp.menu")) {
+                MainMenu.open(player);
             }
-            if (sender.hasPermission("witp.menu")) {
-                Message.send(sender, "<gray>/parkour menu <dark_gray>- Open the customization menu");
-            }
-            if (sender.hasPermission("witp.gamemode")) {
-                Message.send(sender, "<gray>/parkour gamemode <dark_gray>- Open the gamemode menu");
-            }
-            if (sender.hasPermission("witp.leaderboard")) {
-                Message.send(sender, "<gray>/parkour leaderboard <dark_gray>- Open the leaderboard");
-            }
-            if (sender.hasPermission("witp.schematic")) {
-                Message.send(sender, "<gray>/witp schematic <dark_gray>- Create a schematic");
-            }
-            if (sender.hasPermission("witp.reload")) {
-                Message.send(sender, "<gray>/witp reload <dark_gray>- Reloads the messages-v3.yml file");
-                Message.send(sender, "<gray>/witp migrate <dark_gray>- Migrate your Json files to MySQL");
-            }
-            if (sender.hasPermission("witp.reset")) {
-                Message.send(sender, "<gray>/witp reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
-            }
-            if (sender.hasPermission("witp.forcejoin")) {
-                Message.send(sender, "<gray>/witp forcejoin <everyone/player> <dark_gray>- Forces a player or everyone to join");
-            }
-            if (sender.hasPermission("witp.forceleave")) {
-                Message.send(sender, "<gray>/witp forceleave <everyone/player> <dark_gray>- Forces a player or everyone to leave");
-            }
-            if (sender.hasPermission("witp.recoverinventory")) {
-                Message.send(sender, "<gray>/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
-                        " <red>Useful for recovering data after server crashes or errors when leaving.");
-            }
-            Message.send(sender, "");
             return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
+                // Help menu
+                case "help":
+                    sendHelpMessages(sender);
+                    return true;
                 case "reload":
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
@@ -461,5 +433,47 @@ public class ParkourCommand extends ViCommand {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private void sendHelpMessages(CommandSender sender) {
+        Message.send(sender, "");
+        Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
+        Message.send(sender, "");
+        Message.send(sender, "<gray>/parkour <dark_gray>- Main command");
+        if (sender.hasPermission("witp.join")) {
+            Message.send(sender, "<gray>/parkour join <dark_gray>- Join the game on this server");
+            Message.send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
+        }
+        if (sender.hasPermission("witp.menu")) {
+            Message.send(sender, "<gray>/parkour menu <dark_gray>- Open the customization menu");
+        }
+        if (sender.hasPermission("witp.gamemode")) {
+            Message.send(sender, "<gray>/parkour gamemode <dark_gray>- Open the gamemode menu");
+        }
+        if (sender.hasPermission("witp.leaderboard")) {
+            Message.send(sender, "<gray>/parkour leaderboard <dark_gray>- Open the leaderboard");
+        }
+        if (sender.hasPermission("witp.schematic")) {
+            Message.send(sender, "<gray>/witp schematic <dark_gray>- Create a schematic");
+        }
+        if (sender.hasPermission("witp.reload")) {
+            Message.send(sender, "<gray>/witp reload <dark_gray>- Reloads the messages-v3.yml file");
+            Message.send(sender, "<gray>/witp migrate <dark_gray>- Migrate your Json files to MySQL");
+        }
+        if (sender.hasPermission("witp.reset")) {
+            Message.send(sender, "<gray>/witp reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
+        }
+        if (sender.hasPermission("witp.forcejoin")) {
+            Message.send(sender, "<gray>/witp forcejoin <everyone/player> <dark_gray>- Forces a player or everyone to join");
+        }
+        if (sender.hasPermission("witp.forceleave")) {
+            Message.send(sender, "<gray>/witp forceleave <everyone/player> <dark_gray>- Forces a player or everyone to leave");
+        }
+        if (sender.hasPermission("witp.recoverinventory")) {
+            Message.send(sender, "<gray>/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
+                    " <red>Useful for recovering data after server crashes or errors when leaving.");
+        }
+        Message.send(sender, "");
+
     }
 }

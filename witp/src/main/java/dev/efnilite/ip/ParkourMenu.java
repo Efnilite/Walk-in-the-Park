@@ -171,7 +171,7 @@ public class ParkourMenu {
      * @param   disabledOptions
      *          An array of disabled options
      */
-    public static void openMainMenu(ParkourPlayer user, ParkourOption... disabledOptions)  {
+    public static void openSettingsMenu(ParkourPlayer user, ParkourOption... disabledOptions)  {
         Player player = user.getPlayer();
         Configuration config = IP.getConfiguration();
 
@@ -451,7 +451,7 @@ public class ParkourMenu {
                     .click((event) -> {
                         user.setLocale(lang);
                         user.lang = lang;
-                        openMainMenu(user, disabledOptions);
+                        openSettingsMenu(user, disabledOptions);
                     }));
         }
 
@@ -466,7 +466,7 @@ public class ParkourMenu {
                         .click((event) -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openMainMenu(user, disabledOptions)))
+                        .click((event) -> openSettingsMenu(user, disabledOptions)))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .animation(new WaveWestAnimation())
@@ -499,7 +499,7 @@ public class ParkourMenu {
                         .click((event) -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openMainMenu(user, disabledOptions)))
+                        .click((event) -> openSettingsMenu(user, disabledOptions)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -539,7 +539,7 @@ public class ParkourMenu {
                     .glowing(user.style.equals(name))
                     .click((event) -> {
                         user.style = name;
-                        openMainMenu(user, disabledOptions);
+                        openSettingsMenu(user, disabledOptions);
                     }));
         }
 
@@ -554,7 +554,7 @@ public class ParkourMenu {
                         .click((event) -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openMainMenu(user, disabledOptions)))
+                        .click((event) -> openSettingsMenu(user, disabledOptions)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -650,7 +650,7 @@ public class ParkourMenu {
                                 }))
 
                 .item(26, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openMainMenu(user, disabledOptions)))
+                        .click((event) -> openSettingsMenu(user, disabledOptions)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
