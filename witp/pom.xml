@@ -5,12 +5,12 @@
     <parent>
         <artifactId>WITP</artifactId>
         <groupId>dev.efnilite</groupId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>witp</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.3</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -44,8 +44,8 @@
                             <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
-                                    <pattern>dev.efnilite.fycore</pattern>
-                                    <shadedPattern>dev.efnilite.ip.fycore</shadedPattern>
+                                    <pattern>dev.efnilite.vilib</pattern>
+                                    <shadedPattern>dev.efnilite.ip.vilib</shadedPattern>
                                 </relocation>
 
                                 <relocation>
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>com.github.ViStudios</groupId>
             <artifactId>vilib</artifactId>
-            <version>8cd900ff2d</version>
+            <version>a4d626e879</version>
             <scope>compile</scope>
         </dependency>
 

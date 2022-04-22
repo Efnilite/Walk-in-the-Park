@@ -1,7 +1,6 @@
 Walk in the Park
 
-v3.1.2
-- Added option to base interval rewards on total score or regular score
-- Improved internal handling of playable zones
-- Fixed per style permissions
-- Fixed a lot more!
+v3.2.3
+- Added Traditional Chinese (thanks Konsheng)
+- Improved error message
+- Migrated internal library to vilib
