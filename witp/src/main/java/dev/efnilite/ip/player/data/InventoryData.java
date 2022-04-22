@@ -1,11 +1,11 @@
 package dev.efnilite.ip.player.data;
 
 import com.google.gson.annotations.Expose;
+import dev.efnilite.ip.IP;
+import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.serialization.ItemSerializer;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.config.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

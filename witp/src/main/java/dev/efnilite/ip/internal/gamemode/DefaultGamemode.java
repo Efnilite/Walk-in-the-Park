@@ -1,12 +1,12 @@
 package dev.efnilite.ip.internal.gamemode;
 
-import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

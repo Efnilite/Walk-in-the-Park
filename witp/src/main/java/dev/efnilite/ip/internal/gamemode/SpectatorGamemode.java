@@ -1,5 +1,10 @@
 package dev.efnilite.ip.internal.gamemode;
 
+import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
@@ -7,11 +12,6 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
-import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

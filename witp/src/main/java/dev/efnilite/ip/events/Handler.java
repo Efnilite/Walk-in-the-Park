@@ -1,10 +1,5 @@
 package dev.efnilite.ip.events;
 
-import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.event.EventWatcher;
-import dev.efnilite.vilib.particle.ParticleData;
-import dev.efnilite.vilib.particle.Particles;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -15,6 +10,11 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.ip.world.generation.VoidGenerator;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.event.EventWatcher;
+import dev.efnilite.vilib.particle.ParticleData;
+import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Logging;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

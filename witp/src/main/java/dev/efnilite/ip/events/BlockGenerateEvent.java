@@ -1,8 +1,8 @@
 package dev.efnilite.ip.events;
 
-import dev.efnilite.vilib.event.EventWrapper;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.vilib.event.EventWrapper;
 import org.bukkit.block.Block;
 
 /**

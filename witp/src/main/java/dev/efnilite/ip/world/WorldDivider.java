@@ -1,10 +1,5 @@
 package dev.efnilite.ip.world;
 
-import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Version;
-import dev.efnilite.vilib.vector.Vector2D;
-import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.generator.AreaData;
 import dev.efnilite.ip.generator.DefaultGenerator;
@@ -17,6 +12,11 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
+import dev.efnilite.vilib.vector.Vector2D;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;

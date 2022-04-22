@@ -1,11 +1,11 @@
 package dev.efnilite.ip.api;
 
-import dev.efnilite.vilib.sql.InvalidStatementException;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.vilib.sql.InvalidStatementException;
+import dev.efnilite.vilib.util.Logging;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

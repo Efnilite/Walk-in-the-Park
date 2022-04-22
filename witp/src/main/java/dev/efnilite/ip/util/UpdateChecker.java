@@ -1,8 +1,8 @@
 package dev.efnilite.ip.util;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.ip.IP;
 
 import java.io.BufferedReader;
 import java.io.IOException;

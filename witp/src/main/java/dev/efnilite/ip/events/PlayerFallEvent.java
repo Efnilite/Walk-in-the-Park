@@ -1,7 +1,7 @@
 package dev.efnilite.ip.events;
 
-import dev.efnilite.vilib.event.EventWrapper;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.vilib.event.EventWrapper;
 
 /**
  * This event gets called when a player falls off of the parkour.

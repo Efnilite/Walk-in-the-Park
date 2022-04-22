@@ -1,8 +1,8 @@
 package dev.efnilite.ip.api;
 
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

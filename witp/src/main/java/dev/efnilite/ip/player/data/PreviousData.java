@@ -1,12 +1,12 @@
 package dev.efnilite.ip.player.data;
 
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Version;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Version;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;

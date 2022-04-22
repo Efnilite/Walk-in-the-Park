@@ -1,8 +1,8 @@
 package dev.efnilite.ip.api;
 
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.ip.util.Util;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;

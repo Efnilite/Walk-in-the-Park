@@ -1,13 +1,13 @@
 package dev.efnilite.ip.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
-import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

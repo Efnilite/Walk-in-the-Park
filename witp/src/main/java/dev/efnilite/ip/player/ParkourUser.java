@@ -1,7 +1,5 @@
 package dev.efnilite.ip.player;
 
-import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.events.PlayerLeaveEvent;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -11,6 +9,8 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Logging;
 import fr.mrmicky.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;

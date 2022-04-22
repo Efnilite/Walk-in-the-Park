@@ -1,9 +1,9 @@
 package dev.efnilite.ip.schematic;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
-import dev.efnilite.ip.IP;
 
 import java.io.File;
 import java.util.HashMap;

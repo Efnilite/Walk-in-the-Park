@@ -1,8 +1,8 @@
 package dev.efnilite.ip.internal.style;
 
-import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.StyleType;
+import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 

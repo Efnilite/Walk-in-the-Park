@@ -1,7 +1,5 @@
 package dev.efnilite.ip.player;
 
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.player.data.Highscore;
@@ -9,6 +7,8 @@ import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;

@@ -1,10 +1,5 @@
 package dev.efnilite.ip.generator;
 
-import dev.efnilite.vilib.particle.ParticleData;
-import dev.efnilite.vilib.particle.Particles;
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
-import dev.efnilite.vilib.util.Version;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourMenu;
 import dev.efnilite.ip.events.BlockGenerateEvent;
@@ -20,6 +15,11 @@ import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.particle.ParticleData;
+import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Version;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

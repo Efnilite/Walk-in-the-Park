@@ -1,7 +1,7 @@
 package dev.efnilite.ip.schematic.selection;
 
-import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 
 /**

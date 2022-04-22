@@ -1,8 +1,8 @@
 package dev.efnilite.ip.reward;
 
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.Logging;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

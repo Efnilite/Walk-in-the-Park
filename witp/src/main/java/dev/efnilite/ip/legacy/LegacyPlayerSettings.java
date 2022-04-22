@@ -1,11 +1,11 @@
 package dev.efnilite.ip.legacy;
 
 import com.google.gson.annotations.Expose;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.profile.PlayerProfile;
 import dev.efnilite.ip.player.profile.Profile;
+import dev.efnilite.vilib.util.Logging;
 
 import java.io.FileReader;
 

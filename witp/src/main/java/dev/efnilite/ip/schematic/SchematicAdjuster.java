@@ -1,8 +1,8 @@
 package dev.efnilite.ip.schematic;
 
-import dev.efnilite.vilib.vector.Vector3D;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

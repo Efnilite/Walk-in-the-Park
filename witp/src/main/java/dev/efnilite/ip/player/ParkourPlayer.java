@@ -1,9 +1,6 @@
 package dev.efnilite.ip.player;
 
 import com.google.gson.annotations.Expose;
-import dev.efnilite.vilib.sql.InvalidStatementException;
-import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.generator.DefaultGenerator;
@@ -16,6 +13,9 @@ import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.InsertStatement;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
+import dev.efnilite.vilib.sql.InvalidStatementException;
+import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Task;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

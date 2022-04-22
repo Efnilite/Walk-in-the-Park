@@ -2,12 +2,12 @@ package dev.efnilite.ip.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Logging;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

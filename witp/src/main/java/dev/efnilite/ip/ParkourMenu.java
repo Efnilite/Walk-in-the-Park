@@ -1,5 +1,13 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.StyleType;
+import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.player.data.Highscore;
+import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.util.config.Configuration;
+import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -13,14 +21,6 @@ import dev.efnilite.vilib.inventory.item.SliderItem;
 import dev.efnilite.vilib.inventory.item.TimedItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
-import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.StyleType;
-import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.Highscore;
-import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

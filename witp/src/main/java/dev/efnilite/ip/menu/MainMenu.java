@@ -23,14 +23,12 @@ public class MainMenu {
     static {
         // Singleplayer if player is not found
         registerMainItem(0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(event -> {
-            Player player = (Player) event.getEvent().getWhoClicked();
-            ParkourUser.register(player);
+            ParkourUser.register(event.getPlayer());
         }), (player) -> !ParkourPlayer.isActive(player));
 
         // Settings if player is active
         registerMainItem(9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
-            Player player = (Player) event.getEvent().getWhoClicked();
-            ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+            ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
             if (pp != null) {
                 ParkourMenu.openSettingsMenu(pp);
@@ -39,8 +37,7 @@ public class MainMenu {
 
         // Add a quit button if player is active
         registerMainItem(10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> { // todo add lang support
-            Player player = (Player) event.getEvent().getWhoClicked();
-            ParkourUser.leave(player);
+            ParkourUser.leave(event.getPlayer());
         }), ParkourPlayer::isActive);
     }
 
