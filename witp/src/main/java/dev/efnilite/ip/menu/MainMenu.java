@@ -1,15 +1,18 @@
 package dev.efnilite.ip.menu;
 
-import dev.efnilite.ip.ParkourMenu;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -18,32 +21,50 @@ import java.util.function.Predicate;
  */
 public class MainMenu {
 
-    private static final Map<Integer, ItemContainer> registeredItems = new HashMap<>();
+    private static final Map<Integer, List<ItemContainer>> registeredItems = new HashMap<>();
 
     static {
         // Singleplayer if player is not found
-        registerMainItem(0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(event -> {
-            ParkourUser.register(event.getPlayer());
-        }), (player) -> !ParkourPlayer.isActive(player));
+        registerMainItem(2, 0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(
+                event -> ParkourUser.register(event.getPlayer())),
+                player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
-        registerMainItem(9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
-            ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
+        registerMainItem(2, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
+                ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
-            if (pp != null) {
-                ParkourMenu.openSettingsMenu(pp);
-            }
-        }), ParkourPlayer::isActive);
+                if (pp != null) {
+                    SettingsMenu.open(pp);
+                }
+        }), player -> ParkourPlayer.isActive(player) && ParkourOption.SETTINGS.check(player));
 
-        // Add a quit button if player is active
-        registerMainItem(10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> { // todo add lang support
-            ParkourUser.leave(event.getPlayer());
-        }), ParkourPlayer::isActive);
+        // Quit button if player is active
+        registerMainItem(2, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> // todo add lang support
+                ParkourUser.leave(event.getPlayer())),
+                ParkourPlayer::isActive);
+
+        // Leaderboard only if player has perms
+        registerMainItem(4, 0, new Item(Material.GOLD_BLOCK, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
+                event -> LeaderboardMenu.open(event.getPlayer())),
+                ParkourOption.LEADERBOARD::check);
+
+        // Language only if player has perms
+        registerMainItem(4, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language").click(
+                event -> LeaderboardMenu.open(event.getPlayer())),
+                ParkourOption.LANGUAGE::check);
+
+        // Always allow closing of the menu
+        registerMainItem(4, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close").click(
+                event -> event.getPlayer().closeInventory()),
+                player -> true);
     }
 
     /**
      * Registers an item that will be displayed in a specific slot if the specified condition is met.
      * This will be used to create a context-aware main menu.
+     *
+     * @param   row
+     *          The row in which this item will be displayed. Starts from 0 and ends at 5.
      *
      * @param   id
      *          The id of this item. This will be used to determine the positions of each item.
@@ -55,12 +76,18 @@ public class MainMenu {
      * @param   predicate
      *          The predicate
      */
-    public static void registerMainItem(int id, MenuItem item, Predicate<Player> predicate) {
-        if (id < 0) {
+    public static void registerMainItem(int row, int id, MenuItem item, Predicate<Player> predicate) {
+        if (id < 0 || row < 0 || row > 5) {
             return;
         }
 
-        registeredItems.put(id, new ItemContainer(item, predicate));
+        List<ItemContainer> existing = registeredItems.get(row);
+        if (existing == null) {
+            existing = new ArrayList<>();
+        }
+        existing.add(new ItemContainer(id, item, predicate));
+
+        registeredItems.put(row, existing);
     }
 
     /**
@@ -70,16 +97,19 @@ public class MainMenu {
      *          The player to open the menu to
      */
     public static void open(Player player) {
-        Menu menu = new Menu(3, "Parkour")
+        Menu menu = new Menu(5, "Parkour")
+                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+                .animation(new RandomAnimation())
                 .distributeRowEvenly(1);
 
-        int actualSlot = 9; // start from pos 9 (second row in inventory)
-        for (int id : registeredItems.keySet()) {
-            ItemContainer container = registeredItems.get(id);
+        for (int row : registeredItems.keySet()) {
+            int actualSlot = row * 9; // 0, 9, 18, etc.
 
-            if (container.predicate.test(player)) { // if item in id passes predicate, display it in the menu
-                menu.item(actualSlot, container.item);
-                actualSlot++;
+            for (ItemContainer container : registeredItems.get(row)) {
+                if (container.predicate.test(player)) { // if item in id passes predicate, display it in the menu
+                    menu.item(actualSlot, container.item);
+                    actualSlot++;
+                }
             }
         }
 
@@ -91,10 +121,12 @@ public class MainMenu {
      */
     private static class ItemContainer {
 
+        public int id;
         public MenuItem item;
         public Predicate<Player> predicate;
 
-        public ItemContainer(MenuItem item, Predicate<Player> predicate) {
+        public ItemContainer(int id, MenuItem item, Predicate<Player> predicate) {
+            this.id = id;
             this.item = item;
             this.predicate = predicate;
         }

@@ -1,5 +1,7 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.menu.GamemodeMenu;
+import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -55,7 +57,7 @@ public class ParkourCommand extends ViCommand {
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
-            } else if (player.hasPermission("witp.menu")) {
+            } else if (ParkourOption.MENU.check(player)) {
                 MainMenu.open(player);
             }
             return true;
@@ -126,7 +128,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (Option.PERMISSIONS.get() && !player.hasPermission("witp.join")) {
+                    if (!ParkourOption.JOIN.check(player)) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
@@ -164,22 +166,22 @@ public class ParkourCommand extends ViCommand {
                 case "gm": {
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null) {
-                        if (Option.PERMISSIONS.get() && !player.hasPermission(ParkourOption.GAMEMODE.getPermission())) {
+                        if (!ParkourOption.GAMEMODE.check(player)) {
                             return true;
                         }
-                        ParkourMenu.openGamemodeMenu(user);
+                        GamemodeMenu.open(user);
                     }
                     return true;
                 }
                 case "leaderboard":
-                    if (Option.PERMISSIONS.get() && !player.hasPermission(ParkourOption.LEADERBOARD.getPermission())) {
+                    if (!ParkourOption.LEADERBOARD.check(player)) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
-                    ParkourMenu.openLeaderboardMenu(ParkourUser.getUser(player), player);
+                    LeaderboardMenu.open(player);
                     break;
                 case "schematic":
-                    if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) {
+                    if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) { // default players shouldn't have access even if perms are disabled
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }

@@ -1,7 +1,7 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourMenu;
+import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.events.BlockGenerateEvent;
 import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
@@ -222,7 +222,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        ParkourMenu.openSettingsMenu(player);
+        SettingsMenu.open(player);
     }
 
     @Override

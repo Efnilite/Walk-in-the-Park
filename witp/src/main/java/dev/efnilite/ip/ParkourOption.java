@@ -1,5 +1,8 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.util.config.Option;
+import org.bukkit.entity.Player;
+
 /**
  * An enum for all Parkour Menu Options
  */
@@ -20,7 +23,11 @@ public enum ParkourOption {
 
     GAMEMODE("gamemode", "witp.option.gamemode"),
     LEADERBOARD("leaderboard", "witp.option.leaderboard"),
-    LANGUAGE("language", "witp.option.language");
+    LANGUAGE("language", "witp.option.language"),
+
+    JOIN("join", "witp.join"),
+    MENU("menu", "witp.menu"),
+    SETTINGS("settings", "witp.option.settings");
 
     /**
      * The name of the option
@@ -35,6 +42,19 @@ public enum ParkourOption {
     ParkourOption(String name, String permission) {
         this.name = name;
         this.permission = permission;
+    }
+
+    /**
+     * Checks if a player has the current permission if permissions are enabled.
+     * If perms are disabled, always returns true.
+     *
+     * @param   player
+     *          The player
+     *
+     * @return true if the player is allowed to perform this action, false if not
+     */
+    public boolean check(Player player) {
+        return !Option.PERMISSIONS.get() || player.hasPermission(permission);
     }
 
     public String getName() {

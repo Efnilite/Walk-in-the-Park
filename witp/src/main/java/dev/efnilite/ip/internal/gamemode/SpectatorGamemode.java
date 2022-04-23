@@ -59,7 +59,7 @@ public class SpectatorGamemode implements Gamemode {
             SkullSetter.setPlayerHead(bukkitPlayer, meta);
             item.meta(meta);
 
-            display.add(item.click((event) -> {
+            display.add(item.click(event -> {
                 if (ParkourUser.getActivePlayers().contains(pp)) {
                     ParkourSpectator.spectateSession(player, pp.getSession());
                 }
@@ -71,13 +71,13 @@ public class SpectatorGamemode implements Gamemode {
                 .addToDisplay(display)
 
                 .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> spectator.page(1)))
+                        .click(event -> spectator.page(1)))
 
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> spectator.page(-1)))
+                        .click(event -> spectator.page(-1)))
 
                 .item(31, IP.getConfiguration().getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> player.closeInventory()))
+                        .click(event -> player.closeInventory()))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleInAnimation())

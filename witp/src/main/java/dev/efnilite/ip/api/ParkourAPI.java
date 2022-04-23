@@ -1,7 +1,7 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourMenu;
+import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.sql.InvalidStatementException;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 /**
  * Main API accessor.
  *
- * @see ParkourMenu
+ * @see SettingsMenu
  * @see ParkourUser
  */
 @SuppressWarnings("unused")

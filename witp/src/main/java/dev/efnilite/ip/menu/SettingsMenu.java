@@ -1,10 +1,9 @@
-package dev.efnilite.ip;
+package dev.efnilite.ip.menu;
 
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.Highscore;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -14,24 +13,20 @@ import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import dev.efnilite.vilib.inventory.animation.SnakeSingleAnimation;
 import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
-import dev.efnilite.vilib.inventory.animation.WaveWestAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import dev.efnilite.vilib.inventory.item.TimedItem;
-import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
 import fr.mrmicky.fastboard.FastBoard;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handles all menu-related activities
@@ -39,128 +34,7 @@ import java.util.*;
  * @since v3.0.0
  * @author Efnilite
  */
-public class ParkourMenu {
-
-    /**
-     * Opens the gamemode menu
-     *
-     * @param   user
-     *          The ParkourUser instance
-     */
-    public static void openGamemodeMenu(ParkourUser user) {
-        IP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
-
-        Configuration config = IP.getConfiguration();
-        PagedMenu gamemode = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.gamemode.name")));
-
-        List<MenuItem> items = new ArrayList<>();
-        for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            Item item = gm.getItem(user.getLocale());
-            items.add(new Item(item.getMaterial(), item.getName())
-                    .click((event) -> gm.handleItemClick(user.getPlayer(), user, event.getMenu())));
-        }
-
-        gamemode
-                .displayRows(0, 1)
-                .addToDisplay(items)
-
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> gamemode.page(1)))
-
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> gamemode.page(-1)))
-
-                .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> user.getPlayer().closeInventory()))
-
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new RandomAnimation())
-                .open(user.getPlayer());
-    }
-    
-    /**
-     * Shows the leaderboard menu
-     *
-     * @param   user
-     *          The user, but can be null
-     *
-     * @param   player
-     *          The player
-     */
-    public static void openLeaderboardMenu(@Nullable ParkourUser user, Player player) {
-        ParkourUser.initHighScores(); // make sure scores are enabled
-
-        // sort high scores by value
-        HashMap<UUID, Integer> sorted = Util.sortByValue(ParkourUser.highScores);
-        ParkourUser.highScores = sorted;
-        List<UUID> uuids = new ArrayList<>(sorted.keySet());
-
-        // init vars
-        String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
-        Configuration config = IP.getConfiguration();
-        PagedMenu leaderboard = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
-        List<MenuItem> items = new ArrayList<>();
-
-        int rank = 1;
-        Item base = config.getFromItemData(locale, "options.leaderboard-head");
-        for (UUID uuid : uuids) {
-            Highscore highscore = ParkourUser.getHighscore(uuid);
-            if (highscore == null) {
-                continue;
-            }
-
-            int finalRank = rank;
-            Item item = base.clone()
-                    .material(Material.PLAYER_HEAD)
-                    .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
-                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name)
-                            .replace("%t", highscore.time)
-                            .replace("%d", highscore.diff))
-                    .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
-                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name)
-                            .replace("%t", highscore.time)
-                            .replace("%d", highscore.diff));
-
-            // Player head gathering
-            ItemStack stack = item.build();
-            stack.setType(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) stack.getItemMeta();
-            if (meta == null) {
-                continue;
-            }
-            SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
-            item.meta(meta);
-
-            if (uuid.equals(player.getUniqueId())) {
-                leaderboard.item(30, item.clone());
-                item.glowing();
-            }
-
-            items.add(item);
-            rank++;
-        }
-
-        leaderboard
-                .displayRows(0, 1)
-                .addToDisplay(items)
-
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> leaderboard.page(1)))
-
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> leaderboard.page(-1)))
-
-                .item(32, config.getFromItemData(locale, "general.close")
-                        .click((event) -> player.closeInventory()))
-
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new WaveEastAnimation())
-                .open(player);
-    }
+public class SettingsMenu {
 
     /**
      * Shows the main menu to a valid ParkourPlayer instance
@@ -171,7 +45,7 @@ public class ParkourMenu {
      * @param   disabledOptions
      *          An array of disabled options
      */
-    public static void openSettingsMenu(ParkourPlayer user, ParkourOption... disabledOptions)  {
+    public static void open(ParkourPlayer user, ParkourOption... disabledOptions)  {
         Player player = user.getPlayer();
         Configuration config = IP.getConfiguration();
 
@@ -182,7 +56,7 @@ public class ParkourMenu {
 
         if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
             main.item(0, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
-                    .click((event) -> {
+                    .click(event -> {
                         if (IP.getRegistry().getStyleTypes().size() == 1) {
                             openSingleStyleMenu(user, IP.getRegistry().getStyleTypes().get(0), disabledOptions);
                         } else {
@@ -203,7 +77,7 @@ public class ParkourMenu {
                 item.add(slot, displayItem.clone()
                                 .amount(value)
                                 .modifyLore(line -> line.replace("%s", Integer.toString(value))),
-                        (event) -> {
+                        event -> {
                             user.blockLead = value;
                             return true;
                         });
@@ -215,7 +89,7 @@ public class ParkourMenu {
 
         if (checkOptions(player, ParkourOption.SCHEMATICS, disabledOptions)) {
             main.item(2, config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATICS.getName())
-                    .click((event) -> openSchematicMenu(user, disabledOptions)));
+                    .click(event -> openSchematicMenu(user, disabledOptions)));
         }
 
         if (checkOptions(player, ParkourOption.TIME, disabledOptions)) {
@@ -230,7 +104,7 @@ public class ParkourMenu {
                     .add(0, item.clone()
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
-                            (event) -> {
+                            event -> {
                                 user.selectedTime = 0;
                                 user.updateVisualTime(user.selectedTime);
                                 return true;
@@ -238,7 +112,7 @@ public class ParkourMenu {
                     .add(1, item.clone()
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
-                            (event) -> {
+                            event -> {
                                 user.selectedTime = 6000;
                                 user.updateVisualTime(user.selectedTime);
                                 return true;
@@ -246,7 +120,7 @@ public class ParkourMenu {
                     .add(2, item.clone()
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
-                            (event) -> {
+                            event -> {
                                 user.selectedTime = 12000;
                                 user.updateVisualTime(user.selectedTime);
                                 return true;
@@ -254,7 +128,7 @@ public class ParkourMenu {
                     .add(3, item.clone()
                                     .modifyLore(line ->
                                             line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
-                            (event) -> {
+                            event -> {
                                 user.selectedTime = 18000;
                                 user.updateVisualTime(user.selectedTime);
                                 return true;
@@ -271,7 +145,7 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (event) -> {
+                            event -> {
                                     user.showScoreboard = true;
                                     user.setBoard(new FastBoard(player));
                                     user.updateScoreboard();
@@ -280,7 +154,7 @@ public class ParkourMenu {
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (event) -> {
+                            event -> {
                                     user.showScoreboard = false;
                                     if (user.getBoard() != null && !user.getBoard().isDeleted()) {
                                         user.getBoard().delete();
@@ -297,14 +171,14 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (event) -> {
+                            event -> {
                                 user.showFallMessage = true;
                                 return true;
                             })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (event) -> {
+                            event -> {
                                 user.showFallMessage = false;
                                 return true;
                             }));
@@ -318,14 +192,14 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (event) -> {
+                            event -> {
                                 user.useParticlesAndSound = true;
                                 return true;
                             })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (event) -> {
+                            event -> {
                                 user.useParticlesAndSound = false;
                                 return true;
                             }));
@@ -339,7 +213,7 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (event) -> {
+                            event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSpecialBlocks = true;
                                     return true;
@@ -349,7 +223,7 @@ public class ParkourMenu {
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (event) -> {
+                            event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSpecialBlocks = false;
                                     return true;
@@ -366,7 +240,7 @@ public class ParkourMenu {
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            (event) -> {
+                            event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useScoreDifficulty = true;
                                     return true;
@@ -376,7 +250,7 @@ public class ParkourMenu {
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                     .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            (event) -> {
+                            event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useScoreDifficulty = false;
                                     return true;
@@ -385,92 +259,45 @@ public class ParkourMenu {
                             }));
         }
 
-        if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
-
-            main.item(19, item.click((event) -> openGamemodeMenu(user)));
-        }
-
-        if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
-                    .modifyLore(line -> // #%n (%s)
-                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
-                                    user.highScore.toString()) + ")");
-
-            main.item(20, item.click((event) -> {
-                player.closeInventory();
-                openLeaderboardMenu(user, player);
-            }));
-        }
-
-        if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
-                    .modifyLore(line ->
-                            line.replace("%s", user.getLocale()));
-
-            main.item(21, item.click((event) -> openLangMenu(user, disabledOptions)));
-        }
+//        if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
+//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
+//
+//            main.item(19, item.click(event -> GamemodeMenu.open(user)));
+//        }
+//
+//        if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
+//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
+//                    .modifyLore(line -> // #%n (%s)
+//                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
+//                                    user.highScore.toString()) + ")");
+//
+//            main.item(20, item.click(event -> {
+//                player.closeInventory();
+//                LeaderboardMenu.open(player);
+//            }));
+//        }
+//
+//        if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
+//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
+//                    .modifyLore(line ->
+//                            line.replace("%s", user.getLocale()));
+//
+//            main.item(21, item.click(event -> LangMenu.open(user, disabledOptions)));
+//        } todo remove/transfer
 
         // opens the menu
         main
                 .distributeRowEvenly(0, 1, 2, 3)
 
                 .item(28, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> user.getPlayer().closeInventory()))
+                        .click(event -> user.getPlayer().closeInventory()))
 
                 .item(29, config.getFromItemData(user.getLocale(), "general.quit")
-                        .click((event) -> ParkourPlayer.leave(user)))
+                        .click(event -> ParkourPlayer.leave(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SnakeSingleAnimation())
                 .open(player);
-    }
-
-    /**
-     * Opens the language menu
-     *
-     * @param   user
-     *          The ParkourPlayer instance
-     *
-     * @param   disabledOptions
-     *          Options which are disabled
-     */
-    public static void openLangMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
-        Configuration config = IP.getConfiguration();
-
-        // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.language.name")));
-
-        List<MenuItem> items = new ArrayList<>();
-        for (String lang : Option.LANGUAGES.get()) {
-            Item item = new Item(Material.PAPER, "<#238681><bold>" + lang);
-
-            items.add(item
-                    .glowing(user.getLocale().equals(lang))
-                    .click((event) -> {
-                        user.setLocale(lang);
-                        user.lang = lang;
-                        openSettingsMenu(user, disabledOptions);
-                    }));
-        }
-
-        style
-                .displayRows(0, 1)
-                .addToDisplay(items)
-
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> style.page(1)))
-
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> style.page(-1)))
-
-                .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openSettingsMenu(user, disabledOptions)))
-
-                .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
-                .animation(new WaveWestAnimation())
-                .open(user.getPlayer());
     }
 
     public static void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
@@ -484,8 +311,7 @@ public class ParkourMenu {
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
             Item item = type.getItem(user.getLocale());
 
-            items.add(item
-                    .click((event) -> openSingleStyleMenu(user, type, disabledOptions)));
+            items.add(item.click(event -> openSingleStyleMenu(user, type, disabledOptions)));
         }
 
         style
@@ -493,13 +319,13 @@ public class ParkourMenu {
                 .addToDisplay(items)
 
                 .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> style.page(1)))
+                        .click(event -> style.page(1)))
 
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> style.page(-1)))
+                        .click(event -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openSettingsMenu(user, disabledOptions)))
+                        .click(event -> open(user, disabledOptions)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -537,9 +363,9 @@ public class ParkourMenu {
 
             items.add(item
                     .glowing(user.style.equals(name))
-                    .click((event) -> {
+                    .click(event -> {
                         user.style = name;
-                        openSettingsMenu(user, disabledOptions);
+                        open(user, disabledOptions);
                     }));
         }
 
@@ -548,13 +374,13 @@ public class ParkourMenu {
                 .addToDisplay(items)
 
                 .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click((event) -> style.page(1)))
+                        .click(event -> style.page(1)))
 
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click((event) -> style.page(-1)))
+                        .click(event -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openSettingsMenu(user, disabledOptions)))
+                        .click(event -> open(user, disabledOptions)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -586,7 +412,7 @@ public class ParkourMenu {
                 .initial(difficulties.indexOf(user.schematicDifficulty))
                 .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                 .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
-                        (event) -> {
+                        event -> {
                             if (allowSettingChange(user, event)) {
                                 user.schematicDifficulty = 0.2;
                                 return true;
@@ -595,7 +421,7 @@ public class ParkourMenu {
                         })
                 .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
                                 .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
-                        (event) -> {
+                        event -> {
                             if (allowSettingChange(user, event)) {
                                 user.schematicDifficulty = 0.4;
                                 return true;
@@ -604,7 +430,7 @@ public class ParkourMenu {
                         })
                 .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
                                 .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
-                        (event) -> {
+                        event -> {
                             if (allowSettingChange(user, event)) {
                                 user.schematicDifficulty = 0.6;
                                 return true;
@@ -613,7 +439,7 @@ public class ParkourMenu {
                         })
                 .add(3, item.clone().material(Material.SKELETON_SKULL)
                                 .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
-                        (event) -> {
+                        event -> {
                             if (allowSettingChange(user, event)) {
                                 user.schematicDifficulty = 0.8;
                                 return true;
@@ -631,7 +457,7 @@ public class ParkourMenu {
                         .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                                (event) -> {
+                                event -> {
                                     if (allowSettingChange(user, event)) {
                                         user.useSchematic = true;
                                         return true;
@@ -641,7 +467,7 @@ public class ParkourMenu {
                         .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                         .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                                (event) -> {
+                                event -> {
                                     if (allowSettingChange(user, event)) {
                                         user.useSchematic = false;
                                         return true;
@@ -650,7 +476,7 @@ public class ParkourMenu {
                                 }))
 
                 .item(26, config.getFromItemData(user.getLocale(), "general.close")
-                        .click((event) -> openSettingsMenu(user, disabledOptions)))
+                        .click(event -> open(user, disabledOptions)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
