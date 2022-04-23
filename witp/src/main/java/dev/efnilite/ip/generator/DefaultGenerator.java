@@ -1,12 +1,12 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.events.BlockGenerateEvent;
 import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
+import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;

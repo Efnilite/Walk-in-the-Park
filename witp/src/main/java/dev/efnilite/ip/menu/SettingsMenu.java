@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -259,31 +260,31 @@ public class SettingsMenu {
                             }));
         }
 
-//        if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
-//
-//            main.item(19, item.click(event -> GamemodeMenu.open(user)));
-//        }
-//
-//        if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
-//                    .modifyLore(line -> // #%n (%s)
-//                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
-//                                    user.highScore.toString()) + ")");
-//
-//            main.item(20, item.click(event -> {
-//                player.closeInventory();
-//                LeaderboardMenu.open(player);
-//            }));
-//        }
-//
-//        if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
-//                    .modifyLore(line ->
-//                            line.replace("%s", user.getLocale()));
-//
-//            main.item(21, item.click(event -> LangMenu.open(user, disabledOptions)));
-//        } todo remove/transfer
+        if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
+
+            main.item(19, item.click(event -> GamemodeMenu.open(user)));
+        }
+
+        if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
+                    .modifyLore(line -> // #%n (%s)
+                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
+                                    user.highScore.toString()) + ")");
+
+            main.item(20, item.click(event -> {
+                player.closeInventory();
+                LeaderboardMenu.open(player);
+            }));
+        }
+
+        if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
+            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
+                    .modifyLore(line ->
+                            line.replace("%s", user.getLocale()));
+
+            main.item(21, item.click(event -> LangMenu.open(user, disabledOptions)));
+        }
 
         // opens the menu
         main
