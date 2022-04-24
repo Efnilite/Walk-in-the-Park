@@ -2,6 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.menu.GamemodeMenu;
 import dev.efnilite.ip.menu.LeaderboardMenu;
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -53,14 +54,13 @@ public class ParkourCommand extends ViCommand {
         }
 
         if (args.length == 0) {
-            // Main menu
-            sendHelpMessages(sender);
 
-//            if (player == null) {
-//                sendHelpMessages(sender);
-//            } else if (ParkourOption.MENU.check(player)) {
-//                MainMenu.open(player);
-//            }
+            // Main menu
+            if (player == null) {
+                sendHelpMessages(sender);
+            } else if (ParkourOption.MENU.check(player)) {
+                MainMenu.open(player);
+            }
             return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -438,7 +438,7 @@ public class ParkourCommand extends ViCommand {
         }
     }
 
-    private void sendHelpMessages(CommandSender sender) {
+    public static void sendHelpMessages(CommandSender sender) {
         Message.send(sender, "");
         Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
         Message.send(sender, "");

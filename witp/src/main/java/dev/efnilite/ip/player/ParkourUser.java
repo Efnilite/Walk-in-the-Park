@@ -114,8 +114,7 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Registers a player. This may be used to internally register a player without a joining message.
-     * Doesn't use async reading because the system immediately needs the data.
+     * Registers a player. This registers the player internally - for joining, use {@link #join(Player)}
      * This automatically unregisters the player if it is already registered.
      *
      * @param   player

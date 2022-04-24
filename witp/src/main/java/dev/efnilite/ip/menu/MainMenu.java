@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu;
 
+import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -25,12 +26,12 @@ public class MainMenu {
 
     static {
         // Singleplayer if player is not found
-        registerMainItem(2, 0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(
-                event -> ParkourUser.register(event.getPlayer())),
+        registerMainItem(1, 0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(
+                event -> ParkourUser.join(event.getPlayer())),
                 player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
-        registerMainItem(2, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
+        registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
                 if (pp != null) {
@@ -39,22 +40,26 @@ public class MainMenu {
         }), player -> ParkourPlayer.isActive(player) && ParkourOption.SETTINGS.check(player));
 
         // Quit button if player is active
-        registerMainItem(2, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> // todo add lang support
+        registerMainItem(1, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> // todo add lang support
                 ParkourUser.leave(event.getPlayer())),
                 ParkourPlayer::isActive);
 
         // Leaderboard only if player has perms
-        registerMainItem(4, 0, new Item(Material.GOLD_BLOCK, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
+        registerMainItem(3, 0, new Item(Material.GOLD_BLOCK, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
                 event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms
-        registerMainItem(4, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language").click(
+        registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language").click(
                 event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LANGUAGE::check);
 
+        registerMainItem(3, 2, new Item(Material.PAPER, "<#E53CA2><bold>View commands").click(
+                event -> ParkourCommand.sendHelpMessages(event.getPlayer())),
+                player -> true);
+
         // Always allow closing of the menu
-        registerMainItem(4, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close").click(
+        registerMainItem(3, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close").click(
                 event -> event.getPlayer().closeInventory()),
                 player -> true);
     }
@@ -77,7 +82,7 @@ public class MainMenu {
      *          The predicate
      */
     public static void registerMainItem(int row, int id, MenuItem item, Predicate<Player> predicate) {
-        if (id < 0 || row < 0 || row > 5) {
+        if (id < 0 || row < 0 || row > 4) {
             return;
         }
 
@@ -97,10 +102,10 @@ public class MainMenu {
      *          The player to open the menu to
      */
     public static void open(Player player) {
-        Menu menu = new Menu(5, "Parkour")
-                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+        Menu menu = new Menu(4, "<white>Parkour")
+                .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
-                .distributeRowEvenly(1);
+                .distributeRowEvenly(0, 1, 2, 3);
 
         for (int row : registeredItems.keySet()) {
             int actualSlot = row * 9; // 0, 9, 18, etc.
