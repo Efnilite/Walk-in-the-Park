@@ -1,6 +1,4 @@
 Walk in the Park
 
-v3.2.3
-- Added Traditional Chinese (thanks Konsheng)
-- Improved error message
-- Migrated internal library to vilib
+v3.3.0
+- Updated to Java 16. All lower used versions will be incompatible.

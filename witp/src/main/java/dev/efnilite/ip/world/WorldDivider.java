@@ -117,7 +117,7 @@ public class WorldDivider {
                 createIsland(player, cachedPoint);
             }
 
-            Logging.verbose("Cached point divided to " + player.getPlayer().getName() + " at " + cachedPoint);
+            Logging.verbose("Cached point divided to " + player.getName() + " at " + cachedPoint);
         } else {
             int size = activePoints.size();
             int[] coords = Util.spiralAt(size);
@@ -131,7 +131,7 @@ public class WorldDivider {
                 createIsland(player, point);
             }
 
-            Logging.verbose("New point divided to " + player.getPlayer().getName() + " at " + point);
+            Logging.verbose("New point divided to " + player.getName() + " at " + point);
         }
     }
 
@@ -160,7 +160,7 @@ public class WorldDivider {
                     block.setType(Material.AIR, false);
                 }
             } else {
-                Logging.warn("Could not find data on leave for player " + player.getPlayer().getName());
+                Logging.warn("Could not find data on leave for player " + player.getName());
                 Logging.warn("If any floating islands appear in the parkour world, try to reload the server to fix the issue.");
             }
         }

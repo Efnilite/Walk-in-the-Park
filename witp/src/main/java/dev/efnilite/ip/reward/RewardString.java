@@ -36,7 +36,7 @@ public class RewardString {
 
         // Check for placeholders
         if (string.toLowerCase().contains("%player%")) {
-            string = string.replaceAll("%player%", player.getPlayer().getName());
+            string = string.replaceAll("%player%", player.getName());
         }
 
         if (string.toLowerCase().contains("leave:")) { // leave:

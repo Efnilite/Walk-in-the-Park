@@ -45,7 +45,7 @@ public class SingleSession implements Session {
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.sendTranslated("spectator-join", spectator.getPlayer().getName());
+                player.sendTranslated("spectator-join", spectator.getName());
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
@@ -57,7 +57,7 @@ public class SingleSession implements Session {
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.sendTranslated("spectator-leave", spectator.getPlayer().getName());
+                player.sendTranslated("spectator-leave", spectator.getName());
             }
 
             this.spectators.remove(spectator.getUUID());

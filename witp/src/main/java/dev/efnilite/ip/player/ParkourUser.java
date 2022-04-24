@@ -161,7 +161,7 @@ public abstract class ParkourUser {
      */
     public static void leave(@NotNull ParkourUser user) {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
-            user.sendTranslated("leave", user.getPlayer().getName());
+            user.sendTranslated("leave", user.getName());
             for (ParkourUser to : getUsers()) {
                 if (to.getUUID().equals(user.getUUID())) {
                     continue;
@@ -232,7 +232,7 @@ public abstract class ParkourUser {
                 user.getBoard().delete();
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
-            Logging.stack("Error while trying to make player " + user.getPlayer().getName() + " leave",
+            Logging.stack("Error while trying to make player " + user.getName() + " leave",
                     "Please report this error to the developer. Previous data will still be set.", throwable);
             user.send(IP.PREFIX + "<red>There was an error while trying to handle leaving.");
         }
@@ -245,7 +245,7 @@ public abstract class ParkourUser {
             return;
         }
         if (user.getPreviousData() == null) {
-            Logging.warn("No previous data found for " + user.getPlayer().getName());
+            Logging.warn("No previous data found for " + user.getName());
         } else {
             user.getPreviousData().apply(sendBack);
 
@@ -626,5 +626,14 @@ public abstract class ParkourUser {
         }
 
         return locale;
+    }
+
+    /**
+     * Returns the player's name
+     *
+     * @return the name of the player
+     */
+    public String getName() {
+        return player.getName();
     }
 }

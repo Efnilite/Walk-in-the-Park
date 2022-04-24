@@ -18,6 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * This class stores data about a playing session, since a player can change class several types while
  * switching between gamemodes. This class may include multiple players, or just one.
  *
+ * These are referred to as 'Lobbies' in game, to make it easier for players to understand their function.
+ *
  * @since v3.0.3
  * @author Efnilite
  */
@@ -164,6 +166,18 @@ public interface Session {
         if (getPlayers().isEmpty() && getSpectators().isEmpty()) { // if there are no other players/spectators, close session
             Manager.unregister(this);
         }
+    }
+
+    /**
+     * Checks if a Session is currently registered.
+     *
+     * @param   id
+     *          The id of the session.
+     *
+     * @return true if the Session is active. False if not.
+     */
+    static boolean isActive(String id) {
+        return getSession(id) != null;
     }
 
     /**

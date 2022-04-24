@@ -94,7 +94,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
         super(player, generatorOptions);
-        Logging.verbose("Init of DefaultGenerator of " + player.getPlayer().getName());
+        Logging.verbose("Init of DefaultGenerator of " + player.getName());
 
         this.score = 0;
         this.totalScore = 0;
@@ -227,7 +227,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void startTick() {
-        Logging.verbose("Starting generator of " + player.getPlayer().getName());
+        Logging.verbose("Starting generator of " + player.getName());
 
         task = new BukkitRunnable() {
             @Override

@@ -30,6 +30,10 @@ public class MainMenu {
                 event -> ParkourUser.join(event.getPlayer())),
                 player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
+        registerMainItem(1, 2, new Item(Material.BUCKET, "<#39D5AB><bold>Spectator").click(
+                        event -> SpectatorMenu.open(event.getPlayer())),
+                player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
+
         // Settings if player is active
         registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
@@ -51,11 +55,14 @@ public class MainMenu {
 
         // Language only if player has perms
         registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language").click(
-                event -> LeaderboardMenu.open(event.getPlayer())),
-                ParkourOption.LANGUAGE::check);
+                event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
+                player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
 
         registerMainItem(3, 2, new Item(Material.PAPER, "<#E53CA2><bold>View commands").click(
-                event -> ParkourCommand.sendHelpMessages(event.getPlayer())),
+                event -> {
+                    ParkourCommand.sendHelpMessages(event.getPlayer());
+                    event.getPlayer().closeInventory();
+                }),
                 player -> true);
 
         // Always allow closing of the menu
@@ -103,7 +110,7 @@ public class MainMenu {
      */
     public static void open(Player player) {
         Menu menu = new Menu(4, "<white>Parkour")
-                .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
                 .distributeRowEvenly(0, 1, 2, 3);
 

@@ -409,7 +409,7 @@ public class ParkourCommand extends ViCommand {
             if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("witp.reload")) {
                 completions.add("everyone");
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
-                    completions.add(pp.getPlayer().getName());
+                    completions.add(pp.getName());
                 }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));

@@ -30,6 +30,10 @@ public class LangMenu {
     public static void open(ParkourPlayer user, ParkourOption... disabledOptions) {
         Configuration config = IP.getConfiguration();
 
+        if (user == null) {
+            return;
+        }
+
         // init menu
         PagedMenu style = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.language.name")));

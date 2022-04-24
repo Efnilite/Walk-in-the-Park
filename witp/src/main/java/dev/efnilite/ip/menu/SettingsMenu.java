@@ -304,25 +304,19 @@ public class SettingsMenu {
         Configuration config = IP.getConfiguration();
 
         // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" +
+        Menu menu = new Menu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
 
-        List<MenuItem> items = new ArrayList<>();
+        int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
             Item item = type.getItem(user.getLocale());
 
-            items.add(item.click(event -> openSingleStyleMenu(user, type, disabledOptions)));
+            menu.item(slot, item.click(event -> openSingleStyleMenu(user, type, disabledOptions)));
+            slot++;
         }
 
-        style
-                .displayRows(0, 1)
-                .addToDisplay(items)
-
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click(event -> style.page(1)))
-
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click(event -> style.page(-1)))
+        menu
+                .distributeRowEvenly(1)
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
                         .click(event -> open(user, disabledOptions)))
@@ -489,7 +483,7 @@ public class SettingsMenu {
             event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player.getLocale(), "options.cant-change")
                     .click((event1) -> {
 
-                    }), event, 5 * 20));
+                    }), event).stay(5 * 20));
             event.getMenu().updateItem(event.getSlot());
             return false;
         }
