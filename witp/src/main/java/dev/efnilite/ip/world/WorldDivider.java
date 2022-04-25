@@ -152,9 +152,6 @@ public class WorldDivider {
                 for (Block block : data.blocks()) {
                     block.setType(Material.AIR, false);
                 }
-            } else {
-                IP.logging().warn("Could not find data on leave for player " + player.getName());
-                IP.logging().warn("If any floating islands appear in the parkour world, try to reload the server to fix the issue.");
             }
         }
 
@@ -257,6 +254,11 @@ public class WorldDivider {
             defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
         }
 
+        // setup inventory, etc.
+        setup(to, pp);
+    }
+
+    public void setupSession(ParkourPlayer pp) {
         // create session
         Session session = new SingleSession();
         session.addPlayers(pp);
@@ -264,13 +266,12 @@ public class WorldDivider {
 
         // set session id for player
         pp.setSessionId(session.getSessionId());
-
-        // setup inventory, etc.
-        setup(to, pp);
     }
 
     public void setup(Location to, ParkourPlayer pp) {
         Player player = pp.getPlayer();
+
+        setupSession(pp);
 
         pp.teleport(to);
 

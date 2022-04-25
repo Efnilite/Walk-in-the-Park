@@ -3,7 +3,7 @@ package dev.efnilite.ip.player.data;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.vilib.serialization.ItemSerializer;
+import dev.efnilite.vilib.serialization.ObjectSerializer;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class InventoryData {
 
         for (int slot : inventory.keySet()) {
             if (readFromFile) {
-                ItemStack item = ItemSerializer.deserialize64(inventory.get(slot));
+                ItemStack item = ObjectSerializer.deserialize64(inventory.get(slot));
                 if (item == null) {
                     wasSuccessful = false;
                     continue;
@@ -110,7 +110,7 @@ public class InventoryData {
         Inventory inventory = this.player.getInventory();
         for (ItemStack item : inventory.getContents()) {
             if (item != null) {
-                this.inventory.put(index, ItemSerializer.serialize64(item));
+                this.inventory.put(index, ObjectSerializer.serialize64(item));
                 this.loadedInventory.put(index, item);
             }
             index++;

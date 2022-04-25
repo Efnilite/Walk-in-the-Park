@@ -32,11 +32,15 @@ public class SingleplayerMenu {
         String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
 
         Configuration config = IP.getConfiguration();
-        PagedMenu gamemode = new PagedMenu(4, "<white>Singleplayer" +
+        PagedMenu gamemode = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
+            if (gm.isMultiplayer()) {
+                continue;
+            }
+
             Item item = gm.getItem(locale);
             items.add(new Item(item.getMaterial(), item.getName())
                     .click(event -> gm.handleItemClick(player, null, event.getMenu())));

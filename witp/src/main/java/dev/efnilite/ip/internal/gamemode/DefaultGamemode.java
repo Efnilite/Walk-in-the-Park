@@ -38,4 +38,9 @@ public class DefaultGamemode implements Gamemode {
         ParkourPlayer pp = ParkourPlayer.register(player);
         IP.getDivider().generate(pp);
     }
+
+    @Override
+    public boolean isMultiplayer() {
+        return false;
+    }
 }

@@ -25,4 +25,9 @@ public class SpectatorGamemode implements Gamemode {
     public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
         SpectatorMenu.open(player);
     }
+
+    @Override
+    public boolean isMultiplayer() {
+        return false;
+    }
 }

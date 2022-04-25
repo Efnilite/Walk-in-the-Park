@@ -44,4 +44,6 @@ public interface Gamemode {
      */
     void handleItemClick(Player player, ParkourUser user, Menu previousMenu);
 
+    boolean isMultiplayer();
+
 }

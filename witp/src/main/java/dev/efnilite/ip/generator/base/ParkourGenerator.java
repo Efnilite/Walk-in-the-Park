@@ -168,4 +168,8 @@ public abstract class ParkourGenerator {
     public void setZone(Selection zone) {
         this.zone = zone;
     }
+
+    public List<GeneratorOption> getGeneratorOptions() {
+        return generatorOptions;
+    }
 }
