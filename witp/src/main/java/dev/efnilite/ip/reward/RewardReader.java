@@ -1,7 +1,7 @@
 package dev.efnilite.ip.reward;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.config.ConfigOption;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +70,7 @@ public class RewardReader {
             try {
                 INTERVAL_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
+                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
             }
         }
 
@@ -85,7 +85,7 @@ public class RewardReader {
             try {
                 SCORE_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
+                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
             }
         }
 
@@ -100,7 +100,7 @@ public class RewardReader {
             try {
                 ONE_TIME_REWARDS.put(Integer.parseInt(interval), strings);
             } catch (NumberFormatException ex) {
-                Logging.stack(interval + " is not a valid score", "Check your rewards-v2.yml file for incorrect numbers");
+                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
             }
         }
     }

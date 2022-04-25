@@ -6,7 +6,6 @@ import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.config.ConfigOption;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -115,7 +114,7 @@ public class Option {
                 if (option.equalsIgnoreCase(node)) {
                     String value = items.getString("items.options." + node + ".default");
                     if (value == null) {
-                        Logging.stack("Default option '" + node + "' is null!", "Please check your items-v3.yml file and check the default options!");
+                        IP.logging().stack("Default option '" + node + "' is null!", "check the items file and the default options");
                         continue;
                     }
                     OPTIONS_DEFAULTS.put(node, value);
@@ -140,7 +139,7 @@ public class Option {
         POSSIBLE_LEADS = config.getIntegerList("options.leads.amount");
         for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
             if (lead < 1 || lead > 64) {
-                Logging.error("Invalid lead in config: found " + lead + ", should be above 1 and below 64!");
+                IP.logging().error("Invalid lead in config: found " + lead + ", should be above 1 and below 64 to prevent lag.");
                 POSSIBLE_LEADS.remove((Object) lead);
             }
         }
@@ -186,7 +185,7 @@ public class Option {
                 try {
                     SOUND_TYPE = new ConfigOption<>(Sound.valueOf("BLOCK_NOTE_PLING"));
                 } catch (IllegalArgumentException ex2) {
-                    Logging.error("Invalid sound: " + enumValue);
+                    IP.logging().error("Invalid sound: " + enumValue);
                     SOUND_TYPE = new ConfigOption<>(Sound.values()[0]);
                 }
             }
@@ -198,7 +197,7 @@ public class Option {
                 try {
                     PARTICLE_TYPE = new ConfigOption<>(Particle.valueOf("SPELL_INSTANT"));
                 } catch (IllegalArgumentException ex2) {
-                    Logging.error("Invalid particle: " + enumValue);
+                    IP.logging().error("Invalid particle: " + enumValue);
                     PARTICLE_TYPE = new ConfigOption<>(Particle.values()[0]);
                 }
             }

@@ -1,7 +1,5 @@
 package dev.efnilite.ip;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
 import dev.efnilite.ip.generator.DefaultGenerator;
@@ -45,7 +43,6 @@ public final class IP extends ViPlugin {
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
 
     public static boolean OUTDATED = false;
-    private static Gson gson;
     private static IP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
@@ -65,8 +62,6 @@ public final class IP extends ViPlugin {
 
         instance = this;
         Time.timerStart("load");
-        Logging.init(this);
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().disableHtmlEscaping().setLenient().create();
 
         // ----- Configurations -----
 
@@ -79,12 +74,12 @@ public final class IP extends ViPlugin {
         // ----- Hooks and Bungee -----
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            Logging.info("Connecting with PlaceholderAPI..");
+            logging().info("Connecting with PlaceholderAPI..");
             placeholderHook = new PlaceholderHook();
             placeholderHook.register();
         }
         if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            Logging.info("Connecting with Multiverse..");
+            logging().info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
         }
         if (Option.BUNGEECORD.get()) {
@@ -115,8 +110,7 @@ public final class IP extends ViPlugin {
             }
             ParkourUser.initHighScores();
         } catch (Throwable throwable) {
-            Logging.stack("There was an error while starting WITP",
-                    "Please report this error and the above stack trace to the developer!", throwable);
+            logging().stack("There was an error while starting WITP", throwable);
         }
 
         // ----- Events -----
@@ -129,7 +123,7 @@ public final class IP extends ViPlugin {
         if (Option.UPDATE_CHECKER.get()) {
             UpdateChecker checker = new UpdateChecker();
 
-            new Task()
+            Task.create(IP.getPlugin())
                     .repeat(8 * 72000) // 8 hours
                     .execute(checker::check)
                     .run();
@@ -148,8 +142,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        Logging.info("Loaded WITP in " + Time.timerEnd("load") + "ms!");
-
+        logging().info("Loaded WITP in " + Time.timerEnd("load") + "ms!");
     }
 
     @Override
@@ -206,6 +199,24 @@ public final class IP extends ViPlugin {
         return Version.isHigherOrEqual(Version.V1_16);
     }
 
+    /**
+     * Returns the {@link Logging} belonging to this plugin.
+     *
+     * @return this plugin's {@link Logging} instance.
+     */
+    public static Logging logging() {
+        return getPlugin().logging;
+    }
+
+    /**
+     * Returns this plugin instance.
+     *
+     * @return the plugin instance.
+     */
+    public static IP getPlugin() {
+        return instance;
+    }
+
     // Static stuff
     @Nullable
     public static MultiverseHook getMultiverseHook() {
@@ -235,13 +246,5 @@ public final class IP extends ViPlugin {
 
     public static Configuration getConfiguration() {
         return configuration;
-    }
-
-    public static Gson getGson() {
-        return gson;
-    }
-
-    public static IP getInstance() {
-        return instance;
     }
 }

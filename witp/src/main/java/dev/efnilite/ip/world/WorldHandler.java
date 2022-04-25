@@ -3,7 +3,6 @@ package dev.efnilite.ip.world;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.world.generation.VoidGenerator;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
 
@@ -35,9 +34,9 @@ public class WorldHandler {
             create();
         } else {
             this.world = world;
-            Logging.warn("## ");
-            Logging.warn("## Crash detected! If there are any blocks left in the Parkour world, reload your server.");
-            Logging.warn("## ");
+            IP.logging().warn("## ");
+            IP.logging().warn("## Crash detected! If there are any blocks left in the Parkour world, reload your server.");
+            IP.logging().warn("## ");
         }
     }
 
@@ -56,10 +55,12 @@ public class WorldHandler {
 
                 world = Bukkit.createWorld(creator);
                 if (world == null) {
-                    Logging.stack("Error while trying to create the parkour world", "Delete the witp world folder and restart!");
+                    IP.logging().stack("Error while trying to create the parkour world",
+                            "delete the parkour world folder and restart the server");
                 }
             } catch (Throwable throwable) {
-                Logging.stack("Error while trying to create the parkour world", "Delete the witp world folder and restart!", throwable);
+                IP.logging().stack("Error while trying to create the parkour world",
+                        "delete the parkour world folder and restart the server", throwable);
             }
         }
 
@@ -85,7 +86,6 @@ public class WorldHandler {
                 folder.delete();
             }
         }
-        Logging.verbose("Deleted world " + name);
     }
 
     // Sets up the settings for the world
@@ -125,7 +125,7 @@ public class WorldHandler {
         if (world == null) {
             world = Bukkit.getWorld(Option.WORLD_NAME.get());
             if (world == null) {
-                Logging.stack("World is null", "Please delete the WITP world and reload/restart your server");
+                IP.logging().stack("World is null", "delete the parkour world folder and restart the server");
             }
         }
         return world;

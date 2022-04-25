@@ -1,6 +1,6 @@
 package dev.efnilite.ip.api;
 
-import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.ip.IP;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public final class Registry {
     public void registerType(@NotNull StyleType style) {
         if (!closed) {
             this.styleTypes.put(style.getName(), style);
-            Logging.info("Registered style type " + style.getName() + "!");
+            IP.logging().info("Registered style type " + style.getName() + "!");
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }
@@ -47,7 +47,7 @@ public final class Registry {
     public void register(Gamemode gamemode) {
         if (!closed) {
             this.gamemodes.put(gamemode.getName(), gamemode);
-            Logging.info("Registered gamemode " + gamemode.getName() + "!");
+            IP.logging().info("Registered gamemode " + gamemode.getName() + "!");
         } else {
             throw new IllegalStateException("Register attempt while registry is closed");
         }

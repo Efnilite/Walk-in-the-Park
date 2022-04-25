@@ -1,7 +1,6 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 
@@ -18,17 +17,17 @@ public class SchematicCache {
 
     public static void read() {
         if (!IP.versionSupportsSchematics()) {
-            Logging.warn("This version does *not* support schematics, consider upgrading if you want them");
+            IP.logging().warn("This version does *not* support schematics, consider upgrading if you want them");
             return;
         }
 
-        new Task()
+        Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
                     Time.timerStart("schematicsLoad");
-                    Logging.info("Initializing schematics...");
+                    IP.logging().info("Initializing schematics...");
                     cache.clear();
-                    File folder = new File(IP.getInstance().getDataFolder() + "/schematics/");
+                    File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
                     File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
                     for (File file : files) {
                         String fileName = file.getName();
@@ -38,8 +37,8 @@ public class SchematicCache {
                             cache.put(fileName, schematic);
                         }
                     }
-                    Logging.info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
-                    Logging.info("Loaded all schematics in " + Time.timerEnd("schematicsLoad") + "ms!");
+                    IP.logging().info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
+                    IP.logging().info("Loaded all schematics in " + Time.timerEnd("schematicsLoad") + "ms!");
                 })
                 .run();
     }

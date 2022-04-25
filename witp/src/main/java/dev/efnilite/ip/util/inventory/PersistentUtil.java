@@ -40,7 +40,7 @@ public class PersistentUtil {
     public static <T> Object getPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type) {
         ItemMeta meta = itemStack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(IP.getInstance(), key);
+        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 
         return container.get(namespacedKey, type);
     }
@@ -66,7 +66,7 @@ public class PersistentUtil {
         if (itemStack.getType() != Material.AIR) {
             ItemMeta meta = itemStack.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            NamespacedKey namespacedKey = new NamespacedKey(IP.getInstance(), key);
+            NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 
             return container.has(namespacedKey, type);
         } else {
@@ -95,7 +95,7 @@ public class PersistentUtil {
     public static <T> void setPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type, T t) {
         ItemMeta meta = itemStack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(IP.getInstance(), key);
+        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 
         container.set(namespacedKey, type, t);
         itemStack.setItemMeta(meta);
@@ -113,7 +113,7 @@ public class PersistentUtil {
     public static void removePersistentData(ItemStack itemStack, String key) {
         ItemMeta meta = itemStack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(IP.getInstance(), key);
+        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 
         container.remove(namespacedKey);
         itemStack.setItemMeta(meta);

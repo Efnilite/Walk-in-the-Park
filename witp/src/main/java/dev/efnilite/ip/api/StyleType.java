@@ -1,8 +1,8 @@
 package dev.efnilite.ip.api;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +70,7 @@ public abstract class StyleType {
         List<String> list = Util.getNode(file, path);
 
         if (list == null || list.isEmpty()) {
-            Logging.error("Style path " + path + " not found");
+            IP.logging().error("Style path " + path + " not found");
             return;
         }
 
@@ -98,7 +98,7 @@ public abstract class StyleType {
         String possible = file.getString(path + "." + name);
 
         if (possible == null) {
-            Logging.warn("Style at path " + path + " doesn't exist but is registered!");
+            IP.logging().warn("Style at path " + path + " doesn't exist but is registered!");
             return null;
         }
 

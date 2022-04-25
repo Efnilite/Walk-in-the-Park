@@ -15,7 +15,6 @@ import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,7 +72,7 @@ public class Handler implements EventWatcher {
         // Bungeecord joining
         if (Option.BUNGEECORD.get()) {
             if (!Option.ENABLE_JOINING.get()) {
-                Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                IP.logging().warn("Player " + player.getName() + " tried joining, but parkour is disabled.");
                 return;
             }
 
@@ -88,7 +87,7 @@ public class Handler implements EventWatcher {
                 // If players who left in the world end up in the world itself while not being a player
                 player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             } else {
-                Logging.error("There is no backup world! Selecting one at random...");
+                IP.logging().warn("No backup worlds have been set! A random one will be selected for " + playerName);
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(Option.WORLD_NAME.get()))) {
                         Message.send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
@@ -96,7 +95,7 @@ public class Handler implements EventWatcher {
                         return;
                     }
                 }
-                Logging.error("There are no worlds for player " + player.getName() + " to fall back to! Kicking player..");
+                IP.logging().error("There are no worlds for player " + playerName + " to fall back to. " + playerName + " will be kicked.");
                 player.kickPlayer("There are no accessible worlds for you to go to - please rejoin");
             }
         }
@@ -197,7 +196,7 @@ public class Handler implements EventWatcher {
         Location location = event.getClickedBlock().getLocation();
 
         switch (action) {
-            case LEFT_CLICK_BLOCK:
+            case LEFT_CLICK_BLOCK -> {
                 event.setCancelled(true);
                 if (ParkourCommand.selections.get(player) == null) {
                     ParkourCommand.selections.put(player, new Selection(location, null, player.getWorld()));
@@ -211,9 +210,8 @@ public class Handler implements EventWatcher {
                     Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
                 Message.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
-                break;
-
-            case RIGHT_CLICK_BLOCK:
+            }
+            case RIGHT_CLICK_BLOCK -> {
                 event.setCancelled(true);
                 if (ParkourCommand.selections.get(player) == null) {
                     ParkourCommand.selections.put(player, new Selection(null, location, player.getWorld()));
@@ -227,7 +225,7 @@ public class Handler implements EventWatcher {
                     Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
                 Message.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
-                break;
+            }
         }
     }
 

@@ -14,7 +14,6 @@ import dev.efnilite.ip.util.sql.InsertStatement;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
 import dev.efnilite.vilib.sql.InvalidStatementException;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
@@ -75,13 +74,12 @@ public class ParkourPlayer extends ParkourUser {
      */
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
-        Logging.verbose("Init of Player " + player.getName());
 
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.joinTime = System.currentTimeMillis();
 
-        this.file = new File(IP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+        this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.locale = Option.DEFAULT_LANG.get();
         this.lang = locale;
     }
@@ -125,7 +123,7 @@ public class ParkourPlayer extends ParkourUser {
 
     private <T> T orDefault(T value, T def) {
         if (def == null) {
-            Logging.stack("Default value is null!", "Please see if there are any errors above. Check your items-v3.yml.");
+            IP.logging().stack("Default value is null!", "Please see if there are any errors above. Check your items-v3.yml.");
         }
 
         return value == null ? def : value;
@@ -147,7 +145,7 @@ public class ParkourPlayer extends ParkourUser {
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
             if (lines == null) {
-                Logging.error("Scoreboard lines are null! Check your config!");
+                IP.logging().error("Scoreboard lines are null! Check your config!");
                 return;
             }
             Integer rank = getHighScoreValue(uuid);
@@ -229,8 +227,6 @@ public class ParkourPlayer extends ParkourUser {
         Runnable runnable = () -> {
             try {
                 if (Option.SQL.get()) {
-                    Logging.verbose("Writing player's data to SQL server");
-
                     if (highScoreDifficulty == null) {
                         calculateDifficultyScore();
                     }
@@ -255,10 +251,10 @@ public class ParkourPlayer extends ParkourUser {
                     statement.query();
                 } else {
                     if (file == null) {
-                        file = new File(IP.getInstance().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                        file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
                     }
                     if (!file.exists()) {
-                        File folder = new File(IP.getInstance().getDataFolder() + "/players");
+                        File folder = new File(IP.getPlugin().getDataFolder() + "/players");
                         if (!folder.exists()) {
                             folder.mkdirs();
                         }
@@ -270,12 +266,11 @@ public class ParkourPlayer extends ParkourUser {
                     writer.close();
                 }
             } catch (IOException | InvalidStatementException ex) {
-                Logging.stack("Error while saving data of player " + player.getName(),
-                        "Please report this error to the developer!", ex);
+                IP.logging().stack("Error while saving data of player " + player.getName(), ex);
             }
         };
         if (async) {
-            new Task()
+            Task.create(IP.getPlugin())
                     .async()
                     .execute(runnable)
                     .run();
@@ -368,7 +363,7 @@ public class ParkourPlayer extends ParkourUser {
         UUID uuid = pp.getPlayer().getUniqueId();
         JOIN_COUNT++;
         if (!Option.SQL.get()) {
-            File data = new File(IP.getInstance().getDataFolder() + "/players/" + uuid + ".json");
+            File data = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid + ".json");
             if (data.exists()) {
                 try {
                     FileReader reader = new FileReader(data);
@@ -380,11 +375,9 @@ public class ParkourPlayer extends ParkourUser {
                             from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
-                    Logging.stack("Error while reading file of player " + pp.player.getName(),
-                            "Please try again or report this error to the developer!", throwable);
+                    IP.logging().stack("Error while reading file of player " + pp.player.getName(), throwable);
                 }
             } else {
-                Logging.verbose("Setting new player data..");
                 pp.resetPlayerPreferences();
             }
 
@@ -427,8 +420,7 @@ public class ParkourPlayer extends ParkourUser {
                     pp.saveStats();
                 }
             } catch (Throwable throwable) {
-                Logging.stack("Error while reading SQL data of player " + pp.player.getName(),
-                        "Please try again or report this error to the developer!", throwable);
+                IP.logging().stack("Error while reading SQL data of player " + pp.player.getName(), throwable);
             }
 
             players.put(pp.player, pp);

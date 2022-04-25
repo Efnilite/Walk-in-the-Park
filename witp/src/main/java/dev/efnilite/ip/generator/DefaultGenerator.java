@@ -17,7 +17,6 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.Location;
@@ -94,7 +93,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
         super(player, generatorOptions);
-        Logging.verbose("Init of DefaultGenerator of " + player.getName());
 
         this.score = 0;
         this.totalScore = 0;
@@ -119,31 +117,28 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
 
             switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
-                case DOT:
+                case DOT -> {
                     PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
                     Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
-                    break;
-                case CIRCLE:
+                }
+                case CIRCLE -> {
                     PARTICLE_DATA.size(5);
                     Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), (int) Math.sqrt(applyTo.size()), 25);
-                    break;
-                case BOX:
+                }
+                case BOX -> {
                     Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
                     Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
-
                     for (Block block : applyTo) {
                         Location loc = block.getLocation();
                         min = Util.min(min, loc);
                         max = Util.max(max, loc);
                     }
-
                     if (max.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
                         return;
                     }
-
                     PARTICLE_DATA.size(1);
                     Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
-                    break;
+                }
             }
             player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
         }
@@ -173,19 +168,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         if (isSpecial && specialType != null) {
             switch (specialType) { // adjust for special jumps
-                case PACKED_ICE: // ice
-                    gap++;
-                    break;
-                case QUARTZ_SLAB: // slab
-                    height = Math.min(height, 0);
-                    break;
-                case GLASS_PANE: // pane
-                    gap -= 0.5;
-                    break;
-                case OAK_FENCE:
-                    height = Math.min(height, 0);
-                    gap -= 1;
-                    break;
+                case PACKED_ICE -> // ice
+                        gap++;
+                case QUARTZ_SLAB -> // slab
+                        height = Math.min(height, 0);
+                case GLASS_PANE -> // pane
+                        gap -= 0.5;
+                case OAK_FENCE -> {
+                        height = Math.min(height, 0);
+                        gap -= 1;
+                }
             }
         }
 
@@ -227,8 +219,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void startTick() {
-        Logging.verbose("Starting generator of " + player.getName());
-
         task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -240,7 +230,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 tick();
             }
         };
-        new Task()
+        Task.create(IP.getPlugin())
                 .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK.get())
                 .execute(task)
                 .run();
@@ -342,8 +332,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (!regenerate) {
             stopped = true;
             if (task == null) {// incomplete setup as task is the last thing to start
-                Logging.warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
-                Logging.warn("You don't have to report this warning.");
+                IP.logging().warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
+                IP.logging().warn("You don't have to report this warning.");
             } else {
                 task.cancel();
             }
@@ -434,23 +424,20 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             if (isSpecial && player.useSpecialBlocks) { // if special
                 int value = getRandomChance(specialChances);
                 switch (value) {
-                    case 0: // ice
+                    case 0 -> // ice
                         selectedBlockData = Material.PACKED_ICE.createBlockData();
-                        break;
-                    case 1: // slab
+                    case 1 -> { // slab
                         selectedBlockData = Material.QUARTZ_SLAB.createBlockData();
                         ((Slab) selectedBlockData).setType(Slab.Type.BOTTOM);
-                        break;
-                    case 2: // pane
+                    }
+                    case 2 -> // pane
                         selectedBlockData = Material.WHITE_STAINED_GLASS_PANE.createBlockData();
-                        break;
-                    case 3: // fence
+                    case 3 -> // fence
                         selectedBlockData = Material.OAK_FENCE.createBlockData();
-                        break;
-                    default:
+                    default -> {
                         selectedBlockData = Material.STONE.createBlockData();
-                        Logging.stack("Invalid special block ID " + value, "Please report this error to the developer!");
-                        break;
+                        IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
+                    }
                 }
                 specialType = selectedBlockData.getMaterial();
             } else {
@@ -482,7 +469,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 return;
             }
 
-            File folder = new File(IP.getInstance().getDataFolder() + "/schematics/");
+            File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
             List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
             File file = null;
             if (!files.isEmpty()) {
@@ -497,7 +484,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     }
                 }
             } else {
-                Logging.error("No structures to choose from!");
+                IP.logging().error("No structures to choose from!");
                 generate(); // generate if no schematic is found
                 return;
             }
@@ -515,14 +502,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
                 waitForSchematicCompletion = true;
             } catch (IOException ex) {
-                Logging.stack("There was an error while trying to paste schematic " + schematic.getName(),
-                        "This file might have been manually edited - please report this error to the developer!", ex);
+                IP.logging().stack("There was an error while trying to paste schematic " + schematic.getName(),
+                        "delete this file and restart the server", ex);
                 reset(true);
                 return;
             }
 
             if (schematicBlocks == null || schematicBlocks.isEmpty()) {
-                Logging.error("0 blocks found in structure!");
+                IP.logging().error("0 blocks found in structure!");
                 player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                 reset(true);
                 return;
@@ -674,20 +661,20 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     private double[] getBounds(Direction direction, double range) {
         // todo fix
-        switch (direction) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
-            default: // east
-                // - 1/2 pi to 1/2 pi
-                return new double[] { -0.5 * range, 0.5 * range };
-            case WEST:
-                // 1/2 pi to -1/2 pi
-                return new double[] { 0.5 * range, -0.5 * range };
-            case NORTH:
-                // pi to 0
-                return new double[] { range, 0 };
-            case SOUTH:
-                // 0 to pi
-                return new double[] { 0, range };
-        }
+        return switch (direction) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
+            default -> // east
+                    // - 1/2 pi to 1/2 pi
+                    new double[]{-0.5 * range, 0.5 * range};
+            case WEST ->
+                    // 1/2 pi to -1/2 pi
+                    new double[]{0.5 * range, -0.5 * range};
+            case NORTH ->
+                    // pi to 0
+                    new double[]{range, 0};
+            case SOUTH ->
+                    // 0 to pi
+                    new double[]{0, range};
+        };
     }
 
     /**

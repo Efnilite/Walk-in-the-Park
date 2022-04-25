@@ -5,7 +5,6 @@ import dev.efnilite.ip.schematic.selection.Dimensions;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.vector.Vector3D;
@@ -97,7 +96,7 @@ public class Schematic {
      * @return the instance of this class
      */
     public Schematic file(@NotNull String fileName) {
-        File folder = new File(IP.getInstance().getDataFolder(), "schematics");
+        File folder = new File(IP.getPlugin().getDataFolder(), "schematics");
         folder.mkdirs();
 
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";
@@ -146,13 +145,13 @@ public class Schematic {
      * Saves a schematic file
      */
     public void save(@Nullable Player player) {
-        new Task()
+        Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
                     try {
                         Time.timerStart("saveSchematic-" + file.getName());
                         if (dimensions == null || blocks == null) {
-                            Logging.error("Data of schematic is null while trying to save!");
+                            IP.logging().error("Data of schematic is null while trying to save!");
                             return;
                         }
 
@@ -206,8 +205,7 @@ public class Schematic {
                         }
                         Message.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!");
                     } catch (IOException ex) {
-                        Logging.stack("Error while saving data of player " + (player == null ? "?" : player.getName()),
-                                "Please try again or report this error to the developer!", ex);
+                        IP.logging().stack("Error while saving data of player " + (player == null ? "?" : player.getName()), ex);
                     }
                 })
                 .run();
@@ -220,16 +218,15 @@ public class Schematic {
         if (read) {
             return;
         }
-        Logging.verbose("Reading schematic " + file.getName() + "...");
         Time.timerStart("schematicRead");
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().collect(Collectors.toList()); // read the lines of the file
         } catch (FileNotFoundException ex) {
-            Logging.stack("Schematic file does not exist!", "Try again!", ex);
+            IP.logging().stack("Schematic file does not exist!", ex);
             return;
         } catch (IOException ex) {
-            Logging.stack("Error while reading file!", "Please report this error to the developer!", ex);
+            IP.logging().stack("Error while reading file!", ex);
             return;
         }
         this.read = true;
@@ -291,16 +288,15 @@ public class Schematic {
 
         Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
         this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
-        Logging.verbose("Finished reading in " + Time.timerEnd("schematicRead") + "ms!");
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
-        Logging.info("Checking legacy materials for " + full);
+        IP.logging().info("Checking legacy materials for " + full);
         String[] split = full.split("\\[");
         String material = split[0];
         Material legacy = Material.matchMaterial(material, true);
         if (legacy == null) {
-            Logging.error("Unknown material: " + material + " in " + fileName);
+            IP.logging().error("Unknown material: " + material + " in " + fileName);
             return null;
         }
         if (split.length > 1) {
@@ -366,7 +362,7 @@ public class Schematic {
         }
 
         if (other == null) { // if no lime wool
-            Logging.error("No lime wool found in file " + file.getName());
+            IP.logging().error("No lime wool found in file " + file.getName());
             return null;
         }
 

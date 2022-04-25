@@ -10,7 +10,6 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.util.Logging;
 import fr.mrmicky.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
@@ -203,8 +202,7 @@ public abstract class ParkourUser {
             new PlayerLeaveEvent(user).call();
             Session session = user.getSession();
 
-            if (user instanceof ParkourPlayer) {
-                ParkourPlayer pp = (ParkourPlayer) user;
+            if (user instanceof ParkourPlayer pp) {
 
                 ParkourGenerator generator = pp.getGenerator();
                 // remove spectators
@@ -221,8 +219,7 @@ public abstract class ParkourUser {
                 generator.reset(false);
                 IP.getDivider().leave(pp);
                 pp.save(saveAsync);
-            } else if (user instanceof ParkourSpectator) {
-                ParkourSpectator spectator = (ParkourSpectator) user;
+            } else if (user instanceof ParkourSpectator spectator) {
                 spectator.stopClosestChecker();
                 if (session != null) {
                     spectator.getSession().removeSpectators(spectator);
@@ -232,8 +229,7 @@ public abstract class ParkourUser {
                 user.getBoard().delete();
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
-            Logging.stack("Error while trying to make player " + user.getName() + " leave",
-                    "Please report this error to the developer. Previous data will still be set.", throwable);
+            IP.logging().stack("Error while trying to make player " + user.getName() + " leave", throwable);
             user.send(IP.PREFIX + "<red>There was an error while trying to handle leaving.");
         }
 
@@ -245,7 +241,7 @@ public abstract class ParkourUser {
             return;
         }
         if (user.getPreviousData() == null) {
-            Logging.warn("No previous data found for " + user.getName());
+            IP.logging().warn("No previous data found for " + user.getName());
         } else {
             user.getPreviousData().apply(sendBack);
 
@@ -281,7 +277,7 @@ public abstract class ParkourUser {
                 }
             }
         } else {
-            File folder = new File(IP.getInstance().getDataFolder() + "/players/");
+            File folder = new File(IP.getPlugin().getDataFolder() + "/players/");
             if (!(folder.exists())) {
                 folder.mkdirs();
                 return;
@@ -314,7 +310,7 @@ public abstract class ParkourUser {
             player.setHighScore(player.name, 0, "0.0s", "0.0");
         }
 
-        File folder = new File(IP.getInstance().getDataFolder(), "players/"); // update files
+        File folder = new File(IP.getPlugin().getDataFolder(), "players/"); // update files
 
         try {
             for (File file : folder.listFiles()) {
@@ -326,8 +322,7 @@ public abstract class ParkourUser {
                 reader.close();
             }
         } catch (Throwable throwable) {
-            Logging.stack("Error while trying to reset the high scores!",
-                    "Please try again or report this error to the developer!", throwable);
+            IP.logging().stack("Error while trying to reset the high scores!", throwable);
             return false;
         }
         return true;
@@ -346,7 +341,7 @@ public abstract class ParkourUser {
         if (player != null) {
             player.setHighScore(player.name, 0, "0.0s", "0.0");
         } else {
-            File file = new File(IP.getInstance().getDataFolder(), "players/" + uuid.toString() + ".json");
+            File file = new File(IP.getPlugin().getDataFolder(), "players/" + uuid.toString() + ".json");
 
             try {
                 FileReader reader = new FileReader(file);
@@ -356,8 +351,7 @@ public abstract class ParkourUser {
                 from.save(true);
                 reader.close();
             } catch (Throwable throwable) {
-                Logging.stack("Error while trying to reset the high scores!",
-                        "Please try again or report this error to the developer!", throwable);
+                IP.logging().stack("Error while trying to reset the high scores!", throwable);
                 return false;
             }
         }
@@ -372,8 +366,7 @@ public abstract class ParkourUser {
             try {
                 fetchHighScores();
             } catch (IOException | SQLException ex) {
-                Logging.stack("Error while trying to fetch the high scores!",
-                        "Please try again or report this error to the developer!", ex);
+                IP.logging().stack("Error while trying to fetch the high scores!", ex);
             }
             highScores = Util.sortByValue(highScores);
         }

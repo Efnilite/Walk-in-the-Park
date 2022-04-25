@@ -44,11 +44,6 @@
                             <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
-                                    <pattern>dev.efnilite.vilib</pattern>
-                                    <shadedPattern>dev.efnilite.ip.vilib</shadedPattern>
-                                </relocation>
-
-                                <relocation>
                                     <pattern>fr.mrmicky.fastboard</pattern>
                                     <shadedPattern>dev.efnilite.ip.util.fastboard</shadedPattern>
                                 </relocation>
@@ -107,30 +102,42 @@
             <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.ViStudios</groupId>
+            <artifactId>vilib</artifactId>
+            <version>cf1807b10b</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.7.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -139,13 +146,6 @@
         </dependency>
 
         <!-- Dependencies that will be compiled with the jar -->
-
-        <dependency>
-            <groupId>com.github.ViStudios</groupId>
-            <artifactId>vilib</artifactId>
-            <version>beb0a992d6</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>fr.mrmicky</groupId>

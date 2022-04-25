@@ -7,7 +7,6 @@ import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.util.Logging;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,7 +83,7 @@ public class Util {
 
     public static String parseDifficulty(double difficulty) {
         if (difficulty > 1) {
-            Logging.error("Invalid difficuly, above 1: " + difficulty);
+            IP.logging().error("Invalid difficuly, above 1: " + difficulty);
             return "unknown";
         }
         if (difficulty <= 0.3) {
@@ -135,7 +134,7 @@ public class Util {
                     economy = service.getProvider();
                     economy.depositPlayer(player, amount);
                 } else {
-                    Logging.error("There was an error while trying to fetch the Vault economy!");
+                    IP.logging().error("There was an error while trying to fetch the Vault economy!");
                 }
             } else {
                 economy.depositPlayer(player, amount);
@@ -155,7 +154,7 @@ public class Util {
         try {
             return Direction.valueOf(face == null ? "-" : face.toUpperCase());
         } catch (Throwable throwable) {
-            Logging.stack(face + " is not a direction!", "Please check generation.yml", throwable);
+            IP.logging().stack(face + " is not a direction!", "check generation.yml for misinputs", throwable);
             return Direction.EAST;
         }
     }
@@ -174,9 +173,9 @@ public class Util {
         out.writeUTF("Connect");
         out.writeUTF(server);
         try {
-            player.sendPluginMessage(IP.getInstance(), "BungeeCord", out.toByteArray());
+            player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
-            Logging.error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
+            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
             player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
         }
     }
@@ -354,7 +353,7 @@ public class Util {
         String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
         World world = Bukkit.getWorld(values[3]);
         if (world == null) {
-            Logging.error("Detected an invalid world: " + values[3]);
+            IP.logging().error("Detected an invalid world: " + values[3]);
             return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
         }
         return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));

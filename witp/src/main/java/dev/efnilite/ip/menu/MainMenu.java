@@ -135,17 +135,7 @@ public class MainMenu {
     /**
      * Data class for registered items
      */
-    private static class ItemContainer {
+    private record ItemContainer(int id, MenuItem item, Predicate<Player> predicate) {
 
-        public int id;
-        public MenuItem item;
-        public Predicate<Player> predicate;
-
-        public ItemContainer(int id, MenuItem item, Predicate<Player> predicate) {
-            this.id = id;
-            this.item = item;
-            this.predicate = predicate;
-        }
     }
-
 }

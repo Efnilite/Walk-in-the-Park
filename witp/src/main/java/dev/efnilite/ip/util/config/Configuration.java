@@ -6,7 +6,6 @@ import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,7 +47,7 @@ public class Configuration {
                 plugin.getDataFolder().mkdirs();
 
                 plugin.saveResource(name, false);
-                Logging.info("Created config file " + name);
+                IP.logging().info("Created config file " + name);
             }
         }
 
@@ -59,8 +58,8 @@ public class Configuration {
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
         } catch (IOException ex) {
-            Logging.stack("Error while trying to update a config file",
-                    "Delete all config files and reload/restart. If the problem persists, please report this error to the developer!", ex);
+            IP.logging().stack("Error while trying to update a config file",
+                    "delete all config files and restart the server", ex);
         }
 
         checkUserLanguages("lang/messages-v3.yml", "messages");
@@ -69,7 +68,7 @@ public class Configuration {
         reload();
 
         schematics();
-        Logging.info("Loaded all config files");
+        IP.logging().info("Loaded all config files");
     }
 
     private void checkUserLanguages(String file, String beginPath) {
@@ -99,8 +98,8 @@ public class Configuration {
             // somehow
             ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), toNotUpdate);
         } catch (IOException ex) {
-            Logging.stack("Error while trying to update language file " + file,
-                    "Delete this file. If the problem persists, please report this error to the developer!", ex);
+            IP.logging().stack("Error while trying to update language file " + file,
+                    "delete this file and restart the server", ex);
         }
     }
 
@@ -131,32 +130,30 @@ public class Configuration {
         String[] schematics = new String[]{"spawn-island.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
         folder.mkdirs();
-        Logging.info("Downloading all schematics...");
+        IP.logging().info("Downloading all schematics...");
         int structureCount = 21;
 
-        new Task()
+        Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
                     try {
                         for (String schematic : schematics) {
                             InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
                             Files.copy(stream, Paths.get(folder + "/" + schematic));
-                            Logging.verbose("Downloaded " + schematic);
                             stream.close();
                         }
                         for (int i = 1; i <= structureCount; i++) {
                             InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
                             Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
-                            Logging.verbose("Downloaded parkour-" + i);
                             stream.close();
                         }
                         SchematicCache.read();
-                        Logging.info("Downloaded all schematics");
+                        IP.logging().info("Downloaded all schematics");
                     } catch (FileAlreadyExistsException ex) {
                         // do nothing
                     } catch (IOException ex) {
-                        Logging.stack("Stopped download of schematics",
-                                "Please delete all the structures that have been downloaded and restart the server", ex);
+                        IP.logging().stack("Stopped download of schematics",
+                                "delete the schematics folder and restart the server", ex);
                     }
                 })
                 .run();
@@ -214,7 +211,7 @@ public class Configuration {
         String string = getFile(file).getString(path);
 
         if (string == null) {
-            Logging.stack("Option at path " + path + " with file " + file + " is null", "Please check your config values");
+            IP.logging().stack("Option at path " + path + " with file " + file + " is null", "check the " + file + " file for misinputs");
             return "";
         }
 
@@ -226,7 +223,7 @@ public class Configuration {
 
         if (string == null) {
             repairPaths();
-            Logging.stack("Option at path " + path + " with file " + file + " is null", "Please check your config values");
+            IP.logging().stack("Option at path " + path + " with file " + file + " is null", "check the " + file + " file for misinputs");
             return "";
         }
 
@@ -316,16 +313,7 @@ public class Configuration {
     /**
      * Class to make gathering data (items-v3.yml) easier
      */
-    private static class ItemData {
+    private record ItemData(String name, List<String> lore, @Nullable Material material) {
 
-        public String name;
-        public List<String> lore;
-        public @Nullable Material material;
-
-        public ItemData(String name, List<String> lore, @Nullable Material material) {
-            this.name = name;
-            this.lore = lore;
-            this.material = material;
-        }
     }
 }

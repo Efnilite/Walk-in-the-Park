@@ -4,7 +4,8 @@ author: Efnilite, Ice_Pancake
 version: 3.2.4
 api-version: 1.16
 main: dev.efnilite.ip.IP
-softdepend: [Vault, PlaceholderAPI, ProtocolAPI, Multiverse-Core, HolographicDisplays, NoteBlockAPI, WVoidGen, VoidGen]
+depend: [vilib]
+softdepend: [Vault, PlaceholderAPI, ProtocolAPI, Multiverse-Core, HolographicDisplays, NoteBlockAPI, VoidGen]
 commands:
     witp:
         aliases: [parkour, ip]

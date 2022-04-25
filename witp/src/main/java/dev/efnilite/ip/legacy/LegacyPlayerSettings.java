@@ -5,7 +5,6 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.profile.PlayerProfile;
 import dev.efnilite.ip.player.profile.Profile;
-import dev.efnilite.vilib.util.Logging;
 
 import java.io.FileReader;
 
@@ -63,7 +62,7 @@ public class LegacyPlayerSettings {
 
             return profile;
         } catch (Throwable throwable) {
-            Logging.stack("Error while migrating legacy player file of " + file + " to new profile", "Please report this error to the developer", throwable);
+            IP.logging().stack("Error while migrating legacy player file of " + file + " to new profile", throwable);
             return null;
         }
     }

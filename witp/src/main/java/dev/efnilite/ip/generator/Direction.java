@@ -8,28 +8,20 @@ public enum Direction {
     WEST;
 
     public Direction turnRight() {
-        switch (this) {
-            case NORTH:
-                return EAST;
-            case EAST:
-                return SOUTH;
-            case SOUTH:
-                return WEST;
-            default:
-                return NORTH;
-        }
+        return switch (this) {
+            case NORTH -> EAST;
+            case EAST -> SOUTH;
+            case SOUTH -> WEST;
+            default -> NORTH;
+        };
     }
 
     public Direction turnLeft() {
-        switch (this) {
-            case NORTH:
-                return WEST;
-            case WEST:
-                return SOUTH;
-            case SOUTH:
-                return EAST;
-            default:
-                return NORTH;
-        }
+        return switch (this) {
+            case NORTH -> WEST;
+            case WEST -> SOUTH;
+            case SOUTH -> EAST;
+            default -> NORTH;
+        };
     }
 }

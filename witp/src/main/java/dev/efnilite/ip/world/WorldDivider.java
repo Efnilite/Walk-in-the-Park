@@ -13,7 +13,6 @@ import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
 import dev.efnilite.vilib.vector.Vector2D;
 import dev.efnilite.vilib.vector.Vector3D;
@@ -59,7 +58,6 @@ public class WorldDivider {
      */
     @SuppressWarnings("ConstantConditions")
     public WorldDivider() {
-        Logging.verbose("Initializing WorldDivider");
         FileConfiguration gen = IP.getConfiguration().getFile("generation");
         this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
         this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
@@ -116,8 +114,6 @@ public class WorldDivider {
             if (generateIsland) {
                 createIsland(player, cachedPoint);
             }
-
-            Logging.verbose("Cached point divided to " + player.getName() + " at " + cachedPoint);
         } else {
             int size = activePoints.size();
             int[] coords = Util.spiralAt(size);
@@ -130,8 +126,6 @@ public class WorldDivider {
             if (generateIsland) {
                 createIsland(player, point);
             }
-
-            Logging.verbose("New point divided to " + player.getName() + " at " + point);
         }
     }
 
@@ -147,21 +141,20 @@ public class WorldDivider {
 
         cachedPoints.add(point);
         activePoints.remove(player);
-        Logging.verbose("Cached point " + point);
 
         if (player.getGenerator() instanceof DefaultGenerator) {
             AreaData data = ((DefaultGenerator) player.getGenerator()).getData();
 
             if (data != null) {
-                for (Chunk spawnChunk : data.spawnChunks) {
+                for (Chunk spawnChunk : data.spawnChunks()) {
                     spawnChunk.setForceLoaded(false);
                 }
-                for (Block block : data.blocks) {
+                for (Block block : data.blocks()) {
                     block.setType(Material.AIR, false);
                 }
             } else {
-                Logging.warn("Could not find data on leave for player " + player.getName());
-                Logging.warn("If any floating islands appear in the parkour world, try to reload the server to fix the issue.");
+                IP.logging().warn("Could not find data on leave for player " + player.getName());
+                IP.logging().warn("If any floating islands appear in the parkour world, try to reload the server to fix the issue.");
             }
         }
 
@@ -238,12 +231,12 @@ public class WorldDivider {
             }
         }
         if (!playerDetected) {
-            Logging.stack("Couldn't find the spawn of a player", "Please check your block types and schematics");
+            IP.logging().stack("Couldn't find the spawn of a player", "check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
         if (!parkourDetected) {
-            Logging.stack("Couldn't find the spawn of the parkour", "Please check your block types and schematics");
+            IP.logging().stack("Couldn't find the spawn of the parkour", "check your block types and schematics");
             blocks.forEach(b -> b.setType(Material.AIR, false));
             createIsland(pp, point);
         }
@@ -258,8 +251,7 @@ public class WorldDivider {
         // set the proper zone
         pp.getGenerator().setZone(new Selection(min, max));
 
-        if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator) {
-            DefaultGenerator defaultGenerator = (DefaultGenerator) pp.getGenerator();
+        if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator defaultGenerator) {
 
             defaultGenerator.setData(new AreaData(blocks, chunks));
             defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
@@ -288,7 +280,7 @@ public class WorldDivider {
             player.getInventory().clear();
             ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
             if (mat == null) {
-                Logging.error("Material for options in config is null - defaulting to compass");
+                IP.logging().error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
             } else {
                 player.getInventory().setItem(8, mat);
@@ -297,7 +289,7 @@ public class WorldDivider {
         if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
             ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit").build();
             if (mat == null) {
-                Logging.error("Material for quitting in config is null - defaulting to barrier");
+                IP.logging().error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
             } else {
                 player.getInventory().setItem(7, mat);

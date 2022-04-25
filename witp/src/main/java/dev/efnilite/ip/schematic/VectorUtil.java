@@ -10,34 +10,22 @@ public class VectorUtil {
     }
 
     public static Vector3D rotateAround(Vector3D vector, RotationAngle rotation) {
-        switch (rotation) {
-            case ANGLE_0:
-                return vector;
-            case ANGLE_90:
-                return swapXZ(vector.multiply(-1, 1, 1));
-            case ANGLE_180:
-                return vector.multiply(-1, 1, -1);
-            case ANGLE_270:
-                return swapXZ(vector.multiply(1, 1, -1));
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (rotation) {
+            case ANGLE_0 -> vector;
+            case ANGLE_90 -> swapXZ(vector.multiply(-1, 1, 1));
+            case ANGLE_180 -> vector.multiply(-1, 1, -1);
+            case ANGLE_270 -> swapXZ(vector.multiply(1, 1, -1));
+        };
     }
 
     // without swapping
     public static Vector3D defaultRotate(Vector3D vector, RotationAngle rotation) {
-        switch (rotation) {
-            case ANGLE_0:
-                return vector;
-            case ANGLE_90:
-                return swapXZ(vector.multiply(1, 1, -1));
-            case ANGLE_180:
-                return vector.multiply(-1, 1, -1);
-            case ANGLE_270:
-                return swapXZ(vector.multiply(-1, 1, 1));
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (rotation) {
+            case ANGLE_0 -> vector;
+            case ANGLE_90 -> swapXZ(vector.multiply(1, 1, -1));
+            case ANGLE_180 -> vector.multiply(-1, 1, -1);
+            case ANGLE_270 -> swapXZ(vector.multiply(-1, 1, 1));
+        };
     }
 
     public static Vector3D swapXZ(Vector3D vector) {

@@ -2,7 +2,6 @@ package dev.efnilite.ip.util.sql;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.Bukkit;
 
 import java.sql.Connection;
@@ -26,7 +25,7 @@ public class SQLManager {
         this.database = Option.SQL_DB.get();
 
         try {
-            Logging.info("Connecting to SQL");
+            IP.logging().info("Connecting to SQL");
 
             // Load driver class
             try {
@@ -48,10 +47,10 @@ public class SQLManager {
 
             init();
 
-            Logging.info("Successfully connected");
+            IP.logging().info("Successfully connected");
         } catch (Throwable throwable) {
-            Logging.stack("Could not connect to SQL database", "Check your SQL settings in the config", throwable);
-            Bukkit.getPluginManager().disablePlugin(IP.getInstance()); // disable plugin since data handling without db will go horribly wrong
+            IP.logging().stack("Could not connect to SQL database", "check your SQL settings in the config", throwable);
+            Bukkit.getPluginManager().disablePlugin(IP.getPlugin()); // disable plugin since data handling without db will go horribly wrong
         }
     }
 
@@ -66,9 +65,9 @@ public class SQLManager {
                 connect();
             }
         } catch (SQLException ex) {
-            Logging.stack("Could not confirm connection to SQL database", "Please report this error to the developer", ex);
+            IP.logging().stack("Could not confirm connection to SQL database", ex);
         } catch (Throwable throwable) {
-            Logging.stack("Could not reconnect to SQL database", "Please restart your server and report this error", throwable);
+            IP.logging().stack("Could not reconnect to SQL database", throwable);
         }
     }
 
@@ -86,7 +85,7 @@ public class SQLManager {
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ex) {
-            Logging.stack("Could not send query " + query, "Please report this error to the developer", ex);
+            IP.logging().stack("Could not send query " + query, ex);
         }
     }
 
@@ -136,7 +135,7 @@ public class SQLManager {
         // v3.1.0
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `collectedRewards` MEDIUMTEXT");
 
-        Logging.info("Initialized database");
+        IP.logging().info("Initialized database");
     }
 
     /**
@@ -145,10 +144,9 @@ public class SQLManager {
     public void close() {
         try {
             connection.close();
-            Logging.info("Closed connection to MySQL");
+            IP.logging().info("Closed connection to MySQL");
         } catch (SQLException ex) {
-            Logging.stack("Error while trying to close connection to SQL database",
-                    "Please try again or report this error to the developer!", ex);
+            IP.logging().stack("Error while trying to close connection to SQL database", ex);
         }
     }
 

@@ -7,7 +7,6 @@ import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -34,7 +33,6 @@ public class ParkourSpectator extends ParkourUser {
 
     public ParkourSpectator(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
         super(player, previousData);
-        Logging.verbose("New ParkourSpectator init " + this.player.getName());
 
         this.session = session;
         this.closest = session.getPlayers().get(0);
@@ -77,7 +75,7 @@ public class ParkourSpectator extends ParkourUser {
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
             if (lines == null) {
-                Logging.error("Scoreboard lines are null! Check your config!");
+                IP.logging().error("Scoreboard lines are null! Check your config!");
                 return;
             }
             Integer rank = ParkourPlayer.getHighScoreValue(closest.getUUID());
@@ -114,7 +112,7 @@ public class ParkourSpectator extends ParkourUser {
      * Runs a checker which checks for the closest {@link ParkourPlayer}, and updates the scoreboard, etc. accordingly.
      */
     public void runClosestChecker() {
-        closestChecker = new Task()
+        closestChecker = Task.create(IP.getPlugin())
                 .async()
                 .execute(new BukkitRunnable() {
                     @Override

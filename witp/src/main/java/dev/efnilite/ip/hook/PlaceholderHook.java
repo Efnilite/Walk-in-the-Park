@@ -45,7 +45,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return IP.getInstance().getDescription().getVersion();
+        return IP.getPlugin().getDescription().getVersion();
     }
 
     @Override
@@ -85,8 +85,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 case "difficulty_string":
                     return Util.parseDifficulty(pp.schematicDifficulty);
                 default:
-                    if (params.contains("score_until_") && generator instanceof DefaultGenerator) {
-                        DefaultGenerator defaultGenerator = (DefaultGenerator) generator;
+                    if (params.contains("score_until_") && generator instanceof DefaultGenerator defaultGenerator) {
                         String replaced = params.replace("score_until_", "");
                         int interval = Integer.parseInt(replaced);
                         if (interval > 0) {
@@ -111,7 +110,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 return Integer.toString(value);
             case "version":
             case "ver":
-                return IP.getInstance().getDescription().getVersion();
+                return IP.getPlugin().getDescription().getVersion();
             case "leader":
             case "record_player":
                 UUID recordPlayer = ParkourPlayer.getAtPlace(1);

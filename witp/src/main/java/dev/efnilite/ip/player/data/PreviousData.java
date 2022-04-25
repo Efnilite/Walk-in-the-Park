@@ -5,7 +5,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -34,7 +33,6 @@ public class PreviousData {
     private final List<RewardString> rewardsLeaveList = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
-        Logging.verbose("New PreviousData instance for player " + player.getName());
         this.player = player;
         this.gamemode = player.getGameMode();
         this.location = player.getLocation();
@@ -93,8 +91,7 @@ public class PreviousData {
                 player.setHealth(health);
             }
         } catch (Throwable ex) {// not optimal but there isn't another way
-            Logging.stack("Error while recovering stats of " + player.getName(),
-                    "Please report this error to the developer! Inventory will still be restored.", ex);
+            IP.logging().stack("Error while recovering stats of " + player.getName(), ex);
         }
         if (inventoryData != null) {
             inventoryData.apply(false);

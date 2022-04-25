@@ -1,7 +1,7 @@
 package dev.efnilite.ip.util.sql;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.sql.InvalidStatementException;
-import dev.efnilite.vilib.util.Logging;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -57,8 +57,7 @@ public class UpdertStatement extends Statement {
                 update.query();
             }
         } catch (SQLException ex) {
-            Logging.stack("Error while trying to update/set values",
-                    "Please try again or report this error to the developer!", ex);
+            IP.logging().stack("Error while trying to update/set values", ex);
         }
     }
 }

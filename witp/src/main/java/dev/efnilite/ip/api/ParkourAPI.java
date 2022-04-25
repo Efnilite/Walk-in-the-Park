@@ -1,23 +1,19 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.vilib.sql.InvalidStatementException;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Main API accessor.
  *
- * @see SettingsMenu
- * @see ParkourUser
+ * For player joining/leaving, please view {@link ParkourUser}.
+ * For player settings, please view {@link ParkourPlayer}.
+ * For player spectating, please view {@link dev.efnilite.ip.player.ParkourSpectator}.
+ * For events, please view {@link dev.efnilite.ip.events.BlockGenerateEvent} and others in the events package.
+ * For Sessions, please view {@link dev.efnilite.ip.session.Session}.
  */
 @SuppressWarnings("unused")
 public class ParkourAPI {
@@ -27,59 +23,12 @@ public class ParkourAPI {
     }
 
     /**
-     * Gets the registry, used in addons.
+     * Gets the registry, used to register custom gamemodes and style types.
      *
      * @return the {@link Registry} class
      */
     public static Registry getRegistry() {
         return IP.getRegistry();
-    }
-
-    /**
-     * Deprecated. Use {@link ParkourUser#register(Player)}.
-     *
-     * @param   player
-     *          The player
-     *
-     * @return The registered version of the player, even if the player is already registered
-     */
-    @Deprecated
-    public static @NotNull ParkourPlayer registerPlayer(@NotNull Player player) throws IOException, SQLException {
-        return ParkourPlayer.register(player);
-    }
-
-    /**
-     * Deprecated. Use {@link ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
-     *
-     * @param   player
-     *          The Bukkit version of the player
-     *
-     * @param   sendBack
-     *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
-     *
-     */
-    @Deprecated
-    public static void unregisterPlayer(@NotNull Player player, boolean sendBack) throws IOException, InvalidStatementException {
-        ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp == null) {
-            Logging.error("Player " + player.getName() + " isn't registered!");
-            return;
-        }
-        ParkourPlayer.unregister(pp, sendBack, false, true);
-    }
-
-    /**
-     * Deprecated. Use {@link dev.efnilite.ip.player.ParkourUser#unregister(ParkourUser, boolean, boolean, boolean)}.
-     *
-     * @param   player
-     *          The player
-     *
-     * @param   sendBack
-     *          If the player should be sent back, usually true when working with APIs (false is when the player leaves)
-     */
-    @Deprecated
-    public static void unregisterPlayer(@NotNull ParkourPlayer player, boolean sendBack) throws IOException, InvalidStatementException {
-        ParkourPlayer.unregister(player, sendBack, false, true);
     }
 
     /**

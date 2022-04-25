@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.serialization.ItemSerializer;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +28,7 @@ public class InventoryData {
 
     public InventoryData(Player player) {
         this.player = player;
-        this.file = new File(IP.getInstance().getDataFolder() + "/inventories", player.getUniqueId() + ".json");
+        this.file = new File(IP.getPlugin().getDataFolder() + "/inventories", player.getUniqueId() + ".json");
     }
 
     /**
@@ -57,7 +56,7 @@ public class InventoryData {
     }
 
     public void readFile(Consumer<@Nullable InventoryData> successfulCallback) {
-        new Task()
+        Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
                     try {
@@ -73,8 +72,7 @@ public class InventoryData {
 
                         reader.close();
                     } catch (IOException ex) {
-                        Logging.stack("Error while reading inventory of " + player.getName() + " from file: ",
-                                "Please report this error and the above stack trace to the developer!", ex);
+                        IP.logging().stack("Error while reading inventory of " + player.getName() + " from file " + file.getName(), ex);
                         successfulCallback.accept(null);
                     }
                 })
@@ -82,12 +80,12 @@ public class InventoryData {
     }
 
     public void saveFile() {
-        new Task()
+        Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
                     try {
                         if (!file.exists()) {
-                            File folder = new File(IP.getInstance().getDataFolder() + "/inventories");
+                            File folder = new File(IP.getPlugin().getDataFolder() + "/inventories");
                             if (!folder.exists()) {
                                 folder.mkdirs();
                             }
@@ -98,8 +96,7 @@ public class InventoryData {
                         writer.flush();
                         writer.close();
                     } catch (IOException ex) {
-                        Logging.stack("Error while saving inventory of " + player.getName() + " to file: ",
-                                "Please report this error and the above stack trace to the developer!", ex);
+                        IP.logging().stack("Error while saving inventory of " + player.getName() + " to file " + file.getName(), ex);
                     }
                 })
                 .run();

@@ -44,16 +44,15 @@ public class SchematicAdjuster {
      * @return the associated angle
      */
     private static RotationAngle getAngle(Direction heading) {
-        switch (heading) {
-            case SOUTH: // south
-                return RotationAngle.ANGLE_180;
-            case NORTH: // north
-                return RotationAngle.ANGLE_0;
-            case EAST: // east
-                return RotationAngle.ANGLE_270;
-            case WEST: // west
-                return RotationAngle.ANGLE_90;
-        }
-        return RotationAngle.ANGLE_270;
+        return switch (heading) {
+            case SOUTH -> // south
+                    RotationAngle.ANGLE_180;
+            case NORTH -> // north
+                    RotationAngle.ANGLE_0;
+            case EAST -> // east
+                    RotationAngle.ANGLE_270;
+            case WEST -> // west
+                    RotationAngle.ANGLE_90;
+        };
     }
 }

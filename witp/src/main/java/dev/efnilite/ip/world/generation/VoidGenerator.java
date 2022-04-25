@@ -1,6 +1,6 @@
 package dev.efnilite.ip.world.generation;
 
-import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
@@ -63,8 +63,8 @@ public class VoidGenerator extends ChunkGenerator {
      */
     public static @Nullable String getMultiverseGenerator() {
         if (Bukkit.getPluginManager().getPlugin("WVoidGen") != null) {
-            Logging.error("WVoidGen is outdated since v3.0.4.");
-            Logging.error("Please delete the jar file and visit the wiki for more info.");
+            IP.logging().error("WVoidGen is outdated since v3.0.4.");
+            IP.logging().error("Please delete the jar file and visit the wiki for more info.");
             return null;
         }
 

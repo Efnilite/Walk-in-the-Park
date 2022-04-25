@@ -1,8 +1,8 @@
 package dev.efnilite.ip.reward;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.util.Logging;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,22 +11,12 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Efnilite
  */
-public class RewardString {
-
-    /**
-     * The string, as read from rewards-v2.yml
-     */
-    private final String string;
-
-    public RewardString(@NotNull String string) {
-        this.string = string;
-    }
+public record RewardString(@NotNull String string) {
 
     /**
      * Parses and executes this reward
      *
-     * @param   player
-     *          The player to which to give this reward to
+     * @param player The player to which to give this reward to
      */
     public void execute(@NotNull ParkourPlayer player) {
         if (string.isEmpty()) {
@@ -57,7 +47,7 @@ public class RewardString {
             try {
                 Util.depositPlayer(player.getPlayer(), Double.parseDouble(string));
             } catch (NumberFormatException ex) {
-                Logging.stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
+                IP.logging().stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
             }
 
         } else {

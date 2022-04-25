@@ -1,8 +1,8 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
+import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -16,7 +16,6 @@ import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
-import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
@@ -32,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
     public static final HashMap<Player, Selection> selections = new HashMap<>();
@@ -65,10 +65,11 @@ public class ParkourCommand extends ViCommand {
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
                 // Help menu
-                case "help":
+                case "help" -> {
                     sendHelpMessages(sender);
                     return true;
-                case "reload":
+                }
+                case "reload" -> {
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
                     }
@@ -76,16 +77,14 @@ public class ParkourCommand extends ViCommand {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
-
                     Time.timerStart("reload");
                     Message.send(sender, IP.PREFIX + "Reloading config files..");
-
                     IP.getConfiguration().reload();
                     Option.init(false);
-
                     Message.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
                     return true;
-                case "migrate":
+                }
+                case "migrate" -> {
                     if (!cooldown(sender, "migrate", 2500)) {
                         return true;
                     }
@@ -96,9 +95,8 @@ public class ParkourCommand extends ViCommand {
                         Message.send(sender, IP.PREFIX + "You have disabled SQL support in the config!");
                         return true;
                     }
-
                     Time.timerStart("migrate");
-                    File folder = new File(IP.getInstance().getDataFolder() + "/players/");
+                    File folder = new File(IP.getPlugin().getDataFolder() + "/players/");
                     if (!folder.exists()) {
                         folder.mkdirs();
                         return true;
@@ -108,7 +106,7 @@ public class ParkourCommand extends ViCommand {
                         try {
                             reader = new FileReader(file);
                         } catch (FileNotFoundException ex) {
-                            Logging.stack("Could not find file to migrate", "Please try again!", ex);
+                            IP.logging().stack("Could not find file to migrate", ex);
                             Message.send(sender, IP.PREFIX + "<red>Could not find that file, try again!");
                             return true;
                         }
@@ -119,12 +117,13 @@ public class ParkourCommand extends ViCommand {
                     }
                     Message.send(sender, IP.PREFIX + "Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
                     return true;
+                }
             }
             if (player == null) {
                 return true;
             }
             switch (args[0]) {
-                case "join": {
+                case "join" -> {
                     if (!cooldown(sender, "join", 2500)) {
                         return true;
                     }
@@ -135,7 +134,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     if (!Option.ENABLE_JOINING.get()) {
-                        Logging.info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                        IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                         return true;
                     }
 
@@ -147,7 +146,7 @@ public class ParkourCommand extends ViCommand {
                     ParkourPlayer.join(player);
                     return true;
                 }
-                case "leave": {
+                case "leave" -> {
                     if (!cooldown(sender, "leave", 2500)) {
                         return true;
                     }
@@ -155,7 +154,7 @@ public class ParkourCommand extends ViCommand {
 
                     return true;
                 }
-                case "menu": {
+                case "menu" -> {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
                     if (Option.OPTIONS_ENABLED.get() && pp != null) {
                         pp.getGenerator().menu();
@@ -163,8 +162,7 @@ public class ParkourCommand extends ViCommand {
                     }
                     return true;
                 }
-                case "gamemode":
-                case "gm": {
+                case "gamemode", "gm" -> {
                     if (!ParkourOption.GAMEMODE.check(player)) {
                         return true;
                     }
@@ -172,14 +170,14 @@ public class ParkourCommand extends ViCommand {
 
                     return true;
                 }
-                case "leaderboard":
+                case "leaderboard" -> {
                     if (!ParkourOption.LEADERBOARD.check(player)) {
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
                     }
                     LeaderboardMenu.open(player);
-                    break;
-                case "schematic":
+                }
+                case "schematic" -> {
                     if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) { // default players shouldn't have access even if perms are disabled
                         Util.sendDefaultLang(player, "cant-do");
                         return true;
@@ -197,12 +195,13 @@ public class ParkourCommand extends ViCommand {
                     Message.send(player, "");
                     Message.send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
                     return true;
+                }
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
                 Selection selection = selections.get(player);
                 switch (args[1].toLowerCase()) {
-                    case "wand":
+                    case "wand" -> {
                         if (Version.isHigherOrEqual(Version.V1_14)) {
                             player.getInventory().addItem(wand);
 
@@ -212,7 +211,8 @@ public class ParkourCommand extends ViCommand {
                             Message.send(player, "&7If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands &7instead.");
                         }
                         return true;
-                    case "pos1":
+                    }
+                    case "pos1" -> {
                         if (selections.get(player) == null) {
                             selections.put(player, new Selection(player.getLocation(), null, player.getWorld()));
                         } else {
@@ -223,7 +223,8 @@ public class ParkourCommand extends ViCommand {
                         }
                         Message.send(player, IP.PREFIX + "Position 1 was set to " + Util.toString(player.getLocation(), true));
                         return true;
-                    case "pos2":
+                    }
+                    case "pos2" -> {
                         if (selections.get(player) == null) {
                             selections.put(player, new Selection(null, player.getLocation(), player.getWorld()));
                         } else {
@@ -234,7 +235,8 @@ public class ParkourCommand extends ViCommand {
                         }
                         Message.send(player, IP.PREFIX + "Position 2 was set to " + Util.toString(player.getLocation(), true));
                         return true;
-                    case "save":
+                    }
+                    case "save" -> {
                         if (!cooldown(sender, "schematic-save", 2500)) {
                             return true;
                         }
@@ -244,18 +246,16 @@ public class ParkourCommand extends ViCommand {
                             Message.send(player, "&7Be sure to set the first and second position!");
                             return true;
                         }
-
                         String code = Util.randomDigits(6);
-
                         Message.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
                         Message.send(player, "&7Your schematic is being saved..");
                         Message.send(player, "&7Your schematic will be generated with random number code <red>'" + code + "'&7!");
                         Message.send(player, "&7You can change the file name to whatever number you like.");
                         Message.send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
-
                         Schematic schematic = new Schematic(selection);
                         schematic.file("parkour-" + code).save(player);
                         return true;
+                    }
                 }
             } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission("witp.forcejoin")) {
 
@@ -331,7 +331,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
-                    new Task().async().execute(() -> {
+                    Task.create(IP.getPlugin()).async().execute(() -> {
                         if (ParkourUser.resetHighScores()) {
                             Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
                         } else {
@@ -359,7 +359,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     UUID finalUuid = uuid;
-                    new Task().async().execute(() -> {
+                    Task.create(IP.getPlugin()).async().execute(() -> {
                         if (ParkourUser.resetHighscore(finalUuid)) {
                             Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + args[1] + " in memory and the files.");
                         } else {
