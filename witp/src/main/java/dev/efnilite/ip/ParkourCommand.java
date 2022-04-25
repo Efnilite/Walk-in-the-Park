@@ -1,6 +1,6 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.menu.GamemodeMenu;
+import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -165,13 +165,11 @@ public class ParkourCommand extends ViCommand {
                 }
                 case "gamemode":
                 case "gm": {
-                    ParkourUser user = ParkourUser.getUser(player);
-                    if (user != null) {
-                        if (!ParkourOption.GAMEMODE.check(player)) {
-                            return true;
-                        }
-                        GamemodeMenu.open(user);
+                    if (!ParkourOption.GAMEMODE.check(player)) {
+                        return true;
                     }
+                    SingleplayerMenu.open(player);
+
                     return true;
                 }
                 case "leaderboard":

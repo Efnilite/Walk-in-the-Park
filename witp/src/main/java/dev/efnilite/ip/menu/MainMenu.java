@@ -25,7 +25,7 @@ public class MainMenu {
         // Singleplayer if player is not found
         registerMainItem(1, 0, new Item(Material.ENDER_PEARL, "<#6E92B1><bold>Singleplayer")
                 .lore("<gray>Play on your own.").click(
-                event -> ParkourUser.join(event.getPlayer())),
+                event -> SingleplayerMenu.open(event.getPlayer())),
                 player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
         registerMainItem(1, 2, new Item(Material.GLASS, "<#39D5AB><bold>Spectator")

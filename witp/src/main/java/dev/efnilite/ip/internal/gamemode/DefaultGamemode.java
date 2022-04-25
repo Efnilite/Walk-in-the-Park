@@ -29,8 +29,7 @@ public class DefaultGamemode implements Gamemode {
     public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
         player.closeInventory();
 
-        if (user instanceof ParkourPlayer) {
-            ParkourPlayer pp = (ParkourPlayer) user;
+        if (user instanceof ParkourPlayer pp) {
             if (pp.getGenerator() instanceof DefaultGenerator) {
                 return;
             }

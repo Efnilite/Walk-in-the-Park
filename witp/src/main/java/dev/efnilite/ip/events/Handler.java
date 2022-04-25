@@ -2,6 +2,7 @@ package dev.efnilite.ip.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -232,6 +233,7 @@ public class Handler implements EventWatcher {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
+        Player p = event.getPlayer();
         ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
         if (player != null && action && System.currentTimeMillis() - player.getJoinTime() > 1000) {
@@ -240,7 +242,7 @@ public class Handler implements EventWatcher {
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {
                 event.setCancelled(true);
-                player.getGenerator().menu();
+                MainMenu.open(p);
             } else if (held == quit) {
                 event.setCancelled(true);
                 ParkourUser.leave(player);

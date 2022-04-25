@@ -292,12 +292,6 @@ public class SettingsMenu {
                 .item(27, new Item(Material.PAPER, "<#2BDCE4><bold>To main menu").click(
                         event -> MainMenu.open(event.getPlayer())))
 
-                .item(28, config.getFromItemData(user.getLocale(), "general.close")
-                        .click(event -> user.getPlayer().closeInventory()))
-
-                .item(29, config.getFromItemData(user.getLocale(), "general.quit")
-                        .click(event -> ParkourPlayer.leave(user)))
-
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SnakeSingleAnimation())
                 .open(player);
