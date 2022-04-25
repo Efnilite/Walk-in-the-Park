@@ -32,9 +32,6 @@ public class LeaderboardMenu {
     /**
      * Shows the leaderboard menu
      *
-     * @param   user
-     *          The user, but can be null
-     *
      * @param   player
      *          The player
      */
@@ -106,7 +103,7 @@ public class LeaderboardMenu {
                         .click(event -> leaderboard.page(-1)))
 
                 .item(32, config.getFromItemData(locale, "general.close")
-                        .click(event -> player.closeInventory()))
+                        .click(event -> MainMenu.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())

@@ -11,10 +11,7 @@ import dev.efnilite.vilib.inventory.item.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -26,12 +23,14 @@ public class MainMenu {
 
     static {
         // Singleplayer if player is not found
-        registerMainItem(1, 0, new Item(Material.BUCKET, "<#6E92B1><bold>Singleplayer").click(
+        registerMainItem(1, 0, new Item(Material.ENDER_PEARL, "<#6E92B1><bold>Singleplayer")
+                .lore("<gray>Play on your own.").click(
                 event -> ParkourUser.join(event.getPlayer())),
                 player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
-        registerMainItem(1, 2, new Item(Material.BUCKET, "<#39D5AB><bold>Spectator").click(
-                        event -> SpectatorMenu.open(event.getPlayer())),
+        registerMainItem(1, 2, new Item(Material.GLASS, "<#39D5AB><bold>Spectator")
+                .lore("<gray>Spectate another player or lobby.").click(
+                event -> SpectatorMenu.open(event.getPlayer())),
                 player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
@@ -49,16 +48,18 @@ public class MainMenu {
                 ParkourPlayer::isActive);
 
         // Leaderboard only if player has perms
-        registerMainItem(3, 0, new Item(Material.GOLD_BLOCK, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
+        registerMainItem(3, 0, new Item(Material.GOLD_NUGGET, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
                 event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms
-        registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language").click(
+        registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language")
+                .lore("<gray>Change your language.").click(
                 event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
 
-        registerMainItem(3, 2, new Item(Material.PAPER, "<#E53CA2><bold>View commands").click(
+        registerMainItem(3, 2, new Item(Material.PAPER, "<#E53CA2><bold>View commands")
+                .lore("<gray>View all current commands.").click(
                 event -> {
                     ParkourCommand.sendHelpMessages(event.getPlayer());
                     event.getPlayer().closeInventory();
@@ -117,7 +118,10 @@ public class MainMenu {
         for (int row : registeredItems.keySet()) {
             int actualSlot = row * 9; // 0, 9, 18, etc.
 
-            for (ItemContainer container : registeredItems.get(row)) {
+            List<ItemContainer> containers = registeredItems.get(row); // sort by id first
+            containers.sort(Comparator.comparingInt(container -> container.id));
+
+            for (ItemContainer container : containers) {
                 if (container.predicate.test(player)) { // if item in id passes predicate, display it in the menu
                     menu.item(actualSlot, container.item);
                     actualSlot++;

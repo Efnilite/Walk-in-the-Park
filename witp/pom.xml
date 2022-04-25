@@ -143,7 +143,7 @@
         <dependency>
             <groupId>com.github.ViStudios</groupId>
             <artifactId>vilib</artifactId>
-            <version>b5e3db1628</version>
+            <version>beb0a992d6</version>
             <scope>compile</scope>
         </dependency>
 

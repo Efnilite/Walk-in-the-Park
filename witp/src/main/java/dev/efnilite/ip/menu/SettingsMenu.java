@@ -55,7 +55,7 @@ public class SettingsMenu {
         // ---------- top row ----------
 
         if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
-            main.item(0, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
+            main.item(9, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
                     .click(event -> {
                         if (IP.getRegistry().getStyleTypes().size() == 1) {
                             openSingleStyleMenu(user, IP.getRegistry().getStyleTypes().get(0), disabledOptions);
@@ -84,11 +84,11 @@ public class SettingsMenu {
                 slot++;
             }
 
-            main.item(1, item);
+            main.item(10, item);
         }
 
         if (checkOptions(player, ParkourOption.SCHEMATICS, disabledOptions)) {
-            main.item(2, config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATICS.getName())
+            main.item(11, config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATICS.getName())
                     .click(event -> openSchematicMenu(user, disabledOptions)));
         }
 
@@ -99,7 +99,7 @@ public class SettingsMenu {
 
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.TIME.getName());
 
-            main.item(3, new SliderItem()
+            main.item(12, new SliderItem()
                     .initial(times.indexOf(user.selectedTime))
                     .add(0, item.clone()
                                     .modifyLore(line ->
@@ -140,7 +140,7 @@ public class SettingsMenu {
         if (checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabledOptions) && Option.SCOREBOARD.get()) {
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_SCOREBOARD.getName());
 
-            main.item(9, new SliderItem()
+            main.item(18, new SliderItem()
                     .initial(user.showScoreboard ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
@@ -166,7 +166,7 @@ public class SettingsMenu {
         if (checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabledOptions)) {
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
 
-            main.item(10, new SliderItem()
+            main.item(19, new SliderItem()
                     .initial(user.showFallMessage ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
@@ -187,7 +187,7 @@ public class SettingsMenu {
         if (checkOptions(player, ParkourOption.PARTICLES_AND_SOUND, disabledOptions)) {
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
 
-            main.item(11, new SliderItem()
+            main.item(20, new SliderItem()
                     .initial(user.useParticlesAndSound ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
@@ -208,7 +208,7 @@ public class SettingsMenu {
         if (checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabledOptions)) {
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SPECIAL_BLOCKS.getName());
 
-            main.item(12, new SliderItem()
+            main.item(21, new SliderItem()
                     .initial(user.useSpecialBlocks ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
@@ -235,7 +235,7 @@ public class SettingsMenu {
         if (checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabledOptions)) {
             Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCORE_DIFFICULTY.getName());
 
-            main.item(13, new SliderItem()
+            main.item(22, new SliderItem()
                     .initial(user.useScoreDifficulty ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
@@ -288,6 +288,9 @@ public class SettingsMenu {
         // opens the menu
         main
                 .distributeRowEvenly(0, 1, 2, 3)
+
+                .item(27, new Item(Material.PAPER, "<#2BDCE4><bold>To main menu").click(
+                        event -> MainMenu.open(event.getPlayer())))
 
                 .item(28, config.getFromItemData(user.getLocale(), "general.close")
                         .click(event -> user.getPlayer().closeInventory()))
