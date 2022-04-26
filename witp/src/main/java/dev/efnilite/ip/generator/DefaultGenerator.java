@@ -29,7 +29,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
@@ -355,7 +354,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         deleteStructure();
 
         if (regenerate) {
-            player.getPlayer().teleport(playerSpawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            player.teleport(playerSpawn);
         }
 
         int score = this.score;
