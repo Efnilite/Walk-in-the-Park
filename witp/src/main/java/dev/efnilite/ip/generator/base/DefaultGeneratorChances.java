@@ -1,7 +1,10 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.config.Option;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -10,6 +13,11 @@ import java.util.HashMap;
  * This class is mostly used to determine all jump chances.
  */
 public abstract class DefaultGeneratorChances extends ParkourGenerator {
+
+    /**
+     * The player
+     */
+    protected ParkourPlayer player;
 
     /**
      * The chances of which distance the jump should have
@@ -36,8 +44,13 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
      */
     protected final HashMap<Integer, Integer> defaultChances;
 
-    public DefaultGeneratorChances(ParkourPlayer player, GeneratorOption... generatorOptions) {
-        super(player, generatorOptions);
+    public DefaultGeneratorChances(@NotNull Session session, GeneratorOption... generatorOptions) {
+        super(session, generatorOptions);
+
+        player = session.getPlayers().get(0);
+        if (!(session instanceof SingleSession)) {
+            throw new IllegalArgumentException("Session is not a SingleSession");
+        }
 
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();

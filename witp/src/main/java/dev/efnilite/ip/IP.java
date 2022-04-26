@@ -12,6 +12,7 @@ import dev.efnilite.ip.internal.style.DefaultStyleType;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
+import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.UpdateChecker;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -29,6 +30,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -182,11 +184,11 @@ public final class IP extends ViPlugin {
      *
      * @return a {@link DefaultGenerator}
      */
-    public static DefaultGenerator getVersionGenerator(ParkourPlayer player) {
+    public static DefaultGenerator getVersionGenerator(@NotNull ParkourPlayer player) {
         if (versionSupportsSchematics()) {
-            return new DefaultGenerator(player);
+            return new DefaultGenerator(SingleSession.create(player));
         } else {
-            return new DefaultGenerator(player, GeneratorOption.DISABLE_SCHEMATICS);
+            return new DefaultGenerator(SingleSession.create(player), GeneratorOption.DISABLE_SCHEMATICS);
         }
     }
 

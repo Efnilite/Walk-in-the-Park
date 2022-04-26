@@ -1,12 +1,13 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.generator.Direction;
-import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.schematic.selection.Selection;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +20,7 @@ public abstract class ParkourGenerator {
     /**
      * The score of the player
      */
-    protected int score;
+    protected int score = 0;
 
     /**
      * The zone in which the parkour can take place.
@@ -56,21 +57,21 @@ public abstract class ParkourGenerator {
     /**
      * The player associated with this Generator.
      */
-    protected final ParkourPlayer player;
+    protected final Session session;
 
     /**
      * The spectators
      */
     protected final Map<UUID, ParkourSpectator> spectators;
 
-    public ParkourGenerator(ParkourPlayer player, GeneratorOption... options) {
-        this.player = player;
+    public ParkourGenerator(@NotNull Session session, GeneratorOption... options) {
+        this.session = session;
         this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
         this.random = ThreadLocalRandom.current();
 
-        player.setGenerator(this);
+        session.getPlayers().forEach(player -> player.setGenerator(this));
     }
 
     /**
@@ -135,16 +136,17 @@ public abstract class ParkourGenerator {
     public void updateTime() {
         time = stopwatch.toString();
 
-        player.updateVisualTime(player.selectedTime);
+        session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
     }
 
     /**
-     * Gets the owning player
+     * Sets the current zone of this generator.
      *
-     * @return the owning player
+     * @param   zone
+     *          The zone of this generator.
      */
-    public ParkourPlayer getPlayer() {
-        return player;
+    public void setZone(Selection zone) {
+        this.zone = zone;
     }
 
     /**
@@ -165,10 +167,29 @@ public abstract class ParkourGenerator {
         return time;
     }
 
-    public void setZone(Selection zone) {
-        this.zone = zone;
+    /**
+     * Gets the current heading as {@link Direction}
+     *
+     * @return the current heading.
+     */
+    public Direction getHeading() {
+        return heading;
     }
 
+    /**
+     * Gets the {@link Session} this Generator belongs to
+     *
+     * @return the {@link Session}
+     */
+    public Session getSession() {
+        return session;
+    }
+
+    /**
+     * Gets the current {@link GeneratorOption}s.
+     *
+     * @return the list of current Generator options.
+     */
     public List<GeneratorOption> getGeneratorOptions() {
         return generatorOptions;
     }

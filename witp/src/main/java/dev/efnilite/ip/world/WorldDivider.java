@@ -9,7 +9,6 @@ import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -258,20 +257,8 @@ public class WorldDivider {
         setup(to, pp);
     }
 
-    public void setupSession(ParkourPlayer pp) {
-        // create session
-        Session session = new SingleSession();
-        session.addPlayers(pp);
-        session.register();
-
-        // set session id for player
-        pp.setSessionId(session.getSessionId());
-    }
-
     public void setup(Location to, ParkourPlayer pp) {
         Player player = pp.getPlayer();
-
-        setupSession(pp);
 
         pp.teleport(to);
 

@@ -22,6 +22,18 @@ public class SingleSession implements Session {
     private final Map<UUID, ParkourPlayer> players = new HashMap<>();
     private final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
+    public static Session create(@NotNull ParkourPlayer player) {
+        // create session
+        Session session = new SingleSession();
+        session.addPlayers(player);
+        session.register();
+
+        // set session id for player
+        player.setSessionId(session.getSessionId());
+
+        return session;
+    }
+
     @Override
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {

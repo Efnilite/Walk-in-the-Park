@@ -1,8 +1,9 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.generator.AreaData;
-import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.session.Session;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An intermediary class to reduce the amount of clutter in the {@link dev.efnilite.ip.generator.DefaultGenerator} class.
@@ -13,12 +14,12 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
     /**
      * The total score achieved in this Generator instance
      */
-    protected int totalScore;
+    protected int totalScore = 0;
 
     /**
      * The schematic cooldown
      */
-    protected int schematicCooldown;
+    protected int schematicCooldown = 20;
 
     /**
      * Where the player spawns on reset
@@ -35,8 +36,8 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
      */
     protected AreaData data;
 
-    public DefaultGeneratorBase(ParkourPlayer player, GeneratorOption... generatorOptions) {
-        super(player, generatorOptions);
+    public DefaultGeneratorBase(@NotNull Session session, GeneratorOption... generatorOptions) {
+        super(session, generatorOptions);
     }
 
     /**

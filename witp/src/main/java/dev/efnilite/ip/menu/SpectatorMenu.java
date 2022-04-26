@@ -5,7 +5,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.SessionVisibility;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
@@ -28,12 +27,12 @@ public class SpectatorMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
 
-        PagedMenu spectator = new PagedMenu(4, "<white>Select a player");
+        PagedMenu spectator = new PagedMenu(4, "<white>Spectate");
 
         List<MenuItem> display = new ArrayList<>();
 
         for (Session session : Session.getSessions()) {
-            if (session.getVisibility() != SessionVisibility.PUBLIC) { // only showcase public
+            if (!session.isAcceptingSpectators()) { // only showcase sessions with spectators enabled
                 continue;
             }
 

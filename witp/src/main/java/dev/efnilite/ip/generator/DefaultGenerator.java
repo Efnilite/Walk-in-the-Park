@@ -13,6 +13,7 @@ import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -50,9 +51,22 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     private boolean isSpecial;
     private Material specialType;
 
-    protected boolean deleteStructure;
-    protected boolean stopped;
-    protected boolean waitForSchematicCompletion;
+    /**
+     * The amount of blocks that will trail the player's current index.
+     */
+    protected int blockTrail = 2;
+
+
+    /**
+     * Whether this generator has been stopped
+     */
+    protected boolean stopped = false;
+
+    /**
+     * Whether the stucture should be deleted on the next jump.
+     */
+    protected boolean deleteStructure = false;
+    protected boolean waitForSchematicCompletion = false;
 
     /**
      * The most recently spawned block
@@ -67,47 +81,36 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     /**
      * A list of blocks from the (possibly) spawned structure
      */
-    protected List<Block> schematicBlocks;
+    protected List<Block> schematicBlocks = new ArrayList<>();
 
     /**
      * The count total. This is always bigger (or the same) than the positionIndexPlayer
      */
-    protected int positionIndexTotal;
+    protected int positionIndexTotal = 0;
 
     /**
      * The player's current position index.
      */
-    protected int lastPositionIndexPlayer;
+    protected int lastPositionIndexPlayer = -1;
 
     /**
      * A map which stores all blocks and their number values. The first block generated will have a value of 0.
      */
-    protected final LinkedHashMap<Block, Integer> positionIndexMap;
+    protected final LinkedHashMap<Block, Integer> positionIndexMap = new LinkedHashMap<>();
 
     protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0, 0, 0, 0);
 
     /**
      * Creates a new ParkourGenerator instance
      *
-     * @param player The player associated with this generator
+     * @param   session
+     *          The session associated with this generator
      */
-    public DefaultGenerator(@NotNull ParkourPlayer player, GeneratorOption... generatorOptions) {
-        super(player, generatorOptions);
+    public DefaultGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
+        super(session, generatorOptions);
 
-        this.score = 0;
-        this.totalScore = 0;
-        this.stopped = false;
-        this.waitForSchematicCompletion = false;
-        this.schematicCooldown = 20;
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.schematicBlocks = new ArrayList<>();
-        this.deleteStructure = false;
-
-        this.positionIndexTotal = 0;
-        this.lastPositionIndexPlayer = -1;
-        this.positionIndexMap = new LinkedHashMap<>();
-
         this.heading = Option.HEADING.get();
     }
 
@@ -308,7 +311,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // delete trailing blocks
         for (Block block : new ArrayList<>(positionIndexMap.keySet())) {
             int index = positionIndexMap.get(block);
-            if (currentIndex - index > 2) {
+            if (currentIndex - index > blockTrail) {
                 block.setType(Material.AIR);
                 positionIndexMap.remove(block);
             }
