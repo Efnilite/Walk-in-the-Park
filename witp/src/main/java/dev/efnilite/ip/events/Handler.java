@@ -80,7 +80,7 @@ public class Handler implements EventWatcher {
                 event.setJoinMessage(null);
             }
 
-            ParkourPlayer.join(player);
+            ParkourPlayer.joinDefault(player);
         } else if (player.getWorld().getUID().equals(IP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {

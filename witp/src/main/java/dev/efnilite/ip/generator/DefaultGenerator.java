@@ -8,12 +8,14 @@ import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Tournament;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -293,14 +295,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         lastStandingPlayerLocation = playerLocation.clone();
 
-        if (Option.ALL_POINTS.get()) { // score handling
-            for (int i = 0; i < deltaFromLast; i++) { // score the difference
-                score();
-            }
-        } else {
-            score();
-        }
-
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= player.blockLead) {
             generate(player.blockLead - deltaCurrentTotal + 1); // generate the remaining amount so it will match
@@ -318,6 +312,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         if (deleteStructure) { // deletes the structure if the player goes to the next block (reason why it's last)
             deleteStructure();
+        }
+
+        if (Option.ALL_POINTS.get()) { // score handling
+            for (int i = 0; i < deltaFromLast; i++) { // score the difference
+                score();
+            }
+        } else {
+            score();
         }
 
         calculateDistance();
@@ -350,7 +352,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         positionIndexMap.clear();
 
         waitForSchematicCompletion = false;
-        player.saveGame();
         deleteStructure();
 
         if (regenerate) {
@@ -382,8 +383,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
-            if (score >= player.highScore) {
-                player.setHighScore(player.name, score, time, diff);
+            if (Tournament.isActive() && session.inTournament()) {
+                Tournament.getActive().addScore(player.uuid, new Score(player.name, score, time, diff));
+            } else {
+                if (score >= player.highScore) {
+                    player.setHighScore(player.name, score, time, diff);
+                }
             }
         }
 

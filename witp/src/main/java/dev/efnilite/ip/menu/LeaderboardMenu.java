@@ -2,8 +2,7 @@ package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.Highscore;
-import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +36,7 @@ public class LeaderboardMenu {
     public static void open(Player player) {
         ParkourUser.initHighScores(); // make sure scores are enabled
 
-        // sort high scores by value
-        HashMap<UUID, Integer> sorted = Util.sortByValue(ParkourUser.highScores);
-        ParkourUser.highScores = sorted;
-        List<UUID> uuids = new ArrayList<>(sorted.keySet());
+        List<UUID> uuids = new ArrayList<>(ParkourUser.getTopScores().keySet());
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
@@ -54,7 +49,7 @@ public class LeaderboardMenu {
         int rank = 1;
         Item base = config.getFromItemData(locale, "options.leaderboard-head");
         for (UUID uuid : uuids) {
-            Highscore highscore = ParkourUser.getHighscore(uuid);
+            Score highscore = ParkourUser.getHighscore(uuid);
             if (highscore == null) {
                 continue;
             }
@@ -64,14 +59,14 @@ public class LeaderboardMenu {
                     .material(Material.PLAYER_HEAD)
                     .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
                             .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name)
-                            .replace("%t", highscore.time)
-                            .replace("%d", highscore.diff))
+                            .replace("%p", highscore.name())
+                            .replace("%t", highscore.time())
+                            .replace("%d", highscore.difficulty()))
                     .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
                             .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name)
-                            .replace("%t", highscore.time)
-                            .replace("%d", highscore.diff));
+                            .replace("%p", highscore.name())
+                            .replace("%t", highscore.time())
+                            .replace("%d", highscore.difficulty()));
 
             // Player head gathering
             ItemStack stack = item.build();

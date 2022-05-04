@@ -2,7 +2,7 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.hook.PlaceholderHook;
-import dev.efnilite.ip.player.data.Highscore;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -81,10 +81,10 @@ public class ParkourSpectator extends ParkourUser {
             Integer rank = ParkourPlayer.getHighScoreValue(closest.getUUID());
             UUID one = ParkourPlayer.getAtPlace(1);
             Integer top = 0;
-            Highscore highscore = null;
+            Score highscore = null;
             if (one != null) {
                 top = ParkourPlayer.getHighScoreValue(one);
-                highscore = scoreMap.get(one);
+                highscore = topScores.get(one);
             }
             for (String s : lines) {
                 s = translatePlaceholders(closest, s); // add support for PAPI placeholders in scoreboard
@@ -92,7 +92,7 @@ public class ParkourSpectator extends ParkourUser {
                         .replace("%time%", closest.getGenerator().getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
-                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
                         .replace("%session%" , getSessionId()));
             }
 

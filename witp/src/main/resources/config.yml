@@ -57,11 +57,6 @@ sql:
   username: 'efnilite'
   password: 'super secret password'
 
-  # Logs all games
-  # !! Warning: Might take up a lot of storage
-  # Does not count games with a score of 0
-  game-logs: false
-
   # Using an existing database might overwrite data. Be cautious!
   database: 'witp'
 

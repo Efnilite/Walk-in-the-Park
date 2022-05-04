@@ -44,7 +44,7 @@ public class SingleplayerMenu {
 
             Item item = gm.getItem(locale);
             items.add(new Item(item.getMaterial(), item.getName())
-                    .click(event -> gm.handleItemClick(player, null, event.getMenu())));
+                    .click(event -> gm.join(player)));
         }
 
         gamemode

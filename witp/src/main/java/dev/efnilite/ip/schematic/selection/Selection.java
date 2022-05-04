@@ -93,7 +93,10 @@ public class Selection {
      * @return the maximal point
      */
     public Location getMaximumPoint() {
-        return new Location(world, Math.max(pos1.getBlockX(), pos2.getBlockX()), Math.max(pos1.getBlockY(), pos2.getBlockY()), Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
+        return new Location(world,
+                Math.max(pos1.getBlockX(), pos2.getBlockX()),
+                Math.max(pos1.getBlockY(), pos2.getBlockY()),
+                Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
     }
 
     /**
@@ -102,7 +105,10 @@ public class Selection {
      * @return the minimal point
      */
     public Location getMinimumPoint() {
-        return new Location(world, Math.min(pos1.getBlockX(), pos2.getBlockX()), Math.min(pos1.getBlockY(), pos2.getBlockY()), Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
+        return new Location(world,
+                Math.min(pos1.getBlockX(), pos2.getBlockX()),
+                Math.min(pos1.getBlockY(), pos2.getBlockY()),
+                Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
     }
 
     /**
@@ -114,9 +120,27 @@ public class Selection {
      *
      * @return an array of distances to each of the axes in the following order: x, y, z
      */
-    public double[] distanceToAxes(Location other) {
+    public double[] distanceToBoundaries(Location other) {
         Location min = getMinimumPoint();
-        return new double[] { other.getBlockX() - min.getBlockX(), other.getBlockY() - min.getBlockY(), other.getBlockZ() - min.getBlockZ() };
+        double[] minDistances = new double[] {
+                other.getBlockX() - min.getBlockX(),
+                other.getBlockY() - min.getBlockY(),
+                other.getBlockZ() - min.getBlockZ() };
+
+        Location max = getMaximumPoint();
+        double[] maxDistances = new double[] {
+                max.getBlockX() - other.getBlockX(),
+                max.getBlockY() - other.getBlockY(),
+                max.getBlockZ() - other.getBlockZ() };
+
+        double[] distances = new double[3];
+        for (int i = 0; i < 3; i++) {
+            double minDistance = minDistances[i];
+            double maxDistance = maxDistances[i];
+
+            distances[i] = Math.min(minDistance, maxDistance);
+        }
+        return distances;
     }
 
     /**
@@ -130,7 +154,7 @@ public class Selection {
 
     @Override
     public String toString() {
-        return pos1.toString() + " to " + pos2.toString(); //
+        return "Selection{" + "world=" + world + ", pos1=" + pos1 + ", pos2=" + pos2 + '}';
     }
 
     public Location getPos1() {

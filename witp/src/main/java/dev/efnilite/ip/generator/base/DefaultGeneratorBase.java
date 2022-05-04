@@ -49,7 +49,7 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
      * @return true if the location is closer than the border warning, false if not.
      */
     public boolean isNearingEdge(Location location) {
-        double[] distances = zone.distanceToAxes(location);
+        double[] distances = zone.distanceToBoundaries(location);
 
         return distances[0] < 50 || distances[2] < 50;
     }

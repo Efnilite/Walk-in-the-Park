@@ -6,7 +6,7 @@ import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.Highscore;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -104,9 +104,6 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "highscore":
             case "high_score":
                 Integer value = ParkourPlayer.getHighScoreValue(player.getUniqueId());
-                if (value == null) {
-                    value = 0;
-                }
                 return Integer.toString(value);
             case "version":
             case "ver":
@@ -123,7 +120,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return "?";
                 }
                 Integer score = ParkourPlayer.getHighScoreValue(uuid);
-                return score == null ? "?" : Integer.toString(score);
+                return Integer.toString(score);
             default:
                 if (params.contains("player_rank_")) {
                     String replaced = params.replace("player_rank_", "");
@@ -133,11 +130,11 @@ public class PlaceholderHook extends PlaceholderExpansion {
                         if (uuidRank == null) {
                             return "?";
                         }
-                        Highscore highscore = ParkourPlayer.getHighScore(uuidRank);
+                        Score highscore = ParkourPlayer.getHighScore(uuidRank);
                         if (highscore == null) {
                             return "?";
                         }
-                        return highscore.name == null ? "?" : highscore.name;
+                        return highscore.name() == null ? "?" : highscore.name();
                     } else {
                         return "?";
                     }
@@ -150,7 +147,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                             return "?";
                         }
                         Integer score1 = ParkourPlayer.getHighScoreValue(uuidRank1);
-                        return score1 == null ? "?" : Integer.toString(score1);
+                        return Integer.toString(score1);
                     } else {
                         return "?";
                     }

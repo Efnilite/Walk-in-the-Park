@@ -41,7 +41,6 @@ public class Option {
     public static List<Integer> POSSIBLE_LEADS;
 
     public static ConfigOption<Boolean> VERBOSING;
-    public static ConfigOption<Boolean> GAMELOGS;
     public static ConfigOption<Boolean> UPDATE_CHECKER;
 
     // Advanced settings
@@ -125,7 +124,6 @@ public class Option {
         HOTBAR_QUIT_ITEM = new ConfigOption<>(config, "options.hotbar-quit-item");
 
         PERMISSIONS_STYLES = new ConfigOption<>(config, "permissions.per-style");
-        GAMELOGS = new ConfigOption<>(config, "sql.game-logs");
         LANGUAGES = new ConfigOption<>(new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false)));
         List<String> languages = new ArrayList<>(LANGUAGES.get());
         languages.remove("default");

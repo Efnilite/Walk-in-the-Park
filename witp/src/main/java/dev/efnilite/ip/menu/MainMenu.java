@@ -38,7 +38,7 @@ public class MainMenu {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
                 if (pp != null) {
-                    SettingsMenu.open(pp);
+                    pp.getGenerator().menu();
                 }
         }), player -> ParkourPlayer.isActive(player) && ParkourOption.SETTINGS.check(player));
 

@@ -1,5 +1,6 @@
 package dev.efnilite.ip.session;
 
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import org.bukkit.entity.Player;
@@ -14,8 +15,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Default methods for a playing session.
- * This class stores data about a playing session, since a player can change class several types while
+ * Default methods for a playing Session.
+ * This class stores data about a playing Session, since a player can change class several types while
  * switching between gamemodes. This class may include multiple players, or just one.
  *
  * These are referred to as 'Lobbies' in game, to make it easier for players to understand their function.
@@ -86,7 +87,7 @@ public interface Session {
     /**
      * Gets a list of all the players in this Session.
      *
-     * @return a list of all {@link ParkourPlayer}s in this session
+     * @return a list of all {@link ParkourPlayer}s in this Session
      */
     @NotNull List<ParkourPlayer> getPlayers();
 
@@ -110,12 +111,42 @@ public interface Session {
      *
      * @see SessionVisibility
      *
-     * @return the session visibility.
+     * @return the Session visibility.
      */
     SessionVisibility getVisibility();
 
     /**
-     * Automatically assigns an unregistered player to this session, based
+     * Sets the Tournament status for this Session
+     *
+     * @param   inTournament
+     *          Whether this Session is partaking in a Tournament
+     */
+    void setTournament(boolean inTournament);
+
+    /**
+     * Whether this Session is taking part in a Tournament.
+     *
+     * @return true if this Session is in a Tournament, false if not
+     */
+    boolean inTournament();
+
+    /**
+     * Returns the {@link Gamemode} of this Session.
+     *
+     * @return the {@link Gamemode} of this Session.
+     */
+    Gamemode getGamemode();
+
+    /**
+     * Sets this Session's current {@link Gamemode}.
+     *
+     * @param   gamemode
+     *          The {@link Gamemode}
+     */
+    void setGamemode(Gamemode gamemode);
+
+    /**
+     * Automatically assigns an unregistered player to this Session, based
      * on the return values of {@link #isAcceptingPlayers()} and {@link #isAcceptingSpectators()}.
      * This is done very discretely. If you want to add your own checks for spectators, etc.,
      * overriding this method is most effective.
@@ -126,7 +157,7 @@ public interface Session {
      */
     default void join(Player player) {
         if (isAcceptingPlayers()) {
-            addPlayers(new ParkourPlayer(player, null));
+            addPlayers(getGamemode().join(player));
         } else if (isAcceptingSpectators()) {
             addSpectators(ParkourSpectator.spectateSession(player, this));
         }
@@ -153,17 +184,17 @@ public interface Session {
     }
 
     /**
-     * Registers this session
+     * Registers this Session
      */
     default void register() {
         Manager.register(this);
     }
 
     /**
-     * Unregisters this session, only if there is one player and 0 spectators
+     * Unregisters this Session, only if there is one player and 0 spectators
      */
     default void unregister() {
-        if (getPlayers().isEmpty() && getSpectators().isEmpty()) { // if there are no other players/spectators, close session
+        if (getPlayers().isEmpty() && getSpectators().isEmpty()) { // if there are no other players/spectators, close Session
             Manager.unregister(this);
         }
     }
@@ -172,7 +203,7 @@ public interface Session {
      * Checks if a Session is currently registered.
      *
      * @param   id
-     *          The id of the session.
+     *          The id of the Session.
      *
      * @return true if the Session is active. False if not.
      */

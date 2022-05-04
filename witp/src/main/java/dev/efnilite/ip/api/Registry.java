@@ -2,6 +2,7 @@ package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +54,24 @@ public final class Registry {
         }
     }
 
+    /**
+     * Returns a gamemode by a specific name
+     *
+     * @param   name
+     *          The name
+     *
+     * @return the Gamemode instance associated with this name or null if there is no Gamemode for this name.
+     */
+    @Nullable
+    public Gamemode getGamemode(String name) {
+        return gamemodes.get(name);
+    }
+
+    @Nullable
+    public StyleType getStyleType(String name) {
+        return styleTypes.get(name);
+    }
+
     public StyleType getTypeFromStyle(String style) {
         for (StyleType value : styleTypes.values()) {
             if (value.styles.keySet().contains(style.toLowerCase())) {
@@ -60,10 +79,6 @@ public final class Registry {
             }
         }
         return styleTypes.get("default");
-    }
-
-    public StyleType getStyleType(String name) {
-        return styleTypes.get(name);
     }
 
     public List<StyleType> getStyleTypes() {

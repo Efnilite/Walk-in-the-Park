@@ -1,7 +1,5 @@
 package dev.efnilite.ip.api;
 
-import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -31,18 +29,12 @@ public interface Gamemode {
     @NotNull Item getItem(String locale);
 
     /**
-     * When this gamemode gets clicked in the inventory screen
+     * Makes a player join this gamemode.
      *
      * @param   player
-     *          The player who clicked
-     *
-     * @param   user
-     *          The {@link ParkourUser} who clicked
-     *
-     * @param   previousMenu
-     *          The inventory
+     *          The player
      */
-    void handleItemClick(Player player, ParkourUser user, Menu previousMenu);
+    void join(Player player);
 
     boolean isMultiplayer();
 

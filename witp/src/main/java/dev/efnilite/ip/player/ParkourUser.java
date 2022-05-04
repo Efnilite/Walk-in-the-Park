@@ -3,7 +3,7 @@ package dev.efnilite.ip.player;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.events.PlayerLeaveEvent;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
-import dev.efnilite.ip.player.data.Highscore;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Superclass of every type of player. This encompasses every player currently in the Parkour world.
@@ -61,8 +62,7 @@ public abstract class ParkourUser {
      */
     protected final Player player;
 
-    public static Map<UUID, Integer> highScores = new LinkedHashMap<>();
-    protected static volatile Map<UUID, Highscore> scoreMap = new LinkedHashMap<>();
+    protected static Map<UUID, Score> topScores = new LinkedHashMap<>();
     protected static final Map<UUID, ParkourUser> users = new HashMap<>();
     protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
 
@@ -94,7 +94,7 @@ public abstract class ParkourUser {
      *
      * @return the newly registered ParkourPlayer instance.
      */
-    public static @NotNull ParkourPlayer join(@NotNull Player player) {
+    public static @NotNull ParkourPlayer joinDefault(@NotNull Player player) {
         ParkourPlayer pp = register(player);
         IP.getDivider().generate(pp);
 
@@ -113,7 +113,7 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Registers a player. This registers the player internally - for joining, use {@link #join(Player)}
+     * Registers a player. This registers the player internally - for joining, use {@link #joinDefault(Player)}
      * This automatically unregisters the player if it is already registered.
      *
      * @param   player
@@ -272,8 +272,7 @@ public abstract class ParkourUser {
                     int highScore = Integer.parseInt((String) values.get(1));
                     String highScoreTime = (String) values.get(2);
                     String highScoreDiff = (String) values.get(3);
-                    highScores.put(uuid, highScore);
-                    scoreMap.put(uuid, new Highscore(name, highScoreTime, highScoreDiff));
+                    topScores.put(uuid, new Score(name, highScore, highScoreTime, highScoreDiff));
                 }
             }
         } else {
@@ -293,8 +292,7 @@ public abstract class ParkourUser {
                 if (from.highScoreDifficulty == null) {
                     from.highScoreDifficulty = "?";
                 }
-                highScores.put(uuid, from.highScore);
-                scoreMap.put(uuid, new Highscore(from.name, from.highScoreTime, from.highScoreDifficulty));
+                topScores.put(uuid, new Score(from.name, from.highScore, from.highScoreTime, from.highScoreDifficulty));
                 reader.close();
             }
         }
@@ -362,26 +360,26 @@ public abstract class ParkourUser {
      * Initializes the high scores
      */
     public static void initHighScores() {
-        if (highScores.isEmpty()) {
+        if (topScores.isEmpty()) {
             try {
                 fetchHighScores();
             } catch (IOException | SQLException ex) {
                 IP.logging().stack("Error while trying to fetch the high scores!", ex);
             }
-            highScores = Util.sortByValue(highScores);
+            sortScores();
         }
     }
 
     /**
-     * Gets an instance of a {@link Highscore} with the player's uuid
+     * Gets an instance of a {@link Score} with the player's uuid
      *
      * @param   uuid
      *          The player's uuid
      *
      * @return the Highscore instance associated with this player uuid
      */
-    public static Highscore getHighscore(@NotNull UUID uuid) {
-        return scoreMap.get(uuid);
+    public static Score getHighscore(@NotNull UUID uuid) {
+        return topScores.get(uuid);
     }
 
     /**
@@ -393,7 +391,7 @@ public abstract class ParkourUser {
      * @return the highest score they got
      */
     public static int getHighestScore(@NotNull UUID uuid) {
-        return highScores.get(uuid);
+        return topScores.get(uuid).score();
     }
 
     /**
@@ -405,7 +403,13 @@ public abstract class ParkourUser {
      * @return the rank (starts at 1.)
      */
     public static int getRank(UUID player) {
-        return new ArrayList<>(highScores.keySet()).indexOf(player) + 1;
+        return new ArrayList<>(topScores.keySet()).indexOf(player) + 1;
+    }
+
+    protected static void sortScores() {
+        topScores = topScores.entrySet().stream()
+                .sorted(Comparator.comparingInt(one -> one.getValue().score()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
     }
 
     /**
@@ -606,6 +610,15 @@ public abstract class ParkourUser {
      */
     public @NotNull Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Returns a copy of all the top scores.
+     *
+     * @return the top scores
+     */
+    public static Map<UUID, Score> getTopScores() {
+        return topScores;
     }
 
     /**

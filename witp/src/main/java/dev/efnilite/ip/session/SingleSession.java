@@ -1,5 +1,6 @@
 package dev.efnilite.ip.session;
 
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import net.md_5.bungee.api.ChatMessageType;
@@ -27,9 +28,6 @@ public class SingleSession implements Session {
         Session session = new SingleSession();
         session.addPlayers(player);
         session.register();
-
-        // set session id for player
-        player.setSessionId(session.getSessionId());
 
         return session;
     }
@@ -92,6 +90,7 @@ public class SingleSession implements Session {
     public void addPlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
             this.players.put(player.getUUID(), player);
+            player.setSessionId(getSessionId());
         }
     }
 
@@ -127,5 +126,25 @@ public class SingleSession implements Session {
     @Override
     public SessionVisibility getVisibility() {
         return visibility;
+    }
+
+    @Override
+    public void setTournament(boolean inTournament) {
+        // todo implement
+    }
+
+    @Override
+    public boolean inTournament() {
+        return false;
+    }
+
+    @Override
+    public Gamemode getGamemode() {
+        return null;
+    }
+
+    @Override
+    public void setGamemode(Gamemode gamemode) {
+
     }
 }

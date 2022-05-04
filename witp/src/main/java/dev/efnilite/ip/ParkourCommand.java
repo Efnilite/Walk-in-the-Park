@@ -1,5 +1,6 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.menu.SingleplayerMenu;
@@ -143,7 +144,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    ParkourPlayer.join(player);
+                    ParkourPlayer.joinDefault(player);
                     return true;
                 }
                 case "leave" -> {
@@ -198,7 +199,35 @@ public class ParkourCommand extends ViCommand {
                 }
             }
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
+            if (args[0].equalsIgnoreCase("join") && sender instanceof Player) {
+                if (!cooldown(sender, "join", 2500)) {
+                    return true;
+                }
+
+                if (!ParkourOption.JOIN.check(player)) {
+                    Util.sendDefaultLang(player, "cant-do");
+                    return true;
+                }
+
+                if (!Option.ENABLE_JOINING.get()) {
+                    IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
+                    return true;
+                }
+
+                ParkourUser user = ParkourUser.getUser(player);
+                if (user != null) {
+                    return true;
+                }
+
+                String mode = args[1]; // get mode from second arg
+                Gamemode gamemode = IP.getRegistry().getGamemode(mode);
+
+                if (gamemode == null) {
+                    gamemode = IP.getRegistry().getGamemodes().get(0); // first registered is default
+                }
+                gamemode.join(player);
+                return true;
+            } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
                 Selection selection = selections.get(player);
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
@@ -261,7 +290,7 @@ public class ParkourCommand extends ViCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.forcejoin.everyone")) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        ParkourPlayer.join(other);
+                        ParkourPlayer.joinDefault(other);
                     }
                     Message.send(sender, IP.PREFIX + "Succesfully force joined everyone");
                     return true;
@@ -273,7 +302,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                ParkourPlayer.join(other);
+                ParkourPlayer.joinDefault(other);
                 return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission("witp.forceleave")) {
 
@@ -442,7 +471,7 @@ public class ParkourCommand extends ViCommand {
         Message.send(sender, "");
         Message.send(sender, "<gray>/parkour <dark_gray>- Main command");
         if (sender.hasPermission("witp.join")) {
-            Message.send(sender, "<gray>/parkour join <dark_gray>- Join the game on this server");
+            Message.send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default gamemode or specify a mode.");
             Message.send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
         }
         if (sender.hasPermission("witp.menu")) {

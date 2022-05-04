@@ -141,8 +141,8 @@ public class WorldDivider {
         cachedPoints.add(point);
         activePoints.remove(player);
 
-        if (player.getGenerator() instanceof DefaultGenerator) {
-            AreaData data = ((DefaultGenerator) player.getGenerator()).getData();
+        if (player.getGenerator() instanceof DefaultGenerator generator) {
+            AreaData data = generator.getData();
 
             if (data != null) {
                 for (Chunk spawnChunk : data.spawnChunks()) {

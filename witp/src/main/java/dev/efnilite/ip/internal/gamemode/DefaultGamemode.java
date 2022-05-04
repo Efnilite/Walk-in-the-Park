@@ -5,7 +5,6 @@ import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,17 +25,15 @@ public class DefaultGamemode implements Gamemode {
     }
 
     @Override
-    public void handleItemClick(Player player, ParkourUser user, Menu previousMenu) {
+    public void join(Player player) {
         player.closeInventory();
 
-        if (user instanceof ParkourPlayer pp) {
-            if (pp.getGenerator() instanceof DefaultGenerator) {
-                return;
-            }
+        ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+        if (pp != null && pp.getGenerator() instanceof DefaultGenerator) {
+            return;
         }
 
-        ParkourPlayer pp = ParkourPlayer.register(player);
-        IP.getDivider().generate(pp);
+        ParkourUser.joinDefault(player);
     }
 
     @Override

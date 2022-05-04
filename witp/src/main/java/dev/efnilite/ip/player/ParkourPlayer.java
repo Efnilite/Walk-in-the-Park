@@ -6,11 +6,10 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.hook.PlaceholderHook;
-import dev.efnilite.ip.player.data.Highscore;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.ip.util.sql.InsertStatement;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
 import dev.efnilite.vilib.sql.InvalidStatementException;
@@ -151,10 +150,10 @@ public class ParkourPlayer extends ParkourUser {
             Integer rank = getHighScoreValue(uuid);
             UUID one = getAtPlace(1);
             Integer top = 0;
-            Highscore highscore = null;
+            Score highscore = null;
             if (one != null) {
                 top = getHighScoreValue(one);
-                highscore = scoreMap.get(one);
+                highscore = topScores.get(one);
             }
             for (String s : lines) {
                 s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
@@ -162,7 +161,7 @@ public class ParkourPlayer extends ParkourUser {
                         .replace("%time%", generator.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
                         .replace("%topscore%", top != null ? top.toString() : "0")
-                        .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
                         .replace("%session%", getSessionId()));
             }
             title = translatePlaceholders(player, title);
@@ -170,7 +169,7 @@ public class ParkourPlayer extends ParkourUser {
                     .replace("%time%", generator.getTime())
                     .replace("%highscore%", rank != null ? rank.toString() : "0")
                     .replace("%topscore%", top != null ? top.toString() : "0")
-                    .replace("%topplayer%", highscore != null && highscore.name != null ? highscore.name : "N/A")
+                    .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
                     .replace("%session%", getSessionId()));
             board.updateLines(list);
         }
@@ -206,14 +205,9 @@ public class ParkourPlayer extends ParkourUser {
             diff = diff.substring(0, 3);
         }
         highScoreDifficulty = diff;
-        if (scoreMap.get(uuid) == null) {
-            scoreMap.put(uuid, new Highscore(name, highScoreTime, diff));
-        } else {
-            scoreMap.get(uuid).time = highScoreTime;
-            scoreMap.get(uuid).diff = diff;
-        }
-        highScores.put(uuid, score);
-        highScores = Util.sortByValue(highScores);
+        topScores.put(uuid, new Score(name, score, highScoreTime, diff));
+
+        sortScores();
     }
 
     private void saveStats() {
@@ -280,23 +274,6 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     /**
-     * Saves the current game of the player
-     */
-    public void saveGame() {
-        if (Option.GAMELOGS.get() && Option.SQL.get() && generator.getScore() > 0) {
-            InsertStatement statement = new InsertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "game-history")
-                    .setValue("code", Util.randomOID()).setValue("uuid", uuid.toString())
-                    .setValue("name", player.getName()).setValue("score", generator.getScore())
-                    .setValue("hstime", generator.getTime()).setValue("scoreDiff", calculateDifficultyScore());
-            try {
-                statement.query();
-            } catch (InvalidStatementException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
      * the player to achieve this score using their settings.
      *
@@ -327,16 +304,16 @@ public class ParkourPlayer extends ParkourUser {
      *
      * @return the high score of the player
      */
-    public static @Nullable Integer getHighScoreValue(@NotNull UUID player) {
-        return highScores.get(player);
+    public static @NotNull Integer getHighScoreValue(@NotNull UUID player) {
+        return topScores.get(player).score();
     }
 
     public static @Nullable String getHighScoreTime(@NotNull UUID player) {
-        return scoreMap.get(player).time;
+        return topScores.get(player).time();
     }
 
-    public static @Nullable Highscore getHighScore(@NotNull UUID player) {
-        return scoreMap.get(player);
+    public static @Nullable Score getHighScore(@NotNull UUID player) {
+        return topScores.get(player);
     }
 
     /**
@@ -349,7 +326,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return the player at that place
      */
     public static @Nullable UUID getAtPlace(int place) {
-        List<UUID> scores = new ArrayList<>(highScores.keySet());
+        List<UUID> scores = new ArrayList<>(topScores.keySet());
         place--;
         if (scores.size() > place) {
             return scores.get(place);
