@@ -56,9 +56,11 @@ public class Handler implements EventWatcher {
         }
 
         // OP join messages
-        if (player.isOp() && IP.OUTDATED) {
+        if (player.isOp() && IP.getElevator().isOutdated()) {
             Message.send(player, "");
-            Message.send(player, IP.PREFIX + "Your Walk in the Park build is outdated. Updates usually fix crucial bugs. Please update.");
+            Message.send(player,
+                    IP.PREFIX + "Your version is outdated. " +
+                            "Please visit the Spigot page to update.");
             Message.send(player, "");
         }
         if (player.isOp() && IP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {

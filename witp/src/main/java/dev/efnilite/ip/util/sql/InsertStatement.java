@@ -1,7 +1,5 @@
 package dev.efnilite.ip.util.sql;
 
-import dev.efnilite.vilib.sql.InvalidStatementException;
-
 import java.util.LinkedHashMap;
 
 public class InsertStatement extends Statement {

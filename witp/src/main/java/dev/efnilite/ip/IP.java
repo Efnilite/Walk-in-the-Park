@@ -13,7 +13,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.session.SingleSession;
-import dev.efnilite.ip.util.UpdateChecker;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SQLManager;
@@ -21,9 +20,10 @@ import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldHandler;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
+import dev.efnilite.vilib.util.elevator.GitElevator;
+import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -44,8 +44,8 @@ public final class IP extends ViPlugin {
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
 
-    public static boolean OUTDATED = false;
     private static IP instance;
+    private static GitElevator elevator;
     private static SQLManager sqlManager;
     private static Registry registry;
     private static WorldDivider divider;
@@ -120,16 +120,9 @@ public final class IP extends ViPlugin {
         registerListener(new Handler());
         registerCommand("witp", new ParkourCommand());
 
-        // ----- Update checker -----
+        // ----- Elevator -----
 
-        if (Option.UPDATE_CHECKER.get()) {
-            UpdateChecker checker = new UpdateChecker();
-
-            Task.create(IP.getPlugin())
-                    .repeat(8 * 72000) // 8 hours
-                    .execute(checker::check)
-                    .run();
-        }
+        elevator = new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
 
         // ----- Metrics -----
 
@@ -247,5 +240,9 @@ public final class IP extends ViPlugin {
 
     public static Configuration getConfiguration() {
         return configuration;
+    }
+
+    public static GitElevator getElevator() {
+        return elevator;
     }
 }

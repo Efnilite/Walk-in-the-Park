@@ -10,71 +10,87 @@
 
 #===============================================================================#
 #                                                                               #
-#                              (c) Efnilite 2020-2021                           #
+#                           (c) Efnilite 2020-2022                              #
 #                                                                               #
 #===============================================================================#
 
-# Verbosing
-# If this is set to true it will display extra data when stuff happens (useful for developers)
-verbosing: false
+# -= Auto updater =-
+# The auto updater will automatically download updates if they are available.
+# It's highly recommended to keep this on!
+auto-updater: true
 
-# Player joining
-# Whether players can join
+# -= Enable joining =-
+# Whether players can join the parkour.
+# True = players can join, false = players can't join.
 enable-joining: true
 
-# Whether the plugin should check for updates
-# !! Highly recommended to be enabled !!
-update-checker: true
-
-# Join-leave messages
-# Whether players should receive a message when a player joins
+# -= Join-leave messages =-
+# Whether players should receive a message when a player joins the parkour.
+# True = players will receive a message when a new player joins, false = players won't get a message.
 join-leave-messages: true
 
-# Bungeecord settings
-# This is also useful for servers who only want to run this plugin.
+# -= BungeeCord options =-
+# Change the BungeeCord settings.
+# This also applies to servers who only want to run this plugin.
 bungeecord:
 
-  # Autojoin mode
-  # Enabling this will make players who join the server automatically join the parkour
+  # -= BungeeCord enabled =-
+  # Enabling this will make players who join the server automatically join the parkour.
+  # You can enable this even without BungeeCord to make this a parkour-only server.
+  # True = players will automatically join the parkour on join, false = players have to use the menu/parkour command.
   enabled: false
 
-  # The server the players will be returned to after leave
+  # -= BungeeCord return server =-
+  # The server the players will be returned to after they leave.
   return_server: 'Lobby'
 
-  # Whether players should be teleported to a specific location after leaving
+  # -= Go back enabled =-
+  # Whether players should be teleported to a specific location after leaving.
+  # True = players get teleported to a specific location when they leave, false = they go to their location when they joined.
   go-back-enabled: false
 
+  # -= Go back location =-
   # The place players will go back to when they leave
-  # Only applies if Autojoin mode is disabled and the go-back option is enabled.
+  # Only applies if BungeeCord mode is disabled and the go-back-enabled option is true.
   # Syntax: '(x,y,z,worldName)'
   go-back: '(0,100,0,world)'
 
-# Options for MySQL databases
+# -= MySQL =-
+# The options for using MySQL as storage.
 sql:
+
+  # -= MySQL enabled =-
+  # Using databases makes you able to sync player data across multiple servers.
+  # True = data will be stored in a database, false = data will be stored locally.
   enabled: false
+
+  # -= MySQL settings =-
   url: 'localhost'
   port: 3306
   username: 'efnilite'
   password: 'super secret password'
-
-  # Using an existing database might overwrite data. Be cautious!
   database: 'witp'
 
-  # The prefix given to any table names (default '', so nothing, example: 'witp-player', the prefix would be 'witp-')
+  # -= MySQL prefix =-
+  # The prefix given to any table names
+  # The default is ''. Example: 'witp-' -> this would make the table 'witp-players'
   prefix: ''
 
-# World settings
+# -= World options =-
 world:
 
-  # The world in which the Parkours will take place
+  # -= World name =-
+  # The world in which parkour will take place
   name: 'witp'
 
+  # -= Delete world on reload =-
   # Deletes the world on reload/restart of the server.
   # This makes sure there are no ghost blocks left when a server crash occurs.
-  # Disable this if you want to have a static map.
+  # Disable this if you want to have a custom map.
   delete-on-reload: true
 
-  # The world players will be teleported to if they accidentally join the WITP world without being a player
+  # -= World fall back =-
+  # The world players will be teleported to if they accidentally join the Parkour world without joining
   fall-back: 'world'
 
 options:
@@ -144,13 +160,15 @@ permissions:
   # Useful for servers with ranks.
   per-style: false
 
-# Options for focus mode.
+# -= Focus mode options =-
 focus-mode:
 
+  # -= Focus mode enabled =-
   # If focus mode is enabled players can't use commands while in parkour.
-  # Note: this might not work on all commands because.. Minecraft.
+  # Note: this might not work on all commands because Minecraft.
   enabled: false
 
+  # -=
   # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
   # If you want to disable the default whitelisted commands you can remove every item in the list below.
   whitelist:
@@ -163,12 +181,14 @@ focus-mode:
     - 'reply'
     - 'message'
 
-# The different styles players can select
+# -= Styles options =-
 styles:
 
+  # -= Styles default =-
   # The default style
   default: 'red'
 
+  # -= Styles list =-
   # The list of all available styles, which you can add to if you want.
   # For changes, you have to restart or reload your server.
   list:
@@ -189,39 +209,40 @@ styles:
     overworld: [grass_block, stone, cobblestone, oak_log]
     ores: [diamond_ore, gold_ore, iron_ore, coal_ore, nether_gold_ore, lapis_ore, redstone_ore, emerald_ore, nether_quartz_ore]
     wood: [oak_planks, spruce_planks, jungle_planks, acacia_planks, birch_planks, dark_oak_planks, oak_log, spruce_log, jungle_log, birch_log, acacia_log, dark_oak_log]
-
-    # Provided by RustyDagger
     rainbow: [red_wool, blue_wool, orange_wool, magenta_wool, lime_wool, purple_wool, yellow_concrete, orange_concrete, lime_concrete, light_blue_concrete, yellow_stained_glass, white_stained_glass, magenta_stained_glass, light_blue_stained_glass]
     glow: [glowstone, jack_o_lantern, beacon, sea_lantern, crying_obsidian, shroomlight]
 
-# Options for scoring
+# -= Scoring options =-
 scoring:
 
-  # Give all points
-  # If a player skips a block jump, it will still give points for that block.
+  # -= All points =-
+  # This will give the player all possible points.
+  # If a player skips a block jump, it will still give the points for that block.
   all-points: false
 
-  # Rewards use total score
+  # -= Rewards use total score =-
   # Whether interval rewards should use the total score of a session or not.
   # The total score doesn't reset when a player falls.
   rewards-use-total-score: false
 
-# Options for particles/sounds
+# -= Particle options =-
 particles:
 
-  # Particle shape
-  # The shape of the particle that will appear
+  # -= Particle shape =-
+  # The shape of the particle that will appear when a new block generates.
   # Possible options: dot, box, circle
   particle-shape: 'box'
 
-  # The particle type
-  # You can find all particle types at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+  # -= Particle type =-
+  # The type of particle that will appear when a new block generates.
+  # You can find all types at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
   particle-type: 'SPELL_INSTANT'
 
-  # Sound type
+  # -= Sound type =-
+  # The sound that will play when a new block generates.
   # You can find all sounds at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
   sound-type: 'BLOCK_NOTE_BLOCK_GUITAR'
 
-  # Sound pitch
-  # The pitch of the played sound
+  # -= Sound pitch =-
+  # The pitch of the sound that will play when a new block generates.
   sound-pitch: 3

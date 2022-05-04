@@ -27,6 +27,8 @@ public class Option {
     private static FileConfiguration items;
     private static FileConfiguration scoreboard;
 
+    public static boolean AUTO_UPDATER;
+
     // Config stuff
     public static ConfigOption<Boolean> ALL_POINTS;
     public static ConfigOption<Boolean> REWARDS_USE_TOTAL_SCORE;
@@ -39,10 +41,6 @@ public class Option {
     public static ConfigOption<Boolean> BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
-
-    public static ConfigOption<Boolean> VERBOSING;
-    public static ConfigOption<Boolean> UPDATE_CHECKER;
-
     // Advanced settings
     public static ConfigOption<Direction> HEADING;
 
@@ -83,8 +81,7 @@ public class Option {
         initAdvancedGeneration();
 
         // General settings
-        VERBOSING = new ConfigOption<>(config, "verbosing");
-        UPDATE_CHECKER = new ConfigOption<>(config, "update-checker");
+        AUTO_UPDATER = config.getBoolean("auto-updater");
         ENABLE_JOINING = new ConfigOption<>(config, "enable-joining");
         JOIN_LEAVE_MESSAGES = new ConfigOption<>(config, "join-leave-messages");
 

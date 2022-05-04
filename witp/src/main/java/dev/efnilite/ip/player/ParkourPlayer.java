@@ -6,13 +6,12 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.hook.PlaceholderHook;
-import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
-import dev.efnilite.vilib.sql.InvalidStatementException;
 import dev.efnilite.vilib.util.Task;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Material;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -259,8 +257,8 @@ public class ParkourPlayer extends ParkourUser {
                     writer.flush();
                     writer.close();
                 }
-            } catch (IOException | InvalidStatementException ex) {
-                IP.logging().stack("Error while saving data of player " + player.getName(), ex);
+            } catch (Throwable throwable) {
+                IP.logging().stack("Error while saving data of player " + player.getName(), throwable);
             }
         };
         if (async) {

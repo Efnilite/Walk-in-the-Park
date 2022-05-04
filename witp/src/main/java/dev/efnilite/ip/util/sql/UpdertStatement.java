@@ -1,7 +1,6 @@
 package dev.efnilite.ip.util.sql;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.vilib.sql.InvalidStatementException;
 
 import java.sql.SQLException;
 import java.util.HashMap;

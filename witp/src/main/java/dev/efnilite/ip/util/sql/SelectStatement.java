@@ -1,6 +1,5 @@
 package dev.efnilite.ip.util.sql;
 
-import dev.efnilite.vilib.sql.InvalidStatementException;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;

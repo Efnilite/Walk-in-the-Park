@@ -1,7 +1,5 @@
 package dev.efnilite.ip.util.sql;
 
-import dev.efnilite.vilib.sql.InvalidStatementException;
-
 public abstract class Statement {
 
     protected SQLManager manager;
