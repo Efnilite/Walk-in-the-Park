@@ -93,17 +93,22 @@ world:
   # The world players will be teleported to if they accidentally join the Parkour world without joining
   fall-back: 'world'
 
+# -= General options =-
 options:
 
-  # If the options menu is enabled
+  # -= Options menu enabled =-
+  # If the options menu is enabled.
+  # This is the menu you can open on join of parkour.
+  # True = players get access to the menu by the compass, false = players can't customize anything
   enabled: true
 
-  # Options for the leads
+  # -= Leads options =-
   leads:
 
-    # The amounts of the lead
+    # -= Leads amounts =-
+    # The lead amounts a player can select in their options menu.
     # This must be a whole number, and you can't have more than 9 options (the first 9 will be selected).
-    # Also must be above 1
+    # Values also need to be above 1 and below 64.
     amount:
       - 1
       - 2
@@ -113,48 +118,60 @@ options:
       - 6
       - 10
 
-  # Options for the time option
+  # -= Time options =-
   time:
 
-    # Selects the time format.
+    # -= Time format =-
     # Choose between:
     # 24 - 24 hour clock. (00:00, 12:00, 23:59)
     # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
     format: 24
 
-  # Enables/disables the inventory handling system
+  # -= Inventory handling =-
+  # Toggles the inventory handling system.
+  # True = players' inventories get saved and cleared when they join the parkour and when they leave they get their items back
+  # False = players keep their inventories when they join the parkour
   inventory-handling: true
 
+  # -= Inventory saving =-
   # Logs inventories of the players that join to the inventories/ folder.
   # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
   # inventories of players to be lost if this is set to false!
-  # This only saves essential data like names, lore, enchantments and damage. All other data may be lost!
+  # Use /witp recoverinventory to recover inventories of players who joined the parkour and who lost their inventories in a crash, etc.
   inventory-saving: true
 
-  # Alternate inventory saving command
+  # -= Alternate inventory saving command =-
+  # If you don't trust this plugin to save inventories, you can select another plugin to execute a command
+  # to save players' inventories.
   # Example: /inventory save %player%
   # This command will be executed by console.
   alt-inventory-saving-command: ''
 
-  # Enables/disables the health handling system
+  # -= Health handling =-
+  # Enables/disables the health handling system. This will reset (max) health to default values on join of the parkour.
   # Disable this if you're experiencing errors with max health, etc.
   health-handling: true
 
-  # Saves things like health and max health for when a player joins the parkour.
+  # -= Stats saving =-
+  # Saves things like (max) health, clears effects, etc. for when a player joins the parkour.
   save-stats: true
 
-  # If enabled, puts the hotbar quit item in slot 8 of players' inventories.
+  # -= Hotbar quit item =-
+  # If enabled, puts quit item in slot 8 of players' inventories.
   hotbar-quit-item: false
 
-# Options for permissions.
+# -= Permissions options =-
 # These permissions are used to determine which things the player can change.
 # Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
 permissions:
 
-  # If permission handling is enabled
+  # -= Permissions enabled =-
+  # If permission handling is enabled.
+  # True = players need a permission to join, view the leaderboard, etc, false = players can do and view anything
+  # from this plugin besides admin commands.
   enabled: false
 
-  # Per style permission
+  # -= Per style permissions =-
   # Gives every style a permission. The permission is the name of the style.
   # Syntax: witp.option.styles.<style> - example: witp.option.styles.red
   # Useful for servers with ranks.
