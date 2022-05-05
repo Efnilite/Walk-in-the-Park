@@ -303,9 +303,9 @@ public abstract class ParkourUser {
      *
      * @return true if success. false if the resetting failed.
      */
-    public static boolean resetHighScores() {
+    public static boolean resetScores() {
         for (ParkourPlayer player : ParkourPlayer.getActivePlayers()) { // active players
-            player.setHighScore(player.name, 0, "0.0s", "0.0");
+            player.setScore(player.name, 0, "0.0s", "0.0");
         }
 
         File folder = new File(IP.getPlugin().getDataFolder(), "players/"); // update files
@@ -315,7 +315,7 @@ public abstract class ParkourUser {
                 FileReader reader = new FileReader(file);
                 ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                 from.uuid = UUID.fromString(file.getName().replace(".json", ""));
-                from.setHighScore(from.name, 0, "0.0s", "0.0");
+                from.setScore(from.name, 0, "0.0s", "0.0");
                 from.save(true);
                 reader.close();
             }
@@ -334,10 +334,10 @@ public abstract class ParkourUser {
      *
      * @return true if success. false if resetting failed.
      */
-    public static boolean resetHighscore(UUID uuid) {
+    public static boolean resetScore(UUID uuid) {
         ParkourPlayer player = ParkourPlayer.getPlayer(uuid);
         if (player != null) {
-            player.setHighScore(player.name, 0, "0.0s", "0.0");
+            player.setScore(player.name, 0, "0.0s", "0.0");
         } else {
             File file = new File(IP.getPlugin().getDataFolder(), "players/" + uuid.toString() + ".json");
 
@@ -345,7 +345,7 @@ public abstract class ParkourUser {
                 FileReader reader = new FileReader(file);
                 ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
                 from.uuid = UUID.fromString(file.getName().replace(".json", ""));
-                from.setHighScore(from.name, 0, "0.0s", "0.0");
+                from.setScore(from.name, 0, "0.0s", "0.0");
                 from.save(true);
                 reader.close();
             } catch (Throwable throwable) {
@@ -391,7 +391,8 @@ public abstract class ParkourUser {
      * @return the highest score they got
      */
     public static int getHighestScore(@NotNull UUID uuid) {
-        return topScores.get(uuid).score();
+        Score score = topScores.get(uuid);
+        return score != null ? score.score() : 0;
     }
 
     /**

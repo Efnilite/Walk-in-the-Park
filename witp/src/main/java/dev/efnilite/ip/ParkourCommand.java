@@ -361,18 +361,20 @@ public class ParkourCommand extends ViCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
                     Task.create(IP.getPlugin()).async().execute(() -> {
-                        if (ParkourUser.resetHighScores()) {
+                        if (ParkourUser.resetScores()) {
                             Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
                         } else {
                             Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset high scores.");
                         }
                     }).run();
                 } else {
+                    String name = null;
                     UUID uuid = null;
 
                     // Check online players
-                    Player online = Bukkit.getPlayer(args[1]);
+                    Player online = Bukkit.getPlayerExact(args[1]);
                     if (online != null) {
+                        name = online.getName();
                         uuid = online.getUniqueId();
                     }
 
@@ -384,15 +386,17 @@ public class ParkourCommand extends ViCommand {
                     // Check offline player
                     if (uuid == null) {
                         OfflinePlayer offline = Bukkit.getOfflinePlayer(args[1]);
+                        name = offline.getName();
                         uuid = offline.getUniqueId();
                     }
 
                     UUID finalUuid = uuid;
+                    String finalName = name;
                     Task.create(IP.getPlugin()).async().execute(() -> {
-                        if (ParkourUser.resetHighscore(finalUuid)) {
-                            Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + args[1] + " in memory and the files.");
+                        if (ParkourUser.resetScore(finalUuid)) {
+                            Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
                         } else {
-                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset " + args[1] + "'s high score.");
+                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset " + finalName + "'s high score.");
                         }
                     }).run();
                 }

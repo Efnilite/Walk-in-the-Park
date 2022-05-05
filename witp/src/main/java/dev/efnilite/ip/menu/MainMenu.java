@@ -3,7 +3,9 @@ package dev.efnilite.ip.menu;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -26,12 +28,18 @@ public class MainMenu {
         registerMainItem(1, 0, new Item(Material.ENDER_PEARL, "<#6E92B1><bold>Singleplayer")
                 .lore("<gray>Play on your own.").click(
                 event -> SingleplayerMenu.open(event.getPlayer())),
-                player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
+                player -> {
+                    ParkourUser user = ParkourUser.getUser(player);
+                    // if user is null display item or if the player isn't already playing single player
+                    return user == null || !(user instanceof ParkourPlayer) && ParkourOption.JOIN.check(player)
+                            && !(user.getSession() instanceof SingleSession);
+                });
 
         registerMainItem(1, 2, new Item(Material.GLASS, "<#39D5AB><bold>Spectator")
                 .lore("<gray>Spectate another player or lobby.").click(
                 event -> SpectatorMenu.open(event.getPlayer())),
-                player -> !ParkourPlayer.isActive(player) && ParkourOption.JOIN.check(player));
+                // display spectator if the player isn't already one
+                player -> !(ParkourUser.getUser(player) instanceof ParkourSpectator) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
         registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {

@@ -374,7 +374,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 message = "message.miss";
             }
             if (score > player.highScore) {
-                player.setHighScore(player.name, score, time, diff);
+                player.setScore(player.name, score, time, diff);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
@@ -387,7 +387,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Tournament.getActive().addScore(player.uuid, new Score(player.name, score, time, diff));
             } else {
                 if (score >= player.highScore) {
-                    player.setHighScore(player.name, score, time, diff);
+                    player.setScore(player.name, score, time, diff);
                 }
             }
         }

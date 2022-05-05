@@ -87,7 +87,7 @@ locale:
         name: '<#9F0000><bold>Quit'
         lore: ''
       close:
-        name: '<red><bold>Close'
+        name: '<#F5A3A3><bold>Close'
         lore: ''
       menu:
         name: '<red><bold>Options'

@@ -196,7 +196,7 @@ public class ParkourPlayer extends ParkourUser {
      * @param   score
      *          The score
      */
-    public void setHighScore(String name, int score, String time, String diff) {
+    public void setScore(String name, int score, String time, String diff) {
         this.highScore = score;
         highScoreTime = time;
         if (diff.length() > 3) {
