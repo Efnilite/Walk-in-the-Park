@@ -7,7 +7,7 @@
 # %highscore% - the player's high score
 # %session% - the current session id
 #
-# Learn more about colouring: https://github.com/Efnilite/fyCore/wiki/Colouring
+# Learn more about colouring: https://github.com/ViStudios/vilib/wiki/Colouring
 
 scoreboard:
 

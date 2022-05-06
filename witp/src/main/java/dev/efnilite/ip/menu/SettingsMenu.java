@@ -289,7 +289,7 @@ public class SettingsMenu {
         main
                 .distributeRowEvenly(0, 1, 2, 3)
 
-                .item(27, IP.getConfiguration().getFromItemData(player.getLocale(), "general.close").click(
+                .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
                         event -> MainMenu.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

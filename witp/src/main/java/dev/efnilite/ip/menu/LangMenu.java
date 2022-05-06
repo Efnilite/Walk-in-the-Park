@@ -1,7 +1,6 @@
 package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -23,11 +22,8 @@ public class LangMenu {
      *
      * @param   user
      *          The ParkourPlayer instance
-     *
-     * @param   disabledOptions
-     *          Options which are disabled
      */
-    public static void open(ParkourPlayer user, ParkourOption... disabledOptions) {
+    public static void open(ParkourPlayer user) {
         Configuration config = IP.getConfiguration();
 
         if (user == null) {
@@ -40,7 +36,7 @@ public class LangMenu {
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Option.LANGUAGES.get()) {
-            Item item = new Item(Material.PAPER, "<#238681><bold>" + lang);
+            Item item = new Item(Material.PAPER, "<#238681><bold>" + config.getString("lang", "messages." + lang + ".name"));
 
             items.add(item
                     .glowing(user.getLocale().equals(lang))

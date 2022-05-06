@@ -10,6 +10,7 @@ import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
+import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -26,7 +27,7 @@ public class MainMenu {
     static {
         // Singleplayer if player is not found
         registerMainItem(1, 0, new Item(Material.ENDER_PEARL, "<#6E92B1><bold>Singleplayer")
-                .lore("<gray>Play on your own.").click(
+                .lore(formatSynonyms("单人游戏 %s シングルプレイヤー")).click(
                 event -> SingleplayerMenu.open(event.getPlayer())),
                 player -> {
                     ParkourUser user = ParkourUser.getUser(player);
@@ -36,13 +37,14 @@ public class MainMenu {
                 });
 
         registerMainItem(1, 2, new Item(Material.GLASS, "<#39D5AB><bold>Spectator")
-                .lore("<gray>Spectate another player or lobby.").click(
+                .lore(formatSynonyms("Zuschauer %s 观众 %s 見物人 %s Spectateur %s Toekijker")).click(
                 event -> SpectatorMenu.open(event.getPlayer())),
                 // display spectator if the player isn't already one
                 player -> !(ParkourUser.getUser(player) instanceof ParkourSpectator) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
-        registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings").click(event -> {
+        registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings")
+                .lore(formatSynonyms("Einstellungen %s 设置 %s セッティング %s Paramêtres %s Instellingen")).click(event -> {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
                 if (pp != null) {
@@ -51,23 +53,25 @@ public class MainMenu {
         }), player -> ParkourPlayer.isActive(player) && ParkourOption.SETTINGS.check(player));
 
         // Quit button if player is active
-        registerMainItem(1, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit").click(event -> // todo add lang support
+        registerMainItem(1, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit")
+                .lore(formatSynonyms("Aufhören %s 退出 %s 去る %s Quitter %s Stoppen")).click(event -> // todo add lang support
                 ParkourUser.leave(event.getPlayer())),
                 ParkourPlayer::isActive);
 
         // Leaderboard only if player has perms
-        registerMainItem(3, 0, new Item(Material.GOLD_NUGGET, "<#6693E7><bold>Leaderboard").click( // todo add items.yml support
+        registerMainItem(3, 0, new Item(Material.GOLD_NUGGET, "<#6693E7><bold>Leaderboard")
+                .lore(formatSynonyms("Bestenliste %s 排行榜 %s リーダーボード %s Classement %s Scorebord")).click( // todo add items.yml support
                 event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms
         registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language")
-                .lore("<gray>Change your language.").click(
+                .lore(formatSynonyms("Sprache %s 语言 %s 言語 %s Langue %s Taal")).click(
                 event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
 
         registerMainItem(3, 2, new Item(Material.PAPER, "<#E53CA2><bold>View commands")
-                .lore("<gray>View all current commands.").click(
+                .lore(formatSynonyms("Commands ansehen %s 查看命令 %s Afficher commandes %s Commands bekijken")).click(
                 event -> {
                     ParkourCommand.sendHelpMessages(event.getPlayer());
                     event.getPlayer().closeInventory();
@@ -75,9 +79,43 @@ public class MainMenu {
                 player -> true);
 
         // Always allow closing of the menu
-        registerMainItem(3, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close").click(
+        registerMainItem(3, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close")
+                .lore(formatSynonyms("Schließen %s 关闭 %s 閉じる %s Fermer %s Sluiten")).click(
                 event -> event.getPlayer().closeInventory()),
                 player -> true);
+    }
+
+    /**
+     * Formats synonyms in the main menu. {@code %s} is used as the separator symbol. Max line length is 17.
+     * This also adds the colour dark_gray to every line.
+     *
+     * @param   string
+     *          The string containing the text.
+     *
+     * @return a String array that has been formatted according to the description.
+     */
+    public static List<String> formatSynonyms(String string) {
+        String separator = String.valueOf(Unicodes.BULLET);
+        string = string.replace("%s", separator);
+
+        List<String> total = new ArrayList<>();
+        String[] sections = string.split(separator); // split by character
+        StringBuilder current = new StringBuilder();
+        for (String section : sections) {
+            current.append(section); // append section and separator
+            if (current.length() > 18) { // if length is > 20, loop around
+                total.add(current.insert(0, "<dark_gray>").toString());
+                current = new StringBuilder().append(separator);
+            } else {
+                current.append(separator);
+            }
+        }
+        current.deleteCharAt(current.length() - 1); // delete trailing character
+        if (current.length() > 1) {
+            total.add(current.insert(0, "<dark_gray>").toString()); // add final result
+        }
+
+        return total;
     }
 
     /**

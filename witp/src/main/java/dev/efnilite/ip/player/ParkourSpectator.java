@@ -80,7 +80,7 @@ public class ParkourSpectator extends ParkourUser {
             }
             Integer rank = ParkourPlayer.getHighScoreValue(closest.getUUID());
             UUID one = ParkourPlayer.getAtPlace(1);
-            Integer top = 0;
+            int top = 0;
             Score highscore = null;
             if (one != null) {
                 top = ParkourPlayer.getHighScoreValue(one);
@@ -90,8 +90,8 @@ public class ParkourSpectator extends ParkourUser {
                 s = translatePlaceholders(closest, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
                         .replace("%time%", closest.getGenerator().getTime())
-                        .replace("%highscore%", rank != null ? rank.toString() : "0")
-                        .replace("%topscore%", top != null ? top.toString() : "0")
+                        .replace("%highscore%", rank.toString())
+                        .replace("%topscore%", Integer.toString(top))
                         .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
                         .replace("%session%" , getSessionId()));
             }

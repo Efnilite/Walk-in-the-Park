@@ -334,7 +334,7 @@ public class Util {
      *          The path
      */
     public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
-        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG.get() + "." + path);
+        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }

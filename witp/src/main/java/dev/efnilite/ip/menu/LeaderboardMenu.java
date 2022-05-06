@@ -40,7 +40,7 @@ public class LeaderboardMenu {
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LANG.get() : user.getLocale();
+        String locale = user == null ? Option.DEFAULT_LANG : user.getLocale();
         Configuration config = IP.getConfiguration();
         PagedMenu leaderboard = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));

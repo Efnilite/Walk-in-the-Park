@@ -8,14 +8,12 @@ import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.Tournament;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -383,12 +381,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
-            if (Tournament.isActive() && session.inTournament()) {
-                Tournament.getActive().addScore(player.uuid, new Score(player.name, score, time, diff));
-            } else {
-                if (score >= player.highScore) {
-                    player.setScore(player.name, score, time, diff);
-                }
+//            if (Tournament.isActive() && session.inTournament()) {
+//                Tournament.getActive().addScore(player.uuid, new Score(player.name, score, time, diff));
+//            } else {
+//                if (score >= player.highScore) {
+//                    player.setScore(player.name, score, time, diff);
+//                }
+//            }
+
+            if (score >= player.highScore) {
+                player.setScore(player.name, score, time, diff);
             }
         }
 

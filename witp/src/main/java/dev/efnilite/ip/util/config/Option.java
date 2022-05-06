@@ -45,7 +45,7 @@ public class Option {
     public static ConfigOption<Direction> HEADING;
 
     public static ConfigOption<List<String>> LANGUAGES;
-    public static ConfigOption<String> DEFAULT_LANG;
+    public static String DEFAULT_LANG;
     public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
 
     public static ConfigOption<String> DEFAULT_STYLE;
@@ -125,7 +125,7 @@ public class Option {
         List<String> languages = new ArrayList<>(LANGUAGES.get());
         languages.remove("default");
         LANGUAGES.thenSet(languages);
-        DEFAULT_LANG = new ConfigOption<>(lang, "messages.default");
+        DEFAULT_LANG = lang.getString("messages.default");
 
         DEFAULT_STYLE = new ConfigOption<>(config, "styles.default");
 
