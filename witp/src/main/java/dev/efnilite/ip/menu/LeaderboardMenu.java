@@ -18,9 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A class containing
@@ -36,7 +34,8 @@ public class LeaderboardMenu {
     public static void open(Player player) {
         ParkourUser.initHighScores(); // make sure scores are enabled
 
-        List<UUID> uuids = new ArrayList<>(ParkourUser.getTopScores().keySet());
+        Map<UUID, Score> topScores = ParkourUser.getTopScores();
+        List<UUID> uuids = new ArrayList<>(topScores.keySet());
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
@@ -49,8 +48,8 @@ public class LeaderboardMenu {
         int rank = 1;
         Item base = config.getFromItemData(locale, "options.leaderboard-head");
         for (UUID uuid : uuids) {
-            Score highscore = ParkourUser.getHighscore(uuid);
-            if (highscore == null) {
+            Score score = ParkourUser.getScore(uuid);
+            if (score == null) {
                 continue;
             }
 
@@ -59,14 +58,14 @@ public class LeaderboardMenu {
                     .material(Material.PLAYER_HEAD)
                     .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
                             .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name())
-                            .replace("%t", highscore.time())
-                            .replace("%d", highscore.difficulty()))
+                            .replace("%p", score.name())
+                            .replace("%t", score.time())
+                            .replace("%d", score.difficulty()))
                     .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
                             .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
-                            .replace("%p", highscore.name())
-                            .replace("%t", highscore.time())
-                            .replace("%d", highscore.difficulty()));
+                            .replace("%p", score.name())
+                            .replace("%t", score.time())
+                            .replace("%d", score.difficulty()));
 
             // Player head gathering
             ItemStack stack = item.build();

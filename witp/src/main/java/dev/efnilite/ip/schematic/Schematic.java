@@ -314,6 +314,13 @@ public class Schematic {
         List<Block> affectedBlocks = new ArrayList<>();
         for (SchematicBlock block : blocks) {
             Vector3D relativeOffset = block.getRelativePosition();
+
+            if (relativeOffset == null) {
+                IP.logging().error("Failed in reading schematic " + getName());
+                IP.logging().error("Please delete your schematics folder and restart the server!");
+                continue;
+            }
+
             relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);
 
             // all positions are saved to be relative to the minimum location

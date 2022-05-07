@@ -303,11 +303,23 @@ public class ParkourPlayer extends ParkourUser {
      * @return the high score of the player
      */
     public static @NotNull Integer getHighScoreValue(@NotNull UUID player) {
-        return topScores.get(player).score();
+        Score score = topScores.get(player);
+
+        if (score == null) {
+            return 0;
+        }
+
+        return score.score();
     }
 
     public static @Nullable String getHighScoreTime(@NotNull UUID player) {
-        return topScores.get(player).time();
+        Score score = topScores.get(player);
+
+        if (score == null) {
+            return "?";
+        }
+
+        return score.time();
     }
 
     public static @Nullable Score getHighScore(@NotNull UUID player) {

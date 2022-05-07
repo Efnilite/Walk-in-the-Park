@@ -378,7 +378,7 @@ public abstract class ParkourUser {
      *
      * @return the Highscore instance associated with this player uuid
      */
-    public static Score getHighscore(@NotNull UUID uuid) {
+    public static Score getScore(@NotNull UUID uuid) {
         return topScores.get(uuid);
     }
 
@@ -409,7 +409,7 @@ public abstract class ParkourUser {
 
     protected static void sortScores() {
         topScores = topScores.entrySet().stream()
-                .sorted(Comparator.comparingInt(one -> one.getValue().score()))
+                .sorted((o1, o2) -> o2.getValue().score() - o1.getValue().score()) // reverse natural order
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
     }
 
