@@ -27,7 +27,7 @@ public class MainMenu {
     static {
         // Singleplayer if player is not found
         registerMainItem(1, 0, new Item(Material.ENDER_PEARL, "<#6E92B1><bold>Singleplayer")
-                .lore(formatSynonyms("单人游戏 %s シングルプレイヤー")).click(
+                .lore(formatSynonyms("单人玩家 %s シングルプレイヤー")).click(
                 event -> SingleplayerMenu.open(event.getPlayer())),
                 player -> {
                     ParkourUser user = ParkourUser.getUser(player);
@@ -37,14 +37,14 @@ public class MainMenu {
                 });
 
         registerMainItem(1, 2, new Item(Material.GLASS, "<#39D5AB><bold>Spectator")
-                .lore(formatSynonyms("Zuschauer %s 观众 %s 見物人 %s Spectateur %s Toekijker")).click(
+                .lore(formatSynonyms("Zuschauer %s 观众 %s 觀眾 %s Spectateur %s 見物人 %s Toekijker")).click(
                 event -> SpectatorMenu.open(event.getPlayer())),
                 // display spectator if the player isn't already one
                 player -> !(ParkourUser.getUser(player) instanceof ParkourSpectator) && ParkourOption.JOIN.check(player));
 
         // Settings if player is active
         registerMainItem(1, 9, new Item(Material.SCAFFOLDING, "<#8CE03F><bold>Settings")
-                .lore(formatSynonyms("Einstellungen %s 设置 %s セッティング %s Paramêtres %s Instellingen")).click(event -> {
+                .lore(formatSynonyms("Einstellungen %s 设置 %s 命令 %s Paramêtres %s セッティング %s Instellingen")).click(event -> {
                 ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
                 if (pp != null) {
@@ -54,19 +54,19 @@ public class MainMenu {
 
         // Quit button if player is active
         registerMainItem(1, 10, new Item(Material.BARRIER, "<#D71F1F><bold>Quit")
-                .lore(formatSynonyms("Aufhören %s 退出 %s 去る %s Quitter %s Stoppen")).click(event -> // todo add lang support
+                .lore(formatSynonyms("Aufhören %s 退出 %s 辭職 %s Quitter %s 去る %s Stoppen")).click(event -> // todo add lang support
                 ParkourUser.leave(event.getPlayer())),
                 ParkourPlayer::isActive);
 
         // Leaderboard only if player has perms
         registerMainItem(3, 0, new Item(Material.GOLD_NUGGET, "<#6693E7><bold>Leaderboard")
-                .lore(formatSynonyms("Bestenliste %s 排行榜 %s リーダーボード %s Classement %s Scorebord")).click( // todo add items.yml support
+                .lore(formatSynonyms("Bestenliste %s 排行榜 %s Classement %s リーダーボード %s Scorebord")).click( // todo add items.yml support
                 event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms
         registerMainItem(3, 1, new Item(Material.WRITABLE_BOOK, "<#4A41BC><bold>Language")
-                .lore(formatSynonyms("Sprache %s 语言 %s 言語 %s Langue %s Taal")).click(
+                .lore(formatSynonyms("Sprache %s 语言 %s 語言 %s Langue %s 言語 %s Taal")).click(
                 event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
 
@@ -80,7 +80,7 @@ public class MainMenu {
 
         // Always allow closing of the menu
         registerMainItem(3, 10, new Item(Material.ARROW, "<#F5A3A3><bold>Close")
-                .lore(formatSynonyms("Schließen %s 关闭 %s 閉じる %s Fermer %s Sluiten")).click(
+                .lore(formatSynonyms("Schließen %s 关闭 %s Fermer %s 閉じる %s Sluiten")).click(
                 event -> event.getPlayer().closeInventory()),
                 player -> true);
     }
@@ -103,7 +103,7 @@ public class MainMenu {
         StringBuilder current = new StringBuilder();
         for (String section : sections) {
             current.append(section); // append section and separator
-            if (current.length() > 18) { // if length is > 20, loop around
+            if (current.length() > 17) { // if length is > 20, loop around
                 total.add(current.insert(0, "<dark_gray>").toString());
                 current = new StringBuilder().append(separator);
             } else {

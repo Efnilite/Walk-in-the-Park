@@ -16,7 +16,7 @@ public class DefaultStyleType extends StyleType {
     }
 
     @Override
-    public @NotNull Item getItem(String locale) { // todo add config
+    public @NotNull Item getItem(String locale) {
         return new Item(Material.POPPY, "<#348EDB><bold>Default");
     }
 
