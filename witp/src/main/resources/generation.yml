@@ -1,5 +1,4 @@
-# Settings for generation
-
+# Settings for parkour generation
 generation:
 
   # The settings for normal jumps

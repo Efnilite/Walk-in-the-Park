@@ -12,16 +12,17 @@
 #
 # Learn more about colouring: https://github.com/Efnilite/fyCore/wiki/Colouring
 
+# -= Rewards enabled =-
 # Are rewards enabled?
 enabled: false
 
-# Score rewards
+# -= Score rewards =-
 # Rewards when a player reaches a specific score
 score-rewards:
   420:
     - "send:gj"
 
-# Interval rewards
+# -= Interval rewards =-
 # Rewards which will be given at certain intervals.
 # An interval of 10 means a player will get a reward at 10, 20, 30, etc.
 interval-rewards:
@@ -29,7 +30,7 @@ interval-rewards:
     - "/witpreward10"
     - "send:<green>Good job!"
 
-# One time rewards
+# -= One time rewards =-
 # Rewards which players will receive just once.
 # These are based on the score required.
 # Changing the commands when a player already has achieved this score will not give it to them again.
