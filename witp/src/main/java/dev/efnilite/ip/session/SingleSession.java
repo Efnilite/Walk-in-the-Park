@@ -18,16 +18,22 @@ import java.util.*;
  */
 public class SingleSession implements Session {
 
+    private Gamemode gamemode;
     private SessionVisibility visibility = SessionVisibility.PUBLIC;
     private final String sessionId = generateSessionId();
     private final Map<UUID, ParkourPlayer> players = new HashMap<>();
     private final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
-    public static Session create(@NotNull ParkourPlayer player) {
+    public static Session create(@NotNull ParkourPlayer player, @NotNull Gamemode gamemode) {
         // create session
         Session session = new SingleSession();
+
+        // add player
         session.addPlayers(player);
         session.register();
+
+        // set gamemode
+        session.setGamemode(gamemode);
 
         return session;
     }
@@ -140,11 +146,11 @@ public class SingleSession implements Session {
 
     @Override
     public Gamemode getGamemode() {
-        return null;
+        return gamemode;
     }
 
     @Override
     public void setGamemode(Gamemode gamemode) {
-
+        this.gamemode = gamemode;
     }
 }

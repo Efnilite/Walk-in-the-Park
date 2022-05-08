@@ -178,9 +178,9 @@ public final class IP extends ViPlugin {
      */
     public static DefaultGenerator getVersionGenerator(@NotNull ParkourPlayer player) {
         if (versionSupportsSchematics()) {
-            return new DefaultGenerator(SingleSession.create(player));
+            return new DefaultGenerator(SingleSession.create(player, getRegistry().getGamemode("default")));
         } else {
-            return new DefaultGenerator(SingleSession.create(player), GeneratorOption.DISABLE_SCHEMATICS);
+            return new DefaultGenerator(SingleSession.create(player, getRegistry().getGamemode("default")), GeneratorOption.DISABLE_SCHEMATICS);
         }
     }
 

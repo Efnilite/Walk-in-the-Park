@@ -55,7 +55,6 @@ public class ParkourCommand extends ViCommand {
         }
 
         if (args.length == 0) {
-
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
