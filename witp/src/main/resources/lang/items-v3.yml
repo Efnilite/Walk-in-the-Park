@@ -94,8 +94,8 @@ locale:
         lore: ''
     gamemodes:
       default:
-        name: '<#6693E7><bold>Normal'
-        lore: '<gray>Play the game like normal.'
+        name: '<#6693E7><bold>Default'
+        lore: '<dark_gray>Standard • 默认 • 默認||<dark_gray>• Défaut • デフォルト • Standaard'
       spectator:
         name: '<#6693E7><bold>Spectate'
         lore: '<gray>Spectate another player.'

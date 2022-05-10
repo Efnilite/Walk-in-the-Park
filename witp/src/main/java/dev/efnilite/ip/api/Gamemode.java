@@ -29,13 +29,27 @@ public interface Gamemode {
     @NotNull Item getItem(String locale);
 
     /**
-     * Makes a player join this gamemode.
+     * Creates this Gamemode instance with a given Player.
+     * For preserving {@link dev.efnilite.ip.player.data.PreviousData}, use {@link dev.efnilite.ip.player.ParkourUser#getUser(Player)}}
      *
      * @param   player
      *          The player
      */
-    void join(Player player);
+    void create(Player player);
 
-    boolean isMultiplayer();
+    /**
+     * What this Gamemode should do when it is selected in a menu.
+     *
+     * @param   player
+     *          The player who clicked.
+     */
+    void click(Player player);
+
+    /**
+     * Whether this mode should be visible in menus.
+     *
+     * @return true if yes, false if not
+     */
+    boolean isVisible();
 
 }

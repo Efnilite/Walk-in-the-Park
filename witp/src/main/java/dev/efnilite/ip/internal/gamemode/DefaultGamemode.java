@@ -25,7 +25,7 @@ public class DefaultGamemode implements Gamemode {
     }
 
     @Override
-    public void join(Player player) {
+    public void create(Player player) {
         player.closeInventory();
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
@@ -37,7 +37,12 @@ public class DefaultGamemode implements Gamemode {
     }
 
     @Override
-    public boolean isMultiplayer() {
-        return false;
+    public void click(Player player) {
+        create(player);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return true;
     }
 }

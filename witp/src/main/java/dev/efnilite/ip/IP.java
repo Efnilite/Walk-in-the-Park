@@ -1,5 +1,6 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
 import dev.efnilite.ip.generator.DefaultGenerator;
@@ -103,6 +104,8 @@ public final class IP extends ViPlugin {
 
         registry.getStyleType("default").addConfigStyles("styles.list", configuration.getFile("config"));
 
+        Gamemodes.init();
+
         // ----- SQL and data -----
 
         try {
@@ -178,9 +181,9 @@ public final class IP extends ViPlugin {
      */
     public static DefaultGenerator getVersionGenerator(@NotNull ParkourPlayer player) {
         if (versionSupportsSchematics()) {
-            return new DefaultGenerator(SingleSession.create(player, getRegistry().getGamemode("default")));
+            return new DefaultGenerator(SingleSession.create(player, Gamemodes.DEFAULT));
         } else {
-            return new DefaultGenerator(SingleSession.create(player, getRegistry().getGamemode("default")), GeneratorOption.DISABLE_SCHEMATICS);
+            return new DefaultGenerator(SingleSession.create(player, Gamemodes.DEFAULT), GeneratorOption.DISABLE_SCHEMATICS);
         }
     }
 

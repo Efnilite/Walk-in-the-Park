@@ -1,17 +1,16 @@
 package dev.efnilite.ip.session;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -157,9 +156,11 @@ public interface Session {
      */
     default void join(Player player) {
         if (isAcceptingPlayers()) {
-            addPlayers(ParkourPlayer.joinDefault(player));
+            getGamemode().create(player); // make player join
+            addPlayers(ParkourPlayer.getPlayer(player));
         } else if (isAcceptingSpectators()) {
-            addSpectators(ParkourSpectator.spectateSession(player, this));
+            Gamemodes.SPECTATOR.create(player, this);
+            addSpectators((ParkourSpectator) ParkourUser.getUser(player));
         }
     }
 
@@ -171,9 +172,10 @@ public interface Session {
     default @NotNull String generateSessionId() {
         char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
+        Random random = ThreadLocalRandom.current();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            builder.append(chars[ThreadLocalRandom.current().nextInt(chars.length)]);
+            builder.append(chars[random.nextInt(chars.length)]);
         }
         String finalId = builder.toString();
         if (getSession(finalId) != null) { // prevent duplicates

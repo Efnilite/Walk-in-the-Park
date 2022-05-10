@@ -17,7 +17,7 @@ public class DefaultStyleType extends StyleType {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return new Item(Material.POPPY, "<#348EDB><bold>Default");
+        return new Item(Material.POPPY, "<#348EDB><bold>Default").lore("<dark_gray>Standard • 默认 • 默認", "<dark_gray>• Défaut • デフォルト • Standaard");
     }
 
     @Override

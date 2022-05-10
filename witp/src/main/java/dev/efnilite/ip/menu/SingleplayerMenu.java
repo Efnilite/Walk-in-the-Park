@@ -2,7 +2,7 @@ package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
+import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -38,13 +38,13 @@ public class SingleplayerMenu {
 
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            if (gm.isMultiplayer() || gm instanceof SpectatorGamemode) {
+            if (gm instanceof MultiGamemode || !gm.isVisible()) {
                 continue;
             }
 
             Item item = gm.getItem(locale);
             items.add(new Item(item.getMaterial(), item.getName())
-                    .click(event -> gm.join(player)));
+                    .click(event -> gm.click(player)));
         }
 
         gamemode

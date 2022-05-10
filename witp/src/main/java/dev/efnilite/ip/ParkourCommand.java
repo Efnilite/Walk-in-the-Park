@@ -224,7 +224,7 @@ public class ParkourCommand extends ViCommand {
                 if (gamemode == null) {
                     gamemode = IP.getRegistry().getGamemodes().get(0); // first registered is default
                 }
-                gamemode.join(player);
+                gamemode.click(player);
                 return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
                 Selection selection = selections.get(player);
