@@ -1,6 +1,7 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.menu.SingleplayerMenu;
@@ -9,6 +10,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.selection.Selection;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
@@ -218,13 +220,19 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                String mode = args[1]; // get mode from second arg
-                Gamemode gamemode = IP.getRegistry().getGamemode(mode);
+                String type = args[1]; // get mode from second arg
+                Gamemode gamemode = IP.getRegistry().getGamemode(type);
+                Session session = Session.getSession(type.toUpperCase());
 
                 if (gamemode == null) {
-                    gamemode = IP.getRegistry().getGamemodes().get(0); // first registered is default
+                    if (session == null) {
+                        Gamemodes.DEFAULT.click(player); // could not find, so go to default
+                    } else {
+                        session.join(player);
+                    }
+                } else {
+                    gamemode.click(player);
                 }
-                gamemode.click(player);
                 return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
                 Selection selection = selections.get(player);

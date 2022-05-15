@@ -40,7 +40,6 @@ public class ParkourSpectator extends ParkourUser {
         this.player.teleport(closest.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         this.player.setFlying(true);
 
-        session.addSpectators(this);
         sendTranslated("spectator");
         runClosestChecker();
     }
@@ -54,15 +53,14 @@ public class ParkourSpectator extends ParkourUser {
      * @param   session
      *          The session to spectate
      *
-     * @return the created instance.
      */
-    public static ParkourSpectator spectateSession(@NotNull Player player, @NotNull Session session) {
+    public static void spectateSession(@NotNull Player player, @NotNull Session session) {
         ParkourUser user = getUser(player);
         if (user != null) {
             ParkourUser.unregister(user, false, false, true);
-            return new ParkourSpectator(player, session, user.getPreviousData());
+            new ParkourSpectator(player, session, user.getPreviousData());
         } else {
-            return new ParkourSpectator(player, session, null);
+            new ParkourSpectator(player, session, null);
         }
     }
 

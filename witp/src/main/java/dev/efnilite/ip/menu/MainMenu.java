@@ -32,7 +32,7 @@ public class MainMenu {
                 player -> {
                     ParkourUser user = ParkourUser.getUser(player);
                     // if user is null display item or if the player isn't already playing single player
-                    return user == null || !(user instanceof ParkourPlayer) && ParkourOption.JOIN.check(player)
+                    return user == null || user instanceof ParkourSpectator || !(user instanceof ParkourPlayer) && ParkourOption.JOIN.check(player)
                             && !(user.getSession() instanceof SingleSession);
                 });
 

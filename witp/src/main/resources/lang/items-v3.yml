@@ -18,12 +18,6 @@ items:
     default:
       item: poppy
 
-  gamemodes:
-    default:
-      item: barrel
-    spectator:
-      item: glass
-
   # Options for the options in the menu
   options:
     cant-change:
@@ -92,13 +86,6 @@ locale:
       menu:
         name: '<red><bold>Options'
         lore: ''
-    gamemodes:
-      default:
-        name: '<#6693E7><bold>Default'
-        lore: '<dark_gray>Standard • 默认 • 默認||<dark_gray>• Défaut • デフォルト • Standaard'
-      spectator:
-        name: '<#6693E7><bold>Spectate'
-        lore: '<gray>Spectate another player.'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Click to spectate.'
@@ -170,12 +157,6 @@ locale:
         name: '<red><bold>Instellingen'
         lore: ''
     gamemodes:
-      default:
-        name: '<#6693E7><bold>Normaal'
-        lore: '<gray>Speel dit spel zoals je normaal doet.'
-      spectator:
-        name: '<#6693E7><bold>Toekijken'
-        lore: '<gray>Kijk een andere speler toe.'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Klik om toe te kijken.'
@@ -247,12 +228,6 @@ locale:
         name: '<red><bold>Paramètres'
         lore: ''
     gamemodes:
-      default:
-        name: '<#6693E7><bold>Normal'
-        lore: '<gray>Jouer le jeu normalement.'
-      spectator:
-        name: '<#6693E7><bold>Spectateur'
-        lore: '<gray>Regarder un autre joueur.'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Cliquez pour regarder.'
@@ -324,12 +299,6 @@ locale:
         name: '<red><bold>選項'
         lore: ''
     gamemodes:
-      default:
-        name: '<#6693E7><bold>普通'
-        lore: '<gray>就像平常一樣的玩遊戲。'
-      spectator:
-        name: '<#6693E7><bold>觀察者'
-        lore: '<gray>觀察其他玩家。'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>點擊進行觀察。'
@@ -401,12 +370,6 @@ locale:
         name: '<red><bold>选项'
         lore: ''
     gamemodes:
-      default:
-        name: '<#6693E7><bold>普通'
-        lore: '<gray>就像平常一样的玩游戏'
-      spectator:
-        name: '<#6693E7><bold>旁观者'
-        lore: '<gray>旁观其他玩家'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>点击进行旁观'

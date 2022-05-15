@@ -55,7 +55,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     protected int blockTrail = 2;
 
-
     /**
      * Whether this generator has been stopped
      */
