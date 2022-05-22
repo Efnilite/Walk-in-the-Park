@@ -1,89 +1,117 @@
+# -= Parkour Generation Settings =-
 # Settings for parkour generation
 generation:
 
+  # -= Normal jump settings =-
   # The settings for normal jumps
   normal-jump:
 
-    # The chance for normal jumps to appear (in %)
-    # When compared to structures.chance and special.chance this should be 100%, but it can go over
+    # -= Normal jump chance =-
+    # The chance for normal jumps to appear (in %). This means a block jump that isn't ice, slab or a schematic.
+    # When compared to structures.chance and special.chance this should be 100%, but it can be more.
     chance: 85
 
-    # The chances of different types of block jumps
-    # if 'normal-jump' is selected to be the next parkour section
+    # -= Distance chances =-
+    # The chances of the different distances in %. Can be above 100%.
     1-block: 5
     2-block: 30
     3-block: 55
     4-block: 10
 
-    # The chances of where the blocks will appear
+    # -= Height chances =-
+    # The chances of the different heights a jump can have in %. Can be above 100%.
     up: 15
     level: 70
     down: 10
     down2: 5 # Goes down 2 blocks
 
-    # Settings for special blocks
-    # Note: these jumps use the chances above for distance
+    # -= Special blocks settings =-
+    # Settings for special block jumps.
+    # Note: these jumps use the chances for normal jumps for distance.
     special:
 
-      # The chance for special jumps to appear (in %)
+      # -= Special jump chance =-
+      # The chance for special jumps to appear (in %).
       chance: 10
 
+      # -= Special jump types chance =-
       # The type of block
       ice: 50
       slab: 30 # for bottom-side half slabs
       pane: 10 # for glass panes
       fence: 10
 
-  # The settings for structures
+  # -= Schematic settings =-
+  # The settings for schematic chances. This used to be called structures, hence the name.
   structures:
 
+    # -= Schematic appear chance =-
     # The chance for structures to appear (in %)
     chance: 5
 
+  # -= Jump settings =-
   settings:
 
-    # The minimal y value for parkour to be generated at
+    # -= Min jump y value =-
+    # The minimal y value for parkour to be generated at.
+    # If you are using a custom world, you should set this to a value where the parkour won't intersect with the world.
     min-y: 100
 
-    # The maximum y value for parkour to be generated at
+    # -= Max jump y value =-
+    # The maximum y value for parkour to be generated at.
+    # If you are using a custom world, you should set this to a value where the parkour won't intersect with the world.
     max-y: 200
 
-# Advanced settings
+# -= Advanced settings =-
 # Don't modify these if you don't know what you're doing!
 advanced:
 
+  # -= Spawn island options =-
   # Options for the spawn island
   island:
     spawn:
-      # The block the player will spawn on
-      # This block will be set to air once the schematic has been pasted
+
+      # -= Player block =-
+      # The material of the block that the player will spawn on.
+      # This block will be set to air once the schematic has been pasted.
       player-block: diamond_block
+
+      # -= Spawn yaw/pitch =-
       yaw: -90
       pitch: 0
 
     parkour:
+
+      # -= Begin block =-
       # The block from which the parkour begins
       # This block will be set to air once the schematic has been pasted
       begin-block: emerald_block
 
+      # -= Directional heading =-
       # The directional heading of the parkour
       # Possible options: north, south, west and east.
       heading: east
 
-  # The size of 1 side of the playable area (so the diameter) of the square playing area
+  # -= Border size =-
+  # The diameter of the playing area of a person in the singleplayer mode.
   border-size: 10000
 
-  # Time interval for the generator checking what block the player is on
+  # -= Generator check interval =-
+  # The amount of ticks between checks of the player's location and score.
+  # Lowering this is not recommended. Raising this may cause additional lag.
   generator-check: 2
 
-  # The height gap used for determining the max distance between 2 blocks
+  # -= Height gap =-
+  # The height gap used for determining the max distance between 2 blocks.
   height-gap: 4.5
 
   # From which score the difficulty multiplier is maxed (so from e.g.
   # 750 score you get more 4 block jumps than at 200 score)
   maxed-multiplier: 500
 
-  # The values of all jumps when the multiplier is maxed
+  # -= Score difficulty maxes =-
+  # The chances of all jumps when the distance multiplier is maxed out.
+  # This is only if a player has the Score difficulty option enabled.
   maxed-values:
     1-block: 5
     2-block: 15
