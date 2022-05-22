@@ -8,7 +8,9 @@ import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
+import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
+import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -194,6 +196,7 @@ public class ParkourCommand extends ViCommand {
                     Message.send(player, "<red>/witp schematic pos1 <dark_gray>- &7Set the first position of your selection");
                     Message.send(player, "<red>/witp schematic pos2 <dark_gray>- &7Set the second position of your selection");
                     Message.send(player, "<red>/witp schematic save <dark_gray>- &7Save your selection to a schematic file");
+                    Message.send(player, "<red>/witp schematic paste <file> <dark_gray>- &7Paste a schematic file");
                     Message.send(player, "");
                     Message.send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
                     return true;
@@ -410,6 +413,21 @@ public class ParkourCommand extends ViCommand {
 
                 return true;
             }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
+                if (args[1].equalsIgnoreCase("paste")) {
+                    String name = args[2];
+                    Schematic schematic = SchematicCache.getSchematic(name);
+                    if (schematic == null) {
+                        Message.send(sender, IP.PREFIX + "Couldn't find " + name);
+                        return true;
+                    }
+
+                    schematic.paste(player.getLocation(), RotationAngle.ANGLE_0);
+                    Message.send(sender, IP.PREFIX + "Pasted schematic " + name);
+                    return true;
+                }
+            }
         }
         return true;
     }
@@ -450,7 +468,7 @@ public class ParkourCommand extends ViCommand {
                     completions.add(pp.getName());
                 }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
-                completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save"));
+                completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save", "paste"));
             } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission("witp.forcejoin")) {
                 if (sender.hasPermission("witp.forcejoin.everyone")) {
                     completions.add("everyone");

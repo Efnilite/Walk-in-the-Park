@@ -261,11 +261,14 @@ public class WorldDivider {
         Player player = pp.getPlayer();
 
         pp.teleport(to);
+        player.setGameMode(GameMode.ADVENTURE);
 
         // -= Inventory =-
-        player.setGameMode(GameMode.ADVENTURE);
-        if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
+        if (Option.INVENTORY_HANDLING.get()) {
             player.getInventory().clear();
+        }
+
+        if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
             ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
             if (mat == null) {
                 IP.logging().error("Material for options in config is null - defaulting to compass");

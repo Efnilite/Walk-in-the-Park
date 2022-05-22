@@ -42,7 +42,7 @@ public class Option {
 
     public static List<Integer> POSSIBLE_LEADS;
     // Advanced settings
-    public static ConfigOption<Direction> HEADING;
+    public static Direction HEADING;
 
     public static ConfigOption<List<String>> LANGUAGES;
     public static String DEFAULT_LANG;
@@ -149,7 +149,7 @@ public class Option {
         BUNGEECORD = new ConfigOption<>(config, "bungeecord.enabled");
 
         // Generation
-        HEADING = new ConfigOption<>(Util.getDirection(generation.getString("advanced.island.parkour.heading")));
+        HEADING = Util.getDirection(generation.getString("advanced.island.parkour.heading"));
 
         // Scoring
         ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");

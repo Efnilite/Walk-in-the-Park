@@ -32,7 +32,7 @@ public class SchematicAdjuster {
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
-        return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING.get()));
+        return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING));
     }
 
     /**
@@ -43,7 +43,7 @@ public class SchematicAdjuster {
      *
      * @return the associated angle
      */
-    private static RotationAngle getAngle(Direction heading) {
+    public static RotationAngle getAngle(Direction heading) {
         return switch (heading) {
             case SOUTH -> // south
                     RotationAngle.ANGLE_180;

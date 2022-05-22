@@ -109,7 +109,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.heading = Option.HEADING.get();
+        this.heading = Option.HEADING;
     }
 
     @Override
