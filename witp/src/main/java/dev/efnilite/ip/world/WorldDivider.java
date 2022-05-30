@@ -269,7 +269,7 @@ public class WorldDivider {
         }
 
         if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
-            ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.menu").build();
+            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
             if (mat == null) {
                 IP.logging().error("Material for options in config is null - defaulting to compass");
                 player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
@@ -278,7 +278,7 @@ public class WorldDivider {
             }
         }
         if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
-            ItemStack mat = IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit").build();
+            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.quit").build();
             if (mat == null) {
                 IP.logging().error("Material for quitting in config is null - defaulting to barrier");
                 player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());

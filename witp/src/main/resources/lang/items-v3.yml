@@ -14,9 +14,23 @@ items:
     menu:
       item: compass
 
-  styles:
-    default:
-      item: poppy
+  # -= Main menu materials =-
+  main:
+    singleplayer:
+      item: ender_pearl
+    spectator:
+      item: glass
+    settings:
+      item: scaffolding
+    quit:
+      item: barrier
+
+    leaderboard:
+      item: gold_nugget
+    language:
+      item: writable_book
+    commands:
+      item: paper
 
   # Options for the options in the menu
   options:
@@ -82,18 +96,47 @@ locale:
         lore: ''
       close:
         name: '<#F5A3A3><bold>Close'
-        lore: ''
+        lore: '<dark_gray>Schließen • 关闭 ||<dark_gray>Fermer • 閉じる||<dark_gray>Sluiten'
       menu:
         name: '<red><bold>Options'
         lore: ''
+
+    # -= Gamemode items =-
+    gamemodes:
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Click to spectate.'
+
+    # -= Main menu items =-
+    main:
+      singleplayer:
+        name: '<#6E92B1><bold>Singleplayer'
+        lore: '<dark_gray>单人玩家 • シングルプレイヤー'
+      spectator:
+        name: '<#39D5AB><bold>Spectator'
+        lore: '<dark_gray>Zuschauer • 观众||<dark_gray>觀眾 • Spectateur||<dark_gray>見物人 • Toekijker'
+      settings:
+        name: '<#8CE03F><bold>Settings'
+        lore: '<dark_gray>Einstellungen • 设置||<dark_gray>命令 • Paramêtres||<dark_gray>セッティング • Instellingen'
+      quit:
+        name: '<#D71F1F><bold>Quit'
+        lore: '<dark_gray>Aufhören • 退出 • 辭職||<dark_gray>Quitter • 去る • Stoppen'
+
+      leaderboard:
+        name: '<#6693E7><bold>Leaderboard'
+        lore: '<dark_gray>Bestenliste • 排行榜||<dark_gray>Classement • リーダーボード||<dark_gray>Scorebord'
+      language:
+        name: '<#4A41BC><bold>Language'
+        lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Langue • 言語 • Taal'
+      commands:
+        name: '<#E53CA2><bold>View commands'
+        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • Commands bekijken'
+
+    # -= Options
     options:
       cant-change:
         name: '<dark_red><bold>You cant change this right now!'
         lore: '<gray>You have a score above 0,||<gray>which means you cant change this setting.'
-
       styles:
         name: '<#6693E7><bold>Style'
         lore: '<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used.'
@@ -156,10 +199,38 @@ locale:
       menu:
         name: '<red><bold>Instellingen'
         lore: ''
+
+    # -= Gamemode items =-
     gamemodes:
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Klik om toe te kijken.'
+
+    # -= Main menu items =-
+    main:
+      singleplayer:
+        name: '<#6E92B1><bold>Singleplayer'
+        lore: '<dark_gray>单人玩家 • シングルプレイヤー'
+      spectator:
+        name: '<#39D5AB><bold>Toekijker'
+        lore: '<dark_gray>Zuschauer • 观众||<dark_gray>觀眾 • Spectateur||<dark_gray>見物人 • Spectator'
+      settings:
+        name: '<#8CE03F><bold>Instellingen'
+        lore: '<dark_gray>Einstellungen • 设置||<dark_gray>命令 • Paramêtres||<dark_gray>セッティング • Settings'
+      quit:
+        name: '<#D71F1F><bold>Stoppen'
+        lore: '<dark_gray>Aufhören • 退出 • 辭職||<dark_gray>Quitter • 去る • Quit'
+
+      leaderboard:
+        name: '<#6693E7><bold>Scorebord'
+        lore: '<dark_gray>Bestenliste • 排行榜||<dark_gray>Classement • リーダーボード||<dark_gray>Leaderboard'
+      language:
+        name: '<#4A41BC><bold>Taal'
+        lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Langue • 言語 • Language'
+      commands:
+        name: '<#E53CA2><bold>Commands bekijken'
+        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • View commands'
+
     options:
       cant-change:
         name: '<dark_red><bold>Je kan dit nu niet veranderen!'
@@ -227,10 +298,38 @@ locale:
       menu:
         name: '<red><bold>Paramètres'
         lore: ''
+
+    # -= Gamemode items =-
     gamemodes:
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Cliquez pour regarder.'
+
+    # -= Main menu items =-
+    main:
+      singleplayer:
+        name: '<#6E92B1><bold>Singleplayer'
+        lore: '<dark_gray>单人玩家 • シングルプレイヤー'
+      spectator:
+        name: '<#39D5AB><bold>Spectateur'
+        lore: '<dark_gray>Zuschauer • 观众||<dark_gray>觀眾 • Toekijker||<dark_gray>見物人 • Spectator'
+      settings:
+        name: '<#8CE03F><bold>Paramêtres'
+        lore: '<dark_gray>Einstellungen • 设置||<dark_gray>命令 • Instellingen||<dark_gray>セッティング • Settings'
+      quit:
+        name: '<#D71F1F><bold>Quit'
+        lore: '<dark_gray>Aufhören • 退出 • 辭職||<dark_gray>Quitter • 去る • Stoppen'
+
+      leaderboard:
+        name: '<#6693E7><bold>Scorebord'
+        lore: '<dark_gray>Bestenliste • 排行榜||<dark_gray>Classement • リーダーボード||<dark_gray>Leaderboard'
+      language:
+        name: '<#4A41BC><bold>Langue'
+        lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Taal • 言語 • Language'
+      commands:
+        name: '<#E53CA2><bold>Afficher commandes'
+        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Commands bekijken • View commands'
+
     options:
       cant-change:
         name: '<dark_red><bold>Il n est pas possible de modifier ce paramètre en ce moment!'
@@ -298,10 +397,38 @@ locale:
       menu:
         name: '<red><bold>選項'
         lore: ''
+
+    # -= Gamemode items =-
     gamemodes:
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>點擊進行觀察。'
+
+    # -= Main menu items =-
+    main:
+      singleplayer:
+        name: '<#6E92B1><bold>单人玩家'
+        lore: '<dark_gray>Singleplayer • シングルプレイヤー'
+      spectator:
+        name: '<#39D5AB><bold>觀眾'
+        lore: '<dark_gray>Zuschauer • 观众||<dark_gray>Spectator • Spectateur||<dark_gray>見物人 • Toekijker'
+      settings:
+        name: '<#8CE03F><bold>命令'
+        lore: '<dark_gray>Einstellungen • 设置||<dark_gray>Settings • Paramêtres||<dark_gray>セッティング • Instellingen'
+      quit:
+        name: '<#D71F1F><bold>辭職'
+        lore: '<dark_gray>Aufhören • 退出 • Quit||<dark_gray>Quitter • 去る • Stoppen'
+
+      leaderboard:
+        name: '<#6693E7><bold>排行榜'
+        lore: '<dark_gray>Bestenliste • Leaderboard||<dark_gray>Classement • リーダーボード||<dark_gray>Scorebord'
+      language:
+        name: '<#4A41BC><bold>語言'
+        lore: '<dark_gray>Sprache • 语言 • Language||<dark_gray>Langue • 言語 • Taal'
+      commands:
+        name: '<#E53CA2><bold>查看命令'
+        lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
+
     options:
       cant-change:
         name: '<dark_red><bold>你現在不能更改此設置！'
@@ -369,10 +496,38 @@ locale:
       menu:
         name: '<red><bold>选项'
         lore: ''
+
+    # -= Gamemode items =-
     gamemodes:
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>点击进行旁观'
+
+    # -= Main menu items =-
+    main:
+      singleplayer:
+        name: '<#6E92B1><bold>单人玩家'
+        lore: '<dark_gray>Singleplayer • シングルプレイヤー'
+      spectator:
+        name: '<#39D5AB><bold>观众'
+        lore: '<dark_gray>Zuschauer • Spectator||<dark_gray>觀眾 • Spectateur||<dark_gray>見物人 • Toekijker'
+      settings:
+        name: '<#8CE03F><bold>设置'
+        lore: '<dark_gray>Einstellungen • Settings||<dark_gray>命令 • Paramêtres||<dark_gray>セッティング • Instellingen'
+      quit:
+        name: '<#D71F1F><bold>退出'
+        lore: '<dark_gray>Aufhören • Quit • 辭職||<dark_gray>Quitter • 去る • Stoppen'
+
+      leaderboard:
+        name: '<#6693E7><bold>排行榜'
+        lore: '<dark_gray>Bestenliste • Leaderboard||<dark_gray>Classement • リーダーボード||<dark_gray>Scorebord'
+      language:
+        name: '<#4A41BC><bold>语言'
+        lore: '<dark_gray>Sprache • Language • 語言||<dark_gray>Langue • 言語 • Taal'
+      commands:
+        name: '<#E53CA2><bold>查看命令'
+        lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
+
     options:
       cant-change:
         name: '<dark_red><bold>你现在不能更改此设置'

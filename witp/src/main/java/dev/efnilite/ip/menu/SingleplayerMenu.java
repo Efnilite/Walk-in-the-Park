@@ -30,7 +30,7 @@ public class SingleplayerMenu {
         IP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
 
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LANG : user.getLocale();
+        String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
         Configuration config = IP.getConfiguration();
         PagedMenu gamemode = new PagedMenu(4, "<white>" +

@@ -2,6 +2,7 @@ package dev.efnilite.ip.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
@@ -80,8 +81,8 @@ public class Configuration {
 
         FileConfiguration included = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
         FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), file));
-        List<String> includedLangs = Util.getNode(included, beginPath);
-        List<String> userLangs = Util.getNode(user, beginPath);
+        List<String> includedLangs = Util.getNode(included, beginPath, true);
+        List<String> userLangs = Util.getNode(user, beginPath, true);
 
         // Add all differences to list
         List<String> toNotUpdate = new ArrayList<>();
@@ -222,7 +223,6 @@ public class Configuration {
         String string = getFile(file).getString(path);
 
         if (string == null) {
-            repairPaths();
             IP.logging().stack("Option at path " + path + " with file " + file + " is null", "check the " + file + " file for misinputs");
             return "";
         }
@@ -230,35 +230,17 @@ public class Configuration {
         return Util.color(string);
     }
 
-    // todo implement
-    private void repairPaths() {
+    public void repairItems() {
+        FileConfiguration config = getFile("items");
 
-    }
-
-    /**
-     * Gets a coloured string that may be null
-     *
-     * @param   file
-     *          The file
-     *
-     * @param   path
-     *          The path
-     *
-     * @return a coloured string
-     */
-    public @Nullable String getStringNullable(@NotNull String file, @NotNull String path, Runnable onNullFound) {
-        String string = getFile(file).getString(path);
-        if (string == null) {
-            if (onNullFound != null) {
-                onNullFound.run();
-            }
-            return null;
-        }
-        return Util.color(string);
+        throw new IllegalArgumentException("Not implemented");
     }
 
     /**
      * Gets an item from the items-v3.yml file and automatically creates it.
+     *
+     * @param   locale
+     *          The locale
      *
      * @param   path
      *          The path of the item (excluding the parameters and 'items.')
@@ -273,6 +255,24 @@ public class Configuration {
         return new Item(data.material, data.name).lore(data.lore);
     }
 
+    /**
+     * Gets an item from the items-v3.yml file and automatically creates it.
+     *
+     * @param   user
+     *          The user
+     *
+     * @param   path
+     *          The path of the item (excluding the parameters and 'items.')
+     *
+     * @param   replace
+     *          What should be replaced in the lore/name
+     *
+     * @return the item based on the data from items-v3.yml
+     */
+    public Item getFromItemData(@Nullable ParkourUser user, String path, @Nullable String... replace) {
+        return getFromItemData(user == null ? Option.DEFAULT_LOCALE : user.getLocale(), path, replace);
+    }
+
     private ItemData getItemData(String path, String locale, @Nullable String... replace) {
         FileConfiguration config = getFile("items");
 
@@ -280,11 +280,19 @@ public class Configuration {
         String matPath = "items." + path;
 
         String name = config.getString(namePath + ".name");
+
+        if (name == null) {
+            IP.logging().info("Found missing name for lang path " + path);
+            IP.logging().info("The lang files will now be repaired.");
+            repairItems();
+        }
+
         if (name != null && replace != null && replace.length > 0) {
             name = name.replaceFirst("%[a-z]", replace[0]);
         }
 
         String l = config.getString(namePath + ".lore");
+
         List<String> lore = null;
         if (l != null) {
             lore = Arrays.asList(l.split("\\|\\|"));
@@ -303,6 +311,13 @@ public class Configuration {
 
         Material material = null;
         String configMaterial = config.getString(matPath + ".item");
+
+        if (configMaterial == null) {
+            IP.logging().info("Found missing material for lang path " + path);
+            IP.logging().info("The lang files will now be repaired.");
+            repairItems();
+        }
+
         if (configMaterial != null) {
             material = Material.getMaterial(configMaterial.toUpperCase());
         }

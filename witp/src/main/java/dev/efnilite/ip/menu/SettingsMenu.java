@@ -233,7 +233,7 @@ public class SettingsMenu {
         }
 
         if (checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCORE_DIFFICULTY.getName());
+            Item item = config.getFromItemData(user, "options." + ParkourOption.SCORE_DIFFICULTY.getName());
 
             main.item(22, new SliderItem()
                     .initial(user.useScoreDifficulty ? 0 : 1)
@@ -397,7 +397,7 @@ public class SettingsMenu {
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
         List<String> values = config.getStringList("items", "locale." + user.getLocale() + ".options.schematic-difficulty.values");
 
-        Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
+        Item item = config.getFromItemData(user, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
         schematics.item(10, new SliderItem()
                 .initial(difficulties.indexOf(user.schematicDifficulty))
@@ -466,7 +466,7 @@ public class SettingsMenu {
                                     return false;
                                 }))
 
-                .item(26, config.getFromItemData(user.getLocale(), "general.close")
+                .item(26, config.getFromItemData(user, "general.close")
                         .click(event -> open(user, disabledOptions)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
@@ -477,7 +477,7 @@ public class SettingsMenu {
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private static boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player.getLocale(), "options.cant-change")
+            event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player, "options.cant-change")
                     .click((event1) -> {
 
                     }), event).stay(5 * 20));

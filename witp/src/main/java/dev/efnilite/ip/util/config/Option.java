@@ -45,7 +45,7 @@ public class Option {
     public static Direction HEADING;
 
     public static ConfigOption<List<String>> LANGUAGES;
-    public static String DEFAULT_LANG;
+    public static String DEFAULT_LOCALE;
     public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
 
     public static ConfigOption<String> DEFAULT_STYLE;
@@ -105,7 +105,7 @@ public class Option {
                 ParkourOption.USE_SCHEMATICS.getName());
 
         OPTIONS_DEFAULTS = new HashMap<>();
-        for (String node : Util.getNode(items, "items.options")) {
+        for (String node : Util.getNode(items, "items.options", false)) {
             for (String option : options) {
                 if (option.equalsIgnoreCase(node)) {
                     String value = items.getString("items.options." + node + ".default");
@@ -125,7 +125,7 @@ public class Option {
         List<String> languages = new ArrayList<>(LANGUAGES.get());
         languages.remove("default");
         LANGUAGES.thenSet(languages);
-        DEFAULT_LANG = lang.getString("messages.default");
+        DEFAULT_LOCALE = lang.getString("messages.default");
 
         DEFAULT_STYLE = new ConfigOption<>(config, "styles.default");
 

@@ -77,7 +77,7 @@ public class ParkourPlayer extends ParkourUser {
         this.joinTime = System.currentTimeMillis();
 
         this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
-        this.locale = Option.DEFAULT_LANG;
+        this.locale = Option.DEFAULT_LOCALE;
         this.lang = locale;
     }
 
@@ -103,7 +103,7 @@ public class ParkourPlayer extends ParkourUser {
 
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE.get());
-        this.lang = orDefault(lang, Option.DEFAULT_LANG);
+        this.lang = orDefault(lang, Option.DEFAULT_LOCALE);
         this.locale = this.lang;
 
         this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS.getName())));
@@ -397,7 +397,7 @@ public class ParkourPlayer extends ParkourUser {
                 objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
                     pp.setSettings(highscore, Integer.parseInt((String) objects.get(8)),
-                            (String) objects.get(0), highScoreTime, Option.DEFAULT_LANG,
+                            (String) objects.get(0), highScoreTime, Option.DEFAULT_LOCALE,
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),

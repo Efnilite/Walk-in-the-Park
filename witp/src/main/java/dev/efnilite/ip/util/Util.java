@@ -191,12 +191,12 @@ public class Util {
      *
      * @return the size
      */
-    public static @Nullable List<String> getNode(FileConfiguration file, String path) {
+    public static @Nullable List<String> getNode(FileConfiguration file, String path, boolean deep) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
             return null;
         }
-        return new ArrayList<>(section.getKeys(false));
+        return new ArrayList<>(section.getKeys(deep));
     }
 
     /**
@@ -334,7 +334,7 @@ public class Util {
      *          The path
      */
     public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
-        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LANG + "." + path);
+        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LOCALE + "." + path);
         for (String s : replaceable) {
             message = message.replaceFirst("%[a-z]", s);
         }

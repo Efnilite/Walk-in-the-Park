@@ -57,7 +57,7 @@ public class LangMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(31, config.getFromItemData(user.getLocale(), "general.close")
+                .item(31, config.getFromItemData(user, "general.close")
                         .click(event -> MainMenu.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
