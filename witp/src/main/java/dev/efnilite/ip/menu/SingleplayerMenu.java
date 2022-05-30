@@ -36,6 +36,7 @@ public class SingleplayerMenu {
         PagedMenu gamemode = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
 
+        Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
             if (gm instanceof MultiGamemode || !gm.isVisible()) {
@@ -45,6 +46,12 @@ public class SingleplayerMenu {
             Item item = gm.getItem(locale);
             items.add(new Item(item.getMaterial(), item.getName())
                     .click(event -> gm.click(player)));
+            latest = gm;
+        }
+
+        if (items.size() == 1) {
+            latest.click(player);
+            return;
         }
 
         gamemode
