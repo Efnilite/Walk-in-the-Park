@@ -281,12 +281,6 @@ public class Configuration {
 
         String name = config.getString(namePath + ".name");
 
-        if (name == null) {
-            IP.logging().info("Found missing name for lang path " + path);
-            IP.logging().info("The lang files will now be repaired.");
-            repairItems();
-        }
-
         if (name != null && replace != null && replace.length > 0) {
             name = name.replaceFirst("%[a-z]", replace[0]);
         }
