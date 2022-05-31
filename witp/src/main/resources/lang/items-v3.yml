@@ -32,7 +32,7 @@ items:
     commands:
       item: paper
 
-  # Options for the options in the menu
+  # -= Options for settings menu =-
   options:
     cant-change:
       item: barrier
@@ -132,7 +132,7 @@ locale:
         name: '<#E53CA2><bold>View commands'
         lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • Commands bekijken'
 
-    # -= Options
+    # -= Options for settings menu =-
     options:
       cant-change:
         name: '<dark_red><bold>You cant change this right now!'
@@ -231,6 +231,7 @@ locale:
         name: '<#E53CA2><bold>Commands bekijken'
         lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • View commands'
 
+    # -= Options for settings menu =-
     options:
       cant-change:
         name: '<dark_red><bold>Je kan dit nu niet veranderen!'
@@ -330,6 +331,7 @@ locale:
         name: '<#E53CA2><bold>Afficher commandes'
         lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Commands bekijken • View commands'
 
+    # -= Options for settings menu =-
     options:
       cant-change:
         name: '<dark_red><bold>Il n est pas possible de modifier ce paramètre en ce moment!'
@@ -429,6 +431,7 @@ locale:
         name: '<#E53CA2><bold>查看命令'
         lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
 
+    # -= Options for settings menu =-
     options:
       cant-change:
         name: '<dark_red><bold>你現在不能更改此設置！'
@@ -528,6 +531,7 @@ locale:
         name: '<#E53CA2><bold>查看命令'
         lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
 
+    # -= Options for settings menu =-
     options:
       cant-change:
         name: '<dark_red><bold>你现在不能更改此设置'
