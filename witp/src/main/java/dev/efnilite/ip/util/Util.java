@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -391,6 +392,49 @@ public class Util {
             return new int[]{-k + (m - n), k};
         } else {
             return new int[]{k, k - (m - n - t)};
+        }
+    }
+
+    /**
+     * Returns the heading opposite to the axes with the smallest distance. Only works for the x and z-axis.
+     *
+     * @param   location
+     *          The current location
+     *
+     * @param   distances
+     *          The distances to the edge of the axis.
+     *
+     * @return the new heading
+     */
+    public static Direction opposite(Location location, double[] distances) {
+        Vector point = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        double dx = distances[0]; // x distance from border
+        double dz = distances[2]; // z distance from border
+
+        Vector mirroredPoint = point.clone(); // point mirrored on axis
+        if (dx <= dz) {
+            // turn away from x
+            mirroredPoint.add(new Vector(dx, 0, 0));
+        } else {
+            // turn away from z
+            mirroredPoint.add(new Vector(0, 0, dz));
+        }
+
+        Vector toBorder = mirroredPoint.subtract(point).normalize(); // a' - a = AA'
+        Vector opposite = toBorder.multiply(-1); // reverse vector
+        System.out.println(opposite);
+        return fromVector(opposite);
+    }
+
+    public static Direction fromVector(Vector vector) {
+        if (vector.getBlockX() < 0) {
+            return Direction.WEST;
+        } else if (vector.getBlockZ() > 0) {
+            return Direction.SOUTH;
+        } else if (vector.getBlockZ() < 0) {
+            return Direction.NORTH;
+        } else {
+            return Direction.EAST;
         }
     }
 }

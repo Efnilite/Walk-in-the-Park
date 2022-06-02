@@ -50,8 +50,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     private boolean isSpecial;
     private Material specialType;
 
-    protected int turnCooldown;
-
     /**
      * The amount of blocks that will trail the player's current index.
      */
@@ -426,12 +424,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
         if (type == 0) {
             if (isNearingEdge(mostRecentBlock) && score > 0) {
-                if (turnCooldown <= 0) {
-                    heading = heading.turnRight(); // reverse heading if close to border
-                    turnCooldown = 5;
-                } else {
-                    turnCooldown--;
-                }
+                heading = Util.opposite(mostRecentBlock, zone.distanceToBoundaries(mostRecentBlock));
             }
 
             BlockData selectedBlockData = selectBlockData();
@@ -642,7 +635,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // the range in which it should check for blocks (max 180 degrees, min 90 degrees)
         double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;
 
-        double[] bounds = getBounds(heading, range);
+        double[] bounds = getBounds(range);
         double startBound = bounds[0];
         double limitBound = bounds[1];
 
@@ -650,8 +643,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double increment = range / detail; // 180 degrees / amount of times it should check = the increment
 
         if (radius > 1) {
-            startBound += 1.5 * increment; // remove blocks on the same axis
-            limitBound -= 1.5 * increment;
+            startBound += -Math.signum(startBound) * 1.5 * increment; // remove blocks on the same axis by reducing bounds
+            limitBound += -Math.signum(limitBound) * 1.5 * increment;
         } else if (radius < 1) {
             radius = 1;
         }
@@ -674,9 +667,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         return possible;
     }
 
-    private double[] getBounds(Direction direction, double range) {
+    private double[] getBounds(double range) {
         // todo fix
-        return switch (direction) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
+        System.out.println("range: " + range);
+        System.out.println("heading: " + heading.name());
+        return switch (heading) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
             default -> // east
                     // - 1/2 pi to 1/2 pi
                     new double[]{-0.5 * range, 0.5 * range};
