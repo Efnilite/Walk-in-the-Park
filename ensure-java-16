@@ -6,7 +6,7 @@ echo "$JV" | sed -E 's/^.*version "([^".]*)\.[^"]*".*$/\1/'
 if [ "$JV" != 16 ]; then
 	case "$1" in
 	install)
-		echo "Installing SDKMAN..."
+		echo "Installing sdkman..."
 		curl -s "https://get.sdkman.io" | bash
 		source ~/.sdkman/bin/sdkman-init.sh
 		sdk version
