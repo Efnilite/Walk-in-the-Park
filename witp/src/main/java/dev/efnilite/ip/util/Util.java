@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.schematic.VectorUtil;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
 import net.milkbowl.vault.economy.Economy;
@@ -406,7 +407,7 @@ public class Util {
      *
      * @return the new heading
      */
-    public static Direction opposite(Location location, double[] distances) {
+    public static Direction opposite(Direction direction, Location location, double[] distances) {
         Vector point = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         double dx = distances[0]; // x distance from border
         double dz = distances[2]; // z distance from border
@@ -414,7 +415,7 @@ public class Util {
         Vector mirroredPoint = point.clone(); // point mirrored on axis
         if (dx <= dz) {
             // turn away from x
-            mirroredPoint.add(new Vector(dx, 0, 0));
+            mirroredPoint.add(new Vector(dx, 0, 0)); // todo fix for directions to west
         } else {
             // turn away from z
             mirroredPoint.add(new Vector(0, 0, dz));
@@ -422,19 +423,6 @@ public class Util {
 
         Vector toBorder = mirroredPoint.subtract(point).normalize(); // a' - a = AA'
         Vector opposite = toBorder.multiply(-1); // reverse vector
-        System.out.println(opposite);
-        return fromVector(opposite);
-    }
-
-    public static Direction fromVector(Vector vector) {
-        if (vector.getBlockX() < 0) {
-            return Direction.WEST;
-        } else if (vector.getBlockZ() > 0) {
-            return Direction.SOUTH;
-        } else if (vector.getBlockZ() < 0) {
-            return Direction.NORTH;
-        } else {
-            return Direction.EAST;
-        }
+        return VectorUtil.fromVector(opposite);
     }
 }

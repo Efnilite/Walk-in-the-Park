@@ -424,7 +424,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
         if (type == 0) {
             if (isNearingEdge(mostRecentBlock) && score > 0) {
-                heading = Util.opposite(mostRecentBlock, zone.distanceToBoundaries(mostRecentBlock));
+                heading = Util.opposite(heading, mostRecentBlock, zone.distanceToBoundaries(mostRecentBlock));
             }
 
             BlockData selectedBlockData = selectBlockData();
@@ -636,26 +636,26 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;
 
         double[] bounds = getBounds(range);
-        double startBound = bounds[0];
-        double limitBound = bounds[1];
+        double minBound = Math.min(bounds[0], bounds[1]);
+        double maxBound = Math.max(bounds[0], bounds[1]);
 
         double detail = radius * 4; // how many times it should check
         double increment = range / detail; // 180 degrees / amount of times it should check = the increment
 
         if (radius > 1) {
-            startBound += -Math.signum(startBound) * 1.5 * increment; // remove blocks on the same axis by reducing bounds
-            limitBound += -Math.signum(limitBound) * 1.5 * increment;
+            minBound += -Math.signum(minBound) * 1.5 * increment; // remove blocks on the same axis by reducing bounds
+            maxBound += -Math.signum(maxBound) * 1.5 * increment;
         } else if (radius < 1) {
             radius = 1;
         }
 
         for (int progress = 0; progress < detail; progress++) {
-            double angle = startBound + progress * increment;
-            if (angle > limitBound) {
+            double angle = minBound + progress * increment; // go from min value to max value
+            if (angle > maxBound) {
                 break;
             }
-            double x = base.getX() + (radius * Math.cos(angle));
-            double z = base.getZ() + (radius * Math.sin(angle));
+            double x = base.getX() + Math.signum(bounds[1]) * (radius * Math.cos(angle));
+            double z = base.getZ() + Math.signum(bounds[1]) * (radius * Math.sin(angle));
             Block block = new Location(world, x, y, z).getBlock();
 
             if (block.getLocation().distance(base) <= heightGap
