@@ -259,7 +259,7 @@ public class Handler implements EventWatcher {
         // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
         if (player.getWorld().getUID() == parkourWorld && user == null && !player.isOp()) {
             player.kickPlayer("");
-        } // todo test
+        }
 
         // leaving world will unregister player
         if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {

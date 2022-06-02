@@ -50,6 +50,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     private boolean isSpecial;
     private Material specialType;
 
+    protected int turnCooldown;
+
     /**
      * The amount of blocks that will trail the player's current index.
      */
@@ -424,7 +426,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
         if (type == 0) {
             if (isNearingEdge(mostRecentBlock) && score > 0) {
-                heading = heading.turnRight(); // reverse heading if close to border
+                if (turnCooldown <= 0) {
+                    heading = heading.turnRight(); // reverse heading if close to border
+                    turnCooldown = 5;
+                } else {
+                    turnCooldown--;
+                }
             }
 
             BlockData selectedBlockData = selectBlockData();

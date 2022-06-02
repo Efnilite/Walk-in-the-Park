@@ -230,12 +230,6 @@ public class Configuration {
         return Util.color(string);
     }
 
-    public void repairItems() {
-        FileConfiguration config = getFile("items");
-
-        throw new IllegalArgumentException("Not implemented");
-    }
-
     /**
      * Gets an item from the items-v3.yml file and automatically creates it.
      *
@@ -306,11 +300,10 @@ public class Configuration {
         Material material = null;
         String configMaterial = config.getString(matPath + ".item");
 
-        if (configMaterial == null) {
-            IP.logging().info("Found missing material for lang path " + path);
-            IP.logging().info("The lang files will now be repaired.");
-            repairItems();
-        }
+//        if (configMaterial == null) {
+//            repairItems();
+//            todo
+//        }
 
         if (configMaterial != null) {
             material = Material.getMaterial(configMaterial.toUpperCase());
