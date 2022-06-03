@@ -5,8 +5,6 @@ import java.util.Map;
 /**
  * A class for {@link dev.efnilite.ip.player.ParkourUser}'s Profile.
  * This includes settings.
- *
- * @author Efnilite
  */
 public interface Profile {
 

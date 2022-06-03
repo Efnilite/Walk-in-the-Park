@@ -276,7 +276,7 @@ public class Configuration {
         String name = config.getString(namePath + ".name");
 
         if (name != null && replace != null && replace.length > 0) {
-            name = name.replaceFirst("%[a-z]", replace[0]);
+            name = name.replaceFirst("%[a-z]", replace[0] == null ? "" : replace[0]);
         }
 
         String l = config.getString(namePath + ".lore");
@@ -288,7 +288,7 @@ public class Configuration {
                 List<String> copy = new ArrayList<>();
                 int index = 0;
                 for (String s : lore) {
-                    copy.add(s.replaceFirst("%[a-z]", replace[index]));
+                    copy.add(s.replaceFirst("%[a-z]", replace[index] == null ? "" : replace[index]));
                 }
                 lore = copy;
             }
@@ -299,11 +299,6 @@ public class Configuration {
 
         Material material = null;
         String configMaterial = config.getString(matPath + ".item");
-
-//        if (configMaterial == null) {
-//            repairItems();
-//            todo
-//        }
 
         if (configMaterial != null) {
             material = Material.getMaterial(configMaterial.toUpperCase());

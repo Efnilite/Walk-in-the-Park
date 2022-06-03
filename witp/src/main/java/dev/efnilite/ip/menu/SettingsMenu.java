@@ -34,270 +34,307 @@ import java.util.List;
  * @since v3.0.0
  * @author Efnilite
  */
-public class SettingsMenu {
+public class SettingsMenu extends DynamicMenu {
+
+    public SettingsMenu(ParkourOption... disabled) {
+
+        // ---------- top row ----------
+
+        // styles
+        registerMainItem(1, 0,
+                user -> IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.STYLES.getName(),
+                        user instanceof ParkourPlayer player ? player.style : null).click(
+                event -> {
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return;
+                    }
+
+                    if (IP.getRegistry().getStyleTypes().size() == 1) {
+                        openSingleStyleMenu(player, IP.getRegistry().getStyleTypes().get(0), disabled);
+                    } else {
+                        openStylesMenu(player, disabled);
+                    }}),
+                player -> checkOptions(player, ParkourOption.STYLES, disabled));
+
+        // leads
+        registerMainItem(1, 1,
+                user -> {
+                    Item displayItem = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.LEADS.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return displayItem;
+                    }
+
+                    List<Integer> leads = Option.POSSIBLE_LEADS;
+
+                    SliderItem item = new SliderItem()
+                            .initial(leads.indexOf(player.blockLead)); // initial value of the player
+
+                    int slot = 0;
+                    for (int value : leads) {
+                        item.add(slot, displayItem.clone()
+                                        .amount(value)
+                                        .modifyLore(line -> line.replace("%s", Integer.toString(value))),
+                                event2 -> {
+                                    player.blockLead = value;
+                                    return true;
+                                });
+                        slot++;
+                    }
+                    return item;
+                },
+                player -> checkOptions(player, ParkourOption.LEADS, disabled));
+
+        // schematics
+        registerMainItem(1, 9,
+                user -> IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SCHEMATICS.getName()).click(
+                event -> {
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return;
+                    }
+
+                    openSchematicMenu(player, disabled);
+                }),
+                player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
+
+        // time
+        registerMainItem(1, 10,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.TIME.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    // Tick times start at 6:00 and total is 24.000.
+                    // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
+                    List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
+
+                    return new SliderItem()
+                            .initial(times.indexOf(player.selectedTime))
+                            .add(0, item.clone()
+                                            .modifyLore(line ->
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
+                                    event -> {
+                                        player.selectedTime = 0;
+                                        player.updateVisualTime(player.selectedTime);
+                                        return true;
+                                    })
+                            .add(1, item.clone()
+                                            .modifyLore(line ->
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
+                                    event -> {
+                                        player.selectedTime = 6000;
+                                        player.updateVisualTime(player.selectedTime);
+                                        return true;
+                                    })
+                            .add(2, item.clone()
+                                            .modifyLore(line ->
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
+                                    event -> {
+                                        player.selectedTime = 12000;
+                                        player.updateVisualTime(player.selectedTime);
+                                        return true;
+                                    })
+                            .add(3, item.clone()
+                                            .modifyLore(line ->
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
+                                    event -> {
+                                        player.selectedTime = 18000;
+                                        player.updateVisualTime(player.selectedTime);
+                                        return true;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.TIME, disabled));
+
+        // ---------- bottom row ----------
+
+        // show scoreboard
+        registerMainItem(2, 0,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SHOW_SCOREBOARD.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.showScoreboard ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        player.showScoreboard = true;
+                                        player.setBoard(new FastBoard(player.getPlayer()));
+                                        player.updateScoreboard();
+                                        return true;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        player.showScoreboard = false;
+                                        if (player.getBoard() != null && !player.getBoard().isDeleted()) {
+                                            player.getBoard().delete();
+                                        }
+                                        return true;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabled) && Option.SCOREBOARD.get());
+
+        // show fall message
+        registerMainItem(2, 1,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.showFallMessage ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        player.showFallMessage = true;
+                                        return true;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        player.showFallMessage = false;
+                                        return true;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabled));
+
+        // show particles and sound
+        registerMainItem(2, 2,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.useParticlesAndSound ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        player.useParticlesAndSound = true;
+                                        return true;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        player.useParticlesAndSound = false;
+                                        return true;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.PARTICLES_AND_SOUND, disabled));
+
+        // show special blocks
+        registerMainItem(2, 3,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SPECIAL_BLOCKS.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.useSpecialBlocks ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        if (allowSettingChange(player, event)) {
+                                            player.useSpecialBlocks = true;
+                                            return true;
+                                        }
+                                        return false;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        if (allowSettingChange(player, event)) {
+                                            player.useSpecialBlocks = false;
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
+
+        // show score difficulty
+        registerMainItem(2, 4,
+                user -> {
+                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SCORE_DIFFICULTY.getName());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.useScoreDifficulty ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        if (allowSettingChange(player, event)) {
+                                            player.useScoreDifficulty = true;
+                                            return true;
+                                        }
+                                        return false;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        if (allowSettingChange(player, event)) {
+                                            player.useScoreDifficulty = false;
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabled));
+
+        // Always allow closing of the menu
+        registerMainItem(3, 10,
+                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                        .click(event -> event.getPlayer().closeInventory()),
+                player -> true);
+    }
 
     /**
      * Shows the main menu to a valid ParkourPlayer instance
      *
      * @param   user
      *          The ParkourPlayer
-     *
-     * @param   disabledOptions
-     *          An array of disabled options
      */
-    public static void open(ParkourPlayer user, ParkourOption... disabledOptions)  {
+    public void open(ParkourPlayer user)  {
         Player player = user.getPlayer();
         Configuration config = IP.getConfiguration();
 
-        Menu main = new Menu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")));
-
-        // ---------- top row ----------
-
-        if (checkOptions(player, ParkourOption.STYLES, disabledOptions)) {
-            main.item(9, config.getFromItemData(user.getLocale(), "options." + ParkourOption.STYLES.getName(), user.style)
-                    .click(event -> {
-                        if (IP.getRegistry().getStyleTypes().size() == 1) {
-                            openSingleStyleMenu(user, IP.getRegistry().getStyleTypes().get(0), disabledOptions);
-                        } else {
-                            openStylesMenu(user, disabledOptions);
-                        }
-                    }));
-        }
-
-        if (checkOptions(player, ParkourOption.LEADS, disabledOptions)) {
-            List<Integer> leads = Option.POSSIBLE_LEADS;
-
-            SliderItem item = new SliderItem()
-                    .initial(leads.indexOf(user.blockLead)); // initial value of the player
-
-            Item displayItem = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADS.getName());
-            int slot = 0;
-            for (int value : leads) {
-                item.add(slot, displayItem.clone()
-                                .amount(value)
-                                .modifyLore(line -> line.replace("%s", Integer.toString(value))),
-                        event -> {
-                            user.blockLead = value;
-                            return true;
-                        });
-                slot++;
-            }
-
-            main.item(10, item);
-        }
-
-        if (checkOptions(player, ParkourOption.SCHEMATICS, disabledOptions)) {
-            main.item(11, config.getFromItemData(user.getLocale(), "options." + ParkourOption.SCHEMATICS.getName())
-                    .click(event -> openSchematicMenu(user, disabledOptions)));
-        }
-
-        if (checkOptions(player, ParkourOption.TIME, disabledOptions)) {
-            // Tick times start at 6:00 and total is 24,000.
-            // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
-            List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
-
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.TIME.getName());
-
-            main.item(12, new SliderItem()
-                    .initial(times.indexOf(user.selectedTime))
-                    .add(0, item.clone()
-                                    .modifyLore(line ->
-                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
-                            event -> {
-                                user.selectedTime = 0;
-                                user.updateVisualTime(user.selectedTime);
-                                return true;
-                            })
-                    .add(1, item.clone()
-                                    .modifyLore(line ->
-                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
-                            event -> {
-                                user.selectedTime = 6000;
-                                user.updateVisualTime(user.selectedTime);
-                                return true;
-                            })
-                    .add(2, item.clone()
-                                    .modifyLore(line ->
-                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
-                            event -> {
-                                user.selectedTime = 12000;
-                                user.updateVisualTime(user.selectedTime);
-                                return true;
-                            })
-                    .add(3, item.clone()
-                                    .modifyLore(line ->
-                                            line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
-                            event -> {
-                                user.selectedTime = 18000;
-                                user.updateVisualTime(user.selectedTime);
-                                return true;
-                            }));
-        }
-
-        // ---------- bottom row ----------
-
-        if (checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabledOptions) && Option.SCOREBOARD.get()) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_SCOREBOARD.getName());
-
-            main.item(18, new SliderItem()
-                    .initial(user.showScoreboard ? 0 : 1)
-                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            event -> {
-                                    user.showScoreboard = true;
-                                    user.setBoard(new FastBoard(player));
-                                    user.updateScoreboard();
-                                    return true;
-                            })
-                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            event -> {
-                                    user.showScoreboard = false;
-                                    if (user.getBoard() != null && !user.getBoard().isDeleted()) {
-                                        user.getBoard().delete();
-                                    }
-                                    return true;
-                            }));
-        }
-
-        if (checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
-
-            main.item(19, new SliderItem()
-                    .initial(user.showFallMessage ? 0 : 1)
-                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            event -> {
-                                user.showFallMessage = true;
-                                return true;
-                            })
-                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            event -> {
-                                user.showFallMessage = false;
-                                return true;
-                            }));
-        }
-
-        if (checkOptions(player, ParkourOption.PARTICLES_AND_SOUND, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
-
-            main.item(20, new SliderItem()
-                    .initial(user.useParticlesAndSound ? 0 : 1)
-                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            event -> {
-                                user.useParticlesAndSound = true;
-                                return true;
-                            })
-                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            event -> {
-                                user.useParticlesAndSound = false;
-                                return true;
-                            }));
-        }
-
-        if (checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabledOptions)) {
-            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.SPECIAL_BLOCKS.getName());
-
-            main.item(21, new SliderItem()
-                    .initial(user.useSpecialBlocks ? 0 : 1)
-                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            event -> {
-                                if (allowSettingChange(user, event)) {
-                                    user.useSpecialBlocks = true;
-                                    return true;
-                                }
-                                return false;
-                            })
-                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            event -> {
-                                if (allowSettingChange(user, event)) {
-                                    user.useSpecialBlocks = false;
-                                    return true;
-                                }
-                                return false;
-                            }));
-        }
-
-        if (checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabledOptions)) {
-            Item item = config.getFromItemData(user, "options." + ParkourOption.SCORE_DIFFICULTY.getName());
-
-            main.item(22, new SliderItem()
-                    .initial(user.useScoreDifficulty ? 0 : 1)
-                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                            event -> {
-                                if (allowSettingChange(user, event)) {
-                                    user.useScoreDifficulty = true;
-                                    return true;
-                                }
-                                return false;
-                            })
-                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                            event -> {
-                                if (allowSettingChange(user, event)) {
-                                    user.useScoreDifficulty = false;
-                                    return true;
-                                }
-                                return false;
-                            }));
-        }
-
-//        if (checkOptions(player, ParkourOption.GAMEMODE, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.GAMEMODE.getName());
-//
-//            main.item(19, item.click(event -> GamemodeMenu.open(user)));
-//        }
-//
-//        if (checkOptions(player, ParkourOption.LEADERBOARD, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LEADERBOARD.getName())
-//                    .modifyLore(line -> // #%n (%s)
-//                            line.replace("%s", "#" + ParkourUser.getRank(user.getUUID()) + " (" +
-//                                    user.highScore.toString()) + ")");
-//
-//            main.item(20, item.click(event -> {
-//                player.closeInventory();
-//                LeaderboardMenu.open(player);
-//            }));
-//        }
-//
-//        if (checkOptions(player, ParkourOption.LANGUAGE, disabledOptions)) {
-//            Item item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.LANGUAGE.getName())
-//                    .modifyLore(line ->
-//                            line.replace("%s", user.getLocale()));
-//
-//            main.item(21, item.click(event -> LangMenu.open(user, disabledOptions)));
-//        }
-
-        // opens the menu
-        main
+        Menu menu = new Menu(4, "<white>" +
+                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")))
                 .distributeRowEvenly(0, 1, 2, 3)
-
                 .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
-                        event -> MainMenu.open(event.getPlayer())))
-
+                        event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SnakeSingleAnimation())
-                .open(player);
+                .animation(new SnakeSingleAnimation());
+
+        display(player, menu);
     }
 
-    public static void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
+    public void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -335,7 +372,7 @@ public class SettingsMenu {
      * @param   disabledOptions
      *          Disabled options
      */
-    public static void openSingleStyleMenu(ParkourPlayer user, StyleType styleType, ParkourOption... disabledOptions) {
+    public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType, ParkourOption... disabledOptions) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -387,7 +424,7 @@ public class SettingsMenu {
      * @param   disabledOptions
      *          Options which are disabled
      */
-    public static void openSchematicMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
+    public void openSchematicMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -475,7 +512,7 @@ public class SettingsMenu {
     }
 
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
-    private static boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
+    private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
             event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player, "options.cant-change")
                     .click((event1) -> {
@@ -488,12 +525,12 @@ public class SettingsMenu {
     }
 
     // replaces true/false with a checkmark and cross
-    private static String getBooleanSymbol(boolean value) {
+    private String getBooleanSymbol(boolean value) {
         return value ? "<#0DCB07><bold>" + Unicodes.HEAVY_CHECK : "<red><bold>" + Unicodes.HEAVY_CROSS;
     }
 
     // check if option is allowed to be displayed
-    private static boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
+    private boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
         boolean enabled = IP.getConfiguration().getFile("items").getBoolean("items.options." + option.getName() + ".enabled");
         if (!enabled || Arrays.asList(disabled).contains(option)) {
             return false;
