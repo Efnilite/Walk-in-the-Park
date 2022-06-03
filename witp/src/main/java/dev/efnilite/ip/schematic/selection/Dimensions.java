@@ -69,7 +69,8 @@ public class Dimensions {
     }
 
     /**
-     * Gets the width
+     * Gets the width.
+     * This is equal to the difference in the x coordinate.
      *
      * @return the width
      */
@@ -79,6 +80,7 @@ public class Dimensions {
 
     /**
      * Gets the height
+     * This is equal to the difference in the y coordinate.
      *
      * @return the height
      */
@@ -88,6 +90,7 @@ public class Dimensions {
 
     /**
      * Gets the length
+     * This is equal to the difference in the z coordinate.
      *
      * @return the length
      */

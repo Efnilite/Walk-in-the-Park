@@ -12,7 +12,6 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Version;
 import dev.efnilite.vilib.vector.Vector2D;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.*;
@@ -145,9 +144,6 @@ public class WorldDivider {
             AreaData data = generator.getData();
 
             if (data != null) {
-                for (Chunk spawnChunk : data.spawnChunks()) {
-                    spawnChunk.setForceLoaded(false);
-                }
                 for (Block block : data.blocks()) {
                     block.setType(Material.AIR, false);
                 }
@@ -159,45 +155,12 @@ public class WorldDivider {
         session.unregister();
     }
 
-    // https://math.stackexchange.com/a/163101
-    public List<Chunk> getChunksAround(Chunk base, int radius) {
-        World world = IP.getWorldHandler().getWorld();
-
-        int lastOfRadius = 2 * radius + 1;
-        int baseX = base.getX();
-        int baseZ = base.getZ();
-
-        List<Chunk> chunks = new ArrayList<>();
-        int amount = lastOfRadius * lastOfRadius;
-        for (int i = 0; i < amount; i++) {
-            int[] coords = Util.spiralAt(i);
-            int x = coords[0];
-            int z = coords[1];
-
-            x += baseX;
-            z += baseZ;
-
-            chunks.add(world.getChunkAt(x, z));
-        }
-        return chunks;
-    }
-
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
         World world = IP.getWorldHandler().getWorld();
 
         double borderSize = Option.BORDER_SIZE.get();
 
         Location spawn = getEstimatedCenter(point, borderSize).toLocation(world).clone();
-
-        List<Chunk> chunks = new ArrayList<>();
-        try {
-            chunks = getChunksAround(spawn.getChunk(), 1);
-            if (Version.isHigherOrEqual(Version.V1_13)) {
-                for (Chunk chunk : chunks) {
-                    chunk.setForceLoaded(true);
-                }
-            }
-        } catch (Throwable ignored) {} // ignored if chunks can't be requested
 
         // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().toVector3D();
@@ -248,8 +211,7 @@ public class WorldDivider {
         pp.getGenerator().setZone(new Selection(min, max));
 
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator defaultGenerator) {
-
-            defaultGenerator.setData(new AreaData(blocks, chunks));
+            defaultGenerator.setData(new AreaData(blocks));
             defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
         }
 

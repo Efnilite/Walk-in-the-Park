@@ -47,7 +47,7 @@ public abstract class ParkourGenerator {
     /**
      * The random for this Thread, which is useful in randomly generating parkour
      */
-    protected final Random random;
+    protected final ThreadLocalRandom random;
 
     /**
      * The stopwatch instance

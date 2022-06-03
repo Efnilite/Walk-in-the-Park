@@ -6,6 +6,8 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.schematic.VectorUtil;
+import dev.efnilite.ip.schematic.selection.Dimensions;
+import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
 import net.milkbowl.vault.economy.Economy;
@@ -402,21 +404,35 @@ public class Util {
      * @param   location
      *          The current location
      *
-     * @param   distances
-     *          The distances to the edge of the axis.
+     * @param   selection
+     *          The selection.
      *
      * @return the new heading
      */
-    public static Direction opposite(Direction direction, Location location, double[] distances) {
-        Vector point = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    public static Direction opposite(Location location, Selection selection) {
+        Dimensions dimensions = selection.getDimensions();
+        Vector point = location.toVector();
+
+        double[] distances = selection.distanceToBoundaries(location);
         double dx = distances[0]; // x distance from border
         double dz = distances[2]; // z distance from border
 
+        Vector center = dimensions.getMinimumPoint().toVector(); // get the location of the min coordinates to act as O(0,0,0)
+        Vector centerOffset = point.clone().subtract(center); // get the offset compared to center
+
         Vector mirroredPoint = point.clone(); // point mirrored on axis
         if (dx <= dz) {
+            if (centerOffset.getX() > dimensions.getWidth()) { // if x is heading west, turn it around
+                dx *= -1;
+            }
+
             // turn away from x
             mirroredPoint.add(new Vector(dx, 0, 0)); // todo fix for directions to west
         } else {
+            if (centerOffset.getZ() > dimensions.getLength()) { // if x is heading north, turn it around
+                dz *= -1;
+            }
+
             // turn away from z
             mirroredPoint.add(new Vector(0, 0, dz));
         }

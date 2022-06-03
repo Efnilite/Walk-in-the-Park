@@ -31,6 +31,7 @@ import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -114,35 +115,36 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (player.useParticlesAndSound && Version.isHigherOrEqual(Version.V1_9)) {
-            PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
-
-            switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
-                case DOT -> {
-                    PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
-                    Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
-                }
-                case CIRCLE -> {
-                    PARTICLE_DATA.size(5);
-                    Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), (int) Math.sqrt(applyTo.size()), 25);
-                }
-                case BOX -> {
-                    Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-                    Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
-                    for (Block block : applyTo) {
-                        Location loc = block.getLocation();
-                        min = Util.min(min, loc);
-                        max = Util.max(max, loc);
-                    }
-                    if (max.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
-                        return;
-                    }
-                    PARTICLE_DATA.size(1);
-                    Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
-                }
-            }
-            player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+        if (!player.useParticlesAndSound && !Version.isHigherOrEqual(Version.V1_9)) {
+            return;
         }
+        PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
+
+        switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
+            case DOT -> {
+                PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
+                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
+            }
+            case CIRCLE -> {
+                PARTICLE_DATA.size(5);
+                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), (int) Math.sqrt(applyTo.size()), 25);
+            }
+            case BOX -> {
+                Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+                Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+                for (Block block : applyTo) {
+                    Location loc = block.getLocation();
+                    min = Util.min(min, loc);
+                    max = Util.max(max, loc);
+                }
+                if (max.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
+                    return;
+                }
+                PARTICLE_DATA.size(1);
+                Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
+            }
+        }
+        player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
     }
 
     @Override
@@ -152,19 +154,19 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public List<Block> selectBlocks() {
-        int height;
-        int gap = getRandomChance(distanceChances) + 1;
+        int dy;
+        int gap = getRandomChance(distanceChances);
 
         int zoneMax = zone.getMaximumPoint().getBlockY();
         int zoneMin = zone.getMinimumPoint().getBlockY();
         int mostRecentY = mostRecentBlock.getBlockY();
 
         if (mostRecentY > zoneMax) { // 204 > 200
-            height = -1;
+            dy = -1;
         } else if (zoneMin > mostRecentY) { // 100 > 99
-            height = 1;
+            dy = 1;
         } else {
-            height = getRandomChance(heightChances);
+            dy = getRandomChance(heightChances);
         }
 
         if (isSpecial && specialType != null) {
@@ -172,30 +174,66 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 case PACKED_ICE -> // ice
                         gap++;
                 case QUARTZ_SLAB -> // slab
-                        height = Math.min(height, 0);
+                        dy = Math.min(dy, 0);
                 case GLASS_PANE -> // pane
                         gap -= 0.5;
                 case OAK_FENCE -> {
-                        height = Math.min(height, 0);
+                        dy = Math.min(dy, 0);
                         gap -= 1;
                 }
             }
         }
 
         if (mostRecentBlock.getBlock().getType() == Material.QUARTZ_SLAB) { // slabs can't go higher than one
-            height = Math.min(height, 0);
+            dy = Math.min(dy, 0);
         }
 
-        height = Math.min(height, 1);
-        gap = Math.min(gap, 4);
+        return List.of(selectNext(mostRecentBlock, gap, dy));
+    }
 
-        List<Block> possible = getPossiblePositions(gap - height, height);
+    /**
+     * Selects the next block that will continue the parkour.
+     * This is done by choosing a random value for the sideways movement.
+     * Based on this sideways movement, a value for forward movement will be chosen.
+     * This is done to ensure players are able to complete the jump.
+     *
+     * @param   current
+     *          The current location to check from.
+     *
+     * @param   range
+     *          The range that should be checked.
+     *
+     * @param   dy
+     *          The difference in height.
+     *
+     * @return a randomly selected block.
+     */
+    protected Block selectNext(Location current, int range, int dy) {
+        // the max range, adjusted to the difference in height
+        // +1 to allow 4 block jumps
+        int adjustedRange = range - dy + 1;
 
-        if (possible.isEmpty()) {
-            return Collections.emptyList();
+        // delta sideways
+        int ds = random.nextInt(-adjustedRange + 1, adjustedRange); // make sure df is always 1 by making sure adjustedRange > ds
+
+        // if selection angle is reduced, half the current sideways step
+        if (option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
+            ds *= 0.5;
         }
 
-        return List.of(possible.get(random.nextInt(possible.size())));
+        // delta forwards
+        // df can't be more than 4 blocks
+        int df = Math.min(adjustedRange - Math.abs(ds), 4);
+
+        // update current loc
+        Location clone = current.clone();
+
+        // add all offsets to a vector and rotate it to match current direction
+        Vector offset = new Vector(df, dy, ds);
+        offset.rotateAroundY(heading.getAngleFromBase());
+        clone.add(offset);
+
+        return clone.getBlock();
     }
 
     @Override
@@ -424,7 +462,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
         if (type == 0) {
             if (isNearingEdge(mostRecentBlock) && score > 0) {
-                heading = Util.opposite(heading, mostRecentBlock, zone.distanceToBoundaries(mostRecentBlock));
+                heading = Util.opposite(mostRecentBlock, zone);
             }
 
             BlockData selectedBlockData = selectBlockData();
@@ -601,90 +639,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         } else {
             block.setBlockData(data, false);
         }
-    }
-
-    /**
-     * Gets all possible locations from a point with a specific radius and delta y value.
-     *
-     * How it works with example radius of 2 and example delta y of -1:
-     * - last spawn location gets lowered by 1 block
-     * - detail becomes 2 * 8 = 16, so it should go around the entire of the circle in 16 steps
-     * - increment using radians, depends on the detail (2pi / 16)
-     *
-     * @param   radius
-     *          The radius
-     *
-     * @param   dy
-     *          The y that should be added to the last spawned block to update the searching position
-     *
-     * @return a list of possible blocks (contains copies of the same block)
-     */
-    protected List<Block> getPossiblePositions(double radius, double dy) {
-        List<Block> possible = new ArrayList<>();
-
-        World world = mostRecentBlock.getWorld();
-        Location base = mostRecentBlock.add(0, dy, 0); // adds y to the last spawned block
-        base.add(0.5, 0, 0.5);
-        radius -= 0.5;
-
-        int y = base.getBlockY();
-
-        // the distance, adjusted to the height (dy)
-        double heightGap = dy >= 0 ? Option.HEIGHT_GAP.getAsDouble() - dy : Option.HEIGHT_GAP.getAsDouble() - (dy + 1);
-
-        // the range in which it should check for blocks (max 180 degrees, min 90 degrees)
-        double range = option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? Math.PI * 0.5 : Math.PI;
-
-        double[] bounds = getBounds(range);
-        double minBound = Math.min(bounds[0], bounds[1]);
-        double maxBound = Math.max(bounds[0], bounds[1]);
-
-        double detail = radius * 4; // how many times it should check
-        double increment = range / detail; // 180 degrees / amount of times it should check = the increment
-
-        if (radius > 1) {
-            minBound += -Math.signum(minBound) * 1.5 * increment; // remove blocks on the same axis by reducing bounds
-            maxBound += -Math.signum(maxBound) * 1.5 * increment;
-        } else if (radius < 1) {
-            radius = 1;
-        }
-
-        for (int progress = 0; progress < detail; progress++) {
-            double angle = minBound + progress * increment; // go from min value to max value
-            if (angle > maxBound) {
-                break;
-            }
-            double x = base.getX() + Math.signum(bounds[1]) * (radius * Math.cos(angle));
-            double z = base.getZ() + Math.signum(bounds[1]) * (radius * Math.sin(angle));
-            Block block = new Location(world, x, y, z).getBlock();
-
-            if (block.getLocation().distance(base) <= heightGap
-                    && !possible.contains(block)) { // prevents duplicates
-                possible.add(block);
-            }
-        }
-
-        return possible;
-    }
-
-    private double[] getBounds(double range) {
-        // todo fix
-        System.out.println("range: " + range);
-        System.out.println("heading: " + heading.name());
-        return switch (heading) { // cos/sin system works clockwise with north on top, explanation: https://imgur.com/t2SFWc9
-            default -> // east
-                    // - 1/2 pi to 1/2 pi
-                    new double[]{-0.5 * range, 0.5 * range};
-            case WEST ->
-                    // 1/2 pi to -1/2 pi
-                    new double[]{0.5 * range, -0.5 * range};
-            case NORTH ->
-                    // pi to 0
-                    new double[]{range, 0};
-            case SOUTH ->
-                    // 0 to pi
-                    new double[]{0, range};
-        };
     }
 
     /**
