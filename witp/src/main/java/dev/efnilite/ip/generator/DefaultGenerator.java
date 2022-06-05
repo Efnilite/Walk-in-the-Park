@@ -6,7 +6,7 @@ import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
-import dev.efnilite.ip.menu.SettingsMenu;
+import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
@@ -187,6 +187,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             dy = Math.min(dy, 0);
         }
 
+        if (dy > 0 && gap < 2) {
+            gap = 2;
+        }
+
         return List.of(selectNext(mostRecentBlock, gap, dy));
     }
 
@@ -210,7 +214,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     protected Block selectNext(Location current, int range, int dy) {
         // the max range, adjusted to the difference in height
         // +1 to allow 4 block jumps
-        int adjustedRange = range - dy + 1;
+        int adjustedRange = range - dy;
 
         // delta sideways
         int ds = random.nextInt(-adjustedRange + 1, adjustedRange); // make sure df is always 1 by making sure adjustedRange > ds
@@ -221,8 +225,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // delta forwards
-        // df can't be more than 4 blocks
-        int df = Math.min(adjustedRange - Math.abs(ds), 4);
+        int df = adjustedRange - Math.abs(ds);
 
         // update current loc
         Location clone = current.clone();
@@ -252,7 +255,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        SettingsMenu.open(player);
+        DynamicMenu.Reg.SETTINGS.open(player);
     }
 
     @Override

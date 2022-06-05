@@ -15,7 +15,7 @@ public class DynamicMenu {
     /**
      * Dynamic menu register
      */
-    static class Reg {
+    public static class Reg {
 
         public static final MainMenu MAIN = new MainMenu();
         public static final SettingsMenu SETTINGS = new SettingsMenu();

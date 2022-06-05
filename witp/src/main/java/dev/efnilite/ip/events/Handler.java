@@ -2,7 +2,7 @@ package dev.efnilite.ip.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
-import dev.efnilite.ip.menu.MainMenu;
+import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -242,7 +242,7 @@ public class Handler implements EventWatcher {
             Material held = Util.getHeldItem(player.getPlayer()).getType();
             if (held == menu) {
                 event.setCancelled(true);
-                MainMenu.open(p);
+                DynamicMenu.Reg.MAIN.open(p);
             } else if (held == quit) {
                 event.setCancelled(true);
                 ParkourUser.leave(player);

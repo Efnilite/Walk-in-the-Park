@@ -65,7 +65,7 @@ public class SingleplayerMenu {
                         .click(event -> gamemode.page(-1)))
 
                 .item(31, config.getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.open(event.getPlayer())))
+                        .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())

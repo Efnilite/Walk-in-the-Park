@@ -50,9 +50,9 @@ public class SettingsMenu extends DynamicMenu {
                     }
 
                     if (IP.getRegistry().getStyleTypes().size() == 1) {
-                        openSingleStyleMenu(player, IP.getRegistry().getStyleTypes().get(0), disabled);
+                        openSingleStyleMenu(player, IP.getRegistry().getStyleTypes().get(0));
                     } else {
-                        openStylesMenu(player, disabled);
+                        openStylesMenu(player);
                     }}),
                 player -> checkOptions(player, ParkourOption.STYLES, disabled));
 
@@ -93,7 +93,7 @@ public class SettingsMenu extends DynamicMenu {
                         return;
                     }
 
-                    openSchematicMenu(player, disabled);
+                    openSchematicMenu(player);
                 }),
                 player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
 
@@ -334,7 +334,7 @@ public class SettingsMenu extends DynamicMenu {
         display(player, menu);
     }
 
-    public void openStylesMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
+    public void openStylesMenu(ParkourPlayer user) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -345,7 +345,7 @@ public class SettingsMenu extends DynamicMenu {
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
             Item item = type.getItem(user.getLocale());
 
-            menu.item(slot, item.click(event -> openSingleStyleMenu(user, type, disabledOptions)));
+            menu.item(slot, item.click(event -> openSingleStyleMenu(user, type)));
             slot++;
         }
 
@@ -353,7 +353,7 @@ public class SettingsMenu extends DynamicMenu {
                 .distributeRowEvenly(1)
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click(event -> open(user, disabledOptions)))
+                        .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -369,10 +369,8 @@ public class SettingsMenu extends DynamicMenu {
      * @param   styleType
      *          The style type
      *
-     * @param   disabledOptions
-     *          Disabled options
      */
-    public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType, ParkourOption... disabledOptions) {
+    public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -393,7 +391,7 @@ public class SettingsMenu extends DynamicMenu {
                     .glowing(user.style.equals(name))
                     .click(event -> {
                         user.style = name;
-                        open(user, disabledOptions);
+                        open(user);
                     }));
         }
 
@@ -408,7 +406,7 @@ public class SettingsMenu extends DynamicMenu {
                         .click(event -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user.getLocale(), "general.close")
-                        .click(event -> open(user, disabledOptions)))
+                        .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
@@ -421,10 +419,8 @@ public class SettingsMenu extends DynamicMenu {
      * @param   user
      *          The ParkourPlayer instance
      *
-     * @param   disabledOptions
-     *          Options which are disabled
      */
-    public void openSchematicMenu(ParkourPlayer user, ParkourOption... disabledOptions) {
+    public void openSchematicMenu(ParkourPlayer user) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -504,7 +500,7 @@ public class SettingsMenu extends DynamicMenu {
                                 }))
 
                 .item(26, config.getFromItemData(user, "general.close")
-                        .click(event -> open(user, disabledOptions)))
+                        .click(event -> open(user)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
