@@ -212,9 +212,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * @return a randomly selected block.
      */
     protected Block selectNext(Location current, int range, int dy) {
+        // the adjusted dy, used to get the updated max range
+        int ady = dy;
+
+        // change coefficient of line if dy is below 0
+        if (dy < 0) {
+            ady = (int) Math.ceil(0.5 * dy); // use ceil since ceiling of negative is closer to 0
+        }
+
         // the max range, adjusted to the difference in height
         // +1 to allow 4 block jumps
-        int adjustedRange = range - dy;
+        int adjustedRange = range - ady;
 
         // delta sideways
         int ds = random.nextInt(-adjustedRange + 1, adjustedRange); // make sure df is always 1 by making sure adjustedRange > ds
@@ -463,9 +471,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
-            if (isNearingEdge(mostRecentBlock) && score > 0) {
-                heading = Util.opposite(mostRecentBlock, zone);
-            }
+//            if (isNearingEdge(mostRecentBlock) && score > 0) { todo fix
+//                heading = Util.opposite(mostRecentBlock, zone);
+//            }
 
             BlockData selectedBlockData = selectBlockData();
 
