@@ -78,15 +78,19 @@ public final class IP extends ViPlugin {
             getLogger().severe("##");
 
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
-        if (vilib != null && !Util.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
+        if (!Util.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
             getLogger().severe("##");
             getLogger().severe("## Infinite Parkour requires *a newer version* of vilib to work!");
             getLogger().severe("##");
             getLogger().severe("## Please download it here:");
             getLogger().severe("## https://github.com/ViStudios/vilib/releases/latest");
             getLogger().severe("##");
+
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         // ----- Start time -----
