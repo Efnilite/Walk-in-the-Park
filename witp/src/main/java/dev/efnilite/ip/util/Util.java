@@ -90,7 +90,6 @@ public class Util {
             IP.logging().error("Invalid difficuly, above 1: " + difficulty);
             return "unknown";
         }
-
         if (difficulty <= 0.3) {
             return "easy";
         } else if (difficulty <= 0.5) {
