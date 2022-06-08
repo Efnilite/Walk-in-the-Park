@@ -287,7 +287,7 @@ public class Schematic {
         this.blocks = blocks;
 
         Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
-        this.dimensions = new Dimensions(readDimensions.x, readDimensions.y, readDimensions.y);
+        this.dimensions = new Dimensions((int) readDimensions.x, (int) readDimensions.y, (int) readDimensions.y);
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {

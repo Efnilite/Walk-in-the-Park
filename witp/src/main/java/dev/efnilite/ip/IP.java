@@ -69,7 +69,7 @@ public final class IP extends ViPlugin {
         // ----- Check vilib -----
 
         Plugin vilib = getServer().getPluginManager().getPlugin("vilib");
-        if (vilib == null || vilib.isEnabled()) {
+        if (vilib == null || !vilib.isEnabled()) {
             getLogger().severe("##");
             getLogger().severe("## Infinite Parkour requires vilib to work!");
             getLogger().severe("##");

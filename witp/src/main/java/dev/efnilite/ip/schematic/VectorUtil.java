@@ -52,7 +52,7 @@ public class VectorUtil {
     }
 
     public static Vector3D swapXZ(Vector3D vector) {
-        int x = vector.x;
+        double x = vector.x;
         vector.x = vector.z;
         vector.z = x;
         return vector;
