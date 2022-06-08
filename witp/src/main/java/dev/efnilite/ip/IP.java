@@ -14,6 +14,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.session.SingleSession;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SQLManager;
@@ -31,6 +32,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +46,7 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
+    public static final String REQUIRED_VILIB_VERSION = "1.0.7";
 
     private static IP instance;
     private static GitElevator elevator;
@@ -61,9 +64,33 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
-        // ----- Instance and timing -----
-
         instance = this;
+
+        // ----- Check vilib -----
+
+        Plugin vilib = getServer().getPluginManager().getPlugin("vilib");
+        if (vilib == null || vilib.isEnabled()) {
+            getLogger().severe("##");
+            getLogger().severe("## Infinite Parkour requires vilib to work!");
+            getLogger().severe("##");
+            getLogger().severe("## Please download it here:");
+            getLogger().severe("## https://github.com/ViStudios/vilib/releases/latest");
+            getLogger().severe("##");
+
+            getServer().getPluginManager().disablePlugin(this);
+        }
+
+        if (vilib != null && !Util.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
+            getLogger().severe("##");
+            getLogger().severe("## Infinite Parkour requires *a newer version* of vilib to work!");
+            getLogger().severe("##");
+            getLogger().severe("## Please download it here:");
+            getLogger().severe("## https://github.com/ViStudios/vilib/releases/latest");
+            getLogger().severe("##");
+        }
+
+        // ----- Start time -----
+
         Time.timerStart("load");
 
         // ----- Configurations -----

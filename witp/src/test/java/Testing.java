@@ -1,6 +1,13 @@
+import dev.efnilite.ip.IP;
+import dev.efnilite.ip.util.Util;
+
 public class Testing {
 
     public static void main(String[] args) {
+        System.out.println(Util.isLatest(IP.REQUIRED_VILIB_VERSION, "1.0.7"));
+    }
+
+    public static void main0(String[] args) {
         for (int dy = -2; dy <= 1; dy++) {
             for (int range = 1; range <= 4; range++) {
                 int gap = range;

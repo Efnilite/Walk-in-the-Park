@@ -105,7 +105,7 @@ public class Util {
 
     /**
      * Sorts a HashMap by value
-     * Source: https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values
+     * Source: <a href="https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values">...</a>
      *
      * @return a sorted HashMap
      */
@@ -440,5 +440,16 @@ public class Util {
         Vector toBorder = mirroredPoint.subtract(point).normalize(); // a' - a = AA'
         Vector opposite = toBorder.multiply(-1); // reverse vector
         return VectorUtil.fromVector(opposite);
+    }
+
+    public static boolean isLatest(String latest, String current) {
+        int latestVs = Integer.parseInt(stripLatest(latest));
+        int currentVs = Integer.parseInt(stripLatest(current));
+
+        return latestVs <= currentVs;
+    }
+
+    private static String stripLatest(String string) {
+        return string.toLowerCase().replace("v", "").replace(".", "");
     }
 }
