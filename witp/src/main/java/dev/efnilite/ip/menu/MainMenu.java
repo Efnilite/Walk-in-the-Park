@@ -33,7 +33,7 @@ public class MainMenu extends DynamicMenu {
                 user -> IP.getConfiguration().getFromItemData(user, "main.spectator").click(
                 event -> SpectatorMenu.open(event.getPlayer())),
                 // display spectator if the player isn't already one
-                player -> !(ParkourUser.getUser(player) instanceof ParkourSpectator) && ParkourOption.JOIN.check(player));
+                ParkourOption.JOIN::check);
 
         // Settings if player is active
         registerMainItem(1, 9,
