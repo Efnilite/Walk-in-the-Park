@@ -19,7 +19,6 @@ import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.vilib.util.Version;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -114,9 +113,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (!player.useParticlesAndSound && !Version.isHigherOrEqual(Version.V1_9)) {
+        if (!player.useParticlesAndSound) {
             return;
         }
+
         PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
 
         switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
