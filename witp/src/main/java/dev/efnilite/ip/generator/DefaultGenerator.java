@@ -221,11 +221,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // the max range, adjusted to the difference in height
-        // +1 to allow 4 block jumps
         int adjustedRange = range - ady;
 
-        // delta sideways
-        int ds = random.nextInt(-adjustedRange + 1, adjustedRange); // make sure df is always 1 by making sure adjustedRange > ds
+        int ds = 0;
+        if (-adjustedRange + 1 < adjustedRange) { // prevent illegal random args
+
+            // make sure df is always 1 by making sure adjustedRange > ds
+            // +1 to follow exclusivity of upper bound
+            ds = random.nextInt(-adjustedRange + 1, adjustedRange);
+        }
 
         // if selection angle is reduced, half the current sideways step
         if (option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
