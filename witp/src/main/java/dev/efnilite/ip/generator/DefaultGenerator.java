@@ -8,6 +8,7 @@ import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.schematic.Schematic;
@@ -117,16 +118,18 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
+        // set particle data type
         PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
 
+        // display particle
         switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
             case DOT -> {
                 PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
-                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA, player.getPlayer());
+                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA);
             }
             case CIRCLE -> {
                 PARTICLE_DATA.size(5);
-                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, player.getPlayer(), (int) Math.sqrt(applyTo.size()), 25);
+                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, (int) Math.sqrt(applyTo.size()), 20);
             }
             case BOX -> {
                 Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -136,14 +139,23 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     min = Util.min(min, loc);
                     max = Util.max(max, loc);
                 }
-                if (max.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
+
+                if (min.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
                     return;
                 }
+
                 PARTICLE_DATA.size(1);
-                Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, player.getPlayer(), 0.15);
+                Util.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, 0.2); // todo add to vilib
             }
         }
-        player.getPlayer().playSound(mostRecentBlock.clone(), Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+
+        // play sound
+        for (ParkourPlayer viewer : session.getPlayers()) {
+            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+        }
+        for (ParkourSpectator viewer : session.getSpectators()) {
+            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+        }
     }
 
     @Override

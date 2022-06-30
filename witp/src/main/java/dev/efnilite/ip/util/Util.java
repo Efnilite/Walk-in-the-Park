@@ -10,6 +10,7 @@ import dev.efnilite.ip.schematic.selection.Dimensions;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.particle.ParticleData;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -433,5 +435,68 @@ public class Util {
 
     private static String stripLatest(String string) {
         return string.toLowerCase().replace("v", "").replace(".", "");
+    }
+
+    public static <T> void box(BoundingBox box, @NotNull World world, ParticleData<T> data, double distanceBetween) {
+        Location point1 = box.getMin().toLocation(world);
+        Location point2;
+        Location point3;
+        Location point4;
+        Location point5;
+        Location point6;
+        Location point7;
+        Location point8;
+        if (box.getWidthX() == 1.0 && box.getWidthZ() == 1.0) {
+            point2 = point1.clone().add(box.getWidthX(), 0.0, 0.0);
+            point3 = point2.clone().add(0.0, 0.0, box.getWidthZ());
+            point4 = point1.clone().add(0.0, 0.0, box.getWidthZ());
+            point5 = point1.clone().add(0.0, box.getHeight(), 0.0);
+            point6 = point2.clone().add(0.0, box.getHeight(), 0.0);
+            point7 = point3.clone().add(0.0, box.getHeight(), 0.0);
+            point8 = point4.clone().add(0.0, box.getHeight(), 0.0);
+        } else {
+            point2 = point1.clone().add(box.getWidthX() + 1.0, 0.0, 0.0);
+            point3 = point2.clone().add(0.0, 0.0, box.getWidthZ() + 1.0);
+            point4 = point1.clone().add(0.0, 0.0, box.getWidthZ() + 1.0);
+            point5 = point1.clone().add(0.0, box.getHeight() + 1.0, 0.0);
+            point6 = point2.clone().add(0.0, box.getHeight() + 1.0, 0.0);
+            point7 = point3.clone().add(0.0, box.getHeight() + 1.0, 0.0);
+            point8 = point4.clone().add(0.0, box.getHeight() + 1.0, 0.0);
+        }
+
+        line(point1, point2, data, distanceBetween);
+        line(point2, point3, data, distanceBetween);
+        line(point3, point4, data, distanceBetween);
+        line(point4, point1, data, distanceBetween);
+        line(point5, point6, data, distanceBetween);
+        line(point6, point7, data, distanceBetween);
+        line(point7, point8, data, distanceBetween);
+        line(point5, point8, data, distanceBetween);
+        line(point1, point5, data, distanceBetween);
+        line(point2, point6, data, distanceBetween);
+        line(point3, point7, data, distanceBetween);
+        line(point4, point8, data, distanceBetween);
+    }
+
+    public static <T> void line(Location one, Location two, ParticleData<T> data, double distanceBetween) {
+        World world = one.getWorld();
+        if (world == null) {
+            throw new NullPointerException("World is null (Particles#draw)");
+        } else {
+            double dist = one.distance(two);
+            Vector p1 = one.toVector();
+            Vector p2 = two.toVector();
+            Vector vec = p2.clone().subtract(p1).normalize().multiply(distanceBetween);
+            world.spawnParticle(data.getType(), p1.getX(), p1.getY(), p1.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
+            world.spawnParticle(data.getType(), p2.getX(), p2.getY(), p2.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
+            double length = 0.0;
+
+            while(length < dist) {
+                world.spawnParticle(data.getType(), p1.getX(), p1.getY(), p1.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
+                length += distanceBetween;
+                p1.add(vec);
+            }
+
+        }
     }
 }
