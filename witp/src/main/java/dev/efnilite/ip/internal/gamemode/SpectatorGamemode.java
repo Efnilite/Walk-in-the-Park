@@ -30,12 +30,16 @@ public class SpectatorGamemode implements Gamemode {
 
     public void create(Player player, Session session) {
         ParkourUser user = ParkourUser.getUser(player);
+        ParkourSpectator spectator;
+
         if (user != null) {
             ParkourUser.unregister(user, false, false, true);
-            new ParkourSpectator(player, session, user.getPreviousData());
+            spectator = new ParkourSpectator(player, session, user.getPreviousData());
         } else {
-            new ParkourSpectator(player, session, null);
+            spectator = new ParkourSpectator(player, session, null);
         }
+
+        session.addSpectators(spectator);
     }
 
     @Override
