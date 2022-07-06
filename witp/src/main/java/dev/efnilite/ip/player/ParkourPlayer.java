@@ -154,7 +154,7 @@ public class ParkourPlayer extends ParkourUser {
                 highscore = topScores.get(one);
             }
             for (String s : lines) {
-                s = translatePlaceholders(player, s); // add support for PAPI placeholders in scoreboard
+                s = PlaceholderHook.translate(player, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(generator.getScore()))
                         .replace("%time%", generator.getTime())
                         .replace("%highscore%", rank != null ? rank.toString() : "0")
@@ -162,7 +162,7 @@ public class ParkourPlayer extends ParkourUser {
                         .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
                         .replace("%session%", getSessionId()));
             }
-            title = translatePlaceholders(player, title);
+            title = PlaceholderHook.translate(player, title);
             board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
                     .replace("%time%", generator.getTime())
                     .replace("%highscore%", rank != null ? rank.toString() : "0")
@@ -171,13 +171,6 @@ public class ParkourPlayer extends ParkourUser {
                     .replace("%session%", getSessionId()));
             board.updateLines(list);
         }
-    }
-
-    private String translatePlaceholders(Player player, String string) {
-        if (IP.getPlaceholderHook() == null) {
-            return string;
-        }
-        return PlaceholderHook.translate(player, string);
     }
 
     /**

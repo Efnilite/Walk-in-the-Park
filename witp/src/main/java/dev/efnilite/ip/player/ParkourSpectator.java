@@ -48,7 +48,7 @@ public class ParkourSpectator extends ParkourUser {
     public void updateScoreboard() {
         if (Option.SCOREBOARD.get() && board != null) {
             String title = Util.color(Option.SCOREBOARD_TITLE.get());
-            title = translatePlaceholders(closest, title); // add support for PAPI placeholders in scoreboard
+            title = PlaceholderHook.translate(closest.getPlayer(), title); // add support for PAPI placeholders in scoreboard
 
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
@@ -65,7 +65,7 @@ public class ParkourSpectator extends ParkourUser {
                 highscore = topScores.get(one);
             }
             for (String s : lines) {
-                s = translatePlaceholders(closest, s); // add support for PAPI placeholders in scoreboard
+                s = PlaceholderHook.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
                         .replace("%time%", closest.getGenerator().getTime())
                         .replace("%highscore%", rank.toString())
@@ -77,13 +77,6 @@ public class ParkourSpectator extends ParkourUser {
             board.updateTitle(title);
             board.updateLines(list);
         }
-    }
-
-    private String translatePlaceholders(ParkourUser user, String string) {
-        if (IP.getPlaceholderHook() == null) {
-            return string;
-        }
-        return PlaceholderHook.translate(user.getPlayer(), string);
     }
 
     /**

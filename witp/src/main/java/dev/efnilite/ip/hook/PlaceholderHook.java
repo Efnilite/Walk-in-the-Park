@@ -34,12 +34,12 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
     
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
@@ -53,6 +53,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
         if (player == null) {
             return "player doesn't exist";
         }
+
         ParkourUser user = ParkourUser.getUser(player);
         ParkourPlayer pp = null;
         if (user instanceof ParkourPlayer) {
@@ -60,6 +61,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
         } else if (user instanceof ParkourSpectator) {
             pp = ((ParkourSpectator) user).getClosest();
         }
+
 
         if (pp != null) {
             ParkourGenerator generator = pp.getGenerator();
@@ -171,6 +173,9 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     public static String translate(Player player, String string) {
+        if (IP.getPlaceholderHook() == null) {
+            return string;
+        }
         return PlaceholderAPI.setPlaceholders(player, string);
     }
 }
