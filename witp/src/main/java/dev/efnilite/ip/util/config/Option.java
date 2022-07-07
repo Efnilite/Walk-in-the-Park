@@ -67,16 +67,16 @@ public class Option {
     public static ConfigOption<Boolean> DELETE_ON_RELOAD;
     public static ConfigOption<String> WORLD_NAME;
 
-    public static void init(boolean init) {
+    public static void init(boolean firstLoad) {
         scoreboard = IP.getConfiguration().getFile("scoreboard");
         generation = IP.getConfiguration().getFile("generation");
         config = IP.getConfiguration().getFile("config");
         lang = IP.getConfiguration().getFile("lang");
         items = IP.getConfiguration().getFile("items");
 
+        initScoreboard();
         initSql();
         initEnums();
-        initScoreboard();
         initGeneration();
         initAdvancedGeneration();
 
@@ -155,7 +155,7 @@ public class Option {
         ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
         REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "scoring.rewards-use-total-score");
 
-        if (init) {
+        if (firstLoad) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");
             SQL = new ConfigOption<>(config, "sql.enabled");
         }
@@ -297,13 +297,13 @@ public class Option {
     // --------------------------------------------------------------
     // Scoreboard
 
-    public static ConfigOption<Boolean> SCOREBOARD;
-    public static ConfigOption<String> SCOREBOARD_TITLE;
+    public static boolean SCOREBOARD_ENABLED;
+    public static String SCOREBOARD_TITLE;
     public static List<String> SCOREBOARD_LINES;
 
     private static void initScoreboard() {
-        SCOREBOARD = new ConfigOption<>(scoreboard, "scoreboard.enabled");
-        SCOREBOARD_TITLE = new ConfigOption<>(scoreboard, "scoreboard.title");
+        SCOREBOARD_ENABLED = scoreboard.getBoolean("scoreboard.enabled");
+        SCOREBOARD_TITLE = scoreboard.getString("scoreboard.title");
         SCOREBOARD_LINES = Util.colorList(scoreboard.getStringList("scoreboard.lines"));
     }
 

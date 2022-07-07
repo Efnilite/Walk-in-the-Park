@@ -1,7 +1,6 @@
 package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.vilib.config.ConfigOption;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,7 @@ public class RewardReader {
     /**
      * Are rewards enabled?
      */
-    public static ConfigOption<Boolean> REWARDS_ENABLED;
+    public static boolean REWARDS_ENABLED;
 
     /**
      * A map with all Score-type score rewards.
@@ -50,7 +49,7 @@ public class RewardReader {
         rewards = config;
 
         // init options
-        REWARDS_ENABLED = new ConfigOption<>(rewards, "enabled");
+        REWARDS_ENABLED = rewards.getBoolean("enabled");
 
         SCORE_REWARDS.clear();
         INTERVAL_REWARDS.clear();

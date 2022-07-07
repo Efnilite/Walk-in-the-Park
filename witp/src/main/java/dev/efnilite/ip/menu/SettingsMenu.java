@@ -180,7 +180,7 @@ public class SettingsMenu extends DynamicMenu {
                                         return true;
                                     });
                 },
-                player -> checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabled) && Option.SCOREBOARD.get());
+                player -> checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabled) && Option.SCOREBOARD_ENABLED);
 
         // show fall message
         registerMainItem(2, 1,

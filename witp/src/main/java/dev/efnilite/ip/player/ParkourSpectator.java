@@ -46,24 +46,26 @@ public class ParkourSpectator extends ParkourUser {
 
     @Override
     public void updateScoreboard() {
-        if (Option.SCOREBOARD.get() && board != null) {
-            String title = Util.color(Option.SCOREBOARD_TITLE.get());
-            title = PlaceholderHook.translate(closest.getPlayer(), title); // add support for PAPI placeholders in scoreboard
-
+        if (Option.SCOREBOARD_ENABLED && board != null) {
+            String title = PlaceholderHook.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
+
             if (lines == null) {
                 IP.logging().error("Scoreboard lines are null! Check your config!");
                 return;
             }
+
             Integer rank = ParkourPlayer.getHighScoreValue(closest.getUUID());
             UUID one = ParkourPlayer.getAtPlace(1);
+
             int top = 0;
             Score highscore = null;
             if (one != null) {
                 top = ParkourPlayer.getHighScoreValue(one);
                 highscore = topScores.get(one);
             }
+
             for (String s : lines) {
                 s = PlaceholderHook.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))

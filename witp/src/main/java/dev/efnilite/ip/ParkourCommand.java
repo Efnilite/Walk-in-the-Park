@@ -81,11 +81,13 @@ public class ParkourCommand extends ViCommand {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
-                    Time.timerStart("reload");
+                    Time.timerStart("reloadIP");
                     Message.send(sender, IP.PREFIX + "Reloading config files..");
+
                     IP.getConfiguration().reload();
                     Option.init(false);
-                    Message.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reload") + "ms!");
+
+                    Message.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reloadIP") + "ms!");
                     return true;
                 }
                 case "migrate" -> {

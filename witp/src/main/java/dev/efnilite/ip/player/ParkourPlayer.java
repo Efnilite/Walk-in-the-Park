@@ -137,37 +137,41 @@ public class ParkourPlayer extends ParkourUser {
      */
     @Override
     public void updateScoreboard() {
-        if (showScoreboard && Option.SCOREBOARD.get() && board != null && generator != null) {
-            String title = Util.color(Option.SCOREBOARD_TITLE.get());
+        if (showScoreboard && Option.SCOREBOARD_ENABLED && board != null && generator != null) {
+            String title = Util.color(Option.SCOREBOARD_TITLE);
             List<String> list = new ArrayList<>();
-            List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
+            List<String> lines = Option.SCOREBOARD_LINES;
+
             if (lines == null) {
                 IP.logging().error("Scoreboard lines are null! Check your config!");
                 return;
             }
+
             Integer rank = getHighScoreValue(uuid);
             UUID one = getAtPlace(1);
-            Integer top = 0;
+
+            int top = 0;
             Score highscore = null;
             if (one != null) {
                 top = getHighScoreValue(one);
                 highscore = topScores.get(one);
             }
+
             for (String s : lines) {
                 s = PlaceholderHook.translate(player, s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(generator.getScore()))
                         .replace("%time%", generator.getTime())
-                        .replace("%highscore%", rank != null ? rank.toString() : "0")
-                        .replace("%topscore%", top != null ? top.toString() : "0")
-                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
+                        .replace("%highscore%", rank.toString())
+                        .replace("%topscore%", Integer.toString(top))
+                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "?")
                         .replace("%session%", getSessionId()));
             }
             title = PlaceholderHook.translate(player, title);
             board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
                     .replace("%time%", generator.getTime())
-                    .replace("%highscore%", rank != null ? rank.toString() : "0")
-                    .replace("%topscore%", top != null ? top.toString() : "0")
-                    .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
+                    .replace("%highscore%", rank.toString())
+                    .replace("%topscore%", Integer.toString(top))
+                    .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "?")
                     .replace("%session%", getSessionId()));
             board.updateLines(list);
         }

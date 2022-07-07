@@ -74,7 +74,7 @@ public abstract class ParkourUser {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
 
-        if (Option.SCOREBOARD.get()) {
+        if (Option.SCOREBOARD_ENABLED) {
             this.board = new FastBoard(player);
         }
         // remove duplicates
