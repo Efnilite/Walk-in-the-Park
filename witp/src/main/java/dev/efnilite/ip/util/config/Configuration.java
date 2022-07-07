@@ -63,8 +63,8 @@ public class Configuration {
                     "delete all config files and restart the server", ex);
         }
 
-        checkUserLanguages("lang/messages-v3.yml", "messages");
-        checkUserLanguages("lang/items-v3.yml", "locale");
+//        checkUserLanguages("lang/messages-v3.yml", "messages");
+//        checkUserLanguages("lang/items-v3.yml", "locale");
 
         reload();
 
