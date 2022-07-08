@@ -119,10 +119,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // set particle data type
-        PARTICLE_DATA.type(Option.PARTICLE_TYPE.get());
+        PARTICLE_DATA.type(Option.PARTICLE_TYPE);
 
         // display particle
-        switch (Option.ParticleShape.valueOf(Option.PARTICLE_SHAPE.get().toUpperCase())) {
+        switch (Option.PARTICLE_SHAPE) {
             case DOT -> {
                 PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
                 Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA);
@@ -151,10 +151,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         // play sound
         for (ParkourPlayer viewer : session.getPlayers()) {
-            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
         for (ParkourSpectator viewer : session.getSpectators()) {
-            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE.get(), 4, Option.SOUND_PITCH.get());
+            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
     }
 

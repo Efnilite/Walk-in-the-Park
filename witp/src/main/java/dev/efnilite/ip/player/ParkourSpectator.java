@@ -2,8 +2,8 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.hook.PlaceholderHook;
-import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;

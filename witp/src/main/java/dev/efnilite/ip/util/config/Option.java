@@ -163,41 +163,41 @@ public class Option {
         SchematicCache.read();
     }
 
-    public static ConfigOption<String> PARTICLE_SHAPE;
-    public static ConfigOption<Sound> SOUND_TYPE;
-    public static ConfigOption<Integer> SOUND_PITCH;
-    public static ConfigOption<Particle> PARTICLE_TYPE;
+    public static ParticleShape PARTICLE_SHAPE;
+    public static Sound SOUND_TYPE;
+    public static int SOUND_PITCH;
+    public static Particle PARTICLE_TYPE;
 
     // Very not efficient but this is basically the only way to ensure the enums have a value
     private static void initEnums() {
-        String enumValue;
-        enumValue = config.getString("particles.sound-type").toUpperCase();
-
         if (Version.isHigherOrEqual(Version.V1_9)) { // 1.8 has no Particle class & severely limited Sound support
+            String enumValue;
+            enumValue = config.getString("particles.sound-type").toUpperCase();
+
             try {
-                SOUND_TYPE = new ConfigOption<>(Sound.valueOf(enumValue));
+                SOUND_TYPE = Sound.valueOf(enumValue);
             } catch (IllegalArgumentException ex) {
                 try {
-                    SOUND_TYPE = new ConfigOption<>(Sound.valueOf("BLOCK_NOTE_PLING"));
+                    SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
                 } catch (IllegalArgumentException ex2) {
                     IP.logging().error("Invalid sound: " + enumValue);
-                    SOUND_TYPE = new ConfigOption<>(Sound.values()[0]);
+                    SOUND_TYPE = Sound.values()[0];
                 }
             }
-            SOUND_PITCH = new ConfigOption<>(config, "particles.sound-pitch");
+            SOUND_PITCH = config.getInt("particles.sound-pitch");
 
             try {
-                PARTICLE_TYPE = new ConfigOption<>(Particle.valueOf(enumValue));
+                PARTICLE_TYPE = Particle.valueOf(enumValue);
             } catch (IllegalArgumentException ex) {
                 try {
-                    PARTICLE_TYPE = new ConfigOption<>(Particle.valueOf("SPELL_INSTANT"));
+                    PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
                 } catch (IllegalArgumentException ex2) {
                     IP.logging().error("Invalid particle: " + enumValue);
-                    PARTICLE_TYPE = new ConfigOption<>(Particle.values()[0]);
+                    PARTICLE_TYPE = Particle.values()[0];
                 }
             }
 
-            PARTICLE_SHAPE = new ConfigOption<>(config, "particles.particle-shape");
+            PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape"));
         }
     }
 
