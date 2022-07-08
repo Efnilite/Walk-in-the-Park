@@ -1,7 +1,6 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.Session;
@@ -47,7 +46,7 @@ public class ParkourSpectator extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (Option.SCOREBOARD_ENABLED && board != null) {
-            String title = PlaceholderHook.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
+            String title = Util.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
             List<String> list = new ArrayList<>();
             List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
 
@@ -67,7 +66,7 @@ public class ParkourSpectator extends ParkourUser {
             }
 
             for (String s : lines) {
-                s = PlaceholderHook.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
+                s = Util.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
                 list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
                         .replace("%time%", closest.getGenerator().getTime())
                         .replace("%highscore%", rank.toString())

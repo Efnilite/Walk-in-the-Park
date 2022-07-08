@@ -11,6 +11,7 @@ import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.particle.ParticleData;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -499,5 +500,23 @@ public class Util {
             }
 
         }
+    }
+
+    /**
+     * Translates any placeholders found by PlaceholderAPI
+     *
+     * @param   player
+     *          The player
+     *
+     * @param   string
+     *          The string that will be translated
+     *
+     * @return the translated string
+     */
+    public static String translate(Player player, String string) {
+        if (IP.getPlaceholderHook() == null) {
+            return string;
+        }
+        return PlaceholderAPI.setPlaceholders(player, string);
     }
 }

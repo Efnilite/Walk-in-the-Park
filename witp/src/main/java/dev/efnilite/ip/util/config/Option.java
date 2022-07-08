@@ -197,7 +197,7 @@ public class Option {
                 }
             }
 
-            PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape"));
+            PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
         }
     }
 

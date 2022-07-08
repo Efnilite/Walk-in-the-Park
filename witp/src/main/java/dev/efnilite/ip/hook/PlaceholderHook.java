@@ -8,7 +8,6 @@ import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -170,12 +169,5 @@ public class PlaceholderHook extends PlaceholderExpansion {
         }
 
         return null;
-    }
-
-    public static String translate(Player player, String string) {
-        if (IP.getPlaceholderHook() == null) {
-            return string;
-        }
-        return PlaceholderAPI.setPlaceholders(player, string);
     }
 }
