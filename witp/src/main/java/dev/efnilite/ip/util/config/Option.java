@@ -6,7 +6,7 @@ import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.config.ConfigOption;
-import dev.efnilite.vilib.util.Version;
+import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -167,40 +167,40 @@ public class Option {
     public static Sound SOUND_TYPE;
     public static int SOUND_PITCH;
     public static Particle PARTICLE_TYPE;
+    public static ParticleData<?> PARTICLE_DATA;
 
     // Very not efficient but this is basically the only way to ensure the enums have a value
     private static void initEnums() {
-        if (Version.isHigherOrEqual(Version.V1_9)) { // 1.8 has no Particle class & severely limited Sound support
-            String enumValue;
-            enumValue = config.getString("particles.sound-type").toUpperCase();
+        String value;
+        value = config.getString("particles.sound-type").toUpperCase();
 
+        try {
+            SOUND_TYPE = Sound.valueOf(value);
+        } catch (IllegalArgumentException ex) {
             try {
-                SOUND_TYPE = Sound.valueOf(enumValue);
-            } catch (IllegalArgumentException ex) {
-                try {
-                    SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
-                } catch (IllegalArgumentException ex2) {
-                    IP.logging().error("Invalid sound: " + enumValue);
-                    SOUND_TYPE = Sound.values()[0];
-                }
+                SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
+            } catch (IllegalArgumentException ex2) {
+                IP.logging().error("Invalid sound: " + value);
+                SOUND_TYPE = Sound.values()[0];
             }
-            SOUND_PITCH = config.getInt("particles.sound-pitch");
-
-            try {
-                PARTICLE_TYPE = Particle.valueOf(enumValue);
-            } catch (IllegalArgumentException ex) {
-                try {
-                    PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
-                } catch (IllegalArgumentException ex2) {
-                    IP.logging().error("Invalid particle: " + enumValue);
-                    PARTICLE_TYPE = Particle.values()[0];
-                }
-            }
-
-            PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
         }
-    }
 
+        value = config.getString("particles.particle-type");
+        try {
+            PARTICLE_TYPE = Particle.valueOf(value);
+        } catch (IllegalArgumentException ex) {
+            try {
+                PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
+            } catch (IllegalArgumentException ex2) {
+                IP.logging().error("Invalid particle: " + value);
+                PARTICLE_TYPE = Particle.values()[0];
+            }
+        }
+
+        SOUND_PITCH = config.getInt("particles.sound-pitch");
+        PARTICLE_SHAPE = ParticleShape.valueOf(config.getString("particles.particle-shape").toUpperCase());
+        PARTICLE_DATA = new ParticleData<>(PARTICLE_TYPE, null, 10, 0, 0, 0, 0);
+    }
 
     // --------------------------------------------------------------
     // MySQL

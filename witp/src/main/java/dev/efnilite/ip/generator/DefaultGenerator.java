@@ -22,7 +22,6 @@ import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
@@ -96,8 +95,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     protected final LinkedHashMap<Block, Integer> positionIndexMap = new LinkedHashMap<>();
 
-    protected static final ParticleData<?> PARTICLE_DATA = new ParticleData<>(Particle.SPELL_INSTANT, null, 10, 0, 0, 0, 0);
-
     /**
      * Creates a new ParkourGenerator instance
      *
@@ -118,18 +115,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        // set particle data type
-        PARTICLE_DATA.type(Option.PARTICLE_TYPE);
+        ParticleData<?> data = Option.PARTICLE_DATA;
 
         // display particle
         switch (Option.PARTICLE_SHAPE) {
             case DOT -> {
-                PARTICLE_DATA.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
-                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), PARTICLE_DATA);
+                data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
+                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), data);
             }
             case CIRCLE -> {
-                PARTICLE_DATA.size(5);
-                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), PARTICLE_DATA, (int) Math.sqrt(applyTo.size()), 20);
+                data.size(5);
+                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), data, (int) Math.sqrt(applyTo.size()), 20);
             }
             case BOX -> {
                 Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -144,8 +140,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     return;
                 }
 
-                PARTICLE_DATA.size(1);
-                Util.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), PARTICLE_DATA, 0.2); // todo add to vilib
+                data.size(1);
+                Util.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), data, 0.2); // todo add to vilib
             }
         }
 
