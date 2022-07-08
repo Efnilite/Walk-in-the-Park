@@ -67,14 +67,21 @@ public class RewardReader {
             }
 
             try {
-                INTERVAL_REWARDS.put(Integer.parseInt(interval), strings);
+                int value = Integer.parseInt(interval);
+
+                if (value <= 0) {
+                    IP.logging().stack(interval + " is not a valid interval score (should be above 1)", "check the rewards file for incorrect numbers");
+                    continue;
+                }
+
+                INTERVAL_REWARDS.put(value, strings);
             } catch (NumberFormatException ex) {
-                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
+                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers", ex);
             }
         }
 
-        for (String interval : getNodes("score-rewards")) {
-            List<String> commands = rewards.getStringList("score-rewards." + interval);
+        for (String score : getNodes("score-rewards")) {
+            List<String> commands = rewards.getStringList("score-rewards." + score);
 
             List<RewardString> strings = new ArrayList<>();
             for (String command : commands) {
@@ -82,14 +89,22 @@ public class RewardReader {
             }
 
             try {
-                SCORE_REWARDS.put(Integer.parseInt(interval), strings);
+                int value = Integer.parseInt(score);
+
+                if (value <= 0) {
+                    IP.logging().stack(score + " is not a valid default reward score (should be above 1)",
+                            "check the rewards file for incorrect numbers");
+                    continue;
+                }
+
+                SCORE_REWARDS.put(value, strings);
             } catch (NumberFormatException ex) {
-                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
+                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers");
             }
         }
 
-        for (String interval : getNodes("one-time-rewards")) {
-            List<String> commands = rewards.getStringList("one-time-rewards." + interval);
+        for (String score : getNodes("one-time-rewards")) {
+            List<String> commands = rewards.getStringList("one-time-rewards." + score);
 
             List<RewardString> strings = new ArrayList<>();
             for (String command : commands) {
@@ -97,9 +112,17 @@ public class RewardReader {
             }
 
             try {
-                ONE_TIME_REWARDS.put(Integer.parseInt(interval), strings);
+                int value = Integer.parseInt(score);
+
+                if (value <= 0) {
+                    IP.logging().stack(score + " is not a valid one-time score (should be above 1)",
+                            "check the rewards file for incorrect numbers");
+                    continue;
+                }
+
+                ONE_TIME_REWARDS.put(value, strings);
             } catch (NumberFormatException ex) {
-                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers");
+                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers");
             }
         }
     }

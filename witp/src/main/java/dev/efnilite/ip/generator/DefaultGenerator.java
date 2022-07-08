@@ -622,7 +622,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * Checks a player's rewards and gives them if necessary
      */
     public void checkRewards() {
-        if (!RewardReader.REWARDS_ENABLED || score == 0) {
+        if (!RewardReader.REWARDS_ENABLED || score == 0 || totalScore == 0) {
             return;
         }
 

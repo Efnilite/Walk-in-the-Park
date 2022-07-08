@@ -1,5 +1,6 @@
 package dev.efnilite.ip.internal.style;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
@@ -23,6 +24,13 @@ public class DefaultStyleType extends StyleType {
     @Override
     public Material get(String style) {
         List<Material> materials = styles.get(style);
+
+        if (materials == null) {
+            IP.logging().error("Materials for style '" + style + "' not found!");
+            IP.logging().error("Check your config.yml file for invalid items.");
+            return Material.STONE;
+        }
+
         return materials.get(ThreadLocalRandom.current().nextInt(materials.size()));
     }
 }
