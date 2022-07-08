@@ -179,7 +179,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (isSpecial && specialType != null) {
             switch (specialType) { // adjust for special jumps
                 case PACKED_ICE -> // ice
-                        gap++;
+                        gap += 0.5;
                 case QUARTZ_SLAB -> // slab
                         dy = Math.min(dy, 0);
                 case GLASS_PANE -> // pane
