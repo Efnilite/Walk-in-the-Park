@@ -318,7 +318,7 @@ public class Schematic {
             if (relativeOffset == null) {
                 IP.logging().error("Failed in reading schematic " + getName());
                 IP.logging().error("Please delete your schematics folder and restart the server!");
-                continue;
+                return affectedBlocks;
             }
 
             relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);

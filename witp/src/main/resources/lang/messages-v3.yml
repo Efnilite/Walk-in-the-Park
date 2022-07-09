@@ -4,7 +4,7 @@
 # %p is the player.
 # %[a-z] is a value that can get replaced.
 #
-# Learn more about colouring: https://github.com/ViStudios/vilib/wiki/Colouring
+# Learn more about colouring: https://github.com/Efnilite/vilib/wiki/Colouring
 
 messages:
 

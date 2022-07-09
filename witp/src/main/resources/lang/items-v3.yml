@@ -3,7 +3,7 @@
 # In lores, '||' is used to create a new line.
 #
 # List of all item materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-# Learn more about colouring: https://github.com/ViStudios/vilib/wiki/Colouring
+# Learn more about colouring: https://github.com/Efnilite/vilib/wiki/Colouring
 
 items:
   general:
