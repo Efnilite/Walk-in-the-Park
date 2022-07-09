@@ -2,6 +2,7 @@ package dev.efnilite.ip.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.nms.CommandSync;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
@@ -119,6 +120,10 @@ public class Configuration {
 
         // read rewards file
         RewardReader.readRewards(files.get("rewards"));
+
+        // sync commands
+        CommandSync sync = new CommandSync(); // todo add to cf
+        sync.sync(); // todo use internal commandmap to register commands (just copy from cf lol)
     }
 
     /**

@@ -9,4 +9,5 @@ softdepend: [Vault, PlaceholderAPI, ProtocolAPI, Multiverse-Core, HolographicDis
 commands:
     witp:
         aliases: [parkour, ip]
-        description: Main command
+        usage: /<command> [arguments]
+        description: Main command for Infinite Parkour
