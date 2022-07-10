@@ -163,49 +163,59 @@ public class Schematic {
                             blocks.add(new SchematicBlock(currentBlock, relativeOffset));
                         }
 
+                        // create file
                         file.createNewFile();
 
                         FileWriter writer = new FileWriter(file);
                         String separator = System.lineSeparator();
 
-                        writer.write(dimensions.toString()); // write dimensions to first line
-                        writer.write(separator); // is basically an enter
+                        // write dimensions to top of file
+                        writer.write(dimensions.toString());
+                        writer.write(separator); // enter
 
+                        // start palette symbol
                         writer.write("*");
-                        writer.write(separator);
+                        writer.write(separator); // enter
 
+                        // filtered to prevent double entries in palette
                         HashSet<String> filtered = new HashSet<>();
                         Map<String, Integer> palette = new HashMap<>();
                         blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
 
+                        // write palette as 0>minecraft:block[data]
                         int index = 0;
                         for (String data : filtered) {
                             palette.put(data, index);
                             writer.write(index + ">" + data);
-                            writer.write(separator);
+                            writer.write(separator); // enter
                             index++;
                         }
 
+                        // begin vector map
                         writer.write("~");
-                        writer.write(separator);
+                        writer.write(separator); // enter
 
+                        // write all vectors per block type
                         StringJoiner joiner = new StringJoiner("/");
                         for (SchematicBlock block : blocks) {
                             String current = block.getData().getAsString();
                             String id = Integer.toString(palette.get(current));
 
-                            joiner.add(id + block.getRelativePosition().toString()); // id(x,y,z) -> 3(2,3,-3)
+                            Vector3D rel = block.getRelativePosition();
+                            joiner.add(id + "(" + (int) rel.x + "," + (int) rel.y + "," + (int) rel.z + ")"); // id(x,y,z) -> 3(2,3,-3)
                         }
 
+                        // finish
                         writer.write(joiner.toString());
                         writer.flush();
                         writer.close();
+
                         if (player == null) {
                             return;
                         }
                         Message.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!");
                     } catch (IOException ex) {
-                        IP.logging().stack("Error while saving data of player " + (player == null ? "?" : player.getName()), ex);
+                        IP.logging().stack("Error while saving schematic " + file, ex);
                     }
                 })
                 .run();
@@ -229,7 +239,7 @@ public class Schematic {
             IP.logging().stack("Error while reading file!", ex);
             return;
         }
-        this.read = true;
+        read = true;
 
         // -- Makes palette --
 

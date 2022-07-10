@@ -58,8 +58,8 @@ public class Configuration {
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
 
-            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
-            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
+//            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
+//            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
         } catch (IOException ex) {
             IP.logging().stack("Error while trying to update a config file",
                     "delete all config files and restart the server", ex);
@@ -86,6 +86,10 @@ public class Configuration {
 
         // read rewards file
         RewardReader.readRewards(files.get("rewards"));
+
+        // read schematics again
+        SchematicCache.invalidate();
+        SchematicCache.read();
     }
 
     /**

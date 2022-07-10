@@ -46,4 +46,8 @@ public class SchematicCache {
     public static Schematic getSchematic(String name) {
         return cache.get(name);
     }
+
+    public static void invalidate() {
+        cache.clear();
+    }
 }

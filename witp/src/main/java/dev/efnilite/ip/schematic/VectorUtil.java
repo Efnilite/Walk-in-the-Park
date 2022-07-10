@@ -8,7 +8,7 @@ public class VectorUtil {
 
     public static Vector3D parseVector(String vector) {
         String[] split = vector.replaceAll("[()]", "").split(",");
-        return new Vector3D(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        return new Vector3D(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]));
     }
 
     public static Direction fromVector(Vector vector) {
@@ -21,15 +21,6 @@ public class VectorUtil {
         } else {
             return Direction.EAST;
         }
-    }
-
-    public static Vector toVector(Direction direction) {
-        return switch (direction) {
-            case NORTH -> new Vector(0, 0, -1);
-            case SOUTH -> new Vector(0, 0, 1);
-            case WEST -> new Vector(-1, 0, 0);
-            default -> new Vector(1, 0, 0);
-        };
     }
 
     public static Vector3D rotateAround(Vector3D vector, RotationAngle rotation) {

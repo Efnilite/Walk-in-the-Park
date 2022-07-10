@@ -26,6 +26,7 @@ import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -305,7 +306,40 @@ public class ParkourCommand extends ViCommand {
                     for (Player other : Bukkit.getOnlinePlayers()) {
                         ParkourPlayer.joinDefault(other);
                     }
-                    Message.send(sender, IP.PREFIX + "Succesfully force joined everyone");
+                    Message.send(sender, IP.PREFIX + "Succesfully force joined everyone!");
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("nearest")) {
+                    Player closest = null;
+                    double distance = Double.MAX_VALUE;
+
+                    // if player is found get location from player
+                    // if no player is found, get location from command block
+                    // if no command block is found, return null
+                    Location from = sender instanceof Player ? player.getLocation() : (sender instanceof BlockCommandSender ? ((BlockCommandSender) sender).getBlock().getLocation() : null);
+
+                    if (from == null || from.getWorld() == null) {
+                        return true;
+                    }
+
+                    // get closest player
+                    for (Player p : from.getWorld().getPlayers()) {
+                        double d = p.getLocation().distance(from);
+
+                        if (d < distance) {
+                            distance = d;
+                            closest = p;
+                        }
+                    }
+
+                    // no closest player found
+                    if (closest == null) {
+                        return true;
+                    }
+
+                    Message.send(sender, IP.PREFIX + "Succesfully force joined " + closest.getName() + "!");
+                    ParkourPlayer.joinDefault(closest);
                     return true;
                 }
 
@@ -474,6 +508,7 @@ public class ParkourCommand extends ViCommand {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save", "paste"));
             } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission("witp.forcejoin")) {
                 if (sender.hasPermission("witp.forcejoin.everyone")) {
+                    completions.add("nearest");
                     completions.add("everyone");
                 }
                 for (Player pl : Bukkit.getOnlinePlayers()) {
@@ -526,10 +561,10 @@ public class ParkourCommand extends ViCommand {
             Message.send(sender, "<gray>/witp reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
         }
         if (sender.hasPermission("witp.forcejoin")) {
-            Message.send(sender, "<gray>/witp forcejoin <everyone/player> <dark_gray>- Forces a player or everyone to join");
+            Message.send(sender, "<gray>/witp forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
         }
         if (sender.hasPermission("witp.forceleave")) {
-            Message.send(sender, "<gray>/witp forceleave <everyone/player> <dark_gray>- Forces a player or everyone to leave");
+            Message.send(sender, "<gray>/witp forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");
         }
         if (sender.hasPermission("witp.recoverinventory")) {
             Message.send(sender, "<gray>/witp recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +

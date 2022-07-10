@@ -1,10 +1,15 @@
 import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
+import dev.efnilite.vilib.vector.Vector3D;
 
 public class Testing {
 
     public static void main(String[] args) {
         System.out.println(VersionComparator.FROM_SEMANTIC.isLatest(IP.REQUIRED_VILIB_VERSION, "1.0.9"));
+
+        String id = "1";
+        Vector3D rel = new Vector3D(10, 10, 10);
+        System.out.println(id + "(" + (int) rel.x + "," + (int) rel.y + "," + (int) rel.z + ")");
     }
 
     public static void main0(String[] args) {
