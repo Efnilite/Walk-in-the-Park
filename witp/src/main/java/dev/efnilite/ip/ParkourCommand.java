@@ -21,6 +21,7 @@ import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
@@ -262,7 +263,7 @@ public class ParkourCommand extends ViCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        Message.send(player, IP.PREFIX + "Position 1 was set to " + Util.toString(player.getLocation(), true));
+                        Message.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(player.getLocation(), true));
                         return true;
                     }
                     case "pos2" -> {
@@ -274,7 +275,7 @@ public class ParkourCommand extends ViCommand {
                             selections.put(player, new Selection(pos1, pos2, player.getWorld()));
                             Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         }
-                        Message.send(player, IP.PREFIX + "Position 2 was set to " + Util.toString(player.getLocation(), true));
+                        Message.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(player.getLocation(), true));
                         return true;
                     }
                     case "save" -> {

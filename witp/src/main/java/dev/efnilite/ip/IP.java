@@ -14,7 +14,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.session.SingleSession;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SQLManager;
@@ -46,7 +45,7 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
-    public static final String REQUIRED_VILIB_VERSION = "1.0.7";
+    public static final String REQUIRED_VILIB_VERSION = "1.0.9";
 
     private static IP instance;
     private static GitElevator elevator;
@@ -81,7 +80,7 @@ public final class IP extends ViPlugin {
             return;
         }
 
-        if (!Util.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
+        if (!VersionComparator.FROM_SEMANTIC.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
             getLogger().severe("##");
             getLogger().severe("## Infinite Parkour requires *a newer version* of vilib to work!");
             getLogger().severe("##");

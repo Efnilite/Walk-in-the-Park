@@ -10,7 +10,6 @@ import dev.efnilite.ip.schematic.selection.Dimensions;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
-import dev.efnilite.vilib.particle.ParticleData;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -26,7 +25,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,24 +41,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Util {
 
     private static Economy economy;
-    private static final char[] OID = "1234567890abcdefghijklmnopqrstuvwxyz".toCharArray(); // Online IDentifier
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
     public static <T> T getRandom(List<T> list) {
         return list.get(ThreadLocalRandom.current().nextInt(list.size()));
-    }
-
-    /**
-     * Random ID for game logging
-     *
-     * @return a string with a random ID
-     */
-    public static String randomOID() {
-        StringBuilder random = new StringBuilder();
-        for (int i = 0; i < 9; i++) {
-            random.append(OID[ThreadLocalRandom.current().nextInt(OID.length - 1)]);
-        }
-        return random.toString();
     }
 
     /**
@@ -253,38 +237,6 @@ public class Util {
     }
 
     /**
-     * Gets the max of the locations
-     *
-     * @param   pos1
-     *          The first location
-     *
-     * @param   pos2
-     *          The second location
-     *
-     * @return  the max values of the locations
-     */
-    public static Location max(Location pos1, Location pos2) {
-        World world = pos1.getWorld() == null ? pos2.getWorld() : pos1.getWorld();
-        return new Location(world, Math.max(pos1.getX(), pos2.getX()), Math.max(pos1.getY(), pos2.getY()), Math.max(pos1.getZ(), pos2.getZ()));
-    }
-
-    /**
-     * Gets the min of the locations
-     *
-     * @param   pos1
-     *          The first location
-     *
-     * @param   pos2
-     *          The second location
-     *
-     * @return  the min values of the locations
-     */
-    public static Location min(Location pos1, Location pos2) {
-        World world = pos1.getWorld() == null ? pos2.getWorld() : pos1.getWorld();
-        return new Location(world, Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
-    }
-
-    /**
      * Gets the player's held item
      *
      * @param   player
@@ -295,22 +247,6 @@ public class Util {
     public static ItemStack getHeldItem(Player player) {
         PlayerInventory inventory = player.getInventory();
         return inventory.getItemInMainHand().getType() == Material.AIR ? inventory.getItemInOffHand() : inventory.getItemInMainHand();
-    }
-
-    /**
-     * Creates a string version of a Location.
-     *
-     * @param   location
-     *          The location
-     *
-     * @return string version
-     */
-    public static String toString(Location location, boolean formatted) {
-        if (!formatted) {
-            return "(" + location.getX() + "," + location.getY() + "," + location.getZ() + "," + location.getWorld().getName() + ")";
-        } else {
-            return "(" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
-        }
     }
 
     /**
@@ -426,80 +362,6 @@ public class Util {
         Vector toBorder = mirroredPoint.subtract(point).normalize(); // a' - a = AA'
         Vector opposite = toBorder.multiply(-1); // reverse vector
         return VectorUtil.fromVector(opposite);
-    }
-
-    public static boolean isLatest(String latest, String current) {
-        int latestVs = Integer.parseInt(stripLatest(latest));
-        int currentVs = Integer.parseInt(stripLatest(current));
-
-        return latestVs <= currentVs;
-    }
-
-    private static String stripLatest(String string) {
-        return string.toLowerCase().replace("v", "").replace(".", "");
-    }
-
-    public static <T> void box(BoundingBox box, @NotNull World world, ParticleData<T> data, double distanceBetween) {
-        Location point1 = box.getMin().toLocation(world);
-        Location point2;
-        Location point3;
-        Location point4;
-        Location point5;
-        Location point6;
-        Location point7;
-        Location point8;
-        if (box.getWidthX() == 1.0 && box.getWidthZ() == 1.0) {
-            point2 = point1.clone().add(box.getWidthX(), 0.0, 0.0);
-            point3 = point2.clone().add(0.0, 0.0, box.getWidthZ());
-            point4 = point1.clone().add(0.0, 0.0, box.getWidthZ());
-            point5 = point1.clone().add(0.0, box.getHeight(), 0.0);
-            point6 = point2.clone().add(0.0, box.getHeight(), 0.0);
-            point7 = point3.clone().add(0.0, box.getHeight(), 0.0);
-            point8 = point4.clone().add(0.0, box.getHeight(), 0.0);
-        } else {
-            point2 = point1.clone().add(box.getWidthX() + 1.0, 0.0, 0.0);
-            point3 = point2.clone().add(0.0, 0.0, box.getWidthZ() + 1.0);
-            point4 = point1.clone().add(0.0, 0.0, box.getWidthZ() + 1.0);
-            point5 = point1.clone().add(0.0, box.getHeight() + 1.0, 0.0);
-            point6 = point2.clone().add(0.0, box.getHeight() + 1.0, 0.0);
-            point7 = point3.clone().add(0.0, box.getHeight() + 1.0, 0.0);
-            point8 = point4.clone().add(0.0, box.getHeight() + 1.0, 0.0);
-        }
-
-        line(point1, point2, data, distanceBetween);
-        line(point2, point3, data, distanceBetween);
-        line(point3, point4, data, distanceBetween);
-        line(point4, point1, data, distanceBetween);
-        line(point5, point6, data, distanceBetween);
-        line(point6, point7, data, distanceBetween);
-        line(point7, point8, data, distanceBetween);
-        line(point5, point8, data, distanceBetween);
-        line(point1, point5, data, distanceBetween);
-        line(point2, point6, data, distanceBetween);
-        line(point3, point7, data, distanceBetween);
-        line(point4, point8, data, distanceBetween);
-    }
-
-    public static <T> void line(Location one, Location two, ParticleData<T> data, double distanceBetween) {
-        World world = one.getWorld();
-        if (world == null) {
-            throw new NullPointerException("World is null (Particles#draw)");
-        } else {
-            double dist = one.distance(two);
-            Vector p1 = one.toVector();
-            Vector p2 = two.toVector();
-            Vector vec = p2.clone().subtract(p1).normalize().multiply(distanceBetween);
-            world.spawnParticle(data.getType(), p1.getX(), p1.getY(), p1.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
-            world.spawnParticle(data.getType(), p2.getX(), p2.getY(), p2.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
-            double length = 0.0;
-
-            while(length < dist) {
-                world.spawnParticle(data.getType(), p1.getX(), p1.getY(), p1.getZ(), data.getSize(), data.getOffsetX(), data.getOffsetY(), data.getOffsetZ(), data.getSpeed(), data.getData());
-                length += distanceBetween;
-                p1.add(vec);
-            }
-
-        }
     }
 
     /**

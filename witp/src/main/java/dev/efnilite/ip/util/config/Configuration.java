@@ -2,7 +2,6 @@ package dev.efnilite.ip.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.nms.CommandSync;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -59,50 +57,18 @@ public class Configuration {
             ConfigUpdater.update(plugin, "generation.yml", new File(plugin.getDataFolder(), "generation.yml"), new ArrayList<>());
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
+
+            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
+            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
         } catch (IOException ex) {
             IP.logging().stack("Error while trying to update a config file",
                     "delete all config files and restart the server", ex);
         }
 
-//        checkUserLanguages("lang/messages-v3.yml", "messages");
-//        checkUserLanguages("lang/items-v3.yml", "locale");
-
         reload();
 
         schematics();
         IP.logging().info("Loaded all config files");
-    }
-
-    private void checkUserLanguages(String file, String beginPath) {
-        // Load included and user file and if there are any differences, exempt them from updating
-        InputStream stream = plugin.getResource(file);
-        if (stream == null) {
-            throw new IllegalArgumentException("Invalid plugin resource " + file);
-        }
-
-        FileConfiguration included = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
-        FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), file));
-        List<String> includedLangs = Util.getNode(included, beginPath, true);
-        List<String> userLangs = Util.getNode(user, beginPath, true);
-
-        // Add all differences to list
-        List<String> toNotUpdate = new ArrayList<>();
-        if (includedLangs != null && userLangs != null) {
-            for (String userLang : userLangs) {
-                if (!includedLangs.contains(userLang)) {
-                    toNotUpdate.add(beginPath + "." + userLang);
-                }
-            }
-        }
-
-        try {
-            // todo fix this
-            // somehow
-            ConfigUpdater.update(plugin, file, new File(plugin.getDataFolder(), file), toNotUpdate);
-        } catch (IOException ex) {
-            IP.logging().stack("Error while trying to update language file " + file,
-                    "delete this file and restart the server", ex);
-        }
     }
 
     /**
@@ -120,10 +86,6 @@ public class Configuration {
 
         // read rewards file
         RewardReader.readRewards(files.get("rewards"));
-
-        // sync commands
-        CommandSync sync = new CommandSync(); // todo add to cf
-        sync.sync(); // todo use internal commandmap to register commands (just copy from cf lol)
     }
 
     /**

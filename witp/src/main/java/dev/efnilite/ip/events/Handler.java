@@ -15,6 +15,7 @@ import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Locations;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -211,7 +212,7 @@ public class Handler implements EventWatcher {
                     ParkourCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
                     Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                Message.send(player, "&4&l(!) &7Position 1 was set to " + Util.toString(location, true));
+                Message.send(player, "&4&l(!) &7Position 1 was set to " + Locations.toString(location, true));
             }
             case RIGHT_CLICK_BLOCK -> {
                 event.setCancelled(true);
@@ -226,7 +227,7 @@ public class Handler implements EventWatcher {
                     ParkourCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
                     Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                 }
-                Message.send(player, "&4&l(!) &7Position 2 was set to " + Util.toString(location, true));
+                Message.send(player, "&4&l(!) &7Position 2 was set to " + Locations.toString(location, true));
             }
         }
     }

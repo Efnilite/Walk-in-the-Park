@@ -19,6 +19,7 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -132,8 +133,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
                 for (Block block : applyTo) {
                     Location loc = block.getLocation();
-                    min = Util.min(min, loc);
-                    max = Util.max(max, loc);
+                    min = Locations.min(min, loc);
+                    max = Locations.max(max, loc);
                 }
 
                 if (min.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
@@ -141,7 +142,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
 
                 data.size(1);
-                Util.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), data, 0.2); // todo add to vilib
+                Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), data, 0.2);
             }
         }
 

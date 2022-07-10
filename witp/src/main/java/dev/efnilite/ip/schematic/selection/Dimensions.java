@@ -1,6 +1,6 @@
 package dev.efnilite.ip.schematic.selection;
 
-import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 
@@ -42,8 +42,8 @@ public class Dimensions {
      * Creates a new instance
      */
     public Dimensions(Location pos1, Location pos2) {
-        this.maximum = Util.max(pos1, pos2);
-        this.minumum = Util.min(pos1, pos2);
+        this.maximum = Locations.max(pos1, pos2);
+        this.minumum = Locations.min(pos1, pos2);
 
         Location max = this.maximum;
         Location min = this.minumum;

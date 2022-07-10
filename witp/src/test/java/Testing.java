@@ -1,10 +1,10 @@
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.elevator.VersionComparator;
 
 public class Testing {
 
     public static void main(String[] args) {
-        System.out.println(Util.isLatest(IP.REQUIRED_VILIB_VERSION, "1.0.7"));
+        System.out.println(VersionComparator.FROM_SEMANTIC.isLatest(IP.REQUIRED_VILIB_VERSION, "1.0.9"));
     }
 
     public static void main0(String[] args) {
