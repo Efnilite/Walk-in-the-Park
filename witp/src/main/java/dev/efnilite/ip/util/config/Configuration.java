@@ -67,7 +67,6 @@ public class Configuration {
 
         reload();
 
-        schematics();
         IP.logging().info("Loaded all config files");
     }
 
@@ -87,17 +86,21 @@ public class Configuration {
         // read rewards file
         RewardReader.readRewards(files.get("rewards"));
 
-        // read schematics again
-        SchematicCache.invalidate();
-        SchematicCache.read();
+        if (schematics()) {
+            // read schematics again
+            SchematicCache.invalidate();
+            SchematicCache.read();
+        }
     }
 
     /**
      * Downloads the structures
+     *
+     * @return true if schematics are already found, false if not
      */
-    private void schematics() {
+    private boolean schematics() {
         if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists() || !IP.versionSupportsSchematics()) {
-            return;
+            return true;
         }
         String[] schematics = new String[]{"spawn-island.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
@@ -119,6 +122,8 @@ public class Configuration {
                             Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
                             stream.close();
                         }
+
+                        SchematicCache.invalidate();
                         SchematicCache.read();
                         IP.logging().info("Downloaded all schematics");
                     } catch (FileAlreadyExistsException ex) {
@@ -129,6 +134,7 @@ public class Configuration {
                     }
                 })
                 .run();
+        return false;
     }
 
     /**
