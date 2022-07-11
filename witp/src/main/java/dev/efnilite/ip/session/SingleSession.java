@@ -5,6 +5,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class SingleSession implements Session {
             Entity target = bukkitPlayer.getSpectatorTarget();
 
             if (watchingPlayer.getLocation().distance(bukkitPlayer.getLocation()) > 30) {
-                if (target != null) { // if player is a spectator
+                if (bukkitPlayer.getGameMode() == GameMode.SPECTATOR) { // if player is a spectator
                     bukkitPlayer.setSpectatorTarget(null);
                     spectator.teleport(watchingPlayer.getLocation());
                     bukkitPlayer.setSpectatorTarget(target);
