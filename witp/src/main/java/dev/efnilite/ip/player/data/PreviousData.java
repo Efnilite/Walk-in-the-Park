@@ -25,6 +25,12 @@ public class PreviousData {
     private double health;
     private double maxHealth;
     private InventoryData inventoryData;
+
+    private final boolean allowFlight;
+    private final boolean flying;
+    private final boolean invisible;
+    private final boolean collidable;
+
     private final int hunger;
     private final Player player;
     private final GameMode gamemode;
@@ -34,9 +40,15 @@ public class PreviousData {
 
     public PreviousData(@NotNull Player player) {
         this.player = player;
-        this.gamemode = player.getGameMode();
-        this.location = player.getLocation();
-        this.hunger = player.getFoodLevel();
+
+        gamemode = player.getGameMode();
+        location = player.getLocation();
+        hunger = player.getFoodLevel();
+
+        allowFlight = player.getAllowFlight();
+        flying = player.getAllowFlight();
+        invisible = player.isInvisible();
+        collidable = player.isCollidable();
 
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
@@ -84,8 +96,11 @@ public class PreviousData {
 
             player.setFoodLevel(hunger);
             player.setGameMode(gamemode);
-            player.setFlying(false);
-            player.setInvisible(false);
+
+            player.setAllowFlight(allowFlight);
+            player.setFlying(flying);
+            player.setInvisible(invisible);
+            player.setCollidable(collidable);
 
             // -= Attributes =-
             if (Option.SAVE_STATS.get() && Option.HEALTH_HANDLING.get()) {

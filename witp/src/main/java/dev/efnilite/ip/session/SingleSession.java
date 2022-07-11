@@ -47,9 +47,13 @@ public class SingleSession implements Session {
             Entity target = bukkitPlayer.getSpectatorTarget();
 
             if (watchingPlayer.getLocation().distance(bukkitPlayer.getLocation()) > 30) {
-                bukkitPlayer.setSpectatorTarget(null);
-                spectator.teleport(watchingPlayer.getLocation());
-                bukkitPlayer.setSpectatorTarget(target);
+                if (target != null) { // if player is a spectator
+                    bukkitPlayer.setSpectatorTarget(null);
+                    spectator.teleport(watchingPlayer.getLocation());
+                    bukkitPlayer.setSpectatorTarget(target);
+                } else { // if player isn't a spectator (bedrock)?
+                    spectator.teleport(watchingPlayer.getLocation());
+                }
             }
             bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(spectator.getTranslated("spectator-bar")));
 
