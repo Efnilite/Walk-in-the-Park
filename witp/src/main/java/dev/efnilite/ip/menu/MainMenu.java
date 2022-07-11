@@ -4,9 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import org.bukkit.Material;
@@ -22,12 +20,7 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer").click(
                 event -> SingleplayerMenu.open(event.getPlayer())),
-                player -> {
-                    ParkourUser user = ParkourUser.getUser(player);
-                    // if user is null display item or if the player isn't already playing single player
-                    return user == null || user instanceof ParkourSpectator || !(user instanceof ParkourPlayer) && ParkourOption.JOIN.check(player)
-                            && !(user.getSession() instanceof SingleSession);
-                });
+                ParkourOption.JOIN::check);
 
         registerMainItem(1, 2,
                 user -> IP.getConfiguration().getFromItemData(user, "main.spectator").click(
