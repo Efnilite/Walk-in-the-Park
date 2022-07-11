@@ -38,6 +38,7 @@ public class ParkourSpectator extends ParkourUser {
         this.player.setGameMode(GameMode.SPECTATOR);
         this.player.teleport(closest.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         this.player.setFlying(true);
+        this.player.setInvisible(true);
 
         sendTranslated("spectator");
         runClosestChecker();

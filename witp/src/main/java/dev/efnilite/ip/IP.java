@@ -84,7 +84,7 @@ public final class IP extends ViPlugin {
             getLogger().severe("##");
             getLogger().severe("## Infinite Parkour requires *a newer version* of vilib to work!");
             getLogger().severe("##");
-            getLogger().severe("## Please download it here:");
+            getLogger().severe("## Please download it here: ");
             getLogger().severe("## https://github.com/Efnilite/vilib/releases/latest");
             getLogger().severe("##");
 

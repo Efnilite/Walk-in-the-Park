@@ -84,6 +84,8 @@ public class PreviousData {
 
             player.setFoodLevel(hunger);
             player.setGameMode(gamemode);
+            player.setFlying(false);
+            player.setInvisible(false);
 
             // -= Attributes =-
             if (Option.SAVE_STATS.get() && Option.HEALTH_HANDLING.get()) {
