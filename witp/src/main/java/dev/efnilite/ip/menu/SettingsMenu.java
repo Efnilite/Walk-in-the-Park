@@ -11,7 +11,7 @@ import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
-import dev.efnilite.vilib.inventory.animation.SnakeSingleAnimation;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -93,7 +93,7 @@ public class SettingsMenu extends DynamicMenu {
                         return;
                     }
 
-                    openSchematicMenu(player);
+                    openSchematicMenu(player, disabled);
                 }),
                 player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
 
@@ -329,7 +329,7 @@ public class SettingsMenu extends DynamicMenu {
                 .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
                         event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SnakeSingleAnimation());
+                .animation(new SplitMiddleOutAnimation());
 
         display(player, menu);
     }
@@ -368,7 +368,6 @@ public class SettingsMenu extends DynamicMenu {
      *
      * @param   styleType
      *          The style type
-     *
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         Configuration config = IP.getConfiguration();
@@ -420,7 +419,7 @@ public class SettingsMenu extends DynamicMenu {
      *          The ParkourPlayer instance
      *
      */
-    public void openSchematicMenu(ParkourPlayer user) {
+    public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
         Configuration config = IP.getConfiguration();
 
         // init menu
@@ -432,72 +431,76 @@ public class SettingsMenu extends DynamicMenu {
 
         Item item = config.getFromItemData(user, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
-        schematics.item(10, new SliderItem()
-                .initial(difficulties.indexOf(user.schematicDifficulty))
-                .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
-                        event -> {
-                            if (allowSettingChange(user, event)) {
-                                user.schematicDifficulty = 0.2;
-                                return true;
-                            }
-                            return false;
-                        })
-                .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
-                                .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
-                        event -> {
-                            if (allowSettingChange(user, event)) {
-                                user.schematicDifficulty = 0.4;
-                                return true;
-                            }
-                            return false;
-                        })
-                .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
-                                .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
-                        event -> {
-                            if (allowSettingChange(user, event)) {
-                                user.schematicDifficulty = 0.6;
-                                return true;
-                            }
-                            return false;
-                        })
-                .add(3, item.clone().material(Material.SKELETON_SKULL)
-                                .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
-                        event -> {
-                            if (allowSettingChange(user, event)) {
-                                user.schematicDifficulty = 0.8;
-                                return true;
-                            }
-                            return false;
-                        }));
+        if (checkOptions(user.getPlayer(), ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
+            schematics.item(10, new SliderItem()
+                    .initial(difficulties.indexOf(user.schematicDifficulty))
+                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.schematicDifficulty = 0.2;
+                                    return true;
+                                }
+                                return false;
+                            })
+                    .add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.schematicDifficulty = 0.4;
+                                    return true;
+                                }
+                                return false;
+                            })
+                    .add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.schematicDifficulty = 0.6;
+                                    return true;
+                                }
+                                return false;
+                            })
+                    .add(3, item.clone().material(Material.SKELETON_SKULL)
+                                    .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.schematicDifficulty = 0.8;
+                                    return true;
+                                }
+                                return false;
+                            }));
+        }
 
         item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.USE_SCHEMATICS.getName());
 
+        if (checkOptions(user.getPlayer(), ParkourOption.USE_SCHEMATICS, disabled)) {
+            schematics.item(9, new SliderItem()
+                    .initial(user.useSchematic ? 0 : 1)
+                    .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                    .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.useSchematic = true;
+                                    return true;
+                                }
+                                return false;
+                            })
+                    .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                            event -> {
+                                if (allowSettingChange(user, event)) {
+                                    user.useSchematic = false;
+                                    return true;
+                                }
+                                return false;
+                            }));
+        }
+
         schematics
                 .distributeRowEvenly(0, 1, 2)
-
-                .item(9, new SliderItem()
-                        .initial(user.useSchematic ? 0 : 1)
-                        .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
-                                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
-                                event -> {
-                                    if (allowSettingChange(user, event)) {
-                                        user.useSchematic = true;
-                                        return true;
-                                    }
-                                    return false;
-                                })
-                        .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
-                                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
-                                event -> {
-                                    if (allowSettingChange(user, event)) {
-                                        user.useSchematic = false;
-                                        return true;
-                                    }
-                                    return false;
-                                }))
 
                 .item(26, config.getFromItemData(user, "general.close")
                         .click(event -> open(user)))
@@ -527,7 +530,8 @@ public class SettingsMenu extends DynamicMenu {
 
     // check if option is allowed to be displayed
     private boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
-        boolean enabled = IP.getConfiguration().getFile("items").getBoolean("items.options." + option.getName() + ".enabled");
+        boolean enabled = Option.OPTIONS_ENABLED.getOrDefault(option, true);
+
         if (!enabled || Arrays.asList(disabled).contains(option)) {
             return false;
         } else {

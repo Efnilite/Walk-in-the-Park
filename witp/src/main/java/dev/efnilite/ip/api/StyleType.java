@@ -69,7 +69,7 @@ public abstract class StyleType {
     public void addConfigStyles(@NotNull String path, @NotNull FileConfiguration file) {
         List<String> list = Util.getNode(file, path, false);
 
-        if (list == null || list.isEmpty()) {
+        if (list.isEmpty()) {
             IP.logging().error("Style path " + path + " not found");
             return;
         }

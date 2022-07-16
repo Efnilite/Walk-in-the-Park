@@ -10,10 +10,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class for variables required in generating without accessing the file a lot (constants)
@@ -47,19 +44,20 @@ public class Option {
     public static String DEFAULT_LOCALE;
     public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
 
-    public static ConfigOption<String> DEFAULT_STYLE;
+    public static String DEFAULT_STYLE;
 
     public static ConfigOption<Boolean> ENABLE_JOINING;
     public static ConfigOption<Boolean> PERMISSIONS_STYLES;
     public static ConfigOption<Boolean> SAVE_STATS;
-    public static ConfigOption<Boolean> OPTIONS_ENABLED;
+    public static ConfigOption<Boolean> SETTINGS_ENABLED;
     public static ConfigOption<Boolean> HEALTH_HANDLING;
     public static ConfigOption<Boolean> INVENTORY_SAVING;
     public static ConfigOption<String> ALT_INVENTORY_SAVING_COMMAND;
 
     public static ConfigOption<Integer> OPTIONS_TIME_FORMAT;
 
-    public static HashMap<String, String> OPTIONS_DEFAULTS;
+    public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
+    public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
     public static ConfigOption<Boolean> HOTBAR_QUIT_ITEM;
 
     // Worlds
@@ -91,31 +89,44 @@ public class Option {
         // Options
 
         SAVE_STATS = new ConfigOption<>(config, "options.save-stats");
-        OPTIONS_ENABLED = new ConfigOption<>(config, "options.enabled");
+        SETTINGS_ENABLED = new ConfigOption<>(config, "options.enabled");
         OPTIONS_TIME_FORMAT = new ConfigOption<>(config, "options.time.format");
         HEALTH_HANDLING = new ConfigOption<>(config, "options.health-handling");
         INVENTORY_SAVING = new ConfigOption<>(config, "options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = new ConfigOption<>(config, "options.alt-inventory-saving-command");
 
-        List<String> options = Arrays.asList(ParkourOption.LEADS.getName(), ParkourOption.TIME.getName(),
-                ParkourOption.SCHEMATIC_DIFFICULTY.getName(), ParkourOption.SCORE_DIFFICULTY.getName(),
-                ParkourOption.PARTICLES_AND_SOUND.getName(), ParkourOption.SHOW_SCOREBOARD.getName(),
-                ParkourOption.SHOW_FALL_MESSAGE.getName(), ParkourOption.SPECIAL_BLOCKS.getName(),
-                ParkourOption.USE_SCHEMATICS.getName());
+        List<ParkourOption> options = Arrays.asList(ParkourOption.LEADS, ParkourOption.TIME,
+                ParkourOption.SCHEMATIC_DIFFICULTY, ParkourOption.SCORE_DIFFICULTY,
+                ParkourOption.PARTICLES_AND_SOUND, ParkourOption.SHOW_SCOREBOARD,
+                ParkourOption.SHOW_FALL_MESSAGE, ParkourOption.SPECIAL_BLOCKS,
+                ParkourOption.USE_SCHEMATICS);
+
+        // =====================================
 
         OPTIONS_DEFAULTS = new HashMap<>();
+        OPTIONS_ENABLED = new HashMap<>();
+
         for (String node : Util.getNode(items, "items.options", false)) {
-            for (String option : options) {
-                if (option.equalsIgnoreCase(node)) {
+            for (ParkourOption option : options) {
+                if (option.getName().equalsIgnoreCase(node)) {
+
+                    // register default value
                     String value = items.getString("items.options." + node + ".default");
                     if (value == null) {
                         IP.logging().stack("Default option '" + node + "' is null!", "check the items file and the default options");
                         continue;
                     }
-                    OPTIONS_DEFAULTS.put(node, value);
+                    OPTIONS_DEFAULTS.put(option, value);
+
+                    // register enabled value
+                    boolean enabled = items.getBoolean("items.options." + node + ".enabled");
+
+                    OPTIONS_ENABLED.put(option, enabled);
                 }
             }
         }
+
+        // =====================================
 
         HOTBAR_QUIT_ITEM = new ConfigOption<>(config, "options.hotbar-quit-item");
 
@@ -126,7 +137,7 @@ public class Option {
         LANGUAGES.thenSet(languages);
         DEFAULT_LOCALE = lang.getString("messages.default");
 
-        DEFAULT_STYLE = new ConfigOption<>(config, "styles.default");
+        DEFAULT_STYLE = config.getString("styles.default");
 
         // Config stuff
 

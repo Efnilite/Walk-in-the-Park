@@ -236,7 +236,7 @@ public class WorldDivider {
             player.getInventory().clear();
         }
 
-        if (Option.INVENTORY_HANDLING.get() && Option.OPTIONS_ENABLED.get()) {
+        if (Option.INVENTORY_HANDLING.get() && Option.SETTINGS_ENABLED.get()) {
             ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
             if (mat == null) {
                 IP.logging().error("Material for options in config is null - defaulting to compass");

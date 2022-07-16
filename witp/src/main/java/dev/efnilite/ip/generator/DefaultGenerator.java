@@ -242,7 +242,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         // if selection angle is reduced, half the current sideways step
         if (option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
-            ds *= 0.5;
+            if (1 < ds) {
+                ds = 1;
+            } else if (ds < -1) {
+                ds = -1;
+            }
         }
 
         // delta forwards

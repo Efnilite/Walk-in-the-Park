@@ -165,10 +165,10 @@ public class Util {
      *
      * @return the size
      */
-    public static @Nullable List<String> getNode(FileConfiguration file, String path, boolean deep) {
+    public static @NotNull List<String> getNode(FileConfiguration file, String path, boolean deep) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
-            return null;
+            return new ArrayList<>();
         }
         return new ArrayList<>(section.getKeys(deep));
     }
