@@ -20,12 +20,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Superclass of every type of player. This encompasses every player currently in the Parkour world.
@@ -256,10 +252,8 @@ public abstract class ParkourUser {
     /**
      * Gets the highscores of all player
      *
-     * @throws  IOException
-     *          When creating the file reader goes wrong
      */
-    public static void fetchHighScores() throws IOException, SQLException {
+    public static void fetchHighScores() throws SQLException {
         if (Option.SQL.get()) {
             SelectStatement per = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
                     .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
@@ -272,145 +266,10 @@ public abstract class ParkourUser {
                     int highScore = Integer.parseInt((String) values.get(1));
                     String highScoreTime = (String) values.get(2);
                     String highScoreDiff = (String) values.get(3);
-                    topScores.put(uuid, new Score(name, highScore, highScoreTime, highScoreDiff));
+                    topScores.put(uuid, new Score(name, highScoreDiff, highScoreTime, highScore));
                 }
-            }
-        } else {
-            File folder = new File(IP.getPlugin().getDataFolder() + "/players/");
-            if (!(folder.exists())) {
-                folder.mkdirs();
-                return;
-            }
-            for (File file : folder.listFiles()) {
-                FileReader reader = new FileReader(file);
-                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
-                if (from == null) {
-                    continue;
-                }
-                String name = file.getName();
-                UUID uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-                if (from.highScoreDifficulty == null) {
-                    from.highScoreDifficulty = "?";
-                }
-                topScores.put(uuid, new Score(from.name, from.highScore, from.highScoreTime, from.highScoreDifficulty));
-                reader.close();
-            }
+            } // todo add SQL support to new leaderboards
         }
-    }
-
-    /**
-     * Resets all known highscores.
-     *
-     * @return true if success. false if the resetting failed.
-     */
-    public static boolean resetScores() {
-        for (ParkourPlayer player : ParkourPlayer.getActivePlayers()) { // active players
-            player.setScore(player.name, 0, "0.0s", "0.0");
-        }
-
-        File folder = new File(IP.getPlugin().getDataFolder(), "players/"); // update files
-
-        try {
-            for (File file : folder.listFiles()) {
-                FileReader reader = new FileReader(file);
-                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
-                from.uuid = UUID.fromString(file.getName().replace(".json", ""));
-                from.setScore(from.name, 0, "0.0s", "0.0");
-                from.save(true);
-                reader.close();
-            }
-        } catch (Throwable throwable) {
-            IP.logging().stack("Error while trying to reset the high scores!", throwable);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Resets a specific player's highscore
-     *
-     * @param   uuid
-     *          The uuid
-     *
-     * @return true if success. false if resetting failed.
-     */
-    public static boolean resetScore(UUID uuid) {
-        ParkourPlayer player = ParkourPlayer.getPlayer(uuid);
-        if (player != null) {
-            player.setScore(player.name, 0, "0.0s", "0.0");
-        } else {
-            File file = new File(IP.getPlugin().getDataFolder(), "players/" + uuid.toString() + ".json");
-
-            try {
-                FileReader reader = new FileReader(file);
-                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
-                from.uuid = UUID.fromString(file.getName().replace(".json", ""));
-                from.setScore(from.name, 0, "0.0s", "0.0");
-                from.save(true);
-                reader.close();
-            } catch (Throwable throwable) {
-                IP.logging().stack("Error while trying to reset the high scores!", throwable);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Initializes the high scores
-     */
-    public static void initHighScores() {
-        if (topScores.isEmpty()) {
-            try {
-                fetchHighScores();
-            } catch (IOException | SQLException ex) {
-                IP.logging().stack("Error while trying to fetch the high scores!", ex);
-            }
-            sortScores();
-        }
-    }
-
-    /**
-     * Gets an instance of a {@link Score} with the player's uuid
-     *
-     * @param   uuid
-     *          The player's uuid
-     *
-     * @return the Highscore instance associated with this player uuid
-     */
-    public static Score getScore(@NotNull UUID uuid) {
-        return topScores.get(uuid);
-    }
-
-    /**
-     * Gets the highest score of a player from their uuid
-     *
-     * @param   uuid
-     *          The player's uuid
-     *
-     * @return the highest score they got
-     */
-    public static int getHighestScore(@NotNull UUID uuid) {
-        Score score = topScores.get(uuid);
-        return score != null ? score.score() : 0;
-    }
-
-    /**
-     * Gets the rank of a certain player
-     *
-     * @param   player
-     *          The player
-     *
-     * @return the rank (starts at 1.)
-     */
-    public static int getRank(UUID player) {
-        return new ArrayList<>(topScores.keySet()).indexOf(player) + 1;
-    }
-
-    protected static void sortScores() {
-        topScores = topScores.entrySet().stream()
-                .sorted((o1, o2) -> o2.getValue().score() - o1.getValue().score()) // reverse natural order
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
     }
 
     /**

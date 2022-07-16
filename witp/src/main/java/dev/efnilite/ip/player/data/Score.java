@@ -15,6 +15,6 @@ package dev.efnilite.ip.player.data;
  * @param   difficulty
  *          The difficulty of this run
  */
-public record Score(String name, int score, String time, String difficulty) {
+public record Score(String name, String time, String difficulty, int score) {
 
 }

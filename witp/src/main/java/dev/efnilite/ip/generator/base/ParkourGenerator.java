@@ -1,5 +1,6 @@
 package dev.efnilite.ip.generator.base;
 
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.schematic.selection.Selection;
@@ -73,6 +74,13 @@ public abstract class ParkourGenerator {
 
         session.getPlayers().forEach(player -> player.setGenerator(this));
     }
+
+    /**
+     * Gets the {@link Gamemode} associated with this Generator.
+     *
+     * @return the {@link Gamemode}
+     */
+    public abstract Gamemode getGamemode();
 
     /**
      * Applies particles to list of blocks

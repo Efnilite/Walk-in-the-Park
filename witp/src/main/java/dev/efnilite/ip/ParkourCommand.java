@@ -22,7 +22,6 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
@@ -131,6 +130,10 @@ public class ParkourCommand extends ViCommand {
                 return true;
             }
             switch (args[0]) {
+                case "leaderboard" -> {
+                    player.performCommand("ip leaderboard invalid");
+                    return true;
+                }
                 case "join" -> {
                     if (!cooldown(sender, "join", 2500)) {
                         return true;
@@ -177,13 +180,6 @@ public class ParkourCommand extends ViCommand {
                     SingleplayerMenu.open(player);
 
                     return true;
-                }
-                case "leaderboard" -> {
-                    if (!ParkourOption.LEADERBOARD.check(player)) {
-                        Util.sendDefaultLang(player, "cant-do");
-                        return true;
-                    }
-                    LeaderboardMenu.open(player);
                 }
                 case "schematic" -> {
                     if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) { // default players shouldn't have access even if perms are disabled
@@ -407,13 +403,11 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
-                    Task.create(IP.getPlugin()).async().execute(() -> {
-                        if (ParkourUser.resetScores()) {
-                            Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
-                        } else {
-                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset high scores.");
-                        }
-                    }).run();
+                    for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
+                        gamemode.getLeaderboard().resetAll();
+                    }
+
+                    Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
                 } else {
                     String name = null;
                     UUID uuid = null;
@@ -439,16 +433,31 @@ public class ParkourCommand extends ViCommand {
 
                     UUID finalUuid = uuid;
                     String finalName = name;
-                    Task.create(IP.getPlugin()).async().execute(() -> {
-                        if (ParkourUser.resetScore(finalUuid)) {
-                            Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
-                        } else {
-                            Message.send(sender, IP.PREFIX + "<red>There was an error while trying to reset " + finalName + "'s high score.");
-                        }
-                    }).run();
+
+                    for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
+                        gamemode.getLeaderboard().reset(finalUuid);
+                    }
+
+                    Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
                 }
 
                 return true;
+            } else if (args[0].equalsIgnoreCase("leaderboard")) {
+
+                // check permissions
+                if (!ParkourOption.LEADERBOARD.check(player)) {
+                    Util.sendDefaultLang(player, "cant-do");
+                    return true;
+                }
+
+                Gamemode gamemode = IP.getRegistry().getGamemode(args[1].toLowerCase());
+
+                // if found gamemode is null, return to default
+                if (gamemode == null) {
+                    gamemode = IP.getRegistry().getGamemodes().get(0);
+                }
+
+                LeaderboardMenu.open(player, gamemode);
             }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
@@ -548,7 +557,7 @@ public class ParkourCommand extends ViCommand {
             Message.send(sender, "<gray>/parkour gamemode <dark_gray>- Open the gamemode menu");
         }
         if (sender.hasPermission("witp.leaderboard")) {
-            Message.send(sender, "<gray>/parkour leaderboard <dark_gray>- Open the leaderboard");
+            Message.send(sender, "<gray>/parkour leaderboard [type]<dark_gray>- Open the leaderboard of a gamemode");
         }
         if (sender.hasPermission("witp.schematic")) {
             Message.send(sender, "<gray>/witp schematic <dark_gray>- Create a schematic");

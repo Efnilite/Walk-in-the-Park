@@ -1,6 +1,7 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.events.BlockGenerateEvent;
 import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
@@ -108,6 +109,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
         this.heading = Option.HEADING;
+    }
+
+    @Override
+    public Gamemode getGamemode() {
+        return IP.getRegistry().getGamemode("default");
     }
 
     @Override

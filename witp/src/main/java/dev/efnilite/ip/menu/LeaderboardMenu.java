@@ -1,6 +1,8 @@
 package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.config.Configuration;
@@ -20,7 +22,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,24 +35,22 @@ public class LeaderboardMenu {
      * @param   player
      *          The player
      */
-    public static void open(Player player) {
-        ParkourUser.initHighScores(); // make sure scores are enabled
-
-        Map<UUID, Score> topScores = ParkourUser.getTopScores();
-        List<UUID> uuids = new ArrayList<>(topScores.keySet());
+    public static void open(Player player, Gamemode gamemode) {
+        Leaderboard leaderboard = gamemode.getLeaderboard();
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
         Configuration config = IP.getConfiguration();
-        PagedMenu leaderboard = new PagedMenu(4, "<white>" +
+        PagedMenu menu = new PagedMenu(4, "<white>" +
                 ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
         List<MenuItem> items = new ArrayList<>();
 
         int rank = 1;
         Item base = config.getFromItemData(locale, "options.leaderboard-head");
-        for (UUID uuid : uuids) {
-            Score score = ParkourUser.getScore(uuid);
+        for (UUID uuid : leaderboard.getScores().keySet()) {
+            Score score = leaderboard.get(uuid);
+
             if (score == null) {
                 continue;
             }
@@ -60,12 +59,12 @@ public class LeaderboardMenu {
             Item item = base.clone()
                     .material(Material.PLAYER_HEAD)
                     .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
-                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%s", Integer.toString(score.score()))
                             .replace("%p", score.name())
                             .replace("%t", score.time())
                             .replace("%d", score.difficulty()))
                     .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
-                            .replace("%s", Integer.toString(ParkourUser.getHighestScore(uuid)))
+                            .replace("%s", Integer.toString(score.score()))
                             .replace("%p", score.name())
                             .replace("%t", score.time())
                             .replace("%d", score.difficulty()));
@@ -81,7 +80,7 @@ public class LeaderboardMenu {
             item.meta(meta);
 
             if (uuid.equals(player.getUniqueId())) {
-                leaderboard.item(30, item.clone());
+                menu.item(30, item.clone());
                 item.glowing();
             }
 
@@ -89,15 +88,15 @@ public class LeaderboardMenu {
             rank++;
         }
 
-        leaderboard
+        menu
                 .displayRows(0, 1)
                 .addToDisplay(items)
 
                 .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click(event -> leaderboard.page(1)))
+                        .click(event -> menu.page(1)))
 
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click(event -> leaderboard.page(-1)))
+                        .click(event -> menu.page(-1)))
 
                 .item(32, config.getFromItemData(locale, "general.close")
                         .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))

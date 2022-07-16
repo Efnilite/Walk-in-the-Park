@@ -1,6 +1,7 @@
 package dev.efnilite.ip.internal.gamemode;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.SpectatorMenu;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
@@ -24,8 +25,13 @@ public class SpectatorGamemode implements Gamemode {
     }
 
     @Override
+    public Leaderboard getLeaderboard() {
+        return null;
+    }
+
+    @Override
     public void create(Player player) {
-        throw new IllegalStateException("SpectatorGamemode uses #create(Player, Session) for instance creation");
+        throw new IllegalAccessError("SpectatorGamemode uses #create(Player, Session) for instance creation");
     }
 
     public void create(Player player, Session session) {

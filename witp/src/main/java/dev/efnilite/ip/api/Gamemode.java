@@ -1,5 +1,6 @@
 package dev.efnilite.ip.api;
 
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,13 @@ public interface Gamemode {
      * @return the item.
      */
     @NotNull Item getItem(String locale);
+
+    /**
+     * Gets the {@link Leaderboard} instance that belongs to this gamemode.
+     *
+     * @return the {@link Leaderboard} manager that belongs to this gamemode
+     */
+    Leaderboard getLeaderboard();
 
     /**
      * Creates this Gamemode instance with a given Player.

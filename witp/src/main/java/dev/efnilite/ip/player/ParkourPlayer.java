@@ -78,6 +78,12 @@ public class ParkourPlayer extends ParkourUser {
         this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
         this.locale = Option.DEFAULT_LOCALE;
         this.lang = locale;
+
+        // generic player settings
+        player.setInvisible(false);
+        player.setCollidable(false);
+        player.setFlying(false);
+        player.setAllowFlight(false);
     }
 
     public void setSettings(Integer highScore, Integer selectedTime, String style, String highScoreTime, String lang, Double schematicDifficulty,
@@ -204,9 +210,8 @@ public class ParkourPlayer extends ParkourUser {
             diff = diff.substring(0, 3);
         }
         highScoreDifficulty = diff;
-        topScores.put(uuid, new Score(name, score, highScoreTime, diff));
 
-        sortScores();
+        generator.getGamemode().getLeaderboard().put(uuid, new Score(name, highScoreTime, diff, score));
     }
 
     private void saveStats() {

@@ -1,5 +1,6 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
@@ -143,7 +144,6 @@ public final class IP extends ViPlugin {
                 sqlManager = new SQLManager();
                 sqlManager.connect();
             }
-            ParkourUser.initHighScores();
         } catch (Throwable throwable) {
             logging().stack("There was an error while starting WITP", throwable);
         }
@@ -176,6 +176,10 @@ public final class IP extends ViPlugin {
     public void disable() {
         for (ParkourUser user : ParkourUser.getUsers()) {
             ParkourUser.unregister(user, true, false, false);
+        }
+
+        for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
+            gamemode.getLeaderboard().write();
         }
 
         if (sqlManager != null) {
