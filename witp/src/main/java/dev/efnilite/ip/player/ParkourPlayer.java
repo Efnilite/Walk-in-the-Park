@@ -5,6 +5,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
@@ -148,42 +149,39 @@ public class ParkourPlayer extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (showScoreboard && Option.SCOREBOARD_ENABLED && board != null && generator != null) {
+            Leaderboard leaderboard = getSession().getGamemode().getLeaderboard();
+
+            // scoreboard settings
             String title = Util.color(Option.SCOREBOARD_TITLE);
-            List<String> list = new ArrayList<>();
-            List<String> lines = Option.SCOREBOARD_LINES;
+            List<String> lines = new ArrayList<>();
 
-            if (lines == null) {
-                IP.logging().error("Scoreboard lines are null! Check your config!");
-                return;
+            Score top = leaderboard.getAtRank(1);
+            Score rank = leaderboard.get(uuid);
+
+            if (top == null) {
+                top = new Score("?", "?", "?", 0);
+            }
+            if (rank == null) {
+                rank = new Score("?", "?", "?", 0);
             }
 
-            Integer rank = getHighScoreValue(uuid);
-            UUID one = getAtPlace(1);
-
-            int top = 0;
-            Score highscore = null;
-            if (one != null) {
-                top = getHighScoreValue(one);
-                highscore = topScores.get(one);
-            }
-
-            for (String s : lines) {
+            for (String s : Option.SCOREBOARD_LINES) {
                 s = Util.translate(player, s); // add support for PAPI placeholders in scoreboard
-                list.add(s.replace("%score%", Integer.toString(generator.getScore()))
+                lines.add(s.replace("%score%", Integer.toString(generator.getScore()))
                         .replace("%time%", generator.getTime())
-                        .replace("%highscore%", rank.toString())
-                        .replace("%topscore%", Integer.toString(top))
-                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "?")
+                        .replace("%highscore%", Integer.toString(rank.score()))
+                        .replace("%topscore%", Integer.toString(top.score()))
+                        .replace("%topplayer%", top.name())
                         .replace("%session%", getSessionId()));
             }
             title = Util.translate(player, title);
             board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
                     .replace("%time%", generator.getTime())
-                    .replace("%highscore%", rank.toString())
-                    .replace("%topscore%", Integer.toString(top))
-                    .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "?")
+                    .replace("%highscore%", Integer.toString(rank.score()))
+                    .replace("%topscore%", Integer.toString(top.score()))
+                    .replace("%topplayer%", top.name())
                     .replace("%session%", getSessionId()));
-            board.updateLines(list);
+            board.updateLines(lines);
         }
     }
 
@@ -300,56 +298,6 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    /**
-     * Gets the high score of a player
-     *
-     * @param   player
-     *          The player
-     *
-     * @return the high score of the player
-     */
-    public static @NotNull Integer getHighScoreValue(@NotNull UUID player) {
-        Score score = topScores.get(player);
-
-        if (score == null) {
-            return 0;
-        }
-
-        return score.score();
-    }
-
-    public static @Nullable String getHighScoreTime(@NotNull UUID player) {
-        Score score = topScores.get(player);
-
-        if (score == null) {
-            return "?";
-        }
-
-        return score.time();
-    }
-
-    public static @Nullable Score getHighScore(@NotNull UUID player) {
-        return topScores.get(player);
-    }
-
-    /**
-     * Gets the player at a certain place
-     * Note: places are indicated in normal fashion (a.k.a. #1 is the first)
-     *
-     * @param   place
-     *          The place
-     *
-     * @return the player at that place
-     */
-    public static @Nullable UUID getAtPlace(int place) {
-        List<UUID> scores = new ArrayList<>(topScores.keySet());
-        place--;
-        if (scores.size() > place) {
-            return scores.get(place);
-        }
-        return null;
-    }
-
     // Internal registering service
     @ApiStatus.Internal
     protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
@@ -408,7 +356,7 @@ public class ParkourPlayer extends ParkourUser {
                             (String) objects.get(0),
                             highScoreTime,
                             Option.DEFAULT_LOCALE, // todo add table support
-                            Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY.getName())), // todo add table support
+                            Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), // todo add table support
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),

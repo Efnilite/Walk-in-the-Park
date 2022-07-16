@@ -5,6 +5,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.profile.PlayerProfile;
 import dev.efnilite.ip.player.profile.Profile;
+import dev.efnilite.vilib.util.Time;
 
 import java.io.FileReader;
 
@@ -41,6 +42,12 @@ public class LegacyPlayerSettings {
      * @return the updated {@link Profile} instance.
      */
     public static Profile migrate(String file) {
+        Time.timerStart("ip migrate profile data");
+        IP.logging().info("## ");
+        IP.logging().info("## Starting migration of IP profile data...");
+        IP.logging().info("## ");
+
+        IP.logging().info("## Reading file...");
         try {
             FileReader reader = new FileReader(file);
             Profile profile = new PlayerProfile();
@@ -60,6 +67,10 @@ public class LegacyPlayerSettings {
             profile.setSetting(ParkourOption.SHOW_FALL_MESSAGE.getName(), String.valueOf(legacy.showFallMessage));
             profile.setSetting(ParkourOption.PARTICLES_AND_SOUND.getName(), String.valueOf(legacy.useParticlesAndSound));
 
+            IP.logging().info("## ");
+            IP.logging().info("## Finished migration of " + file + " profile data.");
+            IP.logging().info("## Took: " + Time.timerEnd("ip migrate profile data") + " ms");
+            IP.logging().info("## ");
             return profile;
         } catch (Throwable throwable) {
             IP.logging().stack("Error while migrating legacy player file of " + file + " to new profile", throwable);

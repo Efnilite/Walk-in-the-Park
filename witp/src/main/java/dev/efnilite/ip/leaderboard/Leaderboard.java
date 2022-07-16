@@ -66,7 +66,7 @@ public class Leaderboard {
 
                         writer.flush();
                     } catch (IOException ex) {
-                        IP.logging().stack("error while trying to write to leaderboard file " + gamemode, "reload/restart your server", ex);
+                        IP.logging().stack("Error while trying to write to leaderboard file " + gamemode, "reload/restart your server", ex);
                     }
                 })
                 .run();
@@ -87,7 +87,7 @@ public class Leaderboard {
                             this.scores.putAll(read.scores);
                         }
                     } catch (IOException ex) {
-                        IP.logging().stack("error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
+                        IP.logging().stack("Error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
                     }
                 })
                 .run();
@@ -172,6 +172,20 @@ public class Leaderboard {
      */
     public int getRank(@NotNull UUID uuid) {
         return new ArrayList<>(scores.keySet()).indexOf(uuid) + 1;
+    }
+
+    /**
+     * Gets the score at a specified rank.
+     * Ranks start at 1.
+     *
+     * @param   rank
+     *          The rank
+     *
+     * @return the {@link Score} instance, null if one isn't found
+     */
+    @Nullable
+    public Score getAtRank(int rank) {
+        return new ArrayList<>(scores.values()).get(rank - 1);
     }
 
     /**

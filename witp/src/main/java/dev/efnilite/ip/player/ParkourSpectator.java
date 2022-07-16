@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.Session;
@@ -10,14 +11,12 @@ import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Class for spectators of a Session.
@@ -51,37 +50,34 @@ public class ParkourSpectator extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (Option.SCOREBOARD_ENABLED && board != null) {
+            Leaderboard leaderboard = getSession().getGamemode().getLeaderboard();
+
+            // scoreboard settings
             String title = Util.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
-            List<String> list = new ArrayList<>();
-            List<String> lines = Option.SCOREBOARD_LINES; // doesn't use configoption
+            List<String> lines = new ArrayList<>();
 
-            if (lines == null) {
-                IP.logging().error("Scoreboard lines are null! Check your config!");
-                return;
+            Score top = leaderboard.getAtRank(1);
+            Score rank = leaderboard.get(getUUID());
+
+            if (top == null) {
+                top = new Score("?", "?", "?", 0);
+            }
+            if (rank == null) {
+                rank = new Score("?", "?", "?", 0);
             }
 
-            Integer rank = ParkourPlayer.getHighScoreValue(closest.getUUID());
-            UUID one = ParkourPlayer.getAtPlace(1);
-
-            int top = 0;
-            Score highscore = null;
-            if (one != null) {
-                top = ParkourPlayer.getHighScoreValue(one);
-                highscore = topScores.get(one);
-            }
-
-            for (String s : lines) {
+            for (String s : Option.SCOREBOARD_LINES) {
                 s = Util.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
-                list.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
+                lines.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
                         .replace("%time%", closest.getGenerator().getTime())
-                        .replace("%highscore%", rank.toString())
-                        .replace("%topscore%", Integer.toString(top))
-                        .replace("%topplayer%", highscore != null && highscore.name() != null ? highscore.name() : "N/A")
+                        .replace("%highscore%", Integer.toString(rank.score()))
+                        .replace("%topscore%", Integer.toString(top.score()))
+                        .replace("%topplayer%", top.name())
                         .replace("%session%" , getSessionId()));
             }
 
             board.updateTitle(title);
-            board.updateLines(list);
+            board.updateLines(lines);
         }
     }
 
@@ -91,28 +87,25 @@ public class ParkourSpectator extends ParkourUser {
     public void runClosestChecker() {
         closestChecker = Task.create(IP.getPlugin())
                 .async()
-                .execute(new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (session.getPlayers().size() < 2) { // only update if there is more than 1 player
-                            return;
-                        }
-
-                        double leastDistance = 1000000;
-                        ParkourPlayer closest = null;
-
-                        for (ParkourPlayer pp : session.getPlayers()) {
-                            double distance = pp.getLocation().distance(player.getLocation());
-                            if (distance < leastDistance) {
-                                closest = pp;
-                                leastDistance = distance;
-                            }
-                        }
-
-                        setClosest(closest == null ? session.getPlayers().get(0) : closest);
-
-                        updateVisualTime(getClosest().selectedTime);
+                .execute(() -> {
+                    if (session.getPlayers().size() < 2) { // only update if there is more than 1 player
+                        return;
                     }
+
+                    double leastDistance = 1000000;
+                    ParkourPlayer closest = null;
+
+                    for (ParkourPlayer pp : session.getPlayers()) {
+                        double distance = pp.getLocation().distance(player.getLocation());
+                        if (distance < leastDistance) {
+                            closest = pp;
+                            leastDistance = distance;
+                        }
+                    }
+
+                    setClosest(closest == null ? session.getPlayers().get(0) : closest);
+
+                    updateVisualTime(getClosest().selectedTime);
                 })
                 .repeat(10)
                 .run();

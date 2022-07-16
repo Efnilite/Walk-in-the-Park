@@ -4,11 +4,9 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.events.PlayerLeaveEvent;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
-import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.chat.Message;
 import fr.mrmicky.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -20,7 +18,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -58,7 +55,6 @@ public abstract class ParkourUser {
      */
     protected final Player player;
 
-    protected static Map<UUID, Score> topScores = new LinkedHashMap<>();
     protected static final Map<UUID, ParkourUser> users = new HashMap<>();
     protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
 
@@ -247,29 +243,6 @@ public abstract class ParkourUser {
         }
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
-    }
-
-    /**
-     * Gets the highscores of all player
-     *
-     */
-    public static void fetchHighScores() throws SQLException {
-        if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
-                    .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
-            HashMap<String, List<Object>> stats = per.fetch();
-            if (stats != null && stats.size() > 0) {
-                for (String string : stats.keySet()) {
-                    List<Object> values = stats.get(string);
-                    UUID uuid = UUID.fromString(string);
-                    String name = (String) values.get(0);
-                    int highScore = Integer.parseInt((String) values.get(1));
-                    String highScoreTime = (String) values.get(2);
-                    String highScoreDiff = (String) values.get(3);
-                    topScores.put(uuid, new Score(name, highScoreDiff, highScoreTime, highScore));
-                }
-            } // todo add SQL support to new leaderboards
-        }
     }
 
     /**
@@ -470,15 +443,6 @@ public abstract class ParkourUser {
      */
     public @NotNull Player getPlayer() {
         return player;
-    }
-
-    /**
-     * Returns a copy of all the top scores.
-     *
-     * @return the top scores
-     */
-    public static Map<UUID, Score> getTopScores() {
-        return topScores;
     }
 
     /**
