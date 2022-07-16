@@ -101,7 +101,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
         switch (params) {
             case "rank":
-                return Integer.toString(ParkourUser.getRank(player.getUniqueId()));
+                return "1";
+//                return Integer.toString(ParkourUser.getRank(player.getUniqueId())); todo
             case "highscore":
             case "high_score":
                 Integer value = ParkourPlayer.getHighScoreValue(player.getUniqueId());

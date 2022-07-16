@@ -80,8 +80,12 @@ public class Leaderboard {
                 .async()
                 .execute(() -> {
                     try (FileReader reader = new FileReader(file)) {
-                        this.scores.clear();
-                        this.scores.putAll(IP.getGson().fromJson(reader, Leaderboard.class).scores);
+                        Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
+
+                        if (read != null) {
+                            this.scores.clear();
+                            this.scores.putAll(read.scores);
+                        }
                     } catch (IOException ex) {
                         IP.logging().stack("error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
                     }

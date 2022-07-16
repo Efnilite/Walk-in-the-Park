@@ -222,10 +222,10 @@ public class WorldDivider {
         }
 
         // setup inventory, etc.
-        setup(to, pp);
+        setup(pp, to, true);
     }
 
-    public void setup(Location to, ParkourPlayer pp) {
+    public void setup(ParkourPlayer pp, Location to, boolean giveCompass) {
         Player player = pp.getPlayer();
 
         pp.teleport(to);
@@ -236,7 +236,7 @@ public class WorldDivider {
             player.getInventory().clear();
         }
 
-        if (Option.INVENTORY_HANDLING.get() && Option.SETTINGS_ENABLED.get()) {
+        if (Option.INVENTORY_HANDLING.get() && Option.SETTINGS_ENABLED.get() && giveCompass) {
             ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
             if (mat == null) {
                 IP.logging().error("Material for options in config is null - defaulting to compass");
