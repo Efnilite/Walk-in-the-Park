@@ -184,7 +184,11 @@ public class Leaderboard {
      * @return the {@link Score} instance, null if one isn't found
      */
     @Nullable
-    public Score getAtRank(int rank) {
+    public Score getScoreAtRank(int rank) {
+        if (scores.size() < rank) {
+            return null;
+        }
+
         return new ArrayList<>(scores.values()).get(rank - 1);
     }
 

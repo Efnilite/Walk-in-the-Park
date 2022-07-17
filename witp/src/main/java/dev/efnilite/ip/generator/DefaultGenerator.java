@@ -2,6 +2,7 @@ package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.events.BlockGenerateEvent;
 import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
@@ -113,7 +114,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public Gamemode getGamemode() {
-        return IP.getRegistry().getGamemode("default");
+        return Gamemodes.DEFAULT;
     }
 
     @Override

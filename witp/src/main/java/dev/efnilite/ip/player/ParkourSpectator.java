@@ -56,7 +56,7 @@ public class ParkourSpectator extends ParkourUser {
             String title = Util.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
             List<String> lines = new ArrayList<>();
 
-            Score top = leaderboard.getAtRank(1);
+            Score top = leaderboard.getScoreAtRank(1);
             Score rank = leaderboard.get(getUUID());
 
             if (top == null) {

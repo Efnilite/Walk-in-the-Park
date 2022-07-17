@@ -6,6 +6,7 @@ import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.GeneratorOption;
+import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
@@ -107,15 +108,11 @@ public final class IP extends ViPlugin {
 
         // ----- Hooks and Bungee -----
 
-        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            logging().info("Connecting with PlaceholderAPI..");
-            placeholderHook = new PlaceholderHook();
-            placeholderHook.register();
-        }
         if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
             logging().info("Connecting with Multiverse..");
             multiverseHook = new MultiverseHook();
         }
+
         if (Option.BUNGEECORD.get()) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
@@ -136,6 +133,17 @@ public final class IP extends ViPlugin {
         registry.getStyleType("default").addConfigStyles("styles.list", configuration.getFile("config"));
 
         Gamemodes.init();
+
+        // hook with hd / papi after gamemode leaderboards have initialized
+        if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            logging().info("Connecting with Holographic Displays..");
+            HoloHook.init(this);
+        }
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            logging().info("Connecting with PlaceholderAPI..");
+            placeholderHook = new PlaceholderHook();
+            placeholderHook.register();
+        }
 
         // ----- SQL and data -----
 

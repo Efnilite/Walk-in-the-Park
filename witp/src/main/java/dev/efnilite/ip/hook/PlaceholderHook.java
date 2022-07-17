@@ -1,20 +1,19 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 /**
  * Hook for PlaceholderAPI
@@ -61,7 +60,6 @@ public class PlaceholderHook extends PlaceholderExpansion {
             pp = ((ParkourSpectator) user).getClosest();
         }
 
-
         if (pp != null) {
             ParkourGenerator generator = pp.getGenerator();
             switch (params) {
@@ -99,44 +97,54 @@ public class PlaceholderHook extends PlaceholderExpansion {
             }
         }
 
+        Leaderboard leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+
         switch (params) {
             case "rank":
-                return "1";
-//                return Integer.toString(ParkourUser.getRank(player.getUniqueId())); todo
+                return Integer.toString(leaderboard.getRank(player.getUniqueId()));
             case "highscore":
             case "high_score":
-                Integer value = ParkourPlayer.getHighScoreValue(player.getUniqueId());
-                return Integer.toString(value);
+                Score score = leaderboard.get(player.getUniqueId());
+
+                if (score == null) {
+                    return "?";
+                } else {
+                    return Integer.toString(score.score());
+                }
             case "version":
             case "ver":
                 return IP.getPlugin().getDescription().getVersion();
             case "leader":
             case "record_player":
-                UUID recordPlayer = ParkourPlayer.getAtPlace(1);
-                return recordPlayer == null ? "?" : Bukkit.getOfflinePlayer(recordPlayer).getName();
+                score = leaderboard.getScoreAtRank(1);
+
+                if (score == null) {
+                    return "?";
+                } else {
+                    return score.name();
+                }
             case "leader_score":
             case "record_score":
             case "record":
-                UUID uuid = ParkourPlayer.getAtPlace(1);
-                if (uuid == null) {
+                score = leaderboard.getScoreAtRank(1);
+
+                if (score == null) {
                     return "?";
+                } else {
+                    return Integer.toString(score.score());
                 }
-                Integer score = ParkourPlayer.getHighScoreValue(uuid);
-                return Integer.toString(score);
             default:
                 if (params.contains("player_rank_")) {
                     String replaced = params.replace("player_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
-                        UUID uuidRank = ParkourPlayer.getAtPlace(rank);
-                        if (uuidRank == null) {
+                        score = leaderboard.getScoreAtRank(rank);
+
+                        if (score == null) {
                             return "?";
+                        } else {
+                            return score.name();
                         }
-                        Score highscore = ParkourPlayer.getHighScore(uuidRank);
-                        if (highscore == null) {
-                            return "?";
-                        }
-                        return highscore.name() == null ? "?" : highscore.name();
                     } else {
                         return "?";
                     }
@@ -144,12 +152,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     String replaced = params.replace("score_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
-                        UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
-                        if (uuidRank1 == null) {
+                        score = leaderboard.getScoreAtRank(rank);
+
+                        if (score == null) {
                             return "?";
+                        } else {
+                            return Integer.toString(score.score());
                         }
-                        Integer score1 = ParkourPlayer.getHighScoreValue(uuidRank1);
-                        return Integer.toString(score1);
                     } else {
                         return "?";
                     }
@@ -157,12 +166,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     String replaced = params.replace("time_rank_", "");
                     int rank = Integer.parseInt(replaced);
                     if (rank > 0) {
-                        UUID uuidRank1 = ParkourPlayer.getAtPlace(rank);
-                        if (uuidRank1 == null) {
+                        score = leaderboard.getScoreAtRank(rank);
+
+                        if (score == null) {
                             return "?";
+                        } else {
+                            return score.time();
                         }
-                        String time = ParkourPlayer.getHighScoreTime(uuidRank1);
-                        return time == null ? "?" : time;
                     } else {
                         return "?";
                     }
