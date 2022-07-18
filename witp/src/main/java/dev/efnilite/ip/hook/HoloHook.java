@@ -34,7 +34,7 @@ public class HoloHook {
             }
 
             // {ip_leaderboard: default, score, #1}
-            String[] split = argument.split(", ");
+            String[] split = argument.replace(" ", "").split(",");
 
             String gamemode = split[0].toLowerCase();
 

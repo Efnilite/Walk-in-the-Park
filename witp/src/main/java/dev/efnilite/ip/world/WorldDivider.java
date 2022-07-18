@@ -210,8 +210,8 @@ public class WorldDivider {
         Location min = spawn.clone().subtract(borderSize / 2, 0, borderSize / 2);
         Location max = spawn.clone().add(borderSize / 2, 0, borderSize / 2);
 
-        min.setY(Option.MIN_Y.get());
-        max.setY(Option.MAX_Y.get());
+        min.setY(Option.MIN_Y);
+        max.setY(Option.MAX_Y);
 
         // set the proper zone
         pp.getGenerator().setZone(new Selection(min, max));
@@ -274,6 +274,6 @@ public class WorldDivider {
      */
     public Vector3D getEstimatedCenter(Vector2D vector, double borderSize) {
         int size = (int) borderSize;
-        return new Vector3D(vector.x * size, 150, vector.y * size);
+        return new Vector3D(vector.x * size, (Option.MAX_Y - Option.MIN_Y) / 2.0, vector.y * size);
     }
 }

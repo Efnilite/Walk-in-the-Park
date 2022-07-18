@@ -251,8 +251,8 @@ public class Option {
     public static ConfigOption<Integer> NORMAL_DOWN;
     public static ConfigOption<Integer> NORMAL_DOWN2;
 
-    public static ConfigOption<Integer> MAX_Y;
-    public static ConfigOption<Integer> MIN_Y;
+    public static int MAX_Y;
+    public static int MIN_Y;
 
     private static void initGeneration() {
         NORMAL = new ConfigOption<>(generation, "generation.normal-jump.chance");
@@ -274,8 +274,16 @@ public class Option {
         NORMAL_DOWN = new ConfigOption<>(generation, "generation.normal-jump.down");
         NORMAL_DOWN2 = new ConfigOption<>(generation, "generation.normal-jump.down2");
 
-        MAX_Y = new ConfigOption<>(generation, "generation.settings.max-y");
-        MIN_Y = new ConfigOption<>(generation, "generation.settings.min-y");
+        MAX_Y = generation.getInt("generation.settings.max-y");
+        MIN_Y = generation.getInt("generation.settings.min-y");
+
+        if (MIN_Y >= MAX_Y) {
+            IP.logging().stack("Provided minimum y is the same or larger than maximum y!", "check your generation.yml file");
+
+            // prevent plugin breakage
+            MIN_Y = 100;
+            MAX_Y = 200;
+        }
     }
 
     // --------------------------------------------------------------
