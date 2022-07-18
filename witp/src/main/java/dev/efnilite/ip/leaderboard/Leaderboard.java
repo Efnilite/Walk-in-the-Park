@@ -11,7 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -35,15 +38,15 @@ public class Leaderboard {
     private final String gamemode;
 
     /**
-     * A map of which users are at which rank
-     */
-    private final Map<UUID, Integer> ranks = new HashMap<>();
-
-    /**
      * A map of all scores for this gamemode
      */
-    @Expose
     private final Map<UUID, Score> scores = new LinkedHashMap<>();
+
+    /**
+     * A map of all scores for this gamemode, used for serializing.
+     */
+    @Expose
+    private final Map<UUID, String> serialized = new LinkedHashMap<>();
 
     public Leaderboard(@NotNull String gamemode) {
         this.gamemode = gamemode;
@@ -51,13 +54,24 @@ public class Leaderboard {
 
         VFiles.create(file);
 
-        read();
+        read(true);
     }
 
     /**
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
-    public void write() {
+    public void write(boolean async) {
+        if (!async) {
+            try (FileWriter writer = new FileWriter(file)) {
+                IP.getGson().toJson(this, writer);
+
+                writer.flush();
+            } catch (IOException ex) {
+                IP.logging().stack("Error while trying to write to leaderboard file " + gamemode, "reload/restart your server", ex);
+            }
+            return;
+        }
+
         Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
@@ -75,7 +89,33 @@ public class Leaderboard {
     /**
      * Reads all scores from the leaderboard file
      */
-    public void read() {
+    public void read(boolean async) {
+        if (!async) {
+            try (FileReader reader = new FileReader(file)) {
+                Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
+
+                if (read != null) {
+                    serialized.clear();
+                    serialized.putAll(read.serialized);
+
+                    scores.clear();
+                    for (UUID uuid : serialized.keySet()) {
+                        String val = serialized.get(uuid);
+
+                        if (val == null) {
+                            continue;
+                        }
+
+                        scores.put(uuid, Score.fromString(val));
+                    }
+                }
+            } catch (IOException ex) {
+                IP.logging().stack("Error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
+            }
+            return;
+        }
+
+
         Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
@@ -83,8 +123,19 @@ public class Leaderboard {
                         Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
 
                         if (read != null) {
-                            this.scores.clear();
-                            this.scores.putAll(read.scores);
+                            serialized.clear();
+                            serialized.putAll(read.serialized);
+
+                            scores.clear();
+                            for (UUID uuid : serialized.keySet()) {
+                                String val = serialized.get(uuid);
+
+                                if (val == null) {
+                                    continue;
+                                }
+
+                                scores.put(uuid, Score.fromString(val));
+                            }
                         }
                     } catch (IOException ex) {
                         IP.logging().stack("Error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
@@ -105,6 +156,12 @@ public class Leaderboard {
 
         scores.clear();
         scores.putAll(sorted);
+
+        serialized.clear();
+        for (UUID uuid : scores.keySet()) {
+            Score score = scores.get(uuid);
+            serialized.put(uuid, score.toString());
+        }
     }
 
     /**
@@ -120,6 +177,8 @@ public class Leaderboard {
      */
     @Nullable
     public Score put(@NotNull UUID uuid, @NotNull Score score) {
+        serialized.put(uuid, score.toString());
+
         Score previous = scores.put(uuid, score);
 
         sort();
@@ -137,6 +196,8 @@ public class Leaderboard {
      */
     @Nullable
     public Score reset(@NotNull UUID uuid) {
+        serialized.remove(uuid);
+
         return scores.remove(uuid);
     }
 

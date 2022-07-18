@@ -45,7 +45,7 @@ public class LegacyLeaderboardData {
 
         // save data
         IP.logging().info("## Saving new file...");
-        leaderboard.write();
+        leaderboard.write(true);
 
         IP.logging().info("## ");
         IP.logging().info("## Finished migration of leaderboard data.");

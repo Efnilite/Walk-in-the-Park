@@ -2,6 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.SingleplayerMenu;
@@ -404,7 +405,13 @@ public class ParkourCommand extends ViCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission("witp.reset.everyone")) {
                     for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
-                        gamemode.getLeaderboard().resetAll();
+                        Leaderboard leaderboard = gamemode.getLeaderboard();
+
+                        if (leaderboard == null) {
+                            continue;
+                        }
+
+                        leaderboard.resetAll();
                     }
 
                     Message.send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
@@ -435,7 +442,13 @@ public class ParkourCommand extends ViCommand {
                     String finalName = name;
 
                     for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
-                        gamemode.getLeaderboard().reset(finalUuid);
+                        Leaderboard leaderboard = gamemode.getLeaderboard();
+
+                        if (leaderboard == null) {
+                            continue;
+                        }
+
+                        leaderboard.reset(finalUuid);
                     }
 
                     Message.send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");

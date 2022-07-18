@@ -11,6 +11,7 @@ import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.schematic.Schematic;
@@ -427,40 +428,38 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.teleport(playerSpawn);
         }
 
+        Score record = getGamemode().getLeaderboard().get(player.getUUID());
+
+        if (record == null) {
+            record = new Score(player.name, "?", "?", 0);
+        }
+
         int score = this.score;
         String time = this.time;
         String diff = player.calculateDifficultyScore();
         if (player.showFallMessage && regenerate && time != null) {
             String message;
             int number = 0;
-            if (score == player.highScore) {
+            if (score == record.score()) {
                 message = "message.tied";
-            } else if (score > player.highScore) {
-                number = score - player.highScore;
+            } else if (score > record.score()) {
+                number = score - record.score();
                 message = "message.beat";
             } else {
-                number = player.highScore - score;
+                number = record.score() - score;
                 message = "message.miss";
             }
-            if (score > player.highScore) {
+            if (score > record.score()) {
                 player.setScore(player.name, score, time, diff);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
             player.sendTranslated("time", time);
-            player.sendTranslated("highscore", Integer.toString(player.highScore));
+            player.sendTranslated("highscore", Integer.toString(record.score()));
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
-//            if (Tournament.isActive() && session.inTournament()) {
-//                Tournament.getActive().addScore(player.uuid, new Score(player.name, score, time, diff));
-//            } else {
-//                if (score >= player.highScore) {
-//                    player.setScore(player.name, score, time, diff);
-//                }
-//            }
-
-            if (score >= player.highScore) {
+            if (score >= record.score()) {
                 player.setScore(player.name, score, time, diff);
             }
         }

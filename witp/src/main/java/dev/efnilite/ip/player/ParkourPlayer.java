@@ -81,7 +81,6 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = locale;
 
         // generic player settings
-        player.setInvisible(false);
         player.setCollidable(false);
         player.setFlying(false);
         player.setAllowFlight(false);

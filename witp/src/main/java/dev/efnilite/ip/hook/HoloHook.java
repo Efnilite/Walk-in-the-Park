@@ -27,7 +27,7 @@ public class HoloHook {
             IP.logging().warn("##");
         }
 
-        HolographicDisplaysAPI.get(plugin).registerGlobalPlaceholder("ip_leaderboard", 200, argument -> {
+        HolographicDisplaysAPI.get(plugin).registerGlobalPlaceholder("ip_leaderboard", 100, argument -> {
 
             if (argument == null) {
                 return "?";

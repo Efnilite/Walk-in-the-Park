@@ -12,6 +12,7 @@ import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.internal.style.DefaultStyleType;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
@@ -28,8 +29,6 @@ import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
-import org.bstats.charts.SimplePie;
-import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -186,8 +185,15 @@ public final class IP extends ViPlugin {
             ParkourUser.unregister(user, true, false, false);
         }
 
+        // write all gamemodes
         for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
-            gamemode.getLeaderboard().write();
+            Leaderboard leaderboard = gamemode.getLeaderboard();
+
+            if (leaderboard == null) {
+                continue;
+            }
+
+            leaderboard.write(false);
         }
 
         if (sqlManager != null) {
