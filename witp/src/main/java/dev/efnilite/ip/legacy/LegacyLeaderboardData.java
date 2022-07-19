@@ -41,7 +41,7 @@ public class LegacyLeaderboardData {
 
             // save data
             IP.logging().info("## Saving new file...");
-            leaderboard.write(true);
+            leaderboard.write(false); // this method is already run asynchronously
             leaderboard.sort();
             IP.logging().info("## ");
             IP.logging().info("## Finished migration of leaderboard data.");

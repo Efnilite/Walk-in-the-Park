@@ -56,6 +56,7 @@ public class Configuration {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
         if (c.contains("enable-joining")) {
             Task.create(plugin)
+                    .async()
                     .delay(10 * 20)
                     .execute(LegacyLeaderboardData::migrate)
                     .run();

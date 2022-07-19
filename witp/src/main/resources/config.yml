@@ -72,11 +72,11 @@ sql:
   port: 3306
   username: 'efnilite'
   password: 'super secret password'
-  database: 'witp'
+  database: 'ip'
 
   # -= MySQL prefix =-
   # The prefix given to any table names
-  # The default is ''. Example: 'witp-' -> this would make the table 'witp-players'
+  # The default is ''. Example: 'ip-' -> this would make the table 'ip-players'
   prefix: ''
 
 # -= World options =-

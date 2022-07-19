@@ -174,8 +174,6 @@ public class Leaderboard {
                 _readFile();
             }
         }
-
-        sort();
     }
 
     /*
@@ -209,6 +207,8 @@ public class Leaderboard {
                     "Error while trying to read SQL leaderboard data",
                     "restart/reload your server", ex);
         }
+
+        sort();
     }
 
     /*
@@ -238,6 +238,8 @@ public class Leaderboard {
                     "Error while trying to read leaderboard file " + gamemode,
                     "send this file to the developer", ex);
         }
+
+        sort();
     }
 
     /**
