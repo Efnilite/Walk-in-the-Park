@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.VFiles;
+import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,10 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,10 +49,32 @@ public class Leaderboard {
     private final Map<UUID, String> serialized = new LinkedHashMap<>();
 
     public Leaderboard(@NotNull String gamemode) {
-        this.gamemode = gamemode;
+        this.gamemode = gamemode.toLowerCase();
         this.file = FOLDER + gamemode.toLowerCase() + ".json";
 
-        VFiles.create(file);
+        if (Option.SQL) {
+            IP.getSqlManager().sendQuery(
+                """
+                USE `%s`;
+                """
+            .formatted(Option.SQL_DB));
+
+            IP.getSqlManager().sendQuery(
+                """
+                CREATE TABLE IF NOT EXISTS `%s`
+                (
+                    uuid       CHAR(36) NOT NULL PRIMARY KEY,
+                    name       CHAR(16),
+                    time       VARCHAR(16),
+                    difficulty VARCHAR(3),
+                    score      INT
+                )
+                CHARSET = utf8 ENGINE = InnoDB;
+                """
+            .formatted(getTableName()));
+        } else {
+            VFiles.create(file);
+        }
 
         read(true);
     }
@@ -61,87 +83,159 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
-        if (!async) {
-            try (FileWriter writer = new FileWriter(file)) {
-                IP.getGson().toJson(this, writer);
-
-                writer.flush();
-            } catch (IOException ex) {
-                IP.logging().stack("Error while trying to write to leaderboard file " + gamemode, "reload/restart your server", ex);
+        if (Option.SQL) {
+            if (async) {
+                Task.create(IP.getPlugin())
+                        .async()
+                        .execute(this::_writeSql)
+                        .run();
+            } else {
+                _writeSql();
             }
-            return;
+        } else {
+            if (async) {
+                Task.create(IP.getPlugin())
+                        .async()
+                        .execute(this::_writeFile)
+                        .run();
+            } else {
+                _writeFile();
+            }
         }
+    }
 
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try (FileWriter writer = new FileWriter(file)) {
-                        IP.getGson().toJson(this, writer);
+    /*
+     * writes all data to the mysql table
+     */
+    private void _writeSql() {
+        // clear table
+        IP.getSqlManager().sendQuery(
+            """
+            TRUNCATE `%s`
+            """
+        .formatted(getTableName()));
 
-                        writer.flush();
-                    } catch (IOException ex) {
-                        IP.logging().stack("Error while trying to write to leaderboard file " + gamemode, "reload/restart your server", ex);
-                    }
-                })
-                .run();
+        for (UUID uuid : scores.keySet()) {
+            Score score = scores.get(uuid);
+
+            if (score == null) {
+                continue;
+            }
+
+            // insert all
+            IP.getSqlManager().sendQuery(
+                    """
+                    INSERT INTO `%s`
+                    (uuid, name, time, difficulty, score)
+                    VALUES
+                    ('%s', '%s', '%s', '%s', %d);
+                    """
+            .formatted(getTableName(), uuid.toString(), score.name(), score.time(), score.difficulty(), score.score()));
+        }
+    }
+
+    /*
+     * writes all leaderboard data to the file
+     */
+    private void _writeFile() {
+        try (FileWriter writer = new FileWriter(file)) {
+            IP.getGson().toJson(this, writer);
+
+            writer.flush();
+        } catch (IOException ex) {
+            IP.logging().stack(
+                    "Error while trying to write to leaderboard file " + gamemode,
+                    "reload/restart your server", ex);
+        }
     }
 
     /**
      * Reads all scores from the leaderboard file
      */
     public void read(boolean async) {
-        if (!async) {
-            try (FileReader reader = new FileReader(file)) {
-                Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
-
-                if (read != null) {
-                    serialized.clear();
-                    serialized.putAll(read.serialized);
-
-                    scores.clear();
-                    for (UUID uuid : serialized.keySet()) {
-                        String val = serialized.get(uuid);
-
-                        if (val == null) {
-                            continue;
-                        }
-
-                        scores.put(uuid, Score.fromString(val));
-                    }
-                }
-            } catch (IOException ex) {
-                IP.logging().stack("Error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
+        if (Option.SQL) {
+            if (async) {
+                Task.create(IP.getPlugin())
+                        .async()
+                        .execute(this::_readSql)
+                        .run();
+            } else {
+                _readSql();
             }
-            return;
+        } else {
+            if (async) {
+                Task.create(IP.getPlugin())
+                        .async()
+                        .execute(this::_readFile)
+                        .run();
+            } else {
+                _readFile();
+            }
         }
 
+        sort();
+    }
 
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try (FileReader reader = new FileReader(file)) {
-                        Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
+    /*
+     * read leaderboard data from table
+     */
+    private void _readSql() {
+        try {
+            SelectStatement statement = new SelectStatement(IP.getSqlManager(), getTableName())
+                    .addColumns("uuid", "name", "time", "difficulty", "score"); // select all
 
-                        if (read != null) {
-                            serialized.clear();
-                            serialized.putAll(read.serialized);
+            // fetch all data
+            Map<String, List<Object>> fetched = statement.fetch();
 
-                            scores.clear();
-                            for (UUID uuid : serialized.keySet()) {
-                                String val = serialized.get(uuid);
+            if (fetched == null) {
+                return;
+            }
 
-                                if (val == null) {
-                                    continue;
-                                }
+            // loop over data to setup scores variable
+            for (String uuid : fetched.keySet()) {
+                List<Object> objects = fetched.get(uuid);
 
-                                scores.put(uuid, Score.fromString(val));
-                            }
-                        }
-                    } catch (IOException ex) {
-                        IP.logging().stack("Error while trying to read leaderboard file " + gamemode, "send this file to the developer", ex);
+                String name = (String) objects.get(0);
+                String time = (String) objects.get(1);
+                String difficulty = (String) objects.get(2);
+                String score = (String) objects.get(3);
+
+                scores.put(UUID.fromString(uuid), new Score(name, time, difficulty, Integer.parseInt(score)));
+            }
+        } catch (SQLException ex) {
+            IP.logging().stack(
+                    "Error while trying to read SQL leaderboard data",
+                    "restart/reload your server", ex);
+        }
+    }
+
+    /*
+     * read leaderboard data from the file
+     */
+    private void _readFile() {
+        try (FileReader reader = new FileReader(file)) {
+            Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
+
+            if (read != null) {
+                serialized.clear();
+                serialized.putAll(read.serialized);
+
+                scores.clear();
+                for (UUID uuid : serialized.keySet()) {
+                    String val = serialized.get(uuid);
+
+                    if (val == null) {
+                        continue;
                     }
-                })
-                .run();
+
+                    scores.put(uuid, Score.fromString(val));
+                }
+            }
+        } catch (IOException ex) {
+            IP.logging().stack(
+                    "Error while trying to read leaderboard file " + gamemode,
+                    "send this file to the developer", ex);
+        }
     }
 
     /**
@@ -269,5 +363,12 @@ public class Leaderboard {
     @NotNull
     public String getGamemode() {
         return gamemode;
+    }
+
+    /*
+     * return the table name
+     */
+    private String getTableName() {
+        return Option.SQL_PREFIX + "leaderboard-" + gamemode;
     }
 }

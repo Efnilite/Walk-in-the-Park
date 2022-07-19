@@ -2,6 +2,7 @@ package dev.efnilite.ip.util.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.legacy.LegacyLeaderboardData;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
@@ -49,6 +50,15 @@ public class Configuration {
                 plugin.saveResource(name, false);
                 IP.logging().info("Created config file " + name);
             }
+        }
+
+        // for versions before the leaderboard update v3.6.0
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
+        if (c.contains("enable-joining")) {
+            Task.create(plugin)
+                    .delay(10 * 20)
+                    .execute(LegacyLeaderboardData::migrate)
+                    .run();
         }
 
         // Config files without languages

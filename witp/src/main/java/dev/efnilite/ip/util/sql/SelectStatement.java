@@ -66,6 +66,7 @@ public class SelectStatement extends Statement {
         LinkedHashMap<String, List<Object>> map = new LinkedHashMap<>();
 
         manager.validateConnection();
+
         PreparedStatement preparedStatement = manager.getConnection().prepareStatement(statement.toString());
         if (preparedStatement == null) {
             return null;
@@ -91,6 +92,7 @@ public class SelectStatement extends Statement {
             }
             map.put(key, values);
         }
+
         preparedStatement.close();
         set.close();
         return map;

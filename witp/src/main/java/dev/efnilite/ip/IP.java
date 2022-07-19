@@ -105,6 +105,17 @@ public final class IP extends ViPlugin {
 
         divider = new WorldDivider();
 
+        // ----- SQL and data -----
+
+        if (Option.SQL) {
+            try {
+                sqlManager = new SQLManager();
+                sqlManager.connect();
+            } catch(Throwable throwable){
+                logging().stack("There was an error while starting WITP", throwable);
+            }
+        }
+
         // ----- Hooks and Bungee -----
 
         if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
@@ -144,17 +155,6 @@ public final class IP extends ViPlugin {
             placeholderHook.register();
         }
 
-        // ----- SQL and data -----
-
-        try {
-            if (Option.SQL.get()) {
-                sqlManager = new SQLManager();
-                sqlManager.connect();
-            }
-        } catch (Throwable throwable) {
-            logging().stack("There was an error while starting WITP", throwable);
-        }
-
         // ----- Events -----
 
         registerListener(new Handler());
@@ -167,7 +167,7 @@ public final class IP extends ViPlugin {
         // ----- Metrics -----
 
         Metrics metrics = new Metrics(this, 9272);
-        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL.get())));
+        metrics.addCustomChart(new Metrics.SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new Metrics.SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED)));
         metrics.addCustomChart(new Metrics.SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.get().size())));
         metrics.addCustomChart(new Metrics.SingleLineChart("player_joins", () -> {

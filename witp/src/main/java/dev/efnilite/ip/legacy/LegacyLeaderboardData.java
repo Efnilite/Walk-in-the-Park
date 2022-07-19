@@ -3,7 +3,6 @@ package dev.efnilite.ip.legacy;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
@@ -22,7 +21,7 @@ public class LegacyLeaderboardData {
 
     private static final Map<UUID, Score> COLLECTED = new HashMap<>();
 
-    public static void register() {
+    public static void migrate() {
         Time.timerStart("ip migrate leaderboard data");
         IP.logging().info("## ");
         IP.logging().info("## Starting migration of IP leaderboard data...");
@@ -62,8 +61,8 @@ public class LegacyLeaderboardData {
      *          When creating the file reader goes wrong
      */
     public static void fetchHighScores() throws IOException, SQLException {
-        if (Option.SQL.get()) {
-            SelectStatement per = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
+        if (Option.SQL) {
+            SelectStatement per = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "players")
                     .addColumns("uuid", "name", "highscore", "hstime", "hsdiff");
             HashMap<String, List<Object>> stats = per.fetch();
             if (stats != null && stats.size() > 0) {
@@ -85,7 +84,7 @@ public class LegacyLeaderboardData {
             }
             for (File file : folder.listFiles()) {
                 FileReader reader = new FileReader(file);
-                ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
+                LegacyLeaderboardPlayer from = IP.getGson().fromJson(reader, LegacyLeaderboardPlayer.class);
                 if (from == null) {
                     continue;
                 }
@@ -94,7 +93,8 @@ public class LegacyLeaderboardData {
                 if (from.highScoreDifficulty == null) {
                     from.highScoreDifficulty = "?";
                 }
-                COLLECTED.put(uuid, new Score(from.name, from.highScoreDifficulty, from.highScoreTime, from.highScore));
+
+                COLLECTED.put(uuid, new Score(from.name, from.highScoreTime, from.highScoreDifficulty, from.highScore));
                 reader.close();
             }
         }

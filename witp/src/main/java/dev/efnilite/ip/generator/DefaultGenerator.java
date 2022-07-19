@@ -332,7 +332,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        Block blockBelowPlayer = playerLocation.clone().subtract(0, 1, 0).getBlock(); // Get the block below
+        Block blockBelowPlayer = playerLocation.clone().subtract(0, 0.5, 0).getBlock(); // Get the block below
 
         if (blockBelowPlayer.getType() == Material.AIR) {
             return;
@@ -431,7 +431,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         Score record = getGamemode().getLeaderboard().get(player.getUUID());
 
         if (record == null) {
-            record = new Score(player.name, "?", "?", 0);
+            record = new Score(player.getName(), "?", "?", 0);
         }
 
         int score = this.score;
@@ -450,7 +450,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 message = "message.miss";
             }
             if (score > record.score()) {
-                player.setScore(player.name, score, time, diff);
+                player.setScore(player.getName(), score, time, diff);
             }
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
@@ -460,7 +460,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.sendTranslated("divider");
         } else {
             if (score >= record.score()) {
-                player.setScore(player.name, score, time, diff);
+                player.setScore(player.getName(), score, time, diff);
             }
         }
 

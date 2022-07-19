@@ -274,6 +274,6 @@ public class WorldDivider {
      */
     public Vector3D getEstimatedCenter(Vector2D vector, double borderSize) {
         int size = (int) borderSize;
-        return new Vector3D(vector.x * size, (Option.MAX_Y - Option.MIN_Y) / 2.0, vector.y * size);
+        return new Vector3D(vector.x * size, (Option.MAX_Y + Option.MIN_Y) / 2.0, vector.y * size);
     }
 }

@@ -22,7 +22,7 @@ public class SQLManager {
      * This method is also used to reconnect to
      */
     public void connect() {
-        this.database = Option.SQL_DB.get();
+        this.database = Option.SQL_DB;
 
         try {
             IP.logging().info("Connecting to SQL");
@@ -36,14 +36,14 @@ public class SQLManager {
 
             // Connect
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + Option.SQL_URL.get() + ":" + Option.SQL_PORT.get() + "/" + Option.SQL_DB.get() +
+                    "jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
                             "?allowPublicKeyRetrieval=true" +
                             "&useSSL=false" +
                             "&useUnicode=true" +
                             "&characterEncoding=utf-8" +
                             "&autoReconnect=true" +
                             "&maxReconnects=5",
-                    Option.SQL_USERNAME.get(), Option.SQL_PASSWORD.get());
+                    Option.SQL_USERNAME, Option.SQL_PASSWORD);
 
             init();
 
@@ -115,25 +115,17 @@ public class SQLManager {
         sendQuery("CREATE DATABASE IF NOT EXISTS `" + database + "`;");
         sendQuery("USE `" + database + "`;");
 
-        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "players` " +
-                "(`uuid` CHAR(36) NOT NULL, `name` VARCHAR(20) NULL, `highscore` INT NOT NULL, " +
-                "`hstime` VARCHAR(13) NULL, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
-        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "options` " +
+        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " +
                 "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10), " +
                 "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
-        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX.get() + "game-history` (`code` CHAR(9) NOT NULL, `uuid` VARCHAR(36), " +
-                "`name` VARCHAR(20), `score` VARCHAR(10), `hstime` VARCHAR(13) NULL, `difficultyScore` DECIMAL, PRIMARY KEY (`code`)) ENGINE = InnoDB CHARSET = utf8;");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `lang` VARCHAR(5)");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "players` ADD `hsdiff` VARCHAR(3)");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "game-history` ADD `scoreDiff` VARCHAR(3)");
 
         // v3.0.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` DROP COLUMN `time`");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `selectedTime` INT NOT NULL");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL");
 
         // v3.1.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX.get() + "options` ADD `collectedRewards` MEDIUMTEXT");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT");
 
         IP.logging().info("Initialized database");
     }

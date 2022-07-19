@@ -11,6 +11,7 @@ import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
+import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
 import dev.efnilite.vilib.util.Task;
 import fr.mrmicky.fastboard.FastBoard;
@@ -24,8 +25,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,13 +37,9 @@ import java.util.UUID;
  */
 public class ParkourPlayer extends ParkourUser {
 
-    public @Expose Integer highScore;
-    public @Expose String highScoreTime;
-    public @Expose String name; // for fixing null in leaderboard
     public @Expose Double schematicDifficulty;
     public @Expose Integer blockLead;
     public @Expose Boolean useScoreDifficulty;
-    public @Expose String highScoreDifficulty;
     public @Expose Boolean useParticlesAndSound;
     public @Expose Boolean useSpecialBlocks;
     public @Expose Boolean showFallMessage;
@@ -73,7 +70,6 @@ public class ParkourPlayer extends ParkourUser {
         super(player, previousData);
 
         this.uuid = player.getUniqueId();
-        this.name = player.getName();
         this.joinTime = System.currentTimeMillis();
 
         this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
@@ -86,9 +82,9 @@ public class ParkourPlayer extends ParkourUser {
         player.setAllowFlight(false);
     }
 
-    public void setSettings(Integer highScore, Integer selectedTime, String style, String highScoreTime, String lang, Double schematicDifficulty,
+    public void setSettings(Integer selectedTime, String style, String lang, Double schematicDifficulty,
                             Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
-                            Boolean showDeathMsg, Boolean showScoreboard, String highScoreDifficulty, String collectedRewards) {
+                            Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
 
         this.collectedRewards = new ArrayList<>();
         if (collectedRewards != null) {
@@ -98,10 +94,6 @@ public class ParkourPlayer extends ParkourUser {
                 }
             }
         }
-
-        this.highScore = orDefault(highScore, 0, null);
-        this.highScoreTime = orDefault(highScoreTime, "0.0s", null);
-        this.highScoreDifficulty = orDefault(highScoreDifficulty, "?", null);
 
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE, null);
@@ -137,9 +129,9 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private void resetPlayerPreferences() {
-        setSettings(null, null, null, null, null, null,
+        setSettings(null, null, null, null,
                 null, null, null, null, null, null,
-                null, null, null);
+                null, null);
     }
 
     /**
@@ -201,14 +193,7 @@ public class ParkourPlayer extends ParkourUser {
      *          The score
      */
     public void setScore(String name, int score, String time, String diff) {
-        this.highScore = score;
-        highScoreTime = time;
-        if (diff.length() > 3) {
-            diff = diff.substring(0, 3);
-        }
-        highScoreDifficulty = diff;
-
-        generator.getGamemode().getLeaderboard().put(uuid, new Score(name, highScoreTime, diff, score));
+        generator.getGamemode().getLeaderboard().put(uuid, new Score(name, time, diff, score));
     }
 
     private void saveStats() {
@@ -221,21 +206,8 @@ public class ParkourPlayer extends ParkourUser {
     public void save(boolean async) {
         Runnable runnable = () -> {
             try {
-                if (Option.SQL.get()) {
-                    if (highScoreDifficulty == null) {
-                        calculateDifficultyScore();
-                    }
-                    if (highScoreDifficulty.length() > 3) {
-                        highScoreDifficulty = highScoreDifficulty.substring(0, 3);
-                    }
-
-                    UpdertStatement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
-                            .setDefault("uuid", uuid.toString()).setDefault("name", name)
-                            .setDefault("highscore", highScore).setDefault("hstime", highScoreTime)
-                            .setDefault("lang" , locale).setDefault("hsdiff", highScoreDifficulty)
-                            .setCondition("`uuid` = '" + uuid.toString() + "'");
-                    statement.query();
-                    statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
+                if (Option.SQL) {
+                    Statement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
                             .setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime)
                             .setDefault("style", style).setDefault("blockLead", blockLead)
                             .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
@@ -302,18 +274,16 @@ public class ParkourPlayer extends ParkourUser {
     protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
         UUID uuid = pp.getPlayer().getUniqueId();
         JOIN_COUNT++;
-        if (!Option.SQL.get()) {
+        if (!Option.SQL) {
             File data = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid + ".json");
             if (data.exists()) {
                 try {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(from.highScore, from.selectedTime, from.style, from.highScoreTime, from.lang,
+                    pp.setSettings(from.selectedTime, from.style, from.lang,
                             from.schematicDifficulty, from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty,
-                            from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard,
-                            from.highScoreDifficulty,
-                            from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
+                            from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
                     IP.logging().stack("Error while reading file of player " + pp.player.getName(), throwable);
@@ -326,40 +296,19 @@ public class ParkourPlayer extends ParkourUser {
             pp.saveStats();
         } else {
             try {
-                SelectStatement select = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "players")
-                        .addColumns("`uuid`", "`name`", "`highscore`", "`hstime`", "`hsdiff`").addCondition("`uuid` = '" + uuid + "'");
-                HashMap<String, List<Object>> map = select.fetch();
-                List<Object> objects = map != null ? map.get(uuid.toString()) : null;
-                String highScoreTime;
-                String highScoreDifficulty;
-                int highscore;
-                if (objects != null) {
-                    highscore = Integer.parseInt((String) objects.get(1));
-                    highScoreTime = (String) objects.get(2);
-                    highScoreDifficulty = (String) objects.get(3);
-                } else {
-                    pp.resetPlayerPreferences();
-                    players.put(pp.player, pp);
-                    pp.saveStats();
-                    return pp;
-                }
-
-                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX.get() + "options")
+                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
                         "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards").addCondition("uuid = '" + uuid + "'");
-                map = options.fetch();
-                objects = map != null ? map.get(uuid.toString()) : null;
+                Map<String, List<Object>> map = options.fetch();
+                List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings(highscore,
-                            Integer.parseInt((String) objects.get(8)),
-                            (String) objects.get(0),
-                            highScoreTime,
-                            Option.DEFAULT_LOCALE, // todo add table support
+                    pp.setSettings(Integer.parseInt((String) objects.get(8)),
+                            (String) objects.get(0), Option.DEFAULT_LOCALE, // todo add table support
                             Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), // todo add table support
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
-                            translateSqlBoolean((String) objects.get(7)), highScoreDifficulty, (String) objects.get(9));
+                            translateSqlBoolean((String) objects.get(7)), (String) objects.get(9));
                 } else {
                     pp.resetPlayerPreferences();
                     pp.saveStats();

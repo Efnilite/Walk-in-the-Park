@@ -79,7 +79,7 @@ public class Option {
 
         // General settings
         AUTO_UPDATER = config.getBoolean("auto-updater");
-        ENABLE_JOINING = new ConfigOption<>(config, "enable-joining");
+        ENABLE_JOINING = new ConfigOption<>(config, "joining");
         JOIN_LEAVE_MESSAGES = new ConfigOption<>(config, "join-leave-messages");
 
         // Worlds
@@ -167,7 +167,7 @@ public class Option {
 
         if (firstLoad) {
             BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");
-            SQL = new ConfigOption<>(config, "sql.enabled");
+            SQL = config.getBoolean("sql.enabled");
         }
     }
 
@@ -212,21 +212,21 @@ public class Option {
 
     // --------------------------------------------------------------
     // MySQL
-    public static ConfigOption<Boolean> SQL;
-    public static ConfigOption<Integer> SQL_PORT;
-    public static ConfigOption<String> SQL_URL;
-    public static ConfigOption<String> SQL_DB;
-    public static ConfigOption<String> SQL_USERNAME;
-    public static ConfigOption<String> SQL_PASSWORD;
-    public static ConfigOption<String> SQL_PREFIX;
+    public static boolean SQL;
+    public static int SQL_PORT;
+    public static String SQL_URL;
+    public static String SQL_DB;
+    public static String SQL_USERNAME;
+    public static String SQL_PASSWORD;
+    public static String SQL_PREFIX;
 
     private static void initSql() {
-        SQL_PORT = new ConfigOption<>(config, "sql.port");
-        SQL_DB = new ConfigOption<>(config, "sql.database");
-        SQL_URL = new ConfigOption<>(config, "sql.url");
-        SQL_USERNAME = new ConfigOption<>(config, "sql.username");
-        SQL_PASSWORD = new ConfigOption<>(config, "sql.password");
-        SQL_PREFIX = new ConfigOption<>(config, "sql.prefix");
+        SQL_PORT = config.getInt("sql.port");
+        SQL_DB = config.getString("sql.database");
+        SQL_URL = config.getString("sql.url");
+        SQL_USERNAME = config.getString("sql.username");
+        SQL_PASSWORD = config.getString("sql.password");
+        SQL_PREFIX = config.getString("sql.prefix");
     }
 
     // --------------------------------------------------------------

@@ -99,7 +99,7 @@ public class ParkourCommand extends ViCommand {
                     if (!sender.hasPermission("witp.reload")) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
-                    } else if (!Option.SQL.get()) {
+                    } else if (!Option.SQL) {
                         Message.send(sender, IP.PREFIX + "You have disabled SQL support in the config!");
                         return true;
                     }
