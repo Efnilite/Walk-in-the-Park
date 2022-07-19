@@ -116,7 +116,7 @@ public class SQLManager {
         sendQuery("USE `" + database + "`;");
 
         sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " +
-                "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(10), " +
+                "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " +
                 "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
 
@@ -130,7 +130,7 @@ public class SQLManager {
         // v3.6.0
         sendQuerySuppressed(
             """
-            ALTER TABLE `%s` ADD `lang` VARCHAR(2)
+            ALTER TABLE `%s` ADD `locale` VARCHAR(8)
             """
         .formatted(Option.SQL_PREFIX + "options"));
 

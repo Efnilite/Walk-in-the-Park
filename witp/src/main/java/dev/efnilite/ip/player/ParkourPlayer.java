@@ -237,6 +237,7 @@ public class ParkourPlayer extends ParkourUser {
                 IP.logging().stack("Error while saving data of player " + player.getName(), throwable);
             }
         };
+
         if (async) {
             Task.create(IP.getPlugin())
                     .async()

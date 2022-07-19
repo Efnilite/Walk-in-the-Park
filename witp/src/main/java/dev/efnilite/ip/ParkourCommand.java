@@ -467,10 +467,10 @@ public class ParkourCommand extends ViCommand {
 
                 // if found gamemode is null, return to default
                 if (gamemode == null) {
-                    gamemode = IP.getRegistry().getGamemodes().get(0);
+                    LeaderboardMenu.open(player);
+                } else {
+                    LeaderboardMenu.openSingle(player, gamemode);
                 }
-
-                LeaderboardMenu.open(player, gamemode);
             }
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {

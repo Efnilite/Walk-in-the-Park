@@ -3,7 +3,6 @@ package dev.efnilite.ip.menu;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
@@ -48,18 +47,7 @@ public class MainMenu extends DynamicMenu {
         // Leaderboard only if player has perms
         registerMainItem(3, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.leaderboard").click(
-                event -> {
-                    ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
-                    Gamemode gamemode;
-
-                    if (pp != null) {
-                        gamemode = pp.getGenerator().getGamemode();
-                    } else {
-                        gamemode = IP.getRegistry().getGamemodes().get(0);
-                    }
-
-                    LeaderboardMenu.open(event.getPlayer(), gamemode);
-                }),
+                event -> LeaderboardMenu.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms

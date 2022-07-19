@@ -18,7 +18,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Class for handling leaderboards per gamemode
+ * Class for handling leaderboards per Gamemode
+ *
+ * @author Efnilite
  */
 public class Leaderboard {
 
@@ -64,7 +66,7 @@ public class Leaderboard {
                 CREATE TABLE IF NOT EXISTS `%s`
                 (
                     uuid       CHAR(36) NOT NULL PRIMARY KEY,
-                    name       CHAR(16),
+                    name       VARCHAR(16),
                     time       VARCHAR(16),
                     difficulty VARCHAR(3),
                     score      INT
