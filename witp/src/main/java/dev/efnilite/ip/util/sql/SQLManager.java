@@ -127,6 +127,13 @@ public class SQLManager {
         // v3.1.0
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT");
 
+        // v3.6.0
+        sendQuerySuppressed(
+            """
+            ALTER TABLE `%s` ADD `lang` VARCHAR(2)
+            """
+        .formatted(Option.SQL_PREFIX + "options"));
+
         IP.logging().info("Initialized database");
     }
 

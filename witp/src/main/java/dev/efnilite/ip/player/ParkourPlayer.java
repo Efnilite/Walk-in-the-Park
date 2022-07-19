@@ -82,7 +82,7 @@ public class ParkourPlayer extends ParkourUser {
         player.setAllowFlight(false);
     }
 
-    public void setSettings(Integer selectedTime, String style, String lang, Double schematicDifficulty,
+    public void setSettings(Integer selectedTime, String style, String locale, Double schematicDifficulty,
                             Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
                             Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
 
@@ -97,7 +97,7 @@ public class ParkourPlayer extends ParkourUser {
 
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE, null);
-        this.lang = orDefault(lang, Option.DEFAULT_LOCALE, null);
+        this.lang = orDefault(locale, Option.DEFAULT_LOCALE, null);
         this.locale = this.lang;
 
         this.schematicDifficulty = orDefault(schematicDifficulty, Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), ParkourOption.SCHEMATIC_DIFFICULTY);
@@ -214,6 +214,7 @@ public class ParkourPlayer extends ParkourUser {
                             .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
                             .setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard)
                             .setDefault("collectedRewards", String.join(",", collectedRewards))
+                            .setDefault("locale", locale)
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {
@@ -298,12 +299,12 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards").addCondition("uuid = '" + uuid + "'");
+                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale").addCondition("uuid = '" + uuid + "'");
                 Map<String, List<Object>> map = options.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
                     pp.setSettings(Integer.parseInt((String) objects.get(8)),
-                            (String) objects.get(0), Option.DEFAULT_LOCALE, // todo add table support
+                            (String) objects.get(0), (String) objects.get(10), // todo add table support
                             Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), // todo add table support
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),

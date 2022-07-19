@@ -22,34 +22,33 @@ public class LegacyLeaderboardData {
     private static final Map<UUID, Score> COLLECTED = new HashMap<>();
 
     public static void migrate() {
-        Time.timerStart("ip migrate leaderboard data");
-        IP.logging().info("## ");
-        IP.logging().info("## Starting migration of IP leaderboard data...");
-        IP.logging().info("## ");
-
-        IP.logging().info("## Reading old files...");
         try {
+            Time.timerStart("ip migrate leaderboard data");
+            IP.logging().info("## ");
+            IP.logging().info("## Starting migration of IP leaderboard data...");
+            IP.logging().info("## ");
+
+            IP.logging().info("## Reading old files...");
+
             fetchHighScores();
-        } catch (IOException | SQLException ex) {
-            IP.logging().stack("Error while trying to migrate leaderboard data", "restart/reload your server", ex);
-            return;
+
+            IP.logging().info("## Updating leaderboard...");
+            Leaderboard leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+
+            for (UUID uuid : COLLECTED.keySet()) {
+                leaderboard.put(uuid, COLLECTED.get(uuid));
+            }
+
+            // save data
+            IP.logging().info("## Saving new file...");
+            leaderboard.write(true);
+            IP.logging().info("## ");
+            IP.logging().info("## Finished migration of leaderboard data.");
+            IP.logging().info("## Took: " + Time.timerEnd("ip migrate leaderboard data") + " ms");
+            IP.logging().info("## ");
+        } catch (Throwable throwable) {
+            IP.logging().stack("Error while trying to migrate leaderboard data", "restart/reload your server", throwable);
         }
-
-        IP.logging().info("## Updating leaderboard...");
-        Leaderboard leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-
-        for (UUID uuid : COLLECTED.keySet()) {
-            leaderboard.put(uuid, COLLECTED.get(uuid));
-        }
-
-        // save data
-        IP.logging().info("## Saving new file...");
-        leaderboard.write(true);
-
-        IP.logging().info("## ");
-        IP.logging().info("## Finished migration of leaderboard data.");
-        IP.logging().info("## Took: " + Time.timerEnd("ip migrate leaderboard data") + " ms");
-        IP.logging().info("## ");
     }
 
     /**
@@ -73,7 +72,7 @@ public class LegacyLeaderboardData {
                     int highScore = Integer.parseInt((String) values.get(1));
                     String highScoreTime = (String) values.get(2);
                     String highScoreDiff = (String) values.get(3);
-                    COLLECTED.put(uuid, new Score(name, highScoreDiff, highScoreTime, highScore));
+                    COLLECTED.put(uuid, new Score(name, highScoreTime, highScoreDiff, highScore));
                 }
             }
         } else {
