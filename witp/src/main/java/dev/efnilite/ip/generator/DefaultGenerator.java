@@ -202,7 +202,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return Collections.emptyList();
         }
 
-        return List.of(possible.get(random.nextInt(possible.size())));
+        return Collections.singletonList(possible.get(random.nextInt(possible.size())));
     }
 
     @Override
@@ -471,7 +471,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
             mostRecentBlock = selectedBlock.getLocation().clone();
 
-            particles(List.of(selectedBlock));
+            particles(Collections.singletonList(selectedBlock));
 
             if (schematicCooldown > 0) {
                 schematicCooldown--;

@@ -54,9 +54,9 @@ public class Configuration {
 
         // Config files without languages
         try {
-            ConfigUpdater.update(plugin, "config.yml", new File(plugin.getDataFolder(), "config.yml"), List.of("styles"));
+            ConfigUpdater.update(plugin, "config.yml", new File(plugin.getDataFolder(), "config.yml"), Collections.singletonList("styles"));
             ConfigUpdater.update(plugin, "generation.yml", new File(plugin.getDataFolder(), "generation.yml"), new ArrayList<>());
-            ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
+            ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), Collections.singletonList("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
         } catch (IOException ex) {
             Logging.stack("Error while trying to update a config file",
