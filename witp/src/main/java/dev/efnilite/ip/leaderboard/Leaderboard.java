@@ -113,7 +113,7 @@ public class Leaderboard {
         // clear table
         IP.getSqlManager().sendQuery(
             """
-            TRUNCATE `%s`
+            TRUNCATE `%s`;
             """
         .formatted(getTableName()));
 

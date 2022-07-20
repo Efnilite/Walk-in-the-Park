@@ -38,8 +38,11 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
 
     /**
      * The current phase of the turnaround manoeuvre.
+     * -1 = deactivated
+     * 0 = activated
+     * 1 = prevent going into zone again
      */
-    protected boolean shouldTurnaround;
+    protected int shouldTurnaround = -1;
 
     public DefaultGeneratorBase(@NotNull Session session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);

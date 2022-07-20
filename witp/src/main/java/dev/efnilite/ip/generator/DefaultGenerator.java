@@ -263,9 +263,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // make sure a block gets put to the side to allow for the blocks
         // that will be generated in the new heading to pass by the previously
         // generated blocks
-        if (shouldTurnaround) {
+        if (shouldTurnaround == 0) {
             df = 0;
             ds = 2;
+        }
+        if (shouldTurnaround == 1) {
+            shouldTurnaround = -1;
         }
 
         // update current loc
@@ -278,11 +281,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         // finalize turnaround manoeuvre by turning heading and making sure
         // no schematics spawn too close to the edge
-        if (shouldTurnaround) {
+        if (shouldTurnaround == 0) {
             heading = Direction.getOpposite(heading);
             schematicCooldown += 2;
-            shouldTurnaround = false;
+            shouldTurnaround = 1;
         }
+        System.out.println("================");
+        System.out.println("Heading: " + heading.name());
+        System.out.println("Phase: " + shouldTurnaround);
 
         return clone.getBlock();
     }
@@ -511,8 +517,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
-            if (isNearingEdge(mostRecentBlock) && score > 0) {
-                shouldTurnaround = true;
+            if (isNearingEdge(mostRecentBlock) && score > 0 && shouldTurnaround == -1) {
+                shouldTurnaround = 0;
             }
 
             BlockData selectedBlockData = selectBlockData();
