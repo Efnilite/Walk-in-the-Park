@@ -260,6 +260,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // delta forwards
         int df = adjustedRange - Math.abs(ds);
 
+        // make sure a block gets put to the side to allow for the blocks
+        // that will be generated in the new heading to pass by the previously
+        // generated blocks
+        if (shouldTurnaround) {
+            df = 0;
+            ds = 2;
+        }
+
         // update current loc
         Location clone = current.clone();
 
@@ -267,6 +275,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         Vector offset = new Vector(df, dy, ds);
         offset.rotateAroundY(heading.getAngleFromBase());
         clone.add(offset);
+
+        // finalize turnaround manoeuvre by turning heading and making sure
+        // no schematics spawn too close to the edge
+        if (shouldTurnaround) {
+            heading = Direction.getOpposite(heading);
+            schematicCooldown += 2;
+            shouldTurnaround = false;
+        }
 
         return clone.getBlock();
     }
@@ -437,6 +453,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int score = this.score;
         String time = this.time;
         String diff = player.calculateDifficultyScore();
+
         if (player.showFallMessage && regenerate && time != null) {
             String message;
             int number = 0;
@@ -494,9 +511,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
-//            if (isNearingEdge(mostRecentBlock) && score > 0) { todo fix
-//                heading = Util.opposite(mostRecentBlock, zone);
-//            }
+            if (isNearingEdge(mostRecentBlock) && score > 0) {
+                shouldTurnaround = true;
+            }
 
             BlockData selectedBlockData = selectBlockData();
 

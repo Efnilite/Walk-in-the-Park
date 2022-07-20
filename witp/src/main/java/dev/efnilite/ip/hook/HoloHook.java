@@ -25,6 +25,7 @@ public class HoloHook {
             IP.logging().warn("## IP only supports Holographic Displays v3.0.0 or higher!");
             IP.logging().warn("## This hook will now be disabled.");
             IP.logging().warn("##");
+            return;
         }
 
         HolographicDisplaysAPI.get(plugin).registerGlobalPlaceholder("ip_leaderboard", 100, argument -> {

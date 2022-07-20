@@ -24,4 +24,21 @@ public enum Direction {
     public Vector3D toVector() {
         return vector;
     }
+
+    /**
+     * Gets the opposite direction of the provided direction
+     *
+     * @param   direction
+     *          The direction
+     *
+     * @return the opposite direction
+     */
+    public static Direction getOpposite(Direction direction) {
+        return switch (direction) {
+            case NORTH -> SOUTH;
+            case EAST -> WEST;
+            case SOUTH -> NORTH;
+            case WEST -> EAST;
+        };
+    }
 }
