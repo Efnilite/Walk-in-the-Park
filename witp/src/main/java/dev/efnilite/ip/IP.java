@@ -4,8 +4,6 @@ import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
-import dev.efnilite.ip.generator.DefaultGenerator;
-import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.hook.PlaceholderHook;
@@ -13,10 +11,8 @@ import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.internal.style.DefaultStyleType;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
-import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SQLManager;
@@ -26,7 +22,6 @@ import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
-import dev.efnilite.vilib.util.Version;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.bstats.bukkit.Metrics;
@@ -36,7 +31,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -236,31 +230,6 @@ public final class IP extends ViPlugin {
         }
 
         worldHandler.deleteWorld();
-    }
-
-    /**
-     * Gets a DefaultGenerator which disables schematics if the version is below 1.16.
-     *
-     * @param   player
-     *          The player
-     *
-     * @return a {@link DefaultGenerator}
-     */
-    public static DefaultGenerator getVersionGenerator(@NotNull ParkourPlayer player) {
-        if (versionSupportsSchematics()) {
-            return new DefaultGenerator(SingleSession.create(player, Gamemodes.DEFAULT));
-        } else {
-            return new DefaultGenerator(SingleSession.create(player, Gamemodes.DEFAULT), GeneratorOption.DISABLE_SCHEMATICS);
-        }
-    }
-
-    /**
-     * Checks whether the current version supports schematics
-     *
-     * @return true if it supports it, false if not.
-     */
-    public static boolean versionSupportsSchematics() {
-        return Version.isHigherOrEqual(Version.V1_16);
     }
 
     /**

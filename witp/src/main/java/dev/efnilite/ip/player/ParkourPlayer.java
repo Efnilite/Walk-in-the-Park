@@ -3,11 +3,13 @@ package dev.efnilite.ip.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
+import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
@@ -140,7 +142,7 @@ public class ParkourPlayer extends ParkourUser {
     @Override
     public void updateScoreboard() {
         if (showScoreboard && Option.SCOREBOARD_ENABLED && board != null && generator != null) {
-            Leaderboard leaderboard = getSession().getGamemode().getLeaderboard();
+            Leaderboard leaderboard = generator.getGamemode().getLeaderboard();
 
             // scoreboard settings
             String title = Util.color(Option.SCOREBOARD_TITLE);
@@ -376,7 +378,7 @@ public class ParkourPlayer extends ParkourUser {
      */
     public @NotNull ParkourGenerator getGenerator() {
         if (generator == null) {
-            generator = IP.getVersionGenerator(this);
+            generator = new DefaultGenerator(SingleSession.create(this, Gamemodes.DEFAULT));
         }
         return generator;
     }

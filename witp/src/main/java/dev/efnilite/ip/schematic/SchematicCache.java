@@ -16,11 +16,6 @@ public class SchematicCache {
     public static volatile Map<String, Schematic> cache = new HashMap<>();
 
     public static void read() {
-        if (!IP.versionSupportsSchematics()) {
-            IP.logging().warn("This version does *not* support schematics, consider upgrading if you want them");
-            return;
-        }
-
         Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {

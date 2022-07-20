@@ -469,7 +469,7 @@ public class ParkourCommand extends ViCommand {
                 if (gamemode == null) {
                     LeaderboardMenu.open(player);
                 } else {
-                    LeaderboardMenu.openSingle(player, gamemode);
+                    LeaderboardMenu.openSingle(player, gamemode, LeaderboardMenu.Sort.SCORE);
                 }
             }
         } else if (args.length == 3) {

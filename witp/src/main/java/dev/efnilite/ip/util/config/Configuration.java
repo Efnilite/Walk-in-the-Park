@@ -110,7 +110,7 @@ public class Configuration {
      * @return true if schematics are already found, false if not
      */
     private boolean schematics() {
-        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists() || !IP.versionSupportsSchematics()) {
+        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists()) {
             return true;
         }
         String[] schematics = new String[]{"spawn-island.witp"};

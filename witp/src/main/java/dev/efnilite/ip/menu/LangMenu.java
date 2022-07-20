@@ -5,7 +5,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.WaveWestAnimation;
+import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
@@ -61,7 +61,7 @@ public class LangMenu {
                         .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
-                .animation(new WaveWestAnimation())
+                .animation(new WaveEastAnimation())
                 .open(user.getPlayer());
     }
 
