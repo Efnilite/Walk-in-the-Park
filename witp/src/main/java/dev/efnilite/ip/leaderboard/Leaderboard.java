@@ -7,6 +7,7 @@ import dev.efnilite.ip.util.VFiles;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.util.Time;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +79,16 @@ public class Leaderboard {
             VFiles.create(file);
         }
 
+        // read all data
         read(true);
+
+        // write all data every 5 minutes
+        Task.create(IP.getPlugin())
+                .delay(5 * Time.SECONDS_PER_MINUTE * 20)
+                .repeat(5 * Time.SECONDS_PER_MINUTE * 20)
+                .async()
+                .execute(() -> write(false))
+                .run();
     }
 
     /**

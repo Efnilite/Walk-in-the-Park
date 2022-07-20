@@ -20,7 +20,6 @@ import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldHandler;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
@@ -172,22 +171,6 @@ public final class IP extends ViPlugin {
             ParkourUser.JOIN_COUNT = 0;
             return joins;
         }));
-
-        Task.create(this)
-                .delay(Time.SECONDS_PER_MINUTE * 20)
-                .repeat(Time.SECONDS_PER_MINUTE * 20)
-                .execute(() -> {
-                    for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
-                        Leaderboard leaderboard = gamemode.getLeaderboard();
-
-                        if (leaderboard == null) {
-                            continue;
-                        }
-
-                        leaderboard.write(true);
-                    }
-                })
-                .run();
 
         logging().info("Loaded WITP in " + Time.timerEnd("load") + "ms!");
     }

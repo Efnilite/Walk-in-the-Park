@@ -260,37 +260,66 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // delta forwards
         int df = adjustedRange - Math.abs(ds);
 
-        // make sure a block gets put to the side to allow for the blocks
-        // that will be generated in the new heading to pass by the previously
-        // generated blocks
-        if (shouldTurnaround == 0) {
-            df = 0;
-            ds = 2;
-        }
-        if (shouldTurnaround == 1) {
-            shouldTurnaround = -1;
-        }
-
         // update current loc
         Location clone = current.clone();
+
+        updateHeading();
 
         // add all offsets to a vector and rotate it to match current direction
         Vector offset = new Vector(df, dy, ds);
         offset.rotateAroundY(heading.getAngleFromBase());
         clone.add(offset);
 
-        // finalize turnaround manoeuvre by turning heading and making sure
-        // no schematics spawn too close to the edge
-        if (shouldTurnaround == 0) {
-            heading = Direction.getOpposite(heading);
-            schematicCooldown += 2;
-            shouldTurnaround = 1;
-        }
-        System.out.println("================");
-        System.out.println("Heading: " + heading.name());
-        System.out.println("Phase: " + shouldTurnaround);
-
         return clone.getBlock();
+    }
+
+    /**
+     * Updates the heading to make sure it avoids the border of the selected zone.
+     * When the most recent block is detected to be within a 5-block radius of the border,
+     * the heading will automatically be turned around to ensure that the edge does not get
+     * destroyed.
+     */
+    public void updateHeading() {
+        // the total dimensions
+        int dx = zone.getDimensions().getWidth();
+        int dz = zone.getDimensions().getLength();
+
+        // the relative x and z coordinates
+        // relative being from the min point of the selection zone
+        double relativeX = mostRecentBlock.getX() - zone.getMinimumPoint().getX();
+        double relativeZ = mostRecentBlock.getZ() - zone.getMinimumPoint().getZ();
+
+        // get progress along axes
+        // tx = 0 means that the player is at the same x coordinate as the min point (origin)
+        // tx = 1 means that the player is at the same x coordinate as the max point
+        // everything between is the progress between these two points, relatively speaking
+        double tx = relativeX / dx;
+        double tz = relativeZ / dz;
+
+        // the minimum distance allowed to the border
+        // max block jump distance is 5, so 6 is the max safe distance
+        double safeDistance = 6;
+
+        // the margin until the border
+        // if tx < borderMarginX, it means the x coordinate is within 'safeDistance' blocks of the border
+        double borderMarginX = safeDistance / dx;
+        double borderMarginZ = safeDistance / dz;
+
+        if (tx < borderMarginX) {
+            heading = Direction.EAST;
+            // x should increase
+        } else if (tx > 1 - borderMarginX) {
+            heading = Direction.WEST;
+            // x should decrease
+        }
+
+        if (tz < borderMarginZ) {
+            heading = Direction.SOUTH;
+            // z should increase
+        } else if (tz > 1 - borderMarginZ) {
+            heading = Direction.NORTH;
+            // z should decrease
+        }
     }
 
     @Override
@@ -517,8 +546,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             type = schematicCooldown == 0 && player.useSchematic ? type : 0;
         }
         if (type == 0) {
-            if (isNearingEdge(mostRecentBlock) && score > 0 && shouldTurnaround == -1) {
-                shouldTurnaround = 0;
+            if (isNearingEdge(mostRecentBlock) && score > 0) {
+                schematicCooldown += 4;
             }
 
             BlockData selectedBlockData = selectBlockData();

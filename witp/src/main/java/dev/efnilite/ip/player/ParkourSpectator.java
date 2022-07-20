@@ -52,19 +52,20 @@ public class ParkourSpectator extends ParkourUser {
         if (Option.SCOREBOARD_ENABLED && board != null) {
             Leaderboard leaderboard = getSession().getGamemode().getLeaderboard();
 
+            Score top = null, rank = null;
+            if (leaderboard != null) {
+                top = leaderboard.getScoreAtRank(1);
+                rank = leaderboard.get(closest.getUUID());
+            }
+
+            if (leaderboard == null || top == null || rank == null) {
+                top = new Score("?", "?", "?", 0);
+                rank = new Score("?", "?", "?", 0);
+            }
+
             // scoreboard settings
             String title = Util.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
             List<String> lines = new ArrayList<>();
-
-            Score top = leaderboard.getScoreAtRank(1);
-            Score rank = leaderboard.get(getUUID());
-
-            if (top == null) {
-                top = new Score("?", "?", "?", 0);
-            }
-            if (rank == null) {
-                rank = new Score("?", "?", "?", 0);
-            }
 
             for (String s : Option.SCOREBOARD_LINES) {
                 s = Util.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard

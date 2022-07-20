@@ -36,32 +36,12 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
      */
     protected AreaData data;
 
-    /**
-     * The current phase of the turnaround manoeuvre.
-     * -1 = deactivated
-     * 0 = activated
-     * 1 = prevent going into zone again
-     */
-    protected int shouldTurnaround = -1;
-
     public DefaultGeneratorBase(@NotNull Session session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);
     }
 
     /**
      * If a specified location is nearing or outside the playable area.
-     *
-     * To perform turnaround manoeuvre:
-     * Step 1
-     * - df 0
-     * - ds 2
-     *
-     * Step 2
-     * - df -2
-     * - ds 0
-     *
-     * Step 3
-     * - heading = heading.opposite()
      *
      * @param   location
      *          The location to check
