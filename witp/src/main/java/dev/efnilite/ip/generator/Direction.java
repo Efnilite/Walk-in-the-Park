@@ -22,7 +22,7 @@ public enum Direction {
     }
 
     public Vector3D toVector() {
-        return vector;
+        return vector.clone();
     }
 
     /**

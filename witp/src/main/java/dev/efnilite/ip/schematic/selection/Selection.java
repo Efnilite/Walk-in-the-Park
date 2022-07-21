@@ -112,38 +112,6 @@ public class Selection {
     }
 
     /**
-     * Returns the distance from a specific location to the axes of this selection.
-     * The axes in the selection is in this case the minimum point, thus negative values are impossible.
-     *
-     * @param   other
-     *          The other location which to compare with
-     *
-     * @return an array of distances to each of the axes in the following order: x, y, z
-     */
-    public double[] distanceToBoundaries(Location other) {
-        Location min = getMinimumPoint();
-        double[] minDistances = new double[] {
-                other.getBlockX() - min.getBlockX(),
-                other.getBlockY() - min.getBlockY(),
-                other.getBlockZ() - min.getBlockZ() };
-
-        Location max = getMaximumPoint();
-        double[] maxDistances = new double[] {
-                max.getBlockX() - other.getBlockX(),
-                max.getBlockY() - other.getBlockY(),
-                max.getBlockZ() - other.getBlockZ() };
-
-        double[] distances = new double[3];
-        for (int i = 0; i < 3; i++) {
-            double minDistance = minDistances[i];
-            double maxDistance = maxDistances[i];
-
-            distances[i] = Math.min(minDistance, maxDistance);
-        }
-        return distances;
-    }
-
-    /**
      * Get the dimensions of this selection
      *
      * @return the dimensions

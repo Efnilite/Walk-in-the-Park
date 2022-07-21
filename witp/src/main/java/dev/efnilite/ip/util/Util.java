@@ -5,9 +5,6 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.schematic.VectorUtil;
-import dev.efnilite.ip.schematic.selection.Dimensions;
-import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -25,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -318,50 +314,6 @@ public class Util {
         } else {
             return new int[]{k, k - (m - n - t)};
         }
-    }
-
-    /**
-     * Returns the heading opposite to the axes with the smallest distance. Only works for the x and z-axis.
-     *
-     * @param   location
-     *          The current location
-     *
-     * @param   selection
-     *          The selection.
-     *
-     * @return the new heading
-     */
-    public static Direction opposite(Location location, Selection selection) {
-        Dimensions dimensions = selection.getDimensions();
-        Vector point = location.toVector();
-
-        double[] distances = selection.distanceToBoundaries(location);
-        double dx = distances[0]; // x distance from border
-        double dz = distances[2]; // z distance from border
-
-        Vector center = dimensions.getMinimumPoint().toVector(); // get the location of the min coordinates to act as O(0,0,0)
-        Vector centerOffset = point.clone().subtract(center); // get the offset compared to center
-
-        Vector mirroredPoint = point.clone(); // point mirrored on axis
-        if (dx <= dz) {
-            if (centerOffset.getX() > dimensions.getWidth()) { // if x is heading west, turn it around
-                dx *= -1;
-            }
-
-            // turn away from x
-            mirroredPoint.add(new Vector(dx, 0, 0)); // todo fix for directions to west
-        } else {
-            if (centerOffset.getZ() > dimensions.getLength()) { // if x is heading north, turn it around
-                dz *= -1;
-            }
-
-            // turn away from z
-            mirroredPoint.add(new Vector(0, 0, dz));
-        }
-
-        Vector toBorder = mirroredPoint.subtract(point).normalize(); // a' - a = AA'
-        Vector opposite = toBorder.multiply(-1); // reverse vector
-        return VectorUtil.fromVector(opposite);
     }
 
     /**

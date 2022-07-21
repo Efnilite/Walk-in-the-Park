@@ -1,6 +1,5 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
@@ -10,7 +9,6 @@ import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.internal.style.DefaultStyleType;
-import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.util.config.Configuration;
@@ -181,16 +179,8 @@ public final class IP extends ViPlugin {
             ParkourUser.unregister(user, true, false, false);
         }
 
-        // write all gamemodes
-        for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
-            Leaderboard leaderboard = gamemode.getLeaderboard();
-
-            if (leaderboard == null) {
-                continue;
-            }
-
-            leaderboard.write(false);
-        }
+        // write all IP gamemodes
+        Gamemodes.DEFAULT.getLeaderboard().write(false);
 
         if (sqlManager != null) {
             sqlManager.close();

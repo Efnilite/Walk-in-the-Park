@@ -40,20 +40,6 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
         super(session, generatorOptions);
     }
 
-    /**
-     * If a specified location is nearing or outside the playable area.
-     *
-     * @param   location
-     *          The location to check
-     *
-     * @return true if the location is closer than the border warning, false if not.
-     */
-    public boolean isNearingEdge(Location location) {
-        double[] distances = zone.distanceToBoundaries(location);
-
-        return distances[0] < 50 || distances[2] < 50;
-    }
-
     public AreaData getData() {
         return data;
     }

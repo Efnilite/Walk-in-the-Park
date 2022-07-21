@@ -24,6 +24,7 @@ import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
+import dev.efnilite.vilib.util.Numbers;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,8 +52,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     private BukkitRunnable task;
 
-    private boolean isSpecial;
-    private Material specialType;
+    private Material special;
 
     /**
      * The amount of blocks that will trail the player's current index.
@@ -174,8 +174,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
 
-        if (isSpecial && specialType != null) {
-            switch (specialType) { // adjust for special jumps
+        if (special != null) {
+            switch (special) { // adjust for special jumps
                 case PACKED_ICE -> // ice
                         gap += 0.5;
                 case QUARTZ_SLAB -> // slab
@@ -187,6 +187,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         gap -= 1;
                 }
             }
+        }
+
+        if (special == Material.QUARTZ_SLAB || special == Material.OAK_FENCE) {
+            dy = 0;
         }
 
         if (dy > 0 && gap < 2) {
@@ -219,7 +223,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double[][] progress = calculateParameterization();
 
         // update the values
-        heading = updateHeading(progress);
+        List<Direction> directions = updateHeading(progress);
+
+        if (directions.size() == 1) {
+            heading = directions.get(0);
+        }
+
         dy = updateHeight(progress, dy);
 
         // the adjusted dy, used to get the updated max range
@@ -253,11 +262,23 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // delta forwards
         int df = adjustedRange - Math.abs(ds);
 
+        Vector offset;
+        // if the next block has two proposed headings, it's stuck in corner
+        // to fix this, get two proposed headings, convert to unit vector
+        // and multiply it by 2 to return in a cornerly fashion
+        if (directions.size() == 2) {
+            Direction one = directions.get(0);
+            Direction two = directions.get(1);
+
+            offset = one.toVector().add(two.toVector()).multiply(2).toBukkitVector();
+        } else {
+            offset = new Vector(df, dy, ds);
+        }
+
         // update current loc
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-        Vector offset = new Vector(df, dy, ds);
         offset.rotateAroundY(heading.getAngleFromBase());
         clone.add(offset);
 
@@ -318,9 +339,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * @param   progress
      *          The 2-dimensional array resulting from {@link #calculateParameterization()}
      *
-     * @return the updated heading
+     * @return a list of new proposed headings
      */
-    public Direction updateHeading(double[][] progress) {
+    public List<Direction> updateHeading(double[][] progress) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -329,24 +350,25 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double tz = progress[2][0];
         double borderMarginZ = progress[2][1];
 
+        List<Direction> directions = new ArrayList<>();
         // check border
         if (tx < borderMarginX) {
-            return Direction.EAST;
+            directions.add(Direction.EAST);
             // x should increase
         } else if (tx > 1 - borderMarginX) {
-            return Direction.WEST;
+            directions.add(Direction.WEST);
             // x should decrease
         }
 
         if (tz < borderMarginZ) {
-            return Direction.SOUTH;
+            directions.add(Direction.SOUTH);
             // z should increase
         } else if (tz > 1 - borderMarginZ) {
-            return Direction.NORTH;
+            directions.add(Direction.NORTH);
             // z should decrease
         }
 
-        return heading;
+        return directions;
     }
 
     /**
@@ -365,7 +387,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public int updateHeight(double[][] progress, int currentHeight) {
         double ty = progress[1][0];
-        double borderMarginY = progress[0][1];
+        double borderMarginY = progress[1][1];
 
         if (ty < borderMarginY) {
             return 1;
@@ -604,119 +626,117 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         int type = getRandomChance(defaultChances); // 0 = normal, 1 = structures, 2 = special
-        isSpecial = type == 2; // 1 = yes, 0 = no
-        if (isSpecial) {
-            type = 0;
-        } else {
-            type = schematicCooldown == 0 && player.useSchematic ? type : 0;
+
+        if (type == 1) {
+            type = schematicCooldown == 0 && player.useSchematic ? type : Numbers.random(0, 2) * 2;
         }
-        if (type == 0) {
-            if (isNearingEdge(mostRecentBlock) && score > 0) {
-                schematicCooldown += 4;
-            }
 
-            BlockData selectedBlockData = selectBlockData();
+        switch (type) {
+            case 0, 2 -> {
+                BlockData next;
 
-            if (isSpecial && player.useSpecialBlocks) { // if special
-                int value = getRandomChance(specialChances);
-                switch (value) {
-                    case 0 -> // ice
-                        selectedBlockData = Material.PACKED_ICE.createBlockData();
-                    case 1 -> { // slab
-                        selectedBlockData = Material.QUARTZ_SLAB.createBlockData();
-                        ((Slab) selectedBlockData).setType(Slab.Type.BOTTOM);
+                if (type == 2 && player.useSpecialBlocks) { // if special
+                    int value = getRandomChance(specialChances);
+                    switch (value) {
+                        // ice
+                        case 0 -> next = Material.PACKED_ICE.createBlockData();
+                        // slab
+                        case 1 -> {
+                            next = Material.QUARTZ_SLAB.createBlockData();
+                            ((Slab) next).setType(Slab.Type.BOTTOM);
+                        }
+                        // pane
+                        case 2 -> next = Material.WHITE_STAINED_GLASS_PANE.createBlockData();
+                        // fence
+                        case 3 -> next = Material.OAK_FENCE.createBlockData();
+                        // ???
+                        default -> {
+                            next = Material.STONE.createBlockData();
+                            IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
+                        }
                     }
-                    case 2 -> // pane
-                        selectedBlockData = Material.WHITE_STAINED_GLASS_PANE.createBlockData();
-                    case 3 -> // fence
-                        selectedBlockData = Material.OAK_FENCE.createBlockData();
-                    default -> {
-                        selectedBlockData = Material.STONE.createBlockData();
-                        IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
+                    special = next.getMaterial();
+                } else {
+                    next = selectBlockData();
+                }
+
+                List<Block> blocks = selectBlocks();
+                if (blocks.isEmpty()) {
+                    return;
+                }
+
+                Block selectedBlock = blocks.get(0);
+                setBlock(selectedBlock, next);
+                new BlockGenerateEvent(selectedBlock, this, player).call();
+
+                positionIndexMap.put(selectedBlock, positionIndexTotal);
+                positionIndexTotal++;
+
+                mostRecentBlock = selectedBlock.getLocation().clone();
+
+                particles(List.of(selectedBlock));
+
+                if (schematicCooldown > 0) {
+                    schematicCooldown--;
+                }
+
+                // delete special type
+                special = null;
+            }
+            case 1 -> {
+                File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
+                List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
+                File file = null;
+                if (!files.isEmpty()) {
+                    boolean passed = true;
+                    while (passed) {
+                        file = files.get(random.nextInt(files.size()));
+                        if (player.schematicDifficulty == 0) {
+                            player.schematicDifficulty = 0.2;
+                        }
+                        if (Util.getDifficulty(file.getName()) < player.schematicDifficulty) {
+                            passed = false;
+                        }
+                    }
+                } else {
+                    IP.logging().error("No structures to choose from!");
+                    generate(); // generate if no schematic is found
+                    return;
+                }
+                Schematic schematic = SchematicCache.getSchematic(file.getName());
+
+                schematicCooldown = 20;
+                List<Block> blocks = selectBlocks();
+                if (blocks.isEmpty()) {
+                    return;
+                }
+
+                Block selectedBlock = blocks.get(0);
+
+                try {
+                    schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
+                    waitForSchematicCompletion = true;
+                } catch (IOException ex) {
+                    IP.logging().stack("There was an error while trying to paste schematic " + schematic.getName(), "delete this file and restart the server", ex);
+                    reset(true);
+                    return;
+                }
+
+                if (schematicBlocks == null || schematicBlocks.isEmpty()) {
+                    IP.logging().error("0 blocks found in structure!");
+                    player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
+                    reset(true);
+                    return;
+                }
+
+                for (Block schematicBlock : schematicBlocks) {
+                    if (schematicBlock.getType() == Material.RED_WOOL) {
+                        mostRecentBlock = schematicBlock.getLocation();
+                        break;
                     }
                 }
-                specialType = selectedBlockData.getMaterial();
-            } else {
-                specialType = null;
             }
-
-            List<Block> blocks = selectBlocks();
-            if (blocks.isEmpty()) {
-                return;
-            }
-
-            Block selectedBlock = blocks.get(0);
-            setBlock(selectedBlock, selectedBlockData);
-            new BlockGenerateEvent(selectedBlock, this, player).call();
-
-            positionIndexMap.put(selectedBlock, positionIndexTotal);
-            positionIndexTotal++;
-
-            mostRecentBlock = selectedBlock.getLocation().clone();
-
-            particles(List.of(selectedBlock));
-
-            if (schematicCooldown > 0) {
-                schematicCooldown--;
-            }
-        } else if (type == 1) {
-            if (isNearingEdge(mostRecentBlock) && score > 0) {
-                generate(); // generate a normal block
-                return;
-            }
-
-            File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
-            List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-            File file = null;
-            if (!files.isEmpty()) {
-                boolean passed = true;
-                while (passed) {
-                    file = files.get(random.nextInt(files.size()));
-                    if (player.schematicDifficulty == 0) {
-                        player.schematicDifficulty = 0.2;
-                    }
-                    if (Util.getDifficulty(file.getName()) < player.schematicDifficulty) {
-                        passed = false;
-                    }
-                }
-            } else {
-                IP.logging().error("No structures to choose from!");
-                generate(); // generate if no schematic is found
-                return;
-            }
-            Schematic schematic = SchematicCache.getSchematic(file.getName());
-
-            schematicCooldown = 20;
-            List<Block> blocks = selectBlocks();
-            if (blocks.isEmpty()) {
-                return;
-            }
-
-            Block selectedBlock = blocks.get(0);
-
-            try {
-                schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
-                waitForSchematicCompletion = true;
-            } catch (IOException ex) {
-                IP.logging().stack("There was an error while trying to paste schematic " + schematic.getName(),
-                        "delete this file and restart the server", ex);
-                reset(true);
-                return;
-            }
-
-            if (schematicBlocks == null || schematicBlocks.isEmpty()) {
-                IP.logging().error("0 blocks found in structure!");
-                player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
-                reset(true);
-                return;
-            }
-
-            for (Block schematicBlock : schematicBlocks) {
-                if (schematicBlock.getType() == Material.RED_WOOL) {
-                    mostRecentBlock = schematicBlock.getLocation();
-                    break;
-                }
-            }
+            default -> IP.logging().stack("Illegal jump type with id " + type, new IllegalArgumentException());
         }
     }
 
