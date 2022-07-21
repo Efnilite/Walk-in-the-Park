@@ -8,6 +8,7 @@ import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
@@ -170,20 +171,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public List<Block> selectBlocks() {
-        int dy;
+        int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
-
-        int zoneMax = zone.getMaximumPoint().getBlockY();
-        int zoneMin = zone.getMinimumPoint().getBlockY();
-        int mostRecentY = mostRecentBlock.getBlockY();
-
-        if (mostRecentY > zoneMax) { // 204 > 200
-            dy = -1;
-        } else if (zoneMin > mostRecentY) { // 100 > 99
-            dy = 1;
-        } else {
-            dy = getRandomChance(heightChances);
-        }
 
         if (isSpecial && specialType != null) {
             switch (specialType) { // adjust for special jumps
@@ -198,10 +187,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         gap -= 1;
                 }
             }
-        }
-
-        if (mostRecentBlock.getBlock().getType() == Material.QUARTZ_SLAB) { // slabs can't go higher than one
-            dy = Math.min(dy, 0);
         }
 
         if (dy > 0 && gap < 2) {
@@ -229,6 +214,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      * @return a randomly selected block.
      */
     protected Block selectNext(Location current, int range, int dy) {
+        // calculate the player's location as parameter form to make it easier to detect
+        // when a player is near the edge of the playable area
+        double[][] progress = calculateParameterization();
+
+        // update the values
+        heading = updateHeading(progress);
+        dy = updateHeight(progress, dy);
+
         // the adjusted dy, used to get the updated max range
         int ady = dy;
 
@@ -263,8 +256,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // update current loc
         Location clone = current.clone();
 
-        updateHeading();
-
         // add all offsets to a vector and rotate it to match current direction
         Vector offset = new Vector(df, dy, ds);
         offset.rotateAroundY(heading.getAngleFromBase());
@@ -274,19 +265,23 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     /**
-     * Updates the heading to make sure it avoids the border of the selected zone.
-     * When the most recent block is detected to be within a 5-block radius of the border,
-     * the heading will automatically be turned around to ensure that the edge does not get
-     * destroyed.
+     * Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
+     *
+     * Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
+     * This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
+     *
+     * @return a 2-dimensional array where the first array index is used to specify x, y and z and the second used to specify the type.
      */
-    public void updateHeading() {
+    public double[][] calculateParameterization() {
         // the total dimensions
         int dx = zone.getDimensions().getWidth();
+        int dy = zone.getDimensions().getHeight();
         int dz = zone.getDimensions().getLength();
 
-        // the relative x and z coordinates
+        // the relative x, y and z coordinates
         // relative being from the min point of the selection zone
         double relativeX = mostRecentBlock.getX() - zone.getMinimumPoint().getX();
+        double relativeY = mostRecentBlock.getY() - zone.getMinimumPoint().getY();
         double relativeZ = mostRecentBlock.getZ() - zone.getMinimumPoint().getZ();
 
         // get progress along axes
@@ -294,6 +289,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // tx = 1 means that the player is at the same x coordinate as the max point
         // everything between is the progress between these two points, relatively speaking
         double tx = relativeX / dx;
+        double ty = relativeY / dy;
         double tz = relativeZ / dz;
 
         // the minimum distance allowed to the border
@@ -303,22 +299,82 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // the margin until the border
         // if tx < borderMarginX, it means the x coordinate is within 'safeDistance' blocks of the border
         double borderMarginX = safeDistance / dx;
+        double borderMarginY = (0.5 * safeDistance) / dy;
         double borderMarginZ = safeDistance / dz;
 
+        return new double[][] {
+                { tx, borderMarginX },
+                { ty, borderMarginY },
+                { tz, borderMarginZ }
+        };
+    }
+
+    /**
+     * Updates the heading to make sure it avoids the border of the selected zone.
+     * When the most recent block is detected to be within a 5-block radius of the border,
+     * the heading will automatically be turned around to ensure that the edge does not get
+     * destroyed.
+     *
+     * @param   progress
+     *          The 2-dimensional array resulting from {@link #calculateParameterization()}
+     *
+     * @return the updated heading
+     */
+    public Direction updateHeading(double[][] progress) {
+        // get x values from progress array
+        double tx = progress[0][0];
+        double borderMarginX = progress[0][1];
+
+        // get z values from progress array
+        double tz = progress[2][0];
+        double borderMarginZ = progress[2][1];
+
+        // check border
         if (tx < borderMarginX) {
-            heading = Direction.EAST;
+            return Direction.EAST;
             // x should increase
         } else if (tx > 1 - borderMarginX) {
-            heading = Direction.WEST;
+            return Direction.WEST;
             // x should decrease
         }
 
         if (tz < borderMarginZ) {
-            heading = Direction.SOUTH;
+            return Direction.SOUTH;
             // z should increase
         } else if (tz > 1 - borderMarginZ) {
-            heading = Direction.NORTH;
+            return Direction.NORTH;
             // z should decrease
+        }
+
+        return heading;
+    }
+
+    /**
+     * Updates the height to make sure the player doesn't go below the playable zone.
+     * If the current height is fine, it will return the value of parameter currentHeight.
+     * If the current height is within the border margin, it will return a value (1 or -1)
+     * to make sure the player doesn't go below this value
+     *
+     * @param   progress
+     *          The 2-dimensional array generated by {@link #calculateParameterization()}
+     *
+     * @param   currentHeight
+     *          The height the system wants to currently use
+     *
+     * @return the updated height
+     */
+    public int updateHeight(double[][] progress, int currentHeight) {
+        double ty = progress[1][0];
+        double borderMarginY = progress[0][1];
+
+        if (ty < borderMarginY) {
+            return 1;
+            // y should increase
+        } else if (ty > 1 - borderMarginY) {
+            return -1;
+            // y should decrease
+        } else {
+            return currentHeight;
         }
     }
 
@@ -383,10 +439,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        Block blockBelowPlayer = playerLocation.clone().subtract(0, 0.5, 0).getBlock(); // Get the block below
+        Location belowPlayer = playerLocation.clone().subtract(0, 1, 0);
+        Block blockBelowPlayer = belowPlayer.getBlock(); // Get the block below
 
         if (blockBelowPlayer.getType() == Material.AIR) {
-            return;
+            if (belowPlayer.subtract(0, 0.5, 0).getBlock().getType() == Material.AIR) {
+                return;
+            }
+            blockBelowPlayer = belowPlayer.getBlock();
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteStructure) { // Structure deletion check
@@ -479,7 +539,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.teleport(playerSpawn);
         }
 
-        Score record = getGamemode().getLeaderboard().get(player.getUUID());
+        Leaderboard leaderboard = getGamemode().getLeaderboard();
+
+        Score record = null;
+        if (leaderboard != null) {
+            record = leaderboard.get(player.getUUID());
+        }
 
         if (record == null) {
             record = new Score(player.getName(), "?", "?", 0);
@@ -501,7 +566,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 number = record.score() - score;
                 message = "message.miss";
             }
-            if (score > record.score()) {
+            if (leaderboard != null && score > record.score()) {
                 player.setScore(player.getName(), score, time, diff);
             }
             player.sendTranslated("divider");
@@ -511,7 +576,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
         } else {
-            if (score >= record.score()) {
+            if (leaderboard != null && score >= record.score()) {
                 player.setScore(player.getName(), score, time, diff);
             }
         }
