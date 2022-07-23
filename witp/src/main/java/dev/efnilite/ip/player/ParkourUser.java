@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.chat.ChatType;
 import dev.efnilite.ip.events.PlayerLeaveEvent;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -39,6 +40,11 @@ public abstract class ParkourUser {
      * This user's locale
      */
     protected String locale;
+
+    /**
+     * The selected {@link ChatType}
+     */
+    protected ChatType chatType;
 
     /**
      * This user's scoreboard
@@ -383,6 +389,16 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Sets this player's {@link ChatType}
+     *
+     * @param   chatType
+     *          The {@link ChatType}
+     */
+    public void setChatType(ChatType chatType) {
+        this.chatType = chatType;
+    }
+
+    /**
      * Gets the scoreboard of the player
      *
      * @return the {@link FastBoard} of the player
@@ -456,6 +472,15 @@ public abstract class ParkourUser {
         }
 
         return locale;
+    }
+
+    /**
+     * Returns the player's selected {@link ChatType}
+     *
+     * @return the player's selected {@link ChatType}
+     */
+    public ChatType getChatType() {
+        return chatType;
     }
 
     /**

@@ -55,6 +55,7 @@ public abstract class StyleType {
      *
      * @return A random material
      */
+    @Nullable
     public abstract Material get(String style);
 
     /**
@@ -90,6 +91,15 @@ public abstract class StyleType {
      */
     public void addStyle(@NotNull String name, @NotNull List<Material> materials) {
         styles.put(name.toLowerCase(), materials);
+    }
+
+    /**
+     * Gets a map of all the registered styles under this style type
+     *
+     * @return the style type
+     */
+    public HashMap<String, List<Material>> getStyles() {
+        return styles;
     }
 
     @Nullable

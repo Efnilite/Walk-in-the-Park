@@ -5,6 +5,7 @@ import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,6 +22,7 @@ public class DefaultStyleType extends StyleType {
         return new Item(Material.POPPY, "<#348EDB><bold>Default").lore("<dark_gray>Standard • 默认 • 默認", "<dark_gray>• Défaut • デフォルト • Standaard");
     }
 
+    @Nullable
     @Override
     public Material get(String style) {
         List<Material> materials = styles.get(style);
@@ -28,7 +30,7 @@ public class DefaultStyleType extends StyleType {
         if (materials == null) {
             IP.logging().error("Materials for style '" + style + "' not found!");
             IP.logging().error("Check your config.yml file for invalid items.");
-            return Material.STONE;
+            return null;
         }
 
         return materials.get(ThreadLocalRandom.current().nextInt(materials.size()));

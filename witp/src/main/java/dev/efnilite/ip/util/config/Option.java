@@ -131,10 +131,12 @@ public class Option {
         HOTBAR_QUIT_ITEM = new ConfigOption<>(config, "options.hotbar-quit-item");
 
         PERMISSIONS_STYLES = new ConfigOption<>(config, "permissions.per-style");
+
         LANGUAGES = new ConfigOption<>(new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false)));
         List<String> languages = new ArrayList<>(LANGUAGES.get());
         languages.remove("default");
         LANGUAGES.thenSet(languages);
+
         DEFAULT_LOCALE = lang.getString("messages.default");
 
         DEFAULT_STYLE = config.getString("styles.default");

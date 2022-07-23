@@ -2,6 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
+import dev.efnilite.ip.chat.ChatHandler;
 import dev.efnilite.ip.events.Handler;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
@@ -152,6 +153,7 @@ public final class IP extends ViPlugin {
         // ----- Events -----
 
         registerListener(new Handler());
+        registerListener(new ChatHandler());
         registerCommand("witp", new ParkourCommand());
 
         // ----- Elevator -----

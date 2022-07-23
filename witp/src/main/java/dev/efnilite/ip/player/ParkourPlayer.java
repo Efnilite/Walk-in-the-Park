@@ -189,7 +189,14 @@ public class ParkourPlayer extends ParkourUser {
      * @return a random material
      */
     public Material getRandomMaterial() {
-        return IP.getRegistry().getTypeFromStyle(style).get(style);
+        Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
+
+        // if found style is null, get the first registered style to prevent big boy errors
+        if (material == null) {
+            style = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).getStyles().keySet()).get(0);
+        }
+
+        return material;
     }
 
     /**
