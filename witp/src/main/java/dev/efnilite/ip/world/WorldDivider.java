@@ -12,6 +12,7 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.vector.Vector2D;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.GameMode;
@@ -233,26 +234,34 @@ public class WorldDivider {
 
         // -= Inventory =-
         if (Option.INVENTORY_HANDLING.get()) {
-            player.getInventory().clear();
-        }
 
-        if (Option.INVENTORY_HANDLING.get() && Option.SETTINGS_ENABLED.get() && giveCompass) {
-            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
-            if (mat == null) {
-                IP.logging().error("Material for options in config is null - defaulting to compass");
-                player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
-            } else {
-                player.getInventory().setItem(8, mat);
-            }
-        }
-        if (Option.INVENTORY_HANDLING.get() && Option.HOTBAR_QUIT_ITEM.get()) {
-            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.quit").build();
-            if (mat == null) {
-                IP.logging().error("Material for quitting in config is null - defaulting to barrier");
-                player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
-            } else {
-                player.getInventory().setItem(7, mat);
-            }
+            Task.create(IP.getPlugin())
+                    .delay(5)
+                    .execute(() -> {
+
+                        player.getInventory().clear();
+
+                        if (Option.SETTINGS_ENABLED.get() && giveCompass) {
+                            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
+                            if (mat == null) {
+                                IP.logging().error("Material for options in config is null - defaulting to compass");
+                                player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
+                            } else {
+                                player.getInventory().setItem(8, mat);
+                            }
+                        }
+                        if (Option.HOTBAR_QUIT_ITEM.get()) {
+                            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.quit").build();
+                            if (mat == null) {
+                                IP.logging().error("Material for quitting in config is null - defaulting to barrier");
+                                player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
+                            } else {
+                                player.getInventory().setItem(7, mat);
+                            }
+                        }
+
+                    })
+                    .run();
         }
 
         if (!Option.INVENTORY_HANDLING.get()) {

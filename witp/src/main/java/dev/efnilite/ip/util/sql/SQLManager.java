@@ -121,16 +121,22 @@ public class SQLManager {
                 "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
 
         // v3.0.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`;");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL;");
 
         // v3.1.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT");
+        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
 
         // v3.6.0
         sendQuerySuppressed(
             """
-            ALTER TABLE `%s` ADD `locale` VARCHAR(8)
+            ALTER TABLE `%s` ADD `locale` VARCHAR(8);
+            """
+        .formatted(Option.SQL_PREFIX + "options"));
+
+        sendQuerySuppressed(
+            """
+            ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;
             """
         .formatted(Option.SQL_PREFIX + "options"));
 

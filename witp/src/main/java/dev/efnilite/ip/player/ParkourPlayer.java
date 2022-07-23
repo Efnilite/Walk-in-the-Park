@@ -211,13 +211,19 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 if (Option.SQL) {
                     Statement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
-                            .setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime)
-                            .setDefault("style", style).setDefault("blockLead", blockLead)
-                            .setDefault("useParticles", useParticlesAndSound).setDefault("useDifficulty", useScoreDifficulty)
-                            .setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks)
-                            .setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard)
+                            .setDefault("uuid", uuid.toString())
+                            .setDefault("selectedTime", selectedTime)
+                            .setDefault("style", style)
+                            .setDefault("blockLead", blockLead)
+                            .setDefault("useParticles", useParticlesAndSound)
+                            .setDefault("useDifficulty", useScoreDifficulty)
+                            .setDefault("useStructure", useSchematic)
+                            .setDefault("useSpecial", useSpecialBlocks)
+                            .setDefault("showFallMsg", showFallMessage)
+                            .setDefault("showScoreboard", showScoreboard)
                             .setDefault("collectedRewards", String.join(",", collectedRewards))
                             .setDefault("locale", locale)
+                            .setDefault("schematicDifficulty", schematicDifficulty)
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {
@@ -303,13 +309,14 @@ public class ParkourPlayer extends ParkourUser {
             try {
                 SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
                         .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale").addCondition("uuid = '" + uuid + "'");
+                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale", "schematicDifficulty")
+                        .addCondition("uuid = '" + uuid + "'");
                 Map<String, List<Object>> map = options.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
                     pp.setSettings(Integer.parseInt((String) objects.get(8)),
-                            (String) objects.get(0), (String) objects.get(10), // todo add table support
-                            Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), // todo add table support
+                            (String) objects.get(0), (String) objects.get(10),
+                            Double.parseDouble((String) objects.get(11)),
                             Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
                             translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
                             translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
