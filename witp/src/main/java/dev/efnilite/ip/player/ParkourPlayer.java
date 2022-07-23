@@ -82,6 +82,7 @@ public class ParkourPlayer extends ParkourUser {
         player.setCollidable(false);
         player.setFlying(false);
         player.setAllowFlight(false);
+        player.setInvisible(false);
     }
 
     public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty,
