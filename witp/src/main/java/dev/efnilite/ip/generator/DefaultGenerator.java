@@ -52,7 +52,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     private BukkitRunnable task;
 
-    private Material special;
+    private Material currentSpecial = null;
+    private Material previousSpecial = null;
 
     /**
      * The amount of blocks that will trail the player's current index.
@@ -174,23 +175,31 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
 
-        if (special != null) {
-            switch (special) { // adjust for special jumps
+        // handle special jumps that depend on the previous block type
+        if (previousSpecial != null) {
+            switch (previousSpecial) { // adjust for special jumps
                 case PACKED_ICE -> // ice
                         gap += 0.5;
                 case QUARTZ_SLAB -> // slab
                         dy = Math.min(dy, 0);
                 case GLASS_PANE -> // pane
                         gap -= 0.5;
-                case OAK_FENCE -> {
-                        dy = Math.min(dy, 0);
-                        gap -= 1;
-                }
             }
+
+            // set previous special to null to avoid it lasting every instance
+            previousSpecial = null;
         }
 
-        if (special == Material.QUARTZ_SLAB || special == Material.OAK_FENCE) {
-            dy = 0;
+        // handle special jumps that depend on the current block type
+        if (currentSpecial != null) {
+            switch (currentSpecial) {
+                case OAK_FENCE -> {
+                    dy = Math.min(dy, 0);
+                    gap -= 1;
+                }
+            }
+
+            currentSpecial = null;
         }
 
         if (dy > 0 && gap < 2) {
@@ -655,7 +664,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
                         }
                     }
-                    special = next.getMaterial();
+                    currentSpecial = next.getMaterial();
                 } else {
                     next = selectBlockData();
                 }
@@ -680,8 +689,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     schematicCooldown--;
                 }
 
-                // delete special type
-                special = null;
+                previousSpecial = next.getMaterial();
             }
             case 1 -> {
                 File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");

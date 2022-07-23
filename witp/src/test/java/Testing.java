@@ -4,6 +4,10 @@ import dev.efnilite.vilib.vector.Vector3D;
 
 public class Testing {
 
+    public static void main(String[] args) {
+        System.out.println(String.valueOf(1.42549305));
+    }
+
     public static void main1(String[] args) {
         System.out.println(VersionComparator.FROM_SEMANTIC.isLatest(IP.REQUIRED_VILIB_VERSION, "1.0.9"));
 

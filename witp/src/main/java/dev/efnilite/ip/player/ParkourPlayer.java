@@ -84,8 +84,8 @@ public class ParkourPlayer extends ParkourUser {
         player.setAllowFlight(false);
     }
 
-    public void setSettings(Integer selectedTime, String style, String locale, Double schematicDifficulty,
-                            Integer blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
+    public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty,
+                            String blockLead, Boolean useParticles, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
                             Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
 
         this.collectedRewards = new ArrayList<>();
@@ -102,15 +102,17 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = orDefault(locale, Option.DEFAULT_LOCALE, null);
         this.locale = this.lang;
 
-        this.schematicDifficulty = orDefault(schematicDifficulty, Double.parseDouble(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), ParkourOption.SCHEMATIC_DIFFICULTY);
         this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS)), ParkourOption.SPECIAL_BLOCKS);
         this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_FALL_MESSAGE)), ParkourOption.SHOW_FALL_MESSAGE);
         this.useScoreDifficulty = orDefault(useDifficulty, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCORE_DIFFICULTY)), ParkourOption.SCHEMATIC_DIFFICULTY);
         this.useSchematic = orDefault(useStructure, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.USE_SCHEMATICS)), ParkourOption.USE_SCHEMATICS);
         this.showScoreboard = orDefault(showScoreboard, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_SCOREBOARD)), ParkourOption.SHOW_SCOREBOARD);
         this.useParticlesAndSound = orDefault(useParticles, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES_AND_SOUND)), ParkourOption.PARTICLES_AND_SOUND);
-        this.blockLead = orDefault(blockLead, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS)), ParkourOption.LEADS);
-        this.selectedTime = orDefault(selectedTime, Integer.parseInt(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME)), ParkourOption.TIME);
+
+        this.blockLead = Integer.parseInt(orDefault(blockLead, Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS), ParkourOption.LEADS));
+        this.selectedTime = Integer.parseInt(orDefault(selectedTime, Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME), ParkourOption.TIME));
+
+        this.schematicDifficulty = Double.parseDouble(orDefault(schematicDifficulty, Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY), ParkourOption.SCHEMATIC_DIFFICULTY));
 
         updateScoreboard();
     }
@@ -292,8 +294,8 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(data);
                     ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(from.selectedTime, from.style, from.lang,
-                            from.schematicDifficulty, from.blockLead, from.useParticlesAndSound, from.useScoreDifficulty,
+                    pp.setSettings(stringValue(from.selectedTime), from.style, from.lang,
+                            stringValue(from.schematicDifficulty), stringValue(from.blockLead), from.useParticlesAndSound, from.useScoreDifficulty,
                             from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
@@ -314,13 +316,18 @@ public class ParkourPlayer extends ParkourUser {
                 Map<String, List<Object>> map = options.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings(Integer.parseInt((String) objects.get(8)),
-                            (String) objects.get(0), (String) objects.get(10),
-                            Double.parseDouble((String) objects.get(11)),
-                            Integer.parseInt((String) objects.get(1)), translateSqlBoolean((String) objects.get(2)),
-                            translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)),
-                            translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)),
-                            translateSqlBoolean((String) objects.get(7)), (String) objects.get(9));
+                    pp.setSettings((String) objects.get(8),
+                            (String) objects.get(0),
+                            (String) objects.get(10),
+                            (String) objects.get(11),
+                            (String) objects.get(1),
+                            translateSqlBoolean((String) objects.get(2)),
+                            translateSqlBoolean((String) objects.get(3)),
+                            translateSqlBoolean((String) objects.get(4)),
+                            translateSqlBoolean((String) objects.get(5)),
+                            translateSqlBoolean((String) objects.get(6)),
+                            translateSqlBoolean((String) objects.get(7)),
+                            (String) objects.get(9));
                 } else {
                     pp.resetPlayerPreferences();
                     pp.saveStats();
@@ -336,6 +343,15 @@ public class ParkourPlayer extends ParkourUser {
 
     private static boolean translateSqlBoolean(String string) {
         return string.equals("1");
+    }
+
+    @Nullable
+    private static String stringValue(Object object) {
+        if (object == null) {
+            return null;
+        } else {
+            return String.valueOf(object);
+        }
     }
 
     /**
