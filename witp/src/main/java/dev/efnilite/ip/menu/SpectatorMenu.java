@@ -82,7 +82,7 @@ public class SpectatorMenu {
                         .click(event -> spectator.page(-1)))
 
                 .item(31, IP.getConfiguration().getFromItemData(locale, "general.close")
-                        .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
+                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleInAnimation())

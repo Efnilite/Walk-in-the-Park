@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
  */
 public class MainMenu extends DynamicMenu {
 
+    public static final MainMenu INSTANCE = new MainMenu();
+
     public MainMenu() {
         // Singleplayer if player is not found
         registerMainItem(1, 0,

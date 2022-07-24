@@ -19,7 +19,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -69,6 +71,9 @@ public class Configuration {
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
 
+            checkNodes("messages", "lang/messages-v3.yml", "messages");
+            checkNodes("items", "lang/items-v3.yml", "items");
+
 //            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
 //            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
         } catch (IOException ex) {
@@ -79,6 +84,42 @@ public class Configuration {
         reload();
 
         IP.logging().info("Loaded all config files");
+    }
+
+    /*
+     * Checks the nodes of a provided path and resource name and fixes all nodes
+     */
+    private void checkNodes(String path, String resource, String file) {
+        FileConfiguration provided = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(resource), StandardCharsets.UTF_8));
+        FileConfiguration user = files.get(file);
+
+        // get all nodes of both files, starting from the path
+        List<String> providedNodes = Util.getNode(provided, path, true);
+        List<String> userNodes = Util.getNode(user, path, true);
+
+        List<String> mismatchedNodes = new ArrayList<>();
+
+        // get mistmatched nodes
+        for (String providedNode : providedNodes) {
+            if (!userNodes.contains(providedNode)) {
+                mismatchedNodes.add(providedNode);
+            }
+        }
+
+        if (mismatchedNodes.size() > 0) {
+            fixNodes(provided, user, mismatchedNodes);
+        }
+    }
+
+    private void fixNodes(FileConfiguration provided, FileConfiguration user, List<String> nodesToFix) {
+
+        // fix all nodes one by one
+        for (String node : nodesToFix) {
+            IP.logging().info("Fixing missing config node '" + node + "'");
+
+            Object providedValue = provided.get(node);
+            user.set(node, providedValue);
+        }
     }
 
     /**
@@ -113,6 +154,7 @@ public class Configuration {
         if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists()) {
             return true;
         }
+
         String[] schematics = new String[]{"spawn-island.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
         folder.mkdirs();

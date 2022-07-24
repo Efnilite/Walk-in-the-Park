@@ -3,8 +3,8 @@ package dev.efnilite.ip;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.LeaderboardMenu;
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -65,7 +65,7 @@ public class ParkourCommand extends ViCommand {
             if (player == null) {
                 sendHelpMessages(sender);
             } else if (ParkourOption.MENU.check(player)) {
-                DynamicMenu.Reg.MAIN.open(player);
+                MainMenu.INSTANCE.open(player);
             }
             return true;
         } else if (args.length == 1) {

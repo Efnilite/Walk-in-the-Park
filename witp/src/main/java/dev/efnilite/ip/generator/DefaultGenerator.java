@@ -9,7 +9,7 @@ import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.GeneratorOption;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.DynamicMenu;
+import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.data.Score;
@@ -426,7 +426,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        DynamicMenu.Reg.SETTINGS.open(player);
+        SettingsMenu.INSTANCE.open(player);
     }
 
     @Override

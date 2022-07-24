@@ -79,7 +79,7 @@ public class LeaderboardMenu {
                         .click(event -> gamemode.page(-1)))
 
                 .item(31, config.getFromItemData(locale, "general.close")
-                        .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
+                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
 
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
@@ -170,7 +170,7 @@ public class LeaderboardMenu {
                         .click(event -> openSingle(player, gamemode, sort)))
 
                 .item(32, config.getFromItemData(locale, "general.close")
-                        .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
+                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())

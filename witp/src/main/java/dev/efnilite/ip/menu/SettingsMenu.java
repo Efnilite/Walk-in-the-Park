@@ -36,6 +36,8 @@ import java.util.List;
  */
 public class SettingsMenu extends DynamicMenu {
 
+    public static final SettingsMenu INSTANCE = new SettingsMenu();
+
     public SettingsMenu(ParkourOption... disabled) {
 
         // ---------- top row ----------
@@ -327,7 +329,7 @@ public class SettingsMenu extends DynamicMenu {
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")))
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
-                        event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
+                        event -> MainMenu.INSTANCE.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation());
 

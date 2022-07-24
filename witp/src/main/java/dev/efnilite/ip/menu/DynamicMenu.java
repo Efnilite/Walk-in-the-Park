@@ -12,16 +12,6 @@ import java.util.function.Predicate;
 
 public class DynamicMenu {
 
-    /**
-     * Dynamic menu register
-     */
-    public static class Reg {
-
-        public static final MainMenu MAIN = new MainMenu();
-        public static final SettingsMenu SETTINGS = new SettingsMenu();
-
-    }
-
     protected final Map<Integer, List<ItemContainer>> registeredItems = new HashMap<>();
 
     /**

@@ -43,7 +43,7 @@ public class LangMenu {
                     .click(event -> {
                         user.setLocale(lang);
                         user.lang = lang;
-                        DynamicMenu.Reg.MAIN.open(event.getPlayer());
+                        MainMenu.INSTANCE.open(event.getPlayer());
                     }));
         }
 
@@ -58,7 +58,7 @@ public class LangMenu {
                         .click(event -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user, "general.close")
-                        .click(event -> DynamicMenu.Reg.MAIN.open(event.getPlayer())))
+                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
