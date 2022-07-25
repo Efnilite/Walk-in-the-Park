@@ -24,6 +24,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -114,6 +115,19 @@ public class Handler implements EventWatcher {
         }
 
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void move(InventoryMoveItemEvent event) {
+        if (event.getInitiator().getHolder() instanceof Player player) {
+            ParkourUser user = ParkourUser.getUser(player);
+
+            if (user == null) {
+                return;
+            }
+
             event.setCancelled(true);
         }
     }
