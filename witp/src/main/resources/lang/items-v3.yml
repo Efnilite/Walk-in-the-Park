@@ -82,6 +82,8 @@ items:
     leaderboard:
       item: gold_block
       enabled: true
+    leaderboard-sort:
+      item: bookshelf
     language:
       item: writable_book
       enabled: true
@@ -180,6 +182,9 @@ locale:
       leaderboard:
         name: '<#6693E7><bold>Leaderboard'
         lore: '<#5574AF>Rank: <gray>%s'
+      leaderboard-sort:
+        name: '<#DEA11F><bold>Sort by %s'
+        lore: '<dark_gray>Sortieren • 种类||<dark_gray>Trier • 選別 • Sorteren'
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0'
@@ -280,6 +285,9 @@ locale:
       leaderboard:
         name: '<#6693E7><bold>Scorebord'
         lore: '<#5574AF>Rang: <gray>%s'
+      leaderboard-sort:
+        name: '<#DEA11F><bold>Sorteren op %s'
+        lore: '<dark_gray>Sortieren • 种类||<dark_gray>Trier • 選別 • Sort'
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Tijd: <gray>%t||<#5574AF>Moeilijkheid: <gray>%d<dark_gray>/1.0'
@@ -380,6 +388,9 @@ locale:
       leaderboard:
         name: '<#6693E7><bold>Tableau de classement'
         lore: '<#5574AF>Rang: <gray>%s'
+      leaderboard-sort:
+        name: '<#DEA11F><bold>Trier par %s'
+        lore: '<dark_gray>Sortieren • 种类||<dark_gray>Sorteren • 選別 • Sort'
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Temps: <gray>%t||<#5574AF>Difficulté: <gray>%d<dark_gray>/1.0'
@@ -483,6 +494,9 @@ locale:
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>分數: <gray>%s||<#5574AF>時間: <gray>%t||<#5574AF>難度: <gray>%d<dark_gray>/1.0'
+      leaderboard-sort:
+        name: '<#DEA11F><bold>排序方式 %s'
+        lore: '<dark_gray>Sortieren • Trier||<dark_gray>Sorteren • 選別 • Sort'
       language:
         name: '<#6693E7><bold>語言'
         lore: '<#5574AF>目前: <gray>%s'
@@ -580,6 +594,9 @@ locale:
       leaderboard:
         name: '<#6693E7><bold>排行榜'
         lore: '<#5574AF>排名: <gray>%s'
+      leaderboard-sort:
+        name: '<#DEA11F><bold>排序方式 %s'
+        lore: '<dark_gray>Sortieren • Trier||<dark_gray>Sorteren • 選別 • Sort'
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>分数: <gray>%s||<#5574AF>时间: <gray>%t||<#5574AF>难道: <gray>%d<dark_gray>/1.0'

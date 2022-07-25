@@ -165,8 +165,7 @@ public class LeaderboardMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(31, new Item(Material.BOOKSHELF, "<#DEA11F><bold>Sort by " + next.name().toLowerCase())
-                        .lore("<dark_gray>Sortieren • 种类", "<dark_gray>Trier • 選別 • Sorteren")
+                .item(31, config.getFromItemData(locale, "options.leaderboard-sort", next.name().toLowerCase())
                         .click(event -> openSingle(player, gamemode, sort)))
 
                 .item(32, config.getFromItemData(locale, "general.close")

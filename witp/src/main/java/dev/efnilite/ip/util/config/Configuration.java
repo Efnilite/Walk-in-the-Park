@@ -71,8 +71,8 @@ public class Configuration {
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
 
-            checkNodes("messages", "lang/messages-v3.yml");
-            checkNodes("locale", "lang/items-v3.yml");
+            checkNodes("lang/messages-v3.yml");
+            checkNodes("lang/items-v3.yml");
 
 //            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
 //            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
@@ -89,13 +89,15 @@ public class Configuration {
     /*
      * Checks the nodes of a provided path and resource name and fixes all nodes
      */
-    private void checkNodes(String path, String resource) {
+    private void checkNodes(String resource) throws IOException {
+        File localPath = new File(plugin.getDataFolder(), resource);
+
         FileConfiguration provided = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(resource), StandardCharsets.UTF_8));
-        FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), resource));
+        FileConfiguration user = YamlConfiguration.loadConfiguration(localPath);
 
         // get all nodes of both files, starting from the path
-        List<String> providedNodes = Util.getNode(provided, path, true);
-        List<String> userNodes = Util.getNode(user, path, true);
+        List<String> providedNodes = Util.getNode(provided, "", true);
+        List<String> userNodes = Util.getNode(user, "", true);
 
         List<String> mismatchedNodes = new ArrayList<>();
 
@@ -107,11 +109,11 @@ public class Configuration {
         }
 
         if (mismatchedNodes.size() > 0) {
-            fixNodes(provided, user, mismatchedNodes);
+            fixNodes(provided, user, localPath, mismatchedNodes);
         }
     }
 
-    private void fixNodes(FileConfiguration provided, FileConfiguration user, List<String> nodesToFix) {
+    private void fixNodes(FileConfiguration provided, FileConfiguration user, File localPath, List<String> nodesToFix) throws IOException {
 
         // fix all nodes one by one
         for (String node : nodesToFix) {
@@ -120,6 +122,8 @@ public class Configuration {
             Object providedValue = provided.get(node);
             user.set(node, providedValue);
         }
+
+        user.save(localPath);
     }
 
     /**

@@ -70,8 +70,8 @@ public class MainMenu extends DynamicMenu {
                         default -> ChatType.PUBLIC;
                     };
 
-                    return new Item(Material.FEATHER, "<#20C6BC><bold>Change chat to " + next)
-                            .lore("<dark_gray>Select who you can chat with", "Currently: " + user.getChatType().getName()).click(
+                    return new Item(Material.FEATHER, "<#20C6BC><bold>Change chat to " + next.getName())
+                            .lore("<dark_gray>Select who you can chat with", "<dark_gray>Currently: " + user.getChatType().getName()).click(
                             event -> {
                                 user.setChatType(next);
                                 open(event.getPlayer());
