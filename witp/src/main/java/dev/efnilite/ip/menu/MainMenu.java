@@ -1,12 +1,12 @@
 package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.chat.ChatType;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.animation.RandomAnimation;
+import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -59,12 +59,25 @@ public class MainMenu extends DynamicMenu {
                 player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
 
         registerMainItem(3, 2,
-                user -> IP.getConfiguration().getFromItemData(user, "main.commands").click(
-                event -> {
-                    ParkourCommand.sendHelpMessages(event.getPlayer());
-                    event.getPlayer().closeInventory();
-                }),
-                player -> true);
+                user -> {
+                    if (user == null) {
+                        return new Item(Material.STONE, "");
+                    }
+
+                    ChatType next = switch (user.getChatType()) {
+                        case PUBLIC -> ChatType.LOBBY_ONLY;
+                        case LOBBY_ONLY -> ChatType.PLAYERS_ONLY;
+                        default -> ChatType.PUBLIC;
+                    };
+
+                    return new Item(Material.FEATHER, "<#20C6BC><bold>Change chat to " + next)
+                            .lore("<dark_gray>Select who you can chat with", "Currently: " + user.getChatType().getName()).click(
+                            event -> {
+                                user.setChatType(next);
+                                open(event.getPlayer());
+                            });
+                },
+                player -> ParkourUser.getUser(player) != null);
 
         // Always allow closing of the menu
         registerMainItem(3, 10,
@@ -82,7 +95,6 @@ public class MainMenu extends DynamicMenu {
     public void open(Player player) {
         Menu menu = new Menu(4, "<white>Parkour")
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new RandomAnimation())
                 .distributeRowEvenly(0, 1, 2, 3);
 
         display(player, menu);

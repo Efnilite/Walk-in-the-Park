@@ -7,9 +7,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum ChatType {
 
-    LOBBY_ONLY,
-    PLAYERS_ONLY,
-    PUBLIC;
+    LOBBY_ONLY("lobby only"),
+    PLAYERS_ONLY("players only"),
+    PUBLIC("public");
+
+    public final String name;
+
+    ChatType(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     @NotNull
     public static ChatType getFromString(@NotNull String string) {

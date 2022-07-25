@@ -29,6 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -41,10 +42,9 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<gradient:#B30000>Infinite Parkour</gradient:#00A1A1>";
     public static final String PREFIX = NAME + " <#7B7B7B>» <gray>";
-    public static final String REQUIRED_VILIB_VERSION = "1.0.9";
+    public static final String REQUIRED_VILIB_VERSION = "1.0.11";
 
     private static IP instance;
-    private static GitElevator elevator;
     private static SQLManager sqlManager;
     private static Registry registry;
     private static WorldDivider divider;
@@ -156,10 +156,6 @@ public final class IP extends ViPlugin {
         registerListener(new ChatHandler());
         registerCommand("witp", new ParkourCommand());
 
-        // ----- Elevator -----
-
-        elevator = new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
-
         // ----- Metrics -----
 
         Metrics metrics = new Metrics(this, 9272);
@@ -205,6 +201,12 @@ public final class IP extends ViPlugin {
         }
 
         worldHandler.deleteWorld();
+    }
+
+    @Override
+    @NotNull
+    public GitElevator getElevator() {
+        return new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
     }
 
     /**
@@ -254,9 +256,5 @@ public final class IP extends ViPlugin {
 
     public static Configuration getConfiguration() {
         return configuration;
-    }
-
-    public static GitElevator getElevator() {
-        return elevator;
     }
 }

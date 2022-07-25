@@ -57,7 +57,7 @@ public class Handler implements EventWatcher {
         }
 
         // OP join messages
-        if (player.isOp() && IP.getElevator().isOutdated()) {
+        if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
             Message.send(player, "");
             Message.send(player,
                     IP.PREFIX + "Your version is outdated. " +

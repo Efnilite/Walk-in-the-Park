@@ -44,7 +44,7 @@ public abstract class ParkourUser {
     /**
      * The selected {@link ChatType}
      */
-    protected ChatType chatType;
+    protected ChatType chatType = ChatType.PUBLIC;
 
     /**
      * This user's scoreboard

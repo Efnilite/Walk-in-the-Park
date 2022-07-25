@@ -71,8 +71,8 @@ public class Configuration {
             ConfigUpdater.update(plugin, "schematics.yml", new File(plugin.getDataFolder(), "schematics.yml"), List.of("difficulty"));
             ConfigUpdater.update(plugin, "lang/scoreboard-v3.yml", new File(plugin.getDataFolder(), "lang/scoreboard-v3.yml"), new ArrayList<>());
 
-            checkNodes("messages", "lang/messages-v3.yml", "messages");
-            checkNodes("items", "lang/items-v3.yml", "items");
+            checkNodes("messages", "lang/messages-v3.yml");
+            checkNodes("locale", "lang/items-v3.yml");
 
 //            ConfigUpdater.update(plugin, "lang/messages-v3.yml", new File(plugin.getDataFolder(), "lang/messages-v3.yml"), "messages");
 //            ConfigUpdater.update(plugin, "lang/items-v3.yml", new File(plugin.getDataFolder(), "lang/items-v3.yml"), "locale");
@@ -89,9 +89,9 @@ public class Configuration {
     /*
      * Checks the nodes of a provided path and resource name and fixes all nodes
      */
-    private void checkNodes(String path, String resource, String file) {
+    private void checkNodes(String path, String resource) {
         FileConfiguration provided = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(resource), StandardCharsets.UTF_8));
-        FileConfiguration user = files.get(file);
+        FileConfiguration user = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), resource));
 
         // get all nodes of both files, starting from the path
         List<String> providedNodes = Util.getNode(provided, path, true);
