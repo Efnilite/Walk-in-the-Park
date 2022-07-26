@@ -24,7 +24,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -115,19 +114,6 @@ public class Handler implements EventWatcher {
         }
 
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void move(InventoryMoveItemEvent event) {
-        if (event.getInitiator().getHolder() instanceof Player player) {
-            ParkourUser user = ParkourUser.getUser(player);
-
-            if (user == null) {
-                return;
-            }
-
             event.setCancelled(true);
         }
     }
@@ -248,16 +234,32 @@ public class Handler implements EventWatcher {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
-        Player p = event.getPlayer();
-        ParkourPlayer player = ParkourPlayer.getPlayer(event.getPlayer());
+        Player player = event.getPlayer();
+        ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+
+        if (pp == null) {
+            return;
+        }
+
+        boolean type = event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.DISPENSER ||
+                event.getClickedBlock().getType() == Material.DROPPER ||
+                event.getClickedBlock().getType() == Material.HOPPER);
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && type && event.getHand() == EquipmentSlot.HAND) {
+            event.setCancelled(true);
+            player.closeInventory();
+            return;
+        }
+
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
-        if (player != null && action && System.currentTimeMillis() - player.getJoinTime() > 1000) {
-            Material menu = IP.getConfiguration().getFromItemData(player, "general.menu").build().getType();
-            Material quit = IP.getConfiguration().getFromItemData(player, "general.quit").build().getType();
-            Material held = Util.getHeldItem(player.getPlayer()).getType();
+
+        if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
+            Material menu = IP.getConfiguration().getFromItemData(pp, "general.menu").getMaterial();
+            Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
+            Material held = Util.getHeldItem(player).getType();
             if (held == menu) {
                 event.setCancelled(true);
-                MainMenu.INSTANCE.open(p);
+                MainMenu.INSTANCE.open(player);
             } else if (held == quit) {
                 event.setCancelled(true);
                 ParkourUser.leave(player);
