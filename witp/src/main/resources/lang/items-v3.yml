@@ -29,8 +29,8 @@ items:
       item: gold_nugget
     language:
       item: writable_book
-    commands:
-      item: paper
+    chat:
+      item: feather
 
   # -= Options for settings menu =-
   options:
@@ -130,9 +130,9 @@ locale:
       language:
         name: '<#4A41BC><bold>Language'
         lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Langue • 言語 • Taal'
-      commands:
-        name: '<#E53CA2><bold>View commands'
-        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • Commands bekijken'
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
 
     # -= Options for settings menu =-
     options:
@@ -232,9 +232,9 @@ locale:
       language:
         name: '<#4A41BC><bold>Taal'
         lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Langue • 言語 • Language'
-      commands:
-        name: '<#E53CA2><bold>Commands bekijken'
-        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Afficher commandes • View commands'
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Huidige waarde: <#17B2CE><bold>%s||<gray>Selecteer met wie je kan praten'
 
     # -= Options for settings menu =-
     options:
@@ -335,9 +335,9 @@ locale:
       language:
         name: '<#4A41BC><bold>Langue'
         lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Taal • 言語 • Language'
-      commands:
-        name: '<#E53CA2><bold>Afficher commandes'
-        lore: '<dark_gray>Commands ansehen • 查看命令||<dark_gray>Commands bekijken • View commands'
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Actuellement: <#17B2CE><bold>%s||<gray>Sélectionnez avec qui vous pouvez discuter'
 
     # -= Options for settings menu =-
     options:
@@ -438,9 +438,9 @@ locale:
       language:
         name: '<#4A41BC><bold>語言'
         lore: '<dark_gray>Sprache • 语言 • Language||<dark_gray>Langue • 言語 • Taal'
-      commands:
-        name: '<#E53CA2><bold>查看命令'
-        lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
 
     # -= Options for settings menu =-
     options:
@@ -541,9 +541,9 @@ locale:
       language:
         name: '<#4A41BC><bold>语言'
         lore: '<dark_gray>Sprache • Language • 語言||<dark_gray>Langue • 言語 • Taal'
-      commands:
-        name: '<#E53CA2><bold>查看命令'
-        lore: '<dark_gray>Commands ansehen • View commands||<dark_gray>Afficher commandes • Commands bekijken'
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
 
     # -= Options for settings menu =-
     options:

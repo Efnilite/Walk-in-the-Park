@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum ChatType {
 
+    PUBLIC("public"),
     LOBBY_ONLY("lobby only"),
-    PLAYERS_ONLY("players only"),
-    PUBLIC("public");
+    PLAYERS_ONLY("players only");
 
     public final String name;
 

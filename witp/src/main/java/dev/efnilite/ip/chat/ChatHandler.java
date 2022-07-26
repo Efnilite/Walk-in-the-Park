@@ -30,24 +30,20 @@ public class ChatHandler implements Listener {
             case LOBBY_ONLY -> {
                 event.setCancelled(true);
 
-                String message = "<#8A1010>(Lobby) <#BE0D0D>%s <dark_gray>> <gray>%s".formatted(sender.getName(), event.getMessage());
-
                 // send it to all players
                 for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.send(message);
+                    pp.sendTranslated("chat.lobby", sender.getName(), event.getMessage());
+                }
+                for (ParkourSpectator sp : session.getSpectators()) {
+                    sp.sendTranslated("chat.lobby", sender.getName(), event.getMessage());
                 }
             }
             case PLAYERS_ONLY -> {
                 event.setCancelled(true);
 
-                String message = "<#8A1010>(Players) <#BE0D0D>%s <dark_gray>> <gray>%s".formatted(sender.getName(), event.getMessage());
-
                 // send it to all users
                 for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.send(message);
-                }
-                for (ParkourSpectator sp : session.getSpectators()) {
-                    sp.send(message);
+                    pp.sendTranslated("chat.players", sender.getName(), event.getMessage());
                 }
             }
         }

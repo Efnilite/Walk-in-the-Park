@@ -31,6 +31,11 @@ messages:
     score: '<#80C7FD><bold>Score <white>%s'
     time: '<#80C7FD><bold>Time <white>%s'
     highscore: '<#80C7FD><bold>Highscore <white>%s'
+
+    chat:
+      lobby: '<#8A1010>(Lobby) <#BE0D0D>%p <dark_gray>> <gray>%s'
+      players: '<#8A1010>(Players) <#BE0D0D>%p <dark_gray>> <gray>%s'
+
     message:
       miss: '<gray>You missed your high score by %s points!'
       beat: '<gray>You beat your high score by %s points!'
@@ -57,6 +62,11 @@ messages:
     score: '<#80C7FD><bold>Score <white>%s'
     time: '<#80C7FD><bold>Tijd <white>%s'
     highscore: '<#80C7FD><bold>Highscore <white>%s'
+
+    chat:
+      lobby: '<#8A1010>(Lobby) <#BE0D0D>%p <dark_gray>> <gray>%s'
+      players: '<#8A1010>(Spelers) <#BE0D0D>%p <dark_gray>> <gray>%s'
+
     message:
       miss: '<gray>Je hebt je highscore gemist met %s punten!'
       beat: '<gray>Je hebt je highscore overtroffen met %s punten!'
@@ -83,6 +93,11 @@ messages:
     score: '<#80C7FD><bold>Score <white>%s'
     time: '<#80C7FD><bold>Temps <white>%s'
     highscore: '<#80C7FD><bold>Highscore <white>%s'
+
+    chat:
+      lobby: '<#8A1010>(Lobby) <#BE0D0D>%p <dark_gray>> <gray>%s'
+      players: '<#8A1010>(Players) <#BE0D0D>%p <dark_gray>> <gray>%s'
+
     message:
       miss: '<gray>Vous avez raté votre meilleur score de %s points'
       beat: '<gray>Vous avez battu votre meilleur score en %s points!'
@@ -109,6 +124,11 @@ messages:
     score: '<#80C7FD><bold>分數 <white>%s'
     time: '<#80C7FD><bold>時間 <white>%s'
     highscore: '<#80C7FD><bold>最高分數 <white>%s'
+
+    chat:
+      lobby: '<#8A1010>(大堂) <#BE0D0D>%p <dark_gray>> <gray>%s'
+      players: '<#8A1010>(球員) <#BE0D0D>%p <dark_gray>> <gray>%s'
+
     message:
       miss: '<gray>你與你的最高分數相差了 %s 分！'
       beat: '<gray>你以 %s 分打破了你的最高分數！'
@@ -135,6 +155,11 @@ messages:
     score: '<#80C7FD><bold>分数 <white>%s'
     time: '<#80C7FD><bold>时间 <white>%s'
     highscore: '<#80C7FD><bold>最高分数 <white>%s'
+
+    chat:
+      lobby: '<#8A1010>(大堂) <#BE0D0D>%p <dark_gray>> <gray>%s'
+      players: '<#8A1010>(球员) <#BE0D0D>%p <dark_gray>> <gray>%s'
+
     message:
       miss: '<gray>你与你的最高分数相差了 %s 分'
       beat: '<gray>你以 %s 分打破了你的最高分数'

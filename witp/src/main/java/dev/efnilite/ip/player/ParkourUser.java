@@ -2,7 +2,6 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.chat.ChatType;
-import dev.efnilite.ip.events.PlayerLeaveEvent;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
@@ -197,7 +196,6 @@ public abstract class ParkourUser {
         Player pl = user.getPlayer();
 
         try {
-            new PlayerLeaveEvent(user).call();
             Session session = user.getSession();
 
             if (user instanceof ParkourPlayer pp) {
