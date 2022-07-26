@@ -13,6 +13,7 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +28,8 @@ public class SpectatorMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
-        PagedMenu spectator = new PagedMenu(4, "<white>Spectate");
+        PagedMenu spectator = new PagedMenu(4, "<white>" +
+                ChatColor.stripColor(IP.getConfiguration().getString("items", "locale." + locale + ".main.spectator.name")));
 
         List<MenuItem> display = new ArrayList<>();
 
