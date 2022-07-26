@@ -44,7 +44,7 @@ public class SingleplayerMenu {
             }
 
             Item item = gm.getItem(locale);
-            items.add(new Item(item.getMaterial(), item.getName())
+            items.add(item.clone()
                     .click(event -> gm.click(player)));
             latest = gm;
         }
