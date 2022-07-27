@@ -71,8 +71,6 @@ public abstract class ParkourGenerator {
         this.stopwatch = new Stopwatch();
         this.spectators = new HashMap<>();
         this.random = ThreadLocalRandom.current();
-
-        session.getPlayers().forEach(player -> player.setGenerator(this));
     }
 
     /**

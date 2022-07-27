@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.chat.ChatType;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -98,7 +99,7 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             pp.sendTranslated("join", player.getName());
             for (ParkourUser to : getUsers()) {
-                if (to.getUUID().equals(player.getUniqueId())) {
+                if (to.getUUID().equals(player.getUniqueId()) || to.getSession().getGamemode() instanceof MultiGamemode) {
                     continue;
                 }
 
@@ -159,7 +160,7 @@ public abstract class ParkourUser {
         if (Option.JOIN_LEAVE_MESSAGES.get()) {
             user.sendTranslated("leave", user.getName());
             for (ParkourUser to : getUsers()) {
-                if (to.getUUID().equals(user.getUUID())) {
+                if (to.getUUID().equals(user.getUUID()) || to.getSession().getGamemode() instanceof MultiGamemode) {
                     continue;
                 }
 

@@ -2,7 +2,6 @@ package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.config.Option;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,41 +16,37 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * The player
      */
-    protected ParkourPlayer player;
+    public ParkourPlayer player;
 
     /**
      * The chances of which distance the jump should have
      */
-    protected final HashMap<Integer, Integer> distanceChances;
+    public final HashMap<Integer, Integer> distanceChances;
 
     /**
      * Variable to determine how much the chance should be of a jump type, depending on the player's score
      */
-    protected final HashMap<Integer, Double> adaptiveDistanceChances;
+    public final HashMap<Integer, Double> adaptiveDistanceChances;
 
     /**
      * The chances of which height the jump should have
      */
-    protected final HashMap<Integer, Integer> heightChances;
+    public final HashMap<Integer, Integer> heightChances;
 
     /**
      * The chances of which type of special jump
      */
-    protected final HashMap<Integer, Integer> specialChances;
+    public final HashMap<Integer, Integer> specialChances;
 
     /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
-    protected final HashMap<Integer, Integer> defaultChances;
+    public final HashMap<Integer, Integer> defaultChances;
 
     public DefaultGeneratorChances(@NotNull Session session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);
 
-        player = session.getPlayers().get(0);
-        if (!(session instanceof SingleSession)) {
-            throw new IllegalArgumentException("Session is not a SingleSession");
-        }
-
+        this.player = session.getPlayers().get(0);
         this.distanceChances = new HashMap<>();
         this.heightChances = new HashMap<>();
         this.specialChances = new HashMap<>();

@@ -1,7 +1,6 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
@@ -219,18 +218,13 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                ParkourUser user = ParkourUser.getUser(player);
-                if (user != null) {
-                    return true;
-                }
-
                 String type = args[1]; // get mode from second arg
                 Gamemode gamemode = IP.getRegistry().getGamemode(type);
                 Session session = Session.getSession(type.toUpperCase());
 
                 if (gamemode == null) {
                     if (session == null) {
-                        Gamemodes.DEFAULT.click(player); // could not find, so go to default
+                        Message.send(sender, IP.PREFIX + "Unknown lobby! Try typing the code again."); // could not find, so go to default
                     } else {
                         session.join(player);
                     }
