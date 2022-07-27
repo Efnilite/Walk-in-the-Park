@@ -99,9 +99,9 @@ public class WorldDivider {
         this.generate(player, null, true);
     }
 
-    public synchronized void generate(@NotNull ParkourPlayer player, @Nullable ParkourGenerator generator, boolean generateIsland) {
+    public synchronized Vector2D generate(@NotNull ParkourPlayer player, @Nullable ParkourGenerator generator, boolean generateIsland) {
         if (getPoint(player) != null) { // player already has assigned point
-            return;
+            return getPoint(player);
         }
 
         if (cachedPoints.size() > 0) { // check for leftover spots, if none are left just generate a new one
@@ -109,7 +109,7 @@ public class WorldDivider {
 
             if (cachedPoint == null) { // if cachedPoint is somehow still null after checking size (to remove @NotNull warning)
                 generate(player, generator, generateIsland);
-                return;
+                return getPoint(player);
             }
 
             activePoints.put(player, cachedPoint);
@@ -119,6 +119,7 @@ public class WorldDivider {
             if (generateIsland) {
                 createIsland(player, cachedPoint);
             }
+            return cachedPoint;
         } else {
             int size = activePoints.size();
             int[] coords = Util.spiralAt(size);
@@ -131,6 +132,7 @@ public class WorldDivider {
             if (generateIsland) {
                 createIsland(player, point);
             }
+            return point;
         }
     }
 
@@ -223,13 +225,15 @@ public class WorldDivider {
         }
 
         // setup inventory, etc.
-        setup(pp, to, true);
+        setup(pp, to, true, true);
     }
 
-    public void setup(ParkourPlayer pp, Location to, boolean giveCompass) {
+    public void setup(ParkourPlayer pp, Location to, boolean giveCompass, boolean runGenerator) {
         Player player = pp.getPlayer();
 
-        pp.teleport(to);
+        if (to != null) {
+            pp.teleport(to);
+        }
         player.setGameMode(GameMode.ADVENTURE);
 
         // -= Inventory =-
@@ -267,7 +271,10 @@ public class WorldDivider {
         if (!Option.INVENTORY_HANDLING.get()) {
             pp.sendTranslated("customize-menu");
         }
-        pp.getGenerator().startTick();
+
+        if (runGenerator) {
+            pp.getGenerator().startTick();
+        }
     }
 
     /**
