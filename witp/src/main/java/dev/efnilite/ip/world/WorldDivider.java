@@ -167,9 +167,7 @@ public class WorldDivider {
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
         World world = IP.getWorldHandler().getWorld();
 
-        double borderSize = Option.BORDER_SIZE.get();
-
-        Location spawn = getEstimatedCenter(point, borderSize).toLocation(world).clone();
+        Location spawn = getEstimatedCenter(point, Option.BORDER_SIZE).toLocation(world).clone();
 
         // --- Schematic pasting ---
         Vector3D dimension = spawnIsland.getDimensions().toVector3D();
@@ -209,15 +207,8 @@ public class WorldDivider {
             createIsland(pp, point);
         }
 
-        // get the min and max locations
-        Location min = spawn.clone().subtract(borderSize / 2, 0, borderSize / 2);
-        Location max = spawn.clone().add(borderSize / 2, 0, borderSize / 2);
-
-        min.setY(Option.MIN_Y);
-        max.setY(Option.MAX_Y);
-
-        // set the proper zone
-        pp.getGenerator().setZone(new Selection(min, max));
+        // get zone
+        pp.getGenerator().setZone(getZone(spawn));
 
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator defaultGenerator) {
             defaultGenerator.setData(new AreaData(blocks));
@@ -275,6 +266,27 @@ public class WorldDivider {
         if (runGenerator) {
             pp.getGenerator().startTick();
         }
+    }
+
+    /**
+     * Gets the {@link Selection} instance used as the playable zone, given a specific center location
+     *
+     * @param   center
+     *          The center location
+     *
+     * @return the playable area
+     */
+    public Selection getZone(Location center) {
+        double borderSize = Option.BORDER_SIZE;
+
+        // get the min and max locations
+        Location min = center.clone().subtract(borderSize / 2, 0, borderSize / 2);
+        Location max = center.clone().add(borderSize / 2, 0, borderSize / 2);
+
+        min.setY(Option.MIN_Y);
+        max.setY(Option.MAX_Y);
+
+        return new Selection(min, max);
     }
 
     /**

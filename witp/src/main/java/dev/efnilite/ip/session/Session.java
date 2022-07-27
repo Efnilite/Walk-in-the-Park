@@ -4,7 +4,6 @@ import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -160,7 +159,6 @@ public interface Session {
             addPlayers(ParkourPlayer.getPlayer(player));
         } else if (isAcceptingSpectators()) {
             Gamemodes.SPECTATOR.create(player, this);
-            addSpectators((ParkourSpectator) ParkourUser.getUser(player));
         }
     }
 

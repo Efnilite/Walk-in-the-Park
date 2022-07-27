@@ -168,7 +168,7 @@ public class Option {
         REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "scoring.rewards-use-total-score");
 
         if (firstLoad) {
-            BORDER_SIZE =  new ConfigOption<>(generation, "advanced.border-size");
+            BORDER_SIZE = generation.getDouble("advanced.border-size");
             SQL = config.getBoolean("sql.enabled");
         }
     }
@@ -291,7 +291,7 @@ public class Option {
     // --------------------------------------------------------------
     // Advanced settings in generation
 
-    public static ConfigOption<Integer> BORDER_SIZE;
+    public static double BORDER_SIZE;
     public static ConfigOption<Integer> GENERATOR_CHECK;
     public static ConfigOption<Double> HEIGHT_GAP;
     public static ConfigOption<Double> MULTIPLIER;
