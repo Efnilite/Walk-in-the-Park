@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class for handling leaderboards per Gamemode
@@ -256,11 +255,19 @@ public class Leaderboard {
      * Sorts all scores in the map
      */
     public void sort() {
-        LinkedHashMap<UUID, Score> sorted = scores
-                .entrySet()
-                .stream()
-                .sorted((o1, o2) -> o2.getValue().score() - o1.getValue().score()) // reverse natural order
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+        // sort map by values
+
+        // get all entries in a list
+        List<Map.Entry<UUID, Score>> toSort = new ArrayList<>(scores.entrySet());
+
+        // sort in reverse natural order
+        toSort.sort((one, two) -> two.getValue().score() - one.getValue().score());
+
+        // compile map back together
+        LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
+        for (Map.Entry<UUID, Score> entry : toSort) {
+            sorted.put(entry.getKey(), entry.getValue());
+        }
 
         scores.clear();
         scores.putAll(sorted);

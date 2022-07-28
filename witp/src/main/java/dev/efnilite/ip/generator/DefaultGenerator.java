@@ -116,8 +116,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
         this.heading = Option.HEADING;
-
-        updateScoreboard();
     }
 
     @Override
@@ -879,6 +877,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         } else {
             block.setBlockData(data, false);
         }
+
+        // fixes players receiving delayed update
+        player.getPlayer().sendBlockChange(block.getLocation(), data);
     }
 
     /**
