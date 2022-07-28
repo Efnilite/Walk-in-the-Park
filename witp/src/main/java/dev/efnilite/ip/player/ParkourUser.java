@@ -80,11 +80,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Updates the scoreboard
-     */
-    public abstract void updateScoreboard();
-
-    /**
      * Joins a player. This sends a join message while using {@link #register(Player)}.
      *
      * @param   player

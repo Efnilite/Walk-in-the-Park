@@ -6,11 +6,9 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
-import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.SingleSession;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
@@ -114,8 +112,6 @@ public class ParkourPlayer extends ParkourUser {
         this.selectedTime = Integer.parseInt(orDefault(selectedTime, Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME), ParkourOption.TIME));
 
         this.schematicDifficulty = Double.parseDouble(orDefault(schematicDifficulty, Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY), ParkourOption.SCHEMATIC_DIFFICULTY));
-
-        updateScoreboard();
     }
 
     private <T> T orDefault(T value, T def, @Nullable ParkourOption option) {
@@ -137,49 +133,6 @@ public class ParkourPlayer extends ParkourUser {
         setSettings(null, null, null, null,
                 null, null, null, null, null, null,
                 null, null);
-    }
-
-    /**
-     * Updates the scoreboard
-     */
-    @Override
-    public void updateScoreboard() {
-        if (showScoreboard && Option.SCOREBOARD_ENABLED && board != null && generator != null) {
-            Leaderboard leaderboard = generator.getGamemode().getLeaderboard();
-
-            Score top = null, rank = null;
-            if (leaderboard != null) {
-                top = leaderboard.getScoreAtRank(1);
-                rank = leaderboard.get(uuid);
-            }
-
-            if (leaderboard == null || top == null || rank == null) {
-                top = new Score("?", "?", "?", 0);
-                rank = new Score("?", "?", "?", 0);
-            }
-
-            // scoreboard settings
-            String title = Util.color(Option.SCOREBOARD_TITLE);
-            List<String> lines = new ArrayList<>();
-
-            for (String s : Option.SCOREBOARD_LINES) {
-                s = Util.translate(player, s); // add support for PAPI placeholders in scoreboard
-                lines.add(s.replace("%score%", Integer.toString(generator.getScore()))
-                        .replace("%time%", generator.getTime())
-                        .replace("%highscore%", Integer.toString(rank.score()))
-                        .replace("%topscore%", Integer.toString(top.score()))
-                        .replace("%topplayer%", top.name())
-                        .replace("%session%", getSessionId()));
-            }
-            title = Util.translate(player, title);
-            board.updateTitle(title.replace("%score%", Integer.toString(generator.getScore()))
-                    .replace("%time%", generator.getTime())
-                    .replace("%highscore%", Integer.toString(rank.score()))
-                    .replace("%topscore%", Integer.toString(top.score()))
-                    .replace("%topplayer%", top.name())
-                    .replace("%session%", getSessionId()));
-            board.updateLines(lines);
-        }
     }
 
     /**

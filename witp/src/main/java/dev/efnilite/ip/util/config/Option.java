@@ -321,7 +321,7 @@ public class Option {
 
     private static void initScoreboard() {
         SCOREBOARD_ENABLED = scoreboard.getBoolean("scoreboard.enabled");
-        SCOREBOARD_TITLE = scoreboard.getString("scoreboard.title");
+        SCOREBOARD_TITLE = Util.color(scoreboard.getString("scoreboard.title"));
         SCOREBOARD_LINES = Util.colorList(scoreboard.getStringList("scoreboard.lines"));
     }
 

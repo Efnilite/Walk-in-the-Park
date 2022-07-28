@@ -81,6 +81,12 @@ public abstract class ParkourGenerator {
     public abstract Gamemode getGamemode();
 
     /**
+     * Defines the way this generator's (and accompanying gamemode) scoreboard will look.
+     * The code in this method has no restrictions and may apply to anyone.
+     */
+    public abstract void updateScoreboard();
+
+    /**
      * Applies particles to list of blocks
      *
      * @param   applyTo

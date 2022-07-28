@@ -168,7 +168,7 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         player.showScoreboard = true;
                                         player.setBoard(new FastBoard(player.getPlayer()));
-                                        player.updateScoreboard();
+                                        player.getGenerator().updateScoreboard();
                                         return true;
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)

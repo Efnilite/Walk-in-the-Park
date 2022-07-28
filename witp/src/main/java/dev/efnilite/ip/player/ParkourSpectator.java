@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
@@ -47,39 +48,58 @@ public class ParkourSpectator extends ParkourUser {
         runClosestChecker();
     }
 
-    @Override
     public void updateScoreboard() {
-        if (Option.SCOREBOARD_ENABLED && board != null) {
-            Leaderboard leaderboard = getSession().getGamemode().getLeaderboard();
-
-            Score top = null, rank = null;
-            if (leaderboard != null) {
-                top = leaderboard.getScoreAtRank(1);
-                rank = leaderboard.get(closest.getUUID());
-            }
-
-            if (leaderboard == null || top == null || rank == null) {
-                top = new Score("?", "?", "?", 0);
-                rank = new Score("?", "?", "?", 0);
-            }
-
-            // scoreboard settings
-            String title = Util.translate(closest.getPlayer(), Util.color(Option.SCOREBOARD_TITLE));
-            List<String> lines = new ArrayList<>();
-
-            for (String s : Option.SCOREBOARD_LINES) {
-                s = Util.translate(closest.getPlayer(), s); // add support for PAPI placeholders in scoreboard
-                lines.add(s.replace("%score%", Integer.toString(closest.getGenerator().getScore()))
-                        .replace("%time%", closest.getGenerator().getTime())
-                        .replace("%highscore%", Integer.toString(rank.score()))
-                        .replace("%topscore%", Integer.toString(top.score()))
-                        .replace("%topplayer%", top.name())
-                        .replace("%session%" , getSessionId()));
-            }
-
-            board.updateTitle(title);
-            board.updateLines(lines);
+        if (!Option.SCOREBOARD_ENABLED) {
+            return;
         }
+
+        // board can be null a few ticks after on player leave
+        if (board == null) {
+            return;
+        }
+        ParkourPlayer player = closest;
+        ParkourGenerator generator = player.generator;
+
+        Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
+
+        String title = Util.translate(player.getPlayer(), Option.SCOREBOARD_TITLE);
+        List<String> lines = new ArrayList<>();
+
+        Score top = null, rank = null;
+        if (leaderboard != null) {
+
+            // only get score at rank if lines contains variables
+            if (Util.listContains(lines, "topscore", "topplayer")) {
+                top = leaderboard.getScoreAtRank(1);
+            }
+
+            rank = leaderboard.get(player.getUUID());
+        }
+
+        // set generic score if score is not found
+        top = top == null ? new Score("?", "?", "?", 0) : top;
+        rank = rank == null ? new Score("?", "?", "?", 0) : rank;
+
+
+        // update lines
+        for (String line : Option.SCOREBOARD_LINES) {
+            line = Util.translate(player.getPlayer(), line); // add support for PAPI placeholders in scoreboard
+
+            lines.add(line
+                    .replace("%score%", Integer.toString(generator.getScore()))
+                    .replace("%time%", generator.getTime())
+                    .replace("%highscore%", Integer.toString(rank.score()))
+                    .replace("%topscore%", Integer.toString(top.score()))
+                    .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+        }
+
+        board.updateTitle(title
+                .replace("%score%", Integer.toString(generator.getScore()))
+                .replace("%time%", generator.getTime())
+                .replace("%highscore%", Integer.toString(rank.score()))
+                .replace("%topscore%", Integer.toString(top.score()))
+                .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+        board.updateLines(lines);
     }
 
     /**

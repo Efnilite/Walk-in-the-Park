@@ -39,6 +39,18 @@ public class Util {
     private static Economy economy;
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
+    public static boolean listContains(List<String> list, String... strings) {
+        for (String s : list) {
+            for (String string : strings) {
+                if (s.contains(string)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static <T> T getRandom(List<T> list) {
         return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }

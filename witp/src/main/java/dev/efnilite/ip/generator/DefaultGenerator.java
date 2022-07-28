@@ -50,20 +50,23 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends DefaultGeneratorBase {
 
-    private BukkitRunnable task;
-
     private Material currentSpecial = null;
     private Material previousSpecial = null;
 
     /**
      * The amount of blocks that will trail the player's current index.
      */
-    protected int blockTrail = 2;
+    public int blockTrail = 2;
+
+    /**
+     * The task used in checking the player's current location
+     */
+    protected BukkitRunnable task;
 
     /**
      * Whether this generator has been stopped
      */
-    protected boolean stopped = false;
+    public boolean stopped = false;
 
     /**
      * Whether the stucture should be deleted on the next jump.
@@ -113,11 +116,70 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
         this.heading = Option.HEADING;
+
+        updateScoreboard();
     }
 
     @Override
     public Gamemode getGamemode() {
         return Gamemodes.DEFAULT;
+    }
+
+    @Override
+    public void updateScoreboard() {
+        if (!Option.SCOREBOARD_ENABLED) {
+            return;
+        }
+
+        if (!player.showScoreboard) {
+            return;
+        }
+
+        // board can be null a few ticks after on player leave
+        if (player.getBoard() == null) {
+            return;
+        }
+
+        Leaderboard leaderboard = getGamemode().getLeaderboard();
+
+        String title = Util.translate(player.getPlayer(), Option.SCOREBOARD_TITLE);
+        List<String> lines = new ArrayList<>();
+
+        Score top = null, rank = null;
+        if (leaderboard != null) {
+
+            // only get score at rank if lines contains variables
+            if (Util.listContains(lines, "topscore", "topplayer")) {
+                top = leaderboard.getScoreAtRank(1);
+            }
+
+            rank = leaderboard.get(player.getUUID());
+        }
+
+        // set generic score if score is not found
+        top = top == null ? new Score("?", "?", "?", 0) : top;
+        rank = rank == null ? new Score("?", "?", "?", 0) : rank;
+
+
+        // update lines
+        for (String line : Option.SCOREBOARD_LINES) {
+            line = Util.translate(player.getPlayer(), line); // add support for PAPI placeholders in scoreboard
+
+            lines.add(line
+                    .replace("%score%", Integer.toString(score))
+                    .replace("%time%", time)
+                    .replace("%highscore%", Integer.toString(rank.score()))
+                    .replace("%topscore%", Integer.toString(top.score()))
+                    .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+        }
+
+        player.getBoard().updateTitle(title
+                .replace("%score%", Integer.toString(score))
+                .replace("%time%", time)
+                .replace("%highscore%", Integer.toString(rank.score()))
+                .replace("%topscore%", Integer.toString(top.score()))
+                .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+        player.getBoard().updateLines(lines);
     }
 
     @Override
@@ -454,8 +516,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     @Override
     public void tick() {
         updateTime();
+        updateScoreboard();
+
         player.getSession().updateSpectators();
-        player.updateScoreboard();
         player.getPlayer().setSaturation(20);
 
         Location playerLocation = player.getLocation();
