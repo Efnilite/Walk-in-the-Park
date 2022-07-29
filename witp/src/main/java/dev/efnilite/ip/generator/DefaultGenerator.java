@@ -558,7 +558,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int currentIndex = positionIndexMap.get(blockBelowPlayer); // current index of the player
         int deltaFromLast = currentIndex - lastPositionIndexPlayer;
 
-        if (deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
+        if (!option(GeneratorOption.IGNORE_CHECK_FOR_PROGRESS) && deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
             return;
         }
 
