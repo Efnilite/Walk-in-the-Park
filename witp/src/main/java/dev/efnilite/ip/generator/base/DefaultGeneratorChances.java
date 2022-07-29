@@ -1,5 +1,6 @@
 package dev.efnilite.ip.generator.base;
 
+import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.config.Option;
@@ -180,7 +181,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
         int four = Option.MAXED_FOUR_BLOCK.get();
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
-        if (player.useScoreDifficulty && option(GeneratorOption.DISABLE_ADAPTIVE)) {
+        if (profile.getValue("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
             if (score <= Option.MULTIPLIER.getAsDouble()) {
                 one = (int) (Option.NORMAL_ONE_BLOCK.get() + (adaptiveDistanceChances.get(1) * score));
                 two = (int) (Option.NORMAL_TWO_BLOCK.get() + (adaptiveDistanceChances.get(2) * score));

@@ -6,6 +6,7 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.generator.profile.Profile;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.SingleSession;
@@ -81,6 +82,25 @@ public class ParkourPlayer extends ParkourUser {
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setInvisible(false);
+    }
+
+    /**
+     * Forces this player's generator to match the settings of this player.
+     */
+    public void updateGeneratorSettings() {
+        Profile profile = generator.getProfile();
+
+        profile
+                .setSetting("schematicDifficulty", schematicDifficulty.toString())
+                .setSetting("blockLead", blockLead.toString())
+                .setSetting("useScoreDifficulty", useScoreDifficulty.toString())
+                .setSetting("useParticlesAndSound", useParticlesAndSound.toString())
+                .setSetting("useSpecialBlocks", useSpecialBlocks.toString())
+                .setSetting("showFallMessage", showFallMessage.toString())
+                .setSetting("showScoreboard", showScoreboard.toString())
+                .setSetting("useSchematic", useSchematic.toString())
+                .setSetting("selectedTime", selectedTime.toString())
+                .setSetting("style", style);
     }
 
     public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty,

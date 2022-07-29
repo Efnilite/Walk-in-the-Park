@@ -1,4 +1,4 @@
-package dev.efnilite.ip.generator;
+package dev.efnilite.ip.generator.data;
 
 import org.bukkit.block.Block;
 

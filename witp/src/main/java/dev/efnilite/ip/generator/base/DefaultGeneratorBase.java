@@ -1,6 +1,7 @@
 package dev.efnilite.ip.generator.base;
 
-import dev.efnilite.ip.generator.AreaData;
+import dev.efnilite.ip.generator.data.AreaData;
+import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.session.Session;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;

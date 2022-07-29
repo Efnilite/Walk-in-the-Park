@@ -7,7 +7,8 @@ import dev.efnilite.ip.events.BlockGenerateEvent;
 import dev.efnilite.ip.events.PlayerFallEvent;
 import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
-import dev.efnilite.ip.generator.base.GeneratorOption;
+import dev.efnilite.ip.generator.base.Direction;
+import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -129,7 +130,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        if (!player.showScoreboard) {
+        if (!profile.getValue("showScoreboard").asBoolean()) {
             return;
         }
 
@@ -165,7 +166,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
             lines.add(line
                     .replace("%score%", Integer.toString(score))
-                    .replace("%time%", time)
+                    .replace("%time%", stopwatch.toString())
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
@@ -173,7 +174,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         player.getBoard().updateTitle(title
                 .replace("%score%", Integer.toString(score))
-                .replace("%time%", time)
+                .replace("%time%", stopwatch.toString())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
@@ -182,7 +183,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (!player.useParticlesAndSound) {
+        if (!profile.getValue("useParticlesAndSound").asBoolean()) {
             return;
         }
 
@@ -547,7 +548,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
             waitForSchematicCompletion = false;
             schematicCooldown = 20;
-            generate(player.blockLead);
+            generate(profile.getValue("blockLead").asInt());
             deleteStructure = true;
             return;
         }
@@ -558,7 +559,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int currentIndex = positionIndexMap.get(blockBelowPlayer); // current index of the player
         int deltaFromLast = currentIndex - lastPositionIndexPlayer;
 
-        if (!option(GeneratorOption.IGNORE_CHECK_FOR_PROGRESS) && deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
+        if (deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
             return;
         }
 
@@ -568,9 +569,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         lastStandingPlayerLocation = playerLocation.clone();
 
+        int blockLead = profile.getValue("blockLead").asInt();
+
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
-        if (deltaCurrentTotal <= player.blockLead) {
-            generate(player.blockLead - deltaCurrentTotal + 1); // generate the remaining amount so it will match
+        if (deltaCurrentTotal <= blockLead) {
+            generate(blockLead - deltaCurrentTotal + 1); // generate the remaining amount so it will match
         }
         lastPositionIndexPlayer = currentIndex;
 
@@ -643,10 +646,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         int score = this.score;
-        String time = this.time;
+        String time = this.stopwatch.toString();
         String diff = player.calculateDifficultyScore();
 
-        if (player.showFallMessage && regenerate && time != null) {
+        if (profile.getValue("showFallMessage").asBoolean() && regenerate && time != null) {
             String message;
             int number = 0;
             if (score == record.score()) {
@@ -698,14 +701,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int type = getRandomChance(defaultChances); // 0 = normal, 1 = structures, 2 = special
 
         if (type == 1) {
-            type = schematicCooldown == 0 && player.useSchematic ? type : Numbers.random(0, 2) * 2;
+            type = schematicCooldown == 0 && profile.getValue("useSchematic").asBoolean() ? type : Numbers.random(0, 2) * 2;
         }
 
         switch (type) {
             case 0, 2 -> {
                 BlockData next;
 
-                if (type == 2 && player.useSpecialBlocks) { // if special
+                if (type == 2 && profile.getValue("useSpecialBlocks").asBoolean()) { // if special
                     int value = getRandomChance(specialChances);
                     switch (value) {
                         // ice
@@ -760,10 +763,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     boolean passed = true;
                     while (passed) {
                         file = files.get(random.nextInt(files.size()));
-                        if (player.schematicDifficulty == 0) {
-                            player.schematicDifficulty = 0.2;
+                        if (profile.getValue("schematicDifficulty").asDouble() == 0) {
+                            profile.setSetting("schematicDifficulty", "0.2");
                         }
-                        if (Util.getDifficulty(file.getName()) < player.schematicDifficulty) {
+                        if (Util.getDifficulty(file.getName()) < profile.getValue("schematicDifficulty").asDouble()) {
                             passed = false;
                         }
                     }
@@ -858,7 +861,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
             strings.forEach(s -> s.execute(player));
             player.collectedRewards.add(Integer.toString(score));
-        }
+        } // todo rewards
     }
 
     protected void deleteStructure() {
@@ -896,7 +899,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         lastStandingPlayerLocation = spawn.clone();
         blockSpawn = block.clone();
         mostRecentBlock = block.clone();
-        generate(player.blockLead + 1);
+        generate(profile.getValue("blockLead").asInt() + 1);
     }
 
     public int getTotalScore() {

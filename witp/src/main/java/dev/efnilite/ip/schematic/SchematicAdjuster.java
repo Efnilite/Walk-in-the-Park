@@ -1,6 +1,6 @@
 package dev.efnilite.ip.schematic;
 
-import dev.efnilite.ip.generator.Direction;
+import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;

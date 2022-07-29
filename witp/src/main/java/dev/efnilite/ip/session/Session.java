@@ -154,7 +154,6 @@ public interface Session {
      *          The player to force to join
      */
     default void join(Player player) {
-        System.out.println("OLD SESSION call for player " + player.getName());
         if (isAcceptingPlayers()) {
             getGamemode().create(player); // make player join
             addPlayers(ParkourPlayer.getPlayer(player));

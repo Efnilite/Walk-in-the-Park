@@ -3,7 +3,7 @@ package dev.efnilite.ip.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.generator.Direction;
+import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;

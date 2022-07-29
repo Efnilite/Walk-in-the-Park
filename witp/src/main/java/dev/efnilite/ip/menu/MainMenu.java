@@ -2,11 +2,9 @@ package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.chat.ChatType;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -57,48 +55,6 @@ public class MainMenu extends DynamicMenu {
                 user -> IP.getConfiguration().getFromItemData(user, "main.language").click(
                 event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
-
-        registerMainItem(3, 2,
-                user -> new SliderItem()
-                        .initial(switch (user.getChatType()) {
-                            case PUBLIC -> 0;
-                            case LOBBY_ONLY -> 1;
-                            case PLAYERS_ONLY -> 2;
-                        }) // user has to be not-null to see this item
-                        .add(0, IP.getConfiguration().getFromItemData(user, "main.chat")
-                                .modifyLore(lore -> lore.replace("%s", "lobby only")),
-                        event -> {
-                            ParkourUser u = ParkourUser.getUser(event.getPlayer());
-
-                            if (u != null) {
-                                u.setChatType(ChatType.LOBBY_ONLY);
-                            }
-
-                            return true;
-                        })
-                        .add(1, IP.getConfiguration().getFromItemData(user, "main.chat")
-                                        .modifyLore(lore -> lore.replace("%s", "players only")),
-                            event -> {
-                                ParkourUser u = ParkourUser.getUser(event.getPlayer());
-
-                                if (u != null) {
-                                    u.setChatType(ChatType.PLAYERS_ONLY);
-                                }
-
-                                return true;
-                            })
-                        .add(2, IP.getConfiguration().getFromItemData(user, "main.chat")
-                                        .modifyLore(lore -> lore.replace("%s", "public")),
-                                event -> {
-                                    ParkourUser u = ParkourUser.getUser(event.getPlayer());
-
-                                    if (u != null) {
-                                        u.setChatType(ChatType.PUBLIC);
-                                    }
-
-                                    return true;
-                                }),
-                player -> ParkourUser.getUser(player) != null && ParkourOption.CHAT.check(player));
 
         // Always allow closing of the menu
         registerMainItem(3, 10,

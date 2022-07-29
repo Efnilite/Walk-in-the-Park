@@ -1,4 +1,4 @@
-package dev.efnilite.ip.chat;
+package dev.efnilite.ip.session.chat;
 
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;

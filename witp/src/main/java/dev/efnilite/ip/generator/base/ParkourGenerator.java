@@ -1,8 +1,9 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.generator.Direction;
-import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.generator.profile.GeneratorProfile;
+import dev.efnilite.ip.generator.profile.Profile;
+import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
@@ -10,7 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -19,21 +21,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class ParkourGenerator {
 
     /**
-     * The score of the player
+     * This generator's score
      */
     protected int score = 0;
 
     /**
-     * The zone in which the parkour can take place.
+     * The zone in which the parkour can take place. (playable area)
      */
     protected Selection zone;
-
-    /**
-     * The time of the player's current session
-     *
-     * @see Stopwatch#toString()
-     */
-    protected String time = "0.0s";
 
     /**
      * The direction of the parkour
@@ -46,30 +41,33 @@ public abstract class ParkourGenerator {
     protected List<GeneratorOption> generatorOptions;
 
     /**
-     * The random for this Thread, which is useful in randomly generating parkour
-     */
-    protected final ThreadLocalRandom random;
-
-    /**
-     * The stopwatch instance
+     * The {@link Stopwatch} instance
      */
     protected final Stopwatch stopwatch;
 
     /**
-     * The player associated with this Generator.
+     * The {@link Session} associated with this Generator.
      */
     protected final Session session;
 
     /**
-     * The spectators
+     * This Generator's {@link Profile}.
+     *
+     * @see GeneratorProfile
      */
-    protected final Map<UUID, ParkourSpectator> spectators;
+    protected final Profile profile;
+
+    /**
+     * The random for this Thread, which is useful in randomly generating parkour
+     */
+    protected final ThreadLocalRandom random;
 
     public ParkourGenerator(@NotNull Session session, GeneratorOption... options) {
         this.session = session;
+        this.profile = new GeneratorProfile();
+
         this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();
-        this.spectators = new HashMap<>();
         this.random = ThreadLocalRandom.current();
     }
 
@@ -146,8 +144,6 @@ public abstract class ParkourGenerator {
      * Updates the stopwatch time and visual time for the player
      */
     public void updateTime() {
-        time = stopwatch.toString();
-
         session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
     }
 
@@ -168,15 +164,6 @@ public abstract class ParkourGenerator {
      */
     public int getScore() {
         return score;
-    }
-
-    /**
-     * Gets the current time
-     *
-     * @return the player's current time
-     */
-    public String getTime() {
-        return time;
     }
 
     /**
@@ -204,5 +191,23 @@ public abstract class ParkourGenerator {
      */
     public List<GeneratorOption> getGeneratorOptions() {
         return generatorOptions;
+    }
+
+    /**
+     * Returns this Generator's {@link Stopwatch} instance
+     *
+     * @return the {@link Stopwatch instance}
+     */
+    public Stopwatch getStopwatch() {
+        return stopwatch;
+    }
+
+    /**
+     * Returns this Generator's {@link Profile} instance
+     *
+     * @return the {@link Profile} instance
+     */
+    public Profile getProfile() {
+        return profile;
     }
 }

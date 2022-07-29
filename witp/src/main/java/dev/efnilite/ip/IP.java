@@ -2,7 +2,6 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
-import dev.efnilite.ip.chat.ChatHandler;
 import dev.efnilite.ip.events.Handler;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
@@ -12,6 +11,7 @@ import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.internal.style.DefaultStyleType;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
+import dev.efnilite.ip.session.chat.ChatHandler;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SQLManager;

@@ -1,9 +1,9 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.generator.AreaData;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.generator.data.AreaData;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;

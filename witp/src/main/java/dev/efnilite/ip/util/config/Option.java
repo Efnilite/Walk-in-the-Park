@@ -2,7 +2,7 @@ package dev.efnilite.ip.util.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.generator.Direction;
+import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.config.ConfigOption;
 import dev.efnilite.vilib.particle.ParticleData;

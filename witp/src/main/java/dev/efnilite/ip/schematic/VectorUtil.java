@@ -1,26 +1,12 @@
 package dev.efnilite.ip.schematic;
 
-import dev.efnilite.ip.generator.Direction;
 import dev.efnilite.vilib.vector.Vector3D;
-import org.bukkit.util.Vector;
 
 public class VectorUtil {
 
     public static Vector3D parseVector(String vector) {
         String[] split = vector.replaceAll("[()]", "").split(",");
         return new Vector3D(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]));
-    }
-
-    public static Direction fromVector(Vector vector) {
-        if (vector.getBlockX() < 0) {
-            return Direction.WEST;
-        } else if (vector.getBlockZ() > 0) {
-            return Direction.SOUTH;
-        } else if (vector.getBlockZ() < 0) {
-            return Direction.NORTH;
-        } else {
-            return Direction.EAST;
-        }
     }
 
     public static Vector3D rotateAround(Vector3D vector, RotationAngle rotation) {

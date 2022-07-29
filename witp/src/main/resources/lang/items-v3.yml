@@ -130,9 +130,17 @@ locale:
       language:
         name: '<#4A41BC><bold>Language'
         lore: '<dark_gray>Sprache • 语言 • 語言||<dark_gray>Langue • 言語 • Taal'
+
+    # -= Lobby menu items =-
+    lobby:
+      visibility:
+        name: '<#A1E1DD><bold>Visibility'
+        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        values: [private, id only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
         lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        values: [lobby only, players only, public]
 
     # -= Options for settings menu =-
     options:

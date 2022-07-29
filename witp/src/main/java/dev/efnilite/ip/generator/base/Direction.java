@@ -1,4 +1,4 @@
-package dev.efnilite.ip.generator;
+package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.vilib.vector.Vector3D;
 
