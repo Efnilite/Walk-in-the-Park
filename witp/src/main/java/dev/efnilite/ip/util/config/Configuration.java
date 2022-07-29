@@ -159,7 +159,7 @@ public class Configuration {
             return true;
         }
 
-        String[] schematics = new String[]{"spawn-island.witp"};
+        String[] schematics = new String[]{"spawn-island.witp", "spawn-island-duels.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
         folder.mkdirs();
         IP.logging().info("Downloading all schematics...");
