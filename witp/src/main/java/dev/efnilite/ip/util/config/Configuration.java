@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -155,14 +156,15 @@ public class Configuration {
      * @return true if schematics are already found, false if not
      */
     private boolean schematics() {
-        if (new File(plugin.getDataFolder() + "/schematics/parkour-1.witp").exists()) {
+        if (new File(plugin.getDataFolder() + "/schematics/spawn-island-duels.witp").exists()) {
             return true;
         }
 
         String[] schematics = new String[]{"spawn-island.witp", "spawn-island-duels.witp"};
         File folder = new File(plugin.getDataFolder(), "schematics");
         folder.mkdirs();
-        IP.logging().info("Downloading all schematics...");
+
+        IP.logging().info("Downloading missing schematics...");
         int structureCount = 21;
 
         Task.create(IP.getPlugin())
@@ -170,13 +172,23 @@ public class Configuration {
                 .execute(() -> {
                     try {
                         for (String schematic : schematics) {
+                            Path path = Paths.get(folder + "/" + schematic);
+                            if (path.toFile().exists()) {
+                                continue;
+                            }
+
                             InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
-                            Files.copy(stream, Paths.get(folder + "/" + schematic));
+                            Files.copy(stream, path);
                             stream.close();
                         }
                         for (int i = 1; i <= structureCount; i++) {
+                            Path path = Paths.get(folder + "/parkour-" + i + ".witp");
+                            if (path.toFile().exists()) {
+                                continue;
+                            }
+
                             InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
-                            Files.copy(stream, Paths.get(folder + "/parkour-" + i + ".witp"));
+                            Files.copy(stream, path);
                             stream.close();
                         }
 
@@ -185,9 +197,9 @@ public class Configuration {
                         IP.logging().info("Downloaded all schematics");
                     } catch (FileAlreadyExistsException ex) {
                         // do nothing
-                    } catch (IOException ex) {
+                    } catch (Throwable throwable) {
                         IP.logging().stack("Stopped download of schematics",
-                                "delete the schematics folder and restart the server", ex);
+                                "delete the schematics folder and restart the server", throwable);
                     }
                 })
                 .run();
