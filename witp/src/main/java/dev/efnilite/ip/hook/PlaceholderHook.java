@@ -68,7 +68,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return Integer.toString(generator.getScore());
                 case "time":
                 case "current_time":
-                    return generator.getTime();
+                    return generator.getStopwatch().toString();
                 case "blocklead":
                 case "lead":
                     return Integer.toString(pp.blockLead);

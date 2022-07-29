@@ -87,7 +87,7 @@ public class ParkourSpectator extends ParkourUser {
 
             lines.add(line
                     .replace("%score%", Integer.toString(generator.getScore()))
-                    .replace("%time%", generator.getTime())
+                    .replace("%time%", generator.getStopwatch().toString())
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
@@ -95,7 +95,7 @@ public class ParkourSpectator extends ParkourUser {
 
         board.updateTitle(title
                 .replace("%score%", Integer.toString(generator.getScore()))
-                .replace("%time%", generator.getTime())
+                .replace("%time%", generator.getStopwatch().toString())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
