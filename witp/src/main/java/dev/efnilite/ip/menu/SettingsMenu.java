@@ -79,6 +79,8 @@ public class SettingsMenu extends DynamicMenu {
                                         .modifyLore(line -> line.replace("%s", Integer.toString(value))),
                                 event2 -> {
                                     player.blockLead = value;
+
+                                    player.updateGeneratorSettings();
                                     return true;
                                 });
                         slot++;
@@ -120,6 +122,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         player.selectedTime = 0;
                                         player.updateVisualTime(player.selectedTime);
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(1, item.clone()
@@ -128,6 +132,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         player.selectedTime = 6000;
                                         player.updateVisualTime(player.selectedTime);
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(2, item.clone()
@@ -136,6 +142,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         player.selectedTime = 12000;
                                         player.updateVisualTime(player.selectedTime);
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(3, item.clone()
@@ -144,6 +152,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         player.selectedTime = 18000;
                                         player.updateVisualTime(player.selectedTime);
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     });
                 },
@@ -169,6 +179,8 @@ public class SettingsMenu extends DynamicMenu {
                                         player.showScoreboard = true;
                                         player.setBoard(new FastBoard(player.getPlayer()));
                                         player.getGenerator().updateScoreboard();
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
@@ -179,6 +191,8 @@ public class SettingsMenu extends DynamicMenu {
                                         if (player.getBoard() != null && !player.getBoard().isDeleted()) {
                                             player.getBoard().delete();
                                         }
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     });
                 },
@@ -200,6 +214,8 @@ public class SettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                     event -> {
                                         player.showFallMessage = true;
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
@@ -207,6 +223,8 @@ public class SettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                                     event -> {
                                         player.showFallMessage = false;
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     });
                 },
@@ -228,6 +246,8 @@ public class SettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                     event -> {
                                         player.useParticlesAndSound = true;
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
@@ -235,6 +255,8 @@ public class SettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                                     event -> {
                                         player.useParticlesAndSound = false;
+
+                                        player.updateGeneratorSettings();
                                         return true;
                                     });
                 },
@@ -257,6 +279,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useSpecialBlocks = true;
+
+                                            player.updateGeneratorSettings();
                                             return true;
                                         }
                                         return false;
@@ -267,6 +291,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useSpecialBlocks = false;
+
+                                            player.updateGeneratorSettings();
                                             return true;
                                         }
                                         return false;
@@ -291,6 +317,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useScoreDifficulty = true;
+
+                                            player.updateGeneratorSettings();
                                             return true;
                                         }
                                         return false;
@@ -301,6 +329,8 @@ public class SettingsMenu extends DynamicMenu {
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useScoreDifficulty = false;
+
+                                            player.updateGeneratorSettings();
                                             return true;
                                         }
                                         return false;
@@ -392,6 +422,9 @@ public class SettingsMenu extends DynamicMenu {
                     .glowing(user.style.equals(name))
                     .click(event -> {
                         user.style = name;
+
+                        user.updateGeneratorSettings();
+
                         open(user);
                     }));
         }
@@ -441,6 +474,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.schematicDifficulty = 0.2;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;
@@ -450,6 +485,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.schematicDifficulty = 0.4;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;
@@ -459,6 +496,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.schematicDifficulty = 0.6;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;
@@ -468,6 +507,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.schematicDifficulty = 0.8;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;
@@ -485,6 +526,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSchematic = true;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;
@@ -495,6 +538,8 @@ public class SettingsMenu extends DynamicMenu {
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSchematic = false;
+
+                                    user.updateGeneratorSettings();
                                     return true;
                                 }
                                 return false;

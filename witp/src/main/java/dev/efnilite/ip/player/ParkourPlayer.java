@@ -383,13 +383,15 @@ public class ParkourPlayer extends ParkourUser {
      */
     public @NotNull ParkourGenerator getGenerator() {
         if (generator == null) {
-            generator = new DefaultGenerator(SingleSession.create(this, Gamemodes.DEFAULT));
+            setGenerator(new DefaultGenerator(SingleSession.create(this, Gamemodes.DEFAULT)));
         }
         return generator;
     }
 
     public void setGenerator(ParkourGenerator generator) {
         this.generator = generator;
+
+        updateGeneratorSettings();
     }
 
     public void setBoard(FastBoard board) {

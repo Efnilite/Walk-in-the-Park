@@ -229,30 +229,36 @@ public class WorldDivider {
 
         // -= Inventory =-
         if (Option.INVENTORY_HANDLING.get()) {
-
             Task.create(IP.getPlugin())
                     .delay(5)
                     .execute(() -> {
-
                         player.getInventory().clear();
 
                         if (Option.SETTINGS_ENABLED.get() && giveCompass) {
                             ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
                             if (mat == null) {
-                                IP.logging().error("Material for options in config is null - defaulting to compass");
-                                player.getInventory().setItem(8, new Item(Material.COMPASS, "&c&l-= Options =-").build());
+                                IP.logging().error("Material for options in items.yml is null");
+                                player.getInventory().setItem(4, new Item(Material.COMPASS, "&c&l-= Options =-").build());
                             } else {
-                                player.getInventory().setItem(8, mat);
+                                player.getInventory().setItem(4, mat);
                             }
                         }
                         if (Option.HOTBAR_QUIT_ITEM.get()) {
                             ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.quit").build();
                             if (mat == null) {
-                                IP.logging().error("Material for quitting in config is null - defaulting to barrier");
-                                player.getInventory().setItem(7, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
+                                IP.logging().error("Material for quitting in items is null");
+                                player.getInventory().setItem(5, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
                             } else {
-                                player.getInventory().setItem(7, mat);
+                                player.getInventory().setItem(5, mat);
                             }
+                        }
+
+                        ItemStack mat = IP.getConfiguration().getFromItemData(pp, "lobby.item").build();
+                        if (mat == null) {
+                            IP.logging().error("Material for lobby in config is null");
+                            player.getInventory().setItem(5, new Item(Material.BEACON, "&c&l-= Lobbies =-").build());
+                        } else {
+                            player.getInventory().setItem(5, mat);
                         }
 
                     })

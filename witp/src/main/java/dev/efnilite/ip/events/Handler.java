@@ -2,6 +2,7 @@ package dev.efnilite.ip.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
+import dev.efnilite.ip.menu.LobbyMenu;
 import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -256,6 +257,9 @@ public class Handler implements EventWatcher {
         if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
             Material menu = IP.getConfiguration().getFromItemData(pp, "general.menu").getMaterial();
             Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
+            Material lobby = IP.getConfiguration().getFromItemData(pp, "lobby.item").getMaterial();
+
+
             Material held = Util.getHeldItem(player).getType();
             if (held == menu) {
                 event.setCancelled(true);
@@ -263,6 +267,9 @@ public class Handler implements EventWatcher {
             } else if (held == quit) {
                 event.setCancelled(true);
                 ParkourUser.leave(player);
+            } else if (held == lobby) {
+                event.setCancelled(true);
+                LobbyMenu.INSTANCE.open(player);
             }
         }
     }

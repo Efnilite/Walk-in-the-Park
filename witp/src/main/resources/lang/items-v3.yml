@@ -32,6 +32,10 @@ items:
     chat:
       item: feather
 
+  lobby:
+    item:
+      item: iron_ingot
+
   # -= Options for settings menu =-
   options:
     cant-change:
@@ -133,6 +137,9 @@ locale:
 
     # -= Lobby menu items =-
     lobby:
+      item:
+        name: '<#20C6BC><bold>Lobby'
+        lore: ''
       visibility:
         name: '<#A1E1DD><bold>Visibility'
         lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'

@@ -25,8 +25,8 @@ public enum ParkourOption {
     LEADERBOARD("leaderboard", "witp.option.leaderboard"),
     LANGUAGE("language", "witp.option.language"),
 
-    VISIBILITY("visibility", "witp.visibility"),
-    CHAT("chat", "witp.chat"),
+    VISIBILITY("visibility", "witp.option.visibility"),
+    CHAT("chat", "witp.option.chat"),
     JOIN("join", "witp.join"),
     MENU("menu", "witp.menu"),
     SETTINGS("settings", "witp.option.settings");
