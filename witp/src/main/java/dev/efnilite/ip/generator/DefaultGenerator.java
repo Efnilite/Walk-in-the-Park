@@ -27,6 +27,7 @@ import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Numbers;
 import dev.efnilite.vilib.util.Task;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -116,7 +117,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.heading = Option.HEADING;
+        this.heading = Direction.translate(Option.HEADING);
     }
 
     @Override
@@ -292,11 +293,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // when a player is near the edge of the playable area
         double[][] progress = calculateParameterization();
 
-        // update the values
-        List<Direction> directions = updateHeading(progress);
+        // calculate recommendations for new heading
+        List<Vector3D> recommendations = updateHeading(progress);
+        heading = new Vector3D(0, 0, 0);
 
-        if (directions.size() == 1) {
-            heading = directions.get(0);
+        // add all recommendations to heading.
+        // this will allow the heading to become diagonal in case it reaches a corner:
+        // if north and east are recommended, the heading of the parkour will go north-east.
+        for (Vector3D recommendation : recommendations) {
+            heading.add(recommendation);
         }
 
         dy = updateHeight(progress, dy);
@@ -332,24 +337,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         // delta forwards
         int df = adjustedRange - Math.abs(ds);
 
-        Vector offset;
-        // if the next block has two proposed headings, it's stuck in corner
-        // to fix this, get two proposed headings, convert to unit vector
-        // and multiply it by 2 to return in a cornerly fashion
-        if (directions.size() == 2) {
-            Direction one = directions.get(0);
-            Direction two = directions.get(1);
-
-            offset = one.toVector().add(two.toVector()).multiply(2).toBukkitVector();
-        } else {
-            offset = new Vector(df, dy, ds);
-        }
+        Vector offset = new Vector(df, dy, ds);
 
         // update current loc
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(heading.getAngleFromBase());
+//        offset.rotateAroundY(heading.getAngleFromBase());
+
         clone.add(offset);
 
         return clone.getBlock();
@@ -357,7 +352,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     /**
      * Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
-     *
      * Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
      * This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
      *
@@ -411,7 +405,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      *
      * @return a list of new proposed headings
      */
-    public List<Direction> updateHeading(double[][] progress) {
+    public List<Vector3D> updateHeading(double[][] progress) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -420,7 +414,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         double tz = progress[2][0];
         double borderMarginZ = progress[2][1];
 
-        List<Direction> directions = new ArrayList<>();
+        List<Vector3D> directions = new ArrayList<>();
         // check border
         if (tx < borderMarginX) {
             directions.add(Direction.EAST);

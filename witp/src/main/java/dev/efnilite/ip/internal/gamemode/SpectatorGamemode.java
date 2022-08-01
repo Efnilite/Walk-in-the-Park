@@ -20,8 +20,7 @@ public class SpectatorGamemode implements Gamemode {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return new Item(Material.GLASS, "<#39D5AB><bold>Spectator")
-                .lore("<dark_gray>Zuschauer • 观众", "<dark_gray>觀眾 • Spectateur", "<dark_gray>見物人 • Toekijker");
+        return new Item(Material.STONE, "");
     }
 
     @Override

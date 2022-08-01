@@ -3,6 +3,7 @@ package dev.efnilite.ip;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.events.Handler;
+import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.hook.PlaceholderHook;
@@ -52,8 +53,9 @@ public final class IP extends ViPlugin {
     private static Configuration configuration;
 
     @Nullable
+    private static FloodgateHook floodgateHook;
+    @Nullable
     private static MultiverseHook multiverseHook;
-
     @Nullable
     private static PlaceholderHook placeholderHook;
 
@@ -111,22 +113,6 @@ public final class IP extends ViPlugin {
             }
         }
 
-        // ----- Hooks and Bungee -----
-
-        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            logging().info("Connecting with Multiverse..");
-            multiverseHook = new MultiverseHook();
-        }
-
-        if (Option.BUNGEECORD.get()) {
-            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        }
-
-        // ----- Worlds -----
-
-        worldHandler = new WorldHandler();
-        worldHandler.createWorld();
-
         // ----- Registry -----
 
         registry = new Registry();
@@ -141,14 +127,36 @@ public final class IP extends ViPlugin {
 
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            logging().info("Connecting with Holographic Displays..");
+            logging().info("Connecting with Holographic Displays...");
             HoloHook.init(this);
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            logging().info("Connecting with PlaceholderAPI..");
+            logging().info("Connecting with PlaceholderAPI...");
             placeholderHook = new PlaceholderHook();
             placeholderHook.register();
         }
+
+        if (getServer().getPluginManager().isPluginEnabled("Floodgate")) {
+            logging().info("Connecting with Floodgate...");
+            floodgateHook = new FloodgateHook();
+        }
+
+        // ----- Hooks and Bungee -----
+
+        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
+            logging().info("Connecting with Multiverse...");
+            multiverseHook = new MultiverseHook();
+        }
+
+        if (Option.BUNGEECORD.get()) {
+            logging().info("Connecting with BungeeCord..");
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        }
+
+        // ----- Worlds -----
+
+        worldHandler = new WorldHandler();
+        worldHandler.createWorld();
 
         // ----- Events -----
 
@@ -236,6 +244,11 @@ public final class IP extends ViPlugin {
     @Nullable
     public static PlaceholderHook getPlaceholderHook() {
         return placeholderHook;
+    }
+
+    @Nullable
+    public static FloodgateHook getFloodgateHook() {
+        return floodgateHook;
     }
 
     public static WorldHandler getWorldHandler() {

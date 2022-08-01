@@ -5,6 +5,7 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
@@ -60,12 +61,16 @@ public class SpectatorMenu {
 
                 ItemStack stack = item.build(); // Updating meta requires building
                 stack.setType(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) stack.getItemMeta();
-                if (meta == null) {
-                    continue;
+
+                // bedrock has no player skull support
+                if (!Util.isBedrockPlayer(player)) {
+                    SkullMeta meta = (SkullMeta) stack.getItemMeta();
+
+                    if (meta != null) {
+                        SkullSetter.setPlayerHead(pp.getPlayer(), meta);
+                        item.meta(meta);
+                    }
                 }
-                SkullSetter.setPlayerHead(pp.getPlayer(), meta);
-                item.meta(meta);
 
                 slider.add(index, item, (event) -> Gamemodes.SPECTATOR.create(player, session));
             }

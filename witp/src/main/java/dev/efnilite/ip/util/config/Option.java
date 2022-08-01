@@ -2,7 +2,6 @@ package dev.efnilite.ip.util.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.config.ConfigOption;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -38,7 +37,7 @@ public class Option {
 
     public static List<Integer> POSSIBLE_LEADS;
     // Advanced settings
-    public static Direction HEADING;
+    public static String HEADING;
 
     public static ConfigOption<List<String>> LANGUAGES;
     public static String DEFAULT_LOCALE;
@@ -161,7 +160,7 @@ public class Option {
         BUNGEECORD = new ConfigOption<>(config, "bungeecord.enabled");
 
         // Generation
-        HEADING = Util.getDirection(generation.getString("advanced.island.parkour.heading"));
+        HEADING = generation.getString("advanced.island.parkour.heading");
 
         // Scoring
         ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");

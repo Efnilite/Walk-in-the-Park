@@ -3,10 +3,10 @@ package dev.efnilite.ip.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.vector.Vector3D;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,23 +120,6 @@ public class Util {
             } else {
                 economy.depositPlayer(player, amount);
             }
-        }
-    }
-
-    /**
-     * Gets the direction from a facing (e.g. north, south, west)
-     *
-     * @param   face
-     *          The string direction (north, south, east and west)
-     *
-     * @return a vector that indicates the direction
-     */
-    public static @NotNull Direction getDirection(@Nullable String face) {
-        try {
-            return Direction.valueOf(face == null ? "-" : face.toUpperCase());
-        } catch (Throwable throwable) {
-            IP.logging().stack(face + " is not a direction!", "check generation.yml for misinputs", throwable);
-            return Direction.EAST;
         }
     }
 
@@ -294,6 +276,19 @@ public class Util {
     }
 
     /**
+     * Returns whether the provided player is a Bedrock player.
+     * This check is provided by Floodgate
+     *
+     * @param   player
+     *          The player
+     *
+     * @return true if the player is a Bedrock player, false if not.
+     */
+    public static boolean isBedrockPlayer(Player player) {
+        return IP.getFloodgateHook() != null && IP.getFloodgateHook().isBedrockPlayer(player);
+    }
+
+    /**
      * Gets a spiral
      *
      * @param   n
@@ -326,6 +321,13 @@ public class Util {
         } else {
             return new int[]{k, k - (m - n - t)};
         }
+    }
+
+    public static double angle(Vector3D base, Vector3D other) {
+        double dotProduct = base.x * other.x + base.y * other.y + base.z * other.z;
+        double divideBy = base.length() * other.length();
+
+        return Math.toDegrees(Math.acos(dotProduct / divideBy));
     }
 
     /**

@@ -1,12 +1,12 @@
 package dev.efnilite.ip.internal.gamemode;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.item.Item;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +24,7 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return new Item(Material.BARREL, "<#6693E7><bold>Default")
-                .lore("<dark_gray>Standard • 默认 • 默認", "<dark_gray>• Défaut • デフォルト • Standaard");
+        return IP.getConfiguration().getFromItemData(locale, "gamemodes.default");
     }
 
     @Override

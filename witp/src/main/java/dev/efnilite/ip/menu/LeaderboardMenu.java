@@ -6,6 +6,7 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Stopwatch;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -132,12 +133,16 @@ public class LeaderboardMenu {
             // Player head gathering
             ItemStack stack = item.build();
             stack.setType(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) stack.getItemMeta();
-            if (meta == null) {
-                continue;
+
+            // bedrock has no player skull support
+            if (!Util.isBedrockPlayer(player)) {
+                SkullMeta meta = (SkullMeta) stack.getItemMeta();
+
+                if (meta != null) {
+                    SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
+                    item.meta(meta);
+                }
             }
-            SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
-            item.meta(meta);
 
             if (uuid.equals(player.getUniqueId())) {
                 menu.item(30, item.clone());

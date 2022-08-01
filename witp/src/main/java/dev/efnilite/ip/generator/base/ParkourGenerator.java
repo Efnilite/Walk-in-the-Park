@@ -7,6 +7,7 @@ import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
+import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,7 @@ public abstract class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    protected Direction heading;
+    protected Vector3D heading;
 
     /**
      * Generator options
@@ -171,7 +172,7 @@ public abstract class ParkourGenerator {
      *
      * @return the current heading.
      */
-    public Direction getHeading() {
+    public Vector3D getHeading() {
         return heading;
     }
 

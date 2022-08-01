@@ -14,6 +14,10 @@ items:
     menu:
       item: compass
 
+  gamemodes:
+    default:
+      item: barrel
+
   # -= Main menu materials =-
   main:
     singleplayer:
@@ -109,6 +113,9 @@ locale:
 
     # -= Gamemode items =-
     gamemodes:
+      default:
+        name: '<#6693E7><bold>Default'
+        lore: '<dark_gray>Standard • 默认 • 默認||<dark_gray>• Défaut • デフォルト • Standaard'
       spectator-head:
         name: '<#6693E7><bold>%p'
         lore: '<gray>Click to spectate.'

@@ -1,6 +1,5 @@
 package dev.efnilite.ip.schematic;
 
-import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
@@ -43,16 +42,19 @@ public class SchematicAdjuster {
      *
      * @return the associated angle
      */
-    public static RotationAngle getAngle(Direction heading) {
-        return switch (heading) {
-            case SOUTH -> // south
+    public static RotationAngle getAngle(String heading) {
+        return switch (heading.toLowerCase()) {
+            case "south" -> // south
                     RotationAngle.ANGLE_180;
-            case NORTH -> // north
+            case "north" -> // north
                     RotationAngle.ANGLE_0;
-            case EAST -> // east
+            case "east" -> // east
                     RotationAngle.ANGLE_270;
-            case WEST -> // west
+            case "west" -> // west
                     RotationAngle.ANGLE_90;
+
+            default ->
+                    RotationAngle.ANGLE_270;
         };
     }
 }
