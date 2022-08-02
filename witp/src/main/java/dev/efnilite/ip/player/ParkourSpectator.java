@@ -41,8 +41,12 @@ public class ParkourSpectator extends ParkourUser {
 
         player.setAllowFlight(true);
         player.setFlying(true);
-        player.setInvisible(true);
-        player.setCollidable(false);
+
+        // bedrock has no spectator mode, so just make the player invisible
+        if (Util.isBedrockPlayer(player)) {
+            player.setInvisible(true);
+            player.setCollidable(false);
+        }
 
         sendTranslated("spectator");
         runClosestChecker();

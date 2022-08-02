@@ -392,6 +392,8 @@ public class ParkourPlayer extends ParkourUser {
         this.generator = generator;
 
         updateGeneratorSettings();
+
+        generator.updatePreferences();
     }
 
     public void setBoard(FastBoard board) {

@@ -183,6 +183,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     }
 
     @Override
+    public void updatePreferences() {
+        // no preferences here...
+    }
+
+    @Override
     public void particles(List<Block> applyTo) {
         if (!profile.getValue("useParticlesAndSound").asBoolean()) {
             return;
@@ -295,13 +300,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         // calculate recommendations for new heading
         List<Vector3D> recommendations = updateHeading(progress);
-        heading = new Vector3D(0, 0, 0);
 
-        // add all recommendations to heading.
-        // this will allow the heading to become diagonal in case it reaches a corner:
-        // if north and east are recommended, the heading of the parkour will go north-east.
-        for (Vector3D recommendation : recommendations) {
-            heading.add(recommendation);
+        if (!recommendations.isEmpty()) {
+            heading = new Vector3D(0, 0, 0);
+
+            // add all recommendations to heading.
+            // this will allow the heading to become diagonal in case it reaches a corner:
+            // if north and east are recommended, the heading of the parkour will go north-east.
+            for (Vector3D recommendation : recommendations) {
+                heading.add(recommendation);
+            }
         }
 
         dy = updateHeight(progress, dy);
@@ -343,7 +351,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-//        offset.rotateAroundY(heading.getAngleFromBase());
+        offset.rotateAroundY(Util.angle(Direction.translate(Option.HEADING), heading));
 
         clone.add(offset);
 
@@ -417,18 +425,18 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         List<Vector3D> directions = new ArrayList<>();
         // check border
         if (tx < borderMarginX) {
-            directions.add(Direction.EAST);
+            directions.add(new Vector3D(1, 0, 0));
             // x should increase
         } else if (tx > 1 - borderMarginX) {
-            directions.add(Direction.WEST);
+            directions.add(new Vector3D(-1, 0, 0));
             // x should decrease
         }
 
         if (tz < borderMarginZ) {
-            directions.add(Direction.SOUTH);
+            directions.add(new Vector3D(0, 0, 1));
             // z should increase
         } else if (tz > 1 - borderMarginZ) {
-            directions.add(Direction.NORTH);
+            directions.add(new Vector3D(0, 0, -1));
             // z should decrease
         }
 
@@ -893,6 +901,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         lastStandingPlayerLocation = spawn.clone();
         blockSpawn = block.clone();
         mostRecentBlock = block.clone();
+
         generate(profile.getValue("blockLead").asInt() + 1);
     }
 

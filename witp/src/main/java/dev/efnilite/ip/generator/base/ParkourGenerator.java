@@ -86,6 +86,13 @@ public abstract class ParkourGenerator {
     public abstract void updateScoreboard();
 
     /**
+     * A method that gets called when the instance is applied to the player.
+     * This is used internally to update the Generator's {@link Profile}
+     * with settings that should override the player's selection.
+     */
+    public abstract void updatePreferences();
+
+    /**
      * Applies particles to list of blocks
      *
      * @param   applyTo

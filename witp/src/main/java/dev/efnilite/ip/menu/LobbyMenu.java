@@ -6,6 +6,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class LobbyMenu extends DynamicMenu {
     public static final LobbyMenu INSTANCE = new LobbyMenu();
 
     public LobbyMenu() {
-        registerMainItem(2, 9,
+        registerMainItem(1, 9,
                 user -> {
                     List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.visibility.values");
                     return new SliderItem()
@@ -63,7 +64,7 @@ public class LobbyMenu extends DynamicMenu {
                             user.getSession().getPlayers().get(0).getPlayer() == player; // only if player is the owner
                 });
 
-        registerMainItem(2, 10,
+        registerMainItem(1, 10,
                 user -> {
                     List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.chat.values");
                     return new SliderItem()
@@ -103,6 +104,12 @@ public class LobbyMenu extends DynamicMenu {
                             });
                 },
                 player -> ParkourOption.CHAT.check(player) && ParkourUser.getUser(player) != null);
+
+        // Always allow closing of the menu
+        registerMainItem(2, 10,
+                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                        .click(event -> event.getPlayer().closeInventory()),
+                player -> true);
     }
 
     /**
@@ -112,8 +119,9 @@ public class LobbyMenu extends DynamicMenu {
      *          The player to open the menu to
      */
     public void open(Player player) {
-        Menu menu = new Menu(4, "<white>Lobby")
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+        Menu menu = new Menu(3, "<white>Lobby")
+                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+                .animation(new SplitMiddleOutAnimation())
                 .distributeRowEvenly(0, 1, 2);
 
         display(player, menu);

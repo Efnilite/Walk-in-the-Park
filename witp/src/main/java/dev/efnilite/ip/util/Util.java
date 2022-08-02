@@ -324,10 +324,11 @@ public class Util {
     }
 
     public static double angle(Vector3D base, Vector3D other) {
-        double dotProduct = base.x * other.x + base.y * other.y + base.z * other.z;
-        double divideBy = base.length() * other.length();
+        if (base == other) {
+            return 0;
+        }
 
-        return Math.toDegrees(Math.acos(dotProduct / divideBy));
+        return Math.toDegrees(Math.atan2(base.z, base.x) - Math.atan2(other.z, other.x));
     }
 
     /**

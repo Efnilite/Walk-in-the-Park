@@ -65,14 +65,14 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
      *
      * @return true if yes, false if not.
      */
-    protected boolean option(GeneratorOption option) {
+    public boolean option(GeneratorOption option) {
         return generatorOptions.contains(option);
     }
 
     /**
      * Calculates all chances for every variable
      */
-    protected void calculateChances() {
+    public void calculateChances() {
         calculateAdaptiveDistance();
         calculateDefault();
         calculateHeight();
@@ -83,7 +83,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * Calculates the chances of which type of special jump
      */
-    protected void calculateSpecial() {
+    public void calculateSpecial() {
         specialChances.clear();
 
         int percentage = 0;
@@ -108,7 +108,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * Calculates chances for adaptive distances
      */
-    protected void calculateAdaptiveDistance() {
+    public void calculateAdaptiveDistance() {
         adaptiveDistanceChances.clear();
 
         double multiplier = Option.MULTIPLIER.getAsDouble();
@@ -121,7 +121,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * Calculates the chances of default jump types
      */
-    protected void calculateDefault() {
+    public void calculateDefault() {
         defaultChances.clear();
 
         int percentage = 0;
@@ -146,7 +146,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * Calculates the chances of height
      */
-    protected void calculateHeight() {
+    public void calculateHeight() {
         heightChances.clear();
 
         int percentage = 0;
@@ -171,22 +171,25 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     /**
      * Calculates the chances of distance, factoring in if the player uses adaptive difficulty
      */
-    protected void calculateDistance() {
+    public void calculateDistance() {
         distanceChances.clear();
 
-        // The max percentages
-        int one = Option.MAXED_ONE_BLOCK.get();
-        int two = Option.MAXED_TWO_BLOCK.get();
-        int three = Option.MAXED_THREE_BLOCK.get();
-        int four = Option.MAXED_FOUR_BLOCK.get();
-
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
-        if (profile.getValue("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
+        int one, two, three, four;
+        if (profile.getValue("useScoreDifficulty") != null &&
+                profile.getValue("useScoreDifficulty").asBoolean() &&
+                option(GeneratorOption.DISABLE_ADAPTIVE)) {
+
             if (score <= Option.MULTIPLIER.getAsDouble()) {
                 one = (int) (Option.NORMAL_ONE_BLOCK.get() + (adaptiveDistanceChances.get(1) * score));
                 two = (int) (Option.NORMAL_TWO_BLOCK.get() + (adaptiveDistanceChances.get(2) * score));
                 three = (int) (Option.NORMAL_THREE_BLOCK.get() + (adaptiveDistanceChances.get(3) * score));
                 four = (int) (Option.NORMAL_FOUR_BLOCK.get() + (adaptiveDistanceChances.get(4) * score));
+            } else {
+                one = Option.MAXED_ONE_BLOCK.get();
+                two = Option.MAXED_TWO_BLOCK.get();
+                three = Option.MAXED_THREE_BLOCK.get();
+                four = Option.MAXED_FOUR_BLOCK.get();
             }
         } else {
             one = Option.NORMAL_ONE_BLOCK.get();

@@ -39,6 +39,10 @@ items:
   lobby:
     item:
       item: iron_ingot
+    chat:
+      item: feather
+    visibility:
+      item: firework_rocket
 
   # -= Options for settings menu =-
   options:

@@ -5,6 +5,7 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -72,6 +73,7 @@ public class MainMenu extends DynamicMenu {
     public void open(Player player) {
         Menu menu = new Menu(4, "<white>Parkour")
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new SplitMiddleOutAnimation())
                 .distributeRowEvenly(0, 1, 2, 3);
 
         display(player, menu);
