@@ -1,4 +1,4 @@
-![](https://i.imgur.com/T7JGve1.png)
+![](https://i.imgur.com/5Tzv0FP.png)
 
 [![](https://jitpack.io/v/Efnilite/Walk-in-the-Park.svg)](https://jitpack.io/#Efnilite/Walk-in-the-Park)
 
