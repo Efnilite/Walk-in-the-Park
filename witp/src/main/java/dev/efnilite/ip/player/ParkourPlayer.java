@@ -8,7 +8,6 @@ import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.generator.profile.Profile;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
@@ -172,16 +171,6 @@ public class ParkourPlayer extends ParkourUser {
         return material;
     }
 
-    /**
-     * Sets the high score of a player
-     *
-     * @param   score
-     *          The score
-     */
-    public void setScore(String name, int score, String time, String diff) {
-        generator.getGamemode().getLeaderboard().put(uuid, new Score(name, time, diff, score));
-    }
-
     private void saveStats() {
         save(true);
     }
@@ -287,7 +276,7 @@ public class ParkourPlayer extends ParkourUser {
             }
 
             players.put(pp.player, pp);
-            pp.saveStats();
+            pp.save(true);
         } else {
             try {
                 SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
@@ -311,7 +300,7 @@ public class ParkourPlayer extends ParkourUser {
                             (String) objects.get(9));
                 } else {
                     pp.resetPlayerPreferences();
-                    pp.saveStats();
+                    pp.save(true);
                 }
             } catch (Throwable throwable) {
                 IP.logging().stack("Error while reading SQL data of player " + pp.player.getName(), throwable);

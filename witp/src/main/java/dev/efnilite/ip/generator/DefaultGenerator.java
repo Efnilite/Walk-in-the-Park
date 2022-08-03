@@ -9,6 +9,7 @@ import dev.efnilite.ip.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
+import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.SettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -648,8 +649,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         int score = this.score;
-        String time = this.stopwatch.toString();
-        String diff = player.calculateDifficultyScore();
+        String time = stopwatch.toString();
 
         if (profile.getValue("showFallMessage").asBoolean() && regenerate && time != null) {
             String message;
@@ -663,27 +663,32 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 number = record.score() - score;
                 message = "message.miss";
             }
-            if (leaderboard != null && score > record.score()) {
-                player.setScore(player.getName(), score, time, diff);
-            }
+
             player.sendTranslated("divider");
             player.sendTranslated("score", Integer.toString(score));
             player.sendTranslated("time", time);
             player.sendTranslated("highscore", Integer.toString(record.score()));
             player.sendTranslated(message, Integer.toString(number));
             player.sendTranslated("divider");
-        } else {
-            if (leaderboard != null && score >= record.score()) {
-                player.setScore(player.getName(), score, time, diff);
-            }
+        }
+
+        if (leaderboard != null && score > record.score()) {
+            registerScore();
         }
 
         this.score = 0;
         stopwatch.stop();
 
+        updatePreferences();
+
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
         }
+    }
+
+    protected void registerScore() {
+        getGamemode().getLeaderboard().put(player.getUUID(),
+                new Score(player.getName(), stopwatch.toString(), player.calculateDifficultyScore(), score));
     }
 
     /**
@@ -841,6 +846,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     public void checkRewards() {
         if (!RewardReader.REWARDS_ENABLED || score == 0 || totalScore == 0) {
+            return;
+        }
+
+        if (getGamemode() instanceof DefaultGamemode) {
             return;
         }
 
