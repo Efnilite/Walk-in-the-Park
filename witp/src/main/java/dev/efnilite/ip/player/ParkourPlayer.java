@@ -171,10 +171,6 @@ public class ParkourPlayer extends ParkourUser {
         return material;
     }
 
-    private void saveStats() {
-        save(true);
-    }
-
     /**
      * Saves the player's data to their file
      */

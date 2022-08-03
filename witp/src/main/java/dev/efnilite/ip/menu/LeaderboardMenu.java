@@ -55,7 +55,7 @@ public class LeaderboardMenu {
             Item item = gm.getItem(locale);
             items.add(item.clone()
                     .click(event -> {
-                        if (gm.getName().equals("timetrial") || gm.getName().equals("duel")) {
+                        if (gm.getName().equals("time-trial") || gm.getName().equals("duels")) {
                             openSingle(player, gm, Sort.TIME);
                         } else {
                             openSingle(player, gm, Sort.SCORE);

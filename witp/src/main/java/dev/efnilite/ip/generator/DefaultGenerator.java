@@ -679,8 +679,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         this.score = 0;
         stopwatch.stop();
 
-        updatePreferences();
-
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
         }
