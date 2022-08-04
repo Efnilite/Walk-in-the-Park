@@ -136,7 +136,7 @@ public final class IP extends ViPlugin {
             placeholderHook.register();
         }
 
-        if (getServer().getPluginManager().isPluginEnabled("Floodgate")) {
+        if (getServer().getPluginManager().isPluginEnabled("floodgate")) {
             logging().info("Connecting with Floodgate...");
             floodgateHook = new FloodgateHook();
         }
