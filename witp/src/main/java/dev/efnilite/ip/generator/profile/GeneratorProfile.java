@@ -1,5 +1,7 @@
 package dev.efnilite.ip.generator.profile;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,19 +12,22 @@ public class GeneratorProfile implements Profile {
 
     private final Map<String, ProfileValue> settings = new HashMap<>();
 
+    @NotNull
     @Override
-    public Profile setSetting(String setting, String value) {
+    public Profile setSetting(@NotNull String setting, @NotNull String value) {
         settings.put(setting, new ProfileValue(value));
         return this;
     }
 
+    @NotNull
     @Override
-    public ProfileValue getValue(String setting) {
-        return settings.get(setting);
+    public ProfileValue getValue(@NotNull String setting) {
+        ProfileValue value = settings.get(setting);
+        return value == null ? new ProfileValue("") : value;
     }
 
     @Override
-    public Map<String, ProfileValue> getSettings() {
+    public @NotNull Map<String, ProfileValue> getSettings() {
         return settings;
     }
 

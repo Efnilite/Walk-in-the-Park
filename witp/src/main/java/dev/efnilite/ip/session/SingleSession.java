@@ -22,8 +22,8 @@ public class SingleSession implements Session {
     private Gamemode gamemode;
     private SessionVisibility visibility = SessionVisibility.PUBLIC;
     private final String sessionId = generateSessionId();
-    private final Map<UUID, ParkourPlayer> players = new HashMap<>();
-    private final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
+    private final Map<UUID, ParkourPlayer> players = new LinkedHashMap<>();
+    private final Map<UUID, ParkourSpectator> spectators = new LinkedHashMap<>();
 
     public static Session create(@NotNull ParkourPlayer player, @NotNull Gamemode gamemode) {
         // create session
@@ -88,7 +88,7 @@ public class SingleSession implements Session {
 
     @Override
     public boolean isAcceptingSpectators() {
-        return true;
+        return visibility == SessionVisibility.PUBLIC;
     }
 
     @Override

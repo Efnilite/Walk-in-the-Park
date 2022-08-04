@@ -25,7 +25,7 @@ items:
     spectator:
       item: glass
     settings:
-      item: scaffolding
+      item: redstone
     quit:
       item: barrier
 
@@ -270,7 +270,7 @@ locale:
       visibility:
         name: '<#A1E1DD><bold>Zichtbaarheid'
         lore: '<gray>Huidige waarde: <#2BD4E2><bold>%s||<gray>Kies wie je lobby kan joinen'
-        values: [private, id only, public]
+        values: [privé, alleen met id, publiek]
       chat:
         name: '<#20C6BC><bold>Chat'
         lore: '<gray>Huidige waarde: <#17B2CE><bold>%s||<gray>Kies met we je kan chatten'
@@ -379,6 +379,20 @@ locale:
         name: '<#20C6BC><bold>Chat'
         lore: '<gray>Actuellement: <#17B2CE><bold>%s||<gray>Sélectionnez avec qui vous pouvez discuter'
 
+    # -= Lobby menu items =-
+    lobby:
+      item:
+        name: '<#20C6BC><bold>Lobby'
+        lore: ''
+      visibility:
+        name: '<#A1E1DD><bold>Visibility'
+        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        values: [private, id only, public]
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        values: [lobby only, players only, public]
+
     # -= Options for settings menu =-
     options:
       cant-change:
@@ -482,6 +496,20 @@ locale:
         name: '<#20C6BC><bold>Chat'
         lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
 
+    # -= Lobby menu items =-
+    lobby:
+      item:
+        name: '<#20C6BC><bold>Lobby'
+        lore: ''
+      visibility:
+        name: '<#A1E1DD><bold>Visibility'
+        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        values: [private, id only, public]
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        values: [lobby only, players only, public]
+
     # -= Options for settings menu =-
     options:
       cant-change:
@@ -584,6 +612,21 @@ locale:
       chat:
         name: '<#20C6BC><bold>Chat'
         lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+
+
+    # -= Lobby menu items =-
+    lobby:
+      item:
+        name: '<#20C6BC><bold>Lobby'
+        lore: ''
+      visibility:
+        name: '<#A1E1DD><bold>Visibility'
+        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        values: [private, id only, public]
+      chat:
+        name: '<#20C6BC><bold>Chat'
+        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        values: [lobby only, players only, public]
 
     # -= Options for settings menu =-
     options:

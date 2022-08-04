@@ -28,11 +28,11 @@ public class LobbyMenu extends DynamicMenu {
                                 case PRIVATE -> 2;
                             })
                             .add(0, IP.getConfiguration().getFromItemData(user, "lobby.visibility")
-                                    .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
+                                    .modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // public
                                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                                 if (u != null) {
-                                    u.getSession().setVisibility(SessionVisibility.PRIVATE);
+                                    u.getSession().setVisibility(SessionVisibility.PUBLIC);
                                 }
 
                                 return true;
@@ -46,7 +46,7 @@ public class LobbyMenu extends DynamicMenu {
 
                                 return true;
                             }).add(2, IP.getConfiguration().getFromItemData(user, "lobby.visibility")
-                                    .modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // private
+                                    .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
                                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                                 if (u != null) {
@@ -70,9 +70,9 @@ public class LobbyMenu extends DynamicMenu {
                     return new SliderItem()
                             .initial(
                                 switch (user.getChatType()) {
-                                    case PUBLIC -> 0;
-                                    case LOBBY_ONLY -> 1;
-                                    case PLAYERS_ONLY -> 2;
+                                    case LOBBY_ONLY -> 0;
+                                    case PLAYERS_ONLY -> 1;
+                                    case PUBLIC -> 2;
                                 }) // user has to be not-null to see this item
                             .add(0, IP.getConfiguration().getFromItemData(user, "lobby.chat")
                                     .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // lobby only
