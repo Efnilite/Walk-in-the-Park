@@ -171,7 +171,7 @@ public class LeaderboardMenu {
                         .click(event -> menu.page(-1)))
 
                 .item(31, config.getFromItemData(locale, "options.leaderboard-sort", next.name().toLowerCase())
-                        .click(event -> openSingle(player, gamemode, sort)))
+                        .click(event -> openSingle(player, gamemode, next)))
 
                 .item(32, config.getFromItemData(locale, "general.close")
                         .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))

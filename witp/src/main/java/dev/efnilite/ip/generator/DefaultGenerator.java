@@ -258,6 +258,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             previousSpecial = null;
         }
 
+
+
         // handle special jumps that depend on the current block type
         if (currentSpecial != null) {
             switch (currentSpecial) {
@@ -733,6 +735,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
                         }
                     }
+
                     currentSpecial = next.getMaterial();
                 } else {
                     next = selectBlockData();

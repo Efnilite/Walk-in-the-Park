@@ -77,7 +77,6 @@ public class ParkourPlayer extends ParkourUser {
         this.lang = locale;
 
         // generic player settings
-        player.setCollidable(false);
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setInvisible(false);
@@ -253,6 +252,9 @@ public class ParkourPlayer extends ParkourUser {
     protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
         UUID uuid = pp.getPlayer().getUniqueId();
         JOIN_COUNT++;
+
+        pp.setCollides(false);
+
         if (!Option.SQL) {
             File data = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid + ".json");
             if (data.exists()) {
