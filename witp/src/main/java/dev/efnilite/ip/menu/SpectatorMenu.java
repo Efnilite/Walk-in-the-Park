@@ -63,7 +63,7 @@ public class SpectatorMenu {
                 stack.setType(Material.PLAYER_HEAD);
 
                 // bedrock has no player skull support
-                if (!Util.isBedrockPlayer(player)) {
+                if (!Util.isBedrockPlayer(player) || player.getName().startsWith(".")) { // bedrock players' names with geyser start with a .) {
                     SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                     if (meta != null) {
