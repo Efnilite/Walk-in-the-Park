@@ -19,6 +19,7 @@ import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -135,12 +136,16 @@ public class LeaderboardMenu {
             stack.setType(Material.PLAYER_HEAD);
 
             // bedrock has no player skull support
-            if (!Util.isBedrockPlayer(player) || player.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
-                SkullMeta meta = (SkullMeta) stack.getItemMeta();
+            if (!Util.isBedrockPlayer(player)) {
+                OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
 
-                if (meta != null) {
-                    SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
-                    item.meta(meta);
+                if (op.getName() != null && !op.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
+                    SkullMeta meta = (SkullMeta) stack.getItemMeta();
+
+                    if (meta != null) {
+                        SkullSetter.setPlayerHead(Bukkit.getOfflinePlayer(uuid), meta);
+                        item.meta(meta);
+                    }
                 }
             }
 
