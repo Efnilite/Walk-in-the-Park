@@ -39,6 +39,7 @@ items:
   lobby:
     item:
       item: iron_ingot
+      enabled: true
     chat:
       item: feather
     visibility:
@@ -211,6 +212,7 @@ locale:
       leaderboard-sort:
         name: '<#DEA11F><bold>Sort by %s'
         lore: '<dark_gray>Sortieren • 种类||<dark_gray>Trier • 選別 • Sorteren'
+        values: ['score', 'time', 'difficulty']
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0'
@@ -328,6 +330,7 @@ locale:
       leaderboard-sort:
         name: '<#DEA11F><bold>Sorteren op %s'
         lore: '<dark_gray>Sortieren • 种类||<dark_gray>Trier • 選別 • Sort'
+        values: ['score', 'tijd', 'moeilijkheid']
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Tijd: <gray>%t||<#5574AF>Moeilijkheid: <gray>%d<dark_gray>/1.0'
@@ -445,6 +448,7 @@ locale:
       leaderboard-sort:
         name: '<#DEA11F><bold>Trier par %s'
         lore: '<dark_gray>Sortieren • 种类||<dark_gray>Sorteren • 選別 • Sort'
+        values: ['score', 'time', 'difficulty']
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>Score: <gray>%s||<#5574AF>Temps: <gray>%t||<#5574AF>Difficulté: <gray>%d<dark_gray>/1.0'
@@ -565,6 +569,7 @@ locale:
       leaderboard-sort:
         name: '<#DEA11F><bold>排序方式 %s'
         lore: '<dark_gray>Sortieren • Trier||<dark_gray>Sorteren • 選別 • Sort'
+        values: ['score', 'time', 'difficulty']
       language:
         name: '<#6693E7><bold>語言'
         lore: '<#5574AF>目前: <gray>%s'
@@ -680,6 +685,7 @@ locale:
       leaderboard-sort:
         name: '<#DEA11F><bold>排序方式 %s'
         lore: '<dark_gray>Sortieren • Trier||<dark_gray>Sorteren • 選別 • Sort'
+        values: ['score', 'time', 'difficulty']
       leaderboard-head:
         name: '<#6693E7><bold>#%r - %p'
         lore: '<#5574AF>分数: <gray>%s||<#5574AF>时间: <gray>%t||<#5574AF>难道: <gray>%d<dark_gray>/1.0'

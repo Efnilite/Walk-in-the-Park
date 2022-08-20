@@ -22,14 +22,10 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Divides the Parkour world into sections so there can be an infinite amount of players in 1 world.
@@ -232,33 +228,44 @@ public class WorldDivider {
             Task.create(IP.getPlugin())
                     .delay(5)
                     .execute(() -> {
+                        List<Item> items = new ArrayList<>();
+
                         player.getInventory().clear();
 
                         if (Option.SETTINGS_ENABLED.get() && giveCompass) {
-                            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.menu").build();
-                            if (mat == null) {
-                                IP.logging().error("Material for options in items.yml is null");
-                                player.getInventory().setItem(4, new Item(Material.COMPASS, "&c&l-= Options =-").build());
+                            Item item = IP.getConfiguration().getFromItemData(pp, "general.menu");
+                            if (item != null) {
+                                items.add(item);
                             } else {
-                                player.getInventory().setItem(4, mat);
+                                IP.logging().error("Material for options in items.yml is null");
+                                items.add(new Item(Material.COMPASS, "&c&l-= Options =-"));
+                            }
+                        }
+                        boolean enabled = IP.getConfiguration().getFile("items").getBoolean("items.lobby.item.enabled");
+                        if (enabled) {
+                            Item item = IP.getConfiguration().getFromItemData(pp, "lobby.item");
+
+                            if (item != null) {
+                                items.add(item);
+                            } else {
+                                IP.logging().error("Material for lobby item in config is null");
+                                items.add(new Item(Material.BEACON, "&c&l-= Lobbies =-"));
                             }
                         }
                         if (Option.HOTBAR_QUIT_ITEM.get()) {
-                            ItemStack mat = IP.getConfiguration().getFromItemData(pp, "general.quit").build();
-                            if (mat == null) {
-                                IP.logging().error("Material for quitting in items is null");
-                                player.getInventory().setItem(5, new Item(Material.BARRIER, "&c&l-= Quit =-").build());
+                            Item item = IP.getConfiguration().getFromItemData(pp, "general.quit");
+                            if (item != null) {
+                                items.add(item);
                             } else {
-                                player.getInventory().setItem(5, mat);
+                                IP.logging().error("Material for quitting in items is null");
+                                items.add(new Item(Material.BARRIER, "&c&l-= Quit =-"));
                             }
                         }
 
-                        ItemStack mat = IP.getConfiguration().getFromItemData(pp, "lobby.item").build();
-                        if (mat == null) {
-                            IP.logging().error("Material for lobby in config is null");
-                            player.getInventory().setItem(5, new Item(Material.BEACON, "&c&l-= Lobbies =-").build());
-                        } else {
-                            player.getInventory().setItem(5, mat);
+
+                        List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
+                        for (int i = 0; i < items.size(); i++) {
+                            player.getInventory().setItem(slots.get(i), items.get(i).build());
                         }
 
                     })

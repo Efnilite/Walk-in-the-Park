@@ -165,6 +165,13 @@ public class LeaderboardMenu {
             default -> Sort.SCORE;
         };
 
+        List<String> values = IP.getConfiguration().getFile("items").getStringList("locale." + locale + ".options.leaderboard-sort.values");
+        String name = switch (next) {
+            case SCORE -> values.get(0);
+            case TIME -> values.get(1);
+            case DIFFICULTY -> values.get(2);
+        };
+
         menu
                 .displayRows(0, 1)
                 .addToDisplay(items)
@@ -175,7 +182,7 @@ public class LeaderboardMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(31, config.getFromItemData(locale, "options.leaderboard-sort", next.name().toLowerCase())
+                .item(31, config.getFromItemData(locale, "options.leaderboard-sort", name.toLowerCase())
                         .click(event -> openSingle(player, gamemode, next)))
 
                 .item(32, config.getFromItemData(locale, "general.close")

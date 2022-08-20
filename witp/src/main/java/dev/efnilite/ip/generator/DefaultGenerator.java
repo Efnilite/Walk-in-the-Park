@@ -850,7 +850,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             return;
         }
 
-        if (getGamemode() instanceof DefaultGamemode) {
+        if (!(getGamemode() instanceof DefaultGamemode)) {
             return;
         }
 
