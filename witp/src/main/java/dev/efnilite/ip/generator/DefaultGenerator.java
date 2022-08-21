@@ -235,7 +235,20 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public BlockData selectBlockData() {
-        return player.getRandomMaterial().createBlockData();
+        String style = profile.getValue("style").value();
+
+        Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
+
+        // if found style is null, get the first registered style to prevent big boy errors
+        if (material == null) {
+            String newStyle = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).getStyles().keySet()).get(0);
+
+            profile.setSetting("style", newStyle);
+
+            return selectBlockData();
+        } else {
+            return material.createBlockData();
+        }
     }
 
     @Override

@@ -15,7 +15,6 @@ import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
 import dev.efnilite.vilib.util.Task;
 import fr.mrmicky.fastboard.FastBoard;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -151,23 +150,6 @@ public class ParkourPlayer extends ParkourUser {
         setSettings(null, null, null, null,
                 null, null, null, null, null, null,
                 null, null);
-    }
-
-    /**
-     * Returns a random material from the possible styles
-     * @see DefaultGenerator#selectBlockData()
-     *
-     * @return a random material
-     */
-    public Material getRandomMaterial() {
-        Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
-
-        // if found style is null, get the first registered style to prevent big boy errors
-        if (material == null) {
-            style = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).getStyles().keySet()).get(0);
-        }
-
-        return material;
     }
 
     /**
