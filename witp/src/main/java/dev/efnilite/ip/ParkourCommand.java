@@ -2,9 +2,9 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.community.LeaderboardMenu;
+import dev.efnilite.ip.menu.LeaderboardMenu;
 import dev.efnilite.ip.menu.MainMenu;
-import dev.efnilite.ip.menu.play.SingleplayerMenu;
+import dev.efnilite.ip.menu.SingleplayerMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;

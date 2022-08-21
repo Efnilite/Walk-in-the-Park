@@ -2,9 +2,6 @@ package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.menu.community.LeaderboardMenu;
-import dev.efnilite.ip.menu.play.SingleplayerMenu;
-import dev.efnilite.ip.menu.play.SpectatorMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;

@@ -1,7 +1,7 @@
 name: 'WITP'
 description: 'Infinitely automatically generating parkour plugin.'
 author: Efnilite, Ice_Pancake
-version: ${project.version}
+version: 3.8.3
 api-version: 1.16
 main: dev.efnilite.ip.IP
 softdepend: [floodgate, vilib, Vault, PlaceholderAPI, Multiverse-Core, HolographicDisplays, VoidGen]

@@ -1,10 +1,8 @@
-package dev.efnilite.ip.menu.settings;
+package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
-import dev.efnilite.ip.menu.DynamicMenu;
-import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
@@ -36,11 +34,11 @@ import java.util.List;
  * @since v3.0.0
  * @author Efnilite
  */
-public class GameSettingsMenu extends DynamicMenu {
+public class SettingsMenu extends DynamicMenu {
 
-    public static final GameSettingsMenu INSTANCE = new GameSettingsMenu();
+    public static final SettingsMenu INSTANCE = new SettingsMenu();
 
-    public GameSettingsMenu(ParkourOption... disabled) {
+    public SettingsMenu(ParkourOption... disabled) {
 
         // ---------- top row ----------
 
