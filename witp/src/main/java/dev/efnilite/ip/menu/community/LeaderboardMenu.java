@@ -1,8 +1,9 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Stopwatch;

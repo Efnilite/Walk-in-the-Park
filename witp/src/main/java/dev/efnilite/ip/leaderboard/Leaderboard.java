@@ -11,6 +11,7 @@ import dev.efnilite.vilib.util.Time;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public class Leaderboard {
         this.file = FOLDER + gamemode.toLowerCase() + ".json";
 
         if (Option.SQL) {
+            IP.getSqlManager().validateConnection();
+
             IP.getSqlManager().sendQuery(
                 """
                 USE `%s`;
@@ -149,6 +152,10 @@ public class Leaderboard {
      * writes all leaderboard data to the file
      */
     private void _writeFile() {
+        if (!new File(file).exists()) {
+            return;
+        }
+
         try (FileWriter writer = new FileWriter(file)) {
             IP.getGson().toJson(this, writer);
 
@@ -224,6 +231,10 @@ public class Leaderboard {
      * read leaderboard data from the file
      */
     private void _readFile() {
+        if (!new File(file).exists()) {
+            return;
+        }
+
         try (FileReader reader = new FileReader(file)) {
             Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
 

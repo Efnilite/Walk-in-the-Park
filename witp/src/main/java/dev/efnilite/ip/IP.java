@@ -2,7 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
-import dev.efnilite.ip.events.Handler;
+import dev.efnilite.ip.api.events.Handler;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;

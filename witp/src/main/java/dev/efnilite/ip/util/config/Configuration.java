@@ -42,8 +42,7 @@ public class Configuration {
     public Configuration(Plugin plugin) {
         this.plugin = plugin;
 
-        List<String> defaultFiles = Arrays.asList("config.yml", "rewards-v2.yml", "generation.yml", "schematics.yml",
-                "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
+        List<String> defaultFiles = Arrays.asList("config.yml", "rewards-v2.yml", "generation.yml", "schematics.yml", "lang/messages-v3.yml", "lang/items-v3.yml", "lang/scoreboard-v3.yml");
         for (String name : defaultFiles) {
             File file = new File(plugin.getDataFolder(), name);
 

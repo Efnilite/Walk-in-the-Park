@@ -3,15 +3,15 @@ package dev.efnilite.ip.generator;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.events.BlockGenerateEvent;
-import dev.efnilite.ip.events.PlayerFallEvent;
-import dev.efnilite.ip.events.PlayerScoreEvent;
+import dev.efnilite.ip.api.events.BlockGenerateEvent;
+import dev.efnilite.ip.api.events.PlayerFallEvent;
+import dev.efnilite.ip.api.events.PlayerScoreEvent;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.SettingsMenu;
+import dev.efnilite.ip.menu.settings.GameSettingsMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.data.Score;
@@ -492,7 +492,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        SettingsMenu.INSTANCE.open(player);
+        GameSettingsMenu.INSTANCE.open(player);
     }
 
     @Override

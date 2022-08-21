@@ -1,8 +1,9 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.menu.MainMenu;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;

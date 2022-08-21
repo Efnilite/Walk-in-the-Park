@@ -1,10 +1,10 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.menu.DynamicMenu;
+import dev.efnilite.ip.menu.LangMenu;
 import dev.efnilite.ip.menu.community.LeaderboardMenu;
-import dev.efnilite.ip.menu.play.SingleplayerMenu;
-import dev.efnilite.ip.menu.play.SpectatorMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
@@ -15,22 +15,11 @@ import org.bukkit.entity.Player;
 /**
  * Class for the main menu, accessed on executing /parkour
  */
-public class MainMenu extends DynamicMenu {
+public class SettingsMenu extends DynamicMenu {
 
-    public static final MainMenu INSTANCE = new MainMenu();
+    public static final SettingsMenu INSTANCE = new SettingsMenu();
 
-    public MainMenu() {
-        // Singleplayer if player is not found
-        registerMainItem(1, 0,
-                user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer").click(
-                event -> SingleplayerMenu.open(event.getPlayer())),
-                ParkourOption.JOIN::check);
-
-        registerMainItem(1, 2,
-                user -> IP.getConfiguration().getFromItemData(user, "main.spectator").click(
-                event -> SpectatorMenu.open(event.getPlayer())),
-                // display spectator if the player isn't already one
-                ParkourOption.JOIN::check);
+    public SettingsMenu() {
 
         // Settings if player is active
         registerMainItem(1, 9,

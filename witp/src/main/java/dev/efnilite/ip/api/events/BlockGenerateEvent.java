@@ -1,4 +1,4 @@
-package dev.efnilite.ip.events;
+package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
