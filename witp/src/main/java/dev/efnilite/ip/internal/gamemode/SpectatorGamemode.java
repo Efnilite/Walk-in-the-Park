@@ -2,7 +2,7 @@ package dev.efnilite.ip.internal.gamemode;
 
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.SpectatorMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
@@ -49,7 +49,7 @@ public class SpectatorGamemode implements Gamemode {
 
     @Override
     public void click(Player player) {
-        SpectatorMenu.open(player);
+        Menus.SPECTATOR.open(player);
     }
 
     @Override

@@ -1,7 +1,9 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.alt;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.menu.DynamicMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
@@ -20,12 +22,12 @@ public class MainMenu extends DynamicMenu {
         // Singleplayer if player is not found
         registerMainItem(1, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer").click(
-                event -> SingleplayerMenu.open(event.getPlayer())),
+                event -> Menus.SINGLE.open(event.getPlayer())),
                 ParkourOption.JOIN::check);
 
         registerMainItem(1, 2,
                 user -> IP.getConfiguration().getFromItemData(user, "main.spectator").click(
-                event -> SpectatorMenu.open(event.getPlayer())),
+                event -> Menus.SPECTATOR.open(event.getPlayer())),
                 // display spectator if the player isn't already one
                 ParkourOption.JOIN::check);
 
@@ -37,25 +39,25 @@ public class MainMenu extends DynamicMenu {
                 if (pp != null) {
                     pp.getGenerator().menu();
                 }
-        }), player -> ParkourPlayer.isActive(player) && ParkourOption.SETTINGS.check(player));
+        }), player -> ParkourPlayer.isPlayer(player) && ParkourOption.SETTINGS.check(player));
 
         // Quit button if player is active
         registerMainItem(1, 10,
                 user -> IP.getConfiguration().getFromItemData(user, "main.quit").click(event ->
                 ParkourUser.leave(event.getPlayer())),
-                ParkourPlayer::isActive);
+                ParkourPlayer::isPlayer);
 
         // Leaderboard only if player has perms
         registerMainItem(3, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.leaderboard").click(
-                event -> LeaderboardMenu.open(event.getPlayer())),
+                event -> Menus.LEADERBOARDS.open(event.getPlayer())),
                 ParkourOption.LEADERBOARD::check);
 
         // Language only if player has perms
         registerMainItem(3, 1,
                 user -> IP.getConfiguration().getFromItemData(user, "main.language").click(
-                event -> LangMenu.open(ParkourPlayer.getPlayer(event.getPlayer()))),
-                player -> ParkourPlayer.isActive(player) && ParkourOption.LANGUAGE.check(player));
+                event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
+                player -> ParkourPlayer.isPlayer(player) && ParkourOption.LANGUAGE.check(player));
 
         // Always allow closing of the menu
         registerMainItem(3, 10,

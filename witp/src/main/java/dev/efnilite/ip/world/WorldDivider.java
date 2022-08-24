@@ -252,16 +252,6 @@ public class WorldDivider {
                                 items.add(new Item(Material.BEACON, "&c&l-= Lobbies =-"));
                             }
                         }
-                        if (Option.HOTBAR_QUIT_ITEM) {
-                            Item item = IP.getConfiguration().getFromItemData(pp, "general.quit");
-                            if (item != null) {
-                                items.add(item);
-                            } else {
-                                IP.logging().error("Material for quitting in items is null");
-                                items.add(new Item(Material.BARRIER, "&c&l-= Quit =-"));
-                            }
-                        }
-
 
                         List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
                         for (int i = 0; i < items.size(); i++) {

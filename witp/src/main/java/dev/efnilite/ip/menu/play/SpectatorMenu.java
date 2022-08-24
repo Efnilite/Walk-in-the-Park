@@ -1,14 +1,14 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.menu.alt.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.vilib.inventory.item.AutoSliderItem;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -23,9 +23,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The menu to select other players to spectate
+ */
 public class SpectatorMenu {
 
-    public static void open(Player player) {
+    public void open(Player player) {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
@@ -94,7 +97,6 @@ public class SpectatorMenu {
                         .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleInAnimation())
                 .open(player);
 
     }

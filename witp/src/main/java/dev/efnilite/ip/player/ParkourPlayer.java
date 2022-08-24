@@ -334,18 +334,6 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     /**
-     * Returns whether a player is currently active.
-     *
-     * @param   player
-     *          The player
-     *
-     * @return true if the player is registered, false if not.
-     */
-    public static boolean isActive(@Nullable Player player) {
-        return player != null && players.containsKey(player);
-    }
-
-    /**
      * Gets the player's {@link ParkourGenerator}
      *
      * @return the ParkourGenerator associated with this player

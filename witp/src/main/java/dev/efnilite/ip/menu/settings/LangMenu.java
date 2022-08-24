@@ -1,6 +1,7 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.menu.alt.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -23,7 +24,7 @@ public class LangMenu {
      * @param   user
      *          The ParkourPlayer instance
      */
-    public static void open(ParkourPlayer user) {
+    public void open(ParkourPlayer user) {
         Configuration config = IP.getConfiguration();
 
         if (user == null) {

@@ -2,8 +2,8 @@ package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
-import dev.efnilite.ip.menu.LobbyMenu;
-import dev.efnilite.ip.menu.MainMenu;
+import dev.efnilite.ip.menu.alt.MainMenu;
+import dev.efnilite.ip.menu.lobby.LobbyMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;

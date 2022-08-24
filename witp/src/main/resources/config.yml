@@ -161,10 +161,6 @@ options:
   # Saves things like (max) health, clears effects, etc. for when a player joins the parkour.
   save-stats: true
 
-  # -= Hotbar quit item =-
-  # If enabled, puts quit item in slot 8 of players' inventories.
-  hotbar-quit-item: false
-
 # -= Permissions options =-
 # These permissions are used to determine which things the player can change.
 # Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
