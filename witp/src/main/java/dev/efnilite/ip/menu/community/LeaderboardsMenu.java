@@ -3,7 +3,6 @@ package dev.efnilite.ip.menu.community;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.menu.Menus;
-import dev.efnilite.ip.menu.alt.MainMenu;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.config.Configuration;
 import dev.efnilite.ip.util.config.Option;
@@ -67,7 +66,7 @@ public class LeaderboardsMenu {
                         .click(event -> gamemode.page(-1)))
 
                 .item(31, config.getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())

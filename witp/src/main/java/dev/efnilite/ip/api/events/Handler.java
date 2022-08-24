@@ -2,8 +2,7 @@ package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
-import dev.efnilite.ip.menu.alt.MainMenu;
-import dev.efnilite.ip.menu.lobby.LobbyMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -255,21 +254,26 @@ public class Handler implements EventWatcher {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
 
         if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
-            Material menu = IP.getConfiguration().getFromItemData(pp, "general.menu").getMaterial();
-            Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
-            Material lobby = IP.getConfiguration().getFromItemData(pp, "lobby.item").getMaterial();
-
-
             Material held = Util.getHeldItem(player).getType();
-            if (held == menu) {
+
+            Material play = Material.SUGAR_CANE;
+            Material community = Material.OAK_BOAT;
+            Material settings = Material.COMPARATOR;
+            Material lobby = Material.IRON_INGOT;
+            Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
+
+            if (held == play) {
                 event.setCancelled(true);
-                MainMenu.INSTANCE.open(player);
-            } else if (held == quit) {
+                Menus.PLAY.open(player);
+            } else if (held == community) {
                 event.setCancelled(true);
-                ParkourUser.leave(player);
+                Menus.COMMUNITY.open(player);
+            } else if (held == settings) {
+                event.setCancelled(true);
+                Menus.SETTINGS.open(player);
             } else if (held == lobby) {
                 event.setCancelled(true);
-                LobbyMenu.INSTANCE.open(player);
+                Menus.LOBBY.open(player);
             }
         }
     }

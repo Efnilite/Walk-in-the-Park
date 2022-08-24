@@ -3,7 +3,7 @@ package dev.efnilite.ip.menu.community;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.alt.MainMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Stopwatch;
@@ -123,7 +123,7 @@ public class SingleLeaderboardMenu {
                         .click(event -> open(player, gamemode, next)))
 
                 .item(32, config.getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);

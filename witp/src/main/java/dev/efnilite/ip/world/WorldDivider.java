@@ -232,32 +232,20 @@ public class WorldDivider {
 
                         player.getInventory().clear();
 
-                        if (Option.SETTINGS_ENABLED && giveCompass) {
-                            Item item = IP.getConfiguration().getFromItemData(pp, "general.menu");
-                            if (item != null) {
-                                items.add(item);
-                            } else {
-                                IP.logging().error("Material for options in items.yml is null");
-                                items.add(new Item(Material.COMPASS, "&c&l-= Options =-"));
-                            }
-                        }
-                        boolean enabled = IP.getConfiguration().getFile("items").getBoolean("items.lobby.item.enabled");
-                        if (enabled) {
-                            Item item = IP.getConfiguration().getFromItemData(pp, "lobby.item");
+                        items.add(0, new Item(Material.SUGAR_CANE, "<#60EB76><bold>Play"));
 
-                            if (item != null) {
-                                items.add(item);
-                            } else {
-                                IP.logging().error("Material for lobby item in config is null");
-                                items.add(new Item(Material.BEACON, "&c&l-= Lobbies =-"));
-                            }
-                        }
+                        items.add(1, new Item(Material.OAK_BOAT, "<#60C9DF><bold>Community"));
+
+                        items.add(2, new Item(Material.COMPARATOR, "<#6086EB><bold>Settings"));
+
+                        items.add(3, new Item(Material.IRON_INGOT, "<#EB608C><bold>Lobby"));
+
+                        items.add(4, IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit"));
 
                         List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
                         for (int i = 0; i < items.size(); i++) {
                             player.getInventory().setItem(slots.get(i), items.get(i).build());
                         }
-
                     })
                     .run();
         }

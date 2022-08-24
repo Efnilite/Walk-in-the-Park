@@ -4,7 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.menu.DynamicMenu;
-import dev.efnilite.ip.menu.alt.MainMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.config.Configuration;
@@ -359,7 +359,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")))
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
-                        event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        event -> Menus.SETTINGS.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation());
 

@@ -29,12 +29,12 @@ public class SettingsMenu extends DynamicMenu {
                                     pp.getGenerator().menu();
                                 }
                         }),
-                ParkourPlayer::isPlayer);
+                ParkourUser::isPlayer);
 
         registerMainItem(1, 1,
                 user -> IP.getConfiguration().getFromItemData(user, "main.language")
                         .click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
-                ParkourPlayer::isPlayer);
+                ParkourUser::isUser);
 
         registerMainItem(1, 2,
                 user -> {
@@ -77,13 +77,18 @@ public class SettingsMenu extends DynamicMenu {
                             });
                 },
                 ParkourUser::isUser);
+
+        registerMainItem(2, 0,
+                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                        .click(event -> event.getPlayer().closeInventory()),
+                player -> true);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(4, "<white>Settings")
+        Menu menu = new Menu(3, "<white>Settings")
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
-                .distributeRowEvenly(0, 1, 2, 3);
+                .distributeRowsEvenly();
 
         display(player, menu);
     }

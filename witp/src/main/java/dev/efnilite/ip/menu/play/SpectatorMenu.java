@@ -2,7 +2,7 @@ package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.menu.alt.MainMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
@@ -87,14 +87,14 @@ public class SpectatorMenu {
                 .displayRows(0, 1)
                 .addToDisplay(display)
 
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> spectator.page(1)))
 
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> spectator.page(-1)))
 
-                .item(31, IP.getConfiguration().getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                .item(22, IP.getConfiguration().getFromItemData(locale, "general.close")
+                        .click(event -> Menus.PLAY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);

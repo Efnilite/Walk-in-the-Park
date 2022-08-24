@@ -1,7 +1,6 @@
 package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
@@ -14,8 +13,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class LobbyMenu extends DynamicMenu {
-
-    public static final LobbyMenu INSTANCE = new LobbyMenu();
 
     public LobbyMenu() {
         registerMainItem(1, 9,
@@ -59,8 +56,7 @@ public class LobbyMenu extends DynamicMenu {
                 player -> {
                     ParkourUser user = ParkourUser.getUser(player);
 
-                    return ParkourOption.VISIBILITY.check(player) &&
-                            user != null &&
+                    return user != null &&
                             user.getSession().getPlayers().get(0).getPlayer() == player; // only if player is the owner
                 });
 
@@ -81,7 +77,7 @@ public class LobbyMenu extends DynamicMenu {
         Menu menu = new Menu(3, "<white>Lobby")
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
-                .distributeRowEvenly(0, 1, 2);
+                .distributeRowsEvenly();
 
         display(player, menu);
     }
