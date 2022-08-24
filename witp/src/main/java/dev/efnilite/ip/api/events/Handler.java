@@ -74,13 +74,13 @@ public class Handler implements EventWatcher {
         }
 
         // Bungeecord joining
-        if (Option.BUNGEECORD.get()) {
-            if (!Option.ENABLE_JOINING.get()) {
+        if (Option.BUNGEECORD) {
+            if (!Option.ENABLE_JOINING) {
                 IP.logging().warn("Player " + player.getName() + " tried joining, but parkour is disabled.");
                 return;
             }
 
-            if (Option.JOIN_LEAVE_MESSAGES.get()) {
+            if (Option.JOIN_LEAVE_MESSAGES) {
                 event.setJoinMessage(null);
             }
 
@@ -93,7 +93,7 @@ public class Handler implements EventWatcher {
             } else {
                 IP.logging().warn("No backup worlds have been set! A random one will be selected for " + playerName);
                 for (World last : Bukkit.getWorlds()) {
-                    if (!(last.getName().equals(Option.WORLD_NAME.get()))) {
+                    if (!(last.getName().equals(Option.WORLD_NAME))) {
                         Message.send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
                         player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
@@ -128,11 +128,11 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        if (Option.JOIN_LEAVE_MESSAGES.get()) {
+        if (Option.JOIN_LEAVE_MESSAGES) {
             event.setQuitMessage(null);
         }
 
-        if (Option.INVENTORY_HANDLING.get()) {
+        if (Option.INVENTORY_HANDLING) {
             PreviousData data = user.getPreviousData();
             if (data != null)  {
                 quitPreviousData.put(playerName, data);
@@ -153,11 +153,11 @@ public class Handler implements EventWatcher {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void command(PlayerCommandPreprocessEvent event) {
-        if (Option.FOCUS_MODE.get()) {
+        if (Option.FOCUS_MODE) {
             ParkourUser user = ParkourUser.getUser(event.getPlayer());
             if (user != null) {
                 String command = event.getMessage().toLowerCase();
-                for (String item : Option.FOCUS_MODE_WHITELIST.get()) {   // i.e.: "msg", "w"
+                for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
                     if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
                         return;                                     // yes, so let event go through
                     }

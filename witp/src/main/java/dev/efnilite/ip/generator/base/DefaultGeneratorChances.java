@@ -87,19 +87,19 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
         specialChances.clear();
 
         int percentage = 0;
-        for (int i = 0; i < Option.SPECIAL_ICE.get(); i++) {
+        for (int i = 0; i < Option.SPECIAL_ICE; i++) {
             specialChances.put(percentage, 0);
             percentage++;
         }
-        for (int i = 0; i < Option.SPECIAL_SLAB.get(); i++) {
+        for (int i = 0; i < Option.SPECIAL_SLAB; i++) {
             specialChances.put(percentage, 1);
             percentage++;
         }
-        for (int i = 0; i < Option.SPECIAL_PANE.get(); i++) {
+        for (int i = 0; i < Option.SPECIAL_PANE; i++) {
             specialChances.put(percentage, 2);
             percentage++;
         }
-        for (int i = 0; i < Option.SPECIAL_FENCE.get(); i++) {
+        for (int i = 0; i < Option.SPECIAL_FENCE; i++) {
             specialChances.put(percentage, 3);
             percentage++;
         }
@@ -111,11 +111,11 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
     public void calculateAdaptiveDistance() {
         adaptiveDistanceChances.clear();
 
-        double multiplier = Option.MULTIPLIER.getAsDouble();
-        adaptiveDistanceChances.put(1, (Option.MAXED_ONE_BLOCK.get() - Option.NORMAL_ONE_BLOCK.get()) / multiplier);
-        adaptiveDistanceChances.put(2, (Option.MAXED_TWO_BLOCK.get() - Option.NORMAL_TWO_BLOCK.get()) / multiplier);
-        adaptiveDistanceChances.put(3, (Option.MAXED_THREE_BLOCK.get() - Option.NORMAL_THREE_BLOCK.get()) / multiplier);
-        adaptiveDistanceChances.put(4, (Option.MAXED_FOUR_BLOCK.get() - Option.NORMAL_FOUR_BLOCK.get()) / multiplier);
+        double multiplier = Option.MULTIPLIER;
+        adaptiveDistanceChances.put(1, (Option.MAXED_ONE_BLOCK - Option.NORMAL_ONE_BLOCK) / multiplier);
+        adaptiveDistanceChances.put(2, (Option.MAXED_TWO_BLOCK - Option.NORMAL_TWO_BLOCK) / multiplier);
+        adaptiveDistanceChances.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
+        adaptiveDistanceChances.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
     }
 
     /**
@@ -125,18 +125,18 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
         defaultChances.clear();
 
         int percentage = 0;
-        for (int i = 0; i < Option.NORMAL.get(); i++) { // normal
+        for (int i = 0; i < Option.NORMAL; i++) { // normal
             defaultChances.put(percentage, 0);
             percentage++;
         }
         if (!option(GeneratorOption.DISABLE_SCHEMATICS)) { // schematics
-            for (int i = 0; i < Option.SCHEMATICS.get(); i++) {
+            for (int i = 0; i < Option.SCHEMATICS; i++) {
                 defaultChances.put(percentage, 1);
                 percentage++;
             }
         }
         if (!option(GeneratorOption.DISABLE_SPECIAL)) { // special
-            for (int i = 0; i < Option.SPECIAL.get(); i++) {
+            for (int i = 0; i < Option.SPECIAL; i++) {
                 defaultChances.put(percentage, 2);
                 percentage++;
             }
@@ -150,19 +150,19 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
         heightChances.clear();
 
         int percentage = 0;
-        for (int i = 0; i < Option.NORMAL_UP.get(); i++) {
+        for (int i = 0; i < Option.NORMAL_UP; i++) {
             heightChances.put(percentage, 1);
             percentage++;
         }
-        for (int i = 0; i < Option.NORMAL_LEVEL.get(); i++) {
+        for (int i = 0; i < Option.NORMAL_LEVEL; i++) {
             heightChances.put(percentage, 0);
             percentage++;
         }
-        for (int i = 0; i < Option.NORMAL_DOWN.get(); i++) {
+        for (int i = 0; i < Option.NORMAL_DOWN; i++) {
             heightChances.put(percentage, -1);
             percentage++;
         }
-        for (int i = 0; i < Option.NORMAL_DOWN2.get(); i++) {
+        for (int i = 0; i < Option.NORMAL_DOWN2; i++) {
             heightChances.put(percentage, -2);
             percentage++;
         }
@@ -176,26 +176,24 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
         int one, two, three, four;
-        if (profile.getValue("useScoreDifficulty") != null &&
-                profile.getValue("useScoreDifficulty").asBoolean() &&
-                option(GeneratorOption.DISABLE_ADAPTIVE)) {
+        if (profile.getValue("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
 
-            if (score <= Option.MULTIPLIER.getAsDouble()) {
-                one = (int) (Option.NORMAL_ONE_BLOCK.get() + (adaptiveDistanceChances.get(1) * score));
-                two = (int) (Option.NORMAL_TWO_BLOCK.get() + (adaptiveDistanceChances.get(2) * score));
-                three = (int) (Option.NORMAL_THREE_BLOCK.get() + (adaptiveDistanceChances.get(3) * score));
-                four = (int) (Option.NORMAL_FOUR_BLOCK.get() + (adaptiveDistanceChances.get(4) * score));
+            if (score <= Option.MULTIPLIER) {
+                one = (int) (Option.NORMAL_ONE_BLOCK + (adaptiveDistanceChances.get(1) * score));
+                two = (int) (Option.NORMAL_TWO_BLOCK + (adaptiveDistanceChances.get(2) * score));
+                three = (int) (Option.NORMAL_THREE_BLOCK + (adaptiveDistanceChances.get(3) * score));
+                four = (int) (Option.NORMAL_FOUR_BLOCK + (adaptiveDistanceChances.get(4) * score));
             } else {
-                one = Option.MAXED_ONE_BLOCK.get();
-                two = Option.MAXED_TWO_BLOCK.get();
-                three = Option.MAXED_THREE_BLOCK.get();
-                four = Option.MAXED_FOUR_BLOCK.get();
+                one = Option.MAXED_ONE_BLOCK;
+                two = Option.MAXED_TWO_BLOCK;
+                three = Option.MAXED_THREE_BLOCK;
+                four = Option.MAXED_FOUR_BLOCK;
             }
         } else {
-            one = Option.NORMAL_ONE_BLOCK.get();
-            two = Option.NORMAL_TWO_BLOCK.get();
-            three = Option.NORMAL_THREE_BLOCK.get();
-            four = Option.NORMAL_FOUR_BLOCK.get();
+            one = Option.NORMAL_ONE_BLOCK;
+            two = Option.NORMAL_TWO_BLOCK;
+            three = Option.NORMAL_THREE_BLOCK;
+            four = Option.NORMAL_FOUR_BLOCK;
         }
 
         int percentage = 0;

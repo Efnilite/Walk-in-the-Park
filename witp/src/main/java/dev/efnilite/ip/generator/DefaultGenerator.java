@@ -522,7 +522,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             }
         };
         Task.create(IP.getPlugin())
-                .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK.get())
+                .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
                 .execute(task)
                 .run();
     }
@@ -608,7 +608,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             deleteStructure();
         }
 
-        if (Option.ALL_POINTS.get()) { // score handling
+        if (Option.ALL_POINTS) { // score handling
             for (int i = 0; i < deltaFromLast; i++) { // score the difference
                 score();
             }
@@ -874,7 +874,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // gets the correct type of score to check based on the config option
-        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE.get() ? totalScore : score;
+        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
         for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
             if (typeToCheck % interval == 0) {
                 strings = RewardReader.INTERVAL_REWARDS.get(interval);

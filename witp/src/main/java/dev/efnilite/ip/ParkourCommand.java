@@ -144,7 +144,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (!Option.ENABLE_JOINING.get()) {
+                    if (!Option.ENABLE_JOINING) {
                         IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                         return true;
                     }
@@ -167,7 +167,7 @@ public class ParkourCommand extends ViCommand {
                 }
                 case "menu" -> {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                    if (Option.SETTINGS_ENABLED.get() && pp != null) {
+                    if (Option.SETTINGS_ENABLED && pp != null) {
                         pp.getGenerator().menu();
                         return true;
                     }
@@ -213,7 +213,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                if (!Option.ENABLE_JOINING.get()) {
+                if (!Option.ENABLE_JOINING) {
                     IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                     return true;
                 }

@@ -148,7 +148,7 @@ public final class IP extends ViPlugin {
             multiverseHook = new MultiverseHook();
         }
 
-        if (Option.BUNGEECORD.get()) {
+        if (Option.BUNGEECORD) {
             logging().info("Connecting with BungeeCord..");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
@@ -169,7 +169,7 @@ public final class IP extends ViPlugin {
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED)));
-        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.get().size())));
+        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;
             ParkourUser.JOIN_COUNT = 0;
@@ -200,7 +200,7 @@ public final class IP extends ViPlugin {
                 }
             }
         } else {
-            World world = Bukkit.getWorld(Option.WORLD_NAME.get());
+            World world = Bukkit.getWorld(Option.WORLD_NAME);
             if (world != null) {
                 for (Player player : world.getPlayers()) {
                     player.kickPlayer("Server is restarting");

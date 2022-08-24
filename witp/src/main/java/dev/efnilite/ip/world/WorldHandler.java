@@ -19,10 +19,10 @@ public class WorldHandler {
      * Creates the parkour world with the name given in the config.
      */
     public void createWorld() {
-        String name = Option.WORLD_NAME.get();
+        String name = Option.WORLD_NAME;
         World world = Bukkit.getWorld(name);
 
-        if (!Option.DELETE_ON_RELOAD.get()) {
+        if (!Option.DELETE_ON_RELOAD) {
             if (world == null) {
                 create();
             }
@@ -41,7 +41,7 @@ public class WorldHandler {
     }
 
     private void create() {
-        String name = Option.WORLD_NAME.get();
+        String name = Option.WORLD_NAME;
 
         if (IP.getMultiverseHook() != null) { // if multiverse isn't detected
             world = IP.getMultiverseHook().createWorld(name);
@@ -71,11 +71,11 @@ public class WorldHandler {
      * Deletes the parkour world
      */
     public void deleteWorld() {
-        if (!Option.DELETE_ON_RELOAD.get()) {
+        if (!Option.DELETE_ON_RELOAD) {
             return;
         }
 
-        String name = Option.WORLD_NAME.get();
+        String name = Option.WORLD_NAME;
 
         if (IP.getMultiverseHook() != null) {
             IP.getMultiverseHook().deleteWorld(name);
@@ -123,7 +123,7 @@ public class WorldHandler {
      */
     public World getWorld() {
         if (world == null) {
-            world = Bukkit.getWorld(Option.WORLD_NAME.get());
+            world = Bukkit.getWorld(Option.WORLD_NAME);
             if (world == null) {
                 IP.logging().stack("World is null", "delete the parkour world folder and restart the server");
             }

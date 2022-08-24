@@ -224,7 +224,7 @@ public class WorldDivider {
         player.setGameMode(GameMode.ADVENTURE);
 
         // -= Inventory =-
-        if (Option.INVENTORY_HANDLING.get()) {
+        if (Option.INVENTORY_HANDLING) {
             Task.create(IP.getPlugin())
                     .delay(5)
                     .execute(() -> {
@@ -232,7 +232,7 @@ public class WorldDivider {
 
                         player.getInventory().clear();
 
-                        if (Option.SETTINGS_ENABLED.get() && giveCompass) {
+                        if (Option.SETTINGS_ENABLED && giveCompass) {
                             Item item = IP.getConfiguration().getFromItemData(pp, "general.menu");
                             if (item != null) {
                                 items.add(item);
@@ -252,7 +252,7 @@ public class WorldDivider {
                                 items.add(new Item(Material.BEACON, "&c&l-= Lobbies =-"));
                             }
                         }
-                        if (Option.HOTBAR_QUIT_ITEM.get()) {
+                        if (Option.HOTBAR_QUIT_ITEM) {
                             Item item = IP.getConfiguration().getFromItemData(pp, "general.quit");
                             if (item != null) {
                                 items.add(item);
@@ -272,7 +272,7 @@ public class WorldDivider {
                     .run();
         }
 
-        if (!Option.INVENTORY_HANDLING.get()) {
+        if (!Option.INVENTORY_HANDLING) {
             pp.sendTranslated("customize-menu");
         }
 

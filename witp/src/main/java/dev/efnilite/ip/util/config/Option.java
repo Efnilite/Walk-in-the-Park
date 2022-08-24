@@ -3,7 +3,6 @@ package dev.efnilite.ip.util.config;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.config.ConfigOption;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -25,43 +24,43 @@ public class Option {
     public static boolean AUTO_UPDATER;
 
     // Config stuff
-    public static ConfigOption<Boolean> ALL_POINTS;
-    public static ConfigOption<Boolean> REWARDS_USE_TOTAL_SCORE;
+    public static boolean ALL_POINTS;
+    public static boolean REWARDS_USE_TOTAL_SCORE;
 
-    public static ConfigOption<Boolean> INVENTORY_HANDLING;
+    public static boolean INVENTORY_HANDLING;
     public static boolean PERMISSIONS;
-    public static ConfigOption<Boolean> FOCUS_MODE;
-    public static ConfigOption<List<String>> FOCUS_MODE_WHITELIST;
-    public static ConfigOption<Boolean> GO_BACK;
-    public static ConfigOption<Boolean> BUNGEECORD;
+    public static boolean FOCUS_MODE;
+    public static List<String> FOCUS_MODE_WHITELIST;
+    public static boolean GO_BACK;
+    public static boolean BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
     // Advanced settings
     public static String HEADING;
 
-    public static ConfigOption<List<String>> LANGUAGES;
+    public static List<String> LANGUAGES;
     public static String DEFAULT_LOCALE;
-    public static ConfigOption<Boolean> JOIN_LEAVE_MESSAGES;
+    public static boolean JOIN_LEAVE_MESSAGES;
 
     public static String DEFAULT_STYLE;
 
-    public static ConfigOption<Boolean> ENABLE_JOINING;
-    public static ConfigOption<Boolean> PERMISSIONS_STYLES;
-    public static ConfigOption<Boolean> SAVE_STATS;
-    public static ConfigOption<Boolean> SETTINGS_ENABLED;
-    public static ConfigOption<Boolean> HEALTH_HANDLING;
-    public static ConfigOption<Boolean> INVENTORY_SAVING;
-    public static ConfigOption<String> ALT_INVENTORY_SAVING_COMMAND;
+    public static boolean ENABLE_JOINING;
+    public static boolean PERMISSIONS_STYLES;
+    public static boolean SAVE_STATS;
+    public static boolean SETTINGS_ENABLED;
+    public static boolean HEALTH_HANDLING;
+    public static boolean INVENTORY_SAVING;
+    public static String ALT_INVENTORY_SAVING_COMMAND;
 
-    public static ConfigOption<Integer> OPTIONS_TIME_FORMAT;
+    public static int OPTIONS_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
-    public static ConfigOption<Boolean> HOTBAR_QUIT_ITEM;
+    public static boolean HOTBAR_QUIT_ITEM;
 
     // Worlds
-    public static ConfigOption<Boolean> DELETE_ON_RELOAD;
-    public static ConfigOption<String> WORLD_NAME;
+    public static boolean DELETE_ON_RELOAD;
+    public static String WORLD_NAME;
 
     public static void init(boolean firstLoad) {
         scoreboard = IP.getConfiguration().getFile("scoreboard");
@@ -78,21 +77,25 @@ public class Option {
 
         // General settings
         AUTO_UPDATER = config.getBoolean("auto-updater");
-        ENABLE_JOINING = new ConfigOption<>(config, "joining");
-        JOIN_LEAVE_MESSAGES = new ConfigOption<>(config, "join-leave-messages");
+        ENABLE_JOINING = config.getBoolean("joining");
+        JOIN_LEAVE_MESSAGES = config.getBoolean("join-leave-messages");
 
         // Worlds
-        DELETE_ON_RELOAD = new ConfigOption<>(config, "world.delete-on-reload");
-        WORLD_NAME = new ConfigOption<>(config, "world.name", "[a-zA-Z0-9/._-]+");
+        DELETE_ON_RELOAD = config.getBoolean("world.delete-on-reload");
+        WORLD_NAME = config.getString("world.name");
+
+        if (!WORLD_NAME.matches("[a-zA-Z0-9/._-]+")) {
+            IP.logging().stack("Invalid world name!", "world names need to match regex \"[a-zA-Z0-9/._-]+\"");
+        }
 
         // Options
 
-        SAVE_STATS = new ConfigOption<>(config, "options.save-stats");
-        SETTINGS_ENABLED = new ConfigOption<>(config, "options.enabled");
-        OPTIONS_TIME_FORMAT = new ConfigOption<>(config, "options.time.format");
-        HEALTH_HANDLING = new ConfigOption<>(config, "options.health-handling");
-        INVENTORY_SAVING = new ConfigOption<>(config, "options.inventory-saving");
-        ALT_INVENTORY_SAVING_COMMAND = new ConfigOption<>(config, "options.alt-inventory-saving-command");
+        SAVE_STATS = config.getBoolean("options.save-stats");
+        SETTINGS_ENABLED = config.getBoolean("options.enabled");
+        OPTIONS_TIME_FORMAT = config.getInt("options.time.format");
+        HEALTH_HANDLING = config.getBoolean("options.health-handling");
+        INVENTORY_SAVING = config.getBoolean("options.inventory-saving");
+        ALT_INVENTORY_SAVING_COMMAND = config.getString("options.alt-inventory-saving-command");
 
         List<ParkourOption> options = Arrays.asList(ParkourOption.LEADS, ParkourOption.TIME,
                 ParkourOption.SCHEMATIC_DIFFICULTY, ParkourOption.SCORE_DIFFICULTY,
@@ -127,14 +130,12 @@ public class Option {
 
         // =====================================
 
-        HOTBAR_QUIT_ITEM = new ConfigOption<>(config, "options.hotbar-quit-item");
+        HOTBAR_QUIT_ITEM = config.getBoolean("options.hotbar-quit-item");
 
-        PERMISSIONS_STYLES = new ConfigOption<>(config, "permissions.per-style");
+        PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
 
-        LANGUAGES = new ConfigOption<>(new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false)));
-        List<String> languages = new ArrayList<>(LANGUAGES.get());
-        languages.remove("default");
-        LANGUAGES.thenSet(languages);
+        LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
+        LANGUAGES.remove("default");
 
         DEFAULT_LOCALE = lang.getString("messages.default");
 
@@ -150,21 +151,21 @@ public class Option {
             }
         }
 
-        INVENTORY_HANDLING = new ConfigOption<>(config, "options.inventory-handling");
+        INVENTORY_HANDLING = config.getBoolean("options.inventory-handling");
         PERMISSIONS = config.getBoolean("permissions.enabled");
-        FOCUS_MODE = new ConfigOption<>(config, "focus-mode.enabled");
-        FOCUS_MODE_WHITELIST = new ConfigOption<>(config, "focus-mode.whitelist");
+        FOCUS_MODE = config.getBoolean("focus-mode.enabled");
+        FOCUS_MODE_WHITELIST = config.getStringList("focus-mode.whitelist");
 
         // Bungeecord
-        GO_BACK = new ConfigOption<>(config, "bungeecord.go-back-enabled");
-        BUNGEECORD = new ConfigOption<>(config, "bungeecord.enabled");
+        GO_BACK = config.getBoolean("bungeecord.go-back-enabled");
+        BUNGEECORD = config.getBoolean("bungeecord.enabled");
 
         // Generation
         HEADING = generation.getString("advanced.island.parkour.heading");
 
         // Scoring
-        ALL_POINTS = new ConfigOption<>(config, "scoring.all-points");
-        REWARDS_USE_TOTAL_SCORE = new ConfigOption<>(config, "scoring.rewards-use-total-score");
+        ALL_POINTS = config.getBoolean("scoring.all-points");
+        REWARDS_USE_TOTAL_SCORE = config.getBoolean("scoring.rewards-use-total-score");
 
         if (firstLoad) {
             BORDER_SIZE = generation.getDouble("advanced.border-size");
@@ -233,47 +234,47 @@ public class Option {
     // --------------------------------------------------------------
     // Generation
 
-    public static ConfigOption<Integer> NORMAL;
-    public static ConfigOption<Integer> SPECIAL;
-    public static ConfigOption<Integer> SCHEMATICS;
+    public static int NORMAL;
+    public static int SPECIAL;
+    public static int SCHEMATICS;
 
-    public static ConfigOption<Integer> SPECIAL_ICE;
-    public static ConfigOption<Integer> SPECIAL_SLAB;
-    public static ConfigOption<Integer> SPECIAL_PANE;
-    public static ConfigOption<Integer> SPECIAL_FENCE;
+    public static int SPECIAL_ICE;
+    public static int SPECIAL_SLAB;
+    public static int SPECIAL_PANE;
+    public static int SPECIAL_FENCE;
 
-    public static ConfigOption<Integer> NORMAL_ONE_BLOCK;
-    public static ConfigOption<Integer> NORMAL_TWO_BLOCK;
-    public static ConfigOption<Integer> NORMAL_THREE_BLOCK;
-    public static ConfigOption<Integer> NORMAL_FOUR_BLOCK;
+    public static int NORMAL_ONE_BLOCK;
+    public static int NORMAL_TWO_BLOCK;
+    public static int NORMAL_THREE_BLOCK;
+    public static int NORMAL_FOUR_BLOCK;
 
-    public static ConfigOption<Integer> NORMAL_UP;
-    public static ConfigOption<Integer> NORMAL_LEVEL;
-    public static ConfigOption<Integer> NORMAL_DOWN;
-    public static ConfigOption<Integer> NORMAL_DOWN2;
+    public static int NORMAL_UP;
+    public static int NORMAL_LEVEL;
+    public static int NORMAL_DOWN;
+    public static int NORMAL_DOWN2;
 
     public static int MAX_Y;
     public static int MIN_Y;
 
     private static void initGeneration() {
-        NORMAL = new ConfigOption<>(generation, "generation.normal-jump.chance");
-        SCHEMATICS = new ConfigOption<>(generation, "generation.structures.chance");
-        SPECIAL = new ConfigOption<>(generation, "generation.normal-jump.special.chance");
+        NORMAL = generation.getInt("generation.normal-jump.chance");
+        SCHEMATICS = generation.getInt("generation.structures.chance");
+        SPECIAL = generation.getInt("generation.normal-jump.special.chance");
 
-        SPECIAL_ICE = new ConfigOption<>(generation, "generation.normal-jump.special.ice");
-        SPECIAL_SLAB = new ConfigOption<>(generation, "generation.normal-jump.special.slab");
-        SPECIAL_PANE = new ConfigOption<>(generation, "generation.normal-jump.special.pane");
-        SPECIAL_FENCE = new ConfigOption<>(generation, "generation.normal-jump.special.fence");
+        SPECIAL_ICE = generation.getInt("generation.normal-jump.special.ice");
+        SPECIAL_SLAB = generation.getInt("generation.normal-jump.special.slab");
+        SPECIAL_PANE = generation.getInt("generation.normal-jump.special.pane");
+        SPECIAL_FENCE = generation.getInt("generation.normal-jump.special.fence");
 
-        NORMAL_ONE_BLOCK = new ConfigOption<>(generation, "generation.normal-jump.1-block");
-        NORMAL_TWO_BLOCK = new ConfigOption<>(generation, "generation.normal-jump.2-block");
-        NORMAL_THREE_BLOCK = new ConfigOption<>(generation, "generation.normal-jump.3-block");
-        NORMAL_FOUR_BLOCK = new ConfigOption<>(generation, "generation.normal-jump.4-block");
+        NORMAL_ONE_BLOCK = generation.getInt("generation.normal-jump.1-block");
+        NORMAL_TWO_BLOCK = generation.getInt("generation.normal-jump.2-block");
+        NORMAL_THREE_BLOCK = generation.getInt("generation.normal-jump.3-block");
+        NORMAL_FOUR_BLOCK = generation.getInt("generation.normal-jump.4-block");
 
-        NORMAL_UP = new ConfigOption<>(generation, "generation.normal-jump.up");
-        NORMAL_LEVEL = new ConfigOption<>(generation, "generation.normal-jump.level");
-        NORMAL_DOWN = new ConfigOption<>(generation, "generation.normal-jump.down");
-        NORMAL_DOWN2 = new ConfigOption<>(generation, "generation.normal-jump.down2");
+        NORMAL_UP = generation.getInt("generation.normal-jump.up");
+        NORMAL_LEVEL = generation.getInt("generation.normal-jump.level");
+        NORMAL_DOWN = generation.getInt("generation.normal-jump.down");
+        NORMAL_DOWN2 = generation.getInt("generation.normal-jump.down2");
 
         MAX_Y = generation.getInt("generation.settings.max-y");
         MIN_Y = generation.getInt("generation.settings.min-y");
@@ -291,24 +292,24 @@ public class Option {
     // Advanced settings in generation
 
     public static double BORDER_SIZE;
-    public static ConfigOption<Integer> GENERATOR_CHECK;
-    public static ConfigOption<Double> HEIGHT_GAP;
-    public static ConfigOption<Double> MULTIPLIER;
+    public static int GENERATOR_CHECK;
+    public static double HEIGHT_GAP;
+    public static double MULTIPLIER;
 
-    public static ConfigOption<Integer> MAXED_ONE_BLOCK;
-    public static ConfigOption<Integer> MAXED_TWO_BLOCK;
-    public static ConfigOption<Integer> MAXED_THREE_BLOCK;
-    public static ConfigOption<Integer> MAXED_FOUR_BLOCK;
+    public static int MAXED_ONE_BLOCK;
+    public static int MAXED_TWO_BLOCK;
+    public static int MAXED_THREE_BLOCK;
+    public static int MAXED_FOUR_BLOCK;
 
     private static void initAdvancedGeneration() {
-        GENERATOR_CHECK = new ConfigOption<>(generation, "advanced.generator-check");
-        HEIGHT_GAP = new ConfigOption<>(generation, "advanced.height-gap");
-        MULTIPLIER = new ConfigOption<>(generation, "advanced.maxed-multiplier");
+        GENERATOR_CHECK = generation.getInt("advanced.generator-check");
+        HEIGHT_GAP = generation.getDouble("advanced.height-gap");
+        MULTIPLIER = generation.getDouble("advanced.maxed-multiplier");
 
-        MAXED_ONE_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.1-block");
-        MAXED_TWO_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.2-block");
-        MAXED_THREE_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.3-block");
-        MAXED_FOUR_BLOCK = new ConfigOption<>(generation, "advanced.maxed-values.4-block");
+        MAXED_ONE_BLOCK = generation.getInt("advanced.maxed-values.1-block");
+        MAXED_TWO_BLOCK = generation.getInt("advanced.maxed-values.2-block");
+        MAXED_THREE_BLOCK = generation.getInt("advanced.maxed-values.3-block");
+        MAXED_FOUR_BLOCK = generation.getInt("advanced.maxed-values.4-block");
     }
 
     // --------------------------------------------------------------

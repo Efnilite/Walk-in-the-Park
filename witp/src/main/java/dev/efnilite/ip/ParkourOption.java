@@ -56,7 +56,7 @@ public enum ParkourOption {
      * @return true if the player is allowed to perform this action, false if not
      */
     public boolean check(Player player) {
-        return !Option.PERMISSIONS.get() || player.hasPermission(permission);
+        return !Option.PERMISSIONS || player.hasPermission(permission);
     }
 
     public String getName() {

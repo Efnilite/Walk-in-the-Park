@@ -35,7 +35,7 @@ public class LangMenu {
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.language.name")));
 
         List<MenuItem> items = new ArrayList<>();
-        for (String lang : Option.LANGUAGES.get()) {
+        for (String lang : Option.LANGUAGES) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + config.getString("lang", "messages." + lang + ".name"));
 
             items.add(item

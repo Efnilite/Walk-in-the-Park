@@ -118,7 +118,7 @@ public class SettingsMenu extends DynamicMenu {
                             .initial(times.indexOf(player.selectedTime))
                             .add(0, item.clone()
                                             .modifyLore(line ->
-                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 AM" : "00:00")),
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
                                     event -> {
                                         player.selectedTime = 0;
                                         player.updateVisualTime(player.selectedTime);
@@ -128,7 +128,7 @@ public class SettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone()
                                             .modifyLore(line ->
-                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 AM" : "6:00")),
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
                                     event -> {
                                         player.selectedTime = 6000;
                                         player.updateVisualTime(player.selectedTime);
@@ -138,7 +138,7 @@ public class SettingsMenu extends DynamicMenu {
                                     })
                             .add(2, item.clone()
                                             .modifyLore(line ->
-                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "12:00 PM" : "12:00")),
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
                                     event -> {
                                         player.selectedTime = 12000;
                                         player.updateVisualTime(player.selectedTime);
@@ -148,7 +148,7 @@ public class SettingsMenu extends DynamicMenu {
                                     })
                             .add(3, item.clone()
                                             .modifyLore(line ->
-                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT.get() == 12 ? "6:00 PM" : "18:00")),
+                                                    line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
                                     event -> {
                                         player.selectedTime = 18000;
                                         player.updateVisualTime(player.selectedTime);
@@ -411,7 +411,7 @@ public class SettingsMenu extends DynamicMenu {
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
             String perm = ParkourOption.STYLES.getPermission() + "." + name.toLowerCase();
-            if (Option.PERMISSIONS_STYLES.get() && !user.getPlayer().hasPermission(perm.replace(" ", "."))) {
+            if (Option.PERMISSIONS_STYLES && !user.getPlayer().hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
 
@@ -582,7 +582,7 @@ public class SettingsMenu extends DynamicMenu {
         if (!enabled || Arrays.asList(disabled).contains(option)) {
             return false;
         } else {
-            return !Option.PERMISSIONS.get() || player.hasPermission(option.getPermission());
+            return !Option.PERMISSIONS || player.hasPermission(option.getPermission());
         }
     }
 }

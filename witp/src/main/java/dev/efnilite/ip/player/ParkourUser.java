@@ -120,7 +120,7 @@ public abstract class ParkourUser {
         ParkourPlayer pp = register(player);
         IP.getDivider().generate(pp);
 
-        if (Option.JOIN_LEAVE_MESSAGES.get()) {
+        if (Option.JOIN_LEAVE_MESSAGES) {
             pp.sendTranslated("join", player.getName());
             for (ParkourUser to : getUsers()) {
                 if (to.getUUID().equals(player.getUniqueId()) || to.getSession().getGamemode() instanceof MultiGamemode) {
@@ -181,7 +181,7 @@ public abstract class ParkourUser {
      *          The user instance
      */
     public static void leave(@NotNull ParkourUser user) {
-        if (Option.JOIN_LEAVE_MESSAGES.get()) {
+        if (Option.JOIN_LEAVE_MESSAGES) {
             user.sendTranslated("leave", user.getName());
             for (ParkourUser to : getUsers()) {
                 if (to.getUUID().equals(user.getUUID()) || to.getSession().getGamemode() instanceof MultiGamemode) {
@@ -258,7 +258,7 @@ public abstract class ParkourUser {
         players.remove(pl);
         users.remove(pl.getUniqueId());
 
-        if (sendBack && Option.BUNGEECORD.get() && kickIfBungee) {
+        if (sendBack && Option.BUNGEECORD && kickIfBungee) {
             Util.sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }

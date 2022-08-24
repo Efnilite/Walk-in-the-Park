@@ -54,20 +54,20 @@ public class PreviousData {
             player.removePotionEffect(effect.getType());
         }
 
-        if (Option.SAVE_STATS.get()) {
+        if (Option.SAVE_STATS) {
             this.health = player.getHealth();
             this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         }
 
-        if (Option.HEALTH_HANDLING.get()) {
+        if (Option.HEALTH_HANDLING) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
 
-        if (Option.INVENTORY_HANDLING.get()) {
+        if (Option.INVENTORY_HANDLING) {
             this.inventoryData = new InventoryData(player);
             this.inventoryData.saveInventory();
-            if (Option.INVENTORY_SAVING.get()) {
+            if (Option.INVENTORY_SAVING) {
                 this.inventoryData.saveFile();
             }
         }
@@ -86,7 +86,7 @@ public class PreviousData {
             }
 
             if (teleportBack) {
-                if (Option.GO_BACK.get()) {
+                if (Option.GO_BACK) {
                     Location to = Util.parseLocation(IP.getConfiguration().getString("config", "bungeecord.go-back"));
                     player.teleport(to);
                 } else {
@@ -103,7 +103,7 @@ public class PreviousData {
             player.setCollidable(collidable);
 
             // -= Attributes =-
-            if (Option.SAVE_STATS.get() && Option.HEALTH_HANDLING.get()) {
+            if (Option.SAVE_STATS && Option.HEALTH_HANDLING) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }
