@@ -29,7 +29,7 @@ public class Option {
     public static ConfigOption<Boolean> REWARDS_USE_TOTAL_SCORE;
 
     public static ConfigOption<Boolean> INVENTORY_HANDLING;
-    public static ConfigOption<Boolean> PERMISSIONS;
+    public static boolean PERMISSIONS;
     public static ConfigOption<Boolean> FOCUS_MODE;
     public static ConfigOption<List<String>> FOCUS_MODE_WHITELIST;
     public static ConfigOption<Boolean> GO_BACK;
@@ -151,7 +151,7 @@ public class Option {
         }
 
         INVENTORY_HANDLING = new ConfigOption<>(config, "options.inventory-handling");
-        PERMISSIONS = new ConfigOption<>(config, "permissions.enabled");
+        PERMISSIONS = config.getBoolean("permissions.enabled");
         FOCUS_MODE = new ConfigOption<>(config, "focus-mode.enabled");
         FOCUS_MODE_WHITELIST = new ConfigOption<>(config, "focus-mode.whitelist");
 

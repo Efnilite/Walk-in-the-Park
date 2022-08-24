@@ -39,7 +39,9 @@ public class SingleplayerMenu {
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            if (gm instanceof MultiGamemode || !gm.isVisible()) {
+            boolean permissions = Option.PERMISSIONS && player.hasPermission("witp.gamemode." + gm.getName());
+
+            if (!permissions || gm instanceof MultiGamemode || !gm.isVisible()) {
                 continue;
             }
 
