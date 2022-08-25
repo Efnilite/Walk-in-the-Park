@@ -3,6 +3,7 @@ package dev.efnilite.ip.session;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourUser;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -19,11 +20,12 @@ import java.util.*;
  */
 public class SingleSession implements Session {
 
-    private Gamemode gamemode;
-    private SessionVisibility visibility = SessionVisibility.PUBLIC;
-    private final String sessionId = generateSessionId();
-    private final Map<UUID, ParkourPlayer> players = new LinkedHashMap<>();
-    private final Map<UUID, ParkourSpectator> spectators = new LinkedHashMap<>();
+    protected Gamemode gamemode;
+    protected SessionVisibility visibility = SessionVisibility.PUBLIC;
+    protected final String sessionId = generateSessionId();
+    protected final List<ParkourUser> muted = new ArrayList<>();
+    protected final Map<UUID, ParkourPlayer> players = new LinkedHashMap<>();
+    protected final Map<UUID, ParkourSpectator> spectators = new LinkedHashMap<>();
 
     public static Session create(@NotNull ParkourPlayer player, @NotNull Gamemode gamemode) {
         // create session
@@ -139,23 +141,28 @@ public class SingleSession implements Session {
         return visibility;
     }
 
-    @Override
-    public void setTournament(boolean inTournament) {
-        // todo implement
-    }
-
-    @Override
-    public boolean inTournament() {
-        return false;
-    }
-
+    @NotNull
     @Override
     public Gamemode getGamemode() {
         return gamemode;
     }
 
     @Override
-    public void setGamemode(Gamemode gamemode) {
+    public void setGamemode(@NotNull Gamemode gamemode) {
         this.gamemode = gamemode;
+    }
+
+    @Override
+    public void setMuted(@NotNull ParkourUser user, boolean muted) {
+        if (muted) {
+            this.muted.add(user);
+        } else {
+            this.muted.remove(user);
+        }
+    }
+
+    @Override
+    public boolean isMuted(@NotNull ParkourUser user) {
+        return muted.contains(user);
     }
 }

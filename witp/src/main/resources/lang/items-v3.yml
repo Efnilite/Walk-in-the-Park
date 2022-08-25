@@ -155,7 +155,7 @@ locale:
       visibility:
         name: '<#A1E1DD><bold>Visibility'
         lore: '<dark_gray>Currently: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby'
-        values: [private, id only, public]
+        values: [private, invite-only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
         lore: '<dark_gray>Currently: <#17B2CE><bold>%s||<dark_gray>Select who you can chat with'

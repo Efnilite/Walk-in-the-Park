@@ -1,4 +1,4 @@
-package dev.efnilite.ip.menu.alt;
+package dev.efnilite.ip.menu.old;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;

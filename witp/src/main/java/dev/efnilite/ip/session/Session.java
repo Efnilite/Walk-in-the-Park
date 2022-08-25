@@ -4,6 +4,7 @@ import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * Default methods for a playing Session.
  * This class stores data about a playing Session, since a player can change class several types while
  * switching between gamemodes. This class may include multiple players, or just one.
- *
  * These are referred to as 'Lobbies' in game, to make it easier for players to understand their function.
  *
  * @since v3.0.3
@@ -114,25 +114,11 @@ public interface Session {
     SessionVisibility getVisibility();
 
     /**
-     * Sets the Tournament status for this Session
-     *
-     * @param   inTournament
-     *          Whether this Session is partaking in a Tournament
-     */
-    void setTournament(boolean inTournament);
-
-    /**
-     * Whether this Session is taking part in a Tournament.
-     *
-     * @return true if this Session is in a Tournament, false if not
-     */
-    boolean inTournament();
-
-    /**
      * Returns the {@link Gamemode} of this Session.
      *
      * @return the {@link Gamemode} of this Session.
      */
+    @NotNull
     Gamemode getGamemode();
 
     /**
@@ -141,7 +127,28 @@ public interface Session {
      * @param   gamemode
      *          The {@link Gamemode}
      */
-    void setGamemode(Gamemode gamemode);
+    void setGamemode(@NotNull Gamemode gamemode);
+
+    /**
+     * Sets whether the specified player is muted in this session.
+     *
+     * @param   user
+     *          The player
+     *
+     * @param   value
+     *          The value
+     */
+    void setMuted(@NotNull ParkourUser user, boolean value);
+
+    /**
+     * Returns whether the specified user is muted.
+     *
+     * @param   user
+     *          The user
+     *
+     * @return true if muted, false if unmuted.
+     */
+    boolean isMuted(@NotNull ParkourUser user);
 
     /**
      * Automatically assigns an unregistered player to this Session, based

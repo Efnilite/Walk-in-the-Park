@@ -2,10 +2,13 @@ package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.menu.DynamicMenu;
+import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
+import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,7 +18,18 @@ import java.util.List;
 public class LobbyMenu extends DynamicMenu {
 
     public LobbyMenu() {
-        registerMainItem(1, 9,
+        registerMainItem(1, 0,
+                user -> new Item(Material.CAKE, "<#8DC9E5><bold>Manage Players")
+                        .click(event -> Menus.PLAYER_MANAGEMENT.open(user.getPlayer())),
+                player -> {
+                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+
+                    return pp != null &&
+                            pp.getSession().getPlayers().get(0) == pp;
+                }
+        );
+
+        registerMainItem(1, 1,
                 user -> {
                     List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.visibility.values");
                     return new SliderItem()
@@ -57,7 +71,7 @@ public class LobbyMenu extends DynamicMenu {
                     ParkourUser user = ParkourUser.getUser(player);
 
                     return user != null &&
-                            user.getSession().getPlayers().get(0).getPlayer() == player; // only if player is the owner
+                            user.getSession().getPlayers().get(0) == user; // only if player is the owner
                 });
 
         // Always allow closing of the menu

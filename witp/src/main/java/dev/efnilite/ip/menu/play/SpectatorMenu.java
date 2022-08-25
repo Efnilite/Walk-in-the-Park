@@ -46,19 +46,13 @@ public class SpectatorMenu {
                 continue;
             }
 
-            AutoSliderItem slider = new AutoSliderItem(1, spectator) // todo
+            AutoSliderItem slider = new AutoSliderItem(1, spectator)
                     .initial(0); // slideritem
 
             int index = 0;
             for (ParkourPlayer pp : session.getPlayers()) {
                 Item item = IP.getConfiguration().getFromItemData(locale,
                         "gamemodes.spectator-head", pp.getName());
-
-//                List<String> lore = item.getLore(); todo add admin view
-//                lore.add("");
-//                lore.add("<gray><italic>You can see this because you're an admin.");
-//                item.lore(lore);
-
                 // Player head gathering
                 item.material(Material.PLAYER_HEAD);
 
