@@ -1,9 +1,9 @@
 package dev.efnilite.ip.generator.base;
 
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.config.Option;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

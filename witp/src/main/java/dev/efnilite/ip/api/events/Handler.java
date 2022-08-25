@@ -2,14 +2,13 @@ package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
-import dev.efnilite.ip.menu.LobbyMenu;
-import dev.efnilite.ip.menu.MainMenu;
+import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.ip.world.generation.VoidGenerator;
 import dev.efnilite.vilib.chat.Message;
@@ -194,9 +193,11 @@ public class Handler implements EventWatcher {
         Action action = event.getAction();
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
+
         if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "witp", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
+
         Location location = event.getClickedBlock().getLocation();
 
         switch (action) {
@@ -255,21 +256,26 @@ public class Handler implements EventWatcher {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
 
         if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
-            Material menu = IP.getConfiguration().getFromItemData(pp, "general.menu").getMaterial();
-            Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
-            Material lobby = IP.getConfiguration().getFromItemData(pp, "lobby.item").getMaterial();
-
-
             Material held = Util.getHeldItem(player).getType();
-            if (held == menu) {
+
+            Material play = Material.SUGAR_CANE;
+            Material community = Material.OAK_BOAT;
+            Material settings = Material.COMPARATOR;
+            Material lobby = Material.IRON_INGOT;
+            Material quit = IP.getConfiguration().getFromItemData(pp, "general.quit").getMaterial();
+
+            if (held == play) {
                 event.setCancelled(true);
-                MainMenu.INSTANCE.open(player);
-            } else if (held == quit) {
+                Menus.PLAY.open(player);
+            } else if (held == community) {
                 event.setCancelled(true);
-                ParkourUser.leave(player);
+                Menus.COMMUNITY.open(player);
+            } else if (held == settings) {
+                event.setCancelled(true);
+                Menus.SETTINGS.open(player);
             } else if (held == lobby) {
                 event.setCancelled(true);
-                LobbyMenu.INSTANCE.open(player);
+                Menus.LOBBY.open(player);
             }
         }
     }

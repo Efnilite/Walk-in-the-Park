@@ -1,7 +1,7 @@
 package dev.efnilite.ip.util.sql;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.config.Option;
 import org.bukkit.Bukkit;
 
 import java.sql.Connection;

@@ -2,12 +2,12 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.chat.Message;
 import fr.mrmicky.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,7 +77,7 @@ public abstract class ParkourUser {
      */
     protected final Player player;
 
-    protected static final Map<UUID, ParkourUser> users = new HashMap<>();
+    protected static final Map<Player, ParkourUser> users = new HashMap<>();
     protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
 
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
@@ -91,7 +92,7 @@ public abstract class ParkourUser {
             this.board = new FastBoard(player);
         }
         // remove duplicates
-        users.put(player.getUniqueId(), this);
+        users.put(player, this);
     }
 
     /**
@@ -283,12 +284,13 @@ public abstract class ParkourUser {
      * @return the ParkourUser instance associated with this uuid. Returns null if there isn't an active player.
      */
     public static @Nullable ParkourUser getUser(@NotNull UUID uuid) {
-        for (ParkourUser user : users.values()) {
-            if (user.player.getUniqueId() == uuid) {
-                return user;
-            }
+        Player player = Bukkit.getPlayer(uuid);
+
+        if (player == null) {
+            return null;
         }
-        return null;
+
+        return getUser(player);
     }
 
     /**
@@ -300,7 +302,42 @@ public abstract class ParkourUser {
      * @return the associated {@link ParkourUser}
      */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        return getUser(player.getUniqueId());
+        for (ParkourUser user : users.values()) {
+            if (user.player.getUniqueId() == player.getUniqueId()) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks whether the provided player is a {@link ParkourUser}.
+     * If the provided player is null, the method will automatically return false.
+     *
+     * @param   player
+     *          The player. Can be null.
+     *
+     * @return True if the player is a registered {@link ParkourUser}.
+     * False if the player isn't registered or the provided player is null.
+     */
+    @Contract("null -> false")
+    public static boolean isUser(@Nullable Player player) {
+        return player != null && users.containsKey(player);
+
+    }
+
+    /**
+     * Checks whether the provided player is a {@link ParkourPlayer}.
+     * If the provided player is null, the method will automatically return false.
+     *
+     * @param   player
+     *          The player. Can be null.
+     *
+     * @return True if the player is a registered {@link ParkourPlayer}.
+     * False if the player isn't registered or the provided player is null.
+     */
+    public static boolean isPlayer(@Nullable Player player) {
+        return player != null && players.containsKey(player);
     }
 
     public static List<ParkourUser> getUsers() {

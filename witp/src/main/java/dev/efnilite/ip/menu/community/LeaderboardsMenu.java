@@ -1,13 +1,13 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.RandomAnimation;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
@@ -18,17 +18,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleplayerMenu {
+/**
+ * Leaderboards menu
+ */
+public class LeaderboardsMenu {
 
-    /**
-     * Opens the gamemode menu
-     *
-     * @param   player
-     *          The player
-     */
-    public static void open(Player player) {
-        IP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
-
+    public void open(Player player) {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
@@ -39,20 +34,24 @@ public class SingleplayerMenu {
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            boolean permissions = Option.PERMISSIONS && player.hasPermission("witp.gamemode." + gm.getName());
-
-            if (!permissions || gm instanceof MultiGamemode || !gm.isVisible()) {
+            if (gm.getLeaderboard() == null || !gm.isVisible()) {
                 continue;
             }
 
             Item item = gm.getItem(locale);
             items.add(item.clone()
-                    .click(event -> gm.click(player)));
+                    .click(event -> {
+                        if (gm.getName().equals("time-trial") || gm.getName().equals("duels")) {
+                            Menus.SINGLE_LEADERBOARD.open(player, gm, SingleLeaderboardMenu.Sort.TIME);
+                        } else {
+                            Menus.SINGLE_LEADERBOARD.open(player, gm, SingleLeaderboardMenu.Sort.SCORE);
+                        }
+                    }));
             latest = gm;
         }
 
         if (items.size() == 1) {
-            latest.click(player);
+            Menus.SINGLE_LEADERBOARD.open(player, latest, SingleLeaderboardMenu.Sort.SCORE);
             return;
         }
 
@@ -67,11 +66,10 @@ public class SingleplayerMenu {
                         .click(event -> gamemode.page(-1)))
 
                 .item(31, config.getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new RandomAnimation())
+                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+                .animation(new SplitMiddleOutAnimation())
                 .open(player);
     }
-
 }

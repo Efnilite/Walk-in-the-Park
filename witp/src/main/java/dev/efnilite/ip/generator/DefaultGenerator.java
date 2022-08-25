@@ -6,12 +6,13 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.events.BlockGenerateEvent;
 import dev.efnilite.ip.api.events.PlayerFallEvent;
 import dev.efnilite.ip.api.events.PlayerScoreEvent;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.Direction;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.SettingsMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.data.Score;
@@ -22,7 +23,6 @@ import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
@@ -505,7 +505,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void menu() {
-        SettingsMenu.INSTANCE.open(player);
+        Menus.PARKOUR_SETTINGS.open(player);
     }
 
     @Override

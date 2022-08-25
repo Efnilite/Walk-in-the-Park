@@ -1,6 +1,6 @@
 package dev.efnilite.ip.schematic;
 
-import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;

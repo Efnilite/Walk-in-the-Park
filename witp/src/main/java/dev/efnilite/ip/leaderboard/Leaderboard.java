@@ -2,9 +2,8 @@ package dev.efnilite.ip.leaderboard;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.data.Score;
-import dev.efnilite.ip.util.VFiles;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -78,7 +77,19 @@ public class Leaderboard {
                 """
             .formatted(getTableName()));
         } else {
-            VFiles.create(file);
+            File file = new File(this.file);
+            if (!file.exists()) {
+                File folder = new File(file.getParent());
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    IP.logging().stack("Error while creating leaderboard file", "delete leaderboard file for " + file + " and restart your server", ex);
+                }
+            }
         }
 
         // read all data

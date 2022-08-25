@@ -1,14 +1,14 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.vilib.inventory.item.AutoSliderItem;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -23,9 +23,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The menu to select other players to spectate
+ */
 public class SpectatorMenu {
 
-    public static void open(Player player) {
+    public void open(Player player) {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
@@ -43,19 +46,13 @@ public class SpectatorMenu {
                 continue;
             }
 
-            AutoSliderItem slider = new AutoSliderItem(1, spectator) // todo
+            AutoSliderItem slider = new AutoSliderItem(1, spectator)
                     .initial(0); // slideritem
 
             int index = 0;
             for (ParkourPlayer pp : session.getPlayers()) {
                 Item item = IP.getConfiguration().getFromItemData(locale,
                         "gamemodes.spectator-head", pp.getName());
-
-//                List<String> lore = item.getLore(); todo add admin view
-//                lore.add("");
-//                lore.add("<gray><italic>You can see this because you're an admin.");
-//                item.lore(lore);
-
                 // Player head gathering
                 item.material(Material.PLAYER_HEAD);
 
@@ -84,17 +81,16 @@ public class SpectatorMenu {
                 .displayRows(0, 1)
                 .addToDisplay(display)
 
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> spectator.page(1)))
 
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> spectator.page(-1)))
 
-                .item(31, IP.getConfiguration().getFromItemData(locale, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                .item(22, IP.getConfiguration().getFromItemData(locale, "general.close")
+                        .click(event -> Menus.PLAY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleInAnimation())
                 .open(player);
 
     }

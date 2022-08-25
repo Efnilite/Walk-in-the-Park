@@ -1,9 +1,10 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -23,7 +24,7 @@ public class LangMenu {
      * @param   user
      *          The ParkourPlayer instance
      */
-    public static void open(ParkourPlayer user) {
+    public void open(ParkourPlayer user) {
         Configuration config = IP.getConfiguration();
 
         if (user == null) {
@@ -43,7 +44,7 @@ public class LangMenu {
                     .click(event -> {
                         user.setLocale(lang);
                         user.lang = lang;
-                        MainMenu.INSTANCE.open(event.getPlayer());
+                        Menus.SETTINGS.open(event.getPlayer());
                     }));
         }
 
@@ -58,7 +59,7 @@ public class LangMenu {
                         .click(event -> style.page(-1)))
 
                 .item(31, config.getFromItemData(user, "general.close")
-                        .click(event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        .click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())

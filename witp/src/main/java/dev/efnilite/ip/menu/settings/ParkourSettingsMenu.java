@@ -1,12 +1,14 @@
-package dev.efnilite.ip.menu;
+package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
+import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.DynamicMenu;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -34,11 +36,9 @@ import java.util.List;
  * @since v3.0.0
  * @author Efnilite
  */
-public class SettingsMenu extends DynamicMenu {
+public class ParkourSettingsMenu extends DynamicMenu {
 
-    public static final SettingsMenu INSTANCE = new SettingsMenu();
-
-    public SettingsMenu(ParkourOption... disabled) {
+    public ParkourSettingsMenu(ParkourOption... disabled) {
 
         // ---------- top row ----------
 
@@ -359,7 +359,7 @@ public class SettingsMenu extends DynamicMenu {
                 ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")))
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
-                        event -> MainMenu.INSTANCE.open(event.getPlayer())))
+                        event -> Menus.SETTINGS.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation());
 
@@ -388,7 +388,6 @@ public class SettingsMenu extends DynamicMenu {
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new RandomAnimation())
                 .open(user.getPlayer());
     }
 

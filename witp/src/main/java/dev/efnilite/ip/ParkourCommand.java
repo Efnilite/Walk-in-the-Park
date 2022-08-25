@@ -1,10 +1,11 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.LeaderboardMenu;
-import dev.efnilite.ip.menu.MainMenu;
-import dev.efnilite.ip.menu.SingleplayerMenu;
+import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
+import dev.efnilite.ip.menu.old.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -14,7 +15,6 @@ import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.command.ViCommand;
@@ -177,7 +177,7 @@ public class ParkourCommand extends ViCommand {
                     if (!ParkourOption.GAMEMODE.check(player)) {
                         return true;
                     }
-                    SingleplayerMenu.open(player);
+                    Menus.SINGLE.open(player);
 
                     return true;
                 }
@@ -461,9 +461,9 @@ public class ParkourCommand extends ViCommand {
 
                 // if found gamemode is null, return to default
                 if (gamemode == null) {
-                    LeaderboardMenu.open(player);
+                    Menus.LEADERBOARDS.open(player);
                 } else {
-                    LeaderboardMenu.openSingle(player, gamemode, LeaderboardMenu.Sort.SCORE);
+                    Menus.SINGLE_LEADERBOARD.open(player, gamemode, SingleLeaderboardMenu.Sort.SCORE);
                 }
             }
         } else if (args.length == 3) {

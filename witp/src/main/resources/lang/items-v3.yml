@@ -154,11 +154,11 @@ locale:
         lore: ''
       visibility:
         name: '<#A1E1DD><bold>Visibility'
-        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
-        values: [private, id only, public]
+        lore: '<dark_gray>Currently: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby'
+        values: [private, invite-only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
-        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        lore: '<dark_gray>Currently: <#17B2CE><bold>%s||<dark_gray>Select who you can chat with'
         values: [lobby only, players only, public]
 
     # -= Options for settings menu =-
@@ -271,11 +271,11 @@ locale:
         lore: ''
       visibility:
         name: '<#A1E1DD><bold>Zichtbaarheid'
-        lore: '<gray>Huidige waarde: <#2BD4E2><bold>%s||<gray>Kies wie je lobby kan joinen'
+        lore: '<dark_gray>Huidige waarde: <#2BD4E2><bold>%s||<dark_gray>Kies wie je lobby kan joinen'
         values: [privé, alleen met id, publiek]
       chat:
         name: '<#20C6BC><bold>Chat'
-        lore: '<gray>Huidige waarde: <#17B2CE><bold>%s||<gray>Kies met we je kan chatten'
+        lore: '<dark_gray>Huidige waarde: <#17B2CE><bold>%s||<dark_gray>Kies met we je kan chatten'
         values: [alleen lobby, alleen spelers, publiek]
 
     # -= Options for settings menu =-
@@ -389,11 +389,11 @@ locale:
         lore: ''
       visibility:
         name: '<#A1E1DD><bold>Visibility'
-        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        lore: '<dark_gray>Currently: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby'
         values: [private, id only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
-        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        lore: '<dark_gray>Currently: <#17B2CE><bold>%s||<dark_gray>Select who you can chat with'
         values: [lobby only, players only, public]
 
     # -= Options for settings menu =-
@@ -507,11 +507,11 @@ locale:
         lore: ''
       visibility:
         name: '<#A1E1DD><bold>Visibility'
-        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        lore: '<dark_gray>Currently: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby'
         values: [private, id only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
-        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        lore: '<dark_gray>Currently: <#17B2CE><bold>%s||<dark_gray>Select who you can chat with'
         values: [lobby only, players only, public]
 
     # -= Options for settings menu =-
@@ -626,11 +626,11 @@ locale:
         lore: ''
       visibility:
         name: '<#A1E1DD><bold>Visibility'
-        lore: '<gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
+        lore: '<dark_gray>Currently: <#2BD4E2><bold>%s||<gray>Select who can join your lobby'
         values: [private, id only, public]
       chat:
         name: '<#20C6BC><bold>Chat'
-        lore: '<gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
+        lore: '<dark_gray>Currently: <#17B2CE><bold>%s||<gray>Select who you can chat with'
         values: [lobby only, players only, public]
 
     # -= Options for settings menu =-

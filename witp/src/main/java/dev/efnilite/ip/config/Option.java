@@ -1,4 +1,4 @@
-package dev.efnilite.ip.util.config;
+package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
@@ -56,7 +56,6 @@ public class Option {
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
-    public static boolean HOTBAR_QUIT_ITEM;
 
     // Worlds
     public static boolean DELETE_ON_RELOAD;
@@ -129,8 +128,6 @@ public class Option {
         }
 
         // =====================================
-
-        HOTBAR_QUIT_ITEM = config.getBoolean("options.hotbar-quit-item");
 
         PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
 

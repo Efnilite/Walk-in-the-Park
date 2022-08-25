@@ -4,12 +4,12 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.generator.profile.Profile;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.SingleSession;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
@@ -331,18 +331,6 @@ public class ParkourPlayer extends ParkourUser {
      */
     public static @Nullable ParkourPlayer getPlayer(@Nullable Player player) {
         return player == null ? null : getPlayer(player.getUniqueId());
-    }
-
-    /**
-     * Returns whether a player is currently active.
-     *
-     * @param   player
-     *          The player
-     *
-     * @return true if the player is registered, false if not.
-     */
-    public static boolean isActive(@Nullable Player player) {
-        return player != null && players.containsKey(player);
     }
 
     /**
