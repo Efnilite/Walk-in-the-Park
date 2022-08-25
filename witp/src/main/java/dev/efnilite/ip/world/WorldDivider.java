@@ -1,6 +1,7 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.generator.data.AreaData;
@@ -10,7 +11,6 @@ import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.vector.Vector2D;

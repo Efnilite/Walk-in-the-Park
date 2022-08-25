@@ -1,6 +1,6 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.config.Option;
 import org.bukkit.entity.Player;
 
 /**

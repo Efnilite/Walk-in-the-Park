@@ -2,14 +2,14 @@ package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.Stopwatch;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;

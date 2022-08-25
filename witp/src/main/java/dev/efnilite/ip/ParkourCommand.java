@@ -1,6 +1,7 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
@@ -14,7 +15,6 @@ import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.command.ViCommand;

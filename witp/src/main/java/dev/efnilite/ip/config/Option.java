@@ -1,4 +1,4 @@
-package dev.efnilite.ip.util.config;
+package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;

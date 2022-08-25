@@ -21,31 +21,6 @@ public class PersistentUtil {
     }
 
     /**
-     * Gets persistentdata from an Itemstack
-     *
-     * @param   itemStack
-     *          The itemstack
-     *
-     * @param   key
-     *          The key
-     *
-     * @param   type
-     *          The PersistentData type
-     *
-     * @param   <T>
-     *          The type of value
-     *
-     * @return  the data value
-     */
-    public static <T> Object getPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type) {
-        ItemMeta meta = itemStack.getItemMeta();
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
-
-        return container.get(namespacedKey, type);
-    }
-
-    /**
      * Checks if an itemstack has persistentdata
      *
      * @param   itemStack
@@ -98,24 +73,6 @@ public class PersistentUtil {
         NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 
         container.set(namespacedKey, type, t);
-        itemStack.setItemMeta(meta);
-    }
-
-    /**
-     * Removes persistent data from an itemstack
-     *
-     * @param   itemStack
-     *          The itemstack
-     *
-     * @param   key
-     *          The key to be removed
-     */
-    public static void removePersistentData(ItemStack itemStack, String key) {
-        ItemMeta meta = itemStack.getItemMeta();
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
-
-        container.remove(namespacedKey);
         itemStack.setItemMeta(meta);
     }
 }

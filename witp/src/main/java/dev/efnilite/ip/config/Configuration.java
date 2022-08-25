@@ -1,4 +1,4 @@
-package dev.efnilite.ip.util.config;
+package dev.efnilite.ip.config;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;

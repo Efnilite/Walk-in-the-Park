@@ -3,10 +3,11 @@ package dev.efnilite.ip.menu.play;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.util.config.Configuration;
-import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.util.Cooldowns;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -44,7 +45,11 @@ public class SingleMenu {
 
             Item item = gm.getItem(locale);
             items.add(item.clone()
-                    .click(event -> gm.click(player)));
+                    .click(event -> {
+                        if (Cooldowns.passes(player.getUniqueId(), "switch gamemode", 5000)) {
+                            gm.click(player);
+                        }
+                    }));
             latest = gm;
         }
 

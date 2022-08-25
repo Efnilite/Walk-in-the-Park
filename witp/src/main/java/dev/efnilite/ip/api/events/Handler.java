@@ -2,13 +2,13 @@ package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.config.Option;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.ip.world.generation.VoidGenerator;
 import dev.efnilite.vilib.chat.Message;
@@ -193,9 +193,11 @@ public class Handler implements EventWatcher {
         Action action = event.getAction();
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
+
         if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "witp", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
+
         Location location = event.getClickedBlock().getLocation();
 
         switch (action) {

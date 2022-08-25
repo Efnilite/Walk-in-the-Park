@@ -2,7 +2,7 @@ package dev.efnilite.ip.player.data;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.config.Option;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.vilib.serialization.ObjectSerializer;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
