@@ -177,7 +177,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                     event -> {
                                         player.showScoreboard = true;
-                                        player.setBoard(new FastBoard(player.getPlayer()));
+                                        player.setBoard(new FastBoard(player.player));
                                         player.getGenerator().updateScoreboard();
 
                                         player.updateGeneratorSettings();
@@ -188,8 +188,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                                     event -> {
                                         player.showScoreboard = false;
-                                        if (player.getBoard() != null && !player.getBoard().isDeleted()) {
-                                            player.getBoard().delete();
+                                        if (player.board != null && !player.board.isDeleted()) {
+                                            player.board.delete();
                                         }
 
                                         player.updateGeneratorSettings();
@@ -352,7 +352,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      *          The ParkourPlayer
      */
     public void open(ParkourPlayer user)  {
-        Player player = user.getPlayer();
+        Player player = user.player;
         Configuration config = IP.getConfiguration();
 
         Menu menu = new Menu(4, "<white>" +
@@ -388,7 +388,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .open(user.getPlayer());
+                .open(user.player);
     }
 
     /**
@@ -410,7 +410,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
             String perm = ParkourOption.STYLES.getPermission() + "." + name.toLowerCase();
-            if (Option.PERMISSIONS_STYLES && !user.getPlayer().hasPermission(perm.replace(" ", "."))) {
+            if (Option.PERMISSIONS_STYLES && !user.player.hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
 
@@ -443,7 +443,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
-                .open(user.getPlayer());
+                .open(user.player);
     }
 
     /**
@@ -465,7 +465,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         Item item = config.getFromItemData(user, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
-        if (checkOptions(user.getPlayer(), ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
+        if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem()
                     .initial(difficulties.indexOf(user.schematicDifficulty))
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
@@ -516,7 +516,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.USE_SCHEMATICS.getName());
 
-        if (checkOptions(user.getPlayer(), ParkourOption.USE_SCHEMATICS, disabled)) {
+        if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
             schematics.item(9, new SliderItem()
                     .initial(user.useSchematic ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
@@ -553,7 +553,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
-                .open(user.getPlayer());
+                .open(user.player);
     }
 
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair

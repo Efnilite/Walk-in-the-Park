@@ -132,7 +132,7 @@ public class Handler implements EventWatcher {
         }
 
         if (Option.INVENTORY_HANDLING) {
-            PreviousData data = user.getPreviousData();
+            PreviousData data = user.previousData;
             if (data != null)  {
                 quitPreviousData.put(playerName, data);
             }

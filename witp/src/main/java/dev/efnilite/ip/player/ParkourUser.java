@@ -45,37 +45,37 @@ public abstract class ParkourUser {
         }
     }
 
-    public static int JOIN_COUNT;
-
-    /**
-     * This user's session id
-     */
-    protected String sessionId;
-
     /**
      * This user's locale
      */
-    protected String locale;
-
-    /**
-     * The selected {@link ChatType}
-     */
-    protected ChatType chatType = ChatType.PUBLIC;
+    private String locale;
 
     /**
      * This user's scoreboard
      */
-    protected FastBoard board;
+    public FastBoard board;
+
+    /**
+     * This user's session id
+     */
+    public String sessionId;
 
     /**
      * This user's PreviousData
      */
-    protected PreviousData previousData;
+    public PreviousData previousData;
+
+    /**
+     * The selected {@link ChatType}
+     */
+    public ChatType chatType = ChatType.PUBLIC;
 
     /**
      * The Bukkit player instance associated with this user.
      */
-    protected final Player player;
+    public final Player player;
+
+    public static int JOIN_COUNT;
 
     protected static final Map<Player, ParkourUser> users = new HashMap<>();
     protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
@@ -148,7 +148,7 @@ public abstract class ParkourUser {
         PreviousData data = null;
         ParkourUser existing = getUser(player);
         if (existing != null) {
-            data = existing.getPreviousData();
+            data = existing.previousData;
             unregister(existing, false, false, true);
         }
 
@@ -219,7 +219,7 @@ public abstract class ParkourUser {
     // Internal unregistering service
     @ApiStatus.Internal
     protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
-        Player pl = user.getPlayer();
+        Player pl = user.player;
 
         try {
             Session session = user.getSession();
@@ -229,7 +229,7 @@ public abstract class ParkourUser {
                 // remove spectators
                 if (session != null) {
                     for (ParkourSpectator spectator : session.getSpectators()) {
-                        ParkourPlayer spp = ParkourPlayer.register(spectator.getPlayer());
+                        ParkourPlayer spp = ParkourPlayer.register(spectator.player);
                         IP.getDivider().generate(spp);
 
                         session.removeSpectators(spectator);
@@ -248,8 +248,8 @@ public abstract class ParkourUser {
                     spectator.getSession().removeSpectators(spectator);
                 }
             }
-            if (user.getBoard() != null && !user.getBoard().isDeleted()) {
-                user.getBoard().delete();
+            if (user.board != null && !user.board.isDeleted()) {
+                user.board.delete();
             }
         } catch (Throwable throwable) { // safeguard to prevent people from losing data
             IP.logging().stack("Error while trying to make player " + user.getName() + " leave", throwable);
@@ -263,13 +263,13 @@ public abstract class ParkourUser {
             Util.sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
-        if (user.getPreviousData() == null) {
+        if (user.previousData == null) {
             IP.logging().warn("No previous data found for " + user.getName());
         } else {
-            user.getPreviousData().apply(sendBack);
+            user.previousData.apply(sendBack);
 
             if (user instanceof ParkourPlayer) {
-                user.getPreviousData().giveRewards((ParkourPlayer) user);
+                user.previousData.giveRewards((ParkourPlayer) user);
             }
         }
         pl.resetPlayerTime();
@@ -440,35 +440,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Sets the player's session id
-     *
-     * @param   sessionId
-     *          The session id
-     */
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    /**
-     * Sets this player's {@link ChatType}
-     *
-     * @param   chatType
-     *          The {@link ChatType}
-     */
-    public void setChatType(ChatType chatType) {
-        this.chatType = chatType;
-    }
-
-    /**
-     * Gets the scoreboard of the player
-     *
-     * @return the {@link FastBoard} of the player
-     */
-    public @Nullable FastBoard getBoard() {
-        return board;
-    }
-
-    /**
      * Gets the UUID of the player
      *
      * @return the uuid
@@ -496,33 +467,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Gets this player's session id
-     *
-     * @return the session id
-     */
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    /**
-     * Gets the previous data of the player
-     *
-     * @return the {@link PreviousData} of the player
-     */
-    public PreviousData getPreviousData() {
-        return previousData;
-    }
-
-    /**
-     * Gets the Bukkit version of the player
-     *
-     * @return the player
-     */
-    public @NotNull Player getPlayer() {
-        return player;
-    }
-
-    /**
      * Returns the player's locale
      *
      * @return the locale
@@ -533,15 +477,6 @@ public abstract class ParkourUser {
         }
 
         return locale;
-    }
-
-    /**
-     * Returns the player's selected {@link ChatType}
-     *
-     * @return the player's selected {@link ChatType}
-     */
-    public ChatType getChatType() {
-        return chatType;
     }
 
     /**

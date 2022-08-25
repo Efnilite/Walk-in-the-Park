@@ -26,7 +26,7 @@ public class ChatHandler implements Listener {
 
         Session session = user.getSession();
 
-        switch (user.getChatType()) {
+        switch (user.chatType) {
             case LOBBY_ONLY -> {
                 event.setCancelled(true);
 

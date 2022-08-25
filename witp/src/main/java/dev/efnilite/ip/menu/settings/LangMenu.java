@@ -63,7 +63,7 @@ public class LangMenu {
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .animation(new WaveEastAnimation())
-                .open(user.getPlayer());
+                .open(user.player);
     }
 
 }

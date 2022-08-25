@@ -31,7 +31,7 @@ public record RewardString(@NotNull String string) {
 
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            player.getPreviousData().addReward(new RewardString(string));
+            player.previousData.addReward(new RewardString(string));
             return;
         }
 
@@ -45,7 +45,7 @@ public record RewardString(@NotNull String string) {
             string = string.replaceFirst("vault:", "");
 
             try {
-                Util.depositPlayer(player.getPlayer(), Double.parseDouble(string));
+                Util.depositPlayer(player.player, Double.parseDouble(string));
             } catch (NumberFormatException ex) {
                 IP.logging().stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
             }

@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -20,11 +21,12 @@ public class LobbyMenu extends DynamicMenu {
     public LobbyMenu() {
         registerMainItem(1, 0,
                 user -> new Item(Material.CAKE, "<#8DC9E5><bold>Manage Players")
-                        .click(event -> Menus.PLAYER_MANAGEMENT.open(user.getPlayer())),
+                        .click(event -> Menus.PLAYER_MANAGEMENT.open(user.player)),
                 player -> {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
 
-                    return pp != null &&
+                    return ParkourOption.PLAYER_MANAGEMENT.check(player) &&
+                            pp != null &&
                             pp.getSession().getPlayers().get(0) == pp;
                 }
         );
@@ -70,7 +72,8 @@ public class LobbyMenu extends DynamicMenu {
                 player -> {
                     ParkourUser user = ParkourUser.getUser(player);
 
-                    return user != null &&
+                    return ParkourOption.VISIBILITY.check(player) &&
+                            user != null &&
                             user.getSession().getPlayers().get(0) == user; // only if player is the owner
                 });
 

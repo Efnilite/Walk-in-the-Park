@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.vilib.inventory.Menu;
@@ -17,7 +18,7 @@ public class CommunityMenu extends DynamicMenu {
         registerMainItem(1, 1,
                 user -> IP.getConfiguration().getFromItemData(user, "main.leaderboard").click(
                         event -> Menus.LEADERBOARDS.open(event.getPlayer())),
-                player -> true);
+                ParkourOption.LEADERBOARDS::check);
     }
 
     public void open(Player player) {

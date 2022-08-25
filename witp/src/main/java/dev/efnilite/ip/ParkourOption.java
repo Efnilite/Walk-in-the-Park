@@ -8,28 +8,43 @@ import org.bukkit.entity.Player;
  */
 public enum ParkourOption {
 
-    STYLES("styles", "witp.option.styles"),
-    LEADS("leads", "witp.option.leads"),
-    TIME("time", "witp.option.time"),
-    SCHEMATICS("schematics", "witp.option.schematics"),
-    USE_SCHEMATICS("use-schematics", "witp.option.use-schematics"),
-    SCHEMATIC_DIFFICULTY("schematic-difficulty", "witp.option.schematic-difficulty"),
+    // main
+    MAIN("main", "ip.main"),
 
-    SHOW_SCOREBOARD("show-scoreboard", "witp.option.show-scoreboard"),
-    SHOW_FALL_MESSAGE("fall-message", "witp.option.fall-message"),
-    PARTICLES_AND_SOUND("particles-and-sound", "witp.option.particles-and-sound"),
-    SPECIAL_BLOCKS("special-blocks", "witp.option.special-blocks"),
-    SCORE_DIFFICULTY("score-difficulty", "witp.option.score-difficulty"),
+    // play
+    PLAY("play", "ip.play"),
+    SINGLE("single", "ip.play.single"),
+    SPECTATOR("spectator", "ip.play.spectator"),
 
-    GAMEMODE("gamemode", "witp.option.gamemode"),
-    LEADERBOARD("leaderboard", "witp.option.leaderboard"),
-    LANGUAGE("language", "witp.option.language"),
+    // community
+    COMMUNITY("community", "ip.community"),
+    LEADERBOARDS("leaderboards", "ip.community.leaderboards"),
 
-    VISIBILITY("visibility", "witp.option.visibility"),
-    CHAT("chat", "witp.option.chat"),
-    JOIN("join", "witp.join"),
-    MENU("menu", "witp.menu"),
-    SETTINGS("settings", "witp.option.settings");
+    // settings
+    SETTINGS("settings", "ip.settings"),
+
+    PARKOUR_SETTINGS("parkour_settings", "ip.settings.parkour_settings"),
+    STYLES("styles", "ip.settings.styles"),
+    LEADS("leads", "ip.settings.leads"),
+    TIME("time", "ip.settings.time"),
+    SCHEMATICS("schematics", "ip.settings.schematics"),
+    USE_SCHEMATICS("use_schematics", "ip.settings.use_schematics"),
+    SCHEMATIC_DIFFICULTY("schematic_difficulty", "ip.settings.schematic_difficulty"),
+    SHOW_SCOREBOARD("show_scoreboard", "ip.settings.show_scoreboard"),
+    SHOW_FALL_MESSAGE("fall_message", "ip.settings.fall_message"),
+    PARTICLES_AND_SOUND("particles_and_sound", "ip.settings.particles_and_sound"),
+    SPECIAL_BLOCKS("special_blocks", "ip.settings.special_blocks"),
+    SCORE_DIFFICULTY("score_difficulty", "ip.settings.score_difficulty"),
+    LANG("lang", "ip.settings.lang"),
+    CHAT("chat", "ip.settings.chat"),
+
+    // lobby
+    LOBBY("lobby", "ip.lobby"),
+    VISIBILITY("visibility", "ip.lobby.visibility"),
+    PLAYER_MANAGEMENT("player_management", "ip.lobby.player_management"),
+
+    // other
+    JOIN("join", "ip.join");
 
     /**
      * The name of the option

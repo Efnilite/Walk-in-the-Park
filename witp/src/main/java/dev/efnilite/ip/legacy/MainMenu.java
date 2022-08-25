@@ -1,4 +1,4 @@
-package dev.efnilite.ip.menu.old;
+package dev.efnilite.ip.legacy;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
@@ -22,8 +22,8 @@ public class MainMenu extends DynamicMenu {
         // Singleplayer if player is not found
         registerMainItem(1, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer").click(
-                event -> Menus.SINGLE.open(event.getPlayer())),
-                ParkourOption.JOIN::check);
+                event -> Menus.PLAY.open(event.getPlayer())),
+                ParkourOption.PLAY::check);
 
         registerMainItem(1, 2,
                 user -> IP.getConfiguration().getFromItemData(user, "main.spectator").click(
@@ -46,24 +46,6 @@ public class MainMenu extends DynamicMenu {
                 user -> IP.getConfiguration().getFromItemData(user, "main.quit").click(event ->
                 ParkourUser.leave(event.getPlayer())),
                 ParkourPlayer::isPlayer);
-
-        // Leaderboard only if player has perms
-        registerMainItem(3, 0,
-                user -> IP.getConfiguration().getFromItemData(user, "main.leaderboard").click(
-                event -> Menus.LEADERBOARDS.open(event.getPlayer())),
-                ParkourOption.LEADERBOARD::check);
-
-        // Language only if player has perms
-        registerMainItem(3, 1,
-                user -> IP.getConfiguration().getFromItemData(user, "main.language").click(
-                event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
-                player -> ParkourPlayer.isPlayer(player) && ParkourOption.LANGUAGE.check(player));
-
-        // Always allow closing of the menu
-        registerMainItem(3, 10,
-                user -> IP.getConfiguration().getFromItemData(user, "general.close")
-                        .click(event -> event.getPlayer().closeInventory()),
-                player -> true);
     }
 
     /**

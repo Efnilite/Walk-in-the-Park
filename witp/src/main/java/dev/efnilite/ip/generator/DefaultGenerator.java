@@ -137,13 +137,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // board can be null a few ticks after on player leave
-        if (player.getBoard() == null) {
+        if (player.board == null) {
             return;
         }
 
         Leaderboard leaderboard = getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.getPlayer(), Option.SCOREBOARD_TITLE);
+        String title = Util.translate(player.player, Option.SCOREBOARD_TITLE);
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -164,7 +164,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         // update lines
         for (String line : Option.SCOREBOARD_LINES) {
-            line = Util.translate(player.getPlayer(), line); // add support for PAPI placeholders in scoreboard
+            line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line
                     .replace("%score%", Integer.toString(score))
@@ -174,13 +174,13 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
         }
 
-        player.getBoard().updateTitle(title
+        player.board.updateTitle(title
                 .replace("%score%", Integer.toString(score))
                 .replace("%time%", stopwatch.toString())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
-        player.getBoard().updateLines(lines);
+        player.board.updateLines(lines);
     }
 
     @Override
@@ -220,16 +220,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
 
                 data.size(1);
-                Particles.box(BoundingBox.of(max, min), player.getPlayer().getWorld(), data, 0.2);
+                Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data, 0.2);
             }
         }
 
         // play sound
         for (ParkourPlayer viewer : session.getPlayers()) {
-            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
         for (ParkourSpectator viewer : session.getSpectators()) {
-            viewer.getPlayer().playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
     }
 
@@ -536,7 +536,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         updateScoreboard();
 
         player.getSession().updateSpectators();
-        player.getPlayer().setSaturation(20);
+        player.player.setSaturation(20);
 
         Location playerLocation = player.getLocation();
 
@@ -886,7 +886,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
             strings.forEach(s -> s.execute(player));
             player.collectedRewards.add(Integer.toString(score));
-        } // todo rewards
+        }
     }
 
     protected void deleteStructure() {
@@ -907,7 +907,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         }
 
         // fixes players receiving delayed update
-        player.getPlayer().sendBlockChange(block.getLocation(), data);
+        player.player.sendBlockChange(block.getLocation(), data);
     }
 
     /**

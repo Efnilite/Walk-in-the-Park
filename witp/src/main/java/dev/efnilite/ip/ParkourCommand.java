@@ -5,7 +5,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
-import dev.efnilite.ip.menu.old.MainMenu;
+import dev.efnilite.ip.legacy.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -63,8 +63,8 @@ public class ParkourCommand extends ViCommand {
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
-            } else if (ParkourOption.MENU.check(player)) {
-                MainMenu.INSTANCE.open(player);
+            } else if (ParkourOption.MAIN.check(player)) {
+                Menus.MAIN.open(player);
             }
             return true;
         } else if (args.length == 1) {
@@ -174,7 +174,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "gamemode", "gm" -> {
-                    if (!ParkourOption.GAMEMODE.check(player)) {
+                    if (!ParkourOption.PLAY.check(player)) {
                         return true;
                     }
                     Menus.SINGLE.open(player);
@@ -452,7 +452,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
 
                 // check permissions
-                if (!ParkourOption.LEADERBOARD.check(player)) {
+                if (!ParkourOption.LEADERBOARDS.check(player)) {
                     Util.sendDefaultLang(player, "cant-do");
                     return true;
                 }

@@ -44,8 +44,8 @@ public class SingleSession implements Session {
     @Override
     public void updateSpectators() {
         for (ParkourSpectator spectator : spectators.values()) {
-            Player bukkitPlayer =  spectator.getPlayer();
-            Player watchingPlayer =  spectator.getClosest().getPlayer();
+            Player bukkitPlayer =  spectator.player;
+            Player watchingPlayer =  spectator.getClosest().player;
 
             Entity target = bukkitPlayer.getSpectatorTarget();
 
@@ -72,7 +72,7 @@ public class SingleSession implements Session {
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
-            spectator.setSessionId(getSessionId());
+            spectator.sessionId = getSessionId();
         }
     }
 
@@ -103,7 +103,7 @@ public class SingleSession implements Session {
     public void addPlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
             this.players.put(player.getUUID(), player);
-            player.setSessionId(getSessionId());
+            player.sessionId = getSessionId();
         }
     }
 

@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.vilib.inventory.Menu;
@@ -17,12 +18,12 @@ public class PlayMenu extends DynamicMenu {
         registerMainItem(1, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer")
                         .click(event -> Menus.SINGLE.open(event.getPlayer())),
-                player -> true);
+                ParkourOption.SINGLE::check);
 
         registerMainItem(1, 2,
                 user -> IP.getConfiguration().getFromItemData(user, "main.spectator")
                         .click(event -> Menus.SPECTATOR.open(event.getPlayer())),
-                player -> true);
+                ParkourOption.SPECTATOR::check);
 
         registerMainItem(2, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "general.close")

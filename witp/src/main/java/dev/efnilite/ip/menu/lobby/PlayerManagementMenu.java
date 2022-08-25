@@ -42,7 +42,7 @@ public class PlayerManagementMenu {
                 continue;
             }
 
-            Player sessionBukkitPlayer = sessionPlayer.getPlayer();
+            Player sessionBukkitPlayer = sessionPlayer.player;
             Item item = new Item(Material.PLAYER_HEAD, "#4BD16D<bold>" + player.getName());
 
             boolean muted = session.isMuted(sessionPlayer);

@@ -66,7 +66,7 @@ public class ParkourSpectator extends ParkourUser {
 
         Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.getPlayer(), Option.SCOREBOARD_TITLE);
+        String title = Util.translate(player.player, Option.SCOREBOARD_TITLE);
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -87,7 +87,7 @@ public class ParkourSpectator extends ParkourUser {
 
         // update lines
         for (String line : Option.SCOREBOARD_LINES) {
-            line = Util.translate(player.getPlayer(), line); // add support for PAPI placeholders in scoreboard
+            line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line
                     .replace("%score%", Integer.toString(generator.getScore()))

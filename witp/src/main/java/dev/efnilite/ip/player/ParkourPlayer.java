@@ -72,8 +72,9 @@ public class ParkourPlayer extends ParkourUser {
         this.joinTime = System.currentTimeMillis();
 
         this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
-        this.locale = Option.DEFAULT_LOCALE;
-        this.lang = locale;
+
+        setLocale(Option.DEFAULT_LOCALE);
+        this.lang = getLocale();
 
         // generic player settings
         player.setFlying(false);
@@ -116,7 +117,7 @@ public class ParkourPlayer extends ParkourUser {
         // Adjustable defaults
         this.style = orDefault(style, Option.DEFAULT_STYLE, null);
         this.lang = orDefault(locale, Option.DEFAULT_LOCALE, null);
-        this.locale = this.lang;
+        setLocale(lang);
 
         this.useSpecialBlocks = orDefault(useSpecial, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS)), ParkourOption.SPECIAL_BLOCKS);
         this.showFallMessage = orDefault(showDeathMsg, Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SHOW_FALL_MESSAGE)), ParkourOption.SHOW_FALL_MESSAGE);
@@ -171,7 +172,7 @@ public class ParkourPlayer extends ParkourUser {
                             .setDefault("showFallMsg", showFallMessage)
                             .setDefault("showScoreboard", showScoreboard)
                             .setDefault("collectedRewards", String.join(",", collectedRewards))
-                            .setDefault("locale", locale)
+                            .setDefault("locale", getLocale())
                             .setDefault("schematicDifficulty", schematicDifficulty)
                             .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
@@ -232,7 +233,7 @@ public class ParkourPlayer extends ParkourUser {
     // Internal registering service
     @ApiStatus.Internal
     protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
-        UUID uuid = pp.getPlayer().getUniqueId();
+        UUID uuid = pp.player.getUniqueId();
         JOIN_COUNT++;
 
         pp.setCollides(false);

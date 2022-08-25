@@ -42,7 +42,7 @@ public class SpectatorMenu {
                 continue;
             }
 
-            if (user != null && session.getSessionId().equals(user.getSessionId())) { // dont let player join their own session
+            if (user != null && session.getSessionId().equals(user.sessionId)) { // don't let player join their own session
                 continue;
             }
 
@@ -65,7 +65,7 @@ public class SpectatorMenu {
                         SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                         if (meta != null) {
-                            SkullSetter.setPlayerHead(pp.getPlayer(), meta);
+                            SkullSetter.setPlayerHead(pp.player, meta);
                             item.meta(meta);
                         }
                     }

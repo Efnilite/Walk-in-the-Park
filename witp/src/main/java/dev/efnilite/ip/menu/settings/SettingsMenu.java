@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -29,12 +30,12 @@ public class SettingsMenu extends DynamicMenu {
                                     pp.getGenerator().menu();
                                 }
                         }),
-                ParkourUser::isPlayer);
+                player -> ParkourOption.PARKOUR_SETTINGS.check(player) && ParkourUser.isPlayer(player));
 
         registerMainItem(1, 1,
                 user -> IP.getConfiguration().getFromItemData(user, "main.language")
                         .click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
-                ParkourUser::isUser);
+                player -> ParkourOption.LANG.check(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 2,
                 user -> {
@@ -42,7 +43,7 @@ public class SettingsMenu extends DynamicMenu {
                     List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.chat.values");
 
                     return new SliderItem()
-                            .initial(switch (user.getChatType()) {
+                            .initial(switch (user.chatType) {
                                         case LOBBY_ONLY -> 0;
                                         case PLAYERS_ONLY -> 1;
                                         case PUBLIC -> 2;
@@ -52,7 +53,7 @@ public class SettingsMenu extends DynamicMenu {
                                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                                 if (u != null) {
-                                    u.setChatType(ChatType.LOBBY_ONLY);
+                                    u.chatType = ChatType.LOBBY_ONLY;
                                 }
 
                                 return true;
@@ -61,7 +62,7 @@ public class SettingsMenu extends DynamicMenu {
                                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                                 if (u != null) {
-                                    u.setChatType(ChatType.PLAYERS_ONLY);
+                                    u.chatType = ChatType.PLAYERS_ONLY;
                                 }
 
                                 return true;
@@ -70,13 +71,13 @@ public class SettingsMenu extends DynamicMenu {
                                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                                 if (u != null) {
-                                    u.setChatType(ChatType.PUBLIC);
+                                    u.chatType = ChatType.PUBLIC;
                                 }
 
                                 return true;
                             });
                 },
-                ParkourUser::isUser);
+                player -> ParkourOption.CHAT.check(player) && ParkourUser.isUser(player));
 
         registerMainItem(2, 0,
                 user -> IP.getConfiguration().getFromItemData(user, "general.close")

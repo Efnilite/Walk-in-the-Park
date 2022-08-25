@@ -1,6 +1,8 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -212,11 +214,11 @@ public class WorldDivider {
         }
 
         // setup inventory, etc.
-        setup(pp, to, true, true);
+        setup(pp, to, true);
     }
 
-    public void setup(ParkourPlayer pp, Location to, boolean giveCompass, boolean runGenerator) {
-        Player player = pp.getPlayer();
+    public void setup(ParkourPlayer pp, Location to, boolean runGenerator) {
+        Player player = pp.player;
 
         if (to != null) {
             pp.teleport(to);
@@ -232,13 +234,21 @@ public class WorldDivider {
 
                         player.getInventory().clear();
 
-                        items.add(0, new Item(Material.SUGAR_CANE, "<#60EB76><bold>Play"));
+                        if (ParkourOption.PLAY.check(player)) {
+                            items.add(0, Locales.getItem(pp.getLocale(), "play.item"));
+                        }
 
-                        items.add(1, new Item(Material.OAK_BOAT, "<#60C9DF><bold>Community"));
+                        if (ParkourOption.COMMUNITY.check(player)) {
+                            items.add(1, Locales.getItem(pp.getLocale(), "community.item"));
+                        }
 
-                        items.add(2, new Item(Material.COMPARATOR, "<#6086EB><bold>Settings"));
+                        if (ParkourOption.SETTINGS.check(player)) {
+                            items.add(2, Locales.getItem(pp.getLocale(), "settings.item"));
+                        }
 
-                        items.add(3, new Item(Material.IRON_INGOT, "<#EB608C><bold>Lobby"));
+                        if (ParkourOption.LOBBY.check(player)) {
+                            items.add(3, Locales.getItem(pp.getLocale(), "lobby.item"));
+                        }
 
                         items.add(4, IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit"));
 
