@@ -125,7 +125,7 @@ public class Locales {
      * @return a non-null {@link Item} instance built from the description in the locale file
      */
     @NotNull
-    public static Item getItem(Player player, String path, String... replace) {
+    public static Item getItem(@NotNull Player player, String path, String... replace) {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 

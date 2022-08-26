@@ -2,15 +2,14 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.chat.Message;
 import fr.mrmicky.fastboard.FastBoard;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -257,7 +256,7 @@ public abstract class ParkourUser {
         }
 
         players.remove(pl);
-        users.remove(pl.getUniqueId());
+        users.remove(pl);
 
         if (sendBack && Option.BUNGEECORD && kickIfBungee) {
             Util.sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
@@ -323,7 +322,6 @@ public abstract class ParkourUser {
     @Contract("null -> false")
     public static boolean isUser(@Nullable Player player) {
         return player != null && users.containsKey(player);
-
     }
 
     /**
@@ -359,6 +357,7 @@ public abstract class ParkourUser {
         if (to.getWorld() != null) {
             to.getWorld().getChunkAt(to);
         }
+
         player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
@@ -369,49 +368,9 @@ public abstract class ParkourUser {
      *          The message
      */
     public void send(String... messages) {
-        for (String msg : messages) {
-            Message.send(player, msg);
+        for (String message : messages) {
+            player.sendMessage(Locales.colour(message));
         }
-    }
-
-    /**
-     * Gets a message from messages-v3.yml
-     *
-     * @param   path
-     *          The path name in messages-v3.yml (for example: 'time-preference')
-     *
-     * @param   replaceable
-     *          What can be replaced (for example: %s to yes)
-     */
-    public void sendTranslated(String path, String... replaceable) {
-        String message = getTranslated(path, replaceable);
-        if (IP.getPlaceholderHook() == null) {
-            send(message);
-        } else {
-            send(PlaceholderAPI.setPlaceholders(player, message));
-        }
-    }
-
-    /**
-     * Same as {@link #sendTranslated(String, String...)}, but without sending the text (used in GUIs)
-     *
-     * @param   path
-     *          The path
-     *
-     * @param   replaceable
-     *          Things that can be replaced
-     *
-     * @return the coloured and replaced string
-     */
-    public String getTranslated(String path, String... replaceable) {
-        path = "messages." + getLocale() + "." + path;
-        String message = IP.getConfiguration().getLang("lang", path);
-
-        for (String s : replaceable) {
-            message = message.replaceFirst("%[a-z]", s);
-        }
-
-        return message;
     }
 
     /**

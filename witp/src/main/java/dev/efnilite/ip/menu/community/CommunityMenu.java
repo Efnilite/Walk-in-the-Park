@@ -1,7 +1,7 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.vilib.inventory.Menu;
@@ -16,13 +16,13 @@ public class CommunityMenu extends DynamicMenu {
 
     public CommunityMenu() {
         registerMainItem(1, 1,
-                user -> IP.getConfiguration().getFromItemData(user, "main.leaderboard").click(
+                (player, user) -> Locales.getItem(player, "community.leaderboards.item").click(
                         event -> Menus.LEADERBOARDS.open(event.getPlayer())),
                 ParkourOption.LEADERBOARDS::check);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, "<white>Community")
+        Menu menu = new Menu(3, Locales.getString(player, "community.name"))
                 .distributeRowsEvenly()
                 .animation(new WaveWestAnimation())
                 .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE);

@@ -4,15 +4,16 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
  * A class for menus where items are dynamically displayed; that is, depending on provided conditions.
- * These conditions are specified by the param {@code shouldDisplay} in the method {@link #registerMainItem(int, int, Function, Predicate)}.
+ * These conditions are specified by the param {@code shouldDisplay} in the method {@link #registerMainItem(int, int, BiFunction, Predicate)}.
  */
 public class DynamicMenu {
 
@@ -35,7 +36,7 @@ public class DynamicMenu {
      * @param   shouldDisplay
      *          Whether this item should be displayed right now.
      */
-    public void registerMainItem(int row, int id, Function<@Nullable ParkourUser, MenuItem> item, Predicate<Player> shouldDisplay) {
+    public void registerMainItem(int row, int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item, Predicate<Player> shouldDisplay) {
         if (id < 0 || row < 0 || row > 4) {
             return;
         }
@@ -68,7 +69,7 @@ public class DynamicMenu {
 
             for (ItemContainer container : containers) {
                 if (container.predicate.test(player)) { // if item in id passes predicate, display it in the menu
-                    menu.item(actualSlot, container.item.apply(user));
+                    menu.item(actualSlot, container.item.apply(player, user));
                     actualSlot++;
                 }
             }
@@ -80,7 +81,7 @@ public class DynamicMenu {
     /**
      * Data class for registered items
      */
-    protected record ItemContainer(int id, Function<@Nullable ParkourUser, MenuItem> item, Predicate<Player> predicate) {
+    protected record ItemContainer(int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item, Predicate<Player> predicate) {
 
     }
 }

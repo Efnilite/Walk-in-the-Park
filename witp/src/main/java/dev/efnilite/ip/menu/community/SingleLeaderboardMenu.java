@@ -3,6 +3,7 @@ package dev.efnilite.ip.menu.community;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
@@ -16,7 +17,6 @@ import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -38,12 +38,12 @@ public class SingleLeaderboardMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
         Configuration config = IP.getConfiguration();
-        PagedMenu menu = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.leaderboard.name")));
+        PagedMenu menu = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
+
         List<MenuItem> items = new ArrayList<>();
 
         int rank = 1;
-        Item base = config.getFromItemData(locale, "options.leaderboard-head");
+        Item base = Locales.getItem(player, "community.leaderboards.head");
 
         Map<UUID, Score> sorted = sort.sort(leaderboard.getScores());
 
@@ -119,10 +119,10 @@ public class SingleLeaderboardMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(31, config.getFromItemData(locale, "options.leaderboard-sort", name.toLowerCase())
+                .item(31, Locales.getItem(player, "community.leaderboards.sort", name.toLowerCase())
                         .click(event -> open(player, gamemode, next)))
 
-                .item(32, config.getFromItemData(locale, "general.close")
+                .item(32, Locales.getItem(player, "other.close")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

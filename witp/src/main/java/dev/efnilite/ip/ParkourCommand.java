@@ -5,7 +5,6 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
-import dev.efnilite.ip.legacy.MainMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -46,9 +45,9 @@ public class ParkourCommand extends ViCommand {
     public ParkourCommand() {
         if (Version.isHigherOrEqual(Version.V1_14)) {
             wand = new Item(
-                    Material.GOLDEN_AXE, "&4&lWITP Schematic Wand")
+                    Material.GOLDEN_AXE, "&4&lIP Schematic Wand")
                     .lore("&7Left click: first position", "&7Right click: second position").build();
-            PersistentUtil.setPersistentData(wand, "witp", PersistentDataType.STRING, "true");
+            PersistentUtil.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
         }
     }
 
@@ -78,7 +77,7 @@ public class ParkourCommand extends ViCommand {
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
                     }
-                    if (!sender.hasPermission("witp.reload")) {
+                    if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     }
@@ -95,7 +94,7 @@ public class ParkourCommand extends ViCommand {
                     if (!cooldown(sender, "migrate", 2500)) {
                         return true;
                     }
-                    if (!sender.hasPermission("witp.reload")) {
+                    if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                         Util.sendDefaultLang(sender, "cant-do");
                         return true;
                     } else if (!Option.SQL) {
@@ -191,12 +190,12 @@ public class ParkourCommand extends ViCommand {
                     Message.send(player, "&7Welcome to the schematic creating section.");
                     Message.send(player, "&7You can use the following commands:");
                     if (Version.isHigherOrEqual(Version.V1_14)) {
-                        Message.send(player, "<red>/witp schematic wand <dark_gray>- &7Get the schematic wand");
+                        Message.send(player, "<red>/ip schematic wand <dark_gray>- &7Get the schematic wand");
                     }
-                    Message.send(player, "<red>/witp schematic pos1 <dark_gray>- &7Set the first position of your selection");
-                    Message.send(player, "<red>/witp schematic pos2 <dark_gray>- &7Set the second position of your selection");
-                    Message.send(player, "<red>/witp schematic save <dark_gray>- &7Save your selection to a schematic file");
-                    Message.send(player, "<red>/witp schematic paste <file> <dark_gray>- &7Paste a schematic file");
+                    Message.send(player, "<red>/ip schematic pos1 <dark_gray>- &7Set the first position of your selection");
+                    Message.send(player, "<red>/ip schematic pos2 <dark_gray>- &7Set the second position of your selection");
+                    Message.send(player, "<red>/ip schematic save <dark_gray>- &7Save your selection to a schematic file");
+                    Message.send(player, "<red>/ip schematic paste <file> <dark_gray>- &7Paste a schematic file");
                     Message.send(player, "");
                     Message.send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
                     return true;
@@ -232,7 +231,7 @@ public class ParkourCommand extends ViCommand {
                     gamemode.click(player);
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission("witp.schematic")) {
+            } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 Selection selection = selections.get(player);
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
@@ -240,7 +239,7 @@ public class ParkourCommand extends ViCommand {
                             player.getInventory().addItem(wand);
 
                             Message.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
-                            Message.send(player, "&7Use your WITP Schematic Wand to easily select schematics.");
+                            Message.send(player, "&7Use your IP Schematic Wand to easily select schematics.");
                             Message.send(player, "&7Use <dark_gray>left click&7 to set the first position, and <dark_gray>right click &7for the second!");
                             Message.send(player, "&7If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands &7instead.");
                         }
@@ -489,23 +488,21 @@ public class ParkourCommand extends ViCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            if (sender.hasPermission("witp.join")) {
+            if (sender.hasPermission(ParkourOption.JOIN.getPermission())) {
                 completions.add("join");
                 completions.add("leave");
             }
-            if (sender.hasPermission("witp.menu")) {
+            if (sender.hasPermission(ParkourOption.MAIN.getPermission())) {
                 completions.add("menu");
             }
             if (sender.hasPermission("witp.gamemode")) {
                 completions.add("gamemode");
             }
-            if (sender.hasPermission("witp.leaderboard")) {
-                completions.add("leaderboard");
+            if (sender.hasPermission(ParkourOption.LEADERBOARDS.getPermission())) {
+                completions.add("leaderboards");
             }
-            if (sender.hasPermission("witp.schematic")) {
+            if (sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 completions.add("schematic");
-            }
-            if (sender.hasPermission("witp.reload")) {
                 completions.add("reload");
                 completions.add("migrate");
                 completions.add("reset");
@@ -515,12 +512,12 @@ public class ParkourCommand extends ViCommand {
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("witp.reload")) {
+            if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 completions.add("everyone");
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
                     completions.add(pp.getName());
                 }
-            } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission("witp.schematic")) {
+            } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save", "paste"));
             } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission("witp.forcejoin")) {
                 if (sender.hasPermission("witp.forcejoin.everyone")) {
@@ -553,11 +550,11 @@ public class ParkourCommand extends ViCommand {
         Message.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
         Message.send(sender, "");
         Message.send(sender, "<gray>/parkour <dark_gray>- Main command");
-        if (sender.hasPermission("witp.join")) {
+        if (sender.hasPermission(ParkourOption.JOIN.getPermission())) {
             Message.send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default gamemode or specify a mode.");
             Message.send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
         }
-        if (sender.hasPermission("witp.menu")) {
+        if (sender.hasPermission(ParkourOption.MAIN.getPermission())) {
             Message.send(sender, "<gray>/parkour menu <dark_gray>- Open the customization menu");
         }
         if (sender.hasPermission("witp.gamemode")) {

@@ -1,7 +1,6 @@
 package dev.efnilite.ip.menu.settings;
 
-import dev.efnilite.ip.IP;
-import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -10,7 +9,6 @@ import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -25,19 +23,16 @@ public class LangMenu {
      *          The ParkourPlayer instance
      */
     public void open(ParkourPlayer user) {
-        Configuration config = IP.getConfiguration();
-
         if (user == null) {
             return;
         }
 
         // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.language.name")));
+        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.lang.name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Option.LANGUAGES) {
-            Item item = new Item(Material.PAPER, "<#238681><bold>" + config.getString("lang", "messages." + lang + ".name"));
+            Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getItem(lang, "name"));
 
             items.add(item
                     .glowing(user.getLocale().equals(lang))
@@ -58,7 +53,7 @@ public class LangMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(31, config.getFromItemData(user, "general.close")
+                .item(31, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)

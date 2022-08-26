@@ -250,7 +250,7 @@ public class WorldDivider {
                             items.add(3, Locales.getItem(pp.getLocale(), "lobby.item"));
                         }
 
-                        items.add(4, IP.getConfiguration().getFromItemData(pp.getLocale(), "general.quit"));
+                        items.add(4, Locales.getItem(pp.getLocale(), "other.quit"));
 
                         List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
                         for (int i = 0; i < items.size(); i++) {
@@ -261,7 +261,7 @@ public class WorldDivider {
         }
 
         if (!Option.INVENTORY_HANDLING) {
-            pp.sendTranslated("customize-menu");
+            pp.send(Locales.getString(player, "other.customize"));
         }
 
         if (runGenerator) {

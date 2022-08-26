@@ -2,7 +2,7 @@ package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
@@ -11,7 +11,6 @@ import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -27,9 +26,7 @@ public class LeaderboardsMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
-        Configuration config = IP.getConfiguration();
-        PagedMenu gamemode = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
+        PagedMenu gamemode = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
@@ -65,7 +62,7 @@ public class LeaderboardsMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> gamemode.page(-1)))
 
-                .item(31, config.getFromItemData(locale, "general.close")
+                .item(31, Locales.getItem(player, "other.close")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)

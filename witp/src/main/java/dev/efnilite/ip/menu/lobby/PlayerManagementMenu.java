@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -111,7 +112,7 @@ public class PlayerManagementMenu {
                         .click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT)
                         .click(event -> menu.page(1)))
-                .item(22, IP.getConfiguration().getFromItemData(player, "general.close")
+                .item(22, Locales.getItem(player.getLocale(), "other.close")
                         .click(event -> event.getPlayer().closeInventory()))
                 .open(p);
     }

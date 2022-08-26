@@ -3,18 +3,14 @@ package dev.efnilite.ip.config;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.legacy.LegacyLeaderboardData;
-import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -262,100 +258,5 @@ public class Configuration {
         }
 
         return Util.color(string);
-    }
-
-    public @NotNull String getLang(@NotNull String file, @NotNull String path) {
-        String string = getFile(file).getString(path);
-
-        if (string == null) {
-            IP.logging().stack("Option at path " + path + " with file " + file + " is null", "check the " + file + " file for misinputs");
-            return "";
-        }
-
-        return Util.color(string);
-    }
-
-    /**
-     * Gets an item from the items-v3.yml file and automatically creates it.
-     *
-     * @param   locale
-     *          The locale
-     *
-     * @param   path
-     *          The path of the item (excluding the parameters and 'items.')
-     *
-     * @param   replace
-     *          What should be replaced in the lore/name
-     *
-     * @return the item based on the data from items-v3.yml
-     */
-    public Item getFromItemData(String locale, String path, @Nullable String... replace) {
-        ItemData data = getItemData(path, locale, replace);
-        return new Item(data.material, data.name).lore(data.lore);
-    }
-
-    /**
-     * Gets an item from the items-v3.yml file and automatically creates it.
-     *
-     * @param   user
-     *          The user
-     *
-     * @param   path
-     *          The path of the item (excluding the parameters and 'items.')
-     *
-     * @param   replace
-     *          What should be replaced in the lore/name
-     *
-     * @return the item based on the data from items-v3.yml
-     */
-    public Item getFromItemData(@Nullable ParkourUser user, String path, @Nullable String... replace) {
-        return getFromItemData(user == null ? Option.DEFAULT_LOCALE : user.getLocale(), path, replace);
-    }
-
-    private ItemData getItemData(String path, String locale, @Nullable String... replace) {
-        FileConfiguration config = getFile("items");
-
-        String namePath = "locale." + locale + "." + path;
-        String matPath = "items." + path;
-
-        String name = config.getString(namePath + ".name");
-
-        if (name != null && replace != null && replace.length > 0) {
-            name = name.replaceFirst("%[a-z]", replace[0] == null ? "" : replace[0]);
-        }
-
-        String l = config.getString(namePath + ".lore");
-
-        List<String> lore = null;
-        if (l != null) {
-            lore = Arrays.asList(l.split("\\|\\|"));
-            if (lore.size() != 0 && replace != null && replace.length > 0) {
-                List<String> copy = new ArrayList<>();
-                int index = 0;
-                for (String s : lore) {
-                    copy.add(s.replaceFirst("%[a-z]", replace[index] == null ? "" : replace[index]));
-                }
-                lore = copy;
-            }
-        }
-        if (lore != null && lore.size() == 1 && lore.get(0).length() == 0) {
-            lore = null;
-        }
-
-        Material material = null;
-        String configMaterial = config.getString(matPath + ".item");
-
-        if (configMaterial != null) {
-            material = Material.getMaterial(configMaterial.toUpperCase());
-        }
-
-        return new ItemData(name, lore, material);
-    }
-
-    /**
-     * Class to make gathering data (items-v3.yml) easier
-     */
-    private record ItemData(String name, List<String> lore, @Nullable Material material) {
-
     }
 }

@@ -3,26 +3,40 @@
 # Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # Learn more about colouring: https://docs.adventure.kyori.net/minimessage/format.html#format
 
-single:
-  name: "<white>Single"
+name: "English"
+
+main:
+  name: "<white>Parkour"
+
+play:
+  name: "<white>Play"
 
   item:
-    material: "ender_pearl"
-    name: "<#6E92B1><bold>Singleplayer"
+    material: "sugar_cane"
+    name: "<#60EB76><bold>Play"
     lore: ""
 
-  default:
-    material: "barrel"
-    name: "<#6693E7><bold>Default"
-    lore: "The default gamemode."
+  single:
+    name: "<white>Single"
+
+    item:
+      material: "ender_pearl"
+      name: "<#6E92B1><bold>Singleplayer"
+      lore: ""
+
+    default:
+      material: "barrel"
+      name: "<#6693E7><bold>Default"
+      lore: "The default gamemode."
 
   spectator:
+    name: '<white>Spectator'
 
     join: '<#4CB3FF>You are now a spectator. You can use "/parkour" to leave/change your gamemode.'
     action_bar: '<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use "/parkour" to leave.'
 
-    other_join: '<dark_green><bold>+ <gray>%p started spectating you'
-    other_leave: '<red><bold>- <gray>%p stopped spectating you'
+    other_join: '<dark_green><bold>+ <gray>%s started spectating you'
+    other_leave: '<red><bold>- <gray>%s stopped spectating you'
 
     item:
       material: "glass"
@@ -34,14 +48,6 @@ single:
       name: "<#6693E7><bold>%p"
       lore: ""
 
-play:
-  name: "<white>Play"
-
-  item:
-    material: "sugar_cane"
-    name: "<#60EB76><bold>Play"
-    lore: ""
-
 community:
   name: "<white>Community"
 
@@ -51,6 +57,8 @@ community:
     lore: ""
 
   leaderboards:
+    name: "Leaderboards"
+
     item:
       material: "gold_nugget"
       name: "<#6693E7><bold>Leaderboard"
@@ -75,10 +83,13 @@ settings:
     name: "<#6086EB><bold>Settings"
     lore: ""
 
-  language:
-    material: "written_book"
-    name: "<#6693E7><bold>Language"
-    lore: "<#5574AF>Currently: <dark_gray>%s"
+  lang:
+    name: "<white>Language"
+
+    item:
+      material: "written_book"
+      name: "<#6693E7><bold>Language"
+      lore: "<#5574AF>Currently: <dark_gray>%s"
 
   chat:
     material: ""
@@ -105,9 +116,12 @@ settings:
         lore: "<gray>You have a score above 0,||<gray>which means you cant change this setting."
 
       styles:
-        material: "crafting_table"
-        name: "<#6693E7><bold>Style"
-        lore: "<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used."
+        name: "<white>Styles"
+
+        item:
+          material: "crafting_table"
+          name: "<#6693E7><bold>Style"
+          lore: "<#5574AF>Currently: <gray>%s||<gray>Choose which blocks will be used."
 
       leads:
         material: "feather"
@@ -131,9 +145,12 @@ settings:
         lore: "<gray>Currently: %s||<gray>If enabled static schematics||<gray>will appear throughout the parkour."
 
       schematic:
-        material: ""
-        name: "<#6693E7><bold>Schematics"
-        lore: "<gray>Change schematic settings"
+        name: "<white>Schematics"
+
+        item:
+          material: ""
+          name: "<#6693E7><bold>Schematics"
+          lore: "<gray>Change schematic settings"
 
       scoreboard:
         material: ""

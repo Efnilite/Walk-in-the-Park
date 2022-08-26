@@ -2,6 +2,7 @@ package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -20,8 +21,8 @@ public class LobbyMenu extends DynamicMenu {
 
     public LobbyMenu() {
         registerMainItem(1, 0,
-                user -> new Item(Material.CAKE, "<#8DC9E5><bold>Manage Players")
-                        .click(event -> Menus.PLAYER_MANAGEMENT.open(user.player)),
+                (player, user) -> new Item(Material.CAKE, "<#8DC9E5><bold>Manage Players")
+                        .click(event -> Menus.PLAYER_MANAGEMENT.open(player)),
                 player -> {
                     ParkourPlayer pp = ParkourPlayer.getPlayer(player);
 
@@ -32,7 +33,7 @@ public class LobbyMenu extends DynamicMenu {
         );
 
         registerMainItem(1, 1,
-                user -> {
+                (player, user) -> {
                     List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.visibility.values");
                     return new SliderItem()
                             .initial(switch (user.getSession().getVisibility()) {
@@ -79,7 +80,7 @@ public class LobbyMenu extends DynamicMenu {
 
         // Always allow closing of the menu
         registerMainItem(2, 10,
-                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                (player, user) -> Locales.getItem(player, "other.close")
                         .click(event -> event.getPlayer().closeInventory()),
                 player -> true);
     }

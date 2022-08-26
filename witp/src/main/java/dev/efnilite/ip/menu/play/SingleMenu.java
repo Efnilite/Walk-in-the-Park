@@ -3,7 +3,7 @@ package dev.efnilite.ip.menu.play;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.MultiGamemode;
-import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
@@ -12,7 +12,6 @@ import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -30,14 +29,12 @@ public class SingleMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
-        Configuration config = IP.getConfiguration();
-        PagedMenu gamemode = new PagedMenu(3, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + locale + ".options.gamemode.name")));
+        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, "single.name"));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            boolean permissions = Option.PERMISSIONS && player.hasPermission("witp.gamemode." + gm.getName());
+            boolean permissions = Option.PERMISSIONS && player.hasPermission("ip.gamemode." + gm.getName());
 
             if (!permissions || gm instanceof MultiGamemode || !gm.isVisible()) {
                 continue;
@@ -68,7 +65,7 @@ public class SingleMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> gamemode.page(-1)))
 
-                .item(22, config.getFromItemData(locale, "general.close")
+                .item(22, Locales.getItem(player, "other.close")
                         .click(event -> Menus.PLAY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

@@ -1,7 +1,7 @@
 package dev.efnilite.ip.menu.play;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.vilib.inventory.Menu;
@@ -16,23 +16,23 @@ public class PlayMenu extends DynamicMenu {
 
     public PlayMenu() {
         registerMainItem(1, 0,
-                user -> IP.getConfiguration().getFromItemData(user, "main.singleplayer")
+                (player, user) -> Locales.getItem(player, "play.single.item")
                         .click(event -> Menus.SINGLE.open(event.getPlayer())),
                 ParkourOption.SINGLE::check);
 
         registerMainItem(1, 2,
-                user -> IP.getConfiguration().getFromItemData(user, "main.spectator")
+                (player, user) -> Locales.getItem(player, "play.spectator.item")
                         .click(event -> Menus.SPECTATOR.open(event.getPlayer())),
                 ParkourOption.SPECTATOR::check);
 
         registerMainItem(2, 0,
-                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                (player, user) -> Locales.getItem(player, "other.close")
                         .click(event -> event.getPlayer().closeInventory()),
                 player -> true);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, "<white>Play")
+        Menu menu = new Menu(3, Locales.getString(player, "play.name"))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation())
                 .distributeRowsEvenly();

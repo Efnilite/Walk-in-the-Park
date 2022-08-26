@@ -14,6 +14,9 @@ import dev.efnilite.ip.menu.settings.SettingsMenu;
 
 public class Menus {
 
+    // main
+    public static MainMenu MAIN = new MainMenu();
+
     // play
     public static PlayMenu PLAY = new PlayMenu();
     public static SingleMenu SINGLE = new SingleMenu();

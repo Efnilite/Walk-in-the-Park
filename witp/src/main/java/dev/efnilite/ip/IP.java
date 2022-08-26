@@ -4,6 +4,7 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.api.events.Handler;
 import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
@@ -96,7 +97,7 @@ public final class IP extends ViPlugin {
 
         // ----- Configurations -----
 
-        configuration = new Configuration(this);
+        Locales.init(this);
 
         Option.init(true);
 
@@ -109,7 +110,7 @@ public final class IP extends ViPlugin {
                 sqlManager = new SQLManager();
                 sqlManager.connect();
             } catch(Throwable throwable){
-                logging().stack("There was an error while starting WITP", throwable);
+                logging().stack("There was an error while starting IP", throwable);
             }
         }
 
@@ -176,7 +177,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        logging().info("Loaded WITP in " + Time.timerEnd("load") + "ms!");
+        logging().info("Loaded IP in " + Time.timerEnd("load") + "ms!");
     }
 
     @Override

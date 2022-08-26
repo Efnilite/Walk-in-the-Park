@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.config.Configuration;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
@@ -44,9 +45,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // styles
         registerMainItem(1, 0,
-                user -> IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.STYLES.getName(),
-                        user instanceof ParkourPlayer player ? player.style : null).click(
-                event -> {
+                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.STYLES.getName(),
+                        user instanceof ParkourPlayer player ? player.style : null).click(event -> {
                     if (!(user instanceof ParkourPlayer player)) {
                         return;
                     }
@@ -60,8 +60,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // leads
         registerMainItem(1, 1,
-                user -> {
-                    Item displayItem = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.LEADS.getName());
+                (p, user) -> {
+                    Item displayItem = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.LEADS.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return displayItem;
@@ -91,7 +91,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // schematics
         registerMainItem(1, 9,
-                user -> IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SCHEMATICS.getName()).click(
+                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCHEMATICS.getName()).click(
                 event -> {
                     if (!(user instanceof ParkourPlayer player)) {
                         return;
@@ -103,8 +103,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // time
         registerMainItem(1, 10,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.TIME.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.TIME.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -163,8 +163,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // show scoreboard
         registerMainItem(2, 0,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SHOW_SCOREBOARD.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SHOW_SCOREBOARD.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -177,7 +177,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                     event -> {
                                         player.showScoreboard = true;
-                                        player.setBoard(new FastBoard(player.player));
+                                        player.setBoard(new FastBoard(p));
                                         player.getGenerator().updateScoreboard();
 
                                         player.updateGeneratorSettings();
@@ -200,8 +200,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // show fall message
         registerMainItem(2, 1,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SHOW_FALL_MESSAGE.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SHOW_FALL_MESSAGE.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -232,8 +232,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // show particles and sound
         registerMainItem(2, 2,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.PARTICLES_AND_SOUND.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.PARTICLES_AND_SOUND.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -264,8 +264,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // show special blocks
         registerMainItem(2, 3,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SPECIAL_BLOCKS.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SPECIAL_BLOCKS.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -302,8 +302,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // show score difficulty
         registerMainItem(2, 4,
-                user -> {
-                    Item item = IP.getConfiguration().getFromItemData(user, "options." + ParkourOption.SCORE_DIFFICULTY.getName());
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCORE_DIFFICULTY.getName());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -340,7 +340,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // Always allow closing of the menu
         registerMainItem(3, 10,
-                user -> IP.getConfiguration().getFromItemData(user, "general.close")
+                (player, user) -> Locales.getItem(player, "other.close")
                         .click(event -> event.getPlayer().closeInventory()),
                 player -> true);
     }
@@ -353,12 +353,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void open(ParkourPlayer user)  {
         Player player = user.player;
-        Configuration config = IP.getConfiguration();
 
-        Menu menu = new Menu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".general.menu.name")))
+        Menu menu = new Menu(4, Locales.getString(player, "settings.name"))
                 .distributeRowEvenly(0, 1, 2, 3)
-                .item(27, config.getFromItemData(user.getLocale(), "general.close").click(
+                .item(27, Locales.getItem(player, "other.close").click(
                         event -> Menus.SETTINGS.open(event.getPlayer())))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation());
@@ -367,11 +365,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
     }
 
     public void openStylesMenu(ParkourPlayer user) {
-        Configuration config = IP.getConfiguration();
-
         // init menu
-        Menu menu = new Menu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
+        Menu menu = new Menu(4, Locales.getString(user.getLocale(), "settings.parkour_settings.items.styles.name"));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
@@ -384,7 +379,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         menu
                 .distributeRowEvenly(1)
 
-                .item(31, config.getFromItemData(user.getLocale(), "general.close")
+                .item(31, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -401,11 +396,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
      *          The style type
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
-        Configuration config = IP.getConfiguration();
-
         // init menu
-        PagedMenu style = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.styles.name")));
+        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.parkour_settings.items.styles.name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -438,7 +430,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(31, config.getFromItemData(user.getLocale(), "general.close")
+                .item(31, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -457,13 +449,12 @@ public class ParkourSettingsMenu extends DynamicMenu {
         Configuration config = IP.getConfiguration();
 
         // init menu
-        Menu schematics = new Menu(3, "<white>" +
-                ChatColor.stripColor(config.getString("items", "locale." + user.getLocale() + ".options.schematics.name")));
+        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), "settings.parkour_settings.items.schematic.name");
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
         List<String> values = config.getStringList("items", "locale." + user.getLocale() + ".options.schematic-difficulty.values");
 
-        Item item = config.getFromItemData(user, "options." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
+        Item item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
 
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem()
@@ -548,7 +539,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         schematics
                 .distributeRowEvenly(0, 1, 2)
 
-                .item(26, config.getFromItemData(user, "general.close")
+                .item(26, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
@@ -559,7 +550,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.getGenerator().getScore() > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(IP.getConfiguration().getFromItemData(player, "options.cant-change")
+            event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.getLocale(), "settings.parkour_settings.items.no_change")
                     .click((event1) -> {
 
                     }), event).stay(5 * 20));

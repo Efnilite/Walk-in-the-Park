@@ -24,10 +24,10 @@ public enum ParkourOption {
     SETTINGS("settings", "ip.settings"),
 
     PARKOUR_SETTINGS("parkour_settings", "ip.settings.parkour_settings"),
-    STYLES("styles", "ip.settings.styles"),
+    STYLES("styles.item", "ip.settings.styles"),
     LEADS("leads", "ip.settings.leads"),
     TIME("time", "ip.settings.time"),
-    SCHEMATICS("schematics", "ip.settings.schematics"),
+    SCHEMATICS("schematic.item", "ip.settings.schematic"),
     USE_SCHEMATICS("use_schematics", "ip.settings.use_schematics"),
     SCHEMATIC_DIFFICULTY("schematic_difficulty", "ip.settings.schematic_difficulty"),
     SHOW_SCOREBOARD("show_scoreboard", "ip.settings.show_scoreboard"),
@@ -44,7 +44,8 @@ public enum ParkourOption {
     PLAYER_MANAGEMENT("player_management", "ip.lobby.player_management"),
 
     // other
-    JOIN("join", "ip.join");
+    JOIN("join", "ip.join"),
+    ADMIN("admin", "ip.admin");
 
     /**
      * The name of the option

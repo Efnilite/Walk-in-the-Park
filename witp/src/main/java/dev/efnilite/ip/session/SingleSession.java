@@ -1,6 +1,7 @@
 package dev.efnilite.ip.session;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
@@ -58,7 +59,8 @@ public class SingleSession implements Session {
                     spectator.teleport(watchingPlayer.getLocation());
                 }
             }
-            bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(spectator.getTranslated("spectator-bar")));
+            String string = Locales.getString(bukkitPlayer, "spectator.action_bar");
+            bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
 
             spectator.updateScoreboard();
         }
@@ -68,7 +70,7 @@ public class SingleSession implements Session {
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.sendTranslated("spectator-join", spectator.getName());
+                player.send(Locales.getString(player.getLocale(), "play.spectator.other_join").formatted(spectator.getName()));
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
@@ -80,7 +82,7 @@ public class SingleSession implements Session {
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.sendTranslated("spectator-leave", spectator.getName());
+                player.send(Locales.getString(player.getLocale(), "play.spectator.other_leave").formatted(spectator.getName()));
             }
 
             this.spectators.remove(spectator.getUUID());

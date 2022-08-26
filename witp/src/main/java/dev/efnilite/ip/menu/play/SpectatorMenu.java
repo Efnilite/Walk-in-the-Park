@@ -2,6 +2,7 @@ package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -14,7 +15,6 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
 import dev.efnilite.vilib.util.Unicodes;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +32,7 @@ public class SpectatorMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
 
-        PagedMenu spectator = new PagedMenu(4, "<white>" +
-                ChatColor.stripColor(IP.getConfiguration().getString("items", "locale." + locale + ".main.spectator.name")));
+        PagedMenu spectator = new PagedMenu(4, Locales.getString(player, "play.spectator.name"));
 
         List<MenuItem> display = new ArrayList<>();
 
@@ -87,7 +86,7 @@ public class SpectatorMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> spectator.page(-1)))
 
-                .item(22, IP.getConfiguration().getFromItemData(locale, "general.close")
+                .item(22, Locales.getItem(player, "other.close")
                         .click(event -> Menus.PLAY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
