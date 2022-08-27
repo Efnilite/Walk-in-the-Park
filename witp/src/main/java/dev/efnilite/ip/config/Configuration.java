@@ -1,10 +1,10 @@
 package dev.efnilite.ip.config;
 
-import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.legacy.LegacyLeaderboardData;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
+import dev.efnilite.vilib.lib.configupdater.configupdater.ConfigUpdater;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
