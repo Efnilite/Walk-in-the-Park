@@ -1,6 +1,8 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -53,7 +55,7 @@ public class ParkourSpectator extends ParkourUser {
     }
 
     public void updateScoreboard() {
-        if (!Option.SCOREBOARD_ENABLED) {
+        if (!(boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
             return;
         }
 
@@ -66,7 +68,7 @@ public class ParkourSpectator extends ParkourUser {
 
         Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.player, Option.SCOREBOARD_TITLE);
+        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title"));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -86,7 +88,7 @@ public class ParkourSpectator extends ParkourUser {
 
 
         // update lines
-        for (String line : Option.SCOREBOARD_LINES) {
+        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines", true)) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line

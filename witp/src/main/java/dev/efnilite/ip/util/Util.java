@@ -3,8 +3,6 @@ package dev.efnilite.ip.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.chat.Message;
 import dev.efnilite.vilib.vector.Vector3D;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -14,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -239,24 +236,6 @@ public class Util {
     public static ItemStack getHeldItem(Player player) {
         PlayerInventory inventory = player.getInventory();
         return inventory.getItemInMainHand().getType() == Material.AIR ? inventory.getItemInOffHand() : inventory.getItemInMainHand();
-    }
-
-    /**
-     * Send a text to a player from the messages-v3.yml file in the default language
-     * (if the player isn't a {@link ParkourUser}, knowing their preferred language is impossible)
-     *
-     * @param   sender
-     *          The sender
-     *
-     * @param   path
-     *          The path
-     */
-    public static void sendDefaultLang(CommandSender sender, String path, String... replaceable) {
-        String message = IP.getConfiguration().getString("lang", "messages." + Option.DEFAULT_LOCALE + "." + path);
-        for (String s : replaceable) {
-            message = message.replaceFirst("%[a-z]", s);
-        }
-        Message.send(sender, message);
     }
 
     /**

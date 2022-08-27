@@ -13,6 +13,8 @@ import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * The menu for settings
  */
@@ -39,6 +41,8 @@ public class SettingsMenu extends DynamicMenu {
                 (player, user) -> {
                     // user has to be not-null to see this item
                     assert user != null;
+
+                    List<String> values = Locales.getStringList(user.getLocale(), "settings.chat.values", false);
 
                     return new SliderItem()
                             .initial(switch (user.chatType) {

@@ -1,6 +1,5 @@
 package dev.efnilite.ip.menu.play;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -50,8 +49,7 @@ public class SpectatorMenu {
 
             int index = 0;
             for (ParkourPlayer pp : session.getPlayers()) {
-                Item item = IP.getConfiguration().getFromItemData(locale,
-                        "gamemodes.spectator-head", pp.getName());
+                Item item = Locales.getItem(locale, "play.spectator.head", pp.getName());
                 // Player head gathering
                 item.material(Material.PLAYER_HEAD);
 

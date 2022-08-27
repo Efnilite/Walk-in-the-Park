@@ -1,11 +1,13 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.events.BlockGenerateEvent;
 import dev.efnilite.ip.api.events.PlayerFallEvent;
 import dev.efnilite.ip.api.events.PlayerScoreEvent;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
 import dev.efnilite.ip.generator.base.Direction;
@@ -128,7 +130,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void updateScoreboard() {
-        if (!Option.SCOREBOARD_ENABLED) {
+        if (!(boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
             return;
         }
 
@@ -143,7 +145,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         Leaderboard leaderboard = getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.player, Option.SCOREBOARD_TITLE);
+        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title"));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -161,9 +163,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         top = top == null ? new Score("?", "?", "?", 0) : top;
         rank = rank == null ? new Score("?", "?", "?", 0) : rank;
 
-
         // update lines
-        for (String line : Option.SCOREBOARD_LINES) {
+        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines", true)) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line
@@ -190,46 +191,47 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (!profile.getValue("useParticlesAndSound").asBoolean()) {
-            return;
-        }
+        if (profile.getValue("particles").asBoolean()) {
+            ParticleData<?> data = Option.PARTICLE_DATA;
 
-        ParticleData<?> data = Option.PARTICLE_DATA;
-
-        // display particle
-        switch (Option.PARTICLE_SHAPE) {
-            case DOT -> {
-                data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
-                Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), data);
-            }
-            case CIRCLE -> {
-                data.size(5);
-                Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), data, (int) Math.sqrt(applyTo.size()), 20);
-            }
-            case BOX -> {
-                Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-                Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
-                for (Block block : applyTo) {
-                    Location loc = block.getLocation();
-                    min = Locations.min(min, loc);
-                    max = Locations.max(max, loc);
+            // display particle
+            switch (Option.PARTICLE_SHAPE) {
+                case DOT -> {
+                    data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
+                    Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), data);
                 }
-
-                if (min.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
-                    return;
+                case CIRCLE -> {
+                    data.size(5);
+                    Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), data, (int) Math.sqrt(applyTo.size()), 20);
                 }
+                case BOX -> {
+                    Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+                    Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+                    for (Block block : applyTo) {
+                        Location loc = block.getLocation();
+                        min = Locations.min(min, loc);
+                        max = Locations.max(max, loc);
+                    }
 
-                data.size(1);
-                Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data, 0.2);
+                    if (min.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
+                        return;
+                    }
+
+                    data.size(1);
+                    Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data, 0.2);
+                }
             }
+
         }
 
-        // play sound
-        for (ParkourPlayer viewer : session.getPlayers()) {
-            viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
-        }
-        for (ParkourSpectator viewer : session.getSpectators()) {
-            viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+        if (profile.getValue("sound").asBoolean()) {
+            // play sound
+            for (ParkourPlayer viewer : session.getPlayers()) {
+                viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            }
+            for (ParkourSpectator viewer : session.getSpectators()) {
+                viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            }
         }
     }
 
@@ -670,21 +672,21 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             String message;
             int number = 0;
             if (score == record.score()) {
-                message = "message.tied";
+                message = "settings.parkour_settings.items.fall_message.formats.tied";
             } else if (score > record.score()) {
                 number = score - record.score();
-                message = "message.beat";
+                message = "settings.parkour_settings.items.fall_message.formats.beat";
             } else {
                 number = record.score() - score;
-                message = "message.miss";
+                message = "settings.parkour_settings.items.fall_message.formats.miss";
             }
 
-            player.sendTranslated("divider");
-            player.sendTranslated("score", Integer.toString(score));
-            player.sendTranslated("time", time);
-            player.sendTranslated("highscore", Integer.toString(record.score()));
+            player.sendTranslated("settings.parkour_settings.items.fall_message.divider");
+            player.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
+            player.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
+            player.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record.score()));
             player.sendTranslated(message, Integer.toString(number));
-            player.sendTranslated("divider");
+            player.sendTranslated("settings.parkour_settings.items.fall_message.divider");
         }
 
         if (leaderboard != null && score > record.score()) {

@@ -1,7 +1,7 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.config.Option;
-import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 /**
  * An enum for all Parkour Menu Options
@@ -13,35 +13,37 @@ public enum ParkourOption {
 
     // play
     PLAY("play", "ip.play"),
-    SINGLE("single", "ip.play.single"),
-    SPECTATOR("spectator", "ip.play.spectator"),
+    SINGLE("play.single", "ip.play.single"),
+    SPECTATOR("play.spectator", "ip.play.spectator"),
 
     // community
     COMMUNITY("community", "ip.community"),
-    LEADERBOARDS("leaderboards", "ip.community.leaderboards"),
+    LEADERBOARDS("community.leaderboards", "ip.community.leaderboards"),
 
     // settings
     SETTINGS("settings", "ip.settings"),
 
-    PARKOUR_SETTINGS("parkour_settings", "ip.settings.parkour_settings"),
-    STYLES("styles.item", "ip.settings.styles"),
-    LEADS("leads", "ip.settings.leads"),
-    TIME("time", "ip.settings.time"),
-    SCHEMATICS("schematic.item", "ip.settings.schematic"),
-    USE_SCHEMATICS("use_schematics", "ip.settings.use_schematics"),
-    SCHEMATIC_DIFFICULTY("schematic_difficulty", "ip.settings.schematic_difficulty"),
-    SHOW_SCOREBOARD("show_scoreboard", "ip.settings.show_scoreboard"),
-    SHOW_FALL_MESSAGE("fall_message", "ip.settings.fall_message"),
-    PARTICLES_AND_SOUND("particles_and_sound", "ip.settings.particles_and_sound"),
-    SPECIAL_BLOCKS("special_blocks", "ip.settings.special_blocks"),
-    SCORE_DIFFICULTY("score_difficulty", "ip.settings.score_difficulty"),
-    LANG("lang", "ip.settings.lang"),
-    CHAT("chat", "ip.settings.chat"),
+    PARKOUR_SETTINGS("settings.parkour_settings.item", "ip.settings.parkour_settings"),
+    STYLES("settings.parkour_settings.items.styles.item", "ip.settings.styles"),
+    LEADS("settings.parkour_settings.items.leads", "ip.settings.leads"),
+    TIME("settings.parkour_settings.items.time", "ip.settings.time"),
+    SCHEMATIC_DIFFICULTY("settings.parkour_settings.items.schematic_difficulty", "ip.settings.schematic_difficulty"),
+    USE_SCHEMATICS("settings.parkour_settings.items.schematic_use", "ip.settings.schematic_use"),
+    SCHEMATICS("settings.parkour_settings.items.schematic.item", "ip.settings.schematic"),
+    SCOREBOARD("settings.parkour_settings.items.scoreboard", "ip.settings.show_scoreboard"),
+    FALL_MESSAGE("settings.parkour_settings.items.fall_message.item", "ip.settings.fall_message"),
+    PARTICLES("settings.parkour_settings.items.particles", "ip.settings.particles"),
+    SOUND("settings.parkour_settings.items.sound", "ip.settings.sound"),
+    SPECIAL_BLOCKS("settings.parkour_settings.items.special_blocks", "ip.settings.special_blocks"),
+    SCORE_DIFFICULTY("settings.parkour_settings.items.score_difficulty", "ip.settings.score_difficulty"),
+
+    LANG("settings.lang", "ip.settings.lang"),
+    CHAT("settings.chat", "ip.settings.chat"),
 
     // lobby
     LOBBY("lobby", "ip.lobby"),
-    VISIBILITY("visibility", "ip.lobby.visibility"),
-    PLAYER_MANAGEMENT("player_management", "ip.lobby.player_management"),
+    VISIBILITY("lobby.visibility", "ip.lobby.visibility"),
+    PLAYER_MANAGEMENT("lobby.player_management", "ip.lobby.player_management"),
 
     // other
     JOIN("join", "ip.join"),
@@ -50,33 +52,33 @@ public enum ParkourOption {
     /**
      * The name of the option
      */
-    private final String name;
+    private final String path;
 
     /**
      * The permission required to change this option
      */
     private final String permission;
 
-    ParkourOption(String name, String permission) {
-        this.name = name;
+    ParkourOption(String path, String permission) {
+        this.path = path;
         this.permission = permission;
     }
 
     /**
-     * Checks if a player has the current permission if permissions are enabled.
+     * Checks if a permissible has the current permission if permissions are enabled.
      * If perms are disabled, always returns true.
      *
-     * @param   player
-     *          The player
+     * @param   permissible
+     *          The permissible
      *
-     * @return true if the player is allowed to perform this action, false if not
+     * @return true if the permissible is allowed to perform this action, false if not
      */
-    public boolean check(Player player) {
-        return !Option.PERMISSIONS || player.hasPermission(permission);
+    public boolean check(Permissible permissible) {
+        return !Option.PERMISSIONS || permissible.hasPermission(permission);
     }
 
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 
     public String getPermission() {

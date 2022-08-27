@@ -59,7 +59,7 @@ public class SingleSession implements Session {
                     spectator.teleport(watchingPlayer.getLocation());
                 }
             }
-            String string = Locales.getString(bukkitPlayer, "spectator.action_bar");
+            String string = Locales.getString(bukkitPlayer, "play.spectator.action_bar");
             bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
 
             spectator.updateScoreboard();
@@ -70,7 +70,7 @@ public class SingleSession implements Session {
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.send(Locales.getString(player.getLocale(), "play.spectator.other_join").formatted(spectator.getName()));
+                player.sendTranslated("play.spectator.other_join", spectator.getName());
             }
 
             this.spectators.put(spectator.getUUID(), spectator);
@@ -82,7 +82,7 @@ public class SingleSession implements Session {
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
             for (ParkourPlayer player : players.values()) {
-                player.send(Locales.getString(player.getLocale(), "play.spectator.other_leave").formatted(spectator.getName()));
+                player.sendTranslated("play.spectator.other_leave", spectator.getName());
             }
 
             this.spectators.remove(spectator.getUUID());

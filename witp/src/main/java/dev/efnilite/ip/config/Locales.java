@@ -2,6 +2,7 @@ package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import net.kyori.adventure.text.Component;
@@ -15,17 +16,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Locales {
 
+    // a list of all nodes
+    // used to check against missing nodes
+    private static List<String> resourceNodes;
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     // a map of all locales with their respective json trees
@@ -36,6 +45,11 @@ public class Locales {
         Task.create(plugin)
                 .async()
                 .execute(() -> {
+                    FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
+
+                    // get all nodes from the plugin's english resource, aka the most updated version
+                    resourceNodes = Util.getNode(resource, "", true);
+
                     Path folder = Paths.get(plugin.getDataFolder() + "/locales");
 
                     // download files to locales folder
@@ -53,6 +67,8 @@ public class Locales {
                             // get locale from file name
                             String locale = file.getName().split("\\.")[0];
 
+                            validate(resource, YamlConfiguration.loadConfiguration(file), file);
+
                             localeTree.put(locale, YamlConfiguration.loadConfiguration(file));
                         });
                     } catch (IOException throwable) {
@@ -60,6 +76,27 @@ public class Locales {
                     }
                 })
                 .run();
+    }
+
+    // validates whether a lang file contains all required keys.
+    // if it doesn't, automatically add them
+    private static void validate(FileConfiguration provided, FileConfiguration user, File localPath) {
+        List<String> userNodes = Util.getNode(user, "", true);
+
+        for (String node : resourceNodes) {
+            if (!userNodes.contains(node)) {
+                IP.logging().info("Fixing missing config node '" + node + "'");
+
+                Object providedValue = provided.get(node);
+                user.set(node, providedValue);
+            }
+        }
+
+        try {
+            user.save(localPath);
+        } catch (IOException throwable) {
+            IP.logging().stack("Error while trying to save fixed config file " + localPath, "delete this file and restart your server", throwable);
+        }
     }
 
     /**
@@ -108,6 +145,33 @@ public class Locales {
         }
 
         return colour(string);
+    }
+
+    /**
+     * Gets a coloured String list from the provided path in the provided locale file
+     *
+     * @param   locale
+     *          The locale
+     *
+     * @param   path
+     *          The path
+     *
+     * @return a coloured String list
+     */
+    public static List<String> getStringList(String locale, String path, boolean colour) {
+        FileConfiguration base = localeTree.get(locale);
+
+        if (base == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> strings = base.getStringList(path);
+
+        if (strings.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return colour ? strings.stream().map(Locales::colour).collect(Collectors.toList()) : strings;
     }
 
     /**

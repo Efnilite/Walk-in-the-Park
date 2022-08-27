@@ -1,8 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.config.Configuration;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -37,7 +35,6 @@ public class SingleLeaderboardMenu {
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
-        Configuration config = IP.getConfiguration();
         PagedMenu menu = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
 
         List<MenuItem> items = new ArrayList<>();
@@ -102,7 +99,8 @@ public class SingleLeaderboardMenu {
             default -> Sort.SCORE;
         };
 
-        List<String> values = IP.getConfiguration().getFile("items").getStringList("locale." + locale + ".options.leaderboard-sort.values");
+        List<String> values = Locales.getStringList(locale, "community.leaderboards.sort.values", false);
+
         String name = switch (next) {
             case SCORE -> values.get(0);
             case TIME -> values.get(1);

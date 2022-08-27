@@ -36,7 +36,7 @@ public class PlayerManagementMenu {
 
         Session session = player.getSession();
 
-        PagedMenu menu = new PagedMenu(3, "<white>Manage Players");
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player.getLocale(), "lobby.manage_players.name"));
 
         for (ParkourPlayer sessionPlayer : session.getPlayers()) {
             if (sessionPlayer == player) {

@@ -1,6 +1,5 @@
 package dev.efnilite.ip.menu.lobby;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
@@ -10,7 +9,6 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
-import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,62 +19,65 @@ public class LobbyMenu extends DynamicMenu {
 
     public LobbyMenu() {
         registerMainItem(1, 0,
-                (player, user) -> new Item(Material.CAKE, "<#8DC9E5><bold>Manage Players")
-                        .click(event -> Menus.PLAYER_MANAGEMENT.open(player)),
-                player -> {
-                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+            (player, user) -> Locales.getItem(player, "lobby.player_management.item")
+                    .click(event -> Menus.PLAYER_MANAGEMENT.open(player)),
+            player -> {
+                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
 
-                    return ParkourOption.PLAYER_MANAGEMENT.check(player) &&
-                            pp != null &&
-                            pp.getSession().getPlayers().get(0) == pp;
-                }
+                return ParkourOption.PLAYER_MANAGEMENT.check(player) &&
+                        pp != null &&
+                        pp.getSession().getPlayers().get(0) == pp;
+            }
         );
 
         registerMainItem(1, 1,
-                (player, user) -> {
-                    List<String> values = IP.getConfiguration().getStringList("items", "locale." + user.getLocale() + ".lobby.visibility.values");
-                    return new SliderItem()
-                            .initial(switch (user.getSession().getVisibility()) {
-                                case PUBLIC -> 0;
-                                case ID_ONLY -> 1;
-                                case PRIVATE -> 2;
-                            })
-                            .add(0, IP.getConfiguration().getFromItemData(user, "lobby.visibility")
-                                    .modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // public
-                                ParkourUser u = ParkourUser.getUser(event.getPlayer());
+            (player, user) -> {
+                assert user != null;
 
-                                if (u != null) {
-                                    u.getSession().setVisibility(SessionVisibility.PUBLIC);
-                                }
+                List<String> values = Locales.getStringList(user.getLocale(), "lobby.visibility.values", false);
 
-                                return true;
-                            }).add(1, IP.getConfiguration().getFromItemData(user, "lobby.visibility")
-                                    .modifyLore(lore -> lore.replace("%s", values.get(1))), event -> { // id only
-                                ParkourUser u = ParkourUser.getUser(event.getPlayer());
+                return new SliderItem()
+                    .initial(switch (user.getSession().getVisibility()) {
+                        case PUBLIC -> 0;
+                        case ID_ONLY -> 1;
+                        case PRIVATE -> 2;
+                    })
+                    .add(0, Locales.getItem(player, "lobby.visibility")
+                            .modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // public
+                        ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
-                                if (u != null) {
-                                    u.getSession().setVisibility(SessionVisibility.ID_ONLY);
-                                }
+                        if (u != null) {
+                            u.getSession().setVisibility(SessionVisibility.PUBLIC);
+                        }
 
-                                return true;
-                            }).add(2, IP.getConfiguration().getFromItemData(user, "lobby.visibility")
-                                    .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
-                                ParkourUser u = ParkourUser.getUser(event.getPlayer());
+                        return true;
+                    }).add(1, Locales.getItem(player, "lobby.visibility")
+                            .modifyLore(lore -> lore.replace("%s", values.get(1))), event -> { // id only
+                        ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
-                                if (u != null) {
-                                    u.getSession().setVisibility(SessionVisibility.PRIVATE);
-                                }
+                        if (u != null) {
+                            u.getSession().setVisibility(SessionVisibility.ID_ONLY);
+                        }
 
-                                return true;
-                            });
-                },
-                player -> {
-                    ParkourUser user = ParkourUser.getUser(player);
+                        return true;
+                    }).add(2, Locales.getItem(player, "lobby.visibility")
+                            .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
+                        ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
-                    return ParkourOption.VISIBILITY.check(player) &&
-                            user != null &&
-                            user.getSession().getPlayers().get(0) == user; // only if player is the owner
-                });
+                        if (u != null) {
+                            u.getSession().setVisibility(SessionVisibility.PRIVATE);
+                        }
+
+                        return true;
+                    });
+            },
+            player -> {
+                ParkourUser user = ParkourUser.getUser(player);
+
+                return ParkourOption.VISIBILITY.check(player) &&
+                        user != null &&
+                        user.getSession().getPlayers().get(0) == user; // only if player is the owner
+            });
 
         // Always allow closing of the menu
         registerMainItem(2, 10,
@@ -92,10 +93,10 @@ public class LobbyMenu extends DynamicMenu {
      *          The player to open the menu to
      */
     public void open(Player player) {
-        Menu menu = new Menu(3, "<white>Lobby")
-                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleOutAnimation())
-                .distributeRowsEvenly();
+        Menu menu = new Menu(3, Locales.getString(player, "lobby.name"))
+            .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+            .animation(new SplitMiddleOutAnimation())
+            .distributeRowsEvenly();
 
         display(player, menu);
     }

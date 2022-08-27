@@ -1,4 +1,4 @@
-# English
+# English (en)
 # By Efnilite
 # Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # Learn more about colouring: https://docs.adventure.kyori.net/minimessage/format.html#format
@@ -21,7 +21,7 @@ play:
 
     item:
       material: "ender_pearl"
-      name: "<#6E92B1><bold>Singleplayer"
+      name: "<#6E92B1><bold>Single-player"
       lore: ""
 
     default:
@@ -45,7 +45,7 @@ play:
 
     head:
       material: ""
-      name: "<#6693E7><bold>%p"
+      name: "<#6693E7><bold>%s"
       lore: ""
 
 community:
@@ -72,8 +72,8 @@ community:
 
     head:
       material: ""
-      name: "<#6693E7><bold>#%r - %p"
-      lore: "<#5574AF>Score: <dark_gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0"
+      name: "<#6693E7><bold>#%s - %s"
+      lore: "<#5574AF>Score: <dark_gray>%s||<#5574AF>Time: <gray>%s||<#5574AF>Difficulty: <gray>%s<dark_gray>/1.0"
 
 settings:
   name: "<white>Settings"
@@ -98,8 +98,8 @@ settings:
     values: ["lobby only", "players only", "public"]
 
     formats:
-      lobby: "<#8A1010>(Lobby) <#BE0D0D>%p <dark_gray>> <gray>%s"
-      players: "<#8A1010>(Players) <#BE0D0D>%p <dark_gray>> <gray>%s"
+      lobby: "<#8A1010>(Lobby) <#BE0D0D>%s <dark_gray>> <gray>%s"
+      players: "<#8A1010>(Players) <#BE0D0D>%s <dark_gray>> <gray>%s"
 
   parkour_settings:
 
@@ -166,7 +166,7 @@ settings:
         divider: '<dark_gray><strikethrough>-----------------------------------'
         score: '<#80C7FD><bold>Score <white>%s'
         time: '<#80C7FD><bold>Time <white>%s'
-        highscore: '<#80C7FD><bold>Highscore <white>%s'
+        high_score: '<#80C7FD><bold>High-score <white>%s'
 
         formats:
           miss: "<gray>You missed your high score by %s points!"
@@ -188,7 +188,7 @@ settings:
         name: "Use special blocks"
         lore: "<gray>Currently: %s||<gray>If enabled, uses special blocks like ice and slabs."
 
-      score-difficulty:
+      score_difficulty:
         material: ""
         name: "Score difficulty"
         lore: "<gray>Currently: %s||<gray>When enabled, the higher score you have,||<gray>the more difficult it gets."
@@ -206,6 +206,14 @@ lobby:
     name: "<#A1E1DD><bold>Visibility"
     lore: "<dark_gray>Currently: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby."
     values: ["private", "invite-only", "public"]
+
+  player_management:
+    name: "<white>Manage players"
+
+    item:
+      material: "cake"
+      name: "<#8DC9E5><bold>Manage Players"
+      lore: "<dark_gray>Kick or mute players here."
 
 scoreboard:
 

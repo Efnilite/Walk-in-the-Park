@@ -1,7 +1,7 @@
 package dev.efnilite.ip.internal.gamemode;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -24,7 +24,7 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return IP.getConfiguration().getFromItemData(locale, "gamemodes.default");
+        return Locales.getItem(locale, "play.single.default");
     }
 
     @Override

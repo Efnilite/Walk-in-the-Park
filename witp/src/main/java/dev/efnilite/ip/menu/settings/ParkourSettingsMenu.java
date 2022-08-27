@@ -3,7 +3,6 @@ package dev.efnilite.ip.menu.settings;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.StyleType;
-import dev.efnilite.ip.config.Configuration;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.DynamicMenu;
@@ -45,7 +44,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // styles
         registerMainItem(1, 0,
-                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.STYLES.getName(),
+                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.STYLES.getPath(),
                         user instanceof ParkourPlayer player ? player.style : null).click(event -> {
                     if (!(user instanceof ParkourPlayer player)) {
                         return;
@@ -61,7 +60,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // leads
         registerMainItem(1, 1,
                 (p, user) -> {
-                    Item displayItem = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.LEADS.getName());
+                    Item displayItem = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.LEADS.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return displayItem;
@@ -91,7 +90,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // schematics
         registerMainItem(1, 9,
-                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCHEMATICS.getName()).click(
+                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCHEMATICS.getPath()).click(
                 event -> {
                     if (!(user instanceof ParkourPlayer player)) {
                         return;
@@ -104,7 +103,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // time
         registerMainItem(1, 10,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.TIME.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.TIME.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -164,7 +163,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show scoreboard
         registerMainItem(2, 0,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SHOW_SCOREBOARD.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCOREBOARD.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -196,12 +195,12 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                         return true;
                                     });
                 },
-                player -> checkOptions(player, ParkourOption.SHOW_SCOREBOARD, disabled) && Option.SCOREBOARD_ENABLED);
+                player -> checkOptions(player, ParkourOption.SCOREBOARD, disabled) && (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD));
 
         // show fall message
         registerMainItem(2, 1,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SHOW_FALL_MESSAGE.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.FALL_MESSAGE.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -228,24 +227,24 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                         return true;
                                     });
                 },
-                player -> checkOptions(player, ParkourOption.SHOW_FALL_MESSAGE, disabled));
+                player -> checkOptions(player, ParkourOption.FALL_MESSAGE, disabled));
 
-        // show particles and sound
+        // show sound
         registerMainItem(2, 2,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.PARTICLES_AND_SOUND.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.PARTICLES.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
                     }
 
                     return new SliderItem()
-                            .initial(player.useParticlesAndSound ? 0 : 1)
+                            .initial(player.particles ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
                                     event -> {
-                                        player.useParticlesAndSound = true;
+                                        player.particles = true;
 
                                         player.updateGeneratorSettings();
                                         return true;
@@ -254,18 +253,50 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
                                     event -> {
-                                        player.useParticlesAndSound = false;
+                                        player.particles = false;
 
                                         player.updateGeneratorSettings();
                                         return true;
                                     });
                 },
-                player -> checkOptions(player, ParkourOption.PARTICLES_AND_SOUND, disabled));
+                player -> checkOptions(player, ParkourOption.PARTICLES, disabled));
 
-        // show special blocks
+        // show sound
         registerMainItem(2, 3,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SPECIAL_BLOCKS.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SOUND.getPath());
+
+                    if (!(user instanceof ParkourPlayer player)) {
+                        return item;
+                    }
+
+                    return new SliderItem()
+                            .initial(player.sound ? 0 : 1)
+                            .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    event -> {
+                                        player.sound = true;
+
+                                        player.updateGeneratorSettings();
+                                        return true;
+                                    })
+                            .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
+                                            .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    event -> {
+                                        player.sound = false;
+
+                                        player.updateGeneratorSettings();
+                                        return true;
+                                    });
+                },
+                player -> checkOptions(player, ParkourOption.SOUND, disabled));
+
+        // show special blocks
+        registerMainItem(2, 4,
+                (p, user) -> {
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SPECIAL_BLOCKS.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -301,9 +332,9 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
 
         // show score difficulty
-        registerMainItem(2, 4,
+        registerMainItem(2, 5,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCORE_DIFFICULTY.getName());
+                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCORE_DIFFICULTY.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -446,15 +477,13 @@ public class ParkourSettingsMenu extends DynamicMenu {
      *
      */
     public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
-        Configuration config = IP.getConfiguration();
-
         // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), "settings.parkour_settings.items.schematic.name");
+        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), "settings.parkour_settings.items.schematic.name"));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
-        List<String> values = config.getStringList("items", "locale." + user.getLocale() + ".options.schematic-difficulty.values");
+        List<String> values = Locales.getStringList(user.getLocale(), "settings.parkour_settings.items.schematic_difficulty.values", false);
 
-        Item item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.SCHEMATIC_DIFFICULTY.getName());
+        Item item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.SCHEMATIC_DIFFICULTY.getPath());
 
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem()
@@ -505,7 +534,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             }));
         }
 
-        item = config.getFromItemData(user.getLocale(), "options." + ParkourOption.USE_SCHEMATICS.getName());
+        item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.USE_SCHEMATICS.getPath());
 
         if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
             schematics.item(9, new SliderItem()

@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -87,7 +88,7 @@ public abstract class ParkourUser {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
 
-        if (Option.SCOREBOARD_ENABLED) {
+        if ((boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
             this.board = new FastBoard(player);
         }
         // remove duplicates
@@ -371,6 +372,19 @@ public abstract class ParkourUser {
         for (String message : messages) {
             player.sendMessage(Locales.colour(message));
         }
+    }
+
+    /**
+     * Sends a translated message
+     *
+     * @param   key
+     *          The translation key
+     *
+     * @param   format
+     *          Any objects that may be given to the formatting of the string.
+     */
+    public void sendTranslated(String key, Object... format) {
+        send(Locales.getString(getLocale(), key).formatted(format));
     }
 
     /**

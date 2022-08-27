@@ -32,10 +32,10 @@ public class ChatHandler implements Listener {
 
                 // send it to all players
                 for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.sendTranslated("chat.lobby", sender.getName(), event.getMessage());
+                    pp.sendTranslated("settings.chat.formats.lobby", sender.getName(), event.getMessage());
                 }
                 for (ParkourSpectator sp : session.getSpectators()) {
-                    sp.sendTranslated("chat.lobby", sender.getName(), event.getMessage());
+                    sp.sendTranslated("settings.chat.formats.lobby", sender.getName(), event.getMessage());
                 }
             }
             case PLAYERS_ONLY -> {
@@ -43,7 +43,7 @@ public class ChatHandler implements Listener {
 
                 // send it to all users
                 for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.sendTranslated("chat.players", sender.getName(), event.getMessage());
+                    pp.sendTranslated("settings.chat.formats.players", sender.getName(), event.getMessage());
                 }
             }
         }

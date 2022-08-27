@@ -39,6 +39,10 @@
                   <pattern>org.bstats</pattern>
                   <shadedPattern>dev.efnilite.ip.util.bstats</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>net.kyori</pattern>
+                  <shadedPattern>dev.efnilite.ip.util.minimessage</shadedPattern>
+                </relocation>
               </relocations>
               <filters>
                 <filter>

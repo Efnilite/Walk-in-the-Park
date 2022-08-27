@@ -38,7 +38,7 @@ public class LangMenu {
                     .glowing(user.getLocale().equals(lang))
                     .click(event -> {
                         user.setLocale(lang);
-                        user.lang = lang;
+                        user._locale = lang;
                         Menus.SETTINGS.open(event.getPlayer());
                     }));
         }

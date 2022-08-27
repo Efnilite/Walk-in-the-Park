@@ -2,7 +2,6 @@ package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -55,20 +54,17 @@ public class Option {
     public static int OPTIONS_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
-    public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
+    public static Map<ParkourOption, Object> OPTIONS_DEFAULTS;
 
     // Worlds
     public static boolean DELETE_ON_RELOAD;
     public static String WORLD_NAME;
 
     public static void init(boolean firstLoad) {
-        scoreboard = IP.getConfiguration().getFile("scoreboard");
         generation = IP.getConfiguration().getFile("generation");
         config = IP.getConfiguration().getFile("config");
         lang = IP.getConfiguration().getFile("lang");
-        items = IP.getConfiguration().getFile("items");
 
-        initScoreboard();
         initSql();
         initEnums();
         initGeneration();
@@ -98,33 +94,31 @@ public class Option {
 
         List<ParkourOption> options = Arrays.asList(ParkourOption.LEADS, ParkourOption.TIME,
                 ParkourOption.SCHEMATIC_DIFFICULTY, ParkourOption.SCORE_DIFFICULTY,
-                ParkourOption.PARTICLES_AND_SOUND, ParkourOption.SHOW_SCOREBOARD,
-                ParkourOption.SHOW_FALL_MESSAGE, ParkourOption.SPECIAL_BLOCKS,
-                ParkourOption.USE_SCHEMATICS);
+                ParkourOption.PARTICLES, ParkourOption.SCOREBOARD,
+                ParkourOption.FALL_MESSAGE, ParkourOption.SPECIAL_BLOCKS,
+                ParkourOption.USE_SCHEMATICS, ParkourOption.SOUND);
 
         // =====================================
 
         OPTIONS_DEFAULTS = new HashMap<>();
         OPTIONS_ENABLED = new HashMap<>();
 
-        for (String node : Util.getNode(items, "items.options", false)) {
-            for (ParkourOption option : options) {
-                if (option.getName().equalsIgnoreCase(node)) {
+        String prefix = "default-values";
+        for (ParkourOption option : options) {
+            String path = prefix + "." + option.getPath();
 
-                    // register default value
-                    String value = items.getString("items.options." + node + ".default");
-                    if (value == null) {
-                        IP.logging().stack("Default option '" + node + "' is null!", "check the items file and the default options");
-                        continue;
-                    }
-                    OPTIONS_DEFAULTS.put(option, value);
-
-                    // register enabled value
-                    boolean enabled = items.getBoolean("items.options." + node + ".enabled");
-
-                    OPTIONS_ENABLED.put(option, enabled);
-                }
+            // register default value
+            Object value = config.get(path + ".default");
+            if (value == null) {
+                IP.logging().stack("Default option at " + path + " is null!", "check the config file and the default options");
+                continue;
             }
+            OPTIONS_DEFAULTS.put(option, value);
+
+            // register enabled value
+            boolean enabled = items.getBoolean(path + ".enabled");
+
+            OPTIONS_ENABLED.put(option, enabled);
         }
 
         // =====================================
@@ -307,19 +301,6 @@ public class Option {
         MAXED_TWO_BLOCK = generation.getInt("advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = generation.getInt("advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = generation.getInt("advanced.maxed-values.4-block");
-    }
-
-    // --------------------------------------------------------------
-    // Scoreboard
-
-    public static boolean SCOREBOARD_ENABLED;
-    public static String SCOREBOARD_TITLE;
-    public static List<String> SCOREBOARD_LINES;
-
-    private static void initScoreboard() {
-        SCOREBOARD_ENABLED = scoreboard.getBoolean("scoreboard.enabled");
-        SCOREBOARD_TITLE = Util.color(scoreboard.getString("scoreboard.title"));
-        SCOREBOARD_LINES = Util.colorList(scoreboard.getStringList("scoreboard.lines"));
     }
 
     public enum ParticleShape {

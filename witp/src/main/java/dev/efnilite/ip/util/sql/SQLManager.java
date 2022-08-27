@@ -140,6 +140,13 @@ public class SQLManager {
             """
         .formatted(Option.SQL_PREFIX + "options"));
 
+        // v4.0.0
+        sendQuerySuppressed(
+            """
+            ALTER TABLE `%s` ADD `sound` BOOLEAN;
+            """
+        .formatted(Option.SQL_PREFIX + "options"));
+
         IP.logging().info("Initialized database");
     }
 

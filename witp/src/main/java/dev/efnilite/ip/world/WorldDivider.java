@@ -261,7 +261,7 @@ public class WorldDivider {
         }
 
         if (!Option.INVENTORY_HANDLING) {
-            pp.send(Locales.getString(player, "other.customize"));
+            pp.sendTranslated("other.customize");
         }
 
         if (runGenerator) {

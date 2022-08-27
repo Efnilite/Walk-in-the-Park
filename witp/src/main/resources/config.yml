@@ -202,10 +202,6 @@ focus-mode:
 # -= Styles options =-
 styles:
 
-  # -= Styles default =-
-  # The default style
-  default: 'red'
-
   # -= Styles list =-
   # The list of all available styles, which you can add to if you want.
   # For changes, you have to restart or reload your server.
@@ -264,3 +260,98 @@ particles:
   # -= Sound pitch =-
   # The pitch of the sound that will play when a new block generates.
   sound-pitch: 3
+
+# -= Default values =-
+# This is a list of
+default-values:
+  main:
+    enabled: true
+
+  play:
+    enabled: true
+
+    single:
+      enabled: true
+
+    spectator:
+      enabled: true
+
+  community:
+    enabled: true
+
+    leaderboards:
+      enabled: true
+
+  settings:
+    enabled: true
+
+    lang:
+      enabled: true
+      default: "en"
+
+    chat:
+      enabled: true
+
+    parkour_settings:
+
+      item:
+        enabled: true
+
+      items:
+
+        styles:
+          enabled: true
+          default: "red"
+
+        leads:
+          enabled: true
+          default: 4
+
+        time:
+          enabled: true
+          default: 6000
+
+        schematic_difficulty:
+          enabled: true
+          default: 0.6
+
+        schematic_use:
+          enabled: true
+          default: true
+
+        schematic:
+          item:
+            enabled: true
+
+        scoreboard:
+          enabled: true
+          default: true
+
+        fall_message:
+          enabled: true
+          default: true
+
+        particles:
+          enabled: true
+          default: true
+
+        sound:
+          enabled: true
+          default: true
+
+        special_blocks:
+          enabled: true
+          default: true
+
+        score-difficulty:
+          enabled: true
+          default: true
+
+  lobby:
+    enabled: true
+
+    visibility:
+      enabled: true
+
+    player_management:
+      enabled: true
