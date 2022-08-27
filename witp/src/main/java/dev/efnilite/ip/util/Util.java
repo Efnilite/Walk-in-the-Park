@@ -3,7 +3,7 @@ package dev.efnilite.ip.util;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.vector.Vector3D;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -36,6 +37,10 @@ public class Util {
 
     private static Economy economy;
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
+
+    public static void send(CommandSender sender, String message) {
+        sender.sendMessage(Strings.colour(message));
+    }
 
     public static boolean listContains(List<String> list, String... strings) {
         for (String s : list) {
@@ -162,31 +167,6 @@ public class Util {
         return new ArrayList<>(section.getKeys(deep));
     }
 
-    /**
-     * Color something
-     */
-    public static String color(String string) {
-        if (!string.equals("")) {
-            return Message.parseFormatting(string);
-        }
-        return string;
-    }
-
-    /**
-     * Color a list of strings (uses and sign as color marker)
-     *
-     * @param   strings
-     *          The string to be colored
-     *
-     * @return the strings, but colored
-     */
-    public static List<String> colorList(List<String> strings) {
-        List<String> ret = new ArrayList<>();
-        for (String string : strings) {
-            ret.add(Util.color(string));
-        }
-        return ret;
-    }
 
     /**
      * Gets the blocks between 2 locations

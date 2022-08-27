@@ -5,7 +5,6 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.legacy.LegacyLeaderboardData;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.schematic.SchematicCache;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -191,6 +190,6 @@ public class Configuration {
             return "";
         }
 
-        return Util.color(string);
+        return string;
     }
 }

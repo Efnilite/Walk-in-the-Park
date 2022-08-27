@@ -4,9 +4,8 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,7 +34,6 @@ public class Locales {
     // a list of all nodes
     // used to check against missing nodes
     private static List<String> resourceNodes;
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     // a map of all locales with their respective json trees
     // the json trees are stored instead of the files to avoid having to read the files every time
@@ -144,7 +142,7 @@ public class Locales {
             return "";
         }
 
-        return colour(string);
+        return Strings.colour(string);
     }
 
     /**
@@ -171,7 +169,7 @@ public class Locales {
             return Collections.emptyList();
         }
 
-        return colour ? strings.stream().map(Locales::colour).collect(Collectors.toList()) : strings;
+        return colour ? strings.stream().map(Strings::colour).collect(Collectors.toList()) : strings;
     }
 
     /**
@@ -260,19 +258,4 @@ public class Locales {
 
         return item;
     }
-
-    /**
-     * Colours a provided string using the MiniMessage API.
-     *
-     * @param   string
-     *          The string
-     *
-     * @return the coloured string
-     */
-    public static String colour(String string) {
-        Component component = miniMessage.deserialize(string);
-
-        return miniMessage.serialize(component);
-    }
-
 }

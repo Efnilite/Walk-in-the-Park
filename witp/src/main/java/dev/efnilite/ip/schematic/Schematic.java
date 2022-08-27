@@ -4,7 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.schematic.selection.Dimensions;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.chat.Message;
+import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.vector.Vector3D;
@@ -213,7 +213,7 @@ public class Schematic {
                         if (player == null) {
                             return;
                         }
-                        Message.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!");
+                        player.sendMessage(Strings.colour("&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName()) + "ms&7!"));
                     } catch (IOException ex) {
                         IP.logging().stack("Error while saving schematic " + file, ex);
                     }

@@ -370,7 +370,7 @@ public abstract class ParkourUser {
      */
     public void send(String... messages) {
         for (String message : messages) {
-            player.sendMessage(Locales.colour(message));
+            Util.send(player, message);
         }
     }
 

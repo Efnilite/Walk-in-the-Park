@@ -144,7 +144,7 @@ public class ParkourPlayer extends ParkourUser {
         // if option is disabled, return the default value
         // this allows users to set unchangeable settings
         if (option != null && !Option.OPTIONS_ENABLED.get(option)) {
-            return (T) def;
+            return def;
         }
 
         return value == null ? def : value;
