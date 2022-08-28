@@ -1,6 +1,7 @@
 package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -35,9 +36,8 @@ public class Locales {
     // used to check against missing nodes
     private static List<String> resourceNodes;
 
-    // a map of all locales with their respective json trees
-    // the json trees are stored instead of the files to avoid having to read the files every time
-    private static final Map<String, FileConfiguration> localeTree = new HashMap<>();
+    // a map of all locales with their respective yml trees
+    private static final Map<String, FileConfiguration> locales = new HashMap<>();
 
     public static void init(Plugin plugin) {
         Task.create(plugin)
@@ -67,7 +67,7 @@ public class Locales {
 
                             validate(resource, YamlConfiguration.loadConfiguration(file), file);
 
-                            localeTree.put(locale, YamlConfiguration.loadConfiguration(file));
+                            locales.put(locale, YamlConfiguration.loadConfiguration(file));
                         });
                     } catch (IOException throwable) {
                         IP.logging().stack("Error while trying to read locale files", "restart/reload your server", throwable);
@@ -113,7 +113,7 @@ public class Locales {
      */
     public static String getString(Player player, String path) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
+        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         return getString(locale, path);
     }
@@ -130,7 +130,7 @@ public class Locales {
      * @return a coloured String
      */
     public static String getString(String locale, String path) {
-        FileConfiguration base = localeTree.get(locale);
+        FileConfiguration base = locales.get(locale);
 
         if (base == null) {
             return "";
@@ -157,7 +157,7 @@ public class Locales {
      * @return a coloured String list
      */
     public static List<String> getStringList(String locale, String path, boolean colour) {
-        FileConfiguration base = localeTree.get(locale);
+        FileConfiguration base = locales.get(locale);
 
         if (base == null) {
             return Collections.emptyList();
@@ -189,7 +189,7 @@ public class Locales {
     @NotNull
     public static Item getItem(@NotNull Player player, String path, String... replace) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
+        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         return getItem(locale, path, replace);
     }
@@ -210,7 +210,7 @@ public class Locales {
      */
     @NotNull
     public static Item getItem(String locale, String path, String... replace) {
-        final FileConfiguration base = localeTree.get(locale);
+        final FileConfiguration base = locales.get(locale);
 
         String material = base.getString(path + ".material");
         String name = base.getString(path + ".name");
@@ -257,5 +257,9 @@ public class Locales {
         }
 
         return item;
+    }
+
+    public static Map<String, FileConfiguration> getLocales() {
+        return locales;
     }
 }

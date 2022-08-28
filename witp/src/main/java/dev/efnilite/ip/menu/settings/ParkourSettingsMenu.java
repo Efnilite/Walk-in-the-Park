@@ -44,7 +44,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // styles
         registerMainItem(1, 0,
-                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.STYLES.getPath(),
+                (p, user) -> Locales.getItem(p, ParkourOption.STYLES.getPath() + ".item",
                         user instanceof ParkourPlayer player ? player.style : null).click(event -> {
                     if (!(user instanceof ParkourPlayer player)) {
                         return;
@@ -60,7 +60,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // leads
         registerMainItem(1, 1,
                 (p, user) -> {
-                    Item displayItem = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.LEADS.getPath());
+                    Item displayItem = Locales.getItem(p, ParkourOption.LEADS.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return displayItem;
@@ -90,20 +90,20 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         // schematics
         registerMainItem(1, 9,
-                (p, user) -> Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCHEMATICS.getPath()).click(
-                event -> {
-                    if (!(user instanceof ParkourPlayer player)) {
-                        return;
-                    }
+                (p, user) -> Locales.getItem(p, ParkourOption.SCHEMATIC.getPath() + ".item")
+                    .click(event -> {
+                        if (!(user instanceof ParkourPlayer player)) {
+                            return;
+                        }
 
-                    openSchematicMenu(player, disabled);
-                }),
-                player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
+                        openSchematicMenu(player, disabled);
+                    }),
+                player -> checkOptions(player, ParkourOption.SCHEMATIC, disabled));
 
         // time
         registerMainItem(1, 10,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.TIME.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.TIME.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -163,7 +163,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show scoreboard
         registerMainItem(2, 0,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCOREBOARD.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.SCOREBOARD.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -200,7 +200,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show fall message
         registerMainItem(2, 1,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.FALL_MESSAGE.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.FALL_MESSAGE.getPath() + ".item");
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -232,7 +232,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show sound
         registerMainItem(2, 2,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.PARTICLES.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.PARTICLES.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -264,7 +264,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show sound
         registerMainItem(2, 3,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SOUND.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.SOUND.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -296,7 +296,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show special blocks
         registerMainItem(2, 4,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SPECIAL_BLOCKS.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.SPECIAL_BLOCKS.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -334,7 +334,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // show score difficulty
         registerMainItem(2, 5,
                 (p, user) -> {
-                    Item item = Locales.getItem(p, "settings.parkour_settings.items." + ParkourOption.SCORE_DIFFICULTY.getPath());
+                    Item item = Locales.getItem(p, ParkourOption.SCORE_DIFFICULTY.getPath());
 
                     if (!(user instanceof ParkourPlayer player)) {
                         return item;
@@ -397,7 +397,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     public void openStylesMenu(ParkourPlayer user) {
         // init menu
-        Menu menu = new Menu(4, Locales.getString(user.getLocale(), "settings.parkour_settings.items.styles.name"));
+        Menu menu = new Menu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
@@ -428,7 +428,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         // init menu
-        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.parkour_settings.items.styles.name"));
+        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -478,12 +478,12 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
         // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), "settings.parkour_settings.items.schematic.name"));
+        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.getPath() + ".name"));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
-        List<String> values = Locales.getStringList(user.getLocale(), "settings.parkour_settings.items.schematic_difficulty.values", false);
+        List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath() + ".values", false);
 
-        Item item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.SCHEMATIC_DIFFICULTY.getPath());
+        Item item = Locales.getItem(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath());
 
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem()
@@ -534,7 +534,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             }));
         }
 
-        item = Locales.getItem(user.getLocale(), "settings.parkour_settings.items." + ParkourOption.USE_SCHEMATICS.getPath());
+        item = Locales.getItem(user.getLocale(), ParkourOption.USE_SCHEMATICS.getPath());
 
         if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
             schematics.item(9, new SliderItem()
@@ -596,12 +596,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     // check if option is allowed to be displayed
     private boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
-        boolean enabled = Option.OPTIONS_ENABLED.getOrDefault(option, true);
-
-        if (!enabled || Arrays.asList(disabled).contains(option)) {
-            return false;
-        } else {
-            return !Option.PERMISSIONS || player.hasPermission(option.getPermission());
-        }
+        return !Arrays.asList(disabled).contains(option) && option.check(player);
     }
 }

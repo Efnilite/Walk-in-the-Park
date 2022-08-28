@@ -24,14 +24,14 @@ public enum ParkourOption {
     SETTINGS("settings", "ip.settings"),
 
     PARKOUR_SETTINGS("settings.parkour_settings.item", "ip.settings.parkour_settings"),
-    STYLES("settings.parkour_settings.items.styles.item", "ip.settings.styles"),
+    STYLES("settings.parkour_settings.items.styles", "ip.settings.styles"),
     LEADS("settings.parkour_settings.items.leads", "ip.settings.leads"),
     TIME("settings.parkour_settings.items.time", "ip.settings.time"),
     SCHEMATIC_DIFFICULTY("settings.parkour_settings.items.schematic_difficulty", "ip.settings.schematic_difficulty"),
     USE_SCHEMATICS("settings.parkour_settings.items.schematic_use", "ip.settings.schematic_use"),
-    SCHEMATICS("settings.parkour_settings.items.schematic.item", "ip.settings.schematic"),
+    SCHEMATIC("settings.parkour_settings.items.schematic", "ip.settings.schematic"),
     SCOREBOARD("settings.parkour_settings.items.scoreboard", "ip.settings.show_scoreboard"),
-    FALL_MESSAGE("settings.parkour_settings.items.fall_message.item", "ip.settings.fall_message"),
+    FALL_MESSAGE("settings.parkour_settings.items.fall_message", "ip.settings.fall_message"),
     PARTICLES("settings.parkour_settings.items.particles", "ip.settings.particles"),
     SOUND("settings.parkour_settings.items.sound", "ip.settings.sound"),
     SPECIAL_BLOCKS("settings.parkour_settings.items.special_blocks", "ip.settings.special_blocks"),
@@ -73,8 +73,21 @@ public enum ParkourOption {
      *
      * @return true if the permissible is allowed to perform this action, false if not
      */
-    public boolean check(Permissible permissible) {
+    public boolean checkPermission(Permissible permissible) {
         return !Option.PERMISSIONS || permissible.hasPermission(permission);
+    }
+
+    /**
+     * Checks if a permissible has the current permission, if permissions are enabled.
+     * This also checks to see if the option is enabled.
+     *
+     * @param   permissible
+     *          The permissible
+     *
+     * @return true if the permissible is allowed to view/perform this option, false if not.
+     */
+    public boolean check(Permissible permissible) {
+        return checkPermission(permissible) && (boolean) Option.OPTIONS_DEFAULTS.getOrDefault(this, true);
     }
 
     public String getPath() {

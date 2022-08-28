@@ -30,12 +30,12 @@ public class SettingsMenu extends DynamicMenu {
                                     pp.getGenerator().menu();
                                 }
                         }),
-                player -> ParkourOption.PARKOUR_SETTINGS.check(player) && ParkourUser.isPlayer(player));
+                player -> ParkourOption.PARKOUR_SETTINGS.checkPermission(player) && ParkourUser.isPlayer(player));
 
         registerMainItem(1, 1,
                 (player, user) -> Locales.getItem(player, "settings.lang.item")
                         .click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
-                player -> ParkourOption.LANG.check(player) && ParkourUser.isUser(player));
+                player -> ParkourOption.LANG.checkPermission(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 2,
                 (player, user) -> {
@@ -79,7 +79,7 @@ public class SettingsMenu extends DynamicMenu {
                                 return true;
                             });
                 },
-                player -> ParkourOption.CHAT.check(player) && ParkourUser.isUser(player));
+                player -> ParkourOption.CHAT.checkPermission(player) && ParkourUser.isUser(player));
 
         registerMainItem(2, 0,
                 (player, user) -> Locales.getItem(player, "other.close")

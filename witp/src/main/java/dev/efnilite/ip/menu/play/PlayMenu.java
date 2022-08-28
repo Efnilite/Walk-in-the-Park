@@ -18,12 +18,12 @@ public class PlayMenu extends DynamicMenu {
         registerMainItem(1, 0,
                 (player, user) -> Locales.getItem(player, "play.single.item")
                         .click(event -> Menus.SINGLE.open(event.getPlayer())),
-                ParkourOption.SINGLE::check);
+                ParkourOption.SINGLE::checkPermission);
 
         registerMainItem(1, 2,
                 (player, user) -> Locales.getItem(player, "play.spectator.item")
                         .click(event -> Menus.SPECTATOR.open(event.getPlayer())),
-                ParkourOption.SPECTATOR::check);
+                ParkourOption.SPECTATOR::checkPermission);
 
         registerMainItem(2, 0,
                 (player, user) -> Locales.getItem(player, "other.close")

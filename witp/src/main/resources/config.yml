@@ -320,8 +320,7 @@ default-values:
           default: true
 
         schematic:
-          item:
-            enabled: true
+          enabled: true
 
         scoreboard:
           enabled: true
@@ -343,7 +342,7 @@ default-values:
           enabled: true
           default: true
 
-        score-difficulty:
+        score_difficulty:
           enabled: true
           default: true
 

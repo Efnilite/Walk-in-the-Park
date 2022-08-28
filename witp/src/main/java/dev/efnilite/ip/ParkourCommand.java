@@ -53,6 +53,8 @@ public class ParkourCommand extends ViCommand {
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
+        String defaultLocale = (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+
         Player player = null;
         if (sender instanceof Player) {
             player = (Player) sender;
@@ -62,7 +64,7 @@ public class ParkourCommand extends ViCommand {
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
-            } else if (ParkourOption.MAIN.check(player)) {
+            } else if (ParkourOption.MAIN.checkPermission(player)) {
                 Menus.MAIN.open(player);
             }
             return true;
@@ -78,7 +80,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
                     if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
-                        sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                        sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
                     }
                     Time.timerStart("reloadIP");
@@ -95,7 +97,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
                     if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
-                        sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                        sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
                     } else if (!Option.SQL) {
                         Util.send(sender, IP.PREFIX + "You have disabled SQL support in the config!");
@@ -138,8 +140,8 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (!ParkourOption.JOIN.check(player)) {
-                        sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                    if (!ParkourOption.JOIN.checkPermission(player)) {
+                        sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }
 
@@ -173,7 +175,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "play" -> {
-                    if (!ParkourOption.PLAY.check(player)) {
+                    if (!ParkourOption.PLAY.checkPermission(player)) {
                         return true;
                     }
                     Menus.PLAY.open(player);
@@ -181,8 +183,8 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "schematic" -> {
-                    if (!player.hasPermission(ParkourOption.SCHEMATICS.getPermission())) { // default players shouldn't have access even if perms are disabled
-                        sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                    if (!player.hasPermission(ParkourOption.SCHEMATIC.getPermission())) { // default players shouldn't have access even if perms are disabled
+                        sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }
                     Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
@@ -207,8 +209,8 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                if (!ParkourOption.JOIN.check(player)) {
-                    sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                if (!ParkourOption.JOIN.checkPermission(player)) {
+                    sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
                     return true;
                 }
 
@@ -451,8 +453,8 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
 
                 // check permissions
-                if (!ParkourOption.LEADERBOARDS.check(player)) {
-                    sender.sendMessage(Locales.getString(Option.DEFAULT_LOCALE, "other.no_do"));
+                if (!ParkourOption.LEADERBOARDS.checkPermission(player)) {
+                    sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
                     return true;
                 }
 
@@ -488,7 +490,7 @@ public class ParkourCommand extends ViCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            if (ParkourOption.JOIN.check(sender)) {
+            if (ParkourOption.JOIN.checkPermission(sender)) {
                 completions.add("join");
                 completions.add("leave");
             }

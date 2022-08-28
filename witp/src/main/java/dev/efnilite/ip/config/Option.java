@@ -16,9 +16,6 @@ public class Option {
 
     private static FileConfiguration generation;
     private static FileConfiguration config;
-    private static FileConfiguration lang;
-    private static FileConfiguration items;
-    private static FileConfiguration scoreboard;
 
     public static boolean AUTO_UPDATER;
 
@@ -37,11 +34,7 @@ public class Option {
     // Advanced settings
     public static String HEADING;
 
-    public static List<String> LANGUAGES;
-    public static String DEFAULT_LOCALE;
     public static boolean JOIN_LEAVE_MESSAGES;
-
-    public static String DEFAULT_STYLE;
 
     public static boolean ENABLE_JOINING;
     public static boolean PERMISSIONS_STYLES;
@@ -63,7 +56,6 @@ public class Option {
     public static void init(boolean firstLoad) {
         generation = IP.getConfiguration().getFile("generation");
         config = IP.getConfiguration().getFile("config");
-        lang = IP.getConfiguration().getFile("lang");
 
         initSql();
         initEnums();
@@ -92,11 +84,11 @@ public class Option {
         INVENTORY_SAVING = config.getBoolean("options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = config.getString("options.alt-inventory-saving-command");
 
-        List<ParkourOption> options = Arrays.asList(ParkourOption.LEADS, ParkourOption.TIME,
-                ParkourOption.SCHEMATIC_DIFFICULTY, ParkourOption.SCORE_DIFFICULTY,
-                ParkourOption.PARTICLES, ParkourOption.SCOREBOARD,
-                ParkourOption.FALL_MESSAGE, ParkourOption.SPECIAL_BLOCKS,
-                ParkourOption.USE_SCHEMATICS, ParkourOption.SOUND);
+        List<ParkourOption> options = new ArrayList<>(Arrays.asList(ParkourOption.values()));
+
+        // exceptions
+        options.remove(ParkourOption.JOIN);
+        options.remove(ParkourOption.ADMIN);
 
         // =====================================
 
@@ -109,14 +101,13 @@ public class Option {
 
             // register default value
             Object value = config.get(path + ".default");
-            if (value == null) {
-                IP.logging().stack("Default option at " + path + " is null!", "check the config file and the default options");
-                continue;
+
+            if (value != null) {
+                OPTIONS_DEFAULTS.put(option, value);
             }
-            OPTIONS_DEFAULTS.put(option, value);
 
             // register enabled value
-            boolean enabled = items.getBoolean(path + ".enabled");
+            boolean enabled = config.getBoolean(path + ".enabled", true);
 
             OPTIONS_ENABLED.put(option, enabled);
         }
@@ -124,13 +115,6 @@ public class Option {
         // =====================================
 
         PERMISSIONS_STYLES = config.getBoolean("permissions.per-style");
-
-        LANGUAGES = new ArrayList<>(lang.getConfigurationSection("messages").getKeys(false));
-        LANGUAGES.remove("default");
-
-        DEFAULT_LOCALE = lang.getString("messages.default");
-
-        DEFAULT_STYLE = config.getString("styles.default");
 
         // Config stuff
 

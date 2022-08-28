@@ -45,7 +45,7 @@ public final class Registry {
      * @param   gamemode
      *          The instance of the gamemode that's to be registered
      */
-    public void register(Gamemode gamemode) {
+    public void register(@NotNull Gamemode gamemode) {
         if (!closed) {
             this.gamemodes.put(gamemode.getName(), gamemode);
             IP.logging().info("Registered gamemode " + gamemode.getName() + "!");
@@ -63,16 +63,16 @@ public final class Registry {
      * @return the Gamemode instance associated with this name or null if there is no Gamemode for this name.
      */
     @Nullable
-    public Gamemode getGamemode(String name) {
+    public Gamemode getGamemode(@NotNull String name) {
         return gamemodes.get(name);
     }
 
     @Nullable
-    public StyleType getStyleType(String name) {
+    public StyleType getStyleType(@NotNull String name) {
         return styleTypes.get(name);
     }
 
-    public StyleType getTypeFromStyle(String style) {
+    public StyleType getTypeFromStyle(@NotNull String style) {
         for (StyleType value : styleTypes.values()) {
             if (value.styles.keySet().contains(style.toLowerCase())) {
                 return value;

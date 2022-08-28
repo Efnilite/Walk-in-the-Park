@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -34,7 +35,7 @@ public class SingleLeaderboardMenu {
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
+        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
         PagedMenu menu = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
 
         List<MenuItem> items = new ArrayList<>();

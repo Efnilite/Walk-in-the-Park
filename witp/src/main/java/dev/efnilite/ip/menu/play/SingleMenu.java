@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.config.Locales;
@@ -27,7 +28,7 @@ public class SingleMenu {
         IP.getRegistry().close(); // prevent new registrations once a player has opened the gm menu
 
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.DEFAULT_LOCALE : user.getLocale();
+        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, "single.name"));
 

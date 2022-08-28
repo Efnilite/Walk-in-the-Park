@@ -446,7 +446,7 @@ public abstract class ParkourUser {
      */
     public @NotNull String getLocale() {
         if (locale == null) {
-            locale = Option.DEFAULT_LOCALE;
+            locale = (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
         }
 
         return locale;

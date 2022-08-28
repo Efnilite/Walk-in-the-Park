@@ -1,7 +1,6 @@
 package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.config.Locales;
-import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -31,7 +30,7 @@ public class LangMenu {
         PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.lang.name"));
 
         List<MenuItem> items = new ArrayList<>();
-        for (String lang : Option.LANGUAGES) {
+        for (String lang : Locales.getLocales().keySet()) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getItem(lang, "name"));
 
             items.add(item

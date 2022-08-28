@@ -74,7 +74,7 @@ public class ParkourPlayer extends ParkourUser {
 
         this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
 
-        setLocale(Option.DEFAULT_LOCALE);
+        setLocale((String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
         this._locale = getLocale();
 
         // generic player settings
@@ -117,8 +117,8 @@ public class ParkourPlayer extends ParkourUser {
         }
 
         // Adjustable defaults
-        this.style = orDefault(style, Option.DEFAULT_STYLE, null);
-        this._locale = orDefault(locale, Option.DEFAULT_LOCALE, null);
+        this.style = orDefault(style, (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.STYLES), null);
+        this._locale = orDefault(locale, (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG), null);
         setLocale(_locale);
 
         this.useSpecialBlocks = orDefault(useSpecial, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS), ParkourOption.SPECIAL_BLOCKS);

@@ -44,7 +44,7 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<#FF6464><bold>Infinite Parkour";
     public static final String PREFIX = NAME + " <dark_gray>» <gray>";
-    public static final String REQUIRED_VILIB_VERSION = "1.0.11";
+    public static final String REQUIRED_VILIB_VERSION = "1.1.0";
 
     private static IP instance;
     private static SQLManager sqlManager;
@@ -97,8 +97,9 @@ public final class IP extends ViPlugin {
 
         // ----- Configurations -----
 
-        Locales.init(this);
+        configuration = new Configuration(this);
 
+        Locales.init(this);
         Option.init(true);
 
         divider = new WorldDivider();
@@ -170,7 +171,7 @@ public final class IP extends ViPlugin {
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED)));
-        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Option.LANGUAGES.size())));
+        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Locales.getLocales().size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;
             ParkourUser.JOIN_COUNT = 0;

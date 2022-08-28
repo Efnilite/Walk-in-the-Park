@@ -18,7 +18,7 @@ public class CommunityMenu extends DynamicMenu {
         registerMainItem(1, 1,
                 (player, user) -> Locales.getItem(player, "community.leaderboards.item").click(
                         event -> Menus.LEADERBOARDS.open(event.getPlayer())),
-                ParkourOption.LEADERBOARDS::check);
+                ParkourOption.LEADERBOARDS::checkPermission);
     }
 
     public void open(Player player) {

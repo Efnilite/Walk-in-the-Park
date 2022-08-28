@@ -87,12 +87,12 @@ settings:
     name: "<white>Language"
 
     item:
-      material: "written_book"
+      material: "writable_book"
       name: "<#6693E7><bold>Language"
       lore: "<#5574AF>Currently: <dark_gray>%s"
 
   chat:
-    material: ""
+    material: "crossbow"
     name: "<#20C6BC><bold>Chat"
     lore: "<dark_gray>Currently: <#17B2CE><bold>%s||<dark_gray>Select who you can chat with"
     values: ["lobby only", "players only", "public"]
