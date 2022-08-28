@@ -34,8 +34,6 @@ public class Option {
     // Advanced settings
     public static String HEADING;
 
-    public static boolean JOIN_LEAVE_MESSAGES;
-
     public static boolean ENABLE_JOINING;
     public static boolean PERMISSIONS_STYLES;
     public static boolean SAVE_STATS;
@@ -65,7 +63,6 @@ public class Option {
         // General settings
         AUTO_UPDATER = config.getBoolean("auto-updater");
         ENABLE_JOINING = config.getBoolean("joining");
-        JOIN_LEAVE_MESSAGES = config.getBoolean("join-leave-messages");
 
         // Worlds
         DELETE_ON_RELOAD = config.getBoolean("world.delete-on-reload");

@@ -2,7 +2,6 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -121,17 +120,6 @@ public abstract class ParkourUser {
         ParkourPlayer pp = register(player);
         IP.getDivider().generate(pp);
 
-        if (Option.JOIN_LEAVE_MESSAGES) {
-            pp.sendTranslated("join", player.getName());
-            for (ParkourUser to : getUsers()) {
-                if (to.getUUID().equals(player.getUniqueId()) || to.getSession().getGamemode() instanceof MultiGamemode) {
-                    continue;
-                }
-
-                to.sendTranslated("player-join", player.getName());
-            }
-        }
-
         return pp;
     }
 
@@ -182,17 +170,6 @@ public abstract class ParkourUser {
      *          The user instance
      */
     public static void leave(@NotNull ParkourUser user) {
-        if (Option.JOIN_LEAVE_MESSAGES) {
-            user.sendTranslated("leave", user.getName());
-            for (ParkourUser to : getUsers()) {
-                if (to.getUUID().equals(user.getUUID()) || to.getSession().getGamemode() instanceof MultiGamemode) {
-                    continue;
-                }
-
-                to.sendTranslated("player-leave", user.player.getName());
-            }
-        }
-
         unregister(user, true, true, true);
     }
 

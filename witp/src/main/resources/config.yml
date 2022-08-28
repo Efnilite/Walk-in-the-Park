@@ -27,11 +27,6 @@ auto-updater: true
 # True = players can join, false = players can't join.
 joining: true
 
-# -= Join-leave messages =-
-# Whether players should receive a message when a player joins the parkour.
-# True = players will receive a message when a new player joins, false = players won't get a message.
-join-leave-messages: true
-
 # -= BungeeCord options =-
 # Change the BungeeCord settings.
 # This also applies to servers who only want to run this plugin.

@@ -79,10 +79,6 @@ public class Handler implements EventWatcher {
                 return;
             }
 
-            if (Option.JOIN_LEAVE_MESSAGES) {
-                event.setJoinMessage(null);
-            }
-
             ParkourPlayer.joinDefault(player);
         } else if (player.getWorld().getUID().equals(IP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
@@ -125,10 +121,6 @@ public class Handler implements EventWatcher {
         ParkourUser user = ParkourUser.getUser(player);
         if (user == null) {
             return;
-        }
-
-        if (Option.JOIN_LEAVE_MESSAGES) {
-            event.setQuitMessage(null);
         }
 
         if (Option.INVENTORY_HANDLING) {
