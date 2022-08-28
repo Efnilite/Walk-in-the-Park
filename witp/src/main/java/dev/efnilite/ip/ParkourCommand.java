@@ -141,7 +141,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     if (!ParkourOption.JOIN.checkPermission(player)) {
-                        sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
+                        Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                         return true;
                     }
 
@@ -184,7 +184,7 @@ public class ParkourCommand extends ViCommand {
                 }
                 case "schematic" -> {
                     if (!player.hasPermission(ParkourOption.SCHEMATIC.getPermission())) { // default players shouldn't have access even if perms are disabled
-                        sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
+                        Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                         return true;
                     }
                     Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
@@ -210,7 +210,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (!ParkourOption.JOIN.checkPermission(player)) {
-                    sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
+                    Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                     return true;
                 }
 
@@ -454,7 +454,7 @@ public class ParkourCommand extends ViCommand {
 
                 // check permissions
                 if (!ParkourOption.LEADERBOARDS.checkPermission(player)) {
-                    sender.sendMessage(Locales.getString(defaultLocale, "other.no_do"));
+                    Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                     return true;
                 }
 

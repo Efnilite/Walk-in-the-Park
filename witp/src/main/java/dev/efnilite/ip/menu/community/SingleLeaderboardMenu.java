@@ -36,12 +36,12 @@ public class SingleLeaderboardMenu {
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
-        PagedMenu menu = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
+        PagedMenu menu = new PagedMenu(4, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
 
         List<MenuItem> items = new ArrayList<>();
 
         int rank = 1;
-        Item base = Locales.getItem(player, "community.leaderboards.head");
+        Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".head");
 
         Map<UUID, Score> sorted = sort.sort(leaderboard.getScores());
 
@@ -100,7 +100,7 @@ public class SingleLeaderboardMenu {
             default -> Sort.SCORE;
         };
 
-        List<String> values = Locales.getStringList(locale, "community.leaderboards.sort.values", false);
+        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.getPath() + ".sort.values", false);
 
         String name = switch (next) {
             case SCORE -> values.get(0);
@@ -118,7 +118,7 @@ public class SingleLeaderboardMenu {
                 .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(31, Locales.getItem(player, "community.leaderboards.sort", name.toLowerCase())
+                .item(31, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase())
                         .click(event -> open(player, gamemode, next)))
 
                 .item(32, Locales.getItem(player, "other.close")

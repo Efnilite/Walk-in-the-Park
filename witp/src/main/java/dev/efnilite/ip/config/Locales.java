@@ -65,9 +65,10 @@ public class Locales {
                             // get locale from file name
                             String locale = file.getName().split("\\.")[0];
 
-                            validate(resource, YamlConfiguration.loadConfiguration(file), file);
+                            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+                            validate(resource, config, file);
 
-                            locales.put(locale, YamlConfiguration.loadConfiguration(file));
+                            locales.put(locale, config);
                         });
                     } catch (IOException throwable) {
                         IP.logging().stack("Error while trying to read locale files", "restart/reload your server", throwable);
@@ -111,11 +112,11 @@ public class Locales {
      *
      * @return a coloured String
      */
-    public static String getString(Player player, String path) {
+    public static String getString(Player player, String path, boolean colour) {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        return getString(locale, path);
+        return getString(locale, path, colour);
     }
 
     /**
@@ -129,7 +130,7 @@ public class Locales {
      *
      * @return a coloured String
      */
-    public static String getString(String locale, String path) {
+    public static String getString(String locale, String path, boolean colour) {
         FileConfiguration base = locales.get(locale);
 
         if (base == null) {
@@ -142,7 +143,7 @@ public class Locales {
             return "";
         }
 
-        return Strings.colour(string);
+        return colour ? Strings.colour(string) : string;
     }
 
     /**

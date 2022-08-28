@@ -384,7 +384,7 @@ public abstract class ParkourUser {
      *          Any objects that may be given to the formatting of the string.
      */
     public void sendTranslated(String key, Object... format) {
-        send(Locales.getString(getLocale(), key).formatted(format));
+        send(Locales.getString(getLocale(), key, false).formatted(format));
     }
 
     /**

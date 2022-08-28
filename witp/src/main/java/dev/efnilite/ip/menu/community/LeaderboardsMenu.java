@@ -8,7 +8,6 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
@@ -27,7 +26,7 @@ public class LeaderboardsMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu gamemode = new PagedMenu(4, Locales.getString(player, "community.leaderboards.name"));
+        PagedMenu gamemode = new PagedMenu(4, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
@@ -67,7 +66,6 @@ public class LeaderboardsMenu {
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleOutAnimation())
                 .open(player);
     }
 }

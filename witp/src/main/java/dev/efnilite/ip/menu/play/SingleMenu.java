@@ -30,7 +30,7 @@ public class SingleMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, "single.name"));
+        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, "play.single.name", false));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();

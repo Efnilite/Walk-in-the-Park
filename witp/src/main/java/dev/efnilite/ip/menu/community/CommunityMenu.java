@@ -19,10 +19,15 @@ public class CommunityMenu extends DynamicMenu {
                 (player, user) -> Locales.getItem(player, "community.leaderboards.item").click(
                         event -> Menus.LEADERBOARDS.open(event.getPlayer())),
                 ParkourOption.LEADERBOARDS::checkPermission);
+
+        registerMainItem(2, 10,
+                (player, user) -> Locales.getItem(player, "other.close")
+                        .click(event -> event.getPlayer().closeInventory()),
+                player -> true);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "community.name"))
+        Menu menu = new Menu(3, Locales.getString(player, "community.name", false))
                 .distributeRowsEvenly()
                 .animation(new WaveWestAnimation())
                 .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE);

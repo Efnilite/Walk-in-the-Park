@@ -4,7 +4,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.Unicodes;
@@ -27,11 +26,11 @@ public class LangMenu {
         }
 
         // init menu
-        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.lang.name"));
+        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.lang.name", false));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Locales.getLocales().keySet()) {
-            Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getItem(lang, "name"));
+            Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name", false));
 
             items.add(item
                     .glowing(user.getLocale().equals(lang))
@@ -56,7 +55,6 @@ public class LangMenu {
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
-                .animation(new WaveEastAnimation())
                 .open(user.player);
     }
 

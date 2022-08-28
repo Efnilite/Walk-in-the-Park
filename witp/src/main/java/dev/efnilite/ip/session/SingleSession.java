@@ -59,7 +59,7 @@ public class SingleSession implements Session {
                     spectator.teleport(watchingPlayer.getLocation());
                 }
             }
-            String string = Locales.getString(bukkitPlayer, "play.spectator.action_bar");
+            String string = Locales.getString(bukkitPlayer, "play.spectator.action_bar", true);
             bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
 
             spectator.updateScoreboard();

@@ -34,6 +34,10 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 /**
  * Main class of Infinite Parkour
  *
@@ -59,6 +63,24 @@ public final class IP extends ViPlugin {
     private static MultiverseHook multiverseHook;
     @Nullable
     private static PlaceholderHook placeholderHook;
+
+    @Override
+    public void onLoad() {
+        File file = new File("plugins/WITP");
+        if (file.exists()) {
+            try {
+                Files.move(file.toPath(), getDataFolder().toPath());
+            } catch (IOException ex) {
+                getLogger().severe("##");
+                getLogger().severe("## New folder migration failed!");
+                getLogger().severe("## Please close any files in the plugins/WITP folder and restart the server.");
+                getLogger().severe("## If this issue persists, please rename the plugins/WITP folder to plugins/IP.");
+                getLogger().severe("##");
+
+                getServer().getPluginManager().disablePlugin(this);
+            }
+        }
+    }
 
     @Override
     public void enable() {
@@ -164,7 +186,7 @@ public final class IP extends ViPlugin {
 
         registerListener(new Handler());
         registerListener(new ChatHandler());
-        registerCommand("witp", new ParkourCommand());
+        registerCommand("ip", new ParkourCommand());
 
         // ----- Metrics -----
 

@@ -28,36 +28,36 @@ public class PlayerManagementMenu {
             return;
         }
 
-        ParkourPlayer player = ParkourPlayer.getPlayer(p);
+        ParkourPlayer viewer = ParkourPlayer.getPlayer(p);
 
-        if (player == null) {
+        if (viewer == null) {
             return;
         }
 
-        Session session = player.getSession();
+        Session session = viewer.getSession();
 
-        PagedMenu menu = new PagedMenu(3, Locales.getString(player.getLocale(), "lobby.manage_players.name"));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name", false));
 
-        for (ParkourPlayer sessionPlayer : session.getPlayers()) {
-            if (sessionPlayer == player) {
+        for (ParkourPlayer otherPlayer : session.getPlayers()) {
+            if (otherPlayer == viewer) {
                 continue;
             }
 
-            Player sessionBukkitPlayer = sessionPlayer.player;
-            Item item = new Item(Material.PLAYER_HEAD, "#4BD16D<bold>" + player.getName());
+            Player sessionBukkitPlayer = otherPlayer.player;
+            Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", viewer.getName());
+            item.material(Material.PLAYER_HEAD);
 
-            boolean muted = session.isMuted(sessionPlayer);
+            boolean muted = session.isMuted(otherPlayer);
 
             List<String> lore = new ArrayList<>();
             if (muted) {
-                lore.add("<dark_gray>Muted in lobby");
-                lore.add("");
-                lore.add("<#8DE5A3>Left click<dark_gray> to kick from lobby");
-                lore.add("<#8DE5A3>Right click<dark_gray> to unmute in lobby");
-            } else {
-                lore.add("<#8DE5A3>Left click<dark_gray> to kick from lobby");
-                lore.add("<#8DE5A3>Right click<dark_gray> to mute in lobby");
+                String[] top = Locales.getString(viewer.getLocale(), "lobby.player_management.head.top", false).split("\\|\\|");
+
+                lore.addAll(List.of(top));
             }
+            String[] bottom = Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom", false).split("\\|\\|");
+
+            lore.addAll(List.of(bottom));
 
             // Player head gathering
             item
@@ -69,18 +69,20 @@ public class PlayerManagementMenu {
                         switch (click) {
                             case LEFT -> {
                                 IP.getDivider().generate(ParkourPlayer.register(sessionBukkitPlayer));
-                                sessionPlayer.send(IP.PREFIX + "You've been kicked from your previous lobby by the lobby owner.");
+                                otherPlayer.send(IP.PREFIX + Locales.getString(otherPlayer.getLocale(), "lobby.player_management.kicked", false));
 
-                                player.send(IP.PREFIX + "Set your lobby visibility to invite-only to avoid people randomly joining.");
+                                viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice", false));
                                 open(p);
                             }
                             case RIGHT -> {
-                                session.setMuted(sessionPlayer, !muted);
+                                session.setMuted(otherPlayer, !muted);
 
                                 if (!muted) {
-                                    sessionPlayer.send(IP.PREFIX + "You've been muted by the lobby owner.");
+                                    otherPlayer.send(IP.PREFIX +
+                                            Locales.getString(otherPlayer.getLocale(), "lobby.player_management.muted", false));
                                 } else {
-                                    sessionPlayer.send(IP.PREFIX + "You've been unmuted by the lobby owner.");
+                                    otherPlayer.send(IP.PREFIX +
+                                            Locales.getString(otherPlayer.getLocale(), "lobby.player_management.unmuted", false));
                                 }
 
                                 open(p);
@@ -93,7 +95,7 @@ public class PlayerManagementMenu {
 
             // bedrock has no player skull support
             if (!Util.isBedrockPlayer(sessionBukkitPlayer)) {
-                if (sessionPlayer.getName() != null && !sessionPlayer.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
+                if (otherPlayer.getName() != null && !otherPlayer.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
                     SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                     if (meta != null) {
@@ -112,7 +114,7 @@ public class PlayerManagementMenu {
                         .click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT)
                         .click(event -> menu.page(1)))
-                .item(22, Locales.getItem(player.getLocale(), "other.close")
+                .item(22, Locales.getItem(viewer.getLocale(), "other.close")
                         .click(event -> event.getPlayer().closeInventory()))
                 .open(p);
     }

@@ -12,9 +12,6 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
 import dev.efnilite.vilib.inventory.PagedMenu;
-import dev.efnilite.vilib.inventory.animation.RandomAnimation;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
-import dev.efnilite.vilib.inventory.animation.WaveEastAnimation;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.inventory.item.SliderItem;
@@ -385,19 +382,18 @@ public class ParkourSettingsMenu extends DynamicMenu {
     public void open(ParkourPlayer user)  {
         Player player = user.player;
 
-        Menu menu = new Menu(4, Locales.getString(player, "settings.name"))
+        Menu menu = new Menu(4, Locales.getString(player, "settings.name", false))
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, Locales.getItem(player, "other.close").click(
                         event -> Menus.SETTINGS.open(event.getPlayer())))
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleOutAnimation());
+                .fillBackground(Material.GRAY_STAINED_GLASS_PANE);
 
         display(player, menu);
     }
 
     public void openStylesMenu(ParkourPlayer user) {
         // init menu
-        Menu menu = new Menu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
+        Menu menu = new Menu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
@@ -428,7 +424,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         // init menu
-        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
+        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -465,7 +461,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new RandomAnimation())
                 .open(user.player);
     }
 
@@ -478,7 +473,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
         // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.getPath() + ".name"));
+        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.getPath() + ".name", false));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
         List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath() + ".values", false);
@@ -572,7 +567,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
                         .click(event -> open(user)))
 
                 .fillBackground(Material.CYAN_STAINED_GLASS_PANE)
-                .animation(new WaveEastAnimation())
                 .open(user.player);
     }
 

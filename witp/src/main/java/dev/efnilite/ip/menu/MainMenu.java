@@ -38,7 +38,7 @@ public class MainMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "main.name"))
+        Menu menu = new Menu(3, Locales.getString(player, "main.name", false))
                 .distributeRowsEvenly()
                 .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation());

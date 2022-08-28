@@ -33,7 +33,7 @@ public class SettingsMenu extends DynamicMenu {
                 player -> ParkourOption.PARKOUR_SETTINGS.checkPermission(player) && ParkourUser.isPlayer(player));
 
         registerMainItem(1, 1,
-                (player, user) -> Locales.getItem(player, "settings.lang.item")
+                (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? user.getLocale() : "?")
                         .click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourOption.LANG.checkPermission(player) && ParkourUser.isUser(player));
 
@@ -88,7 +88,7 @@ public class SettingsMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "settings.name"))
+        Menu menu = new Menu(3, Locales.getString(player, "settings.name", false))
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
                 .distributeRowsEvenly();

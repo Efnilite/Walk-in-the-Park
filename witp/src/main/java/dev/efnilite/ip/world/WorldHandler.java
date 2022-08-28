@@ -117,9 +117,9 @@ public class WorldHandler {
     }
 
     /**
-     * Gets the WITP Bukkit world.
+     * Gets the IP Bukkit world.
      *
-     * @return the Bukkit world wherein WITP is currently active.
+     * @return the Bukkit world wherein IP is currently active.
      */
     public World getWorld() {
         if (world == null) {

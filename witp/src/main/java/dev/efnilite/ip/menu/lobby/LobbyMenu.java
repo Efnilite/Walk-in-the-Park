@@ -8,7 +8,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
 import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
+import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -93,9 +93,9 @@ public class LobbyMenu extends DynamicMenu {
      *          The player to open the menu to
      */
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "lobby.name"))
+        Menu menu = new Menu(3, Locales.getString(player, "lobby.name", false))
             .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
-            .animation(new SplitMiddleOutAnimation())
+            .animation(new SplitMiddleInAnimation())
             .distributeRowsEvenly();
 
         display(player, menu);

@@ -68,7 +68,7 @@ public class ParkourSpectator extends ParkourUser {
 
         Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title"));
+        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title", true));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;

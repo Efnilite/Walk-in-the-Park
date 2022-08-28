@@ -27,7 +27,7 @@ play:
     default:
       material: "barrel"
       name: "<#6693E7><bold>Default"
-      lore: "The default gamemode."
+      lore: "<dark_gray>The default gamemode."
 
   spectator:
     name: '<white>Spectator'
@@ -57,7 +57,7 @@ community:
     lore: ""
 
   leaderboards:
-    name: "Leaderboards"
+    name: "<white>Leaderboards"
 
     item:
       material: "gold_nugget"
@@ -89,7 +89,7 @@ settings:
     item:
       material: "writable_book"
       name: "<#6693E7><bold>Language"
-      lore: "<#5574AF>Currently: <dark_gray>%s"
+      lore: "<dark_gray>Currently: <#5574AF><bold>%s"
 
   chat:
     material: "crossbow"
@@ -105,7 +105,7 @@ settings:
 
     item:
       material: "redstone"
-      name: "<#8CE03F><bold>Parkour Settings"
+      name: "<#A10404><bold>Parkour Settings"
       lore: "<dark_gray>Change the way your parkour appears."
 
     items:
@@ -210,21 +210,33 @@ lobby:
   player_management:
     name: "<white>Manage players"
 
+    kicked: "You've been kicked from your lobby by the lobby owner."
+    advice: "Set your lobby visibility to invite-only or private to avoid people randomly joining."
+    muted: "You've been muted by the lobby owner."
+    unmuted: "You've been unmuted by the lobby owner."
+
     item:
       material: "cake"
       name: "<#8DC9E5><bold>Manage Players"
       lore: "<dark_gray>Kick or mute players here."
+
+    head:
+      material: ""
+      name: "<#4BD16D><bold>%s"
+      lore: ""
+      top: "<dark_gray>Muted in lobby||"
+      footer: "<#8DE5A3>Left click<dark_gray> to kick from lobby||<#8DE5A3>Right click<dark_gray> to (un)mute in lobby"
 
 scoreboard:
 
   title: "<#FF6464><bold>Infinite Parkour"
 
   lines:
-    - "&a"
+    - "<blue>"
     - "<#F6A8A8>Score <white>%score%"
     - "<#F6A8A8>Time <white>%time%"
     - "<#F6A8A8>Highscore <white>%highscore%"
-    - "&b"
+    - "<red>"
     - "<dark_gray>%session%"
     - "<#FDD5D5><bold>server.ip"
 
