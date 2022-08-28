@@ -116,6 +116,7 @@ public class PlayerManagementMenu {
                         .click(event -> menu.page(1)))
                 .item(22, Locales.getItem(viewer.getLocale(), "other.close")
                         .click(event -> event.getPlayer().closeInventory()))
+                .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }
 }

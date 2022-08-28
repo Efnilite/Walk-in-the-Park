@@ -273,8 +273,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             previousSpecial = null;
         }
 
-
-
         // handle special jumps that depend on the current block type
         if (currentSpecial != null) {
             switch (currentSpecial) {

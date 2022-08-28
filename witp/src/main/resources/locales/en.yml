@@ -30,13 +30,13 @@ play:
       lore: "<dark_gray>The default gamemode."
 
   spectator:
-    name: '<white>Spectator'
+    name: "<white>Spectator"
 
-    join: '<#4CB3FF>You are now a spectator. You can use "/parkour" to leave/change your gamemode.'
-    action_bar: '<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use "/parkour" to leave.'
+    join: "<#4CB3FF>You are now a spectator. You can use "/parkour" to leave/change your gamemode."
+    action_bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use "/parkour" to leave."
 
-    other_join: '<dark_green><bold>+ <gray>%s started spectating you'
-    other_leave: '<red><bold>- <gray>%s stopped spectating you'
+    other_join: "<dark_green><bold>+ <gray>%s started spectating you"
+    other_leave: "<red><bold>- <gray>%s stopped spectating you"
 
     item:
       material: "glass"
@@ -61,8 +61,8 @@ community:
 
     item:
       material: "gold_nugget"
-      name: "<#6693E7><bold>Leaderboard"
-      lore: "<#5574AF>Your rank: <dark_gray>#%s"
+      name: "<#6693E7><bold>Leaderboards"
+      lore: ""
 
     sort:
       material: "bookshelf"
@@ -163,10 +163,10 @@ settings:
           name: "Show fall message"
           lore: "<gray>Currently: %s||<gray>If enabled shows a message when you fall||<gray>with extra info."
 
-        divider: '<dark_gray><strikethrough>-----------------------------------'
-        score: '<#80C7FD><bold>Score <white>%s'
-        time: '<#80C7FD><bold>Time <white>%s'
-        high_score: '<#80C7FD><bold>High-score <white>%s'
+        divider: "<dark_gray><strikethrough>-----------------------------------"
+        score: "<#80C7FD><bold>Score <reset><white>%s"
+        time: "<#80C7FD><bold>Time <reset><white>%s"
+        high_score: "<#80C7FD><bold>High-score <reset><white>%s"
 
         formats:
           miss: "<gray>You missed your high score by %s points!"

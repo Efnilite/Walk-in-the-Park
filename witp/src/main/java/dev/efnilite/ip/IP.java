@@ -13,6 +13,7 @@ import dev.efnilite.ip.hook.PlaceholderHook;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.internal.style.DefaultStyleType;
+import dev.efnilite.ip.legacy.LegacyFolderMigration;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.session.chat.ChatHandler;
@@ -33,10 +34,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 /**
  * Main class of Infinite Parkour
@@ -66,26 +63,13 @@ public final class IP extends ViPlugin {
 
     @Override
     public void onLoad() {
-        File file = new File("plugins/WITP");
-        if (file.exists()) {
-            try {
-                Files.move(file.toPath(), getDataFolder().toPath());
-            } catch (IOException ex) {
-                getLogger().severe("##");
-                getLogger().severe("## New folder migration failed!");
-                getLogger().severe("## Please close any files in the plugins/WITP folder and restart the server.");
-                getLogger().severe("## If this issue persists, please rename the plugins/WITP folder to plugins/IP.");
-                getLogger().severe("##");
+        instance = this;
 
-                getServer().getPluginManager().disablePlugin(this);
-            }
-        }
+        LegacyFolderMigration.migrate();
     }
 
     @Override
     public void enable() {
-        instance = this;
-
         // ----- Check vilib -----
 
         Plugin vilib = getServer().getPluginManager().getPlugin("vilib");
