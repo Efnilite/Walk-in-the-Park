@@ -50,7 +50,7 @@ public class ParkourSpectator extends ParkourUser {
             player.setCollidable(false);
         }
 
-        sendTranslated("spectator");
+        sendTranslated("play.spectator.join");
         runClosestChecker();
     }
 

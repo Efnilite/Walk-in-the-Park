@@ -369,7 +369,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // Always allow closing of the menu
         registerMainItem(3, 10,
                 (player, user) -> Locales.getItem(player, "other.close")
-                        .click(event -> event.getPlayer().closeInventory()),
+                        .click(event -> Menus.SETTINGS.open(event.getPlayer())),
                 player -> true);
     }
 
@@ -393,7 +393,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     public void openStylesMenu(ParkourPlayer user) {
         // init menu
-        Menu menu = new Menu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
+        Menu menu = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
@@ -406,7 +406,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         menu
                 .distributeRowEvenly(1)
 
-                .item(31, Locales.getItem(user.getLocale(), "other.close")
+                .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
@@ -424,7 +424,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         // init menu
-        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -451,13 +451,13 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .displayRows(0, 1)
                 .addToDisplay(items)
 
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> style.page(1)))
 
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(31, Locales.getItem(user.getLocale(), "other.close")
+                .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

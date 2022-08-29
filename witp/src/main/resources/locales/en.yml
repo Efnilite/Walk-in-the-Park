@@ -32,8 +32,8 @@ play:
   spectator:
     name: "<white>Spectator"
 
-    join: "<#4CB3FF>You are now a spectator. You can use "/parkour" to leave/change your gamemode."
-    action_bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use "/parkour" to leave."
+    join: "<#4CB3FF>You are now a spectator. You can use \"/parkour\" to leave/change your gamemode."
+    action_bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use \"/parkour\" to leave."
 
     other_join: "<dark_green><bold>+ <gray>%s started spectating you"
     other_leave: "<red><bold>- <gray>%s stopped spectating you"
@@ -198,7 +198,7 @@ lobby:
 
   item:
     material: "iron_ingot"
-    name: "<#EB608C><bold>Lobby"
+    name: "<#EB608C><bold>Your Lobby"
     lore: ""
 
   visibility:
@@ -225,7 +225,7 @@ lobby:
       name: "<#4BD16D><bold>%s"
       lore: ""
       top: "<dark_gray>Muted in lobby||"
-      footer: "<#8DE5A3>Left click<dark_gray> to kick from lobby||<#8DE5A3>Right click<dark_gray> to (un)mute in lobby"
+      bottom: "<#8DE5A3>Left click<dark_gray> to kick from lobby||<#8DE5A3>Right click<dark_gray> to (un)mute in lobby"
 
 scoreboard:
 
@@ -238,7 +238,7 @@ scoreboard:
     - "<#F6A8A8>Highscore <white>%highscore%"
     - "<red>"
     - "<dark_gray>%session%"
-    - "<#FDD5D5><bold>server.ip"
+    - "<#FF6464><bold>server.ip"
 
 other:
 

@@ -36,7 +36,7 @@ public class SingleLeaderboardMenu {
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
-        PagedMenu menu = new PagedMenu(4, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
 
         List<MenuItem> items = new ArrayList<>();
 
@@ -112,16 +112,16 @@ public class SingleLeaderboardMenu {
                 .displayRows(0, 1)
                 .addToDisplay(items)
 
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> menu.page(1)))
 
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(31, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase())
+                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase())
                         .click(event -> open(player, gamemode, next)))
 
-                .item(32, Locales.getItem(player, "other.close")
+                .item(23, Locales.getItem(player, "other.close")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
                 .fillBackground(Material.GRAY_STAINED_GLASS_PANE)

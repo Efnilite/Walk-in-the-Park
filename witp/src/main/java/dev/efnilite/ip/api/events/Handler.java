@@ -154,7 +154,7 @@ public class Handler implements EventWatcher {
                     }
                 }
                 event.setCancelled(true);
-                user.sendTranslated("cant-do");
+                user.sendTranslated("other.no_do");
             }
         }
     }

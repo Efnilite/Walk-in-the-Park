@@ -44,7 +44,7 @@ public class SingleMenu {
             Item item = gm.getItem(locale);
             items.add(item.clone()
                     .click(event -> {
-                        if (Cooldowns.passes(player.getUniqueId(), "switch gamemode", 5000)) {
+                        if (Cooldowns.passes(player.getUniqueId(), "switch gamemode", 3000)) {
                             gm.click(player);
                         }
                     }));

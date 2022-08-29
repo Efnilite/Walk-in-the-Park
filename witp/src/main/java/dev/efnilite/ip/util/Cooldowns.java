@@ -1,9 +1,6 @@
 package dev.efnilite.ip.util;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class for administering and handling cooldowns.
@@ -38,9 +35,10 @@ public class Cooldowns {
     public static boolean passes(UUID uuid, String key, long cooldownMs) {
         long now = System.currentTimeMillis();
 
+        List<CooldownContainer> containers;
         if (cooldowns.containsKey(uuid)) {
 
-            List<CooldownContainer> containers = cooldowns.get(uuid);
+            containers = cooldowns.get(uuid);
 
             for (CooldownContainer container : containers) {
                 if (container.key.equalsIgnoreCase(key)) {
@@ -54,12 +52,12 @@ public class Cooldowns {
                 }
             }
 
-            containers.add(new CooldownContainer(key, now));
-            cooldowns.put(uuid, containers);
         } else {
-            cooldowns.put(uuid, List.of(new CooldownContainer(key, now)));
-
+            containers = new ArrayList<>();
         }
+
+        containers.add(new CooldownContainer(key, now));
+        cooldowns.put(uuid, containers);
         return true;
     }
 

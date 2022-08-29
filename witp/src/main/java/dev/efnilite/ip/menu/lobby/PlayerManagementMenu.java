@@ -2,6 +2,7 @@ package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
+import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -44,7 +45,7 @@ public class PlayerManagementMenu {
             }
 
             Player sessionBukkitPlayer = otherPlayer.player;
-            Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", viewer.getName());
+            Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", otherPlayer.getName());
             item.material(Material.PLAYER_HEAD);
 
             boolean muted = session.isMuted(otherPlayer);
@@ -115,7 +116,7 @@ public class PlayerManagementMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT)
                         .click(event -> menu.page(1)))
                 .item(22, Locales.getItem(viewer.getLocale(), "other.close")
-                        .click(event -> event.getPlayer().closeInventory()))
+                        .click(event -> Menus.LOBBY.open(event.getPlayer())))
                 .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }

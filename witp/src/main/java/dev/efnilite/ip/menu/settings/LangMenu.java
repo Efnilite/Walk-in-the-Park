@@ -26,7 +26,7 @@ public class LangMenu {
         }
 
         // init menu
-        PagedMenu style = new PagedMenu(4, Locales.getString(user.getLocale(), "settings.lang.name", false));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), "settings.lang.name", false));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Locales.getLocales().keySet()) {
@@ -45,13 +45,13 @@ public class LangMenu {
                 .displayRows(0, 1)
                 .addToDisplay(items)
 
-                .nextPage(35, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> style.page(1)))
 
-                .prevPage(27, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(31, Locales.getItem(user.getLocale(), "other.close")
+                .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
                 .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)

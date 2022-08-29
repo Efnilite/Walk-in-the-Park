@@ -34,12 +34,12 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public void create(Player player) {
-        player.closeInventory();
-
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp != null && pp.getGenerator() instanceof DefaultGenerator) {
             return;
         }
+        player.closeInventory();
+
 
         ParkourUser.joinDefault(player);
     }
