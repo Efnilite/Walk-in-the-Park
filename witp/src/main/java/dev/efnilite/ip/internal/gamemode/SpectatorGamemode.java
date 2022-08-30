@@ -38,7 +38,7 @@ public class SpectatorGamemode implements Gamemode {
         ParkourSpectator spectator;
 
         if (user != null) {
-            ParkourUser.unregister(user, false, false, true);
+            ParkourUser.unregister(user, false, false, true, true);
             spectator = new ParkourSpectator(player, session, user.previousData);
         } else {
             spectator = new ParkourSpectator(player, session, null);

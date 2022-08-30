@@ -190,7 +190,7 @@ public final class IP extends ViPlugin {
     @Override
     public void disable() {
         for (ParkourUser user : ParkourUser.getUsers()) {
-            ParkourUser.unregister(user, true, false, false);
+            ParkourUser.unregister(user, true, false, false, true);
         }
 
         // write all IP gamemodes

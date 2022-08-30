@@ -138,7 +138,7 @@ public abstract class ParkourUser {
         ParkourUser existing = getUser(player);
         if (existing != null) {
             data = existing.previousData;
-            unregister(existing, false, false, true);
+            unregister(existing, false, false, true, true);
         }
 
         return ParkourPlayer.register0(new ParkourPlayer(player, data));
@@ -162,16 +162,16 @@ public abstract class ParkourUser {
 
     /**
      * Makes a player leave. This sends a leave message to all other active Parkour players.
-     * This uses {@link #unregister(ParkourUser, boolean, boolean, boolean)}, but with preset values.
+     * This uses {@link #unregister(ParkourUser, boolean, boolean, boolean, boolean)}, but with preset values.
      * Leaving always makes the player go back to their previous position, they will always be kicked if this plugin
      * is running Bungeecord mode, and their data will always be automatically saved. If you want to unregister a
-     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean, boolean)}.
+     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean, boolean, boolean)}.
      *
      * @param   user
      *          The user instance
      */
     public static void leave(@NotNull ParkourUser user) {
-        unregister(user, true, true, true);
+        unregister(user, true, true, true, true);
     }
 
     /**
@@ -190,13 +190,13 @@ public abstract class ParkourUser {
      *          Whether to save player data asynchronously. This is recommended to be true
      *          at all times, unless your plugin is in the process of disabling.
      */
-    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
-        unregister0(user, restorePreviousData, kickIfBungee, saveAsync);
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync, boolean forceLeave) {
+        unregister0(user, restorePreviousData, kickIfBungee, saveAsync, forceLeave);
     }
 
     // Internal unregistering service
     @ApiStatus.Internal
-    protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
+    protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync, boolean forceLeave) {
         Player pl = user.player;
 
         try {
@@ -214,7 +214,9 @@ public abstract class ParkourUser {
 
                     session.removePlayers(pp);
 
-                    remaining = session.getPlayers().size();
+                    if (!forceLeave) {
+                        remaining = session.getPlayers().size();
+                    }
 
                     for (ParkourSpectator spectator : session.getSpectators()) {
                         ParkourPlayer spp = ParkourPlayer.register(spectator.player);
