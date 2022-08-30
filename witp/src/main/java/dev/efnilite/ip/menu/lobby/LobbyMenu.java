@@ -22,11 +22,11 @@ public class LobbyMenu extends DynamicMenu {
             (player, user) -> Locales.getItem(player, "lobby.player_management.item")
                     .click(event -> Menus.PLAYER_MANAGEMENT.open(player)),
             player -> {
-                ParkourPlayer pp = ParkourPlayer.getPlayer(player);
+                ParkourUser user = ParkourUser.getUser(player);
 
                 return ParkourOption.PLAYER_MANAGEMENT.checkPermission(player) &&
-                        pp != null &&
-                        pp.getSession().getPlayers().get(0) == pp;
+                        user instanceof ParkourPlayer &&
+                        user.getSession().getPlayers().get(0) == user;
             }
         );
 
@@ -75,8 +75,8 @@ public class LobbyMenu extends DynamicMenu {
                 ParkourUser user = ParkourUser.getUser(player);
 
                 return ParkourOption.VISIBILITY.checkPermission(player) &&
-                        user != null &&
-                        user.getSession().getPlayers().get(0) == user; // only if player is the owner
+                        user instanceof ParkourPlayer &&
+                        user.getSession().getPlayers().get(0) == user;
             });
 
         // Always allow closing of the menu

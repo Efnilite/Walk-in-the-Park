@@ -72,8 +72,8 @@ community:
 
     head:
       material: ""
-      name: "<#6693E7><bold>#%s - %s"
-      lore: "<#5574AF>Score: <dark_gray>%s||<#5574AF>Time: <gray>%s||<#5574AF>Difficulty: <gray>%s<dark_gray>/1.0"
+      name: "<#6693E7><bold>#%r - %p"
+      lore: "<#5574AF>Score: <gray>%s||<#5574AF>Time: <gray>%t||<#5574AF>Difficulty: <gray>%d<dark_gray>/1.0"
 
 settings:
   name: "<white>Settings"

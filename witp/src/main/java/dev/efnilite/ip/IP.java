@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class IP extends ViPlugin {
 
-    public static final String NAME = "<#FF6464><bold>Infinite Parkour";
+    public static final String NAME = "<#FF6464><bold>Infinite Parkour<reset>";
     public static final String PREFIX = NAME + " <dark_gray>» <gray>";
     public static final String REQUIRED_VILIB_VERSION = "1.1.0";
 

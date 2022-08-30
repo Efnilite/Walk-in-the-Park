@@ -2,6 +2,7 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.MultiGamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -203,8 +204,18 @@ public abstract class ParkourUser {
 
             if (user instanceof ParkourPlayer pp) {
                 ParkourGenerator generator = pp.getGenerator();
+
+                int remaining = 0;
                 // remove spectators
                 if (session != null) {
+                    if (session.getGamemode() instanceof MultiGamemode gamemode) {
+                        gamemode.leave(pl, session);
+                    }
+
+                    session.removePlayers(pp);
+
+                    remaining = session.getPlayers().size();
+
                     for (ParkourSpectator spectator : session.getSpectators()) {
                         ParkourPlayer spp = ParkourPlayer.register(spectator.player);
                         IP.getDivider().generate(spp);
@@ -215,9 +226,15 @@ public abstract class ParkourUser {
 
                 pp.setCollides(true);
 
-                // reset generator (remove blocks) and delete island
-                generator.reset(false);
-                IP.getDivider().leave(pp);
+                if (remaining == 0) {
+                    // reset generator (remove blocks) and delete island
+                    generator.reset(false);
+                    IP.getDivider().leave(pp);
+
+                    if (session != null) {
+                        session.unregister();
+                    }
+                }
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
                 spectator.stopClosestChecker();

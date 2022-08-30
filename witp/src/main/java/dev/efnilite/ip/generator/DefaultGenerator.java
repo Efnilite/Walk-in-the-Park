@@ -130,16 +130,16 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void updateScoreboard() {
+        // board can be null a few ticks after on player leave
+        if (player == null || player.board == null | player.board.isDeleted()) {
+            return;
+        }
+
         if (!(boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
             return;
         }
 
         if (!profile.getValue("showScoreboard").asBoolean()) {
-            return;
-        }
-
-        // board can be null a few ticks after on player leave
-        if (player.board == null) {
             return;
         }
 

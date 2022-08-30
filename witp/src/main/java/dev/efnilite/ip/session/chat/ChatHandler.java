@@ -26,6 +26,10 @@ public class ChatHandler implements Listener {
 
         Session session = user.getSession();
 
+        if (session.isMuted(user)) {
+            return;
+        }
+
         switch (user.chatType) {
             case LOBBY_ONLY -> {
                 event.setCancelled(true);
