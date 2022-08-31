@@ -29,15 +29,14 @@ public class WorldHandler {
             return;
         }
 
-        if (world == null) { // on crash prevent loading twice
-            deleteWorld();
-            create();
-        } else {
-            this.world = world;
+        if (world != null) {
             IP.logging().warn("## ");
-            IP.logging().warn("## Crash detected! If there are any blocks left in the Parkour world, reload your server.");
+            IP.logging().warn("## Crash detected! Please note that the parkour world loading twice is not usual behaviour.");
+            IP.logging().warn("## This only happens after a server crash.");
             IP.logging().warn("## ");
         }
+        deleteWorld();
+        create();
     }
 
     private void create() {
