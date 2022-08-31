@@ -111,7 +111,7 @@ settings:
     items:
 
       no_change:
-        material: ""
+        material: "barrier"
         name: "<dark_red><bold>You cant change this right now!"
         lore: "<gray>You have a score above 0,||<gray>which means you cant change this setting."
 
@@ -148,7 +148,7 @@ settings:
         name: "<white>Schematics"
 
         item:
-          material: ""
+          material: "scaffolding"
           name: "<#6693E7><bold>Schematics"
           lore: "<gray>Change schematic settings"
 
