@@ -1,0 +1,257 @@
+# Dutch (Nederlands, nl)
+# By Efnilite
+# Copy this file and rename it to add your own language!
+# Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Learn more about colouring: https://docs.adventure.kyori.net/minimessage/format.html#format
+
+name: "Nederlands"
+
+main:
+  name: "<white>Parkour"
+
+play:
+  name: "<white>Spelen"
+
+  item:
+    material: "sugar_cane"
+    name: "<#60EB76><bold>Spelen"
+    lore: ""
+
+  single:
+    name: "<white>Alleen"
+
+    item:
+      material: "ender_pearl"
+      name: "<#6E92B1><bold>Alleen spelen"
+      lore: ""
+
+    default:
+      material: "barrel"
+      name: "<#6693E7><bold>Normaal"
+      lore: "<dark_gray>De normale mode."
+
+  spectator:
+    name: "<white>Toekijker"
+
+    join: "<#4CB3FF>Je bent nu een toekijker. Gebruik \"/parkour\" om te leaven of iets anders te doen."
+    action_bar: "<#4CB3FF>Je bent een toekijker <gray>• <#4CB3FF>Gebruik \"/parkour\" om te leaven."
+
+    other_join: "<dark_green><bold>+ <gray>%s is je nu aan het toekijken."
+    other_leave: "<red><bold>- <gray>%s is gestopt met je toe te kijken."
+
+    item:
+      material: "glass"
+      name: "<#39D5AB><bold>Toekijker"
+      lore: ""
+
+    head:
+      material: ""
+      name: "<#6693E7><bold>%s"
+      lore: ""
+
+community:
+  name: "<white>Gemeenschap"
+
+  item:
+    material: "oak_boat"
+    name: "<#60C9DF><bold>Gemeenschap"
+    lore: ""
+
+  leaderboards:
+    name: "<white>Klassementen"
+
+    item:
+      material: "gold_nugget"
+      name: "<#6693E7><bold>Klassementen"
+      lore: ""
+
+    sort:
+      material: "bookshelf"
+      name: "<#DEA11F><bold>Sorteren op %s"
+      lore: ""
+      values: ["score", "tijd", "moeilijkheid"]
+
+    head:
+      material: ""
+      name: "<#6693E7><bold>#%r - %p"
+      lore: "<#5574AF>Score: <gray>%s||<#5574AF>Tijd: <gray>%t||<#5574AF>Moeilijkheid: <gray>%d<dark_gray>/1.0"
+
+settings:
+  name: "<white>Instellingen"
+
+  item:
+    material: "comparator"
+    name: "<#6086EB><bold>Instellingen"
+    lore: ""
+
+  lang:
+    name: "<white>Taal"
+
+    item:
+      material: "writable_book"
+      name: "<#6693E7><bold>Taal"
+      lore: "<dark_gray>Huidige waarde: <#5574AF><bold>%s"
+
+  chat:
+    material: "crossbow"
+    name: "<#20C6BC><bold>Chat"
+    lore: "<dark_gray>Huidige waarde: <#17B2CE><bold>%s||<dark_gray>Selecteer met wie je kan praten"
+    values: ["alleen met lobby", "alleen met spelers", "publiek"]
+
+    formats:
+      lobby: "<#8A1010>(Lobby) <#BE0D0D>%s <dark_gray>> <gray>%s"
+      players: "<#8A1010>(Spelers) <#BE0D0D>%s <dark_gray>> <gray>%s"
+
+  parkour_settings:
+
+    item:
+      material: "redstone"
+      name: "<#A10404><bold>Parkourinstellingen"
+      lore: "<dark_gray>Verander de manier waarop het parkour verschijnt."
+
+    items:
+
+      no_change:
+        material: "barrier"
+        name: "<dark_red><bold>Je mag dit nu niet doen!"
+        lore: "<gray>Je hebt een score die hoger is dan 0,||<gray>wat betekent dat je dit niet mag veranderen."
+
+      styles:
+        name: "<white>Stijlen"
+
+        item:
+          material: "crafting_table"
+          name: "<#6693E7><bold>Stijl"
+          lore: "<#5574AF>Huidige waarde: <gray>%s||<gray>Selecteer welke blokken worden gebruikt."
+
+      leads:
+        material: "feather"
+        name: "<#6693E7><bold>Voorsprong"
+        lore: "<#5574AF>Huidige waarde: <gray>%s blocks||<gray>Hoeveel blokken er voor je||<gray>zullen verschijnen."
+
+      time:
+        material: "clock"
+        name: "<#6693E7><bold>Tijd"
+        lore: "<#5574AF>Huidige waarde: <gray>%s||<gray>Je huidige visuele tijd."
+
+      schematic_difficulty:
+        material: ""
+        name: "<#6693E7><bold>Schematicmoeilijkheid"
+        lore: "<#5574AF>Huidige waarde: <gray>%s||<gray>De moeilijkheid van de schematics"
+        values: ["makkelijk", "medium", "moeilijk", "erg moeilijk"]
+
+      schematic_use:
+        material: ""
+        name: "Schematics gebuiken"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat zullen er schematics||<gray>in het parkour verschijnen."
+
+      schematic:
+        name: "<white>Schematics"
+
+        item:
+          material: "scaffolding"
+          name: "<#6693E7><bold>Schematics"
+          lore: "<gray>Verander de instellingen van schematics"
+
+      scoreboard:
+        material: ""
+        name: "Scoreboard laten zien"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat kan je het scoreboard zien."
+
+      fall_message:
+        item:
+          material: ""
+          name: "Valbericht laten zien"
+          lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat krijg je een bericht||<gray>met extra info."
+
+        divider: "<dark_gray><strikethrough>-----------------------------------"
+        score: "<#80C7FD><bold>Score <reset><white>%s"
+        time: "<#80C7FD><bold>Tijd <reset><white>%s"
+        high_score: "<#80C7FD><bold>High-score <reset><white>%s"
+
+        formats:
+          miss: "<gray>Je hebt je high-score gemist met %s punten!"
+          beat: "<gray>Je hebt je high-score verslagen met %s punten!"
+          tied: "<gray>Je hebt dezelfde score gekregen als je high-score!"
+
+      particles:
+        material: ""
+        name: "Particles laten zien"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat zal elk blok||<gray>particles laten zien."
+
+      sound:
+        material: ""
+        name: "Geluid"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat zal elk blok||<gray>een geluid afspelen."
+
+      special_blocks:
+        material: ""
+        name: "Speciale blokken gebruiken"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat komen speciale blokken||<gray>zoals ice and slabs in het parkour voor."
+
+      score_difficulty:
+        material: ""
+        name: "Scoremoeilijkheid"
+        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat zorgt een hogere score||<gray>voor moeilijkere jumps."
+
+lobby:
+  name: "<white>Lobby"
+
+  item:
+    material: "iron_ingot"
+    name: "<#EB608C><bold>Jouw Lobby"
+    lore: ""
+
+  visibility:
+    material: "firework_rocket"
+    name: "<#A1E1DD><bold>Zichtbaarheid"
+    lore: "<dark_gray>Huidige waarde: <#2BD4E2><bold>%s||<dark_gray>Selecteer wie jouw lobby kan joinen."
+    values: ["privé", "alleen met invites", "publiek"]
+
+  player_management:
+    name: "<white>Spelers beheren"
+
+    kicked: "Je bent uit je vorige lobby gegooid door de eigenaar van de lobby."
+    advice: "Zet je lobbyzichtbaarheid naar alleen met invite of privé om te voorkomen dat willekeurige mensen joinen."
+    muted: "Je bent door de eigenaar van de lobby gemute."
+    unmuted: "Je bent door de eigenaar van de lobby ge-unmute."
+
+    item:
+      material: "cake"
+      name: "<#8DC9E5><bold>Spelers beheren"
+      lore: "<dark_gray>Hier kan je spelers kicken of muten."
+
+    head:
+      material: ""
+      name: "<#4BD16D><bold>%s"
+      lore: ""
+      top: "<dark_gray>Gemute in deze lobby||"
+      bottom: "<#8DE5A3>Klik met links<dark_gray> om deze speler de lobby uit te gooien.||<#8DE5A3>Klik met rechts<dark_gray> om deze speler te (un)muten."
+
+scoreboard:
+
+  title: "<#FF6464><bold>Infinite Parkour"
+
+  lines:
+    - "<blue>"
+    - "<#F6A8A8>Score <white>%score%"
+    - "<#F6A8A8>Tijd <white>%time%"
+    - "<#F6A8A8>High-score <white>%highscore%"
+    - "<red>"
+    - "<dark_gray>%session%"
+    - "<#FF6464><bold>server.ip"
+
+other:
+
+  no_do: "<gray>Dit kan je nu niet doen."
+  customize: "<gray>Verander je parkourervaring met \"/parkour\""
+
+  quit:
+    material: "barrier"
+    name: "<#D71F1F><bold>Stoppen"
+    lore: ""
+
+  close:
+    material: "arrow"
+    name: "<#F5A3A3><bold>Sluiten"
+    lore: ""
