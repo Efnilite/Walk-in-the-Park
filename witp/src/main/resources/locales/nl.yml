@@ -36,8 +36,8 @@ play:
     join: "<#4CB3FF>Je bent nu een toekijker. Gebruik \"/parkour\" om te leaven of iets anders te doen."
     action_bar: "<#4CB3FF>Je bent een toekijker <gray>• <#4CB3FF>Gebruik \"/parkour\" om te leaven."
 
-    other_join: "<dark_green><bold>+ <gray>%s is je nu aan het toekijken."
-    other_leave: "<red><bold>- <gray>%s is gestopt met je toe te kijken."
+    other_join: "<dark_green><bold>+ <reset><gray>%s is je nu aan het toekijken."
+    other_leave: "<red><bold>- <reset><gray>%s is gestopt met je toe te kijken."
 
     item:
       material: "glass"
