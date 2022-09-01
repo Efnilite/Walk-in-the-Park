@@ -1,5 +1,7 @@
 package dev.efnilite.ip.session.chat;
 
+import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
@@ -20,7 +22,7 @@ public class ChatHandler implements Listener {
 
         ParkourUser user = ParkourUser.getUser(sender);
 
-        if (user == null || user.getSession() == null) {
+        if (!((boolean) Option.OPTIONS_ENABLED.get(ParkourOption.CHAT)) || user == null || user.getSession() == null) {
             return;
         }
 

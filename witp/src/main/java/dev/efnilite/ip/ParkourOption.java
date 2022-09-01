@@ -87,9 +87,9 @@ public enum ParkourOption {
      * @return true if the permissible is allowed to view/perform this option, false if not.
      */
     public boolean check(Permissible permissible) {
-        Object value = Option.OPTIONS_DEFAULTS.getOrDefault(this, true);
+        Object value = Option.OPTIONS_ENABLED.getOrDefault(this, true);
 
-        return !checkPermission(permissible) || (!(value instanceof Boolean)) || (boolean) value;
+        return !checkPermission(permissible) || value == null || (boolean) value;
     }
 
     public String getPath() {

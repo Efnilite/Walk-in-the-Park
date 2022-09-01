@@ -79,7 +79,7 @@ public class SettingsMenu extends DynamicMenu {
                                 return true;
                             });
                 },
-                player -> ParkourOption.CHAT.checkPermission(player) && ParkourUser.isUser(player));
+                player -> ParkourOption.CHAT.check(player) && ParkourUser.isUser(player));
 
         registerMainItem(2, 0,
                 (player, user) -> Locales.getItem(player, "other.close")
