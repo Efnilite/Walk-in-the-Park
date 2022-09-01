@@ -138,7 +138,7 @@ public class ParkourPlayer extends ParkourUser {
     private <T> T orDefault(T value, T def, @Nullable ParkourOption option) {
         // check for null default values
         if (def == null) {
-            IP.logging().stack("Default value is null!", "Please see if there are any errors above. Check your items-v3.yml.");
+            IP.logging().stack("Default value is null!", "Please see if there are any errors above. Check your config.");
         }
 
         // if option is disabled, return the default value
@@ -298,7 +298,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private static boolean translateSqlBoolean(String string) {
-        return string.equals("1");
+        return string == null || string.equals("1");
     }
 
     @Nullable
