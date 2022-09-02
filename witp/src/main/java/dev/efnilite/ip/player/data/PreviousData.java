@@ -4,7 +4,6 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardString;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -87,8 +86,7 @@ public class PreviousData {
 
             if (teleportBack) {
                 if (Option.GO_BACK) {
-                    Location to = Util.parseLocation(IP.getConfiguration().getString("config", "bungeecord.go-back"));
-                    player.teleport(to);
+                    player.teleport(Option.GO_BACK_LOC);
                 } else {
                     player.teleport(location);
                 }

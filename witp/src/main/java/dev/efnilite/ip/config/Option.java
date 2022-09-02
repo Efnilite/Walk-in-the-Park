@@ -2,7 +2,9 @@ package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,6 +53,8 @@ public class Option {
     public static boolean DELETE_ON_RELOAD;
     public static String WORLD_NAME;
 
+    public static Location GO_BACK_LOC;
+
     public static void init(boolean firstLoad) {
         generation = IP.getConfiguration().getFile("generation");
         config = IP.getConfiguration().getFile("config");
@@ -59,6 +63,11 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
+
+        GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));
+        String[] axes = config.getString("bungeecord.go-back-axes").split(",");
+        GO_BACK_LOC.setPitch(Float.parseFloat(axes[0]));
+        GO_BACK_LOC.setYaw(Float.parseFloat(axes[1]));
 
         // General settings
         AUTO_UPDATER = config.getBoolean("auto-updater");

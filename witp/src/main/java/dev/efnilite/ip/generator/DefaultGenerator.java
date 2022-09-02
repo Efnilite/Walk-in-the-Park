@@ -131,7 +131,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     @Override
     public void updateScoreboard() {
         // board can be null a few ticks after on player leave
-        if (player == null || player.board == null | player.board.isDeleted()) {
+        if (player == null || player.board == null || player.board.isDeleted()) {
             return;
         }
 

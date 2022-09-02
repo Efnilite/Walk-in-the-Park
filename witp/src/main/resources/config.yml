@@ -53,6 +53,11 @@ bungeecord:
   # Syntax: '(x,y,z,worldName)'
   go-back: '(0,100,0,world)'
 
+  # -= Go back axes =-
+  # Sets the pitch and yaw of the go-back location.
+  # The first argument is the pitch, second yaw.
+  go-back-axes: '0,0'
+
 # -= MySQL =-
 # The options for using MySQL as storage.
 sql:
