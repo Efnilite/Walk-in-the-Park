@@ -86,8 +86,8 @@ public class SingleSession implements Session {
             }
 
             this.spectators.remove(spectator.getUUID());
-            unregister();
         }
+        unregister();
     }
 
     @Override
@@ -114,6 +114,7 @@ public class SingleSession implements Session {
         for (ParkourPlayer player : players) {
             this.players.remove(player.getUUID());
         }
+        unregister();
     }
 
     @Override

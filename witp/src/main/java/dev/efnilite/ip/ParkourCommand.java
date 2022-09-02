@@ -227,6 +227,11 @@ public class ParkourCommand extends ViCommand {
                     if (session == null) {
                         Util.send(sender, IP.PREFIX + "Unknown lobby! Try typing the code again."); // could not find, so go to default
                     } else {
+                        ParkourUser user = ParkourUser.getUser(player);
+                        if (user != null && user.getSession().getSessionId().equals(type)) {
+                            return true;
+                        }
+
                         session.join(player);
                     }
                 } else {

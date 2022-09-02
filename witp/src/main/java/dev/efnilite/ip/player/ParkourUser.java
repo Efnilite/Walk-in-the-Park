@@ -232,10 +232,6 @@ public abstract class ParkourUser {
                     // reset generator (remove blocks) and delete island
                     generator.reset(false);
                     IP.getDivider().leave(pp);
-
-                    if (session != null) {
-                        session.unregister();
-                    }
                 }
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
