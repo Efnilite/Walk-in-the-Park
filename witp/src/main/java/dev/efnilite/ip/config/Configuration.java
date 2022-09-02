@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -143,6 +144,9 @@ public class Configuration {
                         IP.logging().info("Downloaded all schematics");
                     } catch (FileAlreadyExistsException ex) {
                         // do nothing
+                    } catch (UnknownHostException ex) {
+                        IP.logging().stack("Stopped download of schematics",
+                                "join the Discord and send this error to receive help", ex);
                     } catch (Throwable throwable) {
                         IP.logging().stack("Stopped download of schematics",
                                 "delete the schematics folder and restart the server", throwable);

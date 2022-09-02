@@ -234,18 +234,18 @@ public class WorldDivider {
                         }
 
                         if (ParkourOption.COMMUNITY.check(player)) {
-                            items.add(1, Locales.getItem(pp.getLocale(), "community.item"));
+                            items.add(items.size(), Locales.getItem(pp.getLocale(), "community.item"));
                         }
 
                         if (ParkourOption.SETTINGS.check(player)) {
-                            items.add(2, Locales.getItem(pp.getLocale(), "settings.item"));
+                            items.add(items.size(), Locales.getItem(pp.getLocale(), "settings.item"));
                         }
 
                         if (ParkourOption.LOBBY.check(player)) {
-                            items.add(3, Locales.getItem(pp.getLocale(), "lobby.item"));
+                            items.add(items.size(), Locales.getItem(pp.getLocale(), "lobby.item"));
                         }
 
-                        items.add(4, Locales.getItem(pp.getLocale(), "other.quit"));
+                        items.add(items.size(), Locales.getItem(pp.getLocale(), "other.quit"));
 
                         List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
                         for (int i = 0; i < items.size(); i++) {
