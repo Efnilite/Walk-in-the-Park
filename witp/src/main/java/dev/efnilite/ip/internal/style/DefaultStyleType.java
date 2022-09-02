@@ -1,6 +1,5 @@
 package dev.efnilite.ip.internal.style;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
@@ -19,7 +18,7 @@ public class DefaultStyleType extends StyleType {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return new Item(Material.POPPY, "<#348EDB><bold>Default").lore("<dark_gray>Standard • 默认 • 默認", "<dark_gray>• Défaut • デフォルト • Standaard");
+        return new Item(Material.POPPY, "<#348EDB><bold>Default");
     }
 
     @Nullable
@@ -28,8 +27,6 @@ public class DefaultStyleType extends StyleType {
         List<Material> materials = styles.get(style);
 
         if (materials == null) {
-            IP.logging().error("Materials for style '" + style + "' not found!");
-            IP.logging().error("Check your config.yml file for invalid items.");
             return null;
         }
 

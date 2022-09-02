@@ -37,11 +37,13 @@ public class Configuration {
         this.plugin = plugin;
 
         List<String> defaultFiles = Arrays.asList("config.yml", "rewards-v2.yml", "generation.yml", "schematics.yml");
+
+        File folder = plugin.getDataFolder();
         for (String name : defaultFiles) {
-            File file = new File(plugin.getDataFolder(), name);
+            File file = new File(folder, name);
 
             if (!file.exists()) {
-                plugin.getDataFolder().mkdirs();
+                folder.mkdirs();
 
                 plugin.saveResource(name, false);
                 IP.logging().info("Created config file " + name);
