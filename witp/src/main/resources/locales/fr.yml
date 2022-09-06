@@ -1,0 +1,285 @@
+# French (Français, fr)
+# By TATHAN_06 pour Odysseyus.fr
+# Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Learn more about colouring: https://docs.adventure.kyori.net/minimessage/format.html#format
+
+name: Français
+
+main:
+  name: <white>Parkour
+
+play:
+  name: <white>Jouer
+  
+  item:
+    material: sugar_cane
+    name: <#60EB76><bold>Jouer
+    lore: ''
+  
+  single:
+    name: <white>Seul
+    
+    item:
+      material: ender_pearl
+      name: <#6E92B1><bold>Seul
+      lore: ''
+    
+    default:
+      material: barrel
+      name: <#6693E7><bold>Defaut
+      lore: <dark_gray>Le type de jeu par défaut.
+  
+  spectator:
+    name: <white>Spectateur
+    
+    join: <#4CB3FF>Vous êtes maintenant un spectateur. Tu peux utiliser "/parkour"
+      pour quitter/changer ton mode de jeu.
+    action_bar: <#4CB3FF>Vous êtes un spectateur <gray>- <#4CB3FF>Utilisez "/parkour"
+      pour partir.
+    
+    other_join: <dark_green><bold>+ <reset><gray>%s a commencer a vous regarder
+    other_leave: <red><bold>- <reset><gray>%s a arretter de vous regarder
+    
+    item:
+      material: glass
+      name: <#39D5AB><bold>Spectateur
+      lore: ''
+    
+    head:
+      material: ''
+      name: <#6693E7><bold>%s
+      lore: ''
+
+community:
+  name: <white>Communauté
+  
+  item:
+    material: oak_boat
+    name: <#60C9DF><bold>Communauté
+    lore: ''
+  
+  leaderboards:
+    name: <white>Tableau des Scores
+    
+    item:
+      material: gold_nugget
+      name: <#6693E7><bold>Tableau des Scores
+      lore: ''
+    
+    sort:
+      material: bookshelf
+      name: <#DEA11F><bold>Sort par %s
+      lore: ''
+      values:
+      - score
+      - temps
+      - difficulté
+    
+    head:
+      material: ''
+      name: <#6693E7><bold>#%r - %p
+      lore: '<#5574AF>Score: <gray>%s||<#5574AF>Temps: <gray>%t||<#5574AF>Difficulté:
+        <gray>%d<dark_gray>/1.0'
+
+settings:
+  name: <white>Paramètre
+  
+  item:
+    material: comparator
+    name: <#6086EB><bold>Paramètre
+    lore: ''
+  
+  lang:
+    name: <white>Langue
+    
+    item:
+      material: writable_book
+      name: <#6693E7><bold>Langue
+      lore: '<dark_gray>Pour le moment: <#5574AF><bold>%s'
+  
+  chat:
+    material: crossbow
+    name: <#20C6BC><bold>Chat
+    lore: '<dark_gray>Pour le moment: <#17B2CE><bold>%s||<dark_gray>Sélectionnez avec
+      qui vous pouvez parler'
+    values:
+    - seulement lobby
+    - seulement joueurs
+    - publique
+    
+    formats:
+      lobby: <#8A1010>(Lobby) <#BE0D0D>%s <dark_gray>> <gray>%s
+      players: <#8A1010>(Joueurs) <#BE0D0D>%s <dark_gray>> <gray>%s
+  
+  parkour_settings:
+    
+    item:
+      material: redstone
+      name: <#A10404><bold>Paramètres du Parkour
+      lore: <dark_gray>Changez l'apparence de votre parkour.
+    
+    items:
+      
+      no_change:
+        material: barrier
+        name: <dark_red><bold>Vous ne pouvez pas changer ça maintenant!
+        lore: <gray>Vous avez un score supérieur à 0,||<gray> ce qui signifie que
+          vous ne pouvez pas changer ce réglage.
+      
+      styles:
+        name: <white>Styles
+        
+        item:
+          material: crafting_table
+          name: <#6693E7><bold>Style
+          lore: '<#5574AF>Pour le moment: <gray>%s||<gray>Choisissez les blocs qui
+            seront utilisés.'
+      
+      leads:
+        material: feather
+        name: <#6693E7><bold>Chef
+        lore: '<#5574AF>Pour le moment: <gray>%s blocks||<gray>Combien de blocks||<gray>seront
+          générés devant vous.'
+      
+      time:
+        material: clock
+        name: <#6693E7><bold>Temps
+        lore: '<#5574AF>Pour le moment: <gray>%s||<gray>Votre temps visuel actuel.'
+      
+      schematic_difficulty:
+        material: ''
+        name: <#6693E7><bold>Difficulté des schématique
+        lore: '<#5574AF>Pour le moment: <gray>%s||<gray>La difficulté des schématique'
+        values:
+        - simple
+        - moyen
+        - dur
+        - très dur
+      
+      schematic_use:
+        material: ''
+        name: Utiliser des schematics
+        lore: '<gray>Pour le moment: %s||<gray>Si activé, les schémas statiques||<gray>apparaitront
+          durant le parcour.'
+      
+      schematic:
+        name: <white>Schematics
+        
+        item:
+          material: scaffolding
+          name: <#6693E7><bold>Schematics
+          lore: <gray>Changer les paramètres des schematics
+      
+      scoreboard:
+        material: ''
+        name: Montrer le ScoreBoard
+        lore: '<gray>Pour le moment: %s||<gray>S''il est activé, il affiche le ScoreBoard.'
+      
+      fall_message:
+        item:
+          material: ''
+          name: Afficher le message de chute
+          lore: '<gray>Pour le moment: %s||<gray>Si il est activée, elle affiche
+            un message lorsque vous tombez||<gray>avec des infos en plus.'
+        
+        divider: <dark_gray><strikethrough>-----------------------------------
+        score: <#80C7FD><bold>Score <reset><white>%s
+        time: <#80C7FD><bold>Temps <reset><white>%s
+        high_score: <#80C7FD><bold>Meilleur Score <reset><white>%s
+        
+        formats:
+          miss: <gray>Vous avez raté votre meilleur score de %s points !
+          beat: <gray>Vous avez battu votre meilleur score de %s points !
+          tied: <gray>Vous avez égalé votre meilleur score !
+      
+      particles:
+        material: ''
+        name: Montrer les particules
+        lore: '<gray>Pour le moment: %s||<gray>S''il est activé, chaque bloc généré||<gray>montrera
+          des particules.'
+      
+      sound:
+        material: ''
+        name: Jouer des sons
+        lore: '<gray>Pour le moment: %s||<gray>S''il est activé, chaque bloc généré||<gray>jouera
+          un sond.'
+      
+      special_blocks:
+        material: ''
+        name: Utiliser des blocs spéciaux
+        lore: '<gray>Pour le moment: %s||<gray>Si activé, utilise des blocs spéciaux
+          comme la glace et les dalles.'
+      
+      score_difficulty:
+        material: ''
+        name: Difficulté du score
+        lore: '<gray>En ce moment: %s||<gray>Lorsqu''il est activé, plus votre score
+          est élevé,||<gray>plus cela devient difficile.'
+
+lobby:
+  name: <white>Lobby
+  
+  item:
+    material: iron_ingot
+    name: <#EB608C><bold>Votre Lobby
+    lore: ''
+  
+  visibility:
+    material: firework_rocket
+    name: <#A1E1DD><bold>Visibility
+    lore: '<dark_gray>Pour le moment: <#2BD4E2><bold>%s||<dark_gray>Sélectionnez qui
+      peut rejoindre votre lobby.'
+    values:
+    - privée
+    - sur invitation
+    - publique
+  
+  player_management:
+    name: <white>Gérer les joueurs
+    
+    kicked: Vous avez été kick de votre lobby par l'Owner.
+    advice: Définissez la visibilité de votre lobby comme étant sur invitation seulement
+      ou privée afin d'éviter que des personnes ne rejoigne.
+    muted: Vous avez été mute par l'Owner du Lobby.
+    unmuted: Vous avez été unmute par l'Owner du Lobby.
+    
+    item:
+      material: cake
+      name: <#8DC9E5><bold>Gérer les joueurs
+      lore: <dark_gray>Kick ou mute les players ici.
+    
+    head:
+      material: ''
+      name: <#4BD16D><bold>%s
+      lore: ''
+      top: <dark_gray>Muté dans le lobby||
+      bottom: <#8DE5A3>Clique gauche<dark_gray> pour kick du lobby||<#8DE5A3>Clique
+        droit<dark_gray> pour (un)mute dans le lobby
+
+scoreboard:
+  
+  title: <#FF6464><bold>Parkour Infini
+  
+  lines:
+  - <blue>
+  - <#F6A8A8>Score <white>%score%
+  - <#F6A8A8>Temps <white>%time%
+  - <#F6A8A8>Highscore <white>%highscore%
+  - <red>
+  - <dark_gray>%session%
+  - <#FF6464><bold>games.odysseyus.fr
+
+other:
+  
+  no_do: <gray>Vous ne pouvez pas faire ça maintenant.
+  customize: <gray>Customisez votre parkour en faisant "/parkour"
+  
+  quit:
+    material: barrier
+    name: <#D71F1F><bold>Quitter
+    lore: ''
+  
+  close:
+    material: arrow
+    name: <#F5A3A3><bold>Fermé
+    lore: ''
