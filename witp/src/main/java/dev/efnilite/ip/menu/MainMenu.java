@@ -14,22 +14,22 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 0,
                 (player, user) -> Locales.getItem(player, "play.item")
                         .click(event -> Menus.PLAY.open(event.getPlayer())),
-                ParkourOption.PLAY::checkPermission);
+                ParkourOption.PLAY::check);
 
         registerMainItem(1, 1,
                 (player, user) -> Locales.getItem(player, "community.item")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())),
-                ParkourOption.COMMUNITY::checkPermission);
+                ParkourOption.COMMUNITY::check);
 
         registerMainItem(1, 2,
                 (player, user) -> Locales.getItem(player, "settings.item")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())),
-                ParkourOption.SETTINGS::checkPermission);
+                ParkourOption.SETTINGS::check);
 
         registerMainItem(1, 3,
                 (player, user) -> Locales.getItem(player, "lobby.item")
                         .click(event -> Menus.LOBBY.open(event.getPlayer())),
-                ParkourOption.LOBBY::checkPermission);
+                ParkourOption.LOBBY::check);
 
         registerMainItem(1, 4,
                 (player, user) -> Locales.getItem(player, "other.quit")

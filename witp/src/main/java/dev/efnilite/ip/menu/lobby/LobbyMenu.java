@@ -24,7 +24,7 @@ public class LobbyMenu extends DynamicMenu {
             player -> {
                 ParkourUser user = ParkourUser.getUser(player);
 
-                return ParkourOption.PLAYER_MANAGEMENT.checkPermission(player) &&
+                return ParkourOption.PLAYER_MANAGEMENT.check(player) &&
                         user instanceof ParkourPlayer &&
                         user.getSession().getPlayers().get(0) == user;
             }
@@ -74,7 +74,7 @@ public class LobbyMenu extends DynamicMenu {
             player -> {
                 ParkourUser user = ParkourUser.getUser(player);
 
-                return ParkourOption.VISIBILITY.checkPermission(player) &&
+                return ParkourOption.VISIBILITY.check(player) &&
                         user instanceof ParkourPlayer &&
                         user.getSession().getPlayers().get(0) == user;
             });

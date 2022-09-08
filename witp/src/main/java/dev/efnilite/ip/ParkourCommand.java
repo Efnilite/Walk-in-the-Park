@@ -64,7 +64,7 @@ public class ParkourCommand extends ViCommand {
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
-            } else if (ParkourOption.MAIN.checkPermission(player)) {
+            } else if (ParkourOption.MAIN.check(player)) {
                 Menus.MAIN.open(player);
             }
             return true;
@@ -140,7 +140,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (!ParkourOption.JOIN.checkPermission(player)) {
+                    if (!ParkourOption.JOIN.check(player)) {
                         Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                         return true;
                     }
@@ -175,7 +175,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "play" -> {
-                    if (!ParkourOption.PLAY.checkPermission(player)) {
+                    if (!ParkourOption.PLAY.check(player)) {
                         return true;
                     }
                     Menus.PLAY.open(player);
@@ -209,7 +209,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                if (!ParkourOption.JOIN.checkPermission(player)) {
+                if (!ParkourOption.JOIN.check(player)) {
                     Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                     return true;
                 }
@@ -458,7 +458,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
 
                 // check permissions
-                if (!ParkourOption.LEADERBOARDS.checkPermission(player)) {
+                if (!ParkourOption.LEADERBOARDS.check(player)) {
                     Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                     return true;
                 }
@@ -495,7 +495,7 @@ public class ParkourCommand extends ViCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            if (ParkourOption.JOIN.checkPermission(sender)) {
+            if (ParkourOption.JOIN.check(sender)) {
                 completions.add("join");
                 completions.add("leave");
             }
