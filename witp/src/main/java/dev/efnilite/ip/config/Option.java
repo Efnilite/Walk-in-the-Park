@@ -282,6 +282,8 @@ public class Option {
     public static int MAXED_THREE_BLOCK;
     public static int MAXED_FOUR_BLOCK;
 
+    public static int SCHEMATIC_COOLDOWN;
+
     private static void initAdvancedGeneration() {
         GENERATOR_CHECK = generation.getInt("advanced.generator-check");
         HEIGHT_GAP = generation.getDouble("advanced.height-gap");
@@ -291,6 +293,7 @@ public class Option {
         MAXED_TWO_BLOCK = generation.getInt("advanced.maxed-values.2-block");
         MAXED_THREE_BLOCK = generation.getInt("advanced.maxed-values.3-block");
         MAXED_FOUR_BLOCK = generation.getInt("advanced.maxed-values.4-block");
+        SCHEMATIC_COOLDOWN = generation.getInt("advanced.schematic-cooldown");
     }
 
     public enum ParticleShape {

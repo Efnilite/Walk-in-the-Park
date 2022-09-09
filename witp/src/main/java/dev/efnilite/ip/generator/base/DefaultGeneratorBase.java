@@ -1,5 +1,6 @@
 package dev.efnilite.ip.generator.base;
 
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.data.AreaData;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.session.Session;
@@ -20,7 +21,7 @@ public abstract class DefaultGeneratorBase extends DefaultGeneratorChances {
     /**
      * The schematic cooldown
      */
-    public int schematicCooldown = 20;
+    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
 
     /**
      * Where the player spawns on reset

@@ -565,7 +565,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 score();
             }
             waitForSchematicCompletion = false;
-            schematicCooldown = 20;
+            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
             generate(profile.getValue("blockLead").asInt());
             deleteStructure = true;
             return;
@@ -798,7 +798,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
                 Schematic schematic = SchematicCache.getSchematic(file.getName());
 
-                schematicCooldown = 20;
+                schematicCooldown = Option.SCHEMATIC_COOLDOWN;
                 List<Block> blocks = selectBlocks();
                 if (blocks.isEmpty()) {
                     return;
@@ -896,7 +896,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         schematicBlocks.clear();
         deleteStructure = false;
-        schematicCooldown = 20;
+        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
     }
 
     protected void setBlock(Block block, BlockData data) {

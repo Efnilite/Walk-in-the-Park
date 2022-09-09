@@ -93,8 +93,12 @@ advanced:
       heading: east
 
   # -= Border size =-
-  # The diameter of the playing area of a person in the singleplayer mode.
+  # The diameter of the playing area of a person in the single mode.
   border-size: 10000
+
+  # -= Schematic cooldown =-
+  # The amount of blocks that provide a cooldown for the schematics.
+  schematic-cooldown: 20
 
   # -= Generator check interval =-
   # The amount of ticks between checks of the player's location and score.
