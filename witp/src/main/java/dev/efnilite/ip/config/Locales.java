@@ -56,6 +56,7 @@ public class Locales {
 
                         plugin.saveResource("locales/en.yml", false);
                         plugin.saveResource("locales/nl.yml", false);
+                        plugin.saveResource("locales/fr.yml", false);
                     }
 
                     // get all files in locales folder
@@ -135,18 +136,25 @@ public class Locales {
         FileConfiguration base = locales.get(locale);
 
         if (base == null) {
-            return "";
+            Object defaultLang = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+
+            if (defaultLang == null) {
+                IP.logging().stack("No default language found", "check your config for an incorrect lang default value");
+                return "";
+            }
+
+            base = locales.get((String) defaultLang);
         }
 
         String string = base.getString(path);
 
         if (string == null) {
+            IP.logging().stack("Invalid config path: " + path, "contact the developer");
             return "";
         }
 
         return colour ? Strings.colour(string) : string;
     }
-
     /**
      * Gets a coloured String list from the provided path in the provided locale file
      *
@@ -162,12 +170,20 @@ public class Locales {
         FileConfiguration base = locales.get(locale);
 
         if (base == null) {
-            return Collections.emptyList();
+            Object defaultLang = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+
+            if (defaultLang == null) {
+                IP.logging().stack("No default language found", "check your config for an incorrect lang default value");
+                return Collections.emptyList();
+            }
+
+            base = locales.get((String) defaultLang);
         }
 
         List<String> strings = base.getStringList(path);
 
         if (strings.isEmpty()) {
+            IP.logging().stack("Invalid config path: " + path, "contact the developer");
             return Collections.emptyList();
         }
 
