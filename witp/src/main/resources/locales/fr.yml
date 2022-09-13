@@ -156,7 +156,7 @@ settings:
       scoreboard:
         material: ""
         name: "Montrer le scoreboard"
-        lore: "<gray>Pour le moment: %s||<gray>S""il est activé, il affiche le scoreboard."
+        lore: "<gray>Pour le moment: %s||<gray>S''il est activé, il affiche le scoreboard."
       
       fall_message:
         item:
@@ -177,12 +177,12 @@ settings:
       particles:
         material: ""
         name: "Montrer les particules"
-        lore: "<gray>Pour le moment: %s||<gray>S""il est activé, chaque bloc généré||<gray>montrera des particules."
+        lore: "<gray>Pour le moment: %s||<gray>S''il est activé, chaque bloc généré||<gray>montrera des particules."
       
       sound:
         material: ""
         name: "Jouer des sons"
-        lore: "<gray>Pour le moment: %s||<gray>S""il est activé, chaque bloc généré||<gray>jouera un sond."
+        lore: "<gray>Pour le moment: %s||<gray>S''il est activé, chaque bloc généré||<gray>jouera un sond."
       
       special_blocks:
         material: ""
@@ -192,7 +192,7 @@ settings:
       score_difficulty:
         material: ""
         name: "Difficulté du score"
-        lore: "<gray>En ce moment: %s||<gray>Lorsqu""il est activé, plus votre score est élevé,||<gray>plus cela devient difficile."
+        lore: "<gray>En ce moment: %s||<gray>Lorsqu''il est activé, plus votre score est élevé,||<gray>plus cela devient difficile."
 
 lobby:
   name: "<white>Lobby"

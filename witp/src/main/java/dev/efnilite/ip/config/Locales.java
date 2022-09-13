@@ -53,9 +53,16 @@ public class Locales {
                     // download files to locales folder
                     if (!folder.toFile().exists()) {
                         folder.toFile().mkdirs();
+                    }
 
+                    // create non-existent files
+                    if (!folder.resolve("en.yml").toFile().exists()) {
                         plugin.saveResource("locales/en.yml", false);
+                    }
+                    if (!folder.resolve("nl.yml").toFile().exists()) {
                         plugin.saveResource("locales/nl.yml", false);
+                    }
+                    if (!folder.resolve("fr.yml").toFile().exists()) {
                         plugin.saveResource("locales/fr.yml", false);
                     }
 
