@@ -3,6 +3,7 @@ package dev.efnilite.ip.menu;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import org.bukkit.Material;
@@ -24,12 +25,12 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 2,
                 (player, user) -> Locales.getItem(player, "settings.item")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())),
-                ParkourOption.SETTINGS::check);
+                player -> ParkourOption.SETTINGS.check(player) && ParkourUser.isPlayer(player));
 
         registerMainItem(1, 3,
                 (player, user) -> Locales.getItem(player, "lobby.item")
                         .click(event -> Menus.LOBBY.open(event.getPlayer())),
-                ParkourOption.LOBBY::check);
+                player -> ParkourOption.LOBBY.check(player) && ParkourUser.isPlayer(player));
 
         registerMainItem(1, 4,
                 (player, user) -> Locales.getItem(player, "other.quit")

@@ -11,6 +11,7 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
+import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,13 +37,17 @@ public abstract class ParkourUser {
     public static Team COLLISION_TEAM;
 
     static {
-        try {
-            COLLISION_TEAM = Bukkit.getScoreboardManager().getNewScoreboard().registerNewTeam("IP");
+        Task.create(IP.getPlugin())
+                .execute(() -> {
+                    try {
+                        COLLISION_TEAM = Bukkit.getScoreboardManager().getNewScoreboard().registerNewTeam("IP");
 
-            COLLISION_TEAM.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-        } catch (IllegalArgumentException ignored) {
-            // ignored
-        }
+                        COLLISION_TEAM.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                    } catch (Throwable throwable) {
+                        // ignored
+                    }
+                })
+                .run();
     }
 
     /**
