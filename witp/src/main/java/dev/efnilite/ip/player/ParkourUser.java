@@ -11,13 +11,11 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
-import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,23 +30,6 @@ import java.util.*;
  * @author Efnilite
  */
 public abstract class ParkourUser {
-
-    // logic for creating scoreboard to disable collisions
-    public static Team COLLISION_TEAM;
-
-    static {
-        Task.create(IP.getPlugin())
-                .execute(() -> {
-                    try {
-                        COLLISION_TEAM = Bukkit.getScoreboardManager().getNewScoreboard().registerNewTeam("IP");
-
-                        COLLISION_TEAM.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                    } catch (Throwable throwable) {
-                        // ignored
-                    }
-                })
-                .run();
-    }
 
     /**
      * This user's locale
@@ -98,20 +79,6 @@ public abstract class ParkourUser {
         }
         // remove duplicates
         users.put(player, this);
-    }
-
-    /**
-     * Sets the collidable state of this {@link ParkourUser} instance.
-     *
-     * @param   collides
-     *          Whether this player collides with other players.
-     */
-    public void setCollides(boolean collides) {
-        if (collides) {
-            COLLISION_TEAM.removeEntry(player.getName());
-        } else {
-            COLLISION_TEAM.addEntry(player.getName());
-        }
     }
 
     /**
@@ -230,8 +197,6 @@ public abstract class ParkourUser {
                         session.removeSpectators(spectator);
                     }
                 }
-
-                pp.setCollides(true);
 
                 if (remaining == 0) {
                     // reset generator (remove blocks) and delete island

@@ -4,6 +4,7 @@
 
 ✔ Added French language (by TATHAN)
 ✔ Added option to change schematic cooldown
+✔ Added effect saving
 
 ➰ Fixed async scoreboard creation
 ➰ Fixed empty menu items displaying in main menu

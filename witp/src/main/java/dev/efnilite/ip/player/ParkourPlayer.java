@@ -240,8 +240,6 @@ public class ParkourPlayer extends ParkourUser {
         UUID uuid = pp.player.getUniqueId();
         JOIN_COUNT++;
 
-        pp.setCollides(false);
-
         if (!Option.SQL) {
             File data = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid + ".json");
             if (data.exists()) {

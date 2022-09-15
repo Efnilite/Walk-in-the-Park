@@ -4,16 +4,15 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.reward.RewardString;
-import dev.efnilite.vilib.util.Version;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,6 +34,8 @@ public class PreviousData {
     private final GameMode gamemode;
     private final Location location;
 
+    private final Collection<PotionEffect> effects;
+
     private final List<RewardString> rewardsLeaveList = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
@@ -48,10 +49,6 @@ public class PreviousData {
         flying = player.getAllowFlight();
         invisible = player.isInvisible();
         collidable = player.isCollidable();
-
-        for (PotionEffect effect : player.getActivePotionEffects()) {
-            player.removePotionEffect(effect.getType());
-        }
 
         if (Option.SAVE_STATS) {
             this.health = player.getHealth();
@@ -71,19 +68,14 @@ public class PreviousData {
             }
         }
 
-        if (Version.isHigherOrEqual(Version.V1_13)) {
-            for (PotionEffectType value : PotionEffectType.values()) {
-                player.removePotionEffect(value);
-            }
+        effects = player.getActivePotionEffects();
+        for (PotionEffect effect : effects) {
+            player.removePotionEffect(effect.getType());
         }
     }
 
     public void apply(boolean teleportBack) {
         try {
-            for (PotionEffect effect : player.getActivePotionEffects()) {
-                player.removePotionEffect(effect.getType());
-            }
-
             if (teleportBack) {
                 if (Option.GO_BACK) {
                     player.teleport(Option.GO_BACK_LOC);
@@ -104,6 +96,14 @@ public class PreviousData {
             if (Option.SAVE_STATS && Option.HEALTH_HANDLING) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
+            }
+
+            // -= Potions =-
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                player.removePotionEffect(effect.getType());
+            }
+            for (PotionEffect effect : effects) {
+                player.addPotionEffect(effect);
             }
         } catch (Throwable ex) {// not optimal but there isn't another way
             IP.logging().stack("Error while recovering stats of " + player.getName(), ex);
