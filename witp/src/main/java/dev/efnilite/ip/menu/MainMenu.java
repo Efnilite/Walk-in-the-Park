@@ -25,17 +25,17 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 2,
                 (player, user) -> Locales.getItem(player, "settings.item")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())),
-                player -> ParkourOption.SETTINGS.check(player) && ParkourUser.isPlayer(player));
+                player -> ParkourOption.SETTINGS.check(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 3,
                 (player, user) -> Locales.getItem(player, "lobby.item")
                         .click(event -> Menus.LOBBY.open(event.getPlayer())),
-                player -> ParkourOption.LOBBY.check(player) && ParkourUser.isPlayer(player));
+                player -> ParkourOption.LOBBY.check(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 4,
                 (player, user) -> Locales.getItem(player, "other.quit")
                         .click(event -> ParkourPlayer.leave(player)),
-                player -> true);
+                ParkourUser::isUser);
     }
 
     public void open(Player player) {
