@@ -21,10 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,7 +41,6 @@ public class Locales {
                 .async()
                 .execute(() -> {
                     locales.clear();
-                    resourceNodes.clear();
 
                     FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
@@ -143,6 +139,10 @@ public class Locales {
      * @return a coloured String
      */
     public static String getString(String locale, String path, boolean colour) {
+        if (locales.isEmpty()) { // during reloading
+            return "";
+        }
+
         FileConfiguration base = locales.get(locale);
 
         if (base == null) {
@@ -177,6 +177,10 @@ public class Locales {
      * @return a coloured String list
      */
     public static List<String> getStringList(String locale, String path, boolean colour) {
+        if (locales.isEmpty()) { // during reloading
+            return Collections.emptyList();
+        }
+
         FileConfiguration base = locales.get(locale);
 
         if (base == null) {
@@ -238,6 +242,10 @@ public class Locales {
      */
     @NotNull
     public static Item getItem(String locale, String path, String... replace) {
+        if (locales.isEmpty()) { // during reloading
+            return new Item(Material.STONE, "");
+        }
+
         final FileConfiguration base = locales.get(locale);
 
         String material = base.getString(path + ".material");

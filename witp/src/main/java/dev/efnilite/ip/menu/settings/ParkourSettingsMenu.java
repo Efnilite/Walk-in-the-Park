@@ -386,7 +386,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, Locales.getItem(player, "other.close").click(
                         event -> Menus.SETTINGS.open(event.getPlayer())))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR);
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE);
 
         display(player, menu);
     }
@@ -409,7 +409,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
+                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(user.player);
     }
 
@@ -460,7 +460,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
+                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(user.player);
     }
 
@@ -566,7 +566,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .item(26, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> open(user)))
 
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.CYAN_STAINED_GLASS_PANE : Material.AIR)
+                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.CYAN_STAINED_GLASS_PANE)
                 .open(user.player);
     }
 

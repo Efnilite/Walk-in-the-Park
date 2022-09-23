@@ -90,7 +90,7 @@ public class SettingsMenu extends DynamicMenu {
 
     public void open(Player player) {
         Menu menu = new Menu(3, Locales.getString(player, "settings.name", false))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
                 .distributeRowsEvenly();
 

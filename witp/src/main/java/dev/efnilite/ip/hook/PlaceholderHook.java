@@ -1,6 +1,7 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -15,11 +16,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Hook for PlaceholderAPI
  */
 @ApiStatus.Internal
 public class PlaceholderHook extends PlaceholderExpansion {
+
+    private static final Pattern INFINITE_REGEX = Pattern.compile("(.+)_(\\d+)");
 
     @Override
     public @NotNull String getIdentifier() {
@@ -97,14 +103,12 @@ public class PlaceholderHook extends PlaceholderExpansion {
             }
         }
 
-        Leaderboard leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-
         switch (params) {
             case "rank":
-                return Integer.toString(leaderboard.getRank(player.getUniqueId()));
+                return Integer.toString(Gamemodes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
             case "highscore":
             case "high_score":
-                Score score = leaderboard.get(player.getUniqueId());
+                Score score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
 
                 if (score == null) {
                     return "?";
@@ -116,7 +120,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 return IP.getPlugin().getDescription().getVersion();
             case "leader":
             case "record_player":
-                score = leaderboard.getScoreAtRank(1);
+                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
 
                 if (score == null) {
                     return "?";
@@ -126,7 +130,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "leader_score":
             case "record_score":
             case "record":
-                score = leaderboard.getScoreAtRank(1);
+                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
 
                 if (score == null) {
                     return "?";
@@ -136,7 +140,26 @@ public class PlaceholderHook extends PlaceholderExpansion {
             default:
                 if (params.contains("player_rank_")) {
                     String replaced = params.replace("player_rank_", "");
-                    int rank = Integer.parseInt(replaced);
+
+                    int rank;
+                    Leaderboard leaderboard;
+                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
+                    if (matcher.matches()) { // uses gamemode-specific format
+                        String name = matcher.group(1);
+                        rank = Integer.parseInt(matcher.group(2));
+
+                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
+                        if (gamemode != null) {
+                            leaderboard = gamemode.getLeaderboard();
+                        } else {
+                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                        }
+
+                    } else {
+                        rank = Integer.parseInt(replaced);
+                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                    }
+
                     if (rank > 0) {
                         score = leaderboard.getScoreAtRank(rank);
 
@@ -150,7 +173,26 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     }
                 } else if (params.contains("score_rank_")) {
                     String replaced = params.replace("score_rank_", "");
-                    int rank = Integer.parseInt(replaced);
+
+                    int rank;
+                    Leaderboard leaderboard;
+                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
+                    if (matcher.matches()) { // uses gamemode-specific format
+                        String name = matcher.group(1);
+                        rank = Integer.parseInt(matcher.group(2));
+
+                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
+                        if (gamemode != null) {
+                            leaderboard = gamemode.getLeaderboard();
+                        } else {
+                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                        }
+
+                    } else {
+                        rank = Integer.parseInt(replaced);
+                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                    }
+
                     if (rank > 0) {
                         score = leaderboard.getScoreAtRank(rank);
 
@@ -164,7 +206,26 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     }
                 } else if (params.contains("time_rank_")) {
                     String replaced = params.replace("time_rank_", "");
-                    int rank = Integer.parseInt(replaced);
+
+                    int rank;
+                    Leaderboard leaderboard;
+                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
+                    if (matcher.matches()) { // uses gamemode-specific format
+                        String name = matcher.group(1);
+                        rank = Integer.parseInt(matcher.group(2));
+
+                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
+                        if (gamemode != null) {
+                            leaderboard = gamemode.getLeaderboard();
+                        } else {
+                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                        }
+
+                    } else {
+                        rank = Integer.parseInt(replaced);
+                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                    }
+
                     if (rank > 0) {
                         score = leaderboard.getScoreAtRank(rank);
 
