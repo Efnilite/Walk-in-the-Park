@@ -4,6 +4,7 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.RandomAnimation;
 import org.bukkit.Material;
@@ -33,7 +34,7 @@ public class PlayMenu extends DynamicMenu {
 
     public void open(Player player) {
         Menu menu = new Menu(3, Locales.getString(player, "play.name", false))
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
                 .animation(new RandomAnimation())
                 .distributeRowsEvenly();
 

@@ -3,6 +3,7 @@ package dev.efnilite.ip.menu.settings;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -54,7 +55,7 @@ public class LangMenu {
                 .item(22, Locales.getItem(user.getLocale(), "other.close")
                         .click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
-                .fillBackground(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.LIGHT_BLUE_STAINED_GLASS_PANE : Material.AIR)
                 .open(user.player);
     }
 

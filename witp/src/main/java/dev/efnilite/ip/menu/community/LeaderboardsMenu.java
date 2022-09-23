@@ -7,6 +7,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -65,7 +66,7 @@ public class LeaderboardsMenu {
                 .item(22, Locales.getItem(player, "other.close")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
-                .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.WHITE_STAINED_GLASS_PANE : Material.AIR)
                 .open(player);
     }
 }

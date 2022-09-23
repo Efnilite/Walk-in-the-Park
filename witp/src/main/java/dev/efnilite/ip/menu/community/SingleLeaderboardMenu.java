@@ -124,7 +124,7 @@ public class SingleLeaderboardMenu {
                 .item(23, Locales.getItem(player, "other.close")
                         .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
                 .open(player);
     }
 

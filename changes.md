@@ -2,10 +2,4 @@
 
 **This build requires vilib v1.1.0 or higher to work. ✨**
 
-✔ Added French language (by TATHAN)
-✔ Added option to change schematic cooldown
-✔ Added effect saving
-
-➰ Fixed async scoreboard creation
-➰ Fixed empty menu items displaying in main menu
-➰ Fixed several options not disabling when they were disabled in the config
+✔ Added locale support to reloading

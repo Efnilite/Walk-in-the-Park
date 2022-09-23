@@ -43,6 +43,9 @@ public class Locales {
         Task.create(plugin)
                 .async()
                 .execute(() -> {
+                    locales.clear();
+                    resourceNodes.clear();
+
                     FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
                     // get all nodes from the plugin's english resource, aka the most updated version

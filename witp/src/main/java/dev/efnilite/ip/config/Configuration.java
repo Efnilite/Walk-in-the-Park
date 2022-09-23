@@ -91,6 +91,7 @@ public class Configuration {
 
         // read rewards file
         RewardReader.readRewards(files.get("rewards"));
+        Locales.init(plugin);
 
         if (schematics()) {
             // read schematics again

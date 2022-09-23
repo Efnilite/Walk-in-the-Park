@@ -7,6 +7,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionVisibility;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
 import dev.efnilite.vilib.inventory.item.SliderItem;
@@ -94,7 +95,7 @@ public class LobbyMenu extends DynamicMenu {
      */
     public void open(Player player) {
         Menu menu = new Menu(3, Locales.getString(player, "lobby.name", false))
-            .fillBackground(Material.WHITE_STAINED_GLASS_PANE)
+            .fillBackground(Util.isBedrockPlayer(player) ? Material.WHITE_STAINED_GLASS_PANE : Material.AIR)
             .animation(new SplitMiddleInAnimation())
             .distributeRowsEvenly();
 

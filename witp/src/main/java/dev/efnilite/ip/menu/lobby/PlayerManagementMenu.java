@@ -117,7 +117,7 @@ public class PlayerManagementMenu {
                         .click(event -> menu.page(1)))
                 .item(22, Locales.getItem(viewer.getLocale(), "other.close")
                         .click(event -> Menus.LOBBY.open(event.getPlayer())))
-                .fillBackground(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(p) ? Material.LIGHT_GRAY_STAINED_GLASS_PANE : Material.AIR)
                 .open(p);
     }
 }

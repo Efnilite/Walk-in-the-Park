@@ -105,7 +105,6 @@ public final class IP extends ViPlugin {
 
         configuration = new Configuration(this);
 
-        Locales.init(this);
         Option.init(true);
 
         divider = new WorldDivider();

@@ -88,7 +88,7 @@ public class SpectatorMenu {
                 .item(22, Locales.getItem(player, "other.close")
                         .click(event -> Menus.PLAY.open(event.getPlayer())))
 
-                .fillBackground(Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.GRAY_STAINED_GLASS_PANE : Material.AIR)
                 .open(player);
 
     }
