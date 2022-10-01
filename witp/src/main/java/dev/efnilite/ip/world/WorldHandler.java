@@ -19,8 +19,7 @@ public class WorldHandler {
      * Creates the parkour world with the name given in the config.
      */
     public void createWorld() {
-        String name = Option.WORLD_NAME;
-        World world = Bukkit.getWorld(name);
+        World world = Bukkit.getWorld(Option.WORLD_NAME);
 
         if (!Option.DELETE_ON_RELOAD) {
             if (world == null) {

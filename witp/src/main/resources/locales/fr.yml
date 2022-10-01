@@ -228,6 +228,12 @@ lobby:
       top: "<dark_gray>Muté dans le lobby||"
       bottom: "<#8DE5A3>Clique gauche<dark_gray> pour kick du lobby||<#8DE5A3>Clique droit<dark_gray> pour (un)mute dans le lobby"
 
+styles:
+  default:
+    material: "poppy"
+    name: "<#348EDB><bold>Defaut"
+    lore: ""
+
 scoreboard:
   
   title: "<#FF6464><bold>Parkour Infini"

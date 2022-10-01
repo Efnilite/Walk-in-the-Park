@@ -228,6 +228,12 @@ lobby:
       top: "<dark_gray>Gemute in deze lobby||"
       bottom: "<#8DE5A3>Klik met links<dark_gray> om deze speler de lobby uit te gooien.||<#8DE5A3>Klik met rechts<dark_gray> om deze speler te (un)muten."
 
+styles:
+  default:
+    material: "poppy"
+    name: "<#348EDB><bold>Normaal"
+    lore: ""
+
 scoreboard:
 
   title: "<#FF6464><bold>Infinite Parkour"

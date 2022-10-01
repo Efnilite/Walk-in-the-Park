@@ -1,6 +1,7 @@
 package dev.efnilite.ip.internal.style;
 
 import dev.efnilite.ip.api.StyleType;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public class DefaultStyleType extends StyleType {
 
     @Override
     public @NotNull Item getItem(String locale) {
-        return new Item(Material.POPPY, "<#348EDB><bold>Default");
+        return Locales.getItem(locale, "styles.default");
     }
 
     @Nullable

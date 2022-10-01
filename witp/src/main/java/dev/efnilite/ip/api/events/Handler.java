@@ -2,6 +2,7 @@ package dev.efnilite.ip.api.events;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
+import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -282,7 +283,7 @@ public class Handler implements EventWatcher {
         UUID parkourWorld = IP.getWorldHandler().getWorld().getUID();
 
         // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
-        if (player.getWorld().getUID() == parkourWorld && user == null && !player.isOp()) {
+        if (player.getWorld().getUID() == parkourWorld && user == null && !ParkourOption.ADMIN.check(player)) {
             player.kickPlayer("");
         }
 

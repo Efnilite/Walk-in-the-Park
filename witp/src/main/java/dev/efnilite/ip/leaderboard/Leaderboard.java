@@ -100,7 +100,7 @@ public class Leaderboard {
                 .delay(5 * Time.SECONDS_PER_MINUTE * 20)
                 .repeat(5 * Time.SECONDS_PER_MINUTE * 20)
                 .async()
-                .execute(() -> write(false))
+                .execute(() -> write(true))
                 .run();
     }
 
