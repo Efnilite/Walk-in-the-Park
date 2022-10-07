@@ -4,4 +4,5 @@
 
 ✔ Added locale support to reloading
 
-➰ Improved Bedrock menu support by not display menu background on Bedrock
+➰ Changed slab type to smooth quartz
+➰ Fixed impossible jumps

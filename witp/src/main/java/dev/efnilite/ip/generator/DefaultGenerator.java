@@ -55,9 +55,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DefaultGenerator extends DefaultGeneratorBase {
 
-    private Material currentSpecial = null;
-    private Material previousSpecial = null;
-
     /**
      * The amount of blocks that will trail the player's current index.
      */
@@ -258,35 +255,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
 
-        // handle special jumps that depend on the previous block type
-        if (previousSpecial != null) {
-            switch (previousSpecial) { // adjust for special jumps
-                case PACKED_ICE -> // ice
-                        gap += 0.5;
-                case QUARTZ_SLAB -> // slab
-                        dy = Math.min(dy, 0);
-                case GLASS_PANE -> // pane
-                        gap -= 0.5;
-            }
-
-            // set previous special to null to avoid it lasting every instance
-            previousSpecial = null;
-        }
-
-        // handle special jumps that depend on the current block type
-        if (currentSpecial != null) {
-            switch (currentSpecial) {
-                case OAK_FENCE -> {
-                    dy = Math.min(dy, 0);
-                    gap -= 1;
-                }
-            }
-
-            currentSpecial = null;
-        }
-
-        if (dy > 0 && gap < 2) {
+        if (dy > 0 && gap < 2) { // prevent blocks from spawning on top of each other
             gap = 2;
+        }
+
+        switch (mostRecentBlock.getBlock().getType()) {
+            case PACKED_ICE -> gap += 0.5;
+            case SMOOTH_QUARTZ_SLAB -> dy = 0;
+            case WHITE_STAINED_GLASS_PANE -> gap -= 0.5;
         }
 
         return List.of(selectNext(mostRecentBlock, gap, dy));
@@ -735,7 +711,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                         case 0 -> next = Material.PACKED_ICE.createBlockData();
                         // slab
                         case 1 -> {
-                            next = Material.QUARTZ_SLAB.createBlockData();
+                            next = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
                             ((Slab) next).setType(Slab.Type.BOTTOM);
                         }
                         // pane
@@ -748,8 +724,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                             IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
                         }
                     }
-
-                    currentSpecial = next.getMaterial();
                 } else {
                     next = selectBlockData();
                 }
@@ -760,6 +734,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 }
 
                 Block selectedBlock = blocks.get(0);
+
+                if (next.getMaterial() == Material.OAK_FENCE) {
+                    selectedBlock = IP.getWorldHandler().getWorld().getBlockAt(selectedBlock.getX(), mostRecentBlock.getBlockY(), selectedBlock.getZ());
+                }
+
                 setBlock(selectedBlock, next);
                 new BlockGenerateEvent(selectedBlock, this, player).call();
 
@@ -768,13 +747,11 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
                 mostRecentBlock = selectedBlock.getLocation().clone();
 
-                particles(List.of(selectedBlock));
+                particles(blocks);
 
                 if (schematicCooldown > 0) {
                     schematicCooldown--;
                 }
-
-                previousSpecial = next.getMaterial();
             }
             case 1 -> {
                 File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
