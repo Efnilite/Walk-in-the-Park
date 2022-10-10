@@ -36,9 +36,14 @@ public class SingleMenu {
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
         for (Gamemode gm : IP.getRegistry().getGamemodes()) {
-            boolean permissions = Option.PERMISSIONS && player.hasPermission("ip.gamemode." + gm.getName());
+            boolean permissions;
+            if (Option.PERMISSIONS) {
+                permissions = !player.hasPermission("ip.gamemode." + gm.getName());
+            } else {
+                permissions = false;
+            }
 
-            if (!permissions || gm instanceof MultiGamemode || !gm.isVisible()) {
+            if (permissions || gm instanceof MultiGamemode || !gm.isVisible()) {
                 continue;
             }
 
