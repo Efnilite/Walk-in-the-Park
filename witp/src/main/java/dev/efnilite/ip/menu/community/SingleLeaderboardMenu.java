@@ -162,8 +162,11 @@ public class SingleLeaderboardMenu {
                         .entrySet()
                         .stream()
                         .sorted((o1, o2) -> {
-                            double one = Double.parseDouble(o1.getValue().difficulty());
-                            double two = Double.parseDouble(o2.getValue().difficulty());
+                            String first = o1.getValue().difficulty();
+                            String second = o2.getValue().difficulty();
+
+                            double one = Double.parseDouble(first.equals("?") ? "1.0" : first);
+                            double two = Double.parseDouble(second.equals("?") ? "1.0" : second);
 
                             return (int) (100 * (two - one)); // reverse natural order (higher == better)
                         }) // reverse natural order
