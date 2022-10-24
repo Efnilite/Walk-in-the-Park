@@ -1,7 +1,7 @@
 name: 'IP'
 description: 'Infinitely automatically generating parkour plugin.'
 author: Efnilite, Ice_Pancake
-version: 4.0.3
+version: 4.0.4
 api-version: 1.16
 main: dev.efnilite.ip.IP
 softdepend: [floodgate, vilib, Vault, PlaceholderAPI, Multiverse-Core, HolographicDisplays, VoidGen]
