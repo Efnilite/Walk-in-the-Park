@@ -133,11 +133,7 @@ public class SingleLeaderboardMenu {
         SCORE {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores
-                        .entrySet()
-                        .stream()
-                        .sorted((o1, o2) -> o2.getValue().score() - o1.getValue().score()) // reverse natural order
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+                return scores; // already sorted
             }
         },
         TIME {

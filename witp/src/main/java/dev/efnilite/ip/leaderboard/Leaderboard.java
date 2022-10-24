@@ -76,6 +76,13 @@ public class Leaderboard {
                 CHARSET = utf8 ENGINE = InnoDB;
                 """
             .formatted(getTableName()));
+
+//            IP.getSqlManager().sendQuery(
+//                """
+//                ALTER TABLE `%s`
+//                ADD COLUMN `epoch` TIMESTAMP;
+//                """
+//            .formatted(getTableName()));
         } else {
             File file = new File(this.file);
             if (!file.exists()) {
@@ -133,13 +140,6 @@ public class Leaderboard {
      * writes all data to the mysql table
      */
     private void _writeSql() {
-        // clear table
-        IP.getSqlManager().sendQuery(
-            """
-            TRUNCATE `%s`;
-            """
-        .formatted(getTableName()));
-
         for (UUID uuid : scores.keySet()) {
             Score score = scores.get(uuid);
 
@@ -147,15 +147,20 @@ public class Leaderboard {
                 continue;
             }
 
+
             // insert all
             IP.getSqlManager().sendQuery(
-                    """
-                    INSERT INTO `%s`
-                    (uuid, name, time, difficulty, score)
-                    VALUES
-                    ('%s', '%s', '%s', '%s', %d);
-                    """
-            .formatted(getTableName(), uuid.toString(), score.name(), score.time(), score.difficulty(), score.score()));
+                """
+                INSERT INTO `%s`
+                (uuid, name, time, difficulty, score)
+                VALUES
+                ('%s', '%s', '%s', '%s', %d)
+                ON DUPLICATE KEY UPDATE
+                name = '%s', time = '%s', difficulty = '%s', score = %d;
+                """
+            .formatted(getTableName(),
+                    uuid.toString(), score.name(), score.time(), score.difficulty(), score.score(),
+                    score.name(), score.time(), score.difficulty(), score.score()));
         }
     }
 

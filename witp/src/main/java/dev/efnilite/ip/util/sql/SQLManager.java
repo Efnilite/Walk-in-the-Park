@@ -74,32 +74,32 @@ public class SQLManager {
     /**
      * Sends a query to the database.
      *
-     * @param   query
+     * @param   sql
      *          The query.
      */
-    public void sendQuery(String query) {
+    public void sendQuery(String sql) {
         validateConnection();
 
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ex) {
-            IP.logging().stack("Could not send query " + query, ex);
+            IP.logging().stack("Could not send query " + sql, ex);
         }
     }
 
     /**
      * Sends a query to the database. If this query returns an error, ignore it.
      *
-     * @param   query
+     * @param   sql
      *          The query.
      */
-    public void sendQuerySuppressed(String query) {
+    public void sendQuerySuppressed(String sql) {
         validateConnection();
 
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ignored) {
