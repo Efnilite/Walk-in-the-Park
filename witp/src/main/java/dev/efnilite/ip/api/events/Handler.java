@@ -25,6 +25,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -290,6 +292,22 @@ public class Handler implements EventWatcher {
         // leaving world will unregister player
         if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {
             ParkourUser.unregister(user, false, false, true);
+        }
+    }
+    
+    @EventHandler
+    public void onInventory(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player player) {
+            ParkourUser user = ParkourUser.getUser(player);
+
+            if (user == null) {
+                return;
+            }
+
+            // prevent users from transferring items to possible vaults
+            if (event.getInventory().getType() != InventoryType.CRAFTING) {
+                event.setCancelled(true);
+            }
         }
     }
 }

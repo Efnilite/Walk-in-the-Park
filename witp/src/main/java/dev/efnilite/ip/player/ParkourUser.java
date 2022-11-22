@@ -203,6 +203,7 @@ public abstract class ParkourUser {
                     generator.reset(false);
                     IP.getDivider().leave(pp);
                 }
+
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
                 spectator.stopClosestChecker();
