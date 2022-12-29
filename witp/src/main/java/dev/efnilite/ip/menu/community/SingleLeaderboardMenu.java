@@ -40,27 +40,26 @@ public class SingleLeaderboardMenu {
 
         List<MenuItem> items = new ArrayList<>();
 
-        int rank = 1;
         Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".head");
 
         Map<UUID, Score> sorted = sort.sort(leaderboard.getScores());
 
         for (UUID uuid : sorted.keySet()) {
+            int rank = items.size() + 1;
             Score score = sorted.get(uuid);
 
             if (score == null) {
                 continue;
             }
 
-            int finalRank = rank;
             Item item = base.clone()
                     .material(Material.PLAYER_HEAD)
-                    .modifyName(name -> name.replace("%r", Integer.toString(finalRank))
+                    .modifyName(name -> name.replace("%r", Integer.toString(rank))
                             .replace("%s", Integer.toString(score.score()))
                             .replace("%p", score.name())
                             .replace("%t", score.time())
                             .replace("%d", score.difficulty()))
-                    .modifyLore(line -> line.replace("%r", Integer.toString(finalRank))
+                    .modifyLore(line -> line.replace("%r", Integer.toString(rank))
                             .replace("%s", Integer.toString(score.score()))
                             .replace("%p", score.name())
                             .replace("%t", score.time())
@@ -70,8 +69,9 @@ public class SingleLeaderboardMenu {
             ItemStack stack = item.build();
             stack.setType(Material.PLAYER_HEAD);
 
-            // bedrock has no player skull support
-            if (!Util.isBedrockPlayer(player)) {
+            // if there are more than 36 players, don't show the heads to avoid server crashing
+            // and bedrock has no player skull support
+            if (rank <= 36 && !Util.isBedrockPlayer(player)) {
                 OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
 
                 if (op.getName() != null && !op.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
@@ -90,7 +90,6 @@ public class SingleLeaderboardMenu {
             }
 
             items.add(item);
-            rank++;
         }
 
         // get next sorting type
