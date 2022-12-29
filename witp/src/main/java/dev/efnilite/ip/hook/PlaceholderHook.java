@@ -115,6 +115,14 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 } else {
                     return Integer.toString(score.score());
                 }
+            case "high_score_time":
+                score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+
+                if (score == null) {
+                    return "?";
+                } else {
+                    return score.time();
+                }
             case "version":
             case "ver":
                 return IP.getPlugin().getDescription().getVersion();

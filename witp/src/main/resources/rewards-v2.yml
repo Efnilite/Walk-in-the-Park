@@ -6,6 +6,7 @@
 #
 # Custom reward syntaxes:
 # %player% - the player's name
+# /test %player% - execute a console command.
 # leave:test - executes a command on leave
 # send:<bold>test - sends a message
 # vault:-87 - deposits a specific amount of money (Vault required)

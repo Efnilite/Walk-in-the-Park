@@ -10,6 +10,7 @@ import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
@@ -154,7 +155,7 @@ public class Schematic {
                             return;
                         }
 
-                        for (Block currentBlock : Util.getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
+                        for (Block currentBlock : getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
                             if (currentBlock.getType() == Material.AIR) { // skip air if enabled
                                 continue;
                             }
@@ -296,7 +297,7 @@ public class Schematic {
         this.blocks = blocks;
 
         Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
-        this.dimensions = new Dimensions((int) readDimensions.x, (int) readDimensions.y, (int) readDimensions.y);
+        this.dimensions = new Dimensions((int) readDimensions.x, (int) readDimensions.y, (int) readDimensions.z);
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
@@ -508,6 +509,32 @@ public class Schematic {
             default:
                 return "north";
         }
+    }
+
+    public List<Block> getBlocks(Location position, Location position2) {
+        World w = position.getWorld();
+        List<Block> add = new ArrayList<>();
+        Location location = new Location(w, 0, 0, 0);
+        int max = Math.max(position.getBlockX(), position2.getBlockX());
+        int mix = Math.min(position.getBlockX(), position2.getBlockX());
+        int may = Math.max(position.getBlockY(), position2.getBlockY());
+        int miy = Math.min(position.getBlockY(), position2.getBlockY());
+        int maz = Math.max(position.getBlockZ(), position2.getBlockZ());
+        int miz = Math.min(position.getBlockZ(), position2.getBlockZ());
+        for (int x = mix; x <= max; x++) {
+            for (int y = miy; y <= may; y++) {
+                for (int z = miz; z <= maz; z++) {
+                    location.setX(x);
+                    location.setY(y);
+                    location.setZ(z);
+
+                    if (location.getBlock().getType() != Material.AIR) {
+                        add.add(location.clone().getBlock());
+                    }
+                }
+            }
+        }
+        return add;
     }
 
     public boolean isSupported() {

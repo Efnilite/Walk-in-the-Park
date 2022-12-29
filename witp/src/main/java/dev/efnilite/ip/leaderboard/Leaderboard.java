@@ -6,7 +6,6 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.data.Score;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.vilib.util.Time;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,10 +101,10 @@ public class Leaderboard {
         // read all data
         read(true);
 
-        // write all data every 5 minutes
+        // write all data every 30 seconds after 30 seconds to allow time for reading
         Task.create(IP.getPlugin())
-                .delay(5 * Time.SECONDS_PER_MINUTE * 20)
-                .repeat(5 * Time.SECONDS_PER_MINUTE * 20)
+                .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
+                .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
                 .async()
                 .execute(() -> write(true))
                 .run();
@@ -146,7 +145,6 @@ public class Leaderboard {
             if (score == null) {
                 continue;
             }
-
 
             // insert all
             IP.getSqlManager().sendQuery(

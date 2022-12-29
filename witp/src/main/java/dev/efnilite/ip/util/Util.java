@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -86,7 +85,7 @@ public class Util {
 
     public static String parseDifficulty(double difficulty) {
         if (difficulty > 1) {
-            IP.logging().error("Invalid difficuly, above 1: " + difficulty);
+            IP.logging().error("Invalid difficulty, above 1: " + difficulty);
             return "unknown";
         }
         if (difficulty <= 0.3) {
@@ -165,44 +164,6 @@ public class Util {
             return new ArrayList<>();
         }
         return new ArrayList<>(section.getKeys(deep));
-    }
-
-
-    /**
-     * Gets the blocks between 2 locations
-     *
-     * @param   position
-     *          The first position
-     *
-     * @param   position2
-     *          The second position
-     *
-     * @return the locations of all the blocks between the positions
-     */
-    public static List<Block> getBlocks(Location position, Location position2) {
-        World w = position.getWorld();
-        List<Block> add = new ArrayList<>();
-        Location location = new Location(w, 0, 0, 0);
-        int max = Math.max(position.getBlockX(), position2.getBlockX());
-        int mix = Math.min(position.getBlockX(), position2.getBlockX());
-        int may = Math.max(position.getBlockY(), position2.getBlockY());
-        int miy = Math.min(position.getBlockY(), position2.getBlockY());
-        int maz = Math.max(position.getBlockZ(), position2.getBlockZ());
-        int miz = Math.min(position.getBlockZ(), position2.getBlockZ());
-        for (int x = mix; x <= max; x++) {
-            for (int y = miy; y <= may; y++) {
-                for (int z = miz; z <= maz; z++) {
-                    location.setX(x);
-                    location.setY(y);
-                    location.setZ(z);
-
-                    if (location.getBlock().getType() != Material.AIR) {
-                        add.add(location.clone().getBlock());
-                    }
-                }
-            }
-        }
-        return add;
     }
 
     /**

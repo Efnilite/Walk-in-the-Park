@@ -55,6 +55,8 @@ public class Option {
 
     public static Location GO_BACK_LOC;
 
+    public static int STORAGE_UPDATE_INTERVAL = 30;
+
     public static void init(boolean firstLoad) {
         generation = IP.getConfiguration().getFile("generation");
         config = IP.getConfiguration().getFile("config");
@@ -63,6 +65,8 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
+
+        STORAGE_UPDATE_INTERVAL = config.getInt("storage-update-interval");
 
         GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));
         String[] axes = config.getString("bungeecord.go-back-axes").split(",");

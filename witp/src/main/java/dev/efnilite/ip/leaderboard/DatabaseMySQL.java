@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import java.sql.*;
 import java.util.*;
 
+// todo finish impl
 public class DatabaseMySQL implements Database {
-
 
     @Override
     public void initialize() {

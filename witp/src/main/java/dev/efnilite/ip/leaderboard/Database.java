@@ -5,6 +5,7 @@ import dev.efnilite.ip.player.data.Score;
 import java.util.Map;
 import java.util.UUID;
 
+// todo finish impl
 public interface Database {
 
     void initialize();

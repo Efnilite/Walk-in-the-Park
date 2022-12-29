@@ -168,6 +168,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     .replace("%score%", Integer.toString(score))
                     .replace("%time%", stopwatch.toString())
                     .replace("%highscore%", Integer.toString(rank.score()))
+                    .replace("%highscoretime%", rank.time())
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
         }
@@ -176,6 +177,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 .replace("%score%", Integer.toString(score))
                 .replace("%time%", stopwatch.toString())
                 .replace("%highscore%", Integer.toString(rank.score()))
+                .replace("%highscoretime%", rank.time())
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
         player.board.updateLines(lines);
