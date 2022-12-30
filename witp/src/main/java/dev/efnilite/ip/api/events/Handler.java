@@ -77,7 +77,7 @@ public class Handler implements EventWatcher {
 
         // Bungeecord joining
         if (Option.BUNGEECORD) {
-            if (!Option.ENABLE_JOINING) {
+            if (!Option.JOINING) {
                 IP.logging().warn("Player " + player.getName() + " tried joining, but parkour is disabled.");
                 return;
             }

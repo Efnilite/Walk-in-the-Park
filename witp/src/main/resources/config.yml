@@ -13,7 +13,7 @@
 
 #===============================================================================#
 #                                                                               #
-#                           (c) Efnilite 2020-2022                              #
+#                           (c) Efnilite 2020-2023                              #
 #                                                                               #
 #===============================================================================#
 
@@ -24,7 +24,9 @@ auto-updater: true
 
 # -= Enable joining =-
 # Whether players can join the parkour.
-# True = players can join, false = players can't join.
+# When joining is disabled, the IP instance on this server will only read data from leaderboard databases.
+# Set joining to false if you want to create a cross-server leaderboard on this server.
+# true = players can join, false = players can't join.
 joining: true
 
 # -= BungeeCord options =-

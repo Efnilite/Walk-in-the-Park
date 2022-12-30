@@ -76,12 +76,6 @@ public class Leaderboard {
                 """
             .formatted(getTableName()));
 
-//            IP.getSqlManager().sendQuery(
-//                """
-//                ALTER TABLE `%s`
-//                ADD COLUMN `epoch` TIMESTAMP;
-//                """
-//            .formatted(getTableName()));
         } else {
             File file = new File(this.file);
             if (!file.exists()) {
@@ -101,13 +95,23 @@ public class Leaderboard {
         // read all data
         read(true);
 
-        // write all data every 30 seconds after 30 seconds to allow time for reading
-        Task.create(IP.getPlugin())
-                .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
-                .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
-                .async()
-                .execute(() -> write(true))
-                .run();
+        if (Option.JOINING) {
+            // write all data every x seconds after x seconds to allow time for reading
+            Task.create(IP.getPlugin())
+                    .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
+                    .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
+                    .async()
+                    .execute(() -> write(true))
+                    .run();
+        } else {
+            // reads all data every x seconds after x seconds
+            Task.create(IP.getPlugin())
+                    .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
+                    .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
+                    .async()
+                    .execute(() -> read(true))
+                    .run();
+        }
     }
 
     /**
@@ -221,6 +225,7 @@ public class Leaderboard {
                 return;
             }
 
+            Map<UUID, Score> copy = new HashMap<>();
             // loop over data to setup scores variable
             for (String uuid : fetched.keySet()) {
                 List<Object> objects = fetched.get(uuid);
@@ -230,8 +235,13 @@ public class Leaderboard {
                 String difficulty = (String) objects.get(2);
                 String score = (String) objects.get(3);
 
-                scores.put(UUID.fromString(uuid), new Score(name, time, difficulty, Integer.parseInt(score)));
+                copy.put(UUID.fromString(uuid), new Score(name, time, difficulty, Integer.parseInt(score)));
             }
+
+            // only clear if reading has succeeded
+            scores.clear();
+
+            scores.putAll(copy);
         } catch (SQLException ex) {
             IP.logging().stack(
                     "Error while trying to read SQL leaderboard data",
@@ -256,7 +266,7 @@ public class Leaderboard {
                 serialized.clear();
                 serialized.putAll(read.serialized);
 
-                scores.clear();
+                Map<UUID, Score> copy = new HashMap<>();
                 for (UUID uuid : serialized.keySet()) {
                     String val = serialized.get(uuid);
 
@@ -264,8 +274,13 @@ public class Leaderboard {
                         continue;
                     }
 
-                    scores.put(uuid, Score.fromString(val));
+                    copy.put(uuid, Score.fromString(val));
                 }
+
+                // only clear if reading has succeeded
+                scores.clear();
+
+                scores.putAll(copy);
             }
         } catch (IOException ex) {
             IP.logging().stack(
