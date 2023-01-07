@@ -149,7 +149,7 @@ public class Schematic {
                 .async()
                 .execute(() -> {
                     try {
-                        Time.timerStart("saveSchematic-" + file.getName());
+                        Time.timerStart("save schematic %s".formatted(file.getName()));
                         if (dimensions == null || blocks == null) {
                             IP.logging().error("Data of schematic is null while trying to save!");
                             return;
@@ -213,7 +213,7 @@ public class Schematic {
                         if (player == null) {
                             return;
                         }
-                        Util.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("saveSchematic-" + file.getName() + "ms&7!"));
+                        Util.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms&7!");
                     } catch (IOException ex) {
                         IP.logging().stack("Error while saving schematic " + file, ex);
                     }
