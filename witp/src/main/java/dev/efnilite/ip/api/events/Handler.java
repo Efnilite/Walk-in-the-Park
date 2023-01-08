@@ -13,6 +13,7 @@ import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
+import dev.efnilite.ip.world.WorldHandler;
 import dev.efnilite.ip.world.generation.VoidGenerator;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -76,10 +77,16 @@ public class Handler implements EventWatcher {
             Util.send(player, "");
         }
 
+        WorldHandler handler = IP.getWorldHandler();
+
+        if (handler == null) {
+            return;
+        }
+
         // Bungeecord joining
         if (Option.BUNGEECORD) {
             Gamemodes.DEFAULT.create(player);
-        } else if (player.getWorld().getUID().equals(IP.getWorldHandler().getWorld().getUID())) {
+        } else if (player.getWorld().getUID().equals(handler.getWorld().getUID())) {
             World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {
                 // If players who left in the world end up in the world itself while not being a player
@@ -278,11 +285,25 @@ public class Handler implements EventWatcher {
     public void onSwitch(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        UUID parkourWorld = IP.getWorldHandler().getWorld().getUID();
+        WorldHandler handler = IP.getWorldHandler();
+
+        if (handler == null) {
+            return;
+        }
+
+        UUID parkourWorld = handler.getWorld().getUID();
+
+        boolean passes;
+
+        if (Option.PERMISSIONS) {
+            passes = ParkourOption.ADMIN.check(player);
+        } else {
+            passes = player.isOp();
+        }
 
         // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
-        if (player.getWorld().getUID() == parkourWorld && user == null && !ParkourOption.ADMIN.check(player)) {
-            player.kickPlayer("");
+        if (player.getWorld().getUID() == parkourWorld && user == null && !passes) {
+            player.kickPlayer("You can't enter the parkour world by teleporting!");
         }
 
         // leaving world will unregister player

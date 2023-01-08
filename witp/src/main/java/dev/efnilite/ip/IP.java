@@ -201,23 +201,16 @@ public final class IP extends ViPlugin {
             sqlManager.close();
         }
 
-        if (divider != null) { // somehow this can be null despite it only ever being set to a new instance?
-            World world = worldHandler.getWorld();
-            if (world != null) {
-                for (Player player : world.getPlayers()) {
-                    player.kickPlayer("Server is restarting");
-                }
-            }
-        } else {
-            World world = Bukkit.getWorld(Option.WORLD_NAME);
-            if (world != null) {
-                for (Player player : world.getPlayers()) {
-                    player.kickPlayer("Server is restarting");
-                }
+        World world = Bukkit.getWorld(Option.WORLD_NAME);
+        if (world != null) {
+            for (Player player : world.getPlayers()) {
+                player.kickPlayer("Server is restarting");
             }
         }
 
-        worldHandler.deleteWorld();
+        if (worldHandler != null) {
+            worldHandler.deleteWorld();
+        }
     }
 
     @Override

@@ -513,6 +513,8 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         updateTime();
         updateScoreboard();
 
+        System.out.println(player.getName() + "/" + getGamemode().getName());
+
         player.getSession().updateSpectators();
         player.player.setSaturation(20);
 
