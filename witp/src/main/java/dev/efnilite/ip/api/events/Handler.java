@@ -3,6 +3,7 @@ package dev.efnilite.ip.api.events;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -77,12 +78,7 @@ public class Handler implements EventWatcher {
 
         // Bungeecord joining
         if (Option.BUNGEECORD) {
-            if (!Option.JOINING) {
-                IP.logging().warn("Player " + player.getName() + " tried joining, but parkour is disabled.");
-                return;
-            }
-
-            ParkourPlayer.joinDefault(player);
+            Gamemodes.DEFAULT.create(player);
         } else if (player.getWorld().getUID().equals(IP.getWorldHandler().getWorld().getUID())) {
             World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
             if (fallback != null) {

@@ -1,6 +1,7 @@
 package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -145,17 +146,12 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (!Option.JOINING) {
-                        IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
-                        return true;
-                    }
-
                     ParkourUser user = ParkourUser.getUser(player);
                     if (user != null) {
                         return true;
                     }
 
-                    ParkourPlayer.joinDefault(player);
+                    Gamemodes.DEFAULT.create(player);
                     return true;
                 }
                 case "leave" -> {
@@ -211,11 +207,6 @@ public class ParkourCommand extends ViCommand {
 
                 if (!ParkourOption.JOIN.check(player)) {
                     Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
-                    return true;
-                }
-
-                if (!Option.JOINING) {
-                    IP.logging().info("Player " + player.getName() + "tried joining, but parkour is disabled.");
                     return true;
                 }
 
@@ -301,7 +292,7 @@ public class ParkourCommand extends ViCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        ParkourPlayer.joinDefault(other);
+                        Gamemodes.DEFAULT.create(other);
                     }
                     Util.send(sender, IP.PREFIX + "Succesfully force joined everyone!");
                     return true;
@@ -336,7 +327,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     Util.send(sender, IP.PREFIX + "Succesfully force joined " + closest.getName() + "!");
-                    ParkourPlayer.joinDefault(closest);
+                    Gamemodes.DEFAULT.create(closest);
                     return true;
                 }
 
@@ -346,7 +337,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                ParkourPlayer.joinDefault(other);
+                Gamemodes.DEFAULT.create(other);
                 return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
 

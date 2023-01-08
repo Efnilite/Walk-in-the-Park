@@ -162,8 +162,7 @@ public interface Session {
      */
     default void join(Player player) {
         if (isAcceptingPlayers()) {
-            getGamemode().create(player); // make player join
-            addPlayers(ParkourPlayer.getPlayer(player));
+            Gamemodes.DEFAULT.create(player);
         } else if (isAcceptingSpectators()) {
             Gamemodes.SPECTATOR.create(player, this);
         }

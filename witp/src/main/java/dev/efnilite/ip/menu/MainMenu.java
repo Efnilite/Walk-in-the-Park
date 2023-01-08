@@ -2,6 +2,7 @@ package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
@@ -16,7 +17,7 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 0,
                 (player, user) -> Locales.getItem(player, "play.item")
                         .click(event -> Menus.PLAY.open(event.getPlayer())),
-                ParkourOption.PLAY::check);
+                player -> ParkourOption.PLAY.check(player) && Option.JOINING);
 
         registerMainItem(1, 1,
                 (player, user) -> Locales.getItem(player, "community.item")

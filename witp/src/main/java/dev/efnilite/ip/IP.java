@@ -107,8 +107,6 @@ public final class IP extends ViPlugin {
 
         Option.init(true);
 
-        divider = new WorldDivider();
-
         // ----- SQL and data -----
 
         if (Option.SQL) {
@@ -162,8 +160,12 @@ public final class IP extends ViPlugin {
 
         // ----- Worlds -----
 
-        worldHandler = new WorldHandler();
-        worldHandler.createWorld();
+        if (Option.JOINING) {
+            divider = new WorldDivider();
+
+            worldHandler = new WorldHandler();
+            worldHandler.createWorld();
+        }
 
         // ----- Events -----
 

@@ -82,22 +82,7 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Joins a player. This sends a join message while using {@link #register(Player)}.
-     *
-     * @param   player
-     *          The player
-     *
-     * @return the newly registered ParkourPlayer instance.
-     */
-    public static @NotNull ParkourPlayer joinDefault(@NotNull Player player) {
-        ParkourPlayer pp = register(player);
-        IP.getDivider().generate(pp);
-
-        return pp;
-    }
-
-    /**
-     * Registers a player. This registers the player internally - for joining, use {@link #joinDefault(Player)}
+     * Registers a player. This registers the player internally.
      * This automatically unregisters the player if it is already registered.
      *
      * @param   player
@@ -235,6 +220,7 @@ public abstract class ParkourUser {
                 user.previousData.giveRewards((ParkourPlayer) user);
             }
         }
+
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
     }

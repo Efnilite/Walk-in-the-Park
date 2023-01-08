@@ -1,7 +1,9 @@
 package dev.efnilite.ip.internal.gamemode;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Locales;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -33,14 +35,17 @@ public class DefaultGamemode implements Gamemode {
 
     @Override
     public void create(Player player) {
+        if (!Option.JOINING) {
+            return;
+        }
+
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
         if (pp != null && pp.getSession().getGamemode() instanceof DefaultGamemode) {
             return;
         }
         player.closeInventory();
 
-
-        ParkourUser.joinDefault(player);
+        IP.getDivider().generate(ParkourUser.register(player));
     }
 
     @Override

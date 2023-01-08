@@ -1,6 +1,7 @@
 package dev.efnilite.ip.internal.gamemode;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourSpectator;
@@ -34,6 +35,10 @@ public class SpectatorGamemode implements Gamemode {
     }
 
     public void create(Player player, Session session) {
+        if (!Option.JOINING) {
+            return;
+        }
+
         ParkourUser user = ParkourUser.getUser(player);
         ParkourSpectator spectator;
 
