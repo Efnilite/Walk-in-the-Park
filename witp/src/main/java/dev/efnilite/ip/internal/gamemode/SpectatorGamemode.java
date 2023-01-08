@@ -1,5 +1,6 @@
 package dev.efnilite.ip.internal.gamemode;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -8,6 +9,7 @@ import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.item.Item;
+import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +38,7 @@ public class SpectatorGamemode implements Gamemode {
 
     public void create(Player player, Session session) {
         if (!Option.JOINING) {
+            player.sendMessage(Strings.colour(IP.PREFIX + "Joining is currently disabled."));
             return;
         }
 

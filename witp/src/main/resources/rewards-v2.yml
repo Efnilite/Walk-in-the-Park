@@ -37,9 +37,9 @@ interval-rewards:
 # Changing the commands when a player already has achieved this score will not give it to them again.
 one-time-rewards:
   1:
-    - "leave:send:You made your first jump!"
+    - "send:You made your first jump!"
   2022:
-    - "/currentyear"
+    - "leave:/currentyear"
     - "vault:100"
   2023:
     - "send:&r"

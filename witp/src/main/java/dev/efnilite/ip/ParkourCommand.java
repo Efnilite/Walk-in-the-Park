@@ -502,9 +502,11 @@ public class ParkourCommand extends ViCommand {
             if (sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 completions.add("schematic");
                 completions.add("reload");
-                completions.add("migrate");
+                completions.add("forcejoin");
+                completions.add("forceleave");
                 completions.add("reset");
                 completions.add("recoverinventory");
+                completions.add("migrate");
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {

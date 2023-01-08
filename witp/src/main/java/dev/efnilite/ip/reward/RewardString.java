@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Efnilite
  */
+// todo add cross-server support
 public record RewardString(@NotNull String string) {
 
     /**
