@@ -26,7 +26,6 @@ public class PreviousData {
 
     private final boolean allowFlight;
     private final boolean flying;
-    private final boolean invisible;
     private final boolean collidable;
 
     private final int hunger;
@@ -47,7 +46,6 @@ public class PreviousData {
 
         allowFlight = player.getAllowFlight();
         flying = player.getAllowFlight();
-        invisible = player.isInvisible();
         collidable = player.isCollidable();
 
         if (Option.SAVE_STATS) {
@@ -89,7 +87,6 @@ public class PreviousData {
 
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
-            player.setInvisible(invisible);
             player.setCollidable(collidable);
 
             // -= Attributes =-

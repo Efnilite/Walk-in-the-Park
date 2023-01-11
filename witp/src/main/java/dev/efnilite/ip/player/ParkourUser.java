@@ -191,7 +191,8 @@ public abstract class ParkourUser {
 
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
-                spectator.stopClosestChecker();
+                spectator.unregister();
+
                 if (session != null) {
                     spectator.getSession().removeSpectators(spectator);
                 }

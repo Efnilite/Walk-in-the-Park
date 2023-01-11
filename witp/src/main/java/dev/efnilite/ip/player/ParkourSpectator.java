@@ -141,8 +141,10 @@ public class ParkourSpectator extends ParkourUser {
     /**
      * Stops the closest checker runnable.
      */
-    public void stopClosestChecker() {
+    public void unregister() {
         closestChecker.cancel();
+
+        player.setInvisible(false);
     }
 
     public void setClosest(ParkourPlayer closest) {

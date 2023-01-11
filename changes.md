@@ -4,3 +4,4 @@
 - Fixed players being able to join while joining is disabled through main menu
 - Fixed schematic saving causing an error
 - Fixed joining disabled message
+- Fixed requiring having permissions set to true to prevent people from using /tp
