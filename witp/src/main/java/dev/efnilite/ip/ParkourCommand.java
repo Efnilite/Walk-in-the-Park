@@ -163,10 +163,8 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "menu", "main" -> {
-                    ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-                    if (Option.SETTINGS_ENABLED && pp != null) {
-                        pp.getGenerator().menu();
-                        return true;
+                    if (!ParkourOption.MAIN.check(player)) {
+                        Menus.MAIN.open(player);
                     }
                     return true;
                 }

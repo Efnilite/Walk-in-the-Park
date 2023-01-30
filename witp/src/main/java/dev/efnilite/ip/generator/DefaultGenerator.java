@@ -170,7 +170,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%highscoretime%", rank.time())
                     .replace("%topscore%", Integer.toString(top.score()))
-                    .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+                    .replace("%topplayer%", top.name()).replace("%session%", session.getSessionId()));
         }
 
         player.board.updateTitle(title
@@ -179,7 +179,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%highscoretime%", rank.time())
                 .replace("%topscore%", Integer.toString(top.score()))
-                .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+                .replace("%topplayer%", top.name()).replace("%session%", session.getSessionId()));
         player.board.updateLines(lines);
     }
 
@@ -510,10 +510,17 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     @Override
     public void tick() {
+        IP.logging().info(player.getName() + " / " + ((session == null) ? "null" : session.getSessionId()));
+
+        if (session == null) {
+            reset(false);
+            return;
+        }
+
         updateTime();
         updateScoreboard();
 
-        player.getSession().updateSpectators();
+        session.updateSpectators();
         player.player.setSaturation(20);
 
         Location playerLocation = player.getLocation();

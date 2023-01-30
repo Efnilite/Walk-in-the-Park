@@ -42,6 +42,7 @@ public class WorldDivider {
     private final Material playerSpawn;
     private final Material parkourSpawn;
 
+    private final Vector3D origin;
     /**
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
      * it just picks an old one without any players.
