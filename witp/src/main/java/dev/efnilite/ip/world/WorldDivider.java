@@ -42,7 +42,6 @@ public class WorldDivider {
     private final Material playerSpawn;
     private final Material parkourSpawn;
 
-    private final Vector3D origin;
     /**
      * Spaces which have been previously generated but now have no players, so instead of generating a new point
      * it just picks an old one without any players.
@@ -56,7 +55,7 @@ public class WorldDivider {
 
     /**
      * New instance of the SubareaDivider
-     *
+     * <p>
      * Note: initiating another instance of this class might lead to serious problems
      */
     @SuppressWarnings("ConstantConditions")
@@ -73,9 +72,7 @@ public class WorldDivider {
     /**
      * Gets the point where the player is at
      *
-     * @param   player
-     *          The player
-     *
+     * @param player The player
      * @return the point of the player
      */
     public @Nullable Vector2D getPoint(@NotNull ParkourPlayer player) {
@@ -90,8 +87,7 @@ public class WorldDivider {
     /**
      * Generates an area for the player with no set generator. This will be set to the default DefaultGenerator.
      *
-     * @param   player
-     *          The player
+     * @param player The player
      */
     public synchronized void generate(@NotNull ParkourPlayer player) {
         this.generate(player, null, true);
@@ -138,8 +134,7 @@ public class WorldDivider {
      * Removes a player from the registry
      * If you're using the API, please use {@link ParkourPlayer#register(Player)} instead!
      *
-     * @param   player
-     *          The player
+     * @param player The player
      */
     public synchronized void leave(@NotNull ParkourPlayer player) {
         Vector2D point = getPoint(player);
@@ -223,37 +218,34 @@ public class WorldDivider {
 
         // -= Inventory =-
         if (Option.INVENTORY_HANDLING) {
-            Task.create(IP.getPlugin())
-                    .delay(5)
-                    .execute(() -> {
-                        List<Item> items = new ArrayList<>();
+            Task.create(IP.getPlugin()).delay(5).execute(() -> {
+                List<Item> items = new ArrayList<>();
 
-                        player.getInventory().clear();
+                player.getInventory().clear();
 
-                        if (ParkourOption.PLAY.check(player)) {
-                            items.add(0, Locales.getItem(pp.getLocale(), "play.item"));
-                        }
+                if (ParkourOption.PLAY.check(player)) {
+                    items.add(0, Locales.getItem(pp.getLocale(), "play.item"));
+                }
 
-                        if (ParkourOption.COMMUNITY.check(player)) {
-                            items.add(items.size(), Locales.getItem(pp.getLocale(), "community.item"));
-                        }
+                if (ParkourOption.COMMUNITY.check(player)) {
+                    items.add(items.size(), Locales.getItem(pp.getLocale(), "community.item"));
+                }
 
-                        if (ParkourOption.SETTINGS.check(player)) {
-                            items.add(items.size(), Locales.getItem(pp.getLocale(), "settings.item"));
-                        }
+                if (ParkourOption.SETTINGS.check(player)) {
+                    items.add(items.size(), Locales.getItem(pp.getLocale(), "settings.item"));
+                }
 
-                        if (ParkourOption.LOBBY.check(player)) {
-                            items.add(items.size(), Locales.getItem(pp.getLocale(), "lobby.item"));
-                        }
+                if (ParkourOption.LOBBY.check(player)) {
+                    items.add(items.size(), Locales.getItem(pp.getLocale(), "lobby.item"));
+                }
 
-                        items.add(items.size(), Locales.getItem(pp.getLocale(), "other.quit"));
+                items.add(items.size(), Locales.getItem(pp.getLocale(), "other.quit"));
 
-                        List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
-                        for (int i = 0; i < items.size(); i++) {
-                            player.getInventory().setItem(slots.get(i), items.get(i).build());
-                        }
-                    })
-                    .run();
+                List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
+                for (int i = 0; i < items.size(); i++) {
+                    player.getInventory().setItem(slots.get(i), items.get(i).build());
+                }
+            }).run();
         }
 
         if (!Option.INVENTORY_HANDLING) {
@@ -268,9 +260,7 @@ public class WorldDivider {
     /**
      * Gets the {@link Selection} instance used as the playable zone, given a specific center location
      *
-     * @param   center
-     *          The center location
-     *
+     * @param center The center location
      * @return the playable area
      */
     public Selection getZone(Location center) {
@@ -289,12 +279,8 @@ public class WorldDivider {
     /**
      * Gets the estimated center of an area
      *
-     * @param   vector
-     *          The position
-     *
-     * @param   borderSize
-     *          The border size
-     *
+     * @param vector     The position
+     * @param borderSize The border size
      * @return the vector in the middle
      */
     public Vector3D getEstimatedCenter(Vector2D vector, double borderSize) {

@@ -7,7 +7,7 @@ main: dev.efnilite.ip.IP
 depend: [vilib]
 softdepend: [floodgate, Vault, PlaceholderAPI, Multiverse-Core, HolographicDisplays, VoidGen]
 commands:
-    ip:
-        aliases: [parkour, witp]
+    witp:
+        aliases: [parkour, ip]
         usage: /<command> [arguments]
         description: Main command for Infinite Parkour
