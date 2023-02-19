@@ -2,6 +2,7 @@ package dev.efnilite.ip.generator.profile;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,16 +11,28 @@ import java.util.Map;
  * This class is used to make generator settings modifiable without changing player's
  * preset settings.
  */
-public interface Profile {
+public class Profile {
+
+    private final Map<String, ProfileValue> settings = new HashMap<>();
 
     @NotNull
-    Profile setSetting(@NotNull String setting, @NotNull String value);
+    public Profile setSetting(@NotNull String setting, @NotNull String value) {
+        settings.put(setting, new ProfileValue(value));
+        return this;
+    }
 
     @NotNull
-    ProfileValue getValue(@NotNull String setting);
+    public ProfileValue getValue(@NotNull String setting) {
+        ProfileValue value = settings.get(setting);
+        return value == null ? new ProfileValue("") : value;
+    }
 
-    @NotNull Map<String, ProfileValue> getSettings();
+    @NotNull
+    public Map<String, ProfileValue> getSettings() {
+        return settings;
+    }
 
-    void clear();
-
+    public void clear() {
+        settings.clear();
+    }
 }

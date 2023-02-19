@@ -510,8 +510,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     @Override
     public void tick() {
-        IP.logging().info(player.getName() + " / " + ((session == null) ? "null" : session.getSessionId()));
-
         if (session == null) {
             reset(false);
             return;

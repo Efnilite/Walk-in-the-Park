@@ -1,7 +1,6 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.generator.profile.GeneratorProfile;
 import dev.efnilite.ip.generator.profile.Profile;
 import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.schematic.selection.Selection;
@@ -54,7 +53,7 @@ public abstract class ParkourGenerator {
     /**
      * This Generator's {@link Profile}.
      *
-     * @see GeneratorProfile
+     * @see Profile
      */
     protected final Profile profile;
 
@@ -65,7 +64,7 @@ public abstract class ParkourGenerator {
 
     public ParkourGenerator(@NotNull Session session, GeneratorOption... options) {
         this.session = session;
-        this.profile = new GeneratorProfile();
+        this.profile = new Profile();
 
         this.generatorOptions = Arrays.asList(options);
         this.stopwatch = new Stopwatch();

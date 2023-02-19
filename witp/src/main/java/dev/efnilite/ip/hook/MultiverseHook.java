@@ -35,7 +35,7 @@ public class MultiverseHook {
      *          The name of the world
      */
     public void deleteWorld(String worldName) {
-        manager.deleteWorld(worldName, true); // deleteFromConfig
+        manager.deleteWorld(worldName, false); // deleteFromConfig
     }
 
     /**
