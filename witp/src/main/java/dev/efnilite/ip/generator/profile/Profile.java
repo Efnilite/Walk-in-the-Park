@@ -31,8 +31,4 @@ public class Profile {
     public Map<String, ProfileValue> getSettings() {
         return settings;
     }
-
-    public void clear() {
-        settings.clear();
-    }
 }

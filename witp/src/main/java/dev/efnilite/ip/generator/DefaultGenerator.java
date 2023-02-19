@@ -39,6 +39,7 @@ import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     /**
      * The task used in checking the player's current location
      */
-    protected BukkitRunnable task;
+    protected BukkitTask task;
 
     /**
      * Whether this generator has been stopped
@@ -488,20 +489,19 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
     @Override
     public void startTick() {
-        task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (stopped) {
-                    this.cancel();
-                    return;
-                }
-
-                tick();
-            }
-        };
-        Task.create(IP.getPlugin())
+        task = Task.create(IP.getPlugin())
                 .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
-                .execute(task)
+                .execute(new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (stopped) {
+                            this.cancel();
+                            return;
+                        }
+
+                        tick();
+                    }
+                })
                 .run();
     }
 
@@ -610,12 +610,15 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     @Override
     public void reset(boolean regenerate) {
+        System.out.println("regenerate: " + regenerate);
         if (!regenerate) {
+            System.out.println("called end");
             stopped = true;
             if (task == null) {// incomplete setup as task is the last thing to start
                 IP.logging().warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
                 IP.logging().warn("You don't have to report this warning.");
             } else {
+                System.out.println("task cancelled");
                 task.cancel();
             }
         }
@@ -662,12 +665,14 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                 message = "settings.parkour_settings.items.fall_message.formats.miss";
             }
 
-            player.sendTranslated("settings.parkour_settings.items.fall_message.divider");
-            player.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
-            player.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
-            player.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record.score()));
-            player.sendTranslated(message, Integer.toString(number));
-            player.sendTranslated("settings.parkour_settings.items.fall_message.divider");
+            for (ParkourPlayer players : session.getPlayers()) {
+                players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
+                players.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
+                players.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
+                players.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record.score()));
+                players.sendTranslated(message, Integer.toString(number));
+                players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
+            }
         }
 
         if (leaderboard != null && score > record.score()) {
