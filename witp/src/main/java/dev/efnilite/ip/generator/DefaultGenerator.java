@@ -64,7 +64,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
     /**
      * The task used in checking the player's current location
      */
-    protected BukkitTask task;
+    public BukkitTask task;
 
     /**
      * Whether this generator has been stopped
@@ -258,16 +258,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
 
-        if (dy > 0 && gap < 2) { // prevent blocks from spawning on top of each other
-            gap = 2;
-        }
-
-        switch (mostRecentBlock.getBlock().getType()) {
-            case PACKED_ICE -> gap += 0.5;
-            case SMOOTH_QUARTZ_SLAB -> dy = 0;
-            case WHITE_STAINED_GLASS_PANE -> gap -= 0.5;
-        }
-
         return List.of(selectNext(mostRecentBlock, gap, dy));
     }
 
@@ -309,6 +299,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         dy = updateHeight(progress, dy);
 
+        switch (mostRecentBlock.getBlock().getType()) {
+            case PACKED_ICE -> range += 0.5;
+            case SMOOTH_QUARTZ_SLAB -> dy = 0;
+            case WHITE_STAINED_GLASS_PANE -> range -= 0.5;
+        }
+
         // the adjusted dy, used to get the updated max range
         int ady = dy;
 
@@ -328,9 +324,9 @@ public class DefaultGenerator extends DefaultGeneratorBase {
             ds = random.nextInt(-adjustedRange + 1, adjustedRange);
         }
 
-        // if selection angle is reduced, half the current sideways step
+        // if selection angle is reduced, halve the current sideways step
         if (option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
-            if (1 < ds) {
+            if (ds > 1) {
                 ds = 1;
             } else if (ds < -1) {
                 ds = -1;
@@ -495,7 +491,6 @@ public class DefaultGenerator extends DefaultGeneratorBase {
                     @Override
                     public void run() {
                         if (stopped) {
-                            this.cancel();
                             return;
                         }
 
@@ -610,15 +605,12 @@ public class DefaultGenerator extends DefaultGeneratorBase {
      */
     @Override
     public void reset(boolean regenerate) {
-        System.out.println("regenerate: " + regenerate);
         if (!regenerate) {
-            System.out.println("called end");
             stopped = true;
             if (task == null) {// incomplete setup as task is the last thing to start
                 IP.logging().warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
                 IP.logging().warn("You don't have to report this warning.");
             } else {
-                System.out.println("task cancelled");
                 task.cancel();
             }
         }
