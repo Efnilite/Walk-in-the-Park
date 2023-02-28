@@ -258,6 +258,10 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         int dy = getRandomChance(heightChances);
         int gap = getRandomChance(distanceChances);
 
+        if (dy > 0 && gap < 2) { // prevent blocks from spawning on top of each other
+            gap = 2;
+        }
+
         return List.of(selectNext(mostRecentBlock, gap, dy));
     }
 

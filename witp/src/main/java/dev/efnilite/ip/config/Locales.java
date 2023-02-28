@@ -57,14 +57,12 @@ public class Locales {
                         folder.toFile().mkdirs();
                     }
 
+                    String[] files = folder.toFile().list();
+
                     // create non-existent files
-                    if (!folder.resolve("en.yml").toFile().exists()) {
+                    if (files != null && files.length == 0) {
                         plugin.saveResource("locales/en.yml", false);
-                    }
-                    if (!folder.resolve("nl.yml").toFile().exists()) {
                         plugin.saveResource("locales/nl.yml", false);
-                    }
-                    if (!folder.resolve("fr.yml").toFile().exists()) {
                         plugin.saveResource("locales/fr.yml", false);
                     }
 
