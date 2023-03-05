@@ -10,7 +10,6 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.ip.world.WorldHandler;
@@ -197,37 +196,38 @@ public class Handler implements EventWatcher {
         }
 
         Location location = event.getClickedBlock().getLocation();
+        Location[] existingSelection = ParkourCommand.selections.get(player);
+
+        event.setCancelled(true);
 
         switch (action) {
             case LEFT_CLICK_BLOCK -> {
-                event.setCancelled(true);
-                if (ParkourCommand.selections.get(player) == null) {
-                    ParkourCommand.selections.put(player, new Selection(location, null, player.getWorld()));
-                } else {
-                    Location pos2 = ParkourCommand.selections.get(player).getPos2();
-                    if (pos2 == null) {
-                        Util.send(player, "&4&l(!) Error &7Position two wasn't set. Please retry!");
-                        return;
-                    }
-                    ParkourCommand.selections.put(player, new Selection(location, pos2, player.getWorld()));
-                    Particles.box(BoundingBox.of(location, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+
+                Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
+
+                if (existingSelection == null) {
+                    ParkourCommand.selections.put(player, new Location[] { location, null });
+                    return;
                 }
-                Util.send(player, "&4&l(!) &7Position 1 was set to " + Locations.toString(location, true));
+
+                ParkourCommand.selections.put(player, new Location[] { location, existingSelection[1] });
+
+                Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(),
+                        new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
             case RIGHT_CLICK_BLOCK -> {
-                event.setCancelled(true);
-                if (ParkourCommand.selections.get(player) == null) {
-                    ParkourCommand.selections.put(player, new Selection(null, location, player.getWorld()));
-                } else {
-                    Location pos1 = ParkourCommand.selections.get(player).getPos1();
-                    if (pos1 == null) {
-                        Util.send(player, "&4&l(!) Error &7Position one wasn't set. Please retry!");
-                        return;
-                    }
-                    ParkourCommand.selections.put(player, new Selection(pos1, location, player.getWorld()));
-                    Particles.box(BoundingBox.of(pos1, location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
+
+                if (existingSelection == null) {
+                    ParkourCommand.selections.put(player, new Location[] { null, location });
+                    return;
                 }
-                Util.send(player, "&4&l(!) &7Position 2 was set to " + Locations.toString(location, true));
+
+                ParkourCommand.selections.put(player, new Location[] { existingSelection[0], location });
+
+                Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(),
+                        new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                return;
             }
         }
     }

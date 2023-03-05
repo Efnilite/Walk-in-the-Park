@@ -248,6 +248,8 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
                     case "pos1" -> {
+                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
+
                         if (existingSelection == null) {
                             selections.put(player, new Location[] { playerLocation, null });
                             return true;
@@ -257,11 +259,11 @@ public class ParkourCommand extends ViCommand {
 
                         Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(),
                                 new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
-
-                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
                         return true;
                     }
                     case "pos2" -> {
+                        Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(playerLocation, true));
+
                         if (existingSelection == null) {
                             selections.put(player, new Location[] { null, playerLocation });
                             return true;
@@ -271,8 +273,6 @@ public class ParkourCommand extends ViCommand {
 
                         Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(),
                                 new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
-
-                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
                         return true;
                     }
                     case "save" -> {
