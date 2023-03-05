@@ -40,14 +40,15 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
-    public static final HashMap<Player, Selection> selections = new HashMap<>();
+    public static final HashMap<Player, Location[]> selections = new HashMap<>();
+
     private ItemStack wand;
 
     public ParkourCommand() {
         if (Version.isHigherOrEqual(Version.V1_14)) {
             wand = new Item(
-                    Material.GOLDEN_AXE, "&4&lIP Schematic Wand")
-                    .lore("&7Left click: first position", "&7Right click: second position").build();
+                    Material.GOLDEN_AXE, "<dark_red><bold>IP Schematic Wand")
+                    .lore("<gray>Left click: first position", "<gray>Right click: second position").build();
             PersistentUtil.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
         }
     }
@@ -106,10 +107,12 @@ public class ParkourCommand extends ViCommand {
                     }
                     Time.timerStart("migrate");
                     File folder = new File(IP.getPlugin().getDataFolder() + "/players/");
+
                     if (!folder.exists()) {
                         folder.mkdirs();
                         return true;
                     }
+
                     for (File file : folder.listFiles()) {
                         FileReader reader;
                         try {
@@ -181,17 +184,17 @@ public class ParkourCommand extends ViCommand {
                         Util.send(sender, Locales.getString(defaultLocale, "other.no_do", false));
                         return true;
                     }
-                    Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
+                    Util.send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
                     Util.send(player, "");
-                    Util.send(player, "&7Welcome to the schematic creating section.");
-                    Util.send(player, "&7You can use the following commands:");
+                    Util.send(player, "<gray>Welcome to the schematic creating section.");
+                    Util.send(player, "<gray>You can use the following commands:");
                     if (Version.isHigherOrEqual(Version.V1_14)) {
-                        Util.send(player, "<red>/ip schematic wand <dark_gray>- &7Get the schematic wand");
+                        Util.send(player, "<red>/ip schematic wand <dark_gray>- <gray>Get the schematic wand");
                     }
-                    Util.send(player, "<red>/ip schematic pos1 <dark_gray>- &7Set the first position of your selection");
-                    Util.send(player, "<red>/ip schematic pos2 <dark_gray>- &7Set the second position of your selection");
-                    Util.send(player, "<red>/ip schematic save <dark_gray>- &7Save your selection to a schematic file");
-                    Util.send(player, "<red>/ip schematic paste <file> <dark_gray>- &7Paste a schematic file");
+                    Util.send(player, "<red>/ip schematic pos1 <dark_gray>- <gray>Set the first position of your selection");
+                    Util.send(player, "<red>/ip schematic pos2 <dark_gray>- <gray>Set the second position of your selection");
+                    Util.send(player, "<red>/ip schematic save <dark_gray>- <gray>Save your selection to a schematic file");
+                    Util.send(player, "<red>/ip schematic paste <file> <dark_gray>- <gray>Paste a schematic file");
                     Util.send(player, "");
                     Util.send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
                     return true;
@@ -228,61 +231,73 @@ public class ParkourCommand extends ViCommand {
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.getPermission())) {
-                Selection selection = selections.get(player);
+
+                Location playerLocation = player.getLocation();
+                Location[] existingSelection = selections.get(player);
+
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
                         if (Version.isHigherOrEqual(Version.V1_14)) {
                             player.getInventory().addItem(wand);
 
-                            Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
-                            Util.send(player, "&7Use your IP Schematic Wand to easily select schematics.");
-                            Util.send(player, "&7Use <dark_gray>left click&7 to set the first position, and <dark_gray>right click &7for the second!");
-                            Util.send(player, "&7If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands &7instead.");
+                            Util.send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
+                            Util.send(player, "<gray>Use your IP Schematic Wand to easily select schematics.");
+                            Util.send(player, "<gray>Use <dark_gray>left click<gray> to set the first position, and <dark_gray>right click <gray>for the second!");
+                            Util.send(player, "<gray>If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands <gray>instead.");
                         }
                         return true;
                     }
                     case "pos1" -> {
-                        if (selections.get(player) == null) {
-                            selections.put(player, new Selection(player.getLocation(), null, player.getWorld()));
-                        } else {
-                            Location pos1 = player.getLocation();
-                            Location pos2 = selections.get(player).getPos2();
-                            selections.put(player, new Selection(pos1, pos2, player.getWorld()));
-                            Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        if (existingSelection == null) {
+                            selections.put(player, new Location[] { playerLocation, null });
+                            return true;
                         }
-                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(player.getLocation(), true));
+
+                        selections.put(player, new Location[] { playerLocation, existingSelection[1] });
+
+                        Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(),
+                                new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+
+                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
                         return true;
                     }
                     case "pos2" -> {
-                        if (selections.get(player) == null) {
-                            selections.put(player, new Selection(null, player.getLocation(), player.getWorld()));
-                        } else {
-                            Location pos1 = selections.get(player).getPos1();
-                            Location pos2 = player.getLocation();
-                            selections.put(player, new Selection(pos1, pos2, player.getWorld()));
-                            Particles.box(BoundingBox.of(pos1, pos2), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        if (existingSelection == null) {
+                            selections.put(player, new Location[] { null, playerLocation });
+                            return true;
                         }
-                        Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(player.getLocation(), true));
+
+                        selections.put(player, new Location[] { existingSelection[0], playerLocation });
+
+                        Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(),
+                                new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+
+                        Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
                         return true;
                     }
                     case "save" -> {
                         if (!cooldown(sender, "schematic-save", 2500)) {
                             return true;
                         }
-                        if (selection == null || !selection.isComplete()) {
-                            Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
-                            Util.send(player, "&7Your schematic isn't complete yet.");
-                            Util.send(player, "&7Be sure to set the first and second position!");
+
+                        if (existingSelection == null || existingSelection[0] == null || existingSelection[1] == null) {
+                            Util.send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
+                            Util.send(player, "<gray>Your schematic isn't complete yet.");
+                            Util.send(player, "<gray>Be sure to set the first and second position!");
                             return true;
                         }
+
                         String code = Util.randomDigits(6);
-                        Util.send(player, "<dark_gray>----------- &4&lSchematics <dark_gray>-----------");
-                        Util.send(player, "&7Your schematic is being saved..");
-                        Util.send(player, "&7Your schematic will be generated with random number code <red>'" + code + "'&7!");
-                        Util.send(player, "&7You can change the file name to whatever number you like.");
+
+                        Util.send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
+                        Util.send(player, "<gray>Your schematic is being saved..");
+                        Util.send(player, "<gray>Your schematic will be generated with random number code <red>'" + code + "'<gray>!");
+                        Util.send(player, "<gray>You can change the file name to whatever number you like.");
                         Util.send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
-                        Schematic schematic = new Schematic(selection);
-                        schematic.file("parkour-" + code).save(player);
+
+                        new Schematic(new Selection(existingSelection[0], existingSelection[1]))
+                                .file("parkour-" + code)
+                                .save(player);
                         return true;
                     }
                 }
@@ -292,7 +307,7 @@ public class ParkourCommand extends ViCommand {
                     for (Player other : Bukkit.getOnlinePlayers()) {
                         Gamemodes.DEFAULT.create(other);
                     }
-                    Util.send(sender, IP.PREFIX + "Succesfully force joined everyone!");
+                    Util.send(sender, IP.PREFIX + "Successfully force joined everyone!");
                     return true;
                 }
 
