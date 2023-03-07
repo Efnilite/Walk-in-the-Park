@@ -65,19 +65,6 @@ public enum ParkourOption {
     }
 
     /**
-     * Checks if a permissible has the current permission if permissions are enabled.
-     * If perms are disabled, always returns true.
-     *
-     * @param   permissible
-     *          The permissible
-     *
-     * @return true if the permissible is allowed to perform this action, false if not
-     */
-    public boolean checkPermission(Permissible permissible) {
-        return !Option.PERMISSIONS || permissible.hasPermission(permission);
-    }
-
-    /**
      * Checks if a permissible has the current permission, if permissions are enabled.
      * This also checks to see if the option is enabled.
      *
@@ -87,9 +74,15 @@ public enum ParkourOption {
      * @return true if the permissible is allowed to view/perform this option, false if not.
      */
     public boolean check(Permissible permissible) {
-        Object value = Option.OPTIONS_ENABLED.getOrDefault(this, true);
+        boolean value = Option.OPTIONS_ENABLED.getOrDefault(this, true);
 
-        return !checkPermission(permissible) || value == null || (boolean) value;
+        if (value) {
+            if (Option.PERMISSIONS) {
+                return permissible.hasPermission(permission);
+            }
+            return true;
+        }
+        return false;
     }
 
     public String getPath() {

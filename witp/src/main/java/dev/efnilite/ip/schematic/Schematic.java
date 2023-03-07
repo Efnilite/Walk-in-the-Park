@@ -213,7 +213,7 @@ public class Schematic {
                         if (player == null) {
                             return;
                         }
-                        Util.send(player, "&4&l(!) &7Your schematic has been saved in &c" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms&7!");
+                        Util.send(player, IP.PREFIX + "Your schematic has been saved in <red>" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms<gray>!");
                     } catch (IOException ex) {
                         IP.logging().stack("Error while saving schematic " + file, ex);
                     }
