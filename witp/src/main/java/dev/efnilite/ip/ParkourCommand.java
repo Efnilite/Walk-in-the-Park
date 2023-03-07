@@ -196,7 +196,7 @@ public class ParkourCommand extends ViCommand {
                     Util.send(player, "<red>/ip schematic save <dark_gray>- <gray>Save your selection to a schematic file");
                     Util.send(player, "<red>/ip schematic paste <file> <dark_gray>- <gray>Paste a schematic file");
                     Util.send(player, "");
-                    Util.send(player, "<dark_gray>&nHave any questions or need help? Join the Discord!");
+                    Util.send(player, "<dark_gray><underlined>Have any questions or need help? Join the Discord!");
                     return true;
                 }
             }
@@ -324,7 +324,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    // get closest player
+                    // get the closest player
                     for (Player p : from.getWorld().getPlayers()) {
                         double d = p.getLocation().distance(from);
 
@@ -339,7 +339,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    Util.send(sender, IP.PREFIX + "Succesfully force joined " + closest.getName() + "!");
+                    Util.send(sender, IP.PREFIX + "Successfully force joined " + closest.getName() + "!");
                     Gamemodes.DEFAULT.create(closest);
                     return true;
                 }
@@ -575,7 +575,7 @@ public class ParkourCommand extends ViCommand {
         if (sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
             Util.send(sender, "<gray>/ip schematic <dark_gray>- Create a schematic");
             Util.send(sender, "<gray>/ip reload <dark_gray>- Reloads the messages-v3.yml file");
-            Util.send(sender, "<gray>/ip migrate <dark_gray>- Migrate your Json files to MySQL");
+            Util.send(sender, "<gray>/ip migrate <dark_gray>- Migrate your JSON files to MySQL");
             Util.send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
             Util.send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             Util.send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");

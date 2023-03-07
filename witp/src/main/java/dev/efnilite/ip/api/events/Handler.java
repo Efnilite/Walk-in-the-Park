@@ -70,9 +70,8 @@ public class Handler implements EventWatcher {
         }
         if (player.isOp() && IP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
-            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen.");
-            Util.send(player, IP.PREFIX + "This causes extreme lag spikes and performance issues while playing.");
-            Util.send(player, IP.PREFIX + "Please visit the wiki to fix this.");
+            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
+                    "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             Util.send(player, "");
         }
 
@@ -191,7 +190,7 @@ public class Handler implements EventWatcher {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "witp", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
+        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "ip", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 
@@ -227,7 +226,6 @@ public class Handler implements EventWatcher {
 
                 Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(),
                         new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
-                return;
             }
         }
     }
