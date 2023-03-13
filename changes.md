@@ -2,5 +2,7 @@
 
 - Fixed /ip schematic wand not working
 - Fixed disabling settings with permissions not working
+- Fixed spectators not being visible in player menus
+- Fixed spectators teleport distance being too small
 - Improved /ip schematic logic
 - Improved /ip schematic colouring

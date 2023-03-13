@@ -50,7 +50,7 @@ public class SingleSession implements Session {
 
             Entity target = bukkitPlayer.getSpectatorTarget();
 
-            if (watchingPlayer.getLocation().distance(bukkitPlayer.getLocation()) > 30) {
+            if (watchingPlayer.getLocation().distance(bukkitPlayer.getLocation()) > 100) {
                 if (bukkitPlayer.getGameMode() == GameMode.SPECTATOR) { // if player is a spectator
                     bukkitPlayer.setSpectatorTarget(null);
                     spectator.teleport(watchingPlayer.getLocation());
@@ -62,6 +62,7 @@ public class SingleSession implements Session {
             String string = Locales.getString(bukkitPlayer, "play.spectator.action_bar", true);
             bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
 
+            spectator.player.setGameMode(GameMode.SPECTATOR);
             spectator.updateScoreboard();
         }
     }

@@ -4,6 +4,7 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for all Gamemodes.
@@ -34,7 +35,7 @@ public interface Gamemode {
      *
      * @return the {@link Leaderboard} manager that belongs to this gamemode
      */
-    Leaderboard getLeaderboard();
+    @Nullable Leaderboard getLeaderboard();
 
     /**
      * Creates this Gamemode instance with a given Player.
