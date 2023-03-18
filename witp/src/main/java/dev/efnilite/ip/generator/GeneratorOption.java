@@ -1,4 +1,4 @@
-package dev.efnilite.ip.generator.settings;
+package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 
@@ -11,6 +11,6 @@ public enum GeneratorOption {
     DISABLE_SPECIAL,
     DISABLE_ADAPTIVE,
     REDUCE_RANDOM_BLOCK_SELECTION_ANGLE,
-    INCREASED_TICK_ACCURACY, IGNORE_CHECK_FOR_PROGRESS
+    INCREASED_TICK_ACCURACY
 
 }

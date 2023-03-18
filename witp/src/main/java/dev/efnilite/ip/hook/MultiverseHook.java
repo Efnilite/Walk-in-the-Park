@@ -3,7 +3,7 @@ package dev.efnilite.ip.hook;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import dev.efnilite.ip.world.generation.VoidGenerator;
+import dev.efnilite.ip.world.VoidGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;

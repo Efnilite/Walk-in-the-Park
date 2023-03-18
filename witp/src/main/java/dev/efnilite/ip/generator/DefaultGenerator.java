@@ -9,9 +9,7 @@ import dev.efnilite.ip.api.events.PlayerFallEvent;
 import dev.efnilite.ip.api.events.PlayerScoreEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.generator.base.DefaultGeneratorBase;
-import dev.efnilite.ip.generator.base.Direction;
-import dev.efnilite.ip.generator.settings.GeneratorOption;
+import dev.efnilite.ip.generator.base.DefaultGeneratorChances;
 import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
@@ -54,7 +52,32 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Efnilite
  */
-public class DefaultGenerator extends DefaultGeneratorBase {
+public class DefaultGenerator extends DefaultGeneratorChances {
+
+    /**
+     * The total score achieved in this Generator instance
+     */
+    public int totalScore = 0;
+
+    /**
+     * The schematic cooldown
+     */
+    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+
+    /**
+     * Where the player spawns on reset
+     */
+    public Location playerSpawn;
+
+    /**
+     * Where blocks from schematics spawn
+     */
+    public Location blockSpawn;
+
+    /**
+     * Area data
+     */
+    public List<Block> islandBlocks;
 
     /**
      * The amount of blocks that will trail the player's current index.
@@ -118,7 +141,7 @@ public class DefaultGenerator extends DefaultGeneratorBase {
 
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.heading = Direction.translate(Option.HEADING);
+        this.heading = stringToVector3D(Option.HEADING);
     }
 
     @Override
@@ -346,11 +369,28 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(Util.angle(Direction.translate(Option.HEADING), heading));
+        offset.rotateAroundY(angleBetween(stringToVector3D(Option.HEADING), heading));
 
         clone.add(offset);
 
         return clone.getBlock();
+    }
+
+    private double angleBetween(Vector3D base, Vector3D other) {
+        if (base == other) {
+            return 0;
+        }
+
+        return Math.toDegrees(Math.atan2(base.z, base.x) - Math.atan2(other.z, other.x));
+    }
+
+    private Vector3D stringToVector3D(String direction) {
+        return switch (direction.toLowerCase()) {
+            case "north" -> new Vector3D(0, 0, -1);
+            case "south" -> new Vector3D(0, 0, 1);
+            case "west" -> new Vector3D(-1, 0, 0);
+            default -> new Vector3D(1, 0, 0); // east
+        };
     }
 
     /**
@@ -911,9 +951,5 @@ public class DefaultGenerator extends DefaultGeneratorBase {
         mostRecentBlock = block.clone();
 
         generate(profile.getValue("blockLead").asInt() + 1);
-    }
-
-    public int getTotalScore() {
-        return totalScore;
     }
 }

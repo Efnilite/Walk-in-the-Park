@@ -4,7 +4,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Strings;
-import dev.efnilite.vilib.vector.Vector3D;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -243,14 +242,6 @@ public class Util {
         } else {
             return new int[]{k, k - (m - n - t)};
         }
-    }
-
-    public static double angle(Vector3D base, Vector3D other) {
-        if (base == other) {
-            return 0;
-        }
-
-        return Math.toDegrees(Math.atan2(base.z, base.x) - Math.atan2(other.z, other.x));
     }
 
     public static List<Integer> getEvenlyDistributedSlots(int amountInRow) {

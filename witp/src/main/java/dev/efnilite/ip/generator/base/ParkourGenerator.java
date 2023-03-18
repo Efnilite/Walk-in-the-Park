@@ -1,8 +1,8 @@
 package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.generator.GeneratorOption;
 import dev.efnilite.ip.generator.profile.Profile;
-import dev.efnilite.ip.generator.settings.GeneratorOption;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
@@ -174,7 +174,7 @@ public abstract class ParkourGenerator {
     }
 
     /**
-     * Gets the current heading as {@link Direction}
+     * Gets the current heading as {@link Vector3D}
      *
      * @return the current heading.
      */
