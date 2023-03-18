@@ -38,7 +38,6 @@ public class Option {
 
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
-    public static boolean SAVE_STATS;
     public static boolean SETTINGS_ENABLED;
     public static boolean HEALTH_HANDLING;
     public static boolean INVENTORY_SAVING;
@@ -87,7 +86,6 @@ public class Option {
 
         // Options
 
-        SAVE_STATS = config.getBoolean("options.save-stats");
         SETTINGS_ENABLED = config.getBoolean("options.enabled");
         OPTIONS_TIME_FORMAT = config.getInt("options.time.format");
         HEALTH_HANDLING = config.getBoolean("options.health-handling");
@@ -130,8 +128,8 @@ public class Option {
 
         POSSIBLE_LEADS = config.getIntegerList("options.leads.amount");
         for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
-            if (lead < 1 || lead > 64) {
-                IP.logging().error("Invalid lead in config: found " + lead + ", should be above 1 and below 64 to prevent lag.");
+            if (lead < 1 || lead > 128) {
+                IP.logging().error("Invalid lead in config: found " + lead + ", should be above 1 and below 128 to prevent lag on spawn.");
                 POSSIBLE_LEADS.remove((Object) lead);
             }
         }

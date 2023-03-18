@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class PreviousData {
 
-    private double health;
-    private double maxHealth;
+    private Double health;
+    private Double maxHealth;
     private InventoryData inventoryData;
 
     private final boolean allowFlight;
@@ -48,16 +48,6 @@ public class PreviousData {
         flying = player.getAllowFlight();
         collidable = player.isCollidable();
 
-        if (Option.SAVE_STATS) {
-            this.health = player.getHealth();
-            this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-        }
-
-        if (Option.HEALTH_HANDLING) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-        }
-
         if (Option.INVENTORY_HANDLING) {
             this.inventoryData = new InventoryData(player);
             this.inventoryData.saveInventory();
@@ -69,6 +59,15 @@ public class PreviousData {
         effects = player.getActivePotionEffects();
         for (PotionEffect effect : effects) {
             player.removePotionEffect(effect.getType());
+        }
+
+        // health handling after removing effects and inventory to avoid them affecting it
+        if (Option.HEALTH_HANDLING) {
+            this.health = player.getHealth();
+            this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+            player.setHealth(maxHealth);
         }
     }
 
@@ -90,10 +89,8 @@ public class PreviousData {
             player.setCollidable(collidable);
 
             // -= Attributes =-
-            if (Option.SAVE_STATS && Option.HEALTH_HANDLING) {
-                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-                player.setHealth(health);
-            }
+            if (maxHealth != null) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+            if (health != null) player.setHealth(health);
 
             // -= Potions =-
             for (PotionEffect effect : player.getActivePotionEffects()) {

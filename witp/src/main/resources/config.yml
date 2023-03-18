@@ -167,10 +167,6 @@ options:
   # Disable this if you're experiencing errors with max health, etc.
   health-handling: true
 
-  # -= Stats saving =-
-  # Saves things like (max) health, clears effects, etc. for when a player joins the parkour.
-  save-stats: true
-
 # -= Permissions options =-
 # These permissions are used to determine which things the player can change.
 # Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
