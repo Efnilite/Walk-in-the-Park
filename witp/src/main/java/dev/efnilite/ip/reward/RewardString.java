@@ -1,8 +1,8 @@
 package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.hook.VaultHook;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.util.Util;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +30,14 @@ public record RewardString(@NotNull String string) {
             string = string.replaceAll("%player%", player.getName());
         }
 
+        // Check for extra data
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
             player.previousData.addReward(new RewardString(string));
             return;
         }
 
-        // Check for command types
+        // Check for things to perform
         if (string.toLowerCase().contains("send:")) {
             string = string.replaceFirst("send:", "");
 
@@ -46,7 +47,7 @@ public record RewardString(@NotNull String string) {
             string = string.replaceFirst("vault:", "");
 
             try {
-                Util.depositPlayer(player.player, Double.parseDouble(string));
+                VaultHook.deposit(player.player, Double.parseDouble(string));
             } catch (NumberFormatException ex) {
                 IP.logging().stack(string + " is not a valid money reward", "Check your rewards-v2.yml file for incorrect numbers");
             }

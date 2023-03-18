@@ -1,6 +1,7 @@
 package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.util.Colls;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +19,7 @@ import java.util.Map;
 public class RewardReader {
 
     private static FileConfiguration rewards;
-
-    /**
-     * Are rewards enabled?
-     */
+    
     public static boolean REWARDS_ENABLED;
 
     /**
@@ -51,80 +49,39 @@ public class RewardReader {
         // init options
         REWARDS_ENABLED = rewards.getBoolean("enabled");
 
-        SCORE_REWARDS.clear();
-        INTERVAL_REWARDS.clear();
-        ONE_TIME_REWARDS.clear();
-
-        // loop over interval rewards
-        for (String interval : getNodes("interval-rewards")) {
-            // read commands for this interval
-            List<String> commands = rewards.getStringList("interval-rewards." + interval);
-
-            List<RewardString> strings = new ArrayList<>();
-            // turn each command into a RewardString
-            for (String command : commands) {
-                strings.add(new RewardString(command));
-            }
-
-            try {
-                int value = Integer.parseInt(interval);
-
-                if (value <= 0) {
-                    IP.logging().stack(interval + " is not a valid interval score (should be above 1)", "check the rewards file for incorrect numbers");
-                    continue;
-                }
-
-                INTERVAL_REWARDS.put(value, strings);
-            } catch (NumberFormatException ex) {
-                IP.logging().stack(interval + " is not a valid score", "check the rewards file for incorrect numbers", ex);
-            }
+        if (!REWARDS_ENABLED) {
+            return;
         }
 
-        for (String score : getNodes("score-rewards")) {
-            List<String> commands = rewards.getStringList("score-rewards." + score);
+        SCORE_REWARDS = parseScores("score-rewards");
+        INTERVAL_REWARDS = parseScores("interval-rewards");
+        ONE_TIME_REWARDS = parseScores("one-time-rewards");
+    }
 
-            List<RewardString> strings = new ArrayList<>();
-            for (String command : commands) {
-                strings.add(new RewardString(command));
-            }
+    private static Map<Integer, List<RewardString>> parseScores(String path) {
+
+        Map<Integer, List<RewardString>> rewardMap = new HashMap<>();
+
+        for (String score : getNodes(path)) {
+
+            // read commands for this score
+            List<String> commands = rewards.getStringList(path + "." + score);
 
             try {
                 int value = Integer.parseInt(score);
 
                 if (value <= 0) {
-                    IP.logging().stack(score + " is not a valid default reward score (should be above 1)",
-                            "check the rewards file for incorrect numbers");
+                    IP.logging().stack(score + " is not a valid score (should be above 1)", "check the rewards file for incorrect numbers");
                     continue;
                 }
 
-                SCORE_REWARDS.put(value, strings);
+                rewardMap.put(value, Colls.map(RewardString::new, commands));
             } catch (NumberFormatException ex) {
-                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers");
+                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers", ex);
             }
         }
 
-        for (String score : getNodes("one-time-rewards")) {
-            List<String> commands = rewards.getStringList("one-time-rewards." + score);
-
-            List<RewardString> strings = new ArrayList<>();
-            for (String command : commands) {
-                strings.add(new RewardString(command));
-            }
-
-            try {
-                int value = Integer.parseInt(score);
-
-                if (value <= 0) {
-                    IP.logging().stack(score + " is not a valid one-time score (should be above 1)",
-                            "check the rewards file for incorrect numbers");
-                    continue;
-                }
-
-                ONE_TIME_REWARDS.put(value, strings);
-            } catch (NumberFormatException ex) {
-                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers");
-            }
-        }
+        return rewardMap;
     }
 
     private static @NotNull List<String> getNodes(@NotNull String path) {
