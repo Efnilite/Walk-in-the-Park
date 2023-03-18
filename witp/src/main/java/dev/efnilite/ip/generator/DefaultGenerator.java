@@ -10,7 +10,7 @@ import dev.efnilite.ip.api.events.PlayerScoreEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.DefaultGeneratorChances;
-import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
+import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;

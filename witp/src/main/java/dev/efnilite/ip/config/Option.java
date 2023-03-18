@@ -2,11 +2,8 @@ package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
@@ -67,7 +64,7 @@ public class Option {
 
         STORAGE_UPDATE_INTERVAL = config.getInt("storage-update-interval");
 
-        GO_BACK_LOC = Util.parseLocation(config.getString("bungeecord.go-back"));
+        GO_BACK_LOC = parseLocation(config.getString("bungeecord.go-back"));
         String[] axes = config.getString("bungeecord.go-back-axes").split(",");
         GO_BACK_LOC.setPitch(Float.parseFloat(axes[0]));
         GO_BACK_LOC.setYaw(Float.parseFloat(axes[1]));
@@ -154,6 +151,16 @@ public class Option {
             BORDER_SIZE = generation.getDouble("advanced.border-size");
             SQL = config.getBoolean("sql.enabled");
         }
+    }
+
+    private static Location parseLocation(String location) {
+        String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
+        World world = Bukkit.getWorld(values[3]);
+        if (world == null) {
+            IP.logging().error("Detected an invalid world: " + values[3]);
+            return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+        }
+        return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
     }
 
     public static ParticleShape PARTICLE_SHAPE;

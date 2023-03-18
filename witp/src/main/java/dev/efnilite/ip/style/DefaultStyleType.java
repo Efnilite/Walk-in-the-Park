@@ -1,4 +1,4 @@
-package dev.efnilite.ip.internal.style;
+package dev.efnilite.ip.style;
 
 import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.config.Locales;

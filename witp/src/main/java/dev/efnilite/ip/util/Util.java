@@ -1,26 +1,15 @@
 package dev.efnilite.ip.util;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Strings;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -30,10 +19,46 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Efnilite
  */
 public class Util {
+
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
     public static void send(CommandSender sender, String message) {
         sender.sendMessage(Strings.colour(message));
+    }
+
+    /**
+     * Gets a spiral
+     *
+     * @param   n
+     *          The number of  value
+     *
+     * @return the coords of this value
+     */
+    // https://math.stackexchange.com/a/163101
+    public static int[] spiralAt(int n) {
+        n++; // one-index
+        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        int t = 2 * k + 1;
+        int m = t * t;
+        t--;
+
+        if (n > m - t) {
+            return new int[]{k - (m - n), -k};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k, -k + (m - n)};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k + (m - n), k};
+        } else {
+            return new int[]{k, k - (m - n - t)};
+        }
     }
 
     public static boolean listContains(List<String> list, String... strings) {
@@ -61,76 +86,12 @@ public class Util {
         return random.toString();
     }
 
-
-    /**
-     * Sends a player to a BungeeCord server
-     *
-     * @param   player
-     *          The player to be sent
-     *
-     * @param   server
-     *          The server name
-     */
-    public static void sendPlayer(Player player, String server) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Connect");
-        out.writeUTF(server);
-        try {
-            player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
-        } catch (ChannelNotRegisteredException ex) {
-            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
-            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
-        }
-    }
-
-    /**
-     * Gets the size of a ConfigurationSection
-     *
-     * @param   file
-     *          The file
-     *
-     * @param   path
-     *          The path
-     *
-     * @return the size
-     */
     public static @NotNull List<String> getNode(FileConfiguration file, String path, boolean deep) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
             return new ArrayList<>();
         }
         return new ArrayList<>(section.getKeys(deep));
-    }
-
-    /**
-     * Gets the player's held item
-     *
-     * @param   player
-     *          The player
-     *
-     * @return the player's held item
-     */
-    public static ItemStack getHeldItem(Player player) {
-        PlayerInventory inventory = player.getInventory();
-        return inventory.getItemInMainHand().getType() == Material.AIR ? inventory.getItemInOffHand() : inventory.getItemInMainHand();
-    }
-
-    /**
-     * Get a location from a string
-     *
-     * @param   location
-     *          The string
-     *
-     * @return the location from the string
-     */
-    public static Location parseLocation(String location) {
-        String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
-        World world = Bukkit.getWorld(values[3]);
-        if (world == null) {
-            IP.logging().error("Detected an invalid world: " + values[3]);
-            return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
-        }
-        return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
     }
 
     /**
@@ -144,21 +105,6 @@ public class Util {
      */
     public static boolean isBedrockPlayer(Player player) {
         return IP.getFloodgateHook() != null && IP.getFloodgateHook().isBedrockPlayer(player);
-    }
-
-    public static List<Integer> getEvenlyDistributedSlots(int amountInRow) {
-        return switch (amountInRow) {
-            case 0 -> Collections.emptyList();
-            case 1 -> Collections.singletonList(4);
-            case 2 -> Arrays.asList(3, 5);
-            case 3 -> Arrays.asList(3, 4, 5);
-            case 4 -> Arrays.asList(2, 3, 5, 6);
-            case 5 -> Arrays.asList(2, 3, 4, 5, 6);
-            case 6 -> Arrays.asList(1, 2, 3, 5, 6, 7);
-            case 7 -> Arrays.asList(1, 2, 3, 4, 5, 6, 7);
-            case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
-            default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
-        };
     }
 
     /**

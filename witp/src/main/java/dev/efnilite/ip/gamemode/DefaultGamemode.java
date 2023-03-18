@@ -1,4 +1,4 @@
-package dev.efnilite.ip.internal.gamemode;
+package dev.efnilite.ip.gamemode;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;

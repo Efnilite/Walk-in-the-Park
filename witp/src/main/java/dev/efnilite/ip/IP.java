@@ -9,10 +9,10 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.MultiverseHook;
-import dev.efnilite.ip.hook.PlaceholderHook;
-import dev.efnilite.ip.internal.gamemode.DefaultGamemode;
-import dev.efnilite.ip.internal.gamemode.SpectatorGamemode;
-import dev.efnilite.ip.internal.style.DefaultStyleType;
+import dev.efnilite.ip.hook.PAPIHook;
+import dev.efnilite.ip.gamemode.DefaultGamemode;
+import dev.efnilite.ip.gamemode.SpectatorGamemode;
+import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.legacy.LegacyFolderMigration;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.RewardReader;
@@ -59,7 +59,7 @@ public final class IP extends ViPlugin {
     @Nullable
     private static MultiverseHook multiverseHook;
     @Nullable
-    private static PlaceholderHook placeholderHook;
+    private static PAPIHook placeholderHook;
 
     @Override
     public void onLoad() {
@@ -137,7 +137,7 @@ public final class IP extends ViPlugin {
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             logging().info("Connecting with PlaceholderAPI...");
-            placeholderHook = new PlaceholderHook();
+            placeholderHook = new PAPIHook();
             placeholderHook.register();
         }
 
@@ -244,7 +244,7 @@ public final class IP extends ViPlugin {
     }
 
     @Nullable
-    public static PlaceholderHook getPlaceholderHook() {
+    public static PAPIHook getPlaceholderHook() {
         return placeholderHook;
     }
 

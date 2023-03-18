@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Hook for PlaceholderAPI
  */
 @ApiStatus.Internal
-public class PlaceholderHook extends PlaceholderExpansion {
+public class PAPIHook extends PlaceholderExpansion {
 
     private static final Pattern INFINITE_REGEX = Pattern.compile("(.+)_(\\d+)");
 

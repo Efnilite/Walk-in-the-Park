@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Cooldowns {
 
-    private static volatile Map<UUID, List<CooldownContainer>> cooldowns = new HashMap<>();
+    private static final Map<UUID, List<CooldownContainer>> cooldowns = new HashMap<>();
 
     /**
      * Checks to see whether a specific {@link UUID} can perform an action ({@code key}), with the cooldown for that action ({@code cooldownMs}).

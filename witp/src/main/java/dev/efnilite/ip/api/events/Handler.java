@@ -31,6 +31,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -252,7 +253,7 @@ public class Handler implements EventWatcher {
         boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
 
         if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
-            Material held = Util.getHeldItem(player).getType();
+            Material held = getHeldItem(player).getType();
 
             Material play = Locales.getItem(player, "play.item").getMaterial();
             Material community = Locales.getItem(player, "community.item").getMaterial();
@@ -277,6 +278,11 @@ public class Handler implements EventWatcher {
                 ParkourUser.leave(player);
             }
         }
+    }
+
+    private ItemStack getHeldItem(Player player) {
+        PlayerInventory inventory = player.getInventory();
+        return inventory.getItemInMainHand().getType() == Material.AIR ? inventory.getItemInOffHand() : inventory.getItemInMainHand();
     }
 
     @EventHandler

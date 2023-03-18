@@ -1,5 +1,7 @@
 package dev.efnilite.ip.player;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.MultiGamemode;
@@ -15,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -209,7 +212,7 @@ public abstract class ParkourUser {
         users.remove(pl);
 
         if (sendBack && Option.BUNGEECORD && kickIfBungee) {
-            Util.sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
+            sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
             return;
         }
         if (user.previousData == null) {
@@ -224,6 +227,19 @@ public abstract class ParkourUser {
 
         pl.resetPlayerTime();
         pl.resetPlayerWeather();
+    }
+
+    // Sends a player to a BungeeCord server. server is the server name.
+    private static void sendPlayer(Player player, String server) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Connect");
+        out.writeUTF(server);
+        try {
+            player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
+        } catch (ChannelNotRegisteredException ex) {
+            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
+            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
+        }
     }
 
     /**

@@ -115,7 +115,7 @@ public class WorldDivider {
             return cachedPoint;
         } else {
             int size = activePoints.size();
-            int[] coords = spiralAt(size);
+            int[] coords = Util.spiralAt(size);
             Vector2D point = new Vector2D(coords[0], coords[1]);
 
             activePoints.put(player, point);
@@ -126,41 +126,6 @@ public class WorldDivider {
                 createIsland(player, point);
             }
             return point;
-        }
-    }
-
-    /**
-     * Gets a spiral
-     *
-     * @param   n
-     *          The number of  value
-     *
-     * @return the coords of this value
-     */
-    // https://math.stackexchange.com/a/163101
-    private int[] spiralAt(int n) {
-        n++; // one-index
-        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
-        int t = 2 * k + 1;
-        int m = t * t;
-        t--;
-
-        if (n > m - t) {
-            return new int[]{k - (m - n), -k};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k, -k + (m - n)};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k + (m - n), k};
-        } else {
-            return new int[]{k, k - (m - n - t)};
         }
     }
 
@@ -275,7 +240,7 @@ public class WorldDivider {
 
                 items.add(items.size(), Locales.getItem(pp.getLocale(), "other.quit"));
 
-                List<Integer> slots = Util.getEvenlyDistributedSlots(items.size());
+                List<Integer> slots = getEvenlyDistributedSlots(items.size());
                 for (int i = 0; i < items.size(); i++) {
                     player.getInventory().setItem(slots.get(i), items.get(i).build());
                 }
@@ -289,6 +254,21 @@ public class WorldDivider {
         if (runGenerator) {
             pp.getGenerator().startTick();
         }
+    }
+
+    private List<Integer> getEvenlyDistributedSlots(int amountInRow) {
+        return switch (amountInRow) {
+            case 0 -> Collections.emptyList();
+            case 1 -> Collections.singletonList(4);
+            case 2 -> Arrays.asList(3, 5);
+            case 3 -> Arrays.asList(3, 4, 5);
+            case 4 -> Arrays.asList(2, 3, 5, 6);
+            case 5 -> Arrays.asList(2, 3, 4, 5, 6);
+            case 6 -> Arrays.asList(1, 2, 3, 5, 6, 7);
+            case 7 -> Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+            case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
+            default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
+        };
     }
 
     /**
