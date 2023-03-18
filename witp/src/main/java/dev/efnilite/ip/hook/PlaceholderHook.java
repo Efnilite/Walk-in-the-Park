@@ -54,6 +54,41 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String params) {
+        // placeholders that don't require a player
+        switch (params) {
+            case "version":
+            case "ver":
+                return IP.getPlugin().getDescription().getVersion();
+            case "leader":
+            case "record_player":
+                Score score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+
+                if (score == null) {
+                    return "?";
+                } else {
+                    return score.name();
+                }
+            case "leader_score":
+            case "record_score":
+            case "record":
+                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+
+                if (score == null) {
+                    return "?";
+                } else {
+                    return Integer.toString(score.score());
+                }
+            default:
+                if (params.contains("player_rank_")) {
+                    return getInfiniteScore(params.replace("player_rank_", ""));
+                } else if (params.contains("score_rank_")) {
+                    return getInfiniteScore(params.replace("score_rank_", ""));
+                } else if (params.contains("time_rank_")) {
+                    return getInfiniteScore(params.replace("time_rank_", ""));
+                }
+        }
+
+        // placeholders that require player
         if (player == null) {
             return "player doesn't exist";
         }
@@ -89,6 +124,25 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return Double.toString(pp.schematicDifficulty);
                 case "difficulty_string":
                     return Util.parseDifficulty(pp.schematicDifficulty);
+                case "rank":
+                    return Integer.toString(Gamemodes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
+                case "highscore":
+                case "high_score":
+                    Score score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+
+                    if (score == null) {
+                        return "?";
+                    } else {
+                        return Integer.toString(score.score());
+                    }
+                case "high_score_time":
+                    score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+
+                    if (score == null) {
+                        return "?";
+                    } else {
+                        return score.time();
+                    }
                 default:
                     if (params.contains("score_until_") && generator instanceof DefaultGenerator defaultGenerator) {
                         String replaced = params.replace("score_until_", "");
@@ -103,151 +157,43 @@ public class PlaceholderHook extends PlaceholderExpansion {
             }
         }
 
-        switch (params) {
-            case "rank":
-                return Integer.toString(Gamemodes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
-            case "highscore":
-            case "high_score":
-                Score score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+        return null;
+    }
 
-                if (score == null) {
-                    return "?";
-                } else {
-                    return Integer.toString(score.score());
-                }
-            case "high_score_time":
-                score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+    private String getInfiniteScore(String rankData) {
+        int rank;
+        Leaderboard leaderboard;
+        Matcher matcher = INFINITE_REGEX.matcher(rankData);
 
-                if (score == null) {
-                    return "?";
-                } else {
-                    return score.time();
-                }
-            case "version":
-            case "ver":
-                return IP.getPlugin().getDescription().getVersion();
-            case "leader":
-            case "record_player":
-                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+        // use gamemode-specific format
+        // x_gamemode_rank
+        if (matcher.matches()) {
+            String name = matcher.group(1);
+            rank = Integer.parseInt(matcher.group(2));
 
-                if (score == null) {
-                    return "?";
-                } else {
-                    return score.name();
-                }
-            case "leader_score":
-            case "record_score":
-            case "record":
-                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
-
-                if (score == null) {
-                    return "?";
-                } else {
-                    return Integer.toString(score.score());
-                }
-            default:
-                if (params.contains("player_rank_")) {
-                    String replaced = params.replace("player_rank_", "");
-
-                    int rank;
-                    Leaderboard leaderboard;
-                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
-                    if (matcher.matches()) { // uses gamemode-specific format
-                        String name = matcher.group(1);
-                        rank = Integer.parseInt(matcher.group(2));
-
-                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
-                        if (gamemode != null) {
-                            leaderboard = gamemode.getLeaderboard();
-                        } else {
-                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                        }
-
-                    } else {
-                        rank = Integer.parseInt(replaced);
-                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                    }
-
-                    if (rank > 0) {
-                        score = leaderboard.getScoreAtRank(rank);
-
-                        if (score == null) {
-                            return "?";
-                        } else {
-                            return score.name();
-                        }
-                    } else {
-                        return "?";
-                    }
-                } else if (params.contains("score_rank_")) {
-                    String replaced = params.replace("score_rank_", "");
-
-                    int rank;
-                    Leaderboard leaderboard;
-                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
-                    if (matcher.matches()) { // uses gamemode-specific format
-                        String name = matcher.group(1);
-                        rank = Integer.parseInt(matcher.group(2));
-
-                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
-                        if (gamemode != null) {
-                            leaderboard = gamemode.getLeaderboard();
-                        } else {
-                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                        }
-
-                    } else {
-                        rank = Integer.parseInt(replaced);
-                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                    }
-
-                    if (rank > 0) {
-                        score = leaderboard.getScoreAtRank(rank);
-
-                        if (score == null) {
-                            return "?";
-                        } else {
-                            return Integer.toString(score.score());
-                        }
-                    } else {
-                        return "?";
-                    }
-                } else if (params.contains("time_rank_")) {
-                    String replaced = params.replace("time_rank_", "");
-
-                    int rank;
-                    Leaderboard leaderboard;
-                    Matcher matcher = INFINITE_REGEX.matcher(replaced);
-                    if (matcher.matches()) { // uses gamemode-specific format
-                        String name = matcher.group(1);
-                        rank = Integer.parseInt(matcher.group(2));
-
-                        Gamemode gamemode = IP.getRegistry().getGamemode(name);
-                        if (gamemode != null) {
-                            leaderboard = gamemode.getLeaderboard();
-                        } else {
-                            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                        }
-
-                    } else {
-                        rank = Integer.parseInt(replaced);
-                        leaderboard = Gamemodes.DEFAULT.getLeaderboard();
-                    }
-
-                    if (rank > 0) {
-                        score = leaderboard.getScoreAtRank(rank);
-
-                        if (score == null) {
-                            return "?";
-                        } else {
-                            return score.time();
-                        }
-                    } else {
-                        return "?";
-                    }
-                }
+            Gamemode gamemode = IP.getRegistry().getGamemode(name);
+            if (gamemode != null) {
+                leaderboard = gamemode.getLeaderboard();
+            } else {
+                leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+            }
+        // use generic format
+        // x_rank
+        } else {
+            rank = Integer.parseInt(rankData);
+            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
         }
 
-        return null;
+        if (rank > 0) {
+            Score score = leaderboard.getScoreAtRank(rank);
+
+            if (score == null) {
+                return "?";
+            } else {
+                return Integer.toString(score.score());
+            }
+        } else {
+            return "?";
+        }
     }
 }
