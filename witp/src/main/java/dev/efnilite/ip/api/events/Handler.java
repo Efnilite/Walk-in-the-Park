@@ -6,6 +6,7 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -69,7 +70,7 @@ public class Handler implements EventWatcher {
                             "Please visit the Spigot page to update.");
             Util.send(player, "");
         }
-        if (player.isOp() && IP.getMultiverseHook() != null && VoidGenerator.getMultiverseGenerator() == null) {
+        if (player.isOp() && MultiverseHook.isActive() && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
             Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
                     "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");

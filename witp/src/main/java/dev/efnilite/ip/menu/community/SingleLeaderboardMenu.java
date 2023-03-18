@@ -7,7 +7,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.Score;
+import dev.efnilite.ip.player.Score;
 import dev.efnilite.ip.util.Stopwatch;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;

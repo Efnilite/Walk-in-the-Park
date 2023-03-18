@@ -15,17 +15,18 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public class MultiverseHook {
 
-    private final MVWorldManager manager;
+    private static MVWorldManager manager;
 
-    /**
-     * Gets the Multiverse instance
-     */
-    public MultiverseHook() {
+    static {
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        if (core == null) {
-            throw new IllegalStateException("Initialized without plugin");
+
+        if (core != null) {
+            manager = core.getMVWorldManager();
         }
-        manager = core.getMVWorldManager();
+    }
+
+    public static boolean isActive() {
+        return manager != null;
     }
 
     /**
@@ -34,7 +35,11 @@ public class MultiverseHook {
      * @param   worldName
      *          The name of the world
      */
-    public void deleteWorld(String worldName) {
+    public static void deleteWorld(String worldName) {
+        if (manager == null) {
+            return;
+        }
+
         manager.deleteWorld(worldName, false); // deleteFromConfig
     }
 
@@ -46,7 +51,11 @@ public class MultiverseHook {
      *
      * @return the Bukkit version of this world
      */
-    public World createWorld(String worldName) {
+    public static World createWorld(String worldName) {
+        if (manager == null) {
+            return null;
+        }
+
         manager.addWorld(worldName, World.Environment.NORMAL, null, WorldType.FLAT, false, VoidGenerator.getMultiverseGenerator());
         MultiverseWorld world = manager.getMVWorld(worldName);
 

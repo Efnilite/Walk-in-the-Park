@@ -10,7 +10,6 @@ import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
-import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.legacy.LegacyFolderMigration;
 import dev.efnilite.ip.player.ParkourUser;
@@ -56,8 +55,6 @@ public final class IP extends ViPlugin {
 
     @Nullable
     private static FloodgateHook floodgateHook;
-    @Nullable
-    private static MultiverseHook multiverseHook;
     @Nullable
     private static PAPIHook placeholderHook;
 
@@ -148,11 +145,6 @@ public final class IP extends ViPlugin {
 
         // ----- Hooks and Bungee -----
 
-        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            logging().info("Connecting with Multiverse...");
-            multiverseHook = new MultiverseHook();
-        }
-
         if (Option.BUNGEECORD) {
             logging().info("Connecting with BungeeCord..");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -178,7 +170,7 @@ public final class IP extends ViPlugin {
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
         metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED)));
-        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Locales.getLocales().size())));
+        metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Locales.locales.size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;
             ParkourUser.JOIN_COUNT = 0;
@@ -235,12 +227,6 @@ public final class IP extends ViPlugin {
      */
     public static IP getPlugin() {
         return instance;
-    }
-
-    // Static stuff
-    @Nullable
-    public static MultiverseHook getMultiverseHook() {
-        return multiverseHook;
     }
 
     @Nullable

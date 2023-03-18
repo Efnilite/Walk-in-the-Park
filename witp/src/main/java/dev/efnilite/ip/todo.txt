@@ -1,0 +1,19 @@
+Finished folders:
+- leaderboard
+- legacy
+- reward
+- style
+
+Todo:
+- api
+- config
+- gamemode
+- generator
+- hook
+- menu
+- player
+- schematic
+- session
+- util
+- world
+- parent package

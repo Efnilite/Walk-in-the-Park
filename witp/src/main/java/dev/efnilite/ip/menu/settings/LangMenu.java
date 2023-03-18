@@ -30,7 +30,7 @@ public class LangMenu {
         PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), "settings.lang.name", false));
 
         List<MenuItem> items = new ArrayList<>();
-        for (String lang : Locales.getLocales().keySet()) {
+        for (String lang : Locales.locales.keySet()) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name", false));
 
             items.add(item

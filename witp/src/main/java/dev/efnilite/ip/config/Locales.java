@@ -37,7 +37,7 @@ public class Locales {
     private static List<String> resourceNodes;
 
     // a map of all locales with their respective yml trees
-    private static final Map<String, FileConfiguration> locales = new HashMap<>();
+    public static final Map<String, FileConfiguration> locales = new HashMap<>();
 
     public static void init(Plugin plugin) {
         Task.create(plugin)
@@ -294,9 +294,5 @@ public class Locales {
         }
 
         return item;
-    }
-
-    public static Map<String, FileConfiguration> getLocales() {
-        return locales;
     }
 }

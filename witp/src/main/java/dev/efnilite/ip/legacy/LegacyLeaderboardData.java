@@ -4,7 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.player.data.Score;
+import dev.efnilite.ip.player.Score;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Time;
 
@@ -54,7 +54,6 @@ public class LegacyLeaderboardData {
 
     /**
      * Legacy method used to gather old data.
-     *
      * Gets the highscores of all player
      *
      * @throws  IOException

@@ -1,6 +1,5 @@
 package dev.efnilite.ip.world;
 
-import dev.efnilite.vilib.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -52,10 +51,6 @@ public class VoidGenerator extends ChunkGenerator {
     @Override
     public boolean shouldGenerateStructures() {
         return false;
-    }
-
-    public static VoidGenerator getGenerator() {
-        return Version.isHigherOrEqual(Version.V1_17) ? new VoidGenerator_v1_17() : new VoidGenerator_v1_16();
     }
 
     /**

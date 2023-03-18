@@ -2,10 +2,12 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
 
 import java.io.File;
+import java.nio.file.Files;
 
 /**
  * Class for handling Parkour world generation/deletion, etc.
@@ -33,6 +35,7 @@ public class WorldHandler {
             IP.logging().warn("## This only happens after a server crash.");
             IP.logging().warn("## ");
         }
+
         deleteWorld();
         create();
     }
@@ -40,27 +43,28 @@ public class WorldHandler {
     private void create() {
         String name = Option.WORLD_NAME;
 
-        if (IP.getMultiverseHook() != null) { // if multiverse isn't detected
-            world = IP.getMultiverseHook().createWorld(name);
-        } else {
-            try {
-                WorldCreator creator = new WorldCreator(name)
-                        .generateStructures(false)
-                        .type(WorldType.NORMAL)
-                        .generator(Version.isHigherOrEqual(Version.V1_17)
-                                ? new VoidGenerator.VoidGenerator_v1_17()
-                                : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
-                        .environment(World.Environment.NORMAL);
+        if (MultiverseHook.isActive()) { // if multiverse isn't detected
+            world = MultiverseHook.createWorld(name);
+            return;
+        }
 
-                world = Bukkit.createWorld(creator);
-                if (world == null) {
-                    IP.logging().stack("Error while trying to create the parkour world",
-                            "delete the parkour world folder and restart the server");
-                }
-            } catch (Throwable throwable) {
+        try {
+            WorldCreator creator = new WorldCreator(name)
+                    .generateStructures(false)
+                    .type(WorldType.NORMAL)
+                    .generator(Version.isHigherOrEqual(Version.V1_17)
+                            ? new VoidGenerator.VoidGenerator_v1_17()
+                            : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
+                    .environment(World.Environment.NORMAL);
+
+            world = Bukkit.createWorld(creator);
+            if (world == null) {
                 IP.logging().stack("Error while trying to create the parkour world",
-                        "delete the parkour world folder and restart the server", throwable);
+                        "delete the parkour world folder and restart the server");
             }
+        } catch (Throwable throwable) {
+            IP.logging().stack("Error while trying to create the parkour world",
+                    "delete the parkour world folder and restart the server", throwable);
         }
 
         setupSettings();
@@ -76,14 +80,18 @@ public class WorldHandler {
 
         String name = Option.WORLD_NAME;
 
-        if (IP.getMultiverseHook() != null) {
-            IP.getMultiverseHook().deleteWorld(name);
-        } else {
-            Bukkit.unloadWorld(name, false);
-            File folder = new File(name);
-            if (folder.exists() && folder.isDirectory()) {
-                folder.delete();
-            }
+        if (MultiverseHook.isActive()) {
+            MultiverseHook.deleteWorld(name);
+            return;
+        }
+
+        Bukkit.unloadWorld(name, false);
+        File folder = new File(name);
+
+        try {
+            Files.delete(folder.toPath());
+        } catch (Exception ex) {
+            IP.logging().info("Failed to delete parkour world: " + ex.getMessage());
         }
     }
 
@@ -123,10 +131,12 @@ public class WorldHandler {
     public World getWorld() {
         if (world == null) {
             world = Bukkit.getWorld(Option.WORLD_NAME);
+
             if (world == null) {
                 IP.logging().stack("World is null", "delete the parkour world folder and restart the server");
             }
         }
+
         return world;
     }
 }

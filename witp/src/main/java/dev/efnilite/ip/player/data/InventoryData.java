@@ -113,6 +113,7 @@ public class InventoryData {
                 this.inventory.put(index, ObjectSerializer.serialize64(item));
                 this.loadedInventory.put(index, item);
             }
+
             index++;
         }
 
