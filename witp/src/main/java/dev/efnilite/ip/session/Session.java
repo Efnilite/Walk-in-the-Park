@@ -130,6 +130,16 @@ public interface Session {
     void setGamemode(@NotNull Gamemode gamemode);
 
     /**
+     * Returns whether the specified user is muted.
+     *
+     * @param   user
+     *          The user
+     *
+     * @return true if muted, false if unmuted.
+     */
+    boolean isMuted(@NotNull ParkourUser user);
+
+    /**
      * Sets whether the specified player is muted in this session.
      *
      * @param   user
@@ -139,16 +149,6 @@ public interface Session {
      *          The value
      */
     void setMuted(@NotNull ParkourUser user, boolean value);
-
-    /**
-     * Returns whether the specified user is muted.
-     *
-     * @param   user
-     *          The user
-     *
-     * @return true if muted, false if unmuted.
-     */
-    boolean isMuted(@NotNull ParkourUser user);
 
     /**
      * Automatically assigns an unregistered player to this Session, based

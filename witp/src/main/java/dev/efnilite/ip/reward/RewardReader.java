@@ -19,7 +19,7 @@ import java.util.Map;
 public class RewardReader {
 
     private static FileConfiguration rewards;
-    
+
     public static boolean REWARDS_ENABLED;
 
     /**
@@ -71,7 +71,8 @@ public class RewardReader {
                 int value = Integer.parseInt(score);
 
                 if (value <= 0) {
-                    IP.logging().stack(score + " is not a valid score (should be above 1)", "check the rewards file for incorrect numbers");
+                    IP.logging().stack(score + " is not a valid score (should be above 1 and an integer)",
+                            "check the rewards file for incorrect numbers");
                     continue;
                 }
 

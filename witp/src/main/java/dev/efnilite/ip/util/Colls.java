@@ -2,10 +2,11 @@ package dev.efnilite.ip.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Colls {
+public final class Colls {
 
     /**
      * Applies function f to each item in coll.
@@ -48,6 +49,15 @@ public class Colls {
         return item;
     }
 
+    /**
+     * Performs function f on the first and second item in coll, then
+     * the result of that and the third item in coll, etc.
+     *
+     * @param coll The collection.
+     * @param f The function to apply to items.
+     * @return A single value of the same type.
+     * @param <T> The type.
+     */
     public static <T> T reduce(List<T> coll, BiFunction<T, T, T> f) {
         T item = coll.get(0);
 
@@ -60,4 +70,32 @@ public class Colls {
         return item;
     }
 
+    /**
+     * Returns a random item from coll.
+     *
+     * @param coll The collection.
+     * @return A random item from coll.
+     * @param <T> The type.
+     */
+    public static <T> T random(List<T> coll) {
+        return coll.get(ThreadLocalRandom.current().nextInt(coll.size()));
+    }
+
+    /**
+     * Returns n random item from coll.
+     *
+     * @param coll The collection.
+     * @param n The amount of random items.
+     * @return n random items from coll.
+     * @param <T> The type.
+     */
+    public static <T> List<T> random(List<T> coll, int n) {
+        List<T> items = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            items.add(random(coll));
+        }
+
+        return items;
+    }
 }

@@ -2,12 +2,13 @@ package dev.efnilite.ip.menu.settings;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.style.StyleType;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
@@ -26,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Handles all menu-related activities
@@ -434,7 +434,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 continue;
             }
 
-            Material material = getRandom(styleType.styles.get(name));
+            Material material = Colls.random(styleType.styles.get(name));
             Item item = new Item(material, "<#238681><bold>" + name); // todo add enchantment on select
 
             items.add(item
@@ -463,10 +463,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(user.player);
-    }
-
-    private <T> T getRandom(List<T> list) {
-        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
     /**

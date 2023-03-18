@@ -55,11 +55,7 @@ public class VoidGenerator extends ChunkGenerator {
     }
 
     public static VoidGenerator getGenerator() {
-        if (Version.isHigherOrEqual(Version.V1_17)) {
-            return new VoidGenerator_v1_17();
-        } else {
-            return new VoidGenerator_v1_16();
-        }
+        return Version.isHigherOrEqual(Version.V1_17) ? new VoidGenerator_v1_17() : new VoidGenerator_v1_16();
     }
 
     /**
@@ -72,7 +68,7 @@ public class VoidGenerator extends ChunkGenerator {
     }
 
     @SuppressWarnings("deprecation")
-    private static class VoidGenerator_v1_16 extends VoidGenerator {
+    protected static class VoidGenerator_v1_16 extends VoidGenerator {
 
         @NotNull
         @Override
@@ -81,7 +77,7 @@ public class VoidGenerator extends ChunkGenerator {
         }
     }
 
-    private static class VoidGenerator_v1_17 extends VoidGenerator {
+    protected static class VoidGenerator_v1_17 extends VoidGenerator {
 
         @Override
         public BiomeProvider getDefaultBiomeProvider(@NotNull WorldInfo worldInfo) {

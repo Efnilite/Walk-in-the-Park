@@ -174,30 +174,12 @@ public abstract class ParkourGenerator {
     }
 
     /**
-     * Gets the current heading as {@link Vector3D}
-     *
-     * @return the current heading.
-     */
-    public Vector3D getHeading() {
-        return heading;
-    }
-
-    /**
      * Gets the {@link Session} this Generator belongs to
      *
      * @return the {@link Session}
      */
     public Session getSession() {
         return session;
-    }
-
-    /**
-     * Gets the current {@link GeneratorOption}s.
-     *
-     * @return the list of current Generator options.
-     */
-    public List<GeneratorOption> getGeneratorOptions() {
-        return generatorOptions;
     }
 
     /**

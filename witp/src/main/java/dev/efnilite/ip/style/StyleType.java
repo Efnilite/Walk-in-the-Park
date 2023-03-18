@@ -1,4 +1,4 @@
-package dev.efnilite.ip.api;
+package dev.efnilite.ip.style;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.Util;

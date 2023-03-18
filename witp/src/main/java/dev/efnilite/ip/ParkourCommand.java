@@ -15,8 +15,8 @@ import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -49,7 +49,7 @@ public class ParkourCommand extends ViCommand {
             wand = new Item(
                     Material.GOLDEN_AXE, "<dark_red><bold>IP Schematic Wand")
                     .lore("<gray>Left click: first position", "<gray>Right click: second position").build();
-            PersistentUtil.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
+            Persistents.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
         }
     }
 

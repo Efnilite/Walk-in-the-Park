@@ -47,7 +47,9 @@ public class WorldHandler {
                 WorldCreator creator = new WorldCreator(name)
                         .generateStructures(false)
                         .type(WorldType.NORMAL)
-                        .generator(VoidGenerator.getGenerator()) // to fix No keys in MapLayer etc.
+                        .generator(Version.isHigherOrEqual(Version.V1_17)
+                                ? new VoidGenerator.VoidGenerator_v1_17()
+                                : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
                         .environment(World.Environment.NORMAL);
 
                 world = Bukkit.createWorld(creator);

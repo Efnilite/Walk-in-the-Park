@@ -1,4 +1,4 @@
-package dev.efnilite.ip.util.inventory;
+package dev.efnilite.ip.util;
 
 import dev.efnilite.ip.IP;
 import org.bukkit.Material;
@@ -11,12 +11,12 @@ import org.bukkit.persistence.PersistentDataType;
 /**
  * An utilities class for SuperItems
  */
-public class PersistentUtil {
+public class Persistents {
 
     /**
      * Avoid new instances
      */
-    private PersistentUtil() {
+    private Persistents() {
 
     }
 
@@ -38,15 +38,20 @@ public class PersistentUtil {
      * @return  true if it has the data
      */
     public static <T> boolean hasPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type) {
-        if (itemStack.getType() != Material.AIR) {
-            ItemMeta meta = itemStack.getItemMeta();
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
-
-            return container.has(namespacedKey, type);
-        } else {
+        if (itemStack.getType() == Material.AIR) {
             return false;
         }
+
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta == null) {
+            return false;
+        }
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
+
+        return container.has(namespacedKey, type);
     }
 
     /**
@@ -69,6 +74,11 @@ public class PersistentUtil {
      */
     public static <T> void setPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type, T t) {
         ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta == null) {
+            return;
+        }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
         NamespacedKey namespacedKey = new NamespacedKey(IP.getPlugin(), key);
 

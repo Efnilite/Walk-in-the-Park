@@ -1,14 +1,13 @@
 package dev.efnilite.ip.style;
 
-import dev.efnilite.ip.api.StyleType;
 import dev.efnilite.ip.config.Locales;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DefaultStyleType extends StyleType {
 
@@ -31,6 +30,6 @@ public class DefaultStyleType extends StyleType {
             return null;
         }
 
-        return materials.get(ThreadLocalRandom.current().nextInt(materials.size()));
+        return Colls.random(materials);
     }
 }

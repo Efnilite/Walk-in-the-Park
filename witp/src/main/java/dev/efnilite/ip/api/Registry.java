@@ -1,6 +1,7 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.style.StyleType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

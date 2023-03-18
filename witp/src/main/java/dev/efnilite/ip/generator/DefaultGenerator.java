@@ -9,8 +9,8 @@ import dev.efnilite.ip.api.events.PlayerFallEvent;
 import dev.efnilite.ip.api.events.PlayerScoreEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.generator.base.DefaultGeneratorChances;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
+import dev.efnilite.ip.generator.base.DefaultGeneratorChances;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -22,6 +22,7 @@ import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.SchematicCache;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -45,7 +46,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
@@ -889,8 +889,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             calculateChances();
             return 1;
         }
-        int index = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
-        return map.get(index);
+
+        return map.get(Colls.random(keys));
     }
 
     /**

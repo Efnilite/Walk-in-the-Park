@@ -10,8 +10,8 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.util.inventory.PersistentUtil;
 import dev.efnilite.ip.world.VoidGenerator;
 import dev.efnilite.ip.world.WorldHandler;
 import dev.efnilite.vilib.event.EventWatcher;
@@ -191,7 +191,7 @@ public class Handler implements EventWatcher {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !PersistentUtil.hasPersistentData(item, "ip", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
+        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !Persistents.hasPersistentData(item, "ip", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 

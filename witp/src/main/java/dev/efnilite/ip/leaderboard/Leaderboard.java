@@ -95,23 +95,13 @@ public class Leaderboard {
         // read all data
         read(true);
 
-        if (Option.JOINING) {
-            // write all data every x seconds after x seconds to allow time for reading
-            Task.create(IP.getPlugin())
-                    .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
-                    .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
-                    .async()
-                    .execute(() -> write(true))
-                    .run();
-        } else {
-            // reads all data every x seconds after x seconds
-            Task.create(IP.getPlugin())
-                    .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
-                    .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
-                    .async()
-                    .execute(() -> read(true))
-                    .run();
-        }
+        // read/write all data every x seconds after x seconds to allow time for reading/writing
+        Task.create(IP.getPlugin())
+                .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
+                .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
+                .async()
+                .execute(Option.JOINING ? () -> write(true) : () -> read(true))
+                .run();
     }
 
     /**
