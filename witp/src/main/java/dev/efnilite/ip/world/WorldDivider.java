@@ -115,7 +115,7 @@ public class WorldDivider {
             return cachedPoint;
         } else {
             int size = activePoints.size();
-            int[] coords = Util.spiralAt(size);
+            int[] coords = spiralAt(size);
             Vector2D point = new Vector2D(coords[0], coords[1]);
 
             activePoints.put(player, point);
@@ -126,6 +126,41 @@ public class WorldDivider {
                 createIsland(player, point);
             }
             return point;
+        }
+    }
+
+    /**
+     * Gets a spiral
+     *
+     * @param   n
+     *          The number of  value
+     *
+     * @return the coords of this value
+     */
+    // https://math.stackexchange.com/a/163101
+    private int[] spiralAt(int n) {
+        n++; // one-index
+        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        int t = 2 * k + 1;
+        int m = t * t;
+        t--;
+
+        if (n > m - t) {
+            return new int[]{k - (m - n), -k};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k, -k + (m - n)};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k + (m - n), k};
+        } else {
+            return new int[]{k, k - (m - n - t)};
         }
     }
 

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Handles all menu-related activities
@@ -433,7 +434,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 continue;
             }
 
-            Material material = Util.getRandom(styleType.styles.get(name));
+            Material material = getRandom(styleType.styles.get(name));
             Item item = new Item(material, "<#238681><bold>" + name); // todo add enchantment on select
 
             items.add(item
@@ -462,6 +463,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(user.player);
+    }
+
+    private <T> T getRandom(List<T> list) {
+        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
     /**

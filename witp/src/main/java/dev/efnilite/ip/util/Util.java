@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.vilib.util.Strings;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +30,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Efnilite
  */
 public class Util {
-
-    private static Economy economy;
     private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
     public static void send(CommandSender sender, String message) {
@@ -52,10 +48,6 @@ public class Util {
         return false;
     }
 
-    public static <T> T getRandom(List<T> list) {
-        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
-    }
-
     /**
      * Random digits
      *
@@ -69,61 +61,6 @@ public class Util {
         return random.toString();
     }
 
-    /**
-     * Gets the difficulty of a schematic according to schematics.yml
-     *
-     * @param   fileName
-     *          The name of the file (parkour-x.nbt)
-     *
-     * @return the difficulty, ranging from 0 to 1
-     */
-    public static double getDifficulty(String fileName) {
-        int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
-        return IP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
-    }
-
-    public static String parseDifficulty(double difficulty) {
-        if (difficulty > 1) {
-            IP.logging().error("Invalid difficulty, above 1: " + difficulty);
-            return "unknown";
-        }
-        if (difficulty <= 0.3) {
-            return "easy";
-        } else if (difficulty <= 0.5) {
-            return "medium";
-        } else if (difficulty <= 0.7) {
-            return "hard";
-        } else if (difficulty >= 0.8) {
-            return "very hard";
-        } else {
-            return "unknown";
-        }
-    }
-
-    /**
-     * Deposits money to a player using Vault
-     *
-     * @param   player
-     *          The player
-     *
-     * @param   amount
-     *          The amount
-     */
-    public static void depositPlayer(Player player, double amount) {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            if (economy == null) {
-                RegisteredServiceProvider<Economy> service = Bukkit.getServicesManager().getRegistration(Economy.class);
-                if (service != null) {
-                    economy = service.getProvider();
-                    economy.depositPlayer(player, amount);
-                } else {
-                    IP.logging().error("There was an error while trying to fetch the Vault economy!");
-                }
-            } else {
-                economy.depositPlayer(player, amount);
-            }
-        }
-    }
 
     /**
      * Sends a player to a BungeeCord server
@@ -207,41 +144,6 @@ public class Util {
      */
     public static boolean isBedrockPlayer(Player player) {
         return IP.getFloodgateHook() != null && IP.getFloodgateHook().isBedrockPlayer(player);
-    }
-
-    /**
-     * Gets a spiral
-     *
-     * @param   n
-     *          The number of  value
-     *
-     * @return the coords of this value
-     */
-    // https://math.stackexchange.com/a/163101
-    public static int[] spiralAt(int n) {
-        n++; // one-index
-        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
-        int t = 2 * k + 1;
-        int m = t * t;
-        t--;
-
-        if (n > m - t) {
-            return new int[]{k - (m - n), -k};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k, -k + (m - n)};
-        } else {
-            m -= t;
-        }
-
-        if (n > m - t) {
-            return new int[]{-k + (m - n), k};
-        } else {
-            return new int[]{k, k - (m - n - t)};
-        }
     }
 
     public static List<Integer> getEvenlyDistributedSlots(int amountInRow) {

@@ -812,7 +812,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                         if (profile.getValue("schematicDifficulty").asDouble() == 0) {
                             profile.setSetting("schematicDifficulty", "0.2");
                         }
-                        if (Util.getDifficulty(file.getName()) < profile.getValue("schematicDifficulty").asDouble()) {
+                        if (getDifficulty(file.getName()) < profile.getValue("schematicDifficulty").asDouble()) {
                             passed = false;
                         }
                     }
@@ -856,6 +856,19 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             }
             default -> IP.logging().stack("Illegal jump type with id " + type, new IllegalArgumentException());
         }
+    }
+
+    /**
+     * Gets the difficulty of a schematic according to schematics.yml
+     *
+     * @param   fileName
+     *          The name of the file (parkour-x.nbt)
+     *
+     * @return the difficulty, ranging from 0 to 1
+     */
+    private double getDifficulty(String fileName) {
+        int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
+        return IP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
     }
 
     /**

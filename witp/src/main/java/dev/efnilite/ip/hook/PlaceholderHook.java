@@ -10,7 +10,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.Score;
-import dev.efnilite.ip.util.Util;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -124,7 +123,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 case "difficulty":
                     return Double.toString(pp.schematicDifficulty);
                 case "difficulty_string":
-                    return Util.parseDifficulty(pp.schematicDifficulty);
+                    return parseDifficulty(pp.schematicDifficulty);
                 case "rank":
                     return Integer.toString(Gamemodes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
                 case "highscore":
@@ -160,6 +159,25 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
         return null;
     }
+
+    private String parseDifficulty(double difficulty) {
+        if (difficulty > 1) {
+            IP.logging().error("Invalid difficulty, above 1: " + difficulty);
+            return "unknown";
+        }
+        if (difficulty <= 0.3) {
+            return "easy";
+        } else if (difficulty <= 0.5) {
+            return "medium";
+        } else if (difficulty <= 0.7) {
+            return "hard";
+        } else if (difficulty >= 0.8) {
+            return "very hard";
+        } else {
+            return "unknown";
+        }
+    }
+
 
     private String getInfiniteScore(String rankData, Function<Score, ?> f) {
         int rank;
