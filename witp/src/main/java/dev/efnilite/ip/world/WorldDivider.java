@@ -6,7 +6,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
-import dev.efnilite.ip.generator.data.AreaData;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
@@ -143,10 +142,10 @@ public class WorldDivider {
         activePoints.remove(player);
 
         if (player.getGenerator() instanceof DefaultGenerator generator) {
-            AreaData data = generator.getData();
+            List<Block> blocks = generator.islandBlocks;
 
-            if (data != null) {
-                for (Block block : data.blocks()) {
+            if (blocks != null) {
+                for (Block block : blocks) {
                     block.setType(Material.AIR, false);
                 }
             }
@@ -200,7 +199,7 @@ public class WorldDivider {
         pp.getGenerator().setZone(getZone(spawn));
 
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator defaultGenerator) {
-            defaultGenerator.setData(new AreaData(blocks));
+            defaultGenerator.islandBlocks = blocks;
             defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
         }
 

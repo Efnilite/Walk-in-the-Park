@@ -2,7 +2,6 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.world.generation.VoidGenerator;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
 
