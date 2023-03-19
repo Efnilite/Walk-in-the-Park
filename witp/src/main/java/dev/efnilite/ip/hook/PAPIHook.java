@@ -12,17 +12,12 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.Score;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Hook for PlaceholderAPI
- */
-@ApiStatus.Internal
 public class PAPIHook extends PlaceholderExpansion {
 
     private static final Pattern INFINITE_REGEX = Pattern.compile("(.+)_(\\d+)");
@@ -41,7 +36,7 @@ public class PAPIHook extends PlaceholderExpansion {
     public boolean canRegister() {
         return true;
     }
-    
+
     @Override
     public boolean persist() {
         return true;
@@ -196,8 +191,8 @@ public class PAPIHook extends PlaceholderExpansion {
             } else {
                 leaderboard = Gamemodes.DEFAULT.getLeaderboard();
             }
-        // use generic format
-        // x_rank
+            // use generic format
+            // x_rank
         } else {
             rank = Integer.parseInt(rankData);
             leaderboard = Gamemodes.DEFAULT.getLeaderboard();

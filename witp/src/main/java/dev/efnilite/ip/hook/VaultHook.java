@@ -6,13 +6,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-/**
- * Deals with Vault.
- */
 public class VaultHook {
 
     private static Economy economy;
 
+    /**
+     * Deposits amount to the bal of player.
+     *
+     * @param player The player.
+     * @param amount The amount.
+     */
     public static void deposit(Player player, double amount) {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return;
@@ -22,7 +25,7 @@ public class VaultHook {
             RegisteredServiceProvider<Economy> service = Bukkit.getServicesManager().getRegistration(Economy.class);
 
             if (service == null) {
-                IP.logging().error("There was an error while trying to fetch the Vault economy!");
+                IP.logging().stack("Error while trying to fetch the Vault economy!", new IllegalStateException());
                 return;
             }
 
@@ -31,5 +34,4 @@ public class VaultHook {
 
         economy.depositPlayer(player, amount);
     }
-
 }

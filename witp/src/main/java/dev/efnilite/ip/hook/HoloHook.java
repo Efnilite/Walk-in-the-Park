@@ -6,18 +6,12 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.Score;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 
-/**
- * Hook for Holographic Displays
- */
 public class HoloHook {
 
     /**
      * Initializes this hook.
-     *
-     * @param   plugin
-     *          The IP plugin instance
      */
-    public static void init(IP plugin) {
+    public static void init() {
         try {
             Class.forName("me.filoghost.holographicdisplays.api.HolographicDisplaysAPI");
         } catch (Throwable throwable) {
@@ -28,7 +22,7 @@ public class HoloHook {
             return;
         }
 
-        HolographicDisplaysAPI.get(plugin).registerGlobalPlaceholder("ip_leaderboard", 100, argument -> {
+        HolographicDisplaysAPI.get(IP.getPlugin()).registerGlobalPlaceholder("ip_leaderboard", 100, argument -> {
 
             if (argument == null) {
                 return "?";
