@@ -2,6 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -12,7 +13,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
-import dev.efnilite.ip.schematic.SchematicCache;
+import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Persistents;
@@ -88,7 +89,7 @@ public class ParkourCommand extends ViCommand {
                     Time.timerStart("reloadIP");
                     Util.send(sender, IP.PREFIX + "Reloading config files..");
 
-                    IP.getConfiguration().reload();
+                    Config.reload();
                     Option.init(false);
 
                     Util.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reloadIP") + "ms!");
@@ -480,7 +481,7 @@ public class ParkourCommand extends ViCommand {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.getPermission())) {
                 if (args[1].equalsIgnoreCase("paste")) {
                     String name = args[2];
-                    Schematic schematic = SchematicCache.getSchematic(name);
+                    Schematic schematic = Schematics.getSchematic(name);
                     if (schematic == null) {
                         Util.send(sender, IP.PREFIX + "Couldn't find " + name);
                         return true;

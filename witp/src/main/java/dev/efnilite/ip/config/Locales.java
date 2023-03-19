@@ -39,7 +39,9 @@ public class Locales {
     // a map of all locales with their respective yml trees
     public static final Map<String, FileConfiguration> locales = new HashMap<>();
 
-    public static void init(Plugin plugin) {
+    public static void init() {
+        Plugin plugin = IP.getPlugin();
+
         Task.create(plugin)
                 .async()
                 .execute(() -> {

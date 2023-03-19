@@ -1,24 +1,17 @@
 package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.util.Colls;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Class that reads the rewards-v2.yml file and puts them in the variables listed below.
- *
- * @author Efnilite
  */
-public class RewardReader {
-
-    private static FileConfiguration rewards;
+public class Rewards {
 
     public static boolean REWARDS_ENABLED;
 
@@ -43,11 +36,9 @@ public class RewardReader {
     /**
      * Reads the rewards from the rewards-v2.yml file
      */
-    public static void readRewards(FileConfiguration config) {
-        rewards = config;
-
+    public static void init() {
         // init options
-        REWARDS_ENABLED = rewards.getBoolean("enabled");
+        REWARDS_ENABLED = Config.REWARDS.getBoolean("enabled");
 
         if (!REWARDS_ENABLED) {
             return;
@@ -62,10 +53,10 @@ public class RewardReader {
 
         Map<Integer, List<RewardString>> rewardMap = new HashMap<>();
 
-        for (String score : getNodes(path)) {
+        for (String score : Config.REWARDS.getChildren(path)) {
 
             // read commands for this score
-            List<String> commands = rewards.getStringList(path + "." + score);
+            List<String> commands = Config.REWARDS.getStringList("%s.%s".formatted(path, score));
 
             try {
                 int value = Integer.parseInt(score);
@@ -83,13 +74,5 @@ public class RewardReader {
         }
 
         return rewardMap;
-    }
-
-    private static @NotNull List<String> getNodes(@NotNull String path) {
-        ConfigurationSection section = rewards.getConfigurationSection(path);
-        if (section == null) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(section.getKeys(false));
     }
 }

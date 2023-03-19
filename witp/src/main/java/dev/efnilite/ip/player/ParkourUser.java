@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -212,7 +213,7 @@ public abstract class ParkourUser {
         users.remove(pl);
 
         if (sendBack && Option.BUNGEECORD && kickIfBungee) {
-            sendPlayer(pl, IP.getConfiguration().getString("config", "bungeecord.return_server"));
+            sendPlayer(pl, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
         if (user.previousData == null) {

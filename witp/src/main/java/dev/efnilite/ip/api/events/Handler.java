@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.hook.MultiverseHook;
@@ -87,7 +88,7 @@ public class Handler implements EventWatcher {
         if (Option.BUNGEECORD) {
             Gamemodes.DEFAULT.create(player);
         } else if (player.getWorld().getUID().equals(handler.getWorld().getUID())) {
-            World fallback = Bukkit.getWorld(IP.getConfiguration().getString("config", "world.fall-back"));
+            World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
             if (fallback != null) {
                 // If players who left in the world end up in the world itself while not being a player
                 player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);

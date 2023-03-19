@@ -7,6 +7,7 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.events.BlockGenerateEvent;
 import dev.efnilite.ip.api.events.PlayerFallEvent;
 import dev.efnilite.ip.api.events.PlayerScoreEvent;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
@@ -16,11 +17,11 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.Score;
-import dev.efnilite.ip.reward.RewardReader;
 import dev.efnilite.ip.reward.RewardString;
+import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
-import dev.efnilite.ip.schematic.SchematicCache;
+import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -821,7 +822,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                     generate(); // generate if no schematic is found
                     return;
                 }
-                Schematic schematic = SchematicCache.getSchematic(file.getName());
+                Schematic schematic = Schematics.getSchematic(file.getName());
 
                 schematicCooldown = Option.SCHEMATIC_COOLDOWN;
                 List<Block> blocks = selectBlocks();
@@ -868,7 +869,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      */
     private double getDifficulty(String fileName) {
         int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
-        return IP.getConfiguration().getFile("structures").getDouble("difficulty." + index);
+
+        return Config.SCHEMATICS.getDouble("difficulty.%d".formatted(index));
     }
 
     /**
@@ -897,7 +899,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * Checks a player's rewards and gives them if necessary
      */
     public void checkRewards() {
-        if (!RewardReader.REWARDS_ENABLED || score == 0 || totalScore == 0) {
+        if (!Rewards.REWARDS_ENABLED || score == 0 || totalScore == 0) {
             return;
         }
 
@@ -906,21 +908,21 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         }
 
         // check generic score rewards
-        List<RewardString> strings = RewardReader.SCORE_REWARDS.get(score);
+        List<RewardString> strings = Rewards.SCORE_REWARDS.get(score);
         if (strings != null) {
             strings.forEach(s -> s.execute(player));
         }
 
         // gets the correct type of score to check based on the config option
         int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
-        for (int interval : RewardReader.INTERVAL_REWARDS.keySet()) {
+        for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
             if (typeToCheck % interval == 0) {
-                strings = RewardReader.INTERVAL_REWARDS.get(interval);
+                strings = Rewards.INTERVAL_REWARDS.get(interval);
                 strings.forEach(s -> s.execute(player));
             }
         }
 
-        strings = RewardReader.ONE_TIME_REWARDS.get(score);
+        strings = Rewards.ONE_TIME_REWARDS.get(score);
         if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
             strings.forEach(s -> s.execute(player));
             player.collectedRewards.add(Integer.toString(score));

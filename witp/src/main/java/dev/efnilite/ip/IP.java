@@ -3,6 +3,7 @@ package dev.efnilite.ip;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.api.events.Handler;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Configuration;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -13,7 +14,7 @@ import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.legacy.LegacyFolderMigration;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.reward.RewardReader;
+import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.chat.ChatHandler;
 import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.util.sql.SQLManager;
@@ -100,8 +101,7 @@ public final class IP extends ViPlugin {
 
         // ----- Configurations -----
 
-        configuration = new Configuration(this);
-
+        Config.reload();
         Option.init(true);
 
         // ----- SQL and data -----
@@ -123,7 +123,7 @@ public final class IP extends ViPlugin {
         registry.register(new SpectatorGamemode());
         registry.registerType(new DefaultStyleType());
 
-        registry.getStyleType("default").addConfigStyles("styles.list", configuration.getFile("config"));
+        registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);
 
         Gamemodes.init();
 
@@ -169,7 +169,7 @@ public final class IP extends ViPlugin {
 
         Metrics metrics = new Metrics(this, 9272);
         metrics.addCustomChart(new SimplePie("using_sql", () -> Boolean.toString(Option.SQL)));
-        metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(RewardReader.REWARDS_ENABLED)));
+        metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(Rewards.REWARDS_ENABLED)));
         metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Locales.locales.size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
             int joins = ParkourUser.JOIN_COUNT;

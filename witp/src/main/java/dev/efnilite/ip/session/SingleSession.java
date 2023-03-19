@@ -88,7 +88,6 @@ public class SingleSession implements Session {
 
             this.spectators.remove(spectator.getUUID());
         }
-        unregister();
     }
 
     @Override

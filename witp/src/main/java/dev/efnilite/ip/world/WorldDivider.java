@@ -2,6 +2,7 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
@@ -20,7 +21,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,11 +59,10 @@ public class WorldDivider {
      */
     @SuppressWarnings("ConstantConditions")
     public WorldDivider() {
-        FileConfiguration gen = IP.getConfiguration().getFile("generation");
-        this.spawnYaw = gen.getInt("advanced.island.spawn.yaw");
-        this.spawnPitch = gen.getInt("advanced.island.spawn.pitch");
-        this.playerSpawn = Material.getMaterial(gen.getString("advanced.island.spawn.player-block").toUpperCase());
-        this.parkourSpawn = Material.getMaterial(gen.getString("advanced.island.parkour.begin-block").toUpperCase());
+        this.spawnYaw = Config.GENERATION.getInt("advanced.island.spawn.yaw");
+        this.spawnPitch = Config.GENERATION.getInt("advanced.island.spawn.pitch");
+        this.playerSpawn = Material.getMaterial(Config.GENERATION.getString("advanced.island.spawn.player-block").toUpperCase());
+        this.parkourSpawn = Material.getMaterial(Config.GENERATION.getString("advanced.island.parkour.begin-block").toUpperCase());
 
         this.spawnIsland = new Schematic().file("spawn-island.witp");
     }

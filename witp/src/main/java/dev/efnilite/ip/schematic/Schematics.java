@@ -9,40 +9,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Stores schematics, so they don't have to be read every time
+ * Stores schematics, so they don't have to be read every time.
  */
-public class SchematicCache {
+public class Schematics {
 
     public static volatile Map<String, Schematic> cache = new HashMap<>();
 
-    public static void read() {
+    /**
+     * Reads all files.
+     */
+    public static void init() {
         Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> {
-                    Time.timerStart("schematicsLoad");
-                    IP.logging().info("Initializing schematics...");
+                    Time.timerStart("ip load schematics");
+
                     cache.clear();
-                    File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
+                    File folder = new File(IP.getPlugin().getDataFolder(), "schematics");
+
                     File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
+
+                    if (files == null) {
+                        return;
+                    }
+
                     for (File file : files) {
                         String fileName = file.getName();
+
                         Schematic schematic = new Schematic().file(fileName);
                         schematic.read();
+
                         if (schematic.isSupported()) {
                             cache.put(fileName, schematic);
                         }
                     }
-                    IP.logging().info("Found " + (files.length - cache.keySet().size()) + " unsupported schematic(s).");
-                    IP.logging().info("Loaded all schematics in " + Time.timerEnd("schematicsLoad") + "ms!");
+
+                    IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - cache.keySet().size()));
+                    IP.logging().info("Loaded all schematics in %d ms!".formatted(Time.timerEnd("ip load schematics")));
                 })
                 .run();
     }
 
+    /**
+     * Returns a schematic instance by name.
+     * @param name The name.
+     * @return A schematic instance by name.
+     */
     public static Schematic getSchematic(String name) {
         return cache.get(name);
-    }
-
-    public static void invalidate() {
-        cache.clear();
     }
 }
