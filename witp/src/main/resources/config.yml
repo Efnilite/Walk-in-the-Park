@@ -152,7 +152,7 @@ options:
   # Logs inventories of the players that join to the inventories/ folder.
   # It is highly recommended to keep this enabled. Server crashes or errors while leaving might cause
   # inventories of players to be lost if this is set to false!
-  # Use /witp recoverinventory to recover inventories of players who joined the parkour and who lost their inventories in a crash, etc.
+  # Use /ip recoverinventory to recover inventories of players who joined the parkour and who lost their inventories in a crash, etc.
   inventory-saving: true
 
   # -= Alternate inventory saving command =-
@@ -174,13 +174,13 @@ permissions:
 
   # -= Permissions enabled =-
   # If permission handling is enabled.
-  # True = players need a permission to join, view the leaderboard, etc, false = players can do and view anything
+  # True = players need a permission to join, view the leaderboard, etc., false = players can do and view anything
   # from this plugin besides admin commands.
   enabled: false
 
   # -= Per style permissions =-
   # Gives every style a permission. The permission is the name of the style.
-  # Syntax: witp.option.styles.<style> - example: witp.option.styles.red
+  # Syntax: ip.option.styles.<style> - example: ip.option.styles.red
   # Useful for servers with ranks.
   per-style: false
 
@@ -196,7 +196,7 @@ focus-mode:
   # A whitelist for commands which ARE allowed during focus mode (if focus mode is enabled).
   # If you want to disable the default whitelisted commands you can remove every item in the list below.
   whitelist:
-    - 'witp'
+    - 'ip'
     - 'parkour'
     - 'msg'
     - 'r'

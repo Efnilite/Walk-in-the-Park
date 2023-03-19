@@ -35,7 +35,7 @@ public class SettingsMenu extends DynamicMenu {
 
         registerMainItem(1, 1,
                 (player, user) -> Locales.getItem(player, "settings.lang.item",
-                                user != null ? Locales.getString(user.getLocale(), "name", false) : "?")
+                                user != null ? Locales.getString(user.getLocale(), "name") : "?")
                         .click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))),
                 player -> ParkourOption.LANG.check(player) && ParkourUser.isUser(player));
 
@@ -44,7 +44,7 @@ public class SettingsMenu extends DynamicMenu {
                     // user has to be not-null to see this item
                     assert user != null;
 
-                    List<String> values = Locales.getStringList(user.getLocale(), "settings.chat.values", false);
+                    List<String> values = Locales.getStringList(user.getLocale(), "settings.chat.values");
 
                     return new SliderItem()
                             .initial(switch (user.chatType) {
@@ -90,7 +90,7 @@ public class SettingsMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "settings.name", false))
+        Menu menu = new Menu(3, Locales.getString(player, "settings.name"))
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
                 .distributeRowsEvenly();

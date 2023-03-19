@@ -5,7 +5,6 @@ import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,9 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Locales {
@@ -36,7 +35,9 @@ public class Locales {
     // used to check against missing nodes
     private static List<String> resourceNodes;
 
-    // a map of all locales with their respective yml trees
+    /**
+     * A map of all locales with their respective yml trees
+     */
     public static final Map<String, FileConfiguration> locales = new HashMap<>();
 
     public static void init() {
@@ -50,7 +51,7 @@ public class Locales {
                     FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
                     // get all nodes from the plugin's english resource, aka the most updated version
-                    resourceNodes = Util.getNode(resource, "", true);
+                    resourceNodes = Util.getChildren(resource, "", true);
 
                     Path folder = Paths.get(plugin.getDataFolder() + "/locales");
 
@@ -81,8 +82,8 @@ public class Locales {
 
                             locales.put(locale, config);
                         });
-                    } catch (IOException throwable) {
-                        IP.logging().stack("Error while trying to read locale files", "restart/reload your server", throwable);
+                    } catch (Exception ex) {
+                        IP.logging().stack("Error while trying to read locale files", "restart/reload your server", ex);
                     }
                 })
                 .run();
@@ -91,15 +92,17 @@ public class Locales {
     // validates whether a lang file contains all required keys.
     // if it doesn't, automatically add them
     private static void validate(FileConfiguration provided, FileConfiguration user, File localPath) {
-        List<String> userNodes = Util.getNode(user, "", true);
+        List<String> userNodes = Util.getChildren(user, "", true);
 
         for (String node : resourceNodes) {
-            if (!userNodes.contains(node)) {
-                IP.logging().info("Fixing missing config node '" + node + "'");
-
-                Object providedValue = provided.get(node);
-                user.set(node, providedValue);
+            if (userNodes.contains(node)) {
+                continue;
             }
+
+            IP.logging().info("Fixing missing config node '" + node + "'");
+
+            Object providedValue = provided.get(node);
+            user.set(node, providedValue);
         }
 
         try {
@@ -110,101 +113,50 @@ public class Locales {
     }
 
     /**
-     * Gets a coloured String from the provided path in the provided locale file.
-     * The locale is derived from the player.
+     * Gets a String from the provided path in the provided player's locale.
      * If the player is a {@link ParkourUser}, their locale value will be used.
      * If not, the default locale will be used.
      *
-     * @param   player
-     *          The player
-     *
-     * @param   path
-     *          The path
-     *
-     * @return a coloured String
+     * @param player The player
+     * @param path The path
+     * @return a String
      */
-    public static String getString(Player player, String path, boolean colour) {
+    public static String getString(Player player, String path) {
         ParkourUser user = ParkourUser.getUser(player);
+
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        return getString(locale, path, colour);
+        return getString(locale, path);
     }
 
     /**
      * Gets a coloured String from the provided path in the provided locale file
      *
-     * @param   locale
-     *          The locale
-     *
-     * @param   path
-     *          The path
-     *
-     * @return a coloured String
+     * @param locale The locale
+     * @param path The path
+     * @return a String
      */
-    public static String getString(String locale, String path, boolean colour) {
-        if (locales.isEmpty()) { // during reloading
-            return "";
-        }
-
-        FileConfiguration base = locales.get(locale);
-
-        if (base == null) {
-            Object defaultLang = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
-
-            if (defaultLang == null) {
-                IP.logging().stack("No default language found", "check your config for an incorrect lang default value");
-                return "";
-            }
-
-            base = locales.get((String) defaultLang);
-        }
-
-        String string = base.getString(path);
-
-        if (string == null) {
-            IP.logging().stack("Invalid config path: " + path, "contact the developer");
-            return "";
-        }
-
-        return colour ? Strings.colour(string) : string;
+    public static String getString(String locale, String path) {
+        return getValue(locale, config -> config.getString(path), "");
     }
+
     /**
-     * Gets a coloured String list from the provided path in the provided locale file
+     * Gets an uncoloured String list from the provided path in the provided locale file
      *
-     * @param   locale
-     *          The locale
-     *
-     * @param   path
-     *          The path
-     *
-     * @return a coloured String list
+     * @param locale The locale
+     * @param path The path
+     * @return a String list
      */
-    public static List<String> getStringList(String locale, String path, boolean colour) {
-        if (locales.isEmpty()) { // during reloading
-            return Collections.emptyList();
-        }
+    public static List<String> getStringList(String locale, String path) {
+        return getValue(locale, config -> config.getStringList(path), Collections.emptyList());
+    }
 
-        FileConfiguration base = locales.get(locale);
+    private static <T> T getValue(String locale, Function<FileConfiguration, T> f, T def) {
+        if (locales.isEmpty()) return def;
 
-        if (base == null) {
-            Object defaultLang = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+        FileConfiguration config = locales.get(locale);
 
-            if (defaultLang == null) {
-                IP.logging().stack("No default language found", "check your config for an incorrect lang default value");
-                return Collections.emptyList();
-            }
-
-            base = locales.get((String) defaultLang);
-        }
-
-        List<String> strings = base.getStringList(path);
-
-        if (strings.isEmpty()) {
-            IP.logging().stack("Invalid config path: " + path, "contact the developer");
-            return Collections.emptyList();
-        }
-
-        return colour ? strings.stream().map(Strings::colour).collect(Collectors.toList()) : strings;
+        return config != null ? f.apply(config) : def;
     }
 
     /**
@@ -213,12 +165,8 @@ public class Locales {
      * If the player is a {@link ParkourUser}, their locale value will be used.
      * If not, the default locale will be used.
      *
-     * @param   player
-     *          The player
-     *
-     * @param   path
-     *          The full path of the item in the locale file
-     *
+     * @param player The player
+     * @param path The full path of the item in the locale file
      * @return a non-null {@link Item} instance built from the description in the locale file
      */
     @NotNull
@@ -232,15 +180,9 @@ public class Locales {
     /**
      * Returns an item from a provided json locale file with possible replacements.
      *
-     * @param   locale
-     *          The locale
-     *
-     * @param   path
-     *          The path in the json file
-     *
-     * @param   replace
-     *          The Strings that will replace any appearances of a String following the regex "%[a-z]"
-     *
+     * @param locale The locale
+     * @param path The path in the json file
+     * @param replace The Strings that will replace any appearances of a String following the regex "%[a-z]"
      * @return a non-null {@link Item} instance built from the description in the locale file
      */
     @NotNull
@@ -251,9 +193,9 @@ public class Locales {
 
         final FileConfiguration base = locales.get(locale);
 
-        String material = base.getString(path + ".material");
-        String name = base.getString(path + ".name");
-        String lore = base.getString(path + ".lore");
+        String material = base.getString("%s.material".formatted(path));
+        String name = base.getString("%s.name".formatted(path));
+        String lore = base.getString("%s.lore".formatted(path));
 
         if (material == null) {
             material = "";

@@ -5,6 +5,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.vilib.util.Strings;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -59,7 +60,7 @@ public class SingleSession implements Session {
                     spectator.teleport(watchingPlayer.getLocation());
                 }
             }
-            String string = Locales.getString(bukkitPlayer, "play.spectator.action_bar", true);
+            String string = Strings.colour(Locales.getString(bukkitPlayer, "play.spectator.action_bar"));
             bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
 
             spectator.player.setGameMode(GameMode.SPECTATOR);

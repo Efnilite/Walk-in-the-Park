@@ -36,7 +36,7 @@ public class SingleLeaderboardMenu {
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
-        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class SingleLeaderboardMenu {
             default -> Sort.SCORE;
         };
 
-        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.getPath() + ".sort.values", false);
+        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.getPath() + ".sort.values");
 
         String name = switch (next) {
             case SCORE -> values.get(0);

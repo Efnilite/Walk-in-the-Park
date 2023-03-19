@@ -35,7 +35,7 @@ public class LobbyMenu extends DynamicMenu {
             (player, user) -> {
                 assert user != null;
 
-                List<String> values = Locales.getStringList(user.getLocale(), "lobby.visibility.values", false);
+                List<String> values = Locales.getStringList(user.getLocale(), "lobby.visibility.values");
 
                 return new SliderItem()
                     .initial(switch (user.getSession().getVisibility()) {
@@ -94,7 +94,7 @@ public class LobbyMenu extends DynamicMenu {
      *          The player to open the menu to
      */
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "lobby.name", false))
+        Menu menu = new Menu(3, Locales.getString(player, "lobby.name"))
             .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
             .animation(new SplitMiddleInAnimation())
             .distributeRowsEvenly();

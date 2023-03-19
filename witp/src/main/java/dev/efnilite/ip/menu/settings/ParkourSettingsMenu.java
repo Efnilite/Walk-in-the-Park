@@ -383,7 +383,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
     public void open(ParkourPlayer user)  {
         Player player = user.player;
 
-        Menu menu = new Menu(4, Locales.getString(player, "settings.name", false))
+        Menu menu = new Menu(4, Locales.getString(player, "settings.name"))
                 .distributeRowEvenly(0, 1, 2, 3)
                 .item(27, Locales.getItem(player, "other.close").click(
                         event -> Menus.SETTINGS.open(event.getPlayer())))
@@ -394,7 +394,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     public void openStylesMenu(ParkourPlayer user) {
         // init menu
-        Menu menu = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
+        Menu menu = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
@@ -425,7 +425,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         // init menu
-        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name", false));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.getPath() + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -474,10 +474,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
         // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.getPath() + ".name", false));
+        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.getPath() + ".name"));
 
         List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
-        List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath() + ".values", false);
+        List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath() + ".values");
 
         Item item = Locales.getItem(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.getPath());
 

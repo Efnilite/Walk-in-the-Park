@@ -41,7 +41,7 @@ public class MainMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "main.name", false))
+        Menu menu = new Menu(3, Locales.getString(player, "main.name"))
                 .distributeRowsEvenly()
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation());

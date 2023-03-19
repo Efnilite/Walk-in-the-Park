@@ -86,7 +86,7 @@ public class Util {
         return random.toString();
     }
 
-    public static @NotNull List<String> getNode(FileConfiguration file, String path, boolean deep) {
+    public static @NotNull List<String> getChildren(FileConfiguration file, String path, boolean deep) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
             return new ArrayList<>();

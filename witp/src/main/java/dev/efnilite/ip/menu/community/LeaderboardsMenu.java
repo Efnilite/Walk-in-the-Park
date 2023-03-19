@@ -27,7 +27,7 @@ public class LeaderboardsMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name", false));
+        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name"));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();

@@ -68,7 +68,7 @@ public abstract class StyleType {
      *          The file to read from
      */
     public void addConfigStyles(@NotNull String path, @NotNull FileConfiguration file) {
-        List<String> list = Util.getNode(file, path, false);
+        List<String> list = Util.getChildren(file, path, false);
 
         if (list.isEmpty()) {
             IP.logging().error("Style path " + path + " not found");

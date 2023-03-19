@@ -8,7 +8,9 @@ import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -67,7 +69,7 @@ public class ParkourSpectator extends ParkourUser {
 
         Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title", true));
+        String title = Strings.colour(Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title")));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -87,7 +89,7 @@ public class ParkourSpectator extends ParkourUser {
 
 
         // update lines
-        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines", true)) {
+        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line

@@ -1,7 +1,7 @@
 # ----------- Rewards v2 -----------
 # Each command needs a separate line, as you can see below.
 # You can copy the format below and change the score/commands to add a reward.
-# Reward commands are executed by the console.
+# Reward commands are executed by the console. These have a / in front of them.
 # Scores of 0 do not work.
 #
 # Custom reward syntaxes:

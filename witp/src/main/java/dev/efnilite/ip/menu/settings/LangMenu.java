@@ -27,11 +27,11 @@ public class LangMenu {
         }
 
         // init menu
-        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), "settings.lang.name", false));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), "settings.lang.name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Locales.locales.keySet()) {
-            Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name", false));
+            Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name"));
 
             items.add(item
                     .glowing(user.getLocale().equals(lang))

@@ -29,6 +29,7 @@ import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Numbers;
+import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
@@ -167,7 +168,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         Leaderboard leaderboard = getGamemode().getLeaderboard();
 
-        String title = Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title", true));
+        String title = Strings.colour(Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title")));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
@@ -186,7 +187,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         rank = rank == null ? new Score("?", "?", "?", 0) : rank;
 
         // update lines
-        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines", true)) {
+        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line

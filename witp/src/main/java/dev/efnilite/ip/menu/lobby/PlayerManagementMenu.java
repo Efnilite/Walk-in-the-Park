@@ -39,7 +39,7 @@ public class PlayerManagementMenu {
 
         Session session = viewer.getSession();
 
-        PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name", false));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
         add(menu, viewer, Colls.map(player -> player, session.getPlayers()));
         add(menu, viewer, Colls.map(player -> player, session.getSpectators()));
 
@@ -71,11 +71,11 @@ public class PlayerManagementMenu {
 
             List<String> lore = new ArrayList<>();
             if (muted) {
-                String[] top = Locales.getString(viewer.getLocale(), "lobby.player_management.head.top", false).split("\\|\\|");
+                String[] top = Locales.getString(viewer.getLocale(), "lobby.player_management.head.top").split("\\|\\|");
 
                 lore.addAll(List.of(top));
             }
-            String[] bottom = Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom", false).split("\\|\\|");
+            String[] bottom = Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom").split("\\|\\|");
 
             lore.addAll(List.of(bottom));
 
@@ -89,9 +89,9 @@ public class PlayerManagementMenu {
                         switch (click) {
                             case LEFT -> {
                                 IP.getDivider().generate(ParkourPlayer.register(sessionBukkitPlayer));
-                                other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked", false));
+                                other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked"));
 
-                                viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice", false));
+                                viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice"));
                                 open(viewer.player);
                             }
                             case RIGHT -> {
@@ -99,10 +99,10 @@ public class PlayerManagementMenu {
 
                                 if (!muted) {
                                     other.send(IP.PREFIX +
-                                            Locales.getString(other.getLocale(), "lobby.player_management.muted", false));
+                                            Locales.getString(other.getLocale(), "lobby.player_management.muted"));
                                 } else {
                                     other.send(IP.PREFIX +
-                                            Locales.getString(other.getLocale(), "lobby.player_management.unmuted", false));
+                                            Locales.getString(other.getLocale(), "lobby.player_management.unmuted"));
                                 }
 
                                 open(viewer.player);
