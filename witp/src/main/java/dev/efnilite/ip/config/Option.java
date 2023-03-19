@@ -26,9 +26,9 @@ public class Option {
     public static boolean BUNGEECORD;
 
     public static List<Integer> POSSIBLE_LEADS;
+
     // Advanced settings
     public static String HEADING;
-
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
     public static boolean SETTINGS_ENABLED;
@@ -166,10 +166,8 @@ public class Option {
     public static Particle PARTICLE_TYPE;
     public static ParticleData<?> PARTICLE_DATA;
 
-    // Very not efficient but this is basically the only way to ensure the enums have a value
     private static void initEnums() {
-        String value;
-        value = Config.CONFIG.getString("particles.sound-type").toUpperCase();
+        String value = Config.CONFIG.getString("particles.sound-type").toUpperCase();
 
         try {
             SOUND_TYPE = Sound.valueOf(value);

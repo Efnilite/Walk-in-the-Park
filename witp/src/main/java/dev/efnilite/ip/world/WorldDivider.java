@@ -152,7 +152,7 @@ public class WorldDivider {
     }
 
     private synchronized void createIsland(@NotNull ParkourPlayer pp, @NotNull Vector2D point) {
-        World world = IP.getWorldHandler().getWorld();
+        World world = WorldManager.getWorld();
 
         Location spawn = getEstimatedCenter(point, Option.BORDER_SIZE).toLocation(world).clone();
 

@@ -7,7 +7,6 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.hook.MultiverseHook;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -15,7 +14,7 @@ import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.VoidGenerator;
-import dev.efnilite.ip.world.WorldHandler;
+import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -71,23 +70,17 @@ public class Handler implements EventWatcher {
                             "Please visit the Spigot page to update.");
             Util.send(player, "");
         }
-        if (player.isOp() && MultiverseHook.isActive() && VoidGenerator.getMultiverseGenerator() == null) {
+        if (player.isOp() && WorldManager.WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
             Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
                     "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             Util.send(player, "");
         }
 
-        WorldHandler handler = IP.getWorldHandler();
-
-        if (handler == null) {
-            return;
-        }
-
         // Bungeecord joining
         if (Option.BUNGEECORD) {
             Gamemodes.DEFAULT.create(player);
-        } else if (player.getWorld().getUID().equals(handler.getWorld().getUID())) {
+        } else if (player.getWorld().getUID().equals(WorldManager.getWorld().getUID())) {
             World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
             if (fallback != null) {
                 // If players who left in the world end up in the world itself while not being a player
@@ -291,13 +284,7 @@ public class Handler implements EventWatcher {
     public void onSwitch(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        WorldHandler handler = IP.getWorldHandler();
-
-        if (handler == null) {
-            return;
-        }
-
-        UUID parkourWorld = handler.getWorld().getUID();
+        UUID parkourWorld = WorldManager.getWorld().getUID();
 
         boolean passes;
 

@@ -4,7 +4,6 @@ import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.api.events.Handler;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.config.Configuration;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
@@ -12,14 +11,13 @@ import dev.efnilite.ip.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
-import dev.efnilite.ip.legacy.LegacyFolderMigration;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.chat.ChatHandler;
 import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.util.sql.SQLManager;
 import dev.efnilite.ip.world.WorldDivider;
-import dev.efnilite.ip.world.WorldHandler;
+import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.lib.bstats.bukkit.Metrics;
 import dev.efnilite.vilib.lib.bstats.charts.SimplePie;
@@ -51,8 +49,6 @@ public final class IP extends ViPlugin {
     private static SQLManager sqlManager;
     private static Registry registry;
     private static WorldDivider divider;
-    private static WorldHandler worldHandler;
-    private static Configuration configuration;
 
     @Nullable
     private static FloodgateHook floodgateHook;
@@ -62,8 +58,6 @@ public final class IP extends ViPlugin {
     @Override
     public void onLoad() {
         instance = this;
-
-        LegacyFolderMigration.migrate();
     }
 
     @Override
@@ -130,7 +124,7 @@ public final class IP extends ViPlugin {
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
             logging().info("Connecting with Holographic Displays...");
-            HoloHook.init(this);
+            HoloHook.init();
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             logging().info("Connecting with PlaceholderAPI...");
@@ -155,8 +149,7 @@ public final class IP extends ViPlugin {
         if (Option.JOINING) {
             divider = new WorldDivider();
 
-            worldHandler = new WorldHandler();
-            worldHandler.createWorld();
+            WorldManager.create();
         }
 
         // ----- Events -----
@@ -200,9 +193,7 @@ public final class IP extends ViPlugin {
             }
         }
 
-        if (worldHandler != null) {
-            worldHandler.deleteWorld();
-        }
+        WorldManager.delete();
     }
 
     @Override
@@ -239,10 +230,6 @@ public final class IP extends ViPlugin {
         return floodgateHook;
     }
 
-    public static WorldHandler getWorldHandler() {
-        return worldHandler;
-    }
-
     public static Registry getRegistry() {
         return registry;
     }
@@ -253,9 +240,5 @@ public final class IP extends ViPlugin {
 
     public static WorldDivider getDivider() {
         return divider;
-    }
-
-    public static Configuration getConfiguration() {
-        return configuration;
     }
 }

@@ -16,7 +16,7 @@ import java.util.Random;
  * Wrapper class of the specific version void generators
  * Inspired by the VoidGen plugin.
  */
-public class VoidGenerator extends ChunkGenerator {
+public abstract class VoidGenerator extends ChunkGenerator {
 
     @Override
     public boolean shouldGenerateNoise() {

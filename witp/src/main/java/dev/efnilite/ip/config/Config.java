@@ -149,6 +149,7 @@ public enum Config {
             ConfigUpdater.update(IP.getPlugin(), fileName, path, switch (fileName) {
                 case "config.yml" -> List.of("styles");
                 case "schematics.yml" -> List.of("difficulty");
+                default -> null;
             });
         } catch (Exception ex) {
             IP.logging().stack("Error while trying to update config file", ex);

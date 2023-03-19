@@ -40,9 +40,7 @@ public abstract class StyleType {
     /**
      * Gets the item used in menus to show this style.
      *
-     * @param   locale
-     *          The locale of the menu, used to adjust the name.
-     *
+     * @param locale The locale of the menu, used to adjust the name.
      * @return the item.
      */
     public abstract @NotNull Item getItem(String locale);
@@ -50,9 +48,7 @@ public abstract class StyleType {
     /**
      * Gets a random material from a style
      *
-     * @param   style
-     *          The style from which a material should be picked
-     *
+     * @param style The style from which a material should be picked
      * @return A random material
      */
     @Nullable
@@ -61,11 +57,8 @@ public abstract class StyleType {
     /**
      * Reads a specific file at a specific path to get all the styles.
      *
-     * @param   path
-     *          The path at which the styles are in the config
-     *
-     * @param   file
-     *          The file to read from
+     * @param path The path at which the styles are in the config
+     * @param file The file to read from
      */
     public void addConfigStyles(@NotNull String path, @NotNull FileConfiguration file) {
         List<String> list = Util.getChildren(file, path, false);
@@ -83,11 +76,8 @@ public abstract class StyleType {
     /**
      * Adds a style without reading from config
      *
-     * @param   name
-     *          The name of this style
-     *
-     * @param   materials
-     *          The materials belonging to this style
+     * @param name The name of this style
+     * @param materials The materials belonging to this style
      */
     public void addStyle(@NotNull String name, @NotNull List<Material> materials) {
         styles.put(name.toLowerCase(), materials);

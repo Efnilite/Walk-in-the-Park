@@ -25,6 +25,7 @@ import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
@@ -786,7 +787,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                 Block selectedBlock = blocks.get(0);
 
                 if (next.getMaterial() == Material.OAK_FENCE) {
-                    selectedBlock = IP.getWorldHandler().getWorld().getBlockAt(selectedBlock.getX(), mostRecentBlock.getBlockY(), selectedBlock.getZ());
+                    selectedBlock = WorldManager.getWorld().getBlockAt(selectedBlock.getX(), mostRecentBlock.getBlockY(), selectedBlock.getZ());
                 }
 
                 setBlock(selectedBlock, next);
