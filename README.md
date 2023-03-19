@@ -1,31 +1,21 @@
-![](https://i.imgur.com/5Tzv0FP.png)
+# Welcome!
 
-[![](https://jitpack.io/v/Efnilite/Walk-in-the-Park.svg)](https://jitpack.io/#Efnilite/Walk-in-the-Park)
+## Welcome to MyAPI
 
-### API
-You can import this project using jitpack.io. If the most recent version does not appear, you can create is by clicking the JitPack icon above.
+Welcome to MyAPI! Here you'll find all the documentation you need to get up and running with the MyAPI API.
 
-Maven
-```
-<repositories>
-  <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
+## Want to jump right in?
 
-```maven
-<dependency>
-    <groupId>com.github.Efnilite</groupId>
-    <artifactId>Walk-in-the-Park</artifactId>
-    <version>version</version>
-</dependency>
-```
+Feeling like an eager beaver? Jump in to the quick start docs and get making your first request:
 
-[Click here](https://efnilite.github.io/efnilite.dev/javadocs/witp/index.html) for the Javadocs.
-[Click here](https://efnilite.github.io/efnilite.dev/wiki/witp) for the general wiki.
+{% content-ref url="quick-start.md" %}
+[quick-start.md](quick-start.md)
+{% endcontent-ref %}
 
-## Questions?
+## Want to deep dive?
 
-Discord server: https://discord.gg/AfRMf9C24y
+Dive a little deeper and start exploring our API reference to get an idea of everything that's possible with the API:
+
+{% content-ref url="reference/api-reference/" %}
+[api-reference](reference/api-reference/)
+{% endcontent-ref %}
