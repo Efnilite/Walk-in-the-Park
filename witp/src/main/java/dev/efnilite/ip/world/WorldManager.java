@@ -83,6 +83,7 @@ public abstract class WorldManager {
 
     /**
      * Returns the appropriate instance.
+     *
      * @return The appropriate instance.
      */
     public static WorldManager getInstance() {
@@ -139,18 +140,12 @@ public abstract class WorldManager {
             World world = null;
 
             try {
-                WorldCreator creator = new WorldCreator(Option.WORLD_NAME)
-                        .generateStructures(false)
-                        .type(WorldType.NORMAL)
-                        .generator(Version.isHigherOrEqual(Version.V1_17)
-                                ? new VoidGenerator.VoidGenerator_v1_17()
-                                : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
+                WorldCreator creator = new WorldCreator(Option.WORLD_NAME).generateStructures(false).type(WorldType.NORMAL).generator(Version.isHigherOrEqual(Version.V1_17) ? new VoidGenerator.VoidGenerator_v1_17() : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
                         .environment(World.Environment.NORMAL);
 
                 world = Bukkit.createWorld(creator);
             } catch (Exception ex) {
-                IP.logging().stack("Error while trying to create the parkour world",
-                        "delete the parkour world folder and restart the server", ex);
+                IP.logging().stack("Error while trying to create the parkour world", "delete the parkour world folder and restart the server", ex);
             }
             return world;
         }

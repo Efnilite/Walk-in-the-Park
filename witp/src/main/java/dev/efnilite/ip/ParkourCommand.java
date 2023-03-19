@@ -107,7 +107,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
                     Time.timerStart("migrate");
-                    File folder = new File(IP.getPlugin().getDataFolder() + "/players/");
+                    File folder = IP.getInFolder("players");
 
                     if (!folder.exists()) {
                         folder.mkdirs();

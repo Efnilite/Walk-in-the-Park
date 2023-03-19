@@ -16,20 +16,14 @@ public class Cooldowns {
      * Example usage:
      * <br><br>
      * <code>
-     *     if (passes(uuid, "key", 2000)) {<br>
-     *     // execute code here<br>
-     *     }<br>
+     * if (passes(uuid, "key", 2000)) {<br>
+     * // execute code here<br>
+     * }<br>
      * </code>
      *
-     * @param   uuid
-     *          The {@link UUID} to which to register this action to.
-     *
-     * @param   key
-     *          The key of this action. You can use this as a way of identifying which action was performed.
-     *
-     * @param   cooldownMs
-     *          The cooldown for this action.
-     *
+     * @param uuid       The {@link UUID} to which to register this action to.
+     * @param key        The key of this action. You can use this as a way of identifying which action was performed.
+     * @param cooldownMs The cooldown for this action.
      * @return true if the provided UUID has passed the cooldown, false if the provided UUID hasn't.
      */
     public static boolean passes(UUID uuid, String key, long cooldownMs) {

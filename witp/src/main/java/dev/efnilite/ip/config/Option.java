@@ -301,8 +301,6 @@ public class Option {
     }
 
     public enum ParticleShape {
-        DOT,
-        CIRCLE,
-        BOX
+        DOT, CIRCLE, BOX
     }
 }

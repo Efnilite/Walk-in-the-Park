@@ -68,9 +68,7 @@ public enum ParkourOption {
      * Checks if a permissible has the current permission, if permissions are enabled.
      * This also checks to see if the option is enabled.
      *
-     * @param   permissible
-     *          The permissible
-     *
+     * @param permissible The permissible
      * @return true if the permissible is allowed to view/perform this option, false if not.
      */
     public boolean check(Permissible permissible) {

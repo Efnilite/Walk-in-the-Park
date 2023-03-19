@@ -96,7 +96,7 @@ public class Schematic {
      * @return the instance of this class
      */
     public Schematic file(@NotNull String fileName) {
-        File folder = new File(IP.getPlugin().getDataFolder(), "schematics");
+        File folder = IP.getInFolder("schematics");
         folder.mkdirs();
 
         fileName = fileName.endsWith(".witp") ? fileName : fileName + ".witp";

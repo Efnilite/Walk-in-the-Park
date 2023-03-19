@@ -25,7 +25,7 @@ public class Schematics {
                     Time.timerStart("ip load schematics");
 
                     cache.clear();
-                    File folder = new File(IP.getPlugin().getDataFolder(), "schematics");
+                    File folder = IP.getInFolder("schematics");
 
                     File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 

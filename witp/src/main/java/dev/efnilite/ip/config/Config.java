@@ -53,55 +53,50 @@ public enum Config {
 
     // todo fix
     private static boolean schematics() {
-        if (new File(IP.getPlugin().getDataFolder(), "schematics/spawn-island-duels.witp").exists()) {
+        if (IP.getInFolder("schematics/spawn-island-duels.witp").exists()) {
             return true;
         }
 
-        String[] schematics = new String[] {"spawn-island.witp", "spawn-island-duels.witp"};
-        File folder = new File(IP.getPlugin().getDataFolder(), "schematics");
+        String[] schematics = new String[] { "spawn-island.witp", "spawn-island-duels.witp" };
+        File folder = IP.getInFolder("schematics");
         folder.mkdirs();
 
         IP.logging().info("Downloading missing schematics...");
         int structureCount = 21;
 
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try {
-                        for (String schematic : schematics) {
-                            Path path = Paths.get(folder + "/" + schematic);
-                            if (path.toFile().exists()) {
-                                continue;
-                            }
-
-                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
-                            Files.copy(stream, path);
-                            stream.close();
-                        }
-                        for (int i = 1; i <= structureCount; i++) {
-                            Path path = Paths.get(folder + "parkour-" + i + ".witp");
-                            if (path.toFile().exists()) {
-                                continue;
-                            }
-
-                            InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
-                            Files.copy(stream, path);
-                            stream.close();
-                        }
-
-                        Schematics.init();
-                        IP.logging().info("Downloaded all schematics");
-                    } catch (FileAlreadyExistsException ex) {
-                        // do nothing
-                    } catch (UnknownHostException ex) {
-                        IP.logging().stack("Stopped download of schematics",
-                                "join the Discord and send this error to receive help", ex);
-                    } catch (Throwable throwable) {
-                        IP.logging().stack("Stopped download of schematics",
-                                "delete the schematics folder and restart the server", throwable);
+        Task.create(IP.getPlugin()).async().execute(() -> {
+            try {
+                for (String schematic : schematics) {
+                    Path path = Paths.get(folder + "/" + schematic);
+                    if (path.toFile().exists()) {
+                        continue;
                     }
-                })
-                .run();
+
+                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
+                    Files.copy(stream, path);
+                    stream.close();
+                }
+                for (int i = 1; i <= structureCount; i++) {
+                    Path path = Paths.get(folder + "parkour-" + i + ".witp");
+                    if (path.toFile().exists()) {
+                        continue;
+                    }
+
+                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
+                    Files.copy(stream, path);
+                    stream.close();
+                }
+
+                Schematics.init();
+                IP.logging().info("Downloaded all schematics");
+            } catch (FileAlreadyExistsException ex) {
+                // do nothing
+            } catch (UnknownHostException ex) {
+                IP.logging().stack("Stopped download of schematics", "join the Discord and send this error to receive help", ex);
+            } catch (Throwable throwable) {
+                IP.logging().stack("Stopped download of schematics", "delete the schematics folder and restart the server", throwable);
+            }
+        }).run();
 
         return false;
     }
@@ -123,7 +118,7 @@ public enum Config {
 
     Config(String fileName) {
         this.fileName = fileName;
-        this.path = new File(IP.getPlugin().getDataFolder(), fileName);
+        this.path = IP.getInFolder(fileName);
 
         if (!path.exists()) {
             IP.getPlugin().saveResource(fileName, false);
@@ -158,6 +153,7 @@ public enum Config {
 
     /**
      * Returns true when path exists, false if not.
+     *
      * @param path The path.
      * @return True when path exists, false if not.
      */
@@ -169,6 +165,7 @@ public enum Config {
 
     /**
      * Returns the value at path.
+     *
      * @param path The path.
      * @return The value at path.
      */
@@ -181,6 +178,7 @@ public enum Config {
 
     /**
      * Returns the boolean value at path.
+     *
      * @param path The path.
      * @return The boolean value at path.
      */
@@ -192,6 +190,7 @@ public enum Config {
 
     /**
      * Returns the int value at path.
+     *
      * @param path The path.
      * @return The int value at path.
      */
@@ -203,6 +202,7 @@ public enum Config {
 
     /**
      * Returns the double value at path.
+     *
      * @param path The path.
      * @return The double value at path.
      */
@@ -214,6 +214,7 @@ public enum Config {
 
     /**
      * Returns the String value at path.
+     *
      * @param path The path.
      * @return The String value at path.
      */
@@ -226,6 +227,7 @@ public enum Config {
 
     /**
      * Returns the String list value at path.
+     *
      * @param path The path.
      * @return The String list value at path.
      */
@@ -238,6 +240,7 @@ public enum Config {
 
     /**
      * Returns the int list value at path.
+     *
      * @param path The path.
      * @return The int list value at path.
      */
@@ -250,6 +253,7 @@ public enum Config {
 
     /**
      * Returns children nodes from path.
+     *
      * @param path The path.
      * @param deep Whether search should include children of children as well.
      * @return The children nodes from path.

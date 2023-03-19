@@ -104,6 +104,9 @@ settings:
 
   parkour_settings:
 
+    enabled: "<#0DCB07><bold>✔"
+    disabled: "<red><bold>✘"
+
     item:
       material: "redstone"
       name: "<#A10404><bold>Parkour Settings"
@@ -118,6 +121,11 @@ settings:
 
       styles:
         name: "<white>Styles"
+
+        style_item:
+          material: ""
+          name: "<white><bold>%s"
+          lore: ""
 
         item:
           material: "crafting_table"

@@ -23,18 +23,11 @@ public class DynamicMenu {
      * Registers an item that will be displayed in a specific slot if the specified condition is met.
      * This will be used to create a context-aware main menu.
      *
-     * @param   row
-     *          The row in which this item will be displayed. Starts from 0 and ends at 5.
-     *
-     * @param   id
-     *          The id of this item. This will be used to determine the positions of each item.
-     *          Lower is more to the left. Can't be lower than 0.
-     *
-     * @param   item
-     *          The item
-     *
-     * @param   shouldDisplay
-     *          Whether this item should be displayed right now.
+     * @param row           The row in which this item will be displayed. Starts from 0 and ends at 5.
+     * @param id            The id of this item. This will be used to determine the positions of each item.
+     *                      Lower is more to the left. Can't be lower than 0.
+     * @param item          The item
+     * @param shouldDisplay Whether this item should be displayed right now.
      */
     public void registerMainItem(int row, int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item, Predicate<Player> shouldDisplay) {
         if (id < 0 || row < 0 || row > 4) {
@@ -53,11 +46,8 @@ public class DynamicMenu {
     /**
      * Opens this dynamic menu to a player
      *
-     * @param   player
-     *          The player
-     *
-     * @param   menu
-     *          The menu
+     * @param player The player
+     * @param menu   The menu
      */
     public void display(Player player, Menu menu) {
         ParkourUser user = ParkourUser.getUser(player);
@@ -81,7 +71,6 @@ public class DynamicMenu {
     /**
      * Data class for registered items
      */
-    protected record ItemContainer(int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item, Predicate<Player> predicate) {
-
-    }
+    protected record ItemContainer(int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item,
+                                   Predicate<Player> predicate) {}
 }

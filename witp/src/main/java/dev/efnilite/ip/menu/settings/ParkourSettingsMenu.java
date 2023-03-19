@@ -7,6 +7,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.style.StyleType;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -171,7 +172,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.showScoreboard ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         player.showScoreboard = true;
                                         player.setBoard(new FastBoard(p));
@@ -182,7 +183,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         player.showScoreboard = false;
                                         if (player.board != null && !player.board.isDeleted()) {
@@ -208,7 +209,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.showFallMessage ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         player.showFallMessage = true;
 
@@ -217,7 +218,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         player.showFallMessage = false;
 
@@ -240,7 +241,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.particles ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         player.particles = true;
 
@@ -249,7 +250,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         player.particles = false;
 
@@ -272,7 +273,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.sound ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         player.sound = true;
 
@@ -281,7 +282,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         player.sound = false;
 
@@ -304,7 +305,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.useSpecialBlocks ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useSpecialBlocks = true;
@@ -316,7 +317,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useSpecialBlocks = false;
@@ -342,7 +343,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             .initial(player.useScoreDifficulty ? 0 : 1)
                             .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useScoreDifficulty = true;
@@ -354,7 +355,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                     })
                             .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                             .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                            .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                                     event -> {
                                         if (allowSettingChange(player, event)) {
                                             player.useScoreDifficulty = false;
@@ -433,9 +434,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
             if (Option.PERMISSIONS_STYLES && !user.player.hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
+            // todo add enchantment on select
 
-            Material material = Colls.random(styleType.styles.get(name));
-            Item item = new Item(material, "<#238681><bold>" + name); // todo add enchantment on select
+            Item item = Locales.getItem(user.player, ParkourOption.STYLES.getPath() + "style_item", name)
+                    .material(Colls.random(styleType.styles.get(name)));
 
             items.add(item
                     .glowing(user.style.equals(name))
@@ -537,7 +539,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                     .initial(user.useSchematic ? 0 : 1)
                     .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(true))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSchematic = true;
@@ -549,7 +551,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                             })
                     .add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE)
                                     .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(false))),
+                                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                             event -> {
                                 if (allowSettingChange(user, event)) {
                                     user.useSchematic = false;
@@ -585,8 +587,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
     }
 
     // replaces true/false with a checkmark and cross
-    private String getBooleanSymbol(boolean value) {
-        return value ? "<#0DCB07><bold>" + Unicodes.HEAVY_CHECK : "<red><bold>" + Unicodes.HEAVY_CROSS;
+    private String getBooleanSymbol(ParkourUser user, boolean value) {
+        return value
+                ? Locales.getString(user.player, "settings.parkour_settings.enabled")
+                : Locales.getString(user.player, "settings.parkour_settings.disabled");
     }
 
     // check if option is allowed to be displayed

@@ -72,7 +72,7 @@ public class ParkourPlayer extends ParkourUser {
         this.uuid = player.getUniqueId();
         this.joinTime = System.currentTimeMillis();
 
-        this.file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
+        this.file = IP.getInFolder("players/%s.json".formatted(uuid.toString()));
 
         setLocale((String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
         this._locale = getLocale();
@@ -182,10 +182,10 @@ public class ParkourPlayer extends ParkourUser {
                     statement.query();
                 } else {
                     if (file == null) {
-                        file = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid.toString() + ".json");
+                        file = IP.getInFolder("players/%s.json".formatted(uuid.toString()));
                     }
                     if (!file.exists()) {
-                        File folder = new File(IP.getPlugin().getDataFolder() + "/players");
+                        File folder = IP.getInFolder("players");
                         if (!folder.exists()) {
                             folder.mkdirs();
                         }
@@ -241,10 +241,9 @@ public class ParkourPlayer extends ParkourUser {
         JOIN_COUNT++;
 
         if (!Option.SQL) {
-            File data = new File(IP.getPlugin().getDataFolder() + "/players/" + uuid + ".json");
-            if (data.exists()) {
+            if (pp.file.exists()) {
                 try {
-                    FileReader reader = new FileReader(data);
+                    FileReader reader = new FileReader(pp.file);
                     ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
                     pp.setSettings(stringValue(from.selectedTime), from.style, from._locale,

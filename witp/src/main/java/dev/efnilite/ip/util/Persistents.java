@@ -23,19 +23,11 @@ public class Persistents {
     /**
      * Checks if an itemstack has persistentdata
      *
-     * @param   itemStack
-     *          The itemstack
-     *
-     * @param   key
-     *          The key
-     *
-     * @param   type
-     *          The PersistentData type
-     *
-     * @param   <T>
-     *          The type of value
-     *
-     * @return  true if it has the data
+     * @param itemStack The itemstack
+     * @param key       The key
+     * @param type      The PersistentData type
+     * @param <T>       The type of value
+     * @return true if it has the data
      */
     public static <T> boolean hasPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type) {
         if (itemStack.getType() == Material.AIR) {
@@ -57,20 +49,11 @@ public class Persistents {
     /**
      * Sets the persistent data of an itemstack
      *
-     * @param   itemStack
-     *          The itemstack
-     *
-     * @param   key
-     *          The key
-     *
-     * @param   type
-     *          The PersistentData type
-     *
-     * @param   t
-     *          The value
-     *
-     * @param   <T>
-     *          The type of value
+     * @param itemStack The itemstack
+     * @param key       The key
+     * @param type      The PersistentData type
+     * @param t         The value
+     * @param <T>       The type of value
      */
     public static <T> void setPersistentData(ItemStack itemStack, String key, PersistentDataType<T, T> type, T t) {
         ItemMeta meta = itemStack.getItemMeta();

@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,50 +42,47 @@ public class Locales {
     public static void init() {
         Plugin plugin = IP.getPlugin();
 
-        Task.create(plugin)
-                .async()
-                .execute(() -> {
-                    locales.clear();
+        Task.create(plugin).async().execute(() -> {
+            locales.clear();
 
-                    FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
+            FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
-                    // get all nodes from the plugin's english resource, aka the most updated version
-                    resourceNodes = Util.getChildren(resource, "", true);
+            // get all nodes from the plugin's english resource, aka the most updated version
+            resourceNodes = Util.getChildren(resource, "", true);
 
-                    Path folder = Paths.get(plugin.getDataFolder() + "/locales");
+            File folder = IP.getInFolder("locales");
 
-                    // download files to locales folder
-                    if (!folder.toFile().exists()) {
-                        folder.toFile().mkdirs();
-                    }
+            // download files to locales folder
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
 
-                    String[] files = folder.toFile().list();
+            String[] files = folder.list();
 
-                    // create non-existent files
-                    if (files != null && files.length == 0) {
-                        plugin.saveResource("locales/en.yml", false);
-                        plugin.saveResource("locales/nl.yml", false);
-                        plugin.saveResource("locales/fr.yml", false);
-                    }
+            // create non-existent files
+            if (files != null && files.length == 0) {
+                plugin.saveResource("locales/en.yml", false);
+                plugin.saveResource("locales/nl.yml", false);
+                plugin.saveResource("locales/fr.yml", false);
+            }
 
-                    // get all files in locales folder
-                    try (Stream<Path> stream = Files.list(folder)) {
-                        stream.forEach(path -> {
-                            File file = path.toFile();
+            // get all files in locales folder
+            try (Stream<Path> stream = Files.list(folder.toPath())) {
+                stream.forEach(path -> {
+                    File file = path.toFile();
 
-                            // get locale from file name
-                            String locale = file.getName().split("\\.")[0];
+                    // get locale from file name
+                    String locale = file.getName().split("\\.")[0];
 
-                            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-                            validate(resource, config, file);
+                    FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+                    validate(resource, config, file);
 
-                            locales.put(locale, config);
-                        });
-                    } catch (Exception ex) {
-                        IP.logging().stack("Error while trying to read locale files", "restart/reload your server", ex);
-                    }
-                })
-                .run();
+                    locales.put(locale, config);
+                });
+            } catch (Exception ex) {
+                IP.logging().stack("Error while trying to read locale files", "restart/reload your server", ex);
+            }
+        }).run();
     }
 
     // validates whether a lang file contains all required keys.
@@ -118,7 +114,7 @@ public class Locales {
      * If not, the default locale will be used.
      *
      * @param player The player
-     * @param path The path
+     * @param path   The path
      * @return a String
      */
     public static String getString(Player player, String path) {
@@ -133,7 +129,7 @@ public class Locales {
      * Gets a coloured String from the provided path in the provided locale file
      *
      * @param locale The locale
-     * @param path The path
+     * @param path   The path
      * @return a String
      */
     public static String getString(String locale, String path) {
@@ -144,7 +140,7 @@ public class Locales {
      * Gets an uncoloured String list from the provided path in the provided locale file
      *
      * @param locale The locale
-     * @param path The path
+     * @param path   The path
      * @return a String list
      */
     public static List<String> getStringList(String locale, String path) {
@@ -152,7 +148,9 @@ public class Locales {
     }
 
     private static <T> T getValue(String locale, Function<FileConfiguration, T> f, T def) {
-        if (locales.isEmpty()) return def;
+        if (locales.isEmpty()) {
+            return def;
+        }
 
         FileConfiguration config = locales.get(locale);
 
@@ -166,7 +164,7 @@ public class Locales {
      * If not, the default locale will be used.
      *
      * @param player The player
-     * @param path The full path of the item in the locale file
+     * @param path   The full path of the item in the locale file
      * @return a non-null {@link Item} instance built from the description in the locale file
      */
     @NotNull
@@ -180,8 +178,8 @@ public class Locales {
     /**
      * Returns an item from a provided json locale file with possible replacements.
      *
-     * @param locale The locale
-     * @param path The path in the json file
+     * @param locale  The locale
+     * @param path    The path in the json file
      * @param replace The Strings that will replace any appearances of a String following the regex "%[a-z]"
      * @return a non-null {@link Item} instance built from the description in the locale file
      */

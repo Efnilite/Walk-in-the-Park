@@ -26,7 +26,7 @@ public class Leaderboard {
     /**
      * The folder that is used by the leaderboard storage
      */
-    public static final String FOLDER = IP.getPlugin().getDataFolder() + "/leaderboards/";
+    public static final String FOLDER = IP.getInFolder("leaderboards").toString();
 
     /**
      * The file that the data of this leaderboard is stored in.

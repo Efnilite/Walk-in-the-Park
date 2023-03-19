@@ -76,7 +76,7 @@ public abstract class StyleType {
     /**
      * Adds a style without reading from config
      *
-     * @param name The name of this style
+     * @param name      The name of this style
      * @param materials The materials belonging to this style
      */
     public void addStyle(@NotNull String name, @NotNull List<Material> materials) {

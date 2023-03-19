@@ -11,11 +11,11 @@ public final class Colls {
     /**
      * Applies function f to each item in coll.
      *
-     * @param f The function to apply to each item in collection.
+     * @param f    The function to apply to each item in collection.
      * @param coll The collection.
+     * @param <T>  The original list type.
+     * @param <N>  The new list type.
      * @return coll where each function f has been applied to each item.
-     * @param <T> The original list type.
-     * @param <N> The new list type.
      */
     public static <T, N> List<N> map(Function<T, N> f, List<T> coll) {
         List<N> newColl = new ArrayList<>();
@@ -31,11 +31,11 @@ public final class Colls {
      * Performs function f on the starting value and first item in coll, then
      * the result of that and the second item in coll, etc.
      *
-     * @param coll The collection.
+     * @param coll       The collection.
      * @param startValue The starting value.
-     * @param f The function to apply to items.
+     * @param f          The function to apply to items.
+     * @param <T>        The type.
      * @return A single value of the same type.
-     * @param <T> The type.
      */
     public static <T> T reduce(List<T> coll, T startValue, BiFunction<T, T, T> f) {
         T item = startValue;
@@ -54,9 +54,9 @@ public final class Colls {
      * the result of that and the third item in coll, etc.
      *
      * @param coll The collection.
-     * @param f The function to apply to items.
+     * @param f    The function to apply to items.
+     * @param <T>  The type.
      * @return A single value of the same type.
-     * @param <T> The type.
      */
     public static <T> T reduce(List<T> coll, BiFunction<T, T, T> f) {
         T item = coll.get(0);
@@ -74,8 +74,8 @@ public final class Colls {
      * Returns a random item from coll.
      *
      * @param coll The collection.
+     * @param <T>  The type.
      * @return A random item from coll.
-     * @param <T> The type.
      */
     public static <T> T random(List<T> coll) {
         return coll.get(ThreadLocalRandom.current().nextInt(coll.size()));
@@ -85,9 +85,9 @@ public final class Colls {
      * Returns n random item from coll.
      *
      * @param coll The collection.
-     * @param n The amount of random items.
+     * @param n    The amount of random items.
+     * @param <T>  The type.
      * @return n random items from coll.
-     * @param <T> The type.
      */
     public static <T> List<T> random(List<T> coll, int n) {
         List<T> items = new ArrayList<>();

@@ -33,6 +33,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+
 /**
  * Main class of Infinite Parkour
  *
@@ -200,6 +202,16 @@ public final class IP extends ViPlugin {
     @NotNull
     public GitElevator getElevator() {
         return new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
+    }
+
+    /**
+     * Returns a file from within the plugin folder.
+     *
+     * @param child The file name.
+     * @return A file from within the plugin folder.
+     */
+    public static File getInFolder(String child) {
+        return new File(getPlugin().getDataFolder(), child);
     }
 
     /**

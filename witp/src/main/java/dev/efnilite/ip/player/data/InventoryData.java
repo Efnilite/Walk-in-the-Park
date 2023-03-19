@@ -28,7 +28,7 @@ public class InventoryData {
 
     public InventoryData(Player player) {
         this.player = player;
-        this.file = new File(IP.getPlugin().getDataFolder() + "/inventories", player.getUniqueId() + ".json");
+        this.file = IP.getInFolder("inventories/%s.json".formatted(player.getUniqueId()));
     }
 
     /**
@@ -85,7 +85,7 @@ public class InventoryData {
                 .execute(() -> {
                     try {
                         if (!file.exists()) {
-                            File folder = new File(IP.getPlugin().getDataFolder() + "/inventories");
+                            File folder = IP.getInFolder("inventories");
                             if (!folder.exists()) {
                                 folder.mkdirs();
                             }

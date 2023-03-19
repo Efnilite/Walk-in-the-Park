@@ -103,7 +103,10 @@ settings:
       players: "<#8A1010>(Joueurs) <#BE0D0D>%s <dark_gray>> <gray>%s"
   
   parkour_settings:
-    
+
+    enabled: "<#0DCB07><bold>✔"
+    disabled: "<red><bold>✘"
+
     item:
       material: "redstone"
       name: "<#A10404><bold>Paramètres du Parkour"
@@ -118,7 +121,12 @@ settings:
       
       styles:
         name: "<white>Styles"
-        
+
+        style_item:
+          material: ""
+          name: "<white><bold>%s"
+          lore: ""
+
         item:
           material: "crafting_table"
           name: "<#6693E7><bold>Style"
@@ -138,7 +146,7 @@ settings:
         material: ""
         name: "<#6693E7><bold>Difficulté des schématique"
         lore: "<#5574AF>Pour le moment: <gray>%s||<gray>La difficulté des schématique"
-        values: [ "simple", "moyen", "dur", "très dur" ]
+        values: ["simple", "moyen", "dur", "très dur"]
       
       schematic_use:
         material: ""

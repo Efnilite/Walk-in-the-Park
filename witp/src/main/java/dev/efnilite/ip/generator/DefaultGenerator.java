@@ -805,7 +805,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                 }
             }
             case 1 -> {
-                File folder = new File(IP.getPlugin().getDataFolder() + "/schematics/");
+                File folder = IP.getInFolder("schematics");
                 List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
                 File file = null;
                 if (!files.isEmpty()) {
