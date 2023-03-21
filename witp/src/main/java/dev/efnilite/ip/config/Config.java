@@ -67,7 +67,7 @@ public enum Config {
         Task.create(IP.getPlugin()).async().execute(() -> {
             try {
                 for (String schematic : schematics) {
-                    Path path = Paths.get(folder + "/" + schematic);
+                    Path path = Paths.get(folder.toString(), schematic);
                     if (path.toFile().exists()) {
                         continue;
                     }
@@ -77,7 +77,7 @@ public enum Config {
                     stream.close();
                 }
                 for (int i = 1; i <= structureCount; i++) {
-                    Path path = Paths.get(folder + "parkour-" + i + ".witp");
+                    Path path = Paths.get(folder.toString(), "parkour-%d.witp".formatted(i));
                     if (path.toFile().exists()) {
                         continue;
                     }
@@ -158,8 +158,6 @@ public enum Config {
      * @return True when path exists, false if not.
      */
     public boolean isPath(@NotNull String path) {
-        check(path);
-
         return fileConfiguration.isSet(path);
     }
 

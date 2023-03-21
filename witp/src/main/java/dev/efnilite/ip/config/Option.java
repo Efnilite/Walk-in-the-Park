@@ -70,8 +70,10 @@ public class Option {
         DELETE_ON_RELOAD = Config.CONFIG.getBoolean("world.delete-on-reload");
         WORLD_NAME = Config.CONFIG.getString("world.name");
 
-        if (!WORLD_NAME.matches("[a-zA-Z0-9/._-]+")) {
-            IP.logging().stack("Invalid world name!", "world names need to match regex \"[a-zA-Z0-9/._-]+\"");
+        if (!WORLD_NAME.matches("[a-zA-Z0-9_-]+")) {
+            IP.logging().stack("Invalid world name: %s".formatted(WORLD_NAME), "world names need to contain only a-z, A-Z, 0-9, _ or -.");
+
+            WORLD_NAME = "witp";
         }
 
         // Options
@@ -95,23 +97,21 @@ public class Option {
 
         String prefix = "default-values";
         for (ParkourOption option : options) {
-            String path = prefix + "." + option.getPath();
+            String parent = "%s.%s".formatted(prefix, option.getPath());
+
+            // register enabled value
+            OPTIONS_ENABLED.put(option, Config.CONFIG.getBoolean("%s.enabled".formatted(parent)));
 
             // register default value
-            Object value = Config.CONFIG.get(path + ".default");
+            if (!Config.CONFIG.isPath("%s.default".formatted(parent))) {
+                continue;
+            }
+
+            Object value = Config.CONFIG.get("%s.default".formatted(parent));
 
             if (value != null) {
                 OPTIONS_DEFAULTS.put(option, value);
             }
-
-            // register enabled value
-            boolean enabled = true;
-
-            if (Config.CONFIG.isPath("%s.enabled".formatted(path))) {
-                enabled = Config.CONFIG.getBoolean("%s.enabled".formatted(path));
-            }
-
-            OPTIONS_ENABLED.put(option, enabled);
         }
 
         // =====================================
@@ -123,7 +123,7 @@ public class Option {
         POSSIBLE_LEADS = Config.CONFIG.getIntList("options.leads.amount");
         for (int lead : new ArrayList<>(POSSIBLE_LEADS)) {
             if (lead < 1 || lead > 128) {
-                IP.logging().error("Invalid lead in config: found " + lead + ", should be above 1 and below 128 to prevent lag on spawn.");
+                IP.logging().error("Invalid lead: %d. Should be above 1 and below 128.".formatted(lead));
                 POSSIBLE_LEADS.remove((Object) lead);
             }
         }
@@ -151,13 +151,17 @@ public class Option {
     }
 
     private static Location parseLocation(String location) {
-        String[] values = location.replaceAll("[()]", "").replace(", ", " ").replace(",", " ").split(" ");
+        String[] values = location.replaceAll("[()]", "")
+                .replaceAll("[, ]", " ")
+                .split(" ");
+
         World world = Bukkit.getWorld(values[3]);
+
         if (world == null) {
-            IP.logging().error("Detected an invalid world: " + values[3]);
-            return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+            world = Bukkit.getWorlds().get(0);
         }
-        return new Location(Bukkit.getWorld(values[3]), Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+
+        return new Location(world, Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
     }
 
     public static ParticleShape PARTICLE_SHAPE;
@@ -172,24 +176,16 @@ public class Option {
         try {
             SOUND_TYPE = Sound.valueOf(value);
         } catch (IllegalArgumentException ex) {
-            try {
-                SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
-            } catch (IllegalArgumentException ex2) {
-                IP.logging().error("Invalid sound: " + value);
-                SOUND_TYPE = Sound.values()[0];
-            }
+            SOUND_TYPE = Sound.valueOf("BLOCK_NOTE_PLING");
+            IP.logging().error("Invalid sound: %s".formatted(value));
         }
 
         value = Config.CONFIG.getString("particles.particle-type");
         try {
             PARTICLE_TYPE = Particle.valueOf(value);
         } catch (IllegalArgumentException ex) {
-            try {
-                PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
-            } catch (IllegalArgumentException ex2) {
-                IP.logging().error("Invalid particle: " + value);
-                PARTICLE_TYPE = Particle.values()[0];
-            }
+            PARTICLE_TYPE = Particle.valueOf("SPELL_INSTANT");
+            IP.logging().error("Invalid particle type: %s".formatted(value));
         }
 
         SOUND_PITCH = Config.CONFIG.getInt("particles.sound-pitch");
@@ -265,11 +261,10 @@ public class Option {
         MIN_Y = Config.GENERATION.getInt("generation.settings.min-y");
 
         if (MIN_Y >= MAX_Y) {
-            IP.logging().stack("Provided minimum y is the same or larger than maximum y!", "check your generation.yml file");
-
-            // prevent plugin breakage
             MIN_Y = 100;
             MAX_Y = 200;
+
+            IP.logging().stack("Provided minimum y is the same or larger than maximum y!", "check your generation.yml file");
         }
     }
 

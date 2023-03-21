@@ -45,10 +45,10 @@ public class Locales {
         Task.create(plugin).async().execute(() -> {
             locales.clear();
 
-            FileConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
+            FileConfiguration embedded = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
             // get all nodes from the plugin's english resource, aka the most updated version
-            resourceNodes = Util.getChildren(resource, "", true);
+            resourceNodes = Util.getChildren(embedded, "", true);
 
             File folder = IP.getInFolder("locales");
 
@@ -64,6 +64,8 @@ public class Locales {
                 plugin.saveResource("locales/en.yml", false);
                 plugin.saveResource("locales/nl.yml", false);
                 plugin.saveResource("locales/fr.yml", false);
+                plugin.saveResource("locales/ja.yml", false);
+                plugin.saveResource("locales/zh_cn.yml", false);
             }
 
             // get all files in locales folder
@@ -75,7 +77,7 @@ public class Locales {
                     String locale = file.getName().split("\\.")[0];
 
                     FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-                    validate(resource, config, file);
+                    validate(embedded, config, file);
 
                     locales.put(locale, config);
                 });
@@ -95,16 +97,16 @@ public class Locales {
                 continue;
             }
 
-            IP.logging().info("Fixing missing config node '" + node + "'");
+            IP.logging().info("Fixing missing config node %s (%s)".formatted(node, localPath.getName()));
 
-            Object providedValue = provided.get(node);
-            user.set(node, providedValue);
+            user.set(node, provided.get(node));
         }
 
         try {
             user.save(localPath);
-        } catch (IOException throwable) {
-            IP.logging().stack("Error while trying to save fixed config file " + localPath, "delete this file and restart your server", throwable);
+        } catch (IOException ex) {
+            IP.logging().stack("Error while trying to save fixed config file %s".formatted(localPath),
+                    "delete this file and restart your server", ex);
         }
     }
 

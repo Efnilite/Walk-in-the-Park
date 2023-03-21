@@ -1,9 +1,7 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -12,11 +10,8 @@ import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.vector.Vector2D;
 import dev.efnilite.vilib.vector.Vector3D;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -25,7 +20,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Divides the Parkour world into sections so there can be an infinite amount of players in 1 world.
@@ -202,72 +200,7 @@ public class WorldDivider {
             defaultGenerator.generateFirst(to.clone(), parkourBegin.clone());
         }
 
-        // setup inventory, etc.
-        setup(pp, to, true);
-    }
-
-    public void setup(ParkourPlayer pp, Location to, boolean runGenerator) {
-        Player player = pp.player;
-
-        if (to != null) {
-            pp.teleport(to);
-        }
-        player.setGameMode(GameMode.ADVENTURE);
-
-        // -= Inventory =-
-        if (Option.INVENTORY_HANDLING) {
-            Task.create(IP.getPlugin()).delay(5).execute(() -> {
-                List<Item> items = new ArrayList<>();
-
-                player.getInventory().clear();
-
-                if (ParkourOption.PLAY.check(player)) {
-                    items.add(0, Locales.getItem(pp.getLocale(), "play.item"));
-                }
-
-                if (ParkourOption.COMMUNITY.check(player)) {
-                    items.add(items.size(), Locales.getItem(pp.getLocale(), "community.item"));
-                }
-
-                if (ParkourOption.SETTINGS.check(player)) {
-                    items.add(items.size(), Locales.getItem(pp.getLocale(), "settings.item"));
-                }
-
-                if (ParkourOption.LOBBY.check(player)) {
-                    items.add(items.size(), Locales.getItem(pp.getLocale(), "lobby.item"));
-                }
-
-                items.add(items.size(), Locales.getItem(pp.getLocale(), "other.quit"));
-
-                List<Integer> slots = getEvenlyDistributedSlots(items.size());
-                for (int i = 0; i < items.size(); i++) {
-                    player.getInventory().setItem(slots.get(i), items.get(i).build());
-                }
-            }).run();
-        }
-
-        if (!Option.INVENTORY_HANDLING) {
-            pp.sendTranslated("other.customize");
-        }
-
-        if (runGenerator) {
-            pp.getGenerator().startTick();
-        }
-    }
-
-    private List<Integer> getEvenlyDistributedSlots(int amountInRow) {
-        return switch (amountInRow) {
-            case 0 -> Collections.emptyList();
-            case 1 -> Collections.singletonList(4);
-            case 2 -> Arrays.asList(3, 5);
-            case 3 -> Arrays.asList(3, 4, 5);
-            case 4 -> Arrays.asList(2, 3, 5, 6);
-            case 5 -> Arrays.asList(2, 3, 4, 5, 6);
-            case 6 -> Arrays.asList(1, 2, 3, 5, 6, 7);
-            case 7 -> Arrays.asList(1, 2, 3, 4, 5, 6, 7);
-            case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
-            default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
-        };
+        pp.setupInventory(spawn, true);
     }
 
     /**

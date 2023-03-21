@@ -250,6 +250,7 @@ scoreboard:
 other:
 
   no_do: "<gray>你现在不能做这个。"
+  no_teleporting: "<white>You can''t enter the parkour world by teleporting!"
   customize: "<gray>使用 \"/parkour\" 自定义你的跑酷"
 
   quit:

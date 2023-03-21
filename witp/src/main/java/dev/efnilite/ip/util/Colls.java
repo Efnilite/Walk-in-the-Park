@@ -9,6 +9,26 @@ import java.util.function.Function;
 public final class Colls {
 
     /**
+     * Returns all items in coll where f returns true.
+     *
+     * @param f    The function to apply.
+     * @param coll The collection.
+     * @param <T>  The type.
+     * @return coll where each item returns true when f is applied.
+     */
+    public static <T> List<T> filter(Function<T, Boolean> f, List<T> coll) {
+        List<T> newColl = new ArrayList<>();
+
+        for (T item : coll) {
+            if (f.apply(item)) {
+                newColl.add(item);
+            }
+        }
+
+        return newColl;
+    }
+
+    /**
      * Applies function f to each item in coll.
      *
      * @param f    The function to apply to each item in collection.

@@ -51,35 +51,33 @@ public class Leaderboard {
 
     public Leaderboard(@NotNull String gamemode) {
         this.gamemode = gamemode.toLowerCase();
-        this.file = FOLDER + gamemode.toLowerCase() + ".json";
+        this.file = "%s/%s.json".formatted(FOLDER, gamemode.toLowerCase());
 
         if (Option.SQL) {
             IP.getSqlManager().validateConnection();
 
-            IP.getSqlManager().sendQuery(
-                """
-                USE `%s`;
-                """
-            .formatted(Option.SQL_DB));
+            IP.getSqlManager().sendQuery("""
+                    USE `%s`;
+                    """.formatted(Option.SQL_DB));
 
-            IP.getSqlManager().sendQuery(
-                """
-                CREATE TABLE IF NOT EXISTS `%s`
-                (
-                    uuid       CHAR(36) NOT NULL PRIMARY KEY,
-                    name       VARCHAR(16),
-                    time       VARCHAR(16),
-                    difficulty VARCHAR(3),
-                    score      INT
-                )
-                CHARSET = utf8 ENGINE = InnoDB;
-                """
-            .formatted(getTableName()));
+            IP.getSqlManager().sendQuery("""
+                    CREATE TABLE IF NOT EXISTS `%s`
+                    (
+                        uuid       CHAR(36) NOT NULL PRIMARY KEY,
+                        name       VARCHAR(16),
+                        time       VARCHAR(16),
+                        difficulty VARCHAR(3),
+                        score      INT
+                    )
+                    CHARSET = utf8 ENGINE = InnoDB;
+                    """.formatted(getTableName()));
 
         } else {
             File file = new File(this.file);
+
             if (!file.exists()) {
-                File folder = new File(file.getParent());
+                File folder = new File(FOLDER);
+
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
@@ -87,7 +85,8 @@ public class Leaderboard {
                 try {
                     file.createNewFile();
                 } catch (IOException ex) {
-                    IP.logging().stack("Error while creating leaderboard file", "delete leaderboard file for " + file + " and restart your server", ex);
+                    IP.logging().stack("Error while creating leaderboard file",
+                            "delete leaderboard file %s and restart your server".formatted(file), ex);
                 }
             }
         }
@@ -110,19 +109,13 @@ public class Leaderboard {
     public void write(boolean async) {
         if (Option.SQL) {
             if (async) {
-                Task.create(IP.getPlugin())
-                        .async()
-                        .execute(this::_writeSql)
-                        .run();
+                Task.create(IP.getPlugin()).async().execute(this::_writeSql).run();
             } else {
                 _writeSql();
             }
         } else {
             if (async) {
-                Task.create(IP.getPlugin())
-                        .async()
-                        .execute(this::_writeFile)
-                        .run();
+                Task.create(IP.getPlugin()).async().execute(this::_writeFile).run();
             } else {
                 _writeFile();
             }
@@ -141,18 +134,15 @@ public class Leaderboard {
             }
 
             // insert all
-            IP.getSqlManager().sendQuery(
-                """
-                INSERT INTO `%s`
-                (uuid, name, time, difficulty, score)
-                VALUES
-                ('%s', '%s', '%s', '%s', %d)
-                ON DUPLICATE KEY UPDATE
-                name = '%s', time = '%s', difficulty = '%s', score = %d;
-                """
-            .formatted(getTableName(),
-                    uuid.toString(), score.name(), score.time(), score.difficulty(), score.score(),
-                    score.name(), score.time(), score.difficulty(), score.score()));
+            IP.getSqlManager().sendQuery("""
+                    INSERT INTO `%s`
+                    (uuid, name, time, difficulty, score)
+                    VALUES
+                    ('%s', '%s', '%s', '%s', %d)
+                    ON DUPLICATE KEY UPDATE
+                    name = '%s', time = '%s', difficulty = '%s', score = %d;
+                    """.formatted(getTableName(), uuid.toString(), score.name(), score.time(), score.difficulty(),
+                    score.score(), score.name(), score.time(), score.difficulty(), score.score()));
         }
     }
 
@@ -169,8 +159,7 @@ public class Leaderboard {
 
             writer.flush();
         } catch (IOException ex) {
-            IP.logging().stack(
-                    "Error while trying to write to leaderboard file " + gamemode,
+            IP.logging().stack("Error while trying to write to leaderboard file %s".formatted(gamemode),
                     "reload/restart your server", ex);
         }
     }
@@ -181,19 +170,13 @@ public class Leaderboard {
     public void read(boolean async) {
         if (Option.SQL) {
             if (async) {
-                Task.create(IP.getPlugin())
-                        .async()
-                        .execute(this::_readSql)
-                        .run();
+                Task.create(IP.getPlugin()).async().execute(this::_readSql).run();
             } else {
                 _readSql();
             }
         } else {
             if (async) {
-                Task.create(IP.getPlugin())
-                        .async()
-                        .execute(this::_readFile)
-                        .run();
+                Task.create(IP.getPlugin()).async().execute(this::_readFile).run();
             } else {
                 _readFile();
             }
@@ -233,9 +216,7 @@ public class Leaderboard {
 
             scores.putAll(copy);
         } catch (SQLException ex) {
-            IP.logging().stack(
-                    "Error while trying to read SQL leaderboard data",
-                    "restart/reload your server", ex);
+            IP.logging().stack("Error while trying to read SQL leaderboard data", "restart/reload your server", ex);
         }
 
         sort();
@@ -273,9 +254,7 @@ public class Leaderboard {
                 scores.putAll(copy);
             }
         } catch (IOException ex) {
-            IP.logging().stack(
-                    "Error while trying to read leaderboard file " + gamemode,
-                    "send this file to the developer", ex);
+            IP.logging().stack("Error while trying to read leaderboard file %s".formatted(gamemode), "send this file to the developer", ex);
         }
 
         sort();
@@ -303,21 +282,17 @@ public class Leaderboard {
         scores.putAll(sorted);
 
         serialized.clear();
+
         for (UUID uuid : scores.keySet()) {
-            Score score = scores.get(uuid);
-            serialized.put(uuid, score.toString());
+            serialized.put(uuid, scores.get(uuid).toString());
         }
     }
 
     /**
      * Registers a new score, overriding the old one
      *
-     * @param   uuid
-     *          The player's uuid
-     *
-     * @param   score
-     *          The {@link Score} instance associated with a player's run
-     *
+     * @param uuid  The player's uuid
+     * @param score The {@link Score} instance associated with a player's run
      * @return the previous score, if there was one
      */
     @Nullable
@@ -334,9 +309,7 @@ public class Leaderboard {
     /**
      * Resets the score of a player by deleting it from the internal map
      *
-     * @param   uuid
-     *          The UUID
-     *
+     * @param uuid The UUID
      * @return the previous value if one was found
      */
     @Nullable
@@ -358,9 +331,7 @@ public class Leaderboard {
     /**
      * Returns a {@link Score} associated with a UUID
      *
-     * @param   uuid
-     *          The UUID
-     *
+     * @param uuid The UUID
      * @return the highest {@link Score} instance associated with the given UUID
      */
     @Nullable
@@ -371,9 +342,7 @@ public class Leaderboard {
     /**
      * Gets the rank of the provided UUID
      *
-     * @param   uuid
-     *          The UUID
-     *
+     * @param uuid The UUID
      * @return the
      */
     public int getRank(@NotNull UUID uuid) {
@@ -384,9 +353,7 @@ public class Leaderboard {
      * Gets the score at a specified rank.
      * Ranks start at 1.
      *
-     * @param   rank
-     *          The rank
-     *
+     * @param rank The rank
      * @return the {@link Score} instance, null if one isn't found
      */
     @Nullable
@@ -409,6 +376,7 @@ public class Leaderboard {
 
     /**
      * Returns the gamemode of this leaderboard
+     *
      * @return the gamemode of this leaderboard
      */
     @NotNull
@@ -420,6 +388,6 @@ public class Leaderboard {
      * return the table name
      */
     private String getTableName() {
-        return Option.SQL_PREFIX + "leaderboard-" + gamemode;
+        return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, gamemode);
     }
 }

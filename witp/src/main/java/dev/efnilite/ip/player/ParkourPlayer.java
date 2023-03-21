@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
@@ -13,8 +14,11 @@ import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
+import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Task;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
@@ -346,6 +347,68 @@ public class ParkourPlayer extends ParkourUser {
             setGenerator(new DefaultGenerator(SingleSession.create(this, Gamemodes.DEFAULT)));
         }
         return generator;
+    }
+
+    public void setupInventory(Location to, boolean runGenerator) {
+        if (to != null) {
+            teleport(to);
+        }
+        player.setGameMode(GameMode.ADVENTURE);
+
+        // -= Inventory =-
+        if (Option.INVENTORY_HANDLING) {
+            Task.create(IP.getPlugin()).delay(5).execute(() -> {
+                List<Item> items = new ArrayList<>();
+
+                player.getInventory().clear();
+
+                if (ParkourOption.PLAY.check(player)) {
+                    items.add(0, Locales.getItem(getLocale(), "play.item"));
+                }
+
+                if (ParkourOption.COMMUNITY.check(player)) {
+                    items.add(items.size(), Locales.getItem(getLocale(), "community.item"));
+                }
+
+                if (ParkourOption.SETTINGS.check(player)) {
+                    items.add(items.size(), Locales.getItem(getLocale(), "settings.item"));
+                }
+
+                if (ParkourOption.LOBBY.check(player)) {
+                    items.add(items.size(), Locales.getItem(getLocale(), "lobby.item"));
+                }
+
+                items.add(items.size(), Locales.getItem(getLocale(), "other.quit"));
+
+                List<Integer> slots = getEvenlyDistributedSlots(items.size());
+                for (int i = 0; i < items.size(); i++) {
+                    player.getInventory().setItem(slots.get(i), items.get(i).build());
+                }
+            }).run();
+        }
+
+        if (!Option.INVENTORY_HANDLING) {
+            sendTranslated("other.customize");
+        }
+
+        if (runGenerator) {
+            getGenerator().startTick();
+        }
+    }
+
+    private List<Integer> getEvenlyDistributedSlots(int amountInRow) {
+        return switch (amountInRow) {
+            case 0 -> Collections.emptyList();
+            case 1 -> Collections.singletonList(4);
+            case 2 -> Arrays.asList(3, 5);
+            case 3 -> Arrays.asList(3, 4, 5);
+            case 4 -> Arrays.asList(2, 3, 5, 6);
+            case 5 -> Arrays.asList(2, 3, 4, 5, 6);
+            case 6 -> Arrays.asList(1, 2, 3, 5, 6, 7);
+            case 7 -> Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+            case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
+            default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
+        };
     }
 
     public void setGenerator(ParkourGenerator generator) {
