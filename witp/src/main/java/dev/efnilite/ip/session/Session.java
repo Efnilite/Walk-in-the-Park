@@ -19,8 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * switching between gamemodes. This class may include multiple players, or just one.
  * These are referred to as 'Lobbies' in game, to make it easier for players to understand their function.
  *
- * @since v3.0.3
  * @author Efnilite
+ * @since v3.0.3
  */
 public interface Session {
 
@@ -32,16 +32,14 @@ public interface Session {
     /**
      * Adds spectator(s).
      *
-     * @param   spectators
-     *          The spectator(s) to be added.
+     * @param spectators The spectator(s) to be added.
      */
     void addSpectators(ParkourSpectator... spectators);
 
     /**
      * Removes spectator(s).
      *
-     * @param   spectators
-     *          The spectator(s) to be removed.
+     * @param spectators The spectator(s) to be removed.
      */
     void removeSpectators(ParkourSpectator... spectators);
 
@@ -62,16 +60,14 @@ public interface Session {
     /**
      * Adds player(s).
      *
-     * @param   players
-     *          The player(s) to be added.
+     * @param players The player(s) to be added.
      */
     void addPlayers(ParkourPlayer... players);
 
     /**
      * Removes player(s).
      *
-     * @param   players
-     *          The player(s) to be removed.
+     * @param players The player(s) to be removed.
      */
     void removePlayers(ParkourPlayer... players);
 
@@ -99,42 +95,36 @@ public interface Session {
     /**
      * Sets the Session visibility.
      *
-     * @param   visibility
-     *          The visibility.
+     * @param visibility The visibility.
      */
-    void setVisibility(SessionVisibility visibility);
+    void setVisibility(Session2.Visibility visibility);
 
     /**
      * Returns the Session visibility.
      *
-     * @see SessionVisibility
-     *
      * @return the Session visibility.
+     * @see Session2.Visibility
      */
-    SessionVisibility getVisibility();
+    Session2.Visibility getVisibility();
 
     /**
      * Returns the {@link Gamemode} of this Session.
      *
      * @return the {@link Gamemode} of this Session.
      */
-    @NotNull
-    Gamemode getGamemode();
+    @NotNull Gamemode getGamemode();
 
     /**
      * Sets this Session's current {@link Gamemode}.
      *
-     * @param   gamemode
-     *          The {@link Gamemode}
+     * @param gamemode The {@link Gamemode}
      */
     void setGamemode(@NotNull Gamemode gamemode);
 
     /**
      * Returns whether the specified user is muted.
      *
-     * @param   user
-     *          The user
-     *
+     * @param user The user
      * @return true if muted, false if unmuted.
      */
     boolean isMuted(@NotNull ParkourUser user);
@@ -142,11 +132,8 @@ public interface Session {
     /**
      * Sets whether the specified player is muted in this session.
      *
-     * @param   user
-     *          The player
-     *
-     * @param   value
-     *          The value
+     * @param user  The player
+     * @param value The value
      */
     void setMuted(@NotNull ParkourUser user, boolean value);
 
@@ -157,8 +144,7 @@ public interface Session {
      * overriding this method is most effective.
      * Does not preserve {@link dev.efnilite.ip.player.data.PreviousData}.
      *
-     * @param   player
-     *          The player to force to join
+     * @param player The player to force to join
      */
     default void join(Player player) {
         if (isAcceptingPlayers()) {
@@ -208,9 +194,7 @@ public interface Session {
     /**
      * Checks if a Session is currently registered.
      *
-     * @param   id
-     *          The id of the Session.
-     *
+     * @param id The id of the Session.
      * @return true if the Session is active. False if not.
      */
     static boolean isActive(String id) {
@@ -220,9 +204,7 @@ public interface Session {
     /**
      * Returns a Session based on the Session's id.
      *
-     * @param   id
-     *          The id. A 6-character string.
-     *
+     * @param id The id. A 6-character string.
      * @return the Session instance. Null if not found.
      */
     static @Nullable Session getSession(String id) {

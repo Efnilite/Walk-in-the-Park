@@ -23,11 +23,13 @@ import java.util.*;
 public class SingleSession implements Session {
 
     protected Gamemode gamemode;
-    protected SessionVisibility visibility = SessionVisibility.PUBLIC;
+    protected Session2.Visibility visibility = Session2.Visibility.PUBLIC;
     protected final String sessionId = generateSessionId();
     protected final List<ParkourUser> muted = new ArrayList<>();
     protected final Map<UUID, ParkourPlayer> players = new LinkedHashMap<>();
     protected final Map<UUID, ParkourSpectator> spectators = new LinkedHashMap<>();
+
+    private SingleSession() {}
 
     public static Session create(@NotNull ParkourPlayer player, @NotNull Gamemode gamemode) {
         // create session
@@ -93,7 +95,7 @@ public class SingleSession implements Session {
 
     @Override
     public boolean isAcceptingSpectators() {
-        return visibility == SessionVisibility.PUBLIC;
+        return visibility == Session2.Visibility.PUBLIC;
     }
 
     @Override
@@ -136,12 +138,12 @@ public class SingleSession implements Session {
     }
 
     @Override
-    public void setVisibility(SessionVisibility visibility) {
+    public void setVisibility(Session2.Visibility visibility) {
         this.visibility = visibility;
     }
 
     @Override
-    public SessionVisibility getVisibility() {
+    public Session2.Visibility getVisibility() {
         return visibility;
     }
 

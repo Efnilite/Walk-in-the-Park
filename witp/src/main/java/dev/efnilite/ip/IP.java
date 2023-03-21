@@ -39,7 +39,7 @@ import java.io.File;
  * Main class of Infinite Parkour
  *
  * @author Efnilite
- * Copyright (c) 2020-2022
+ * Copyright (c) 2020-2023
  */
 public final class IP extends ViPlugin {
 

@@ -6,7 +6,7 @@ import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.SessionVisibility;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleInAnimation;
@@ -48,7 +48,7 @@ public class LobbyMenu extends DynamicMenu {
                         ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                         if (u != null) {
-                            u.getSession().setVisibility(SessionVisibility.PUBLIC);
+                            u.getSession().setVisibility(Session2.Visibility.PUBLIC);
                         }
 
                         return true;
@@ -57,7 +57,7 @@ public class LobbyMenu extends DynamicMenu {
                         ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                         if (u != null) {
-                            u.getSession().setVisibility(SessionVisibility.ID_ONLY);
+                            u.getSession().setVisibility(Session2.Visibility.ID_ONLY);
                         }
 
                         return true;
@@ -66,7 +66,7 @@ public class LobbyMenu extends DynamicMenu {
                         ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                         if (u != null) {
-                            u.getSession().setVisibility(SessionVisibility.PRIVATE);
+                            u.getSession().setVisibility(Session2.Visibility.PRIVATE);
                         }
 
                         return true;

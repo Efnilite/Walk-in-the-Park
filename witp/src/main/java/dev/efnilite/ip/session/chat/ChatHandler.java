@@ -22,7 +22,7 @@ public class ChatHandler implements Listener {
 
         ParkourUser user = ParkourUser.getUser(sender);
 
-        if (!((boolean) Option.OPTIONS_ENABLED.get(ParkourOption.CHAT)) || user == null || user.getSession() == null) {
+        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT) || user == null || user.getSession() == null) {
             return;
         }
 
