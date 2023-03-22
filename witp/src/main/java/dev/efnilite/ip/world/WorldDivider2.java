@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>Divides the parkour world in sections, each with an active session.</p>
+ * <p>Iteration 2.</p>
+ * @author Efnilite
+ * @since v5.0.0
+ */
 public class WorldDivider2 {
 
     public static final Map<Integer, Session2> SESSIONS = new HashMap<>();

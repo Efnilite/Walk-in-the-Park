@@ -4,15 +4,18 @@ import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.world.WorldDivider2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
- * A session is bound to a {@link dev.efnilite.ip.world.WorldDivider} section.
- * It manages all players, all spectators, visibility, the generator, etc.
- * <p>
- * Iteration 2.
+ * <p>A session is bound to a {@link dev.efnilite.ip.world.WorldDivider} section.
+ * It manages all players, all spectators, visibility, the generator, etc.</p>
+ * <p>Iteration 2.</p>
+ * @author Efnilite
+ * @since v5.0.0
  */
 public class Session2 {
 
@@ -22,9 +25,19 @@ public class Session2 {
     public ParkourGenerator generator;
 
     /**
-     * The visibility of this session.
+     * The visibility of this session. Default public.
      */
     public Visibility visibility = Visibility.PUBLIC;
+
+    /**
+     * Function that takes the current session and returns whether new players should be accepted.
+     */
+    public Function<Session2, Boolean> isAcceptingPlayers = session -> false;
+
+    /**
+     * Function that takes the current session and returns whether new spectators should be accepted.
+     */
+    public Function<Session2, Boolean> isAcceptingSpectators = session -> session.visibility == Visibility.PUBLIC;
 
     /**
      * List of muted users.
@@ -40,6 +53,8 @@ public class Session2 {
      * List of spectators.
      */
     protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
+
+    private Session2() { }
 
     /**
      * Adds provided players to this session's player list.
@@ -62,15 +77,6 @@ public class Session2 {
         for (ParkourPlayer player : players) {
             this.players.remove(player.getUUID());
         }
-    }
-
-    /**
-     * Returns whether this session is accepting players.
-     *
-     * @return True if yes, false if no.
-     */
-    public boolean isAcceptingPlayers() {
-        return false;
     }
 
     /**
@@ -113,15 +119,6 @@ public class Session2 {
     }
 
     /**
-     * Returns whether this session is accepting spectators.
-     *
-     * @return True if yes, false if no.
-     */
-    public boolean isAcceptingSpectators() {
-        return visibility == Visibility.PUBLIC;
-    }
-
-    /**
      * Returns this session's spectators.
      *
      * @return The spectators.
@@ -158,5 +155,81 @@ public class Session2 {
          */
         PUBLIC,
 
+    }
+
+    /**
+     * Helper class for constructing a session.
+     */
+    public static class Builder {
+
+        private Function<Session2, Boolean> isAcceptingPlayers;
+        private Function<Session2, Boolean> isAcceptingSpectators;
+        private ParkourPlayer[] players;
+
+        /**
+         * Creates a new builder.
+         *
+         * @return A new builder instance.
+         */
+        public static Builder create() {
+            return new Builder();
+        }
+
+        /**
+         * Sets the accepting players function.
+         * @see Session2#isAcceptingPlayers
+         *
+         * @param f The function.
+         * @return This instance.
+         */
+        public Builder isAcceptingPlayers(Function<Session2, Boolean> f) {
+            isAcceptingPlayers = f;
+
+            return this;
+        }
+
+        /**
+         * Sets the accepting spectators function.
+         * @see Session2#isAcceptingSpectators
+         *
+         * @param f The function.
+         * @return This instance.
+         */
+        public Builder isAcceptingSpectators(Function<Session2, Boolean> f) {
+            isAcceptingSpectators = f;
+
+            return this;
+        }
+
+        /**
+         * Adds initial players.
+         * @see Session2#players
+         *
+         * @param p The players.
+         * @return This instance.
+         */
+        public Builder addPlayers(ParkourPlayer... p) {
+            players = p;
+
+            return this;
+        }
+
+        /**
+         * Builds a new session instance with the provided settings.
+         * Assigns the session with {@link WorldDivider2#associate(Session2)}.
+         *
+         * @return The constructed session.
+         */
+        public Session2 complete() {
+            Session2 session = new Session2();
+
+            if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
+            if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
+            if (players != null) session.addPlayers(players);
+
+            WorldDivider2.associate(session);
+
+            return session;
+        }
     }
 }

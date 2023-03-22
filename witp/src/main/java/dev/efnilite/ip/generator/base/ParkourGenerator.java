@@ -146,20 +146,4 @@ public abstract class ParkourGenerator {
      * Generates a block or blocks
      */
     public abstract void generate();
-
-    /**
-     * Updates the stopwatch time and visual time for the player
-     */
-    public void updateTime() {
-        session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
-    }
-
-    /**
-     * Gets the score of the player
-     *
-     * @return the score
-     */
-    public int getScore() {
-        return score;
-    }
 }

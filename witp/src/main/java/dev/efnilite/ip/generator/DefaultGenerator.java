@@ -162,7 +162,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             return;
         }
 
-        if (!profile.getValue("showScoreboard").asBoolean()) {
+        if (!profile.get("showScoreboard").asBoolean()) {
             return;
         }
 
@@ -218,7 +218,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
     @Override
     public void particles(List<Block> applyTo) {
-        if (profile.getValue("particles").asBoolean()) {
+        if (profile.get("particles").asBoolean()) {
             ParticleData<?> data = Option.PARTICLE_DATA;
 
             // display particle
@@ -251,7 +251,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         }
 
-        if (profile.getValue("sound").asBoolean()) {
+        if (profile.get("sound").asBoolean()) {
             // play sound
             for (ParkourPlayer viewer : session.getPlayers()) {
                 viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
@@ -264,7 +264,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
     @Override
     public BlockData selectBlockData() {
-        String style = profile.getValue("style").value();
+        String style = profile.get("style").value();
 
         Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
 
@@ -272,7 +272,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         if (material == null) {
             String newStyle = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).getStyles().keySet()).get(0);
 
-            profile.setSetting("style", newStyle);
+            profile.set("style", newStyle);
 
             return selectBlockData();
         } else {
@@ -542,7 +542,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             return;
         }
 
-        updateTime();
+        session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
         updateScoreboard();
 
         session.updateSpectators();
@@ -576,7 +576,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             }
             waitForSchematicCompletion = false;
             schematicCooldown = Option.SCHEMATIC_COOLDOWN;
-            generate(profile.getValue("blockLead").asInt());
+            generate(profile.get("blockLead").asInt());
             deleteStructure = true;
             return;
         }
@@ -597,7 +597,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         lastStandingPlayerLocation = playerLocation.clone();
 
-        int blockLead = profile.getValue("blockLead").asInt();
+        int blockLead = profile.get("blockLead").asInt();
 
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= blockLead) {
@@ -675,7 +675,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         int score = this.score;
         String time = stopwatch.toString();
 
-        if (profile.getValue("showFallMessage").asBoolean() && regenerate && time != null) {
+        if (profile.get("showFallMessage").asBoolean() && regenerate && time != null) {
             String message;
             int number = 0;
             if (score == record.score()) {
@@ -731,14 +731,14 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         int type = getRandomChance(defaultChances); // 0 = normal, 1 = structures, 2 = special
 
         if (type == 1) {
-            type = schematicCooldown == 0 && profile.getValue("useSchematic").asBoolean() ? type : Numbers.random(0, 2) * 2;
+            type = schematicCooldown == 0 && profile.get("useSchematic").asBoolean() ? type : Numbers.random(0, 2) * 2;
         }
 
         switch (type) {
             case 0, 2 -> {
                 BlockData next;
 
-                if (type == 2 && profile.getValue("useSpecialBlocks").asBoolean()) { // if special
+                if (type == 2 && profile.get("useSpecialBlocks").asBoolean()) { // if special
                     int value = getRandomChance(specialChances);
                     switch (value) {
                         // ice
@@ -795,10 +795,10 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                     boolean passed = true;
                     while (passed) {
                         file = files.get(random.nextInt(files.size()));
-                        if (profile.getValue("schematicDifficulty").asDouble() == 0) {
-                            profile.setSetting("schematicDifficulty", "0.2");
+                        if (profile.get("schematicDifficulty").asDouble() == 0) {
+                            profile.set("schematicDifficulty", "0.2");
                         }
-                        if (getDifficulty(file.getName()) < profile.getValue("schematicDifficulty").asDouble()) {
+                        if (getDifficulty(file.getName()) < profile.get("schematicDifficulty").asDouble()) {
                             passed = false;
                         }
                     }
@@ -944,6 +944,6 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         blockSpawn = block.clone();
         mostRecentBlock = block.clone();
 
-        generate(profile.getValue("blockLead").asInt() + 1);
+        generate(profile.get("blockLead").asInt() + 1);
     }
 }

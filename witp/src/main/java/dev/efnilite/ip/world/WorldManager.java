@@ -94,6 +94,9 @@ public abstract class WorldManager {
         }
     }
 
+    /**
+     * Multiverse world manager.
+     */
     public static class WorldManagerMV extends WorldManager {
 
         public static MVWorldManager MANAGER;
@@ -133,6 +136,9 @@ public abstract class WorldManager {
         }
     }
 
+    /**
+     * Minecraft world manager.
+     */
     public static class WorldManagerMC extends WorldManager {
 
         @Override

@@ -176,7 +176,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
         int one, two, three, four;
-        if (profile.getValue("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
+        if (profile.get("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
 
             if (score <= Option.MULTIPLIER) {
                 one = (int) (Option.NORMAL_ONE_BLOCK + (adaptiveDistanceChances.get(1) * score));

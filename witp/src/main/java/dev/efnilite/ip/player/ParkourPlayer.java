@@ -84,17 +84,17 @@ public class ParkourPlayer extends ParkourUser {
         Profile profile = generator.profile;
 
         profile
-                .setSetting("schematicDifficulty", schematicDifficulty.toString())
-                .setSetting("blockLead", blockLead.toString())
-                .setSetting("useScoreDifficulty", useScoreDifficulty.toString())
-                .setSetting("particles", particles.toString())
-                .setSetting("sound", sound.toString())
-                .setSetting("useSpecialBlocks", useSpecialBlocks.toString())
-                .setSetting("showFallMessage", showFallMessage.toString())
-                .setSetting("showScoreboard", showScoreboard.toString())
-                .setSetting("useSchematic", useSchematic.toString())
-                .setSetting("selectedTime", selectedTime.toString())
-                .setSetting("style", style);
+                .set("schematicDifficulty", schematicDifficulty.toString())
+                .set("blockLead", blockLead.toString())
+                .set("useScoreDifficulty", useScoreDifficulty.toString())
+                .set("particles", particles.toString())
+                .set("sound", sound.toString())
+                .set("useSpecialBlocks", useSpecialBlocks.toString())
+                .set("showFallMessage", showFallMessage.toString())
+                .set("showScoreboard", showScoreboard.toString())
+                .set("useSchematic", useSchematic.toString())
+                .set("selectedTime", selectedTime.toString())
+                .set("style", style);
     }
 
     public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty,
