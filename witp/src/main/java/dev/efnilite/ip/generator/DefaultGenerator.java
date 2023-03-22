@@ -136,8 +136,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     /**
      * Creates a new ParkourGenerator instance
      *
-     * @param   session
-     *          The session associated with this generator
+     * @param session The session associated with this generator
      */
     public DefaultGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);
@@ -197,7 +196,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%highscoretime%", rank.time())
                     .replace("%topscore%", Integer.toString(top.score()))
-                    .replace("%topplayer%", top.name()).replace("%session%", session.getSessionId()));
+                    .replace("%topplayer%", top.name())
+                    .replace("%session%", session.getSessionId()));
         }
 
         player.board.updateTitle(title
@@ -206,7 +206,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%highscoretime%", rank.time())
                 .replace("%topscore%", Integer.toString(top.score()))
-                .replace("%topplayer%", top.name()).replace("%session%", session.getSessionId()));
+                .replace("%topplayer%", top.name())
+                .replace("%session%", session.getSessionId()));
         player.board.updateLines(lines);
     }
 
@@ -297,15 +298,9 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * Based on this sideways movement, a value for forward movement will be chosen.
      * This is done to ensure players are able to complete the jump.
      *
-     * @param   current
-     *          The current location to check from.
-     *
-     * @param   range
-     *          The range that should be checked.
-     *
-     * @param   dy
-     *          The difference in height.
-     *
+     * @param current The current location to check from.
+     * @param range   The range that should be checked.
+     * @param dy      The difference in height.
      * @return a randomly selected block.
      */
     protected Block selectNext(Location current, int range, int dy) {
@@ -404,16 +399,19 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * @return a 2-dimensional array where the first array index is used to specify x, y and z and the second used to specify the type.
      */
     public double[][] calculateParameterization() {
+        Location min = zone[0];
+        Location max = zone[1];
+
         // the total dimensions
-        int dx = zone.getDimensions().getWidth();
-        int dy = zone.getDimensions().getHeight();
-        int dz = zone.getDimensions().getLength();
+        double dx = max.getX() - min.getX();
+        double dy = max.getY() - min.getY();
+        double dz = max.getZ() - min.getZ();
 
         // the relative x, y and z coordinates
         // relative being from the min point of the selection zone
-        double relativeX = mostRecentBlock.getX() - zone.getMinimumPoint().getX();
-        double relativeY = mostRecentBlock.getY() - zone.getMinimumPoint().getY();
-        double relativeZ = mostRecentBlock.getZ() - zone.getMinimumPoint().getZ();
+        double relativeX = mostRecentBlock.getX() - min.getX();
+        double relativeY = mostRecentBlock.getY() - min.getY();
+        double relativeZ = mostRecentBlock.getZ() - min.getZ();
 
         // get progress along axes
         // tx = 0 means that the player is at the same x coordinate as the min point (origin)
@@ -433,11 +431,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         double borderMarginY = (0.5 * safeDistance) / dy;
         double borderMarginZ = safeDistance / dz;
 
-        return new double[][] {
-                { tx, borderMarginX },
-                { ty, borderMarginY },
-                { tz, borderMarginZ }
-        };
+        return new double[][] {{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
     }
 
     /**
@@ -446,9 +440,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * the heading will automatically be turned around to ensure that the edge does not get
      * destroyed.
      *
-     * @param   progress
-     *          The 2-dimensional array resulting from {@link #calculateParameterization()}
-     *
+     * @param progress The 2-dimensional array resulting from {@link #calculateParameterization()}
      * @return a list of new proposed headings
      */
     public List<Vector3D> updateHeading(double[][] progress) {
@@ -487,12 +479,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * If the current height is within the border margin, it will return a value (1 or -1)
      * to make sure the player doesn't go below this value
      *
-     * @param   progress
-     *          The 2-dimensional array generated by {@link #calculateParameterization()}
-     *
-     * @param   currentHeight
-     *          The height the system wants to currently use
-     *
+     * @param progress      The 2-dimensional array generated by {@link #calculateParameterization()}
+     * @param currentHeight The height the system wants to currently use
      * @return the updated height
      */
     public int updateHeight(double[][] progress, int currentHeight) {
@@ -532,19 +520,16 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
     @Override
     public void startTick() {
-        task = Task.create(IP.getPlugin())
-                .repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
-                .execute(new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (stopped) {
-                            return;
-                        }
+        task = Task.create(IP.getPlugin()).repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK).execute(new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (stopped) {
+                    return;
+                }
 
-                        tick();
-                    }
-                })
-                .run();
+                tick();
+            }
+        }).run();
     }
 
     /**
@@ -647,8 +632,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     /**
      * Resets the parkour
      *
-     * @param   regenerate
-     *          false if this is the last reset (when the player leaves), true for resets by falling
+     * @param regenerate false if this is the last reset (when the player leaves), true for resets by falling
      */
     @Override
     public void reset(boolean regenerate) {
@@ -727,8 +711,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     }
 
     protected void registerScore() {
-        getGamemode().getLeaderboard().put(player.getUUID(),
-                new Score(player.getName(), stopwatch.toString(), player.calculateDifficultyScore(), score));
+        getGamemode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), stopwatch.toString(), player.calculateDifficultyScore(), score));
     }
 
     /**
@@ -845,7 +828,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
                 if (schematicBlocks == null || schematicBlocks.isEmpty()) {
                     IP.logging().error("0 blocks found in structure!");
-                    player.send("&cThere was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
+                    player.send("<red>There was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
                     reset(true);
                     return;
                 }
@@ -864,9 +847,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     /**
      * Gets the difficulty of a schematic according to schematics.yml
      *
-     * @param   fileName
-     *          The name of the file (parkour-x.nbt)
-     *
+     * @param fileName The name of the file (parkour-x.nbt)
      * @return the difficulty, ranging from 0 to 1
      */
     private double getDifficulty(String fileName) {
@@ -878,9 +859,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     /**
      * Generates a specific amount of blocks ahead of the player
      *
-     * @param   amount
-     *          The amount
-      */
+     * @param amount The amount
+     */
     public void generate(int amount) {
         for (int i = 0; i < amount; i++) {
             generate();
@@ -955,11 +935,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
     /**
      * Generates the first few blocks (which come off the spawn island)
      *
-     * @param   spawn
-     *          The spawn of the player
-     *
-     * @param   block
-     *          The location used to begin the parkour of off
+     * @param spawn The spawn of the player
+     * @param block The location used to begin the parkour of off
      */
     public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn.clone();

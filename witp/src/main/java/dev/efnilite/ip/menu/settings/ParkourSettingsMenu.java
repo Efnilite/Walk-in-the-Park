@@ -175,7 +175,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                                             .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                                     event -> {
                                         player.showScoreboard = true;
-                                        player.setBoard(new FastBoard(p));
+                                        player.board = new FastBoard(p);
                                         player.getGenerator().updateScoreboard();
 
                                         player.updateGeneratorSettings();
@@ -575,7 +575,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
-        if (player.getGenerator().getScore() > 0) {
+        if (player.getGenerator().score > 0) {
             event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.getLocale(), "settings.parkour_settings.items.no_change")
                     .click((event1) -> {
 

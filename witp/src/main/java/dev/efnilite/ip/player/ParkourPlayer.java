@@ -15,7 +15,6 @@ import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -59,11 +58,6 @@ public class ParkourPlayer extends ParkourUser {
     protected File file;
 
     /**
-     * The instant in ms in which the player joined.
-     */
-    protected final long joinTime;
-
-    /**
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link ParkourPlayer#register(Player)} instead
      */
@@ -71,7 +65,6 @@ public class ParkourPlayer extends ParkourUser {
         super(player, previousData);
 
         this.uuid = player.getUniqueId();
-        this.joinTime = System.currentTimeMillis();
 
         this.file = IP.getInFolder("players/%s.json".formatted(uuid.toString()));
 
@@ -88,7 +81,7 @@ public class ParkourPlayer extends ParkourUser {
      * Forces this player's generator to match the settings of this player.
      */
     public void updateGeneratorSettings() {
-        Profile profile = generator.getProfile();
+        Profile profile = generator.profile;
 
         profile
                 .setSetting("schematicDifficulty", schematicDifficulty.toString())
@@ -417,13 +410,5 @@ public class ParkourPlayer extends ParkourUser {
         updateGeneratorSettings();
 
         generator.updatePreferences();
-    }
-
-    public void setBoard(FastBoard board) {
-        this.board = board;
-    }
-
-    public long getJoinTime() {
-        return joinTime;
     }
 }

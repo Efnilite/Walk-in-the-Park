@@ -245,33 +245,35 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
+        boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+                && event.getHand() == EquipmentSlot.HAND;
 
-        if (action && System.currentTimeMillis() - pp.getJoinTime() > 1000) {
-            Material held = getHeldItem(player).getType();
+        if (!action) {
+            return;
+        }
+        Material held = getHeldItem(player).getType();
 
-            Material play = Locales.getItem(player, "play.item").getMaterial();
-            Material community = Locales.getItem(player, "community.item").getMaterial();
-            Material settings = Locales.getItem(player, "settings.item").getMaterial();
-            Material lobby = Locales.getItem(player, "lobby.item").getMaterial();
-            Material quit = Locales.getItem(player, "other.quit").getMaterial();
+        Material play = Locales.getItem(player, "play.item").getMaterial();
+        Material community = Locales.getItem(player, "community.item").getMaterial();
+        Material settings = Locales.getItem(player, "settings.item").getMaterial();
+        Material lobby = Locales.getItem(player, "lobby.item").getMaterial();
+        Material quit = Locales.getItem(player, "other.quit").getMaterial();
 
-            if (held == play) {
-                event.setCancelled(true);
-                Menus.PLAY.open(player);
-            } else if (held == community) {
-                event.setCancelled(true);
-                Menus.COMMUNITY.open(player);
-            } else if (held == settings) {
-                event.setCancelled(true);
-                Menus.SETTINGS.open(player);
-            } else if (held == lobby) {
-                event.setCancelled(true);
-                Menus.LOBBY.open(player);
-            } else if (held == quit) {
-                event.setCancelled(true);
-                ParkourUser.leave(player);
-            }
+        if (held == play) {
+            event.setCancelled(true);
+            Menus.PLAY.open(player);
+        } else if (held == community) {
+            event.setCancelled(true);
+            Menus.COMMUNITY.open(player);
+        } else if (held == settings) {
+            event.setCancelled(true);
+            Menus.SETTINGS.open(player);
+        } else if (held == lobby) {
+            event.setCancelled(true);
+            Menus.LOBBY.open(player);
+        } else if (held == quit) {
+            event.setCancelled(true);
+            ParkourUser.leave(player);
         }
     }
 

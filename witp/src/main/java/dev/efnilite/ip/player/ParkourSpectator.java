@@ -93,16 +93,16 @@ public class ParkourSpectator extends ParkourUser {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line
-                    .replace("%score%", Integer.toString(generator.getScore()))
-                    .replace("%time%", generator.getStopwatch().toString())
+                    .replace("%score%", Integer.toString(generator.score))
+                    .replace("%time%", generator.stopwatch.toString())
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
         }
 
         board.updateTitle(title
-                .replace("%score%", Integer.toString(generator.getScore()))
-                .replace("%time%", generator.getStopwatch().toString())
+                .replace("%score%", Integer.toString(generator.score))
+                .replace("%time%", generator.stopwatch.toString())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));

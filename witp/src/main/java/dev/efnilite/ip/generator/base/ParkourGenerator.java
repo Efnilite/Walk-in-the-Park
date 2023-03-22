@@ -3,10 +3,10 @@ package dev.efnilite.ip.generator.base;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.GeneratorOption;
 import dev.efnilite.ip.generator.profile.Profile;
-import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
 import dev.efnilite.vilib.vector.Vector3D;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
@@ -23,39 +23,39 @@ public abstract class ParkourGenerator {
     /**
      * This generator's score
      */
-    protected int score = 0;
+    public int score = 0;
 
     /**
      * The zone in which the parkour can take place. (playable area)
      */
-    protected Selection zone;
+    public Location[] zone;
 
     /**
      * The direction of the parkour
      */
-    protected Vector3D heading;
+    public Vector3D heading;
 
     /**
      * Generator options
      */
-    protected List<GeneratorOption> generatorOptions;
+    public List<GeneratorOption> generatorOptions;
 
     /**
      * The {@link Stopwatch} instance
      */
-    protected final Stopwatch stopwatch;
+    public final Stopwatch stopwatch;
 
     /**
      * The {@link Session} associated with this Generator.
      */
-    protected final Session session;
+    public final Session session;
 
     /**
      * This Generator's {@link Profile}.
      *
      * @see Profile
      */
-    protected final Profile profile;
+    public final Profile profile;
 
     /**
      * The random for this Thread, which is useful in randomly generating parkour
@@ -155,48 +155,11 @@ public abstract class ParkourGenerator {
     }
 
     /**
-     * Sets the current zone of this generator.
-     *
-     * @param   zone
-     *          The zone of this generator.
-     */
-    public void setZone(Selection zone) {
-        this.zone = zone;
-    }
-
-    /**
      * Gets the score of the player
      *
      * @return the score
      */
     public int getScore() {
         return score;
-    }
-
-    /**
-     * Gets the {@link Session} this Generator belongs to
-     *
-     * @return the {@link Session}
-     */
-    public Session getSession() {
-        return session;
-    }
-
-    /**
-     * Returns this Generator's {@link Stopwatch} instance
-     *
-     * @return the {@link Stopwatch instance}
-     */
-    public Stopwatch getStopwatch() {
-        return stopwatch;
-    }
-
-    /**
-     * Returns this Generator's {@link Profile} instance
-     *
-     * @return the {@link Profile} instance
-     */
-    public Profile getProfile() {
-        return profile;
     }
 }
