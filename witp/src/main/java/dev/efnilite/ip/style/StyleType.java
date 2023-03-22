@@ -30,26 +30,19 @@ public abstract class StyleType {
     }
 
     /**
-     * The internal name of the style type. Can be anything.
-     * Make sure it doesn't match another name.
-     *
-     * @return the internal name used for this type.
+     * @return The internal name used for this type. Must be unique.
      */
     public abstract String getName();
 
     /**
-     * Gets the item used in menus to show this style.
-     *
      * @param locale The locale of the menu, used to adjust the name.
-     * @return the item.
+     * @return The item used in menus to show this style.
      */
     public abstract @NotNull Item getItem(String locale);
 
     /**
-     * Gets a random material from a style
-     *
      * @param style The style from which a material should be picked
-     * @return A random material
+     * @return A random material from a style
      */
     @Nullable
     public abstract Material get(String style);

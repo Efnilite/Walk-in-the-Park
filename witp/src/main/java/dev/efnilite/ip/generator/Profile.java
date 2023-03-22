@@ -1,4 +1,4 @@
-package dev.efnilite.ip.generator.profile;
+package dev.efnilite.ip.generator;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,15 +19,16 @@ public class Profile {
     @NotNull
     public Profile set(@NotNull String setting, @NotNull String value) {
         settings.put(setting, new ProfileValue(value));
+
         return this;
     }
 
     @NotNull
     public ProfileValue get(@NotNull String setting) {
         ProfileValue value = settings.get(setting);
+
         return value == null ? new ProfileValue("") : value;
     }
-
 
     /**
      * Represents a setting.
@@ -37,16 +38,13 @@ public class Profile {
     public record ProfileValue(String value) {
 
         /**
-         * Returns true when the string value is "true".
-         *
-         * @return The value as true or false.
+         * @return true when the string value is "true", else "false".
          */
         public boolean asBoolean() {
             return value.equals("true"); // save parsing
         }
 
         /**
-         * Returns the value as a double.
          * @return The value as a double.
          */
         public double asDouble() {
@@ -54,8 +52,6 @@ public class Profile {
         }
 
         /**
-         * Returns the value as an int.
-         *
          * @return The value as an int.
          */
         public int asInt() {

@@ -2,7 +2,7 @@ package dev.efnilite.ip.generator.base;
 
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.GeneratorOption;
-import dev.efnilite.ip.generator.profile.Profile;
+import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Stopwatch;
 import dev.efnilite.vilib.vector.Vector3D;

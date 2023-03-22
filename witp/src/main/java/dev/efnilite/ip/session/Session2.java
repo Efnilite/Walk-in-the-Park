@@ -14,6 +14,7 @@ import java.util.function.Function;
  * <p>A session is bound to a {@link dev.efnilite.ip.world.WorldDivider} section.
  * It manages all players, all spectators, visibility, the generator, etc.</p>
  * <p>Iteration 2.</p>
+ *
  * @author Efnilite
  * @since v5.0.0
  */
@@ -54,7 +55,8 @@ public class Session2 {
      */
     protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
-    private Session2() { }
+    private Session2() {
+    }
 
     /**
      * Adds provided players to this session's player list.
@@ -80,8 +82,6 @@ public class Session2 {
     }
 
     /**
-     * Returns this session's players.
-     *
      * @return The players.
      */
     public List<ParkourPlayer> getPlayers() {
@@ -119,8 +119,6 @@ public class Session2 {
     }
 
     /**
-     * Returns this session's spectators.
-     *
      * @return The spectators.
      */
     public List<ParkourSpectator> getSpectators() {
@@ -177,10 +175,10 @@ public class Session2 {
 
         /**
          * Sets the accepting players function.
-         * @see Session2#isAcceptingPlayers
          *
          * @param f The function.
          * @return This instance.
+         * @see Session2#isAcceptingPlayers
          */
         public Builder isAcceptingPlayers(Function<Session2, Boolean> f) {
             isAcceptingPlayers = f;
@@ -190,10 +188,10 @@ public class Session2 {
 
         /**
          * Sets the accepting spectators function.
-         * @see Session2#isAcceptingSpectators
          *
          * @param f The function.
          * @return This instance.
+         * @see Session2#isAcceptingSpectators
          */
         public Builder isAcceptingSpectators(Function<Session2, Boolean> f) {
             isAcceptingSpectators = f;
@@ -203,10 +201,10 @@ public class Session2 {
 
         /**
          * Adds initial players.
-         * @see Session2#players
          *
          * @param p The players.
          * @return This instance.
+         * @see Session2#players
          */
         public Builder addPlayers(ParkourPlayer... p) {
             players = p;

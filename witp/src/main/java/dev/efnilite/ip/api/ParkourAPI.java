@@ -9,12 +9,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Main API accessor.
- *
- * For player joining/leaving, please view {@link ParkourUser}.
- * For player settings, please view {@link ParkourPlayer}.
- * For player spectating, please view {@link dev.efnilite.ip.player.ParkourSpectator}.
- * For events, please view {@link BlockGenerateEvent} and others in the events package.
- * For Sessions, please view {@link dev.efnilite.ip.session.Session}.
+ * <ul>
+ *     <li>For player joining/leaving, please view {@link ParkourUser}.</li>
+ *     <li>For player settings, please view {@link ParkourPlayer}.</li>
+ *     <li>For player spectating, please view {@link dev.efnilite.ip.player.ParkourSpectator}.</li>
+ *     <li>For events, please view {@link BlockGenerateEvent} and others in the events package.</li>
+ *     <li>For Sessions, please view {@link dev.efnilite.ip.session.Session}.</li>
+ * </ul>
  */
 @SuppressWarnings("unused")
 public class ParkourAPI {
@@ -24,9 +25,7 @@ public class ParkourAPI {
     }
 
     /**
-     * Gets the registry, used to register custom gamemodes and style types.
-     *
-     * @return the {@link Registry} class
+     * @return The {@link Registry} class
      */
     public static Registry getRegistry() {
         return IP.getRegistry();
@@ -35,9 +34,7 @@ public class ParkourAPI {
     /**
      * Gets a {@link ParkourPlayer} from its respective Bukkit player instance.
      *
-     * @param   player
-     *          The Bukkit version of the player
-     *
+     * @param player The Bukkit version of the player
      * @return the ParkourPlayer instance.
      */
     public static @Nullable ParkourPlayer getPlayer(Player player) {
@@ -47,10 +44,8 @@ public class ParkourAPI {
     /**
      * Gets a {@link ParkourUser} from a Bukkit player instance
      *
-     * @param   player
-     *          The player
-     *
-     * @return the ParkourUser instance. This may be null.
+     * @param player The player
+     * @return The requested ParkourUser instance. This may be null.
      */
     public static @Nullable ParkourUser getUser(Player player) {
         return ParkourUser.getUser(player);

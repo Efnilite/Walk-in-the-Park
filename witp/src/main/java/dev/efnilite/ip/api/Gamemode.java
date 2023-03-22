@@ -13,27 +13,18 @@ import org.jetbrains.annotations.Nullable;
 public interface Gamemode {
 
     /**
-     * The internal name of the Gamemode. Can be anything.
-     * Make sure it doesn't match another name.
-     *
-     * @return the internal name used for this gamemode.
+     * @return The internal name used for this gamemode.
      */
     @NotNull String getName();
 
     /**
-     * Gets the item used in menus to show this Gamemode.
-     *
-     * @param   locale
-     *          The locale of the menu, used to adjust the name.
-     *
-     * @return the item.
+     * @param locale The locale of the menu, used to adjust the name.
+     * @return The item used in menus to show this mode.
      */
     @NotNull Item getItem(String locale);
 
     /**
-     * Gets the {@link Leaderboard} instance that belongs to this gamemode.
-     *
-     * @return the {@link Leaderboard} manager that belongs to this gamemode
+     * @return The {@link Leaderboard} that belongs to this mode
      */
     @Nullable Leaderboard getLeaderboard();
 
@@ -41,23 +32,19 @@ public interface Gamemode {
      * Creates this Gamemode instance with a given Player.
      * For preserving {@link dev.efnilite.ip.player.data.PreviousData}, use {@link dev.efnilite.ip.player.ParkourUser#getUser(Player)}}
      *
-     * @param   player
-     *          The player
+     * @param player The player
      */
     void create(Player player);
 
     /**
      * What this Gamemode should do when it is selected in a menu.
      *
-     * @param   player
-     *          The player who clicked.
+     * @param player The player who clicked.
      */
     void click(Player player);
 
     /**
-     * Whether this mode should be visible in menus.
-     *
-     * @return true if yes, false if not
+     * @return True if this mode should be visible in menus, false if not.
      */
     boolean isVisible();
 

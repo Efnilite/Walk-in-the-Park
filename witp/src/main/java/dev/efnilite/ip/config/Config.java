@@ -57,7 +57,7 @@ public enum Config {
             return true;
         }
 
-        String[] schematics = new String[] { "spawn-island.witp", "spawn-island-duels.witp" };
+        String[] schematics = new String[]{"spawn-island.witp", "spawn-island-duels.witp"};
         File folder = IP.getInFolder("schematics");
         folder.mkdirs();
 
@@ -152,8 +152,6 @@ public enum Config {
     }
 
     /**
-     * Returns true when path exists, false if not.
-     *
      * @param path The path.
      * @return True when path exists, false if not.
      */
@@ -162,8 +160,6 @@ public enum Config {
     }
 
     /**
-     * Returns the value at path.
-     *
      * @param path The path.
      * @return The value at path.
      */
@@ -175,8 +171,6 @@ public enum Config {
 
 
     /**
-     * Returns the boolean value at path.
-     *
      * @param path The path.
      * @return The boolean value at path.
      */
@@ -187,8 +181,6 @@ public enum Config {
     }
 
     /**
-     * Returns the int value at path.
-     *
      * @param path The path.
      * @return The int value at path.
      */
@@ -199,8 +191,6 @@ public enum Config {
     }
 
     /**
-     * Returns the double value at path.
-     *
      * @param path The path.
      * @return The double value at path.
      */
@@ -211,8 +201,6 @@ public enum Config {
     }
 
     /**
-     * Returns the String value at path.
-     *
      * @param path The path.
      * @return The String value at path.
      */
@@ -224,8 +212,6 @@ public enum Config {
     }
 
     /**
-     * Returns the String list value at path.
-     *
      * @param path The path.
      * @return The String list value at path.
      */
@@ -237,8 +223,6 @@ public enum Config {
     }
 
     /**
-     * Returns the int list value at path.
-     *
      * @param path The path.
      * @return The int list value at path.
      */
@@ -250,8 +234,6 @@ public enum Config {
     }
 
     /**
-     * Returns children nodes from path.
-     *
      * @param path The path.
      * @param deep Whether search should include children of children as well.
      * @return The children nodes from path.

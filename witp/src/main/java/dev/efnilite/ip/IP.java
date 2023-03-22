@@ -205,8 +205,6 @@ public final class IP extends ViPlugin {
     }
 
     /**
-     * Returns a file from within the plugin folder.
-     *
      * @param child The file name.
      * @return A file from within the plugin folder.
      */
@@ -215,18 +213,14 @@ public final class IP extends ViPlugin {
     }
 
     /**
-     * Returns the {@link Logging} belonging to this plugin.
-     *
-     * @return this plugin's {@link Logging} instance.
+     * @return This plugin's {@link Logging} instance.
      */
     public static Logging logging() {
         return getPlugin().logging;
     }
 
     /**
-     * Returns this plugin instance.
-     *
-     * @return the plugin instance.
+     * @return The plugin instance.
      */
     public static IP getPlugin() {
         return instance;

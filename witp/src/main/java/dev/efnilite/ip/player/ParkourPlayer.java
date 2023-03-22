@@ -8,7 +8,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
-import dev.efnilite.ip.generator.profile.Profile;
+import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.sql.SelectStatement;

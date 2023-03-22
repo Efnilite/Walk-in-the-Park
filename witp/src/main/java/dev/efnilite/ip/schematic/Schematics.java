@@ -51,7 +51,6 @@ public class Schematics {
     }
 
     /**
-     * Returns a schematic instance by name.
      * @param name The name.
      * @return A schematic instance by name.
      */

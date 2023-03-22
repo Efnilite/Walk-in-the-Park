@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * <p>Divides the parkour world in sections, each with an active session.</p>
  * <p>Iteration 2.</p>
+ *
  * @author Efnilite
  * @since v5.0.0
  */
@@ -88,6 +89,6 @@ public class WorldDivider2 {
         max.setY(Option.MAX_Y);
         min.setY(Option.MIN_Y);
 
-        return new Location[] { min, max };
+        return new Location[]{min, max};
     }
 }
