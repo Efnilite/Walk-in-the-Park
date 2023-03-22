@@ -1,5 +1,6 @@
 package dev.efnilite.ip.session;
 
+import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
@@ -16,15 +17,29 @@ import java.util.*;
 public class Session2 {
 
     /**
+     * The generator.
+     */
+    public ParkourGenerator generator;
+
+    /**
      * The visibility of this session.
      */
     public Visibility visibility = Visibility.PUBLIC;
+
+    /**
+     * List of muted users.
+     */
     public final List<ParkourUser> muted = new ArrayList<>();
 
+    /**
+     * List of players.
+     */
     protected final Map<UUID, ParkourPlayer> players = new HashMap<>();
-    protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
-    private Session2() {}
+    /**
+     * List of spectators.
+     */
+    protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
     /**
      * Adds provided players to this session's player list.

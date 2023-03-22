@@ -193,7 +193,7 @@ public class WorldDivider {
         }
 
         // get zone
-        pp.getGenerator().setZone(getZone(spawn));
+        pp.getGenerator().zone = getZone(spawn);
 
         if (to != null && parkourBegin != null && pp.getGenerator() instanceof DefaultGenerator defaultGenerator) {
             defaultGenerator.islandBlocks = blocks;
@@ -209,7 +209,7 @@ public class WorldDivider {
      * @param center The center location
      * @return the playable area
      */
-    public Selection getZone(Location center) {
+    public Location[] getZone(Location center) {
         double borderSize = Option.BORDER_SIZE;
 
         // get the min and max locations
@@ -219,7 +219,7 @@ public class WorldDivider {
         min.setY(Option.MIN_Y);
         max.setY(Option.MAX_Y);
 
-        return new Selection(min, max);
+        return new Location[] { min, max };
     }
 
     /**

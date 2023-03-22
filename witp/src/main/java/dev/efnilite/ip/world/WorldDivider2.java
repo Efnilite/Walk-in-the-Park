@@ -1,8 +1,7 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.schematic.selection.Selection;
-import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import org.bukkit.Location;
@@ -14,22 +13,22 @@ import java.util.Map;
 
 public class WorldDivider2 {
 
-    public static final Map<Integer, Session> SECTIONS = new HashMap<>();
+    public static final Map<Integer, Session2> SESSIONS = new HashMap<>();
 
     /**
      * Associates a session to a specific section.
      *
      * @param session The session.
      */
-    public static void associate(Session session) {
+    public static void associate(Session2 session) {
         // attempts to get the closest available section to the center
         int n = 0;
 
-        while (SECTIONS.get(n) != null) {
+        while (SESSIONS.get(n) != null) {
             n++;
         }
 
-        SECTIONS.put(n, session);
+        SESSIONS.put(n, session);
     }
 
     /**
@@ -37,13 +36,13 @@ public class WorldDivider2 {
      *
      * @param session The session.
      */
-    public static void disassociate(Session session) {
-        SECTIONS.remove(getSectionId(session));
+    public static void disassociate(Session2 session) {
+        SESSIONS.remove(getSectionId(session));
     }
 
     // returns the id of a section based on the session instance
-    private static int getSectionId(Session session) {
-        List<Map.Entry<Integer, Session>> filtered = Colls.filter(set -> set.getValue() == session, new ArrayList<>(SECTIONS.entrySet()));
+    private static int getSectionId(Session2 session) {
+        List<Map.Entry<Integer, Session2>> filtered = Colls.filter(set -> set.getValue() == session, new ArrayList<>(SESSIONS.entrySet()));
 
         if (filtered.size() == 0) {
             return -1;
@@ -68,12 +67,12 @@ public class WorldDivider2 {
     }
 
     /**
-     * Returns the entire selection of section n.
+     * Returns array where the first item is the smallest location and second item is the largest.
      *
      * @param n The section.
-     * @return The location at the center.
+     * @return An array with the min/max location.
      */
-    public static Selection toSelection(int n) {
+    public static Location[] toSelection(int n) {
         Location center = toLocation(n);
 
         // get the min and max locations
@@ -83,6 +82,6 @@ public class WorldDivider2 {
         max.setY(Option.MAX_Y);
         min.setY(Option.MIN_Y);
 
-        return new Selection(max, min);
+        return new Location[] { min, max };
     }
 }
