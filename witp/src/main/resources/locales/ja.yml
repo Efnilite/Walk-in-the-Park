@@ -116,7 +116,7 @@ settings:
 
       no_change:
         material: "barrier"
-        name: "<dark_red><bold>You cant change this right now!"
+        name: "<dark_red><bold>これを変えることはできない。"
         lore: "<gray>You have a score above 0,||<gray>which means you cant change this setting."
 
       styles:
@@ -203,7 +203,7 @@ settings:
         lore: "<gray>今: %s||<gray>When enabled, the higher score you have,||<gray>the more difficult it gets."
 
 lobby:
-  name: "<white>Lobby"
+  name: "<white>ロビー"
 
   item:
     material: "iron_ingot"
@@ -214,7 +214,7 @@ lobby:
     material: "firework_rocket"
     name: "<#A1E1DD><bold>見える"
     lore: "<dark_gray>今: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby."
-    values: ["private", "invite-only", "公共"]
+    values: ["私立", "invite-only", "公共"]
 
   player_management:
     name: "<white>Manage players"
@@ -233,7 +233,7 @@ lobby:
       material: ""
       name: "<#4BD16D><bold>%s"
       lore: ""
-      top: "<dark_gray>Muted in lobby||"
+      top: "<dark_gray>ロビーにミュートかった||"
       bottom: "<#8DE5A3>Left click<dark_gray> to kick from lobby||<#8DE5A3>Right click<dark_gray> to (un)mute in lobby"
 
 styles:
@@ -257,13 +257,13 @@ scoreboard:
 
 other:
 
-  no_do: "<gray>You can''t do this right now."
+  no_do: "<gray>これをすることはできない。"
   no_teleporting: "<white>You can''t enter the parkour world by teleporting!"
   customize: "<gray>Customize your parkour experience by using \"/parkour\""
 
   quit:
     material: "barrier"
-    name: "<#D71F1F><bold>終了"
+    name: "<#D71F1F><bold>やめる"
     lore: ""
 
   close:
