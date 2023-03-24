@@ -53,7 +53,7 @@ public class SingleSession implements Session {
 
             Entity target = bukkitPlayer.getSpectatorTarget();
 
-            if (watchingPlayer.getLocation().distance(bukkitPlayer.getLocation()) > 100) {
+            if (watchingPlayer.getLocation().distanceSquared(bukkitPlayer.getLocation()) > 10000) {
                 if (bukkitPlayer.getGameMode() == GameMode.SPECTATOR) { // if player is a spectator
                     bukkitPlayer.setSpectatorTarget(null);
                     spectator.teleport(watchingPlayer.getLocation());

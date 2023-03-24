@@ -2,7 +2,7 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
-import dev.efnilite.ip.api.events.Handler;
+import dev.efnilite.ip.api.event.Handler;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;

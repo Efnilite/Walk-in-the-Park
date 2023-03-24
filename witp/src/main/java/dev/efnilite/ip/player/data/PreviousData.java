@@ -89,8 +89,12 @@ public class PreviousData {
             player.setCollidable(collidable);
 
             // -= Attributes =-
-            if (maxHealth != null) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-            if (health != null) player.setHealth(health);
+            if (maxHealth != null) {
+                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+            }
+            if (health != null) {
+                player.setHealth(health);
+            }
 
             // -= Potions =-
             for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -110,8 +114,7 @@ public class PreviousData {
     /**
      * Adds a reward to the leave list
      *
-     * @param   string
-     *          The reward to give on leave
+     * @param string The reward to give on leave
      */
     public void addReward(RewardString string) {
         rewardsLeaveList.add(string);
@@ -120,8 +123,7 @@ public class PreviousData {
     /**
      * Applies the rewards stored in the leave list
      *
-     * @param   player
-     *          The player to apply these rewards to
+     * @param player The player to apply these rewards to
      */
     public void giveRewards(@NotNull ParkourPlayer player) {
         rewardsLeaveList.forEach(s -> s.execute(player));

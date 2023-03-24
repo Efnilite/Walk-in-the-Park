@@ -50,7 +50,6 @@ public class Rewards {
     }
 
     private static Map<Integer, List<RewardString>> parseScores(String path) {
-
         Map<Integer, List<RewardString>> rewardMap = new HashMap<>();
 
         for (String score : Config.REWARDS.getChildren(path)) {
@@ -62,14 +61,13 @@ public class Rewards {
                 int value = Integer.parseInt(score);
 
                 if (value <= 0) {
-                    IP.logging().stack(score + " is not a valid score (should be above 1 and an integer)",
-                            "check the rewards file for incorrect numbers");
+                    IP.logging().stack("%s is not a valid score (should be above 1 and an integer)".formatted(score), "check the rewards file for incorrect numbers");
                     continue;
                 }
 
                 rewardMap.put(value, Colls.map(RewardString::new, commands));
             } catch (NumberFormatException ex) {
-                IP.logging().stack(score + " is not a valid score", "check the rewards file for incorrect numbers", ex);
+                IP.logging().stack("%s is not a valid score".formatted(score), "check the rewards file for incorrect numbers", ex);
             }
         }
 

@@ -89,9 +89,7 @@ public abstract class ParkourUser {
      * Registers a player. This registers the player internally.
      * This automatically unregisters the player if it is already registered.
      *
-     * @param   player
-     *          The player
-     *
+     * @param player The player
      * @return the ParkourPlayer instance of the newly joined player
      */
     public static @NotNull ParkourPlayer register(@NotNull Player player) {
@@ -108,10 +106,8 @@ public abstract class ParkourUser {
     /**
      * This is the same as {@link #leave(ParkourUser)}, but instead for a Bukkit player instance.
      *
+     * @param player The Bukkit player instance that will be removed from the game if the player is active.
      * @see #leave(ParkourUser)
-     *
-     * @param   player
-     *          The Bukkit player instance that will be removed from the game if the player is active.
      */
     public static void leave(@NotNull Player player) {
         ParkourUser user = getUser(player);
@@ -128,8 +124,7 @@ public abstract class ParkourUser {
      * is running Bungeecord mode, and their data will always be automatically saved. If you want to unregister a
      * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean, boolean)}.
      *
-     * @param   user
-     *          The user instance
+     * @param user The user instance
      */
     public static void leave(@NotNull ParkourUser user) {
         unregister(user, true, true, true);
@@ -138,18 +133,11 @@ public abstract class ParkourUser {
     /**
      * Unregisters a Parkour user instance.
      *
-     * @param   user
-     *          The user to unregister.
-     *
-     * @param   restorePreviousData
-     *          Whether to restore the data from before the player joined the parkour.
-     *
-     * @param   kickIfBungee
-     *          Whether to kick the player if Bungeecord mode is enabled.
-     *
-     * @param   saveAsync
-     *          Whether to save player data asynchronously. This is recommended to be true
-     *          at all times, unless your plugin is in the process of disabling.
+     * @param user                The user to unregister.
+     * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
+     * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
+     * @param saveAsync           Whether to save player data asynchronously. This is recommended to be true
+     *                            at all times, unless your plugin is in the process of disabling.
      */
     public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
         unregister0(user, restorePreviousData, kickIfBungee, saveAsync);
@@ -246,8 +234,7 @@ public abstract class ParkourUser {
     /**
      * Gets a user from their UUID
      *
-     * @param   uuid the user's UUID
-     *
+     * @param uuid the user's UUID
      * @return the ParkourUser instance associated with this uuid. Returns null if there isn't an active player.
      */
     public static @Nullable ParkourUser getUser(@NotNull UUID uuid) {
@@ -263,9 +250,7 @@ public abstract class ParkourUser {
     /**
      * Gets a user from a Bukkit Player
      *
-     * @param   player
-     *          The Bukkit Player
-     *
+     * @param player The Bukkit Player
      * @return the associated {@link ParkourUser}
      */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
@@ -281,9 +266,7 @@ public abstract class ParkourUser {
      * Checks whether the provided player is a {@link ParkourUser}.
      * If the provided player is null, the method will automatically return false.
      *
-     * @param   player
-     *          The player. Can be null.
-     *
+     * @param player The player. Can be null.
      * @return True if the player is a registered {@link ParkourUser}.
      * False if the player isn't registered or the provided player is null.
      */
@@ -296,9 +279,7 @@ public abstract class ParkourUser {
      * Checks whether the provided player is a {@link ParkourPlayer}.
      * If the provided player is null, the method will automatically return false.
      *
-     * @param   player
-     *          The player. Can be null.
-     *
+     * @param player The player. Can be null.
      * @return True if the player is a registered {@link ParkourPlayer}.
      * False if the player isn't registered or the provided player is null.
      */
@@ -317,8 +298,7 @@ public abstract class ParkourUser {
     /**
      * Teleports the player asynchronously, which helps with unloaded chunks (?)
      *
-     * @param   to
-     *          Where the player will be teleported to
+     * @param to Where the player will be teleported to
      */
     public void teleport(@NotNull Location to) {
         player.leaveVehicle();
@@ -328,8 +308,7 @@ public abstract class ParkourUser {
     /**
      * Sends a message or array of it - coloured allowed, using the and sign
      *
-     * @param   messages
-     *          The message
+     * @param messages The message
      */
     public void send(String... messages) {
         for (String message : messages) {
@@ -340,11 +319,8 @@ public abstract class ParkourUser {
     /**
      * Sends a translated message
      *
-     * @param   key
-     *          The translation key
-     *
-     * @param   format
-     *          Any objects that may be given to the formatting of the string.
+     * @param key    The translation key
+     * @param format Any objects that may be given to the formatting of the string.
      */
     public void sendTranslated(String key, Object... format) {
         send(Locales.getString(getLocale(), key).formatted(format));
@@ -353,8 +329,7 @@ public abstract class ParkourUser {
     /**
      * Updates the player's visual time.
      *
-     * @param   selectedTime
-     *          The selected time is the 24-hour format with 3 extra zeroes on the end.
+     * @param selectedTime The selected time is the 24-hour format with 3 extra zeroes on the end.
      */
     public void updateVisualTime(int selectedTime) {
         int newTime = 18000 + selectedTime;
@@ -368,8 +343,7 @@ public abstract class ParkourUser {
     /**
      * Sets this player's locale
      *
-     * @param   locale
-     *          The locale
+     * @param locale The locale
      */
     public void setLocale(String locale) {
         this.locale = locale;

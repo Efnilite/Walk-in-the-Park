@@ -1,4 +1,4 @@
-package dev.efnilite.ip.api.events;
+package dev.efnilite.ip.api.event;
 
 import dev.efnilite.ip.generator.DefaultGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -6,8 +6,7 @@ import dev.efnilite.vilib.event.EventWrapper;
 import org.bukkit.block.Block;
 
 /**
- * Event that gets called when a block generates in Parkour.
- * This event is read-only.
+ * Gets called when a block is generated. Read-only.
  */
 public class BlockGenerateEvent extends EventWrapper {
 

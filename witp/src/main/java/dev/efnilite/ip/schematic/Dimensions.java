@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.selection;
+package dev.efnilite.ip.schematic;
 
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.vector.Vector3D;
@@ -6,10 +6,8 @@ import org.bukkit.Location;
 
 /**
  * The dimensions of a CuboidSelection.
- *
+ * <p>
  * Taken from: Efnilite/Redaktor
- *
- * @see Selection
  */
 public class Dimensions {
 
@@ -57,45 +55,6 @@ public class Dimensions {
         this.width = width;
         this.height = height;
         this.length = length;
-    }
-
-    /**
-     * Calculates the volume
-     *
-     * @return the volume
-     */
-    public int getVolume() {
-        return width * height * length;
-    }
-
-    /**
-     * Gets the width.
-     * This is equal to the difference in the x coordinate.
-     *
-     * @return the width
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Gets the height
-     * This is equal to the difference in the y coordinate.
-     *
-     * @return the height
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Gets the length
-     * This is equal to the difference in the z coordinate.
-     *
-     * @return the length
-     */
-    public int getLength() {
-        return length;
     }
 
     /**

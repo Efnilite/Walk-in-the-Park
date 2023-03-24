@@ -4,9 +4,9 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.api.events.BlockGenerateEvent;
-import dev.efnilite.ip.api.events.PlayerFallEvent;
-import dev.efnilite.ip.api.events.PlayerScoreEvent;
+import dev.efnilite.ip.api.event.BlockGenerateEvent;
+import dev.efnilite.ip.api.event.PlayerFallEvent;
+import dev.efnilite.ip.api.event.PlayerScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -48,6 +48,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -96,6 +98,11 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * Whether this generator has been stopped
      */
     public boolean stopped = false;
+
+    /**
+     * Instant when run started.
+     */
+    public Instant start;
 
     /**
      * Whether the stucture should be deleted on the next jump.
@@ -591,8 +598,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
             return;
         }
 
-        if (!stopwatch.hasStarted()) { // start stopwatch when first point is achieved
-            stopwatch.start();
+        if (start == null) { // start stopwatch when first point is achieved
+            start = Instant.now();
         }
 
         lastStandingPlayerLocation = playerLocation.clone();
@@ -703,11 +710,24 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         }
 
         this.score = 0;
+        start = null;
         stopwatch.stop();
 
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
         }
+    }
+
+    private String durationToString() {
+        Duration duration = Duration.between(start, Instant.now());
+
+        StringBuilder builder = new StringBuilder(" ");
+        
+        if (duration.toMillisPart() > 0) {
+            builder.append("%d ms".formatted(duration.toMillisPart()));
+        }
+
+        return builder.toString();
     }
 
     protected void registerScore() {

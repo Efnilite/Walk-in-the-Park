@@ -15,19 +15,15 @@ public class SchematicAdjuster {
     /**
      * Pastes a Schematic, adjusted to Lime wool
      *
-     * @param   schematic
-     *          The schematic
-     *
-     * @param   adjustTo
-     *          Which location
-     *
+     * @param schematic The schematic
+     * @param adjustTo  Which location
      * @throws IOException if something goes wrong with pasting
      */
     public static @Nullable List<Block> pasteAdjusted(Schematic schematic, Location adjustTo) throws IOException {
         if (!schematic.hasFile() && adjustTo == null) {
             return null;
         }
-        SchematicBlock start = schematic.findFromMaterial(Material.LIME_WOOL);
+        Schematic.SchematicBlock start = schematic.findFromMaterial(Material.LIME_WOOL);
         Vector3D to = start.getRelativePosition();
         adjustTo = adjustTo.subtract(to.toBukkitVector());
 
@@ -37,9 +33,7 @@ public class SchematicAdjuster {
     /**
      * Gets the angle from a specific Vector heading
      *
-     * @param   heading
-     *          The vector heading
-     *
+     * @param heading The vector heading
      * @return the associated angle
      */
     public static RotationAngle getAngle(String heading) {
@@ -52,9 +46,34 @@ public class SchematicAdjuster {
                     RotationAngle.ANGLE_270;
             case "west" -> // west
                     RotationAngle.ANGLE_90;
-
-            default ->
-                    RotationAngle.ANGLE_270;
+            default -> RotationAngle.ANGLE_270;
         };
+    }
+
+    public enum RotationAngle {
+        ANGLE_0(0, 180),
+        ANGLE_90(90, 270),
+        ANGLE_180(180, 0),
+        ANGLE_270(270, 90);
+
+        private final int angle;
+        private final int opposite;
+
+        RotationAngle(int angle, int opposite) {
+            this.angle = angle;
+            this.opposite = opposite;
+        }
+
+        public static RotationAngle getFromInteger(int angle) {
+            return valueOf("ANGLE_" + angle);
+        }
+
+        public int getAngle() {
+            return angle;
+        }
+
+        public int getOpposite() {
+            return opposite;
+        }
     }
 }

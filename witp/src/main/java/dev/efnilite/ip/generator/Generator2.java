@@ -3,8 +3,6 @@ package dev.efnilite.ip.generator;
 import dev.efnilite.ip.session.Session2;
 import org.bukkit.util.Vector;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
  * <p>Iteration 2.</p>
  *
@@ -28,12 +26,17 @@ public class Generator2 {
      */
     public final Session2 session;
 
-    // a random to make it easier to access
-    protected final ThreadLocalRandom random = ThreadLocalRandom.current();
-
     public Generator2(Session2 session) {
         this.session = session;
 
         this.profile = new Profile();
     }
+
+    //   1
+    //   1 2
+    //   1 2 3
+    // o 1 2 3 4 = dz 4 - dx   dy = 0
+    //   1 2 3
+    //   1 2
+    //   1
 }

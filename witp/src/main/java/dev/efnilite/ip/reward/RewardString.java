@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A class for handling reward commands, etc.
- *
- * @author Efnilite
  */
 // todo add cross-server support
 public record RewardString(@NotNull String string) {

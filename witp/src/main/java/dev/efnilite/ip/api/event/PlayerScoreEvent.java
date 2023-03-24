@@ -1,11 +1,10 @@
-package dev.efnilite.ip.api.events;
+package dev.efnilite.ip.api.event;
 
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.event.EventWrapper;
 
 /**
- * This event gets called when a scores a point.
- * This event is read-only.
+ * Gets called when a point is scored. Read-only.
  */
 public class PlayerScoreEvent extends EventWrapper {
 

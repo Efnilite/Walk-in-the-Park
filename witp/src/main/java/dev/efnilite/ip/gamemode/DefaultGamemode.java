@@ -48,6 +48,10 @@ public class DefaultGamemode implements Gamemode {
         player.closeInventory();
 
         IP.getDivider().generate(ParkourUser.register(player));
+
+//        Session2.Builder.create()
+//                .addPlayers(pp)
+//                .complete();
     }
 
     @Override

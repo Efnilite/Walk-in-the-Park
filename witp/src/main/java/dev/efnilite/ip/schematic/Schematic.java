@@ -1,8 +1,6 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.schematic.selection.Dimensions;
-import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -62,21 +60,11 @@ public class Schematic {
     /**
      * The constructor while creating a new schematic from 2 positions
      *
-     * @param   pos1
-     *          The first position
-     *
-     * @param   pos2
-     *          The second position
+     * @param pos1 The first position
+     * @param pos2 The second position
      */
     public Schematic(@NotNull Location pos1, @NotNull Location pos2) {
         this.dimensions = new Dimensions(pos1, pos2);
-        this.blocks = new ArrayList<>();
-        this.read = false;
-        this.isSupported = true;
-    }
-
-    public Schematic(@NotNull Selection selection) {
-        this.dimensions = new Dimensions(selection.getPos1(), selection.getPos2());
         this.blocks = new ArrayList<>();
         this.read = false;
         this.isSupported = true;
@@ -90,9 +78,7 @@ public class Schematic {
     /**
      * Gets a schematic from its file name.
      *
-     * @param   fileName
-     *          The name of the file
-     *
+     * @param fileName The name of the file
      * @return the instance of this class
      */
     public Schematic file(@NotNull String fileName) {
@@ -108,12 +94,8 @@ public class Schematic {
     /**
      * Gets a Schematic from a path and filename. Used for external schematics.
      *
-     * @param   path
-     *          The folder which the file is in
-     *
-     * @param   fileName
-     *          The file name
-     *
+     * @param path     The folder which the file is in
+     * @param fileName The file name
      * @return the instance of his class
      */
     public Schematic file(@NotNull String path, @NotNull String fileName) {
@@ -145,80 +127,77 @@ public class Schematic {
      * Saves a schematic file
      */
     public void save(@Nullable Player player) {
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try {
-                        Time.timerStart("save schematic %s".formatted(file.getName()));
-                        if (dimensions == null || blocks == null) {
-                            IP.logging().error("Data of schematic is null while trying to save!");
-                            return;
-                        }
+        Task.create(IP.getPlugin()).async().execute(() -> {
+            try {
+                Time.timerStart("save schematic %s".formatted(file.getName()));
+                if (dimensions == null || blocks == null) {
+                    IP.logging().error("Data of schematic is null while trying to save!");
+                    return;
+                }
 
-                        for (Block currentBlock : getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
-                            if (currentBlock.getType() == Material.AIR) { // skip air if enabled
-                                continue;
-                            }
-                            Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
-                            blocks.add(new SchematicBlock(currentBlock, relativeOffset));
-                        }
-
-                        // create file
-                        file.createNewFile();
-
-                        FileWriter writer = new FileWriter(file);
-                        String separator = System.lineSeparator();
-
-                        // write dimensions to top of file
-                        writer.write(dimensions.toString());
-                        writer.write(separator); // enter
-
-                        // start palette symbol
-                        writer.write("*");
-                        writer.write(separator); // enter
-
-                        // filtered to prevent double entries in palette
-                        HashSet<String> filtered = new HashSet<>();
-                        Map<String, Integer> palette = new HashMap<>();
-                        blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
-
-                        // write palette as 0>minecraft:block[data]
-                        int index = 0;
-                        for (String data : filtered) {
-                            palette.put(data, index);
-                            writer.write(index + ">" + data);
-                            writer.write(separator); // enter
-                            index++;
-                        }
-
-                        // begin vector map
-                        writer.write("~");
-                        writer.write(separator); // enter
-
-                        // write all vectors per block type
-                        StringJoiner joiner = new StringJoiner("/");
-                        for (SchematicBlock block : blocks) {
-                            String current = block.getData().getAsString();
-                            String id = Integer.toString(palette.get(current));
-
-                            Vector3D rel = block.getRelativePosition();
-                            joiner.add(id + "(" + (int) rel.x + "," + (int) rel.y + "," + (int) rel.z + ")"); // id(x,y,z) -> 3(2,3,-3)
-                        }
-
-                        // finish
-                        writer.write(joiner.toString());
-                        writer.flush();
-                        writer.close();
-
-                        if (player == null) {
-                            return;
-                        }
-                        Util.send(player, IP.PREFIX + "Your schematic has been saved in <red>" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms<gray>!");
-                    } catch (IOException ex) {
-                        IP.logging().stack("Error while saving schematic " + file, ex);
+                for (Block currentBlock : getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
+                    if (currentBlock.getType() == Material.AIR) { // skip air if enabled
+                        continue;
                     }
-                })
-                .run();
+                    Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
+                    blocks.add(new SchematicBlock(currentBlock, relativeOffset));
+                }
+
+                // create file
+                file.createNewFile();
+
+                FileWriter writer = new FileWriter(file);
+                String separator = System.lineSeparator();
+
+                // write dimensions to top of file
+                writer.write(dimensions.toString());
+                writer.write(separator); // enter
+
+                // start palette symbol
+                writer.write("*");
+                writer.write(separator); // enter
+
+                // filtered to prevent double entries in palette
+                HashSet<String> filtered = new HashSet<>();
+                Map<String, Integer> palette = new HashMap<>();
+                blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
+
+                // write palette as 0>minecraft:block[data]
+                int index = 0;
+                for (String data : filtered) {
+                    palette.put(data, index);
+                    writer.write(index + ">" + data);
+                    writer.write(separator); // enter
+                    index++;
+                }
+
+                // begin vector map
+                writer.write("~");
+                writer.write(separator); // enter
+
+                // write all vectors per block type
+                StringJoiner joiner = new StringJoiner("/");
+                for (SchematicBlock block : blocks) {
+                    String current = block.getData().getAsString();
+                    String id = Integer.toString(palette.get(current));
+
+                    Vector3D rel = block.getRelativePosition();
+                    joiner.add(id + "(" + (int) rel.x + "," + (int) rel.y + "," + (int) rel.z + ")"); // id(x,y,z) -> 3(2,3,-3)
+                }
+
+                // finish
+                writer.write(joiner.toString());
+                writer.flush();
+                writer.close();
+
+                if (player == null) {
+                    return;
+                }
+                Util.send(player, IP.PREFIX + "Your schematic has been saved in <red>" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms<gray>!");
+            } catch (IOException ex) {
+                IP.logging().stack("Error while saving schematic " + file, ex);
+            }
+        }).run();
     }
 
     /**
@@ -315,7 +294,7 @@ public class Schematic {
         return Bukkit.createBlockData(legacy);
     }
 
-    public List<Block> paste(Location at, RotationAngle angle) {
+    public List<Block> paste(Location at, SchematicAdjuster.RotationAngle angle) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
         this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector()));
@@ -347,18 +326,14 @@ public class Schematic {
      * Pastes a Schematic at a location and with a certain angle, adjusted to be usable in parkour.
      * todo: optimize/clean up, use matrices and get the initial heading to support for multiple directions, prepare for v3 schematics
      *
-     * @param   at
-     *          The location at which the Schematic will be pasted
-     *
-     * @param   angle
-     *          The angle of the Schematic (0 is default)
-     *
-     * @return  A list of the affected blocks during the pasting
-     *
+     * @param at    The location at which the Schematic will be pasted
+     * @param angle The angle of the Schematic (0 is default)
+     * @return A list of the affected blocks during the pasting
      */
-    public @Nullable List<Block> pasteAdjusted(Location at, RotationAngle angle) {
+    public @Nullable List<Block> pasteAdjusted(Location at, SchematicAdjuster.RotationAngle angle) {
         read();
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector())); // update dimensions to match min location, giving you an idea where it will be pasted
+        // update dimensions to match min location, giving you an idea where it will be pasted
+        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector()));
 
         // -- Preparing for paste --
 
@@ -390,7 +365,7 @@ public class Schematic {
         Vector difference = other.clone().subtract(at).toVector();
 
         // get the opposite angle of the one being pasted at
-        RotationAngle opposite = RotationAngle.getFromInteger(angle.getOpposite());
+        SchematicAdjuster.RotationAngle opposite = SchematicAdjuster.RotationAngle.getFromInteger(angle.getOpposite());
         // turn it in a specific way
         Vector3D turn = VectorUtil.defaultRotate(Vector3D.fromBukkit(difference), opposite);
         // add it to the difference
@@ -403,7 +378,7 @@ public class Schematic {
 
         for (Location location : rotated.keySet()) {
             // align block to where it will actually be set (final step)
-            Block block = location.clone().add(0, difference.getBlockY(),0).subtract(difference).getBlock();
+            Block block = location.clone().add(0, difference.getBlockY(), 0).subtract(difference).getBlock();
             // sets the block data
 
             String finalBlockData = rotated.get(location).getAsString();
@@ -448,9 +423,7 @@ public class Schematic {
     /**
      * Finds a Material in a schematic
      *
-     * @param   material
-     *          The material
-     *
+     * @param material The material
      * @return the {@link SchematicBlock} with this material
      */
     public SchematicBlock findFromMaterial(Material material) {
@@ -463,7 +436,7 @@ public class Schematic {
         return null;
     }
 
-    private String getFaceFromAngle(String original, RotationAngle rotationAngle) {
+    private String getFaceFromAngle(String original, SchematicAdjuster.RotationAngle rotationAngle) {
         int angle = rotationAngle.getAngle();
         switch (original) {
             case "north":
@@ -548,5 +521,29 @@ public class Schematic {
 
     public File getFile() {
         return file;
+    }
+
+    protected static class SchematicBlock {
+
+        private final Vector3D relativePosition;
+        private final BlockData data;
+
+        public SchematicBlock(Block block, Vector3D relativePosition) {
+            this.relativePosition = relativePosition;
+            this.data = block.getBlockData();
+        }
+
+        public SchematicBlock(BlockData data, Vector3D relativePosition) {
+            this.relativePosition = relativePosition;
+            this.data = data;
+        }
+
+        public Vector3D getRelativePosition() {
+            return relativePosition;
+        }
+
+        public BlockData getData() {
+            return data;
+        }
     }
 }

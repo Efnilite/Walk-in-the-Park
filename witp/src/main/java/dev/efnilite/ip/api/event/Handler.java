@@ -1,4 +1,4 @@
-package dev.efnilite.ip.api.events;
+package dev.efnilite.ip.api.event;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourCommand;

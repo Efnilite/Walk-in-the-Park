@@ -9,12 +9,10 @@ import java.util.function.Function;
 public final class Colls {
 
     /**
-     * Returns all items in coll where f returns true.
-     *
      * @param f    The function to apply.
      * @param coll The collection.
      * @param <T>  The type.
-     * @return coll where each item returns true when f is applied.
+     * @return All items in coll where f returns true.
      */
     public static <T> List<T> filter(Function<T, Boolean> f, List<T> coll) {
         List<T> newColl = new ArrayList<>();
@@ -29,13 +27,11 @@ public final class Colls {
     }
 
     /**
-     * Applies function f to each item in coll.
-     *
      * @param f    The function to apply to each item in collection.
      * @param coll The collection.
      * @param <T>  The original list type.
      * @param <N>  The new list type.
-     * @return coll where each function f has been applied to each item.
+     * @return coll where f has been applied to each item. Retains order.
      */
     public static <T, N> List<N> map(Function<T, N> f, List<T> coll) {
         List<N> newColl = new ArrayList<>();
@@ -91,8 +87,6 @@ public final class Colls {
     }
 
     /**
-     * Returns a random item from coll.
-     *
      * @param coll The collection.
      * @param <T>  The type.
      * @return A random item from coll.
@@ -102,8 +96,6 @@ public final class Colls {
     }
 
     /**
-     * Returns n random item from coll.
-     *
      * @param coll The collection.
      * @param n    The amount of random items.
      * @param <T>  The type.

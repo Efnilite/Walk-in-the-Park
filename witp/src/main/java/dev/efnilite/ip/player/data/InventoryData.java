@@ -28,6 +28,7 @@ public class InventoryData {
 
     public InventoryData(Player player) {
         this.player = player;
+
         this.file = IP.getInFolder("inventories/%s.json".formatted(player.getUniqueId()));
     }
 
@@ -56,50 +57,44 @@ public class InventoryData {
     }
 
     public void readFile(Consumer<@Nullable InventoryData> successfulCallback) {
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try {
-                        if (!file.exists()) {
-                            successfulCallback.accept(null);
-                            return;
-                        }
-                        FileReader reader = new FileReader(file);
-                        InventoryData data = IP.getGson().fromJson(reader, InventoryData.class);
-                        data.player = player;
-                        data.file = file;
-                        successfulCallback.accept(data);
+        Task.create(IP.getPlugin()).async().execute(() -> {
+            try {
+                if (!file.exists()) {
+                    successfulCallback.accept(null);
+                    return;
+                }
+                FileReader reader = new FileReader(file);
+                InventoryData data = IP.getGson().fromJson(reader, InventoryData.class);
+                data.player = player;
+                data.file = file;
+                successfulCallback.accept(data);
 
-                        reader.close();
-                    } catch (IOException ex) {
-                        IP.logging().stack("Error while reading inventory of " + player.getName() + " from file " + file.getName(), ex);
-                        successfulCallback.accept(null);
-                    }
-                })
-                .run();
+                reader.close();
+            } catch (IOException ex) {
+                IP.logging().stack("Error while reading inventory of " + player.getName() + " from file " + file.getName(), ex);
+                successfulCallback.accept(null);
+            }
+        }).run();
     }
 
     public void saveFile() {
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    try {
-                        if (!file.exists()) {
-                            File folder = IP.getInFolder("inventories");
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-                            file.createNewFile();
-                        }
-                        FileWriter writer = new FileWriter(file);
-                        IP.getGson().toJson(this, writer);
-                        writer.flush();
-                        writer.close();
-                    } catch (IOException ex) {
-                        IP.logging().stack("Error while saving inventory of " + player.getName() + " to file " + file.getName(), ex);
+        Task.create(IP.getPlugin()).async().execute(() -> {
+            try {
+                if (!file.exists()) {
+                    File folder = IP.getInFolder("inventories");
+                    if (!folder.exists()) {
+                        folder.mkdirs();
                     }
-                })
-                .run();
+                    file.createNewFile();
+                }
+                FileWriter writer = new FileWriter(file);
+                IP.getGson().toJson(this, writer);
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                IP.logging().stack("Error while saving inventory of " + player.getName() + " to file " + file.getName(), ex);
+            }
+        }).run();
     }
 
     /**

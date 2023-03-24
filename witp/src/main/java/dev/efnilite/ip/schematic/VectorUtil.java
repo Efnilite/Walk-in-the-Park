@@ -9,7 +9,7 @@ public class VectorUtil {
         return new Vector3D(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]));
     }
 
-    public static Vector3D rotateAround(Vector3D vector, RotationAngle rotation) {
+    public static Vector3D rotateAround(Vector3D vector, SchematicAdjuster.RotationAngle rotation) {
         return switch (rotation) {
             case ANGLE_0 -> vector;
             case ANGLE_90 -> swapXZ(vector.multiply(-1, 1, 1));
@@ -19,7 +19,7 @@ public class VectorUtil {
     }
 
     // without swapping
-    public static Vector3D defaultRotate(Vector3D vector, RotationAngle rotation) {
+    public static Vector3D defaultRotate(Vector3D vector, SchematicAdjuster.RotationAngle rotation) {
         return switch (rotation) {
             case ANGLE_0 -> vector;
             case ANGLE_90 -> swapXZ(vector.multiply(1, 1, -1));

@@ -19,35 +19,32 @@ public class Schematics {
      * Reads all files.
      */
     public static void init() {
-        Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    Time.timerStart("ip load schematics");
+        Task.create(IP.getPlugin()).async().execute(() -> {
+            Time.timerStart("ip load schematics");
 
-                    cache.clear();
-                    File folder = IP.getInFolder("schematics");
+            cache.clear();
+            File folder = IP.getInFolder("schematics");
 
-                    File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
+            File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 
-                    if (files == null) {
-                        return;
-                    }
+            if (files == null) {
+                return;
+            }
 
-                    for (File file : files) {
-                        String fileName = file.getName();
+            for (File file : files) {
+                String fileName = file.getName();
 
-                        Schematic schematic = new Schematic().file(fileName);
-                        schematic.read();
+                Schematic schematic = new Schematic().file(fileName);
+                schematic.read();
 
-                        if (schematic.isSupported()) {
-                            cache.put(fileName, schematic);
-                        }
-                    }
+                if (schematic.isSupported()) {
+                    cache.put(fileName, schematic);
+                }
+            }
 
-                    IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - cache.keySet().size()));
-                    IP.logging().info("Loaded all schematics in %d ms!".formatted(Time.timerEnd("ip load schematics")));
-                })
-                .run();
+            IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - cache.keySet().size()));
+            IP.logging().info("Loaded all schematics in %d ms!".formatted(Time.timerEnd("ip load schematics")));
+        }).run();
     }
 
     /**

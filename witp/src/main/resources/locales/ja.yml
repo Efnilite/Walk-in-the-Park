@@ -18,7 +18,7 @@ play:
     lore: ""
 
   single:
-    name: "<white>シングルプレい"
+    name: "<white>シングルプレ"
 
     item:
       material: "ender_pearl"
@@ -33,7 +33,7 @@ play:
   spectator:
     name: "<white>見物"
 
-    join: "<#4CB3FF>You are now a spectator. You can use \"/parkour\" to leave/change your gamemode."
+    join: "<#4CB3FF>今、見物です。 ゲームモードを変えるかやめるか\"/parkour\"を使います。"
     action_bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use \"/parkour\" to leave."
 
     other_join: "<dark_green><bold>+ <reset><gray>%s started spectating you"
@@ -116,7 +116,7 @@ settings:
 
       no_change:
         material: "barrier"
-        name: "<dark_red><bold>これを変えることはできない。"
+        name: "<dark_red><bold>これを変えられません。"
         lore: "<gray>You have a score above 0,||<gray>which means you cant change this setting."
 
       styles:
@@ -257,7 +257,7 @@ scoreboard:
 
 other:
 
-  no_do: "<gray>これをすることはできない。"
+  no_do: "<gray>これをできません。"
   no_teleporting: "<white>You can''t enter the parkour world by teleporting!"
   customize: "<gray>Customize your parkour experience by using \"/parkour\""
 

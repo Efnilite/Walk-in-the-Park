@@ -14,7 +14,6 @@ import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.schematic.selection.Selection;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
@@ -296,7 +295,7 @@ public class ParkourCommand extends ViCommand {
                         Util.send(player, "<gray>You can change the file name to whatever number you like.");
                         Util.send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
-                        new Schematic(new Selection(existingSelection[0], existingSelection[1]))
+                        new Schematic(existingSelection[0], existingSelection[1])
                                 .file("parkour-" + code)
                                 .save(player);
                         return true;

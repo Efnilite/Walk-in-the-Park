@@ -1,7 +1,7 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.events.BlockGenerateEvent;
+import dev.efnilite.ip.api.event.BlockGenerateEvent;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
