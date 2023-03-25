@@ -6,11 +6,11 @@ import dev.efnilite.vilib.event.EventWrapper;
 /**
  * Gets called when a player falls. Read-only.
  */
-public class PlayerFallEvent extends EventWrapper {
+public class ParkourFallEvent extends EventWrapper {
 
     public final ParkourPlayer player;
 
-    public PlayerFallEvent(ParkourPlayer player) {
+    public ParkourFallEvent(ParkourPlayer player) {
         this.player = player;
     }
 }

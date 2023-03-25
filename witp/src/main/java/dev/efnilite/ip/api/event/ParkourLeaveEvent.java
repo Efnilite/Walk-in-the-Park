@@ -4,13 +4,13 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.event.EventWrapper;
 
 /**
- * Gets called when a player starts spectating a session. Read-only.
+ * Gets called when a player leaves a session. Read-only.
  */
-public class PlayerSpectateEvent extends EventWrapper {
+public class ParkourLeaveEvent extends EventWrapper {
 
     public final ParkourPlayer player;
 
-    public PlayerSpectateEvent(ParkourPlayer player) {
+    public ParkourLeaveEvent(ParkourPlayer player) {
         this.player = player;
     }
 }

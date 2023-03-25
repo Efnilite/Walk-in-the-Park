@@ -4,13 +4,13 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.event.EventWrapper;
 
 /**
- * Gets called when a player joins a session. Read-only.
+ * Gets called when a point is scored. Read-only.
  */
-public class PlayerJoinEvent extends EventWrapper {
+public class ParkourScoreEvent extends EventWrapper {
 
     public final ParkourPlayer player;
 
-    public PlayerJoinEvent(ParkourPlayer player) {
+    public ParkourScoreEvent(ParkourPlayer player) {
         this.player = player;
     }
 }

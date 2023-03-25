@@ -4,13 +4,13 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.vilib.event.EventWrapper;
 
 /**
- * Gets called when a point is scored. Read-only.
+ * Gets called when a player starts spectating a session. Read-only.
  */
-public class PlayerScoreEvent extends EventWrapper {
+public class ParkourSpectateEvent extends EventWrapper {
 
     public final ParkourPlayer player;
 
-    public PlayerScoreEvent(ParkourPlayer player) {
+    public ParkourSpectateEvent(ParkourPlayer player) {
         this.player = player;
     }
 }
