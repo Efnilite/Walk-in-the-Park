@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * <p>A session is bound to a {@link dev.efnilite.ip.world.WorldDivider} section.
+ * <p>A session is bound to a {@link dev.efnilite.ip.world.WorldDivider2} section.
  * It manages all players, all spectators, visibility, the generator, etc.</p>
  * <p>Iteration 2.</p>
  *
@@ -55,8 +55,7 @@ public class Session2 {
      */
     protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
-    private Session2() {
-    }
+    private Session2() { }
 
     /**
      * Adds provided players to this session's player list.
