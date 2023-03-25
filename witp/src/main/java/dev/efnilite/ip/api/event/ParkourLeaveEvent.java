@@ -1,6 +1,6 @@
 package dev.efnilite.ip.api.event;
 
-import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.event.EventWrapper;
 
 /**
@@ -8,9 +8,9 @@ import dev.efnilite.vilib.event.EventWrapper;
  */
 public class ParkourLeaveEvent extends EventWrapper {
 
-    public final ParkourPlayer player;
+    public final ParkourUser player;
 
-    public ParkourLeaveEvent(ParkourPlayer player) {
+    public ParkourLeaveEvent(ParkourUser player) {
         this.player = player;
     }
 }
