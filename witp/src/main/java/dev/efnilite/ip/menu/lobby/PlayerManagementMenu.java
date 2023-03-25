@@ -6,6 +6,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -37,14 +38,13 @@ public class PlayerManagementMenu {
             return;
         }
 
-        Session session = viewer.getSession();
+        Session2 session = viewer.session;
 
         PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
         add(menu, viewer, Colls.map(player -> player, session.getPlayers()));
         add(menu, viewer, Colls.map(player -> player, session.getSpectators()));
 
-        menu
-                .displayRows(0, 1)
+        menu.displayRows(0, 1)
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT)
                         .click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT)
@@ -56,7 +56,7 @@ public class PlayerManagementMenu {
     }
 
     private void add(PagedMenu menu, ParkourUser viewer, List<ParkourUser> users) {
-        Session session = viewer.getSession();
+        Session2 session = viewer.session;
 
         for (ParkourUser other : users) {
             if (other == viewer) {
@@ -67,7 +67,7 @@ public class PlayerManagementMenu {
             Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", other.getName());
             item.material(Material.PLAYER_HEAD);
 
-            boolean muted = session.isMuted(other);
+            boolean muted = session.muted.contains(other);
 
             List<String> lore = new ArrayList<>();
             if (muted) {
@@ -80,35 +80,30 @@ public class PlayerManagementMenu {
             lore.addAll(List.of(bottom));
 
             // Player head gathering
-            item
-                    .material(Material.PLAYER_HEAD)
-                    .lore(lore)
-                    .click(event -> {
-                        ClickType click = event.getEvent().getClick();
+            item.material(Material.PLAYER_HEAD).lore(lore).click(event -> {
+                ClickType click = event.getEvent().getClick();
 
-                        switch (click) {
-                            case LEFT -> {
-                                IP.getDivider().generate(ParkourPlayer.register(sessionBukkitPlayer));
-                                other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked"));
+                switch (click) {
+                    case LEFT -> {
+                        IP.getDivider().generate(ParkourPlayer.register(sessionBukkitPlayer));
+                        other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked"));
 
-                                viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice"));
-                                open(viewer.player);
-                            }
-                            case RIGHT -> {
-                                session.setMuted(other, !muted);
+                        viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice"));
+                        open(viewer.player);
+                    }
+                    case RIGHT -> {
+                        session.mute(other);
 
-                                if (!muted) {
-                                    other.send(IP.PREFIX +
-                                            Locales.getString(other.getLocale(), "lobby.player_management.muted"));
-                                } else {
-                                    other.send(IP.PREFIX +
-                                            Locales.getString(other.getLocale(), "lobby.player_management.unmuted"));
-                                }
-
-                                open(viewer.player);
-                            }
+                        if (!muted) {
+                            other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.muted"));
+                        } else {
+                            other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.unmuted"));
                         }
-                    });
+
+                        open(viewer.player);
+                    }
+                }
+            });
 
             ItemStack stack = item.build(); // Updating meta requires building
             stack.setType(Material.PLAYER_HEAD);

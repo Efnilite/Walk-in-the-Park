@@ -11,8 +11,10 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.world.WorldDivider2;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,7 +23,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,8 @@ import java.util.*;
  * @author Efnilite
  */
 public abstract class ParkourUser {
+
+    public Session2 session;
 
     /**
      * This user's locale
@@ -149,7 +152,7 @@ public abstract class ParkourUser {
         Player pl = user.player;
 
         try {
-            Session session = user.getSession();
+            Session2 session = user.session;
 
             if (user instanceof ParkourPlayer pp) {
                 ParkourGenerator generator = pp.getGenerator();
@@ -178,7 +181,7 @@ public abstract class ParkourUser {
                 if (remaining == 0) {
                     // reset generator (remove blocks) and delete island
                     generator.reset(false);
-                    IP.getDivider().leave(pp);
+                    WorldDivider2.leave(session);
                 }
 
                 pp.save(saveAsync);
@@ -270,7 +273,6 @@ public abstract class ParkourUser {
      * @return True if the player is a registered {@link ParkourUser}.
      * False if the player isn't registered or the provided player is null.
      */
-    @Contract("null -> false")
     public static boolean isUser(@Nullable Player player) {
         return player != null && users.containsKey(player);
     }
@@ -365,15 +367,6 @@ public abstract class ParkourUser {
      */
     public Location getLocation() {
         return player.getLocation();
-    }
-
-    /**
-     * Gets this player's session by retrieving it from the session pool.
-     *
-     * @return the current player's {@link Session}
-     */
-    public Session getSession() {
-        return Session.getSession(sessionId);
     }
 
     /**

@@ -29,9 +29,7 @@ public class Util {
     /**
      * Gets a spiral
      *
-     * @param   n
-     *          The number of  value
-     *
+     * @param n The number of  value
      * @return the coords of this value
      */
     // https://math.stackexchange.com/a/163101
@@ -98,9 +96,7 @@ public class Util {
      * Returns whether the provided player is a Bedrock player.
      * This check is provided by Floodgate
      *
-     * @param   player
-     *          The player
-     *
+     * @param player The player
      * @return true if the player is a Bedrock player, false if not.
      */
     public static boolean isBedrockPlayer(Player player) {
@@ -110,12 +106,8 @@ public class Util {
     /**
      * Translates any placeholders found by PlaceholderAPI
      *
-     * @param   player
-     *          The player
-     *
-     * @param   string
-     *          The string that will be translated
-     *
+     * @param player The player
+     * @param string The string that will be translated
      * @return the translated string
      */
     public static String translate(Player player, String string) {

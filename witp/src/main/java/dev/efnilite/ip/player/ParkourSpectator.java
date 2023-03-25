@@ -8,6 +8,7 @@ import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Strings;
@@ -29,11 +30,10 @@ import java.util.List;
  */
 public class ParkourSpectator extends ParkourUser {
 
-    protected ParkourPlayer closest;
+    public ParkourPlayer closest;
     protected BukkitTask closestChecker;
-    protected final Session session;
 
-    public ParkourSpectator(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
+    public ParkourSpectator(@NotNull Player player, @NotNull Session2 session, @Nullable PreviousData previousData) {
         super(player, previousData);
 
         this.session = session;
@@ -92,20 +92,20 @@ public class ParkourSpectator extends ParkourUser {
         for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
-            lines.add(line
-                    .replace("%score%", Integer.toString(generator.score))
-                    .replace("%time%", generator.stopwatch.toString())
+            lines.add(line.replace("%score%", Integer.toString(generator.score))
+                    .replace("%time%", generator.getTime())
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%topscore%", Integer.toString(top.score()))
-                    .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+                    .replace("%topplayer%", top.name())
+                    .replace("%session%", getSession().getSessionId()));
         }
 
-        board.updateTitle(title
-                .replace("%score%", Integer.toString(generator.score))
-                .replace("%time%", generator.stopwatch.toString())
+        board.updateTitle(title.replace("%score%", Integer.toString(generator.score))
+                .replace("%time%", generator.getTime())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
-                .replace("%topplayer%", top.name()).replace("%session%", getSession().getSessionId()));
+                .replace("%topplayer%", top.name())
+                .replace("%session%", getSession().getSessionId()));
         board.updateLines(lines);
     }
 
@@ -113,28 +113,24 @@ public class ParkourSpectator extends ParkourUser {
      * Runs a checker which checks for the closest {@link ParkourPlayer}, and updates the scoreboard, etc. accordingly.
      */
     public void runClosestChecker() {
-        closestChecker = Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    if (session.getPlayers().size() < 2) { // only update if there is more than 1 player
-                        return;
-                    }
+        closestChecker = Task.create(IP.getPlugin()).async().execute(() -> {
+            if (session.getPlayers().size() < 2) { // only update if there is more than 1 player
+                return;
+            }
 
-                    double leastDistance = 1000000;
-                    ParkourPlayer closest = null;
+            double leastDistance = 1000000;
+            ParkourPlayer closest = null;
 
-                    for (ParkourPlayer pp : session.getPlayers()) {
-                        double distance = pp.getLocation().distance(player.getLocation());
-                        if (distance < leastDistance) {
-                            closest = pp;
-                            leastDistance = distance;
-                        }
-                    }
+            for (ParkourPlayer pp : session.getPlayers()) {
+                double distance = pp.getLocation().distance(player.getLocation());
+                if (distance < leastDistance) {
+                    closest = pp;
+                    leastDistance = distance;
+                }
+            }
 
-                    setClosest(closest == null ? session.getPlayers().get(0) : closest);
-                })
-                .repeat(10)
-                .run();
+            this.closest = closest == null ? session.getPlayers().get(0) : closest;
+        }).repeat(10).run();
     }
 
     /**
@@ -144,18 +140,5 @@ public class ParkourSpectator extends ParkourUser {
         closestChecker.cancel();
 
         player.setInvisible(false);
-    }
-
-    public void setClosest(ParkourPlayer closest) {
-        this.closest = closest;
-    }
-
-    public ParkourPlayer getClosest() {
-        return closest;
-    }
-
-    @Override
-    public Session getSession() {
-        return session;
     }
 }

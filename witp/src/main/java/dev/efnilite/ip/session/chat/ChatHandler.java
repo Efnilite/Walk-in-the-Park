@@ -5,7 +5,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,13 +22,13 @@ public class ChatHandler implements Listener {
 
         ParkourUser user = ParkourUser.getUser(sender);
 
-        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT) || user == null || user.getSession() == null) {
+        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT) || user == null) {
             return;
         }
 
-        Session session = user.getSession();
+        Session2 session = user.session;
 
-        if (session.isMuted(user)) {
+        if (session.muted.contains(user)) {
             return;
         }
 

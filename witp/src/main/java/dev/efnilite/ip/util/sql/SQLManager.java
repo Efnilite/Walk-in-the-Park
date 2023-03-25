@@ -35,15 +35,7 @@ public class SQLManager {
             }
 
             // Connect
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
-                            "?allowPublicKeyRetrieval=true" +
-                            "&useSSL=false" +
-                            "&useUnicode=true" +
-                            "&characterEncoding=utf-8" +
-                            "&autoReconnect=true" +
-                            "&maxReconnects=5",
-                    Option.SQL_USERNAME, Option.SQL_PASSWORD);
+            connection = DriverManager.getConnection("jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB + "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" + "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
 
             init();
 
@@ -74,8 +66,7 @@ public class SQLManager {
     /**
      * Sends a query to the database.
      *
-     * @param   sql
-     *          The query.
+     * @param sql The query.
      */
     public void sendQuery(String sql) {
         validateConnection();
@@ -92,8 +83,7 @@ public class SQLManager {
     /**
      * Sends a query to the database. If this query returns an error, ignore it.
      *
-     * @param   sql
-     *          The query.
+     * @param sql The query.
      */
     public void sendQuerySuppressed(String sql) {
         validateConnection();
@@ -115,10 +105,7 @@ public class SQLManager {
         sendQuery("CREATE DATABASE IF NOT EXISTS `" + database + "`;");
         sendQuery("USE `" + database + "`;");
 
-        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " +
-                "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " +
-                "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " +
-                "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
+        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " + "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " + "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " + "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
 
         // v3.0.0
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`;");
@@ -128,24 +115,18 @@ public class SQLManager {
         sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
 
         // v3.6.0
-        sendQuerySuppressed(
-            """
-            ALTER TABLE `%s` ADD `locale` VARCHAR(8);
-            """
-        .formatted(Option.SQL_PREFIX + "options"));
+        sendQuerySuppressed("""
+                ALTER TABLE `%s` ADD `locale` VARCHAR(8);
+                """.formatted(Option.SQL_PREFIX + "options"));
 
-        sendQuerySuppressed(
-            """
-            ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;
-            """
-        .formatted(Option.SQL_PREFIX + "options"));
+        sendQuerySuppressed("""
+                ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;
+                """.formatted(Option.SQL_PREFIX + "options"));
 
         // v4.0.0
-        sendQuerySuppressed(
-            """
-            ALTER TABLE `%s` ADD `sound` BOOLEAN;
-            """
-        .formatted(Option.SQL_PREFIX + "options"));
+        sendQuerySuppressed("""
+                ALTER TABLE `%s` ADD `sound` BOOLEAN;
+                """.formatted(Option.SQL_PREFIX + "options"));
 
         IP.logging().info("Initialized database");
     }

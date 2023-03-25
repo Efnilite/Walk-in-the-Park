@@ -26,10 +26,7 @@ import java.util.List;
  */
 public enum Config {
 
-    CONFIG("config.yml"),
-    GENERATION("generation.yml"),
-    REWARDS("rewards-v2.yml"),
-    SCHEMATICS("schematics.yml");
+    CONFIG("config.yml"), GENERATION("generation.yml"), REWARDS("rewards-v2.yml"), SCHEMATICS("schematics.yml");
 
     /**
      * Reloads all config files.

@@ -105,8 +105,7 @@ public class Locales {
         try {
             user.save(localPath);
         } catch (IOException ex) {
-            IP.logging().stack("Error while trying to save fixed config file %s".formatted(localPath),
-                    "delete this file and restart your server", ex);
+            IP.logging().stack("Error while trying to save fixed config file %s".formatted(localPath), "delete this file and restart your server", ex);
         }
     }
 

@@ -8,12 +8,12 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.Score;
-import dev.efnilite.ip.util.Stopwatch;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
+import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,18 +53,7 @@ public class SingleLeaderboardMenu {
                 continue;
             }
 
-            Item item = base.clone()
-                    .material(Material.PLAYER_HEAD)
-                    .modifyName(name -> name.replace("%r", Integer.toString(rank))
-                            .replace("%s", Integer.toString(score.score()))
-                            .replace("%p", score.name())
-                            .replace("%t", score.time())
-                            .replace("%d", score.difficulty()))
-                    .modifyLore(line -> line.replace("%r", Integer.toString(rank))
-                            .replace("%s", Integer.toString(score.score()))
-                            .replace("%p", score.name())
-                            .replace("%t", score.time())
-                            .replace("%d", score.difficulty()));
+            Item item = base.clone().material(Material.PLAYER_HEAD).modifyName(name -> name.replace("%r", Integer.toString(rank)).replace("%s", Integer.toString(score.score())).replace("%p", score.name()).replace("%t", score.time()).replace("%d", score.difficulty())).modifyLore(line -> line.replace("%r", Integer.toString(rank)).replace("%s", Integer.toString(score.score())).replace("%p", score.name()).replace("%t", score.time()).replace("%d", score.difficulty()));
 
             // Player head gathering
             ItemStack stack = item.build();
@@ -107,9 +97,7 @@ public class SingleLeaderboardMenu {
             case DIFFICULTY -> values.get(2);
         };
 
-        menu
-                .displayRows(0, 1)
-                .addToDisplay(items)
+        menu.displayRows(0, 1).addToDisplay(items)
 
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
                         .click(event -> menu.page(1)))
@@ -117,14 +105,11 @@ public class SingleLeaderboardMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase())
-                        .click(event -> open(player, gamemode, next)))
+                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase()).click(event -> open(player, gamemode, next)))
 
-                .item(23, Locales.getItem(player, "other.close")
-                        .click(event -> Menus.COMMUNITY.open(event.getPlayer())))
+                .item(23, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
-                .open(player);
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player);
     }
 
     public enum Sort {
@@ -134,29 +119,21 @@ public class SingleLeaderboardMenu {
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
                 return scores; // already sorted
             }
-        },
-        TIME {
+        }, TIME {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores
-                        .entrySet()
-                        .stream()
-                        .sorted((o1, o2) -> {
-                            long one = Stopwatch.toMillis(o1.getValue().time());
-                            long two = Stopwatch.toMillis(o2.getValue().time());
+                return scores.entrySet().stream().sorted((o1, o2) -> {
+                            long one = toMillis(o1.getValue().time());
+                            long two = toMillis(o2.getValue().time());
 
                             return Math.toIntExact(one - two); // natural order (lower == better)
                         }) // reverse natural order
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
             }
-        },
-        DIFFICULTY {
+        }, DIFFICULTY {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores
-                        .entrySet()
-                        .stream()
-                        .sorted((o1, o2) -> {
+                return scores.entrySet().stream().sorted((o1, o2) -> {
                             String first = o1.getValue().difficulty();
                             String second = o2.getValue().difficulty();
 
@@ -170,5 +147,27 @@ public class SingleLeaderboardMenu {
         };
 
         abstract Map<UUID, Score> sort(Map<UUID, Score> scores);
+    }
+
+    private static long toMillis(@NotNull String string) {
+        long total = 0; // total duration in ms
+
+        for (String part : string.trim().split(" ")) {
+            if (part.contains("h")) { // measure hours
+                int h = Integer.parseInt(part.replace("h", ""));
+
+                total += Time.toMillis((long) h * Time.SECONDS_PER_HOUR);
+            } else if (part.contains("m")) {
+                int m = Integer.parseInt(part.replace("m", ""));
+
+                total += Time.toMillis((long) m * Time.SECONDS_PER_MINUTE);
+            } else if (part.contains("s")) {
+                double s = Double.parseDouble(part.replace("s", ""));
+
+                total += s * 1000;
+            }
+        }
+
+        return total;
     }
 }

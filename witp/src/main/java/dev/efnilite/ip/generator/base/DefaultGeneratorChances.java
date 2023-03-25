@@ -3,7 +3,7 @@ package dev.efnilite.ip.generator.base;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.GeneratorOption;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public abstract class DefaultGeneratorChances extends ParkourGenerator {
      */
     public final HashMap<Integer, Integer> defaultChances;
 
-    public DefaultGeneratorChances(@NotNull Session session, GeneratorOption... generatorOptions) {
+    public DefaultGeneratorChances(@NotNull Session2 session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);
 
         this.player = session.getPlayers().get(0);

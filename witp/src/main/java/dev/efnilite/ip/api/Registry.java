@@ -21,15 +21,14 @@ public final class Registry {
 
     public Registry() {
         this.gamemodes = new LinkedHashMap<>();
-        this.styleTypes =  new LinkedHashMap<>();
+        this.styleTypes = new LinkedHashMap<>();
     }
 
     /**
      * Registers a style type. This doesn't need materials, so you can pass the materials as null.
      * Example: #registerType(new DefaultStyle(null));
      *
-     * @param   style
-     *          The style type.
+     * @param style The style type.
      */
     public void registerType(@NotNull StyleType style) {
         if (!closed) {
@@ -43,8 +42,7 @@ public final class Registry {
     /**
      * Registers a gamemode. Registrations are only accepted until the first time a player opens the Gamemode menu.
      *
-     * @param   gamemode
-     *          The instance of the gamemode that's to be registered
+     * @param gamemode The instance of the gamemode that's to be registered
      */
     public void register(@NotNull Gamemode gamemode) {
         if (!closed) {
@@ -58,9 +56,7 @@ public final class Registry {
     /**
      * Returns a gamemode by a specific name
      *
-     * @param   name
-     *          The name
-     *
+     * @param name The name
      * @return the Gamemode instance associated with this name or null if there is no Gamemode for this name.
      */
     @Nullable
@@ -75,7 +71,7 @@ public final class Registry {
 
     public StyleType getTypeFromStyle(@NotNull String style) {
         for (StyleType value : styleTypes.values()) {
-            if (value.styles.keySet().contains(style.toLowerCase())) {
+            if (value.styles.containsKey(style.toLowerCase())) {
                 return value;
             }
         }

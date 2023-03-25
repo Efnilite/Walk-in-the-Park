@@ -11,10 +11,10 @@ import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
-import dev.efnilite.ip.schematic.RotationAngle;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.command.ViCommand;
@@ -213,7 +213,7 @@ public class ParkourCommand extends ViCommand {
 
                 String type = args[1]; // get mode from second arg
                 Gamemode gamemode = IP.getRegistry().getGamemode(type);
-                Session session = Session.getSession(type.toUpperCase());
+                Session2 session = Session2.getSession(type.toUpperCase());
 
                 if (gamemode == null) {
                     if (session == null) {
@@ -224,7 +224,11 @@ public class ParkourCommand extends ViCommand {
                             return true;
                         }
 
-                        session.join(player);
+                        if (session.isAcceptingPlayers.apply(session)) {
+                            Gamemodes.DEFAULT.create(player);
+                        } else {
+                            Gamemodes.SPECTATOR.create(player);
+                        }
                     }
                 } else {
                     gamemode.click(player);
@@ -486,7 +490,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    schematic.paste(player.getLocation(), RotationAngle.ANGLE_0);
+                    schematic.paste(player.getLocation());
                     Util.send(sender, IP.PREFIX + "Pasted schematic " + name);
                     return true;
                 }

@@ -7,6 +7,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Strings;
 import org.bukkit.entity.Player;
@@ -47,11 +48,9 @@ public class DefaultGamemode implements Gamemode {
         }
         player.closeInventory();
 
-        IP.getDivider().generate(ParkourUser.register(player));
-
-//        Session2.Builder.create()
-//                .addPlayers(pp)
-//                .complete();
+        Session2.Builder.create()
+                .addPlayers(ParkourUser.register(player))
+                .complete();
     }
 
     @Override

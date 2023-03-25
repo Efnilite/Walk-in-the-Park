@@ -40,7 +40,6 @@ public class SelectStatement extends Statement {
      * Fetches data from a table and sorts it based on the first table column.
      *
      * @return a map with key as first table column
-     *
      * @throws SQLException if something goes wrong
      */
     public @Nullable LinkedHashMap<String, List<Object>> fetch() throws SQLException {

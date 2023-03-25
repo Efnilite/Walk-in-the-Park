@@ -16,7 +16,6 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.chat.ChatHandler;
 import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.util.sql.SQLManager;
-import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.lib.bstats.bukkit.Metrics;
@@ -50,7 +49,6 @@ public final class IP extends ViPlugin {
     private static IP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
-    private static WorldDivider divider;
 
     @Nullable
     private static FloodgateHook floodgateHook;
@@ -149,8 +147,6 @@ public final class IP extends ViPlugin {
         // ----- Worlds -----
 
         if (Option.JOINING) {
-            divider = new WorldDivider();
-
             WorldManager.create();
         }
 
@@ -242,9 +238,5 @@ public final class IP extends ViPlugin {
 
     public static SQLManager getSqlManager() {
         return sqlManager;
-    }
-
-    public static WorldDivider getDivider() {
-        return divider;
     }
 }

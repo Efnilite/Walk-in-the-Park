@@ -1,7 +1,7 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.event.BlockGenerateEvent;
+import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  *     <li>For player joining/leaving, please view {@link ParkourUser}.</li>
  *     <li>For player settings, please view {@link ParkourPlayer}.</li>
  *     <li>For player spectating, please view {@link dev.efnilite.ip.player.ParkourSpectator}.</li>
- *     <li>For events, please view {@link BlockGenerateEvent} and others in the events package.</li>
+ *     <li>For events, please view {@link ParkourBlockGenerateEvent} and others in the events package.</li>
  *     <li>For Sessions, please view {@link dev.efnilite.ip.session.Session}.</li>
  * </ul>
  */

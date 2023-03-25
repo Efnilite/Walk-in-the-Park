@@ -3,14 +3,11 @@ package dev.efnilite.ip.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
-import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.generator.DefaultGenerator;
-import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
+import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.session.SingleSession;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
 import dev.efnilite.ip.util.sql.UpdertStatement;
@@ -83,23 +80,10 @@ public class ParkourPlayer extends ParkourUser {
     public void updateGeneratorSettings() {
         Profile profile = generator.profile;
 
-        profile
-                .set("schematicDifficulty", schematicDifficulty.toString())
-                .set("blockLead", blockLead.toString())
-                .set("useScoreDifficulty", useScoreDifficulty.toString())
-                .set("particles", particles.toString())
-                .set("sound", sound.toString())
-                .set("useSpecialBlocks", useSpecialBlocks.toString())
-                .set("showFallMessage", showFallMessage.toString())
-                .set("showScoreboard", showScoreboard.toString())
-                .set("useSchematic", useSchematic.toString())
-                .set("selectedTime", selectedTime.toString())
-                .set("style", style);
+        profile.set("schematicDifficulty", schematicDifficulty.toString()).set("blockLead", blockLead.toString()).set("useScoreDifficulty", useScoreDifficulty.toString()).set("particles", particles.toString()).set("sound", sound.toString()).set("useSpecialBlocks", useSpecialBlocks.toString()).set("showFallMessage", showFallMessage.toString()).set("showScoreboard", showScoreboard.toString()).set("useSchematic", useSchematic.toString()).set("selectedTime", selectedTime.toString()).set("style", style);
     }
 
-    public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty,
-                            String blockLead, Boolean particles, Boolean sound, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial,
-                            Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
+    public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty, String blockLead, Boolean particles, Boolean sound, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial, Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
 
         this.collectedRewards = new ArrayList<>();
         if (collectedRewards != null) {
@@ -145,9 +129,7 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private void resetPlayerPreferences() {
-        setSettings(null, null, null, null,
-                null, null, null, null, null, null,
-                null, null, null);
+        setSettings(null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
     /**
@@ -157,22 +139,7 @@ public class ParkourPlayer extends ParkourUser {
         Runnable runnable = () -> {
             try {
                 if (Option.SQL) {
-                    Statement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
-                            .setDefault("uuid", uuid.toString())
-                            .setDefault("selectedTime", selectedTime)
-                            .setDefault("style", style)
-                            .setDefault("blockLead", blockLead)
-                            .setDefault("useParticles", particles)
-                            .setDefault("useDifficulty", useScoreDifficulty)
-                            .setDefault("useStructure", useSchematic)
-                            .setDefault("useSpecial", useSpecialBlocks)
-                            .setDefault("showFallMsg", showFallMessage)
-                            .setDefault("showScoreboard", showScoreboard)
-                            .setDefault("collectedRewards", String.join(",", collectedRewards))
-                            .setDefault("locale", getLocale())
-                            .setDefault("schematicDifficulty", schematicDifficulty)
-                            .setDefault("sound", sound)
-                            .setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
+                    Statement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options").setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime).setDefault("style", style).setDefault("blockLead", blockLead).setDefault("useParticles", particles).setDefault("useDifficulty", useScoreDifficulty).setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks).setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard).setDefault("collectedRewards", String.join(",", collectedRewards)).setDefault("locale", getLocale()).setDefault("schematicDifficulty", schematicDifficulty).setDefault("sound", sound).setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
                     statement.query();
                 } else {
                     if (file == null) {
@@ -196,10 +163,7 @@ public class ParkourPlayer extends ParkourUser {
         };
 
         if (async) {
-            Task.create(IP.getPlugin())
-                    .async()
-                    .execute(runnable)
-                    .run();
+            Task.create(IP.getPlugin()).async().execute(runnable).run();
         } else {
             runnable.run();
         }
@@ -214,13 +178,22 @@ public class ParkourPlayer extends ParkourUser {
     public String calculateDifficultyScore() {
         try {
             double score = 0.0;
-            if (useSpecialBlocks) score += 0.3;          // sum:      0.3
-            if (useScoreDifficulty) score += 0.2;       //           0.5
+            if (useSpecialBlocks) {
+                score += 0.3;          // sum:      0.3
+            }
+            if (useScoreDifficulty) {
+                score += 0.2;       //           0.5
+            }
             if (useSchematic) {
-                if (schematicDifficulty == 0.3) score += 0.1;      //    0.6
-                else if (schematicDifficulty == 0.5) score += 0.3; //    0.8
-                else if (schematicDifficulty == 0.7) score += 0.4; //    0.9
-                else if (schematicDifficulty == 0.8) score += 0.5; //    1.0
+                if (schematicDifficulty == 0.3) {
+                    score += 0.1;      //    0.6
+                } else if (schematicDifficulty == 0.5) {
+                    score += 0.3; //    0.8
+                } else if (schematicDifficulty == 0.7) {
+                    score += 0.4; //    0.9
+                } else if (schematicDifficulty == 0.8) {
+                    score += 0.5; //    1.0
+                }
             }
             return Double.toString(score).substring(0, 3);
         } catch (NullPointerException ex) {
@@ -240,9 +213,7 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(pp.file);
                     ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(stringValue(from.selectedTime), from.style, from._locale,
-                            stringValue(from.schematicDifficulty), stringValue(from.blockLead), from.particles, from.sound, from.useScoreDifficulty,
-                            from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
+                    pp.setSettings(stringValue(from.selectedTime), from.style, from._locale, stringValue(from.schematicDifficulty), stringValue(from.blockLead), from.particles, from.sound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
                     IP.logging().stack("Error while reading file of player " + pp.player.getName(), throwable);
@@ -255,26 +226,12 @@ public class ParkourPlayer extends ParkourUser {
             pp.save(true);
         } else {
             try {
-                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options")
-                        .addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale", "schematicDifficulty", "sound")
-                        .addCondition("uuid = '" + uuid + "'");
+                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options").addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
+                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale", "schematicDifficulty", "sound").addCondition("uuid = '" + uuid + "'");
                 Map<String, List<Object>> map = options.fetch();
                 List<Object> objects = map != null ? map.get(uuid.toString()) : null;
                 if (objects != null) {
-                    pp.setSettings((String) objects.get(8),
-                            (String) objects.get(0),
-                            (String) objects.get(10),
-                            (String) objects.get(11),
-                            (String) objects.get(1),
-                            translateSqlBoolean((String) objects.get(2)),
-                            translateSqlBoolean((String) objects.get(12)),
-                            translateSqlBoolean((String) objects.get(3)),
-                            translateSqlBoolean((String) objects.get(4)),
-                            translateSqlBoolean((String) objects.get(5)),
-                            translateSqlBoolean((String) objects.get(6)),
-                            translateSqlBoolean((String) objects.get(7)),
-                            (String) objects.get(9));
+                    pp.setSettings((String) objects.get(8), (String) objects.get(0), (String) objects.get(10), (String) objects.get(11), (String) objects.get(1), translateSqlBoolean((String) objects.get(2)), translateSqlBoolean((String) objects.get(12)), translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)), (String) objects.get(9));
                 } else {
                     pp.resetPlayerPreferences();
                     pp.save(true);
@@ -304,9 +261,7 @@ public class ParkourPlayer extends ParkourUser {
     /**
      * Gets a ParkourPlayer from their UUID
      *
-     * @param   uuid
-     *          The uuid
-     *
+     * @param uuid The uuid
      * @return the ParkourPlayer
      */
     public static @Nullable ParkourPlayer getPlayer(UUID uuid) {
@@ -321,9 +276,7 @@ public class ParkourPlayer extends ParkourUser {
     /**
      * Gets a ParkourPlayer from a regular Player
      *
-     * @param   player
-     *          The Bukkit Player
-     *
+     * @param player The Bukkit Player
      * @return the ParkourPlayer
      */
     public static @Nullable ParkourPlayer getPlayer(@Nullable Player player) {
@@ -336,13 +289,10 @@ public class ParkourPlayer extends ParkourUser {
      * @return the ParkourGenerator associated with this player
      */
     public @NotNull ParkourGenerator getGenerator() {
-        if (generator == null) {
-            setGenerator(new DefaultGenerator(SingleSession.create(this, Gamemodes.DEFAULT)));
-        }
         return generator;
     }
 
-    public void setupInventory(Location to, boolean runGenerator) {
+    public void setup(Location to, boolean runGenerator) {
         if (to != null) {
             teleport(to);
         }

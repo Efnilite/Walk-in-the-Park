@@ -3,12 +3,13 @@ package dev.efnilite.ip.generator.base;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.generator.GeneratorOption;
 import dev.efnilite.ip.generator.Profile;
-import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Stopwatch;
-import dev.efnilite.vilib.vector.Vector3D;
+import dev.efnilite.ip.schematic.Schematics;
+import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.world.Island;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public abstract class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    public Vector3D heading;
+    public Vector heading;
 
     /**
      * Generator options
@@ -41,14 +42,9 @@ public abstract class ParkourGenerator {
     public List<GeneratorOption> generatorOptions;
 
     /**
-     * The {@link Stopwatch} instance
+     * The {@link Session2} associated with this Generator.
      */
-    public final Stopwatch stopwatch;
-
-    /**
-     * The {@link Session} associated with this Generator.
-     */
-    public final Session session;
+    public final Session2 session;
 
     /**
      * This Generator's {@link Profile}.
@@ -62,13 +58,18 @@ public abstract class ParkourGenerator {
      */
     protected final ThreadLocalRandom random;
 
-    public ParkourGenerator(@NotNull Session session, GeneratorOption... options) {
+    /**
+     * The island instance.
+     */
+    public final Island island;
+
+    public ParkourGenerator(@NotNull Session2 session, GeneratorOption... options) {
         this.session = session;
         this.profile = new Profile();
 
         this.generatorOptions = Arrays.asList(options);
-        this.stopwatch = new Stopwatch();
         this.random = ThreadLocalRandom.current();
+        this.island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
     }
 
     /**
@@ -98,6 +99,7 @@ public abstract class ParkourGenerator {
      *          The blocks to apply the particles to.
      */
     public abstract void particles(List<Block> applyTo);
+    public abstract String getTime();
 
     /**
      * Implementable method for selecting materials used to set the blocks used in {@link #selectBlocks()}.

@@ -151,9 +151,7 @@ public class Option {
     }
 
     private static Location parseLocation(String location) {
-        String[] values = location.replaceAll("[()]", "")
-                .replaceAll("[, ]", " ")
-                .split(" ");
+        String[] values = location.replaceAll("[()]", "").replaceAll("[, ]", " ").split(" ");
 
         World world = Bukkit.getWorld(values[3]);
 

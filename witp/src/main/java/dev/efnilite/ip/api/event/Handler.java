@@ -65,15 +65,12 @@ public class Handler implements EventWatcher {
         // OP join messages
         if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
             Util.send(player, "");
-            Util.send(player,
-                    IP.PREFIX + "Your version is outdated. " +
-                            "Please visit the Spigot page to update.");
+            Util.send(player, IP.PREFIX + "Your version is outdated. " + "Please visit the Spigot page to update.");
             Util.send(player, "");
         }
         if (player.isOp() && WorldManager.WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
-            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
-                    "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
+            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " + "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             Util.send(player, "");
         }
 
@@ -125,7 +122,7 @@ public class Handler implements EventWatcher {
 
         if (Option.INVENTORY_HANDLING) {
             PreviousData data = user.previousData;
-            if (data != null)  {
+            if (data != null) {
                 quitPreviousData.put(playerName, data);
             }
         }
@@ -201,27 +198,25 @@ public class Handler implements EventWatcher {
                 Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[] { location, null });
+                    ParkourCommand.selections.put(player, new Location[]{location, null});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[] { location, existingSelection[1] });
+                ParkourCommand.selections.put(player, new Location[]{location, existingSelection[1]});
 
-                Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(),
-                        new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
             case RIGHT_CLICK_BLOCK -> {
                 Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[] { null, location });
+                    ParkourCommand.selections.put(player, new Location[]{null, location});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[] { existingSelection[0], location });
+                ParkourCommand.selections.put(player, new Location[]{existingSelection[0], location});
 
-                Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(),
-                        new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
         }
     }
@@ -235,9 +230,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        boolean type = event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.DISPENSER ||
-                event.getClickedBlock().getType() == Material.DROPPER ||
-                event.getClickedBlock().getType() == Material.HOPPER);
+        boolean type = event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.DISPENSER || event.getClickedBlock().getType() == Material.DROPPER || event.getClickedBlock().getType() == Material.HOPPER);
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && type && event.getHand() == EquipmentSlot.HAND) {
             event.setCancelled(true);
@@ -245,8 +238,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-                && event.getHand() == EquipmentSlot.HAND;
+        boolean action = (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && event.getHand() == EquipmentSlot.HAND;
 
         if (!action) {
             return;
@@ -306,7 +298,7 @@ public class Handler implements EventWatcher {
             ParkourUser.unregister(user, false, false, true);
         }
     }
-    
+
     @EventHandler
     public void onInventory(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player player) {

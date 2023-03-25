@@ -4,9 +4,9 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.api.event.BlockGenerateEvent;
-import dev.efnilite.ip.api.event.PlayerFallEvent;
-import dev.efnilite.ip.api.event.PlayerScoreEvent;
+import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
+import dev.efnilite.ip.api.event.ParkourFallEvent;
+import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -23,6 +23,7 @@ import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldManager;
@@ -32,7 +33,6 @@ import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Numbers;
 import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -78,11 +78,6 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * Where blocks from schematics spawn
      */
     public Location blockSpawn;
-
-    /**
-     * Area data
-     */
-    public List<Block> islandBlocks;
 
     /**
      * The amount of blocks that will trail the player's current index.
@@ -145,12 +140,12 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      *
      * @param session The session associated with this generator
      */
-    public DefaultGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
+    public DefaultGenerator(@NotNull Session2 session, GeneratorOption... generatorOptions) {
         super(session, generatorOptions);
 
         this.mostRecentBlock = player.getLocation().clone();
         this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.heading = stringToVector3D(Option.HEADING);
+        this.heading = stringToVector(Option.HEADING);
     }
 
     @Override
@@ -199,7 +194,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
             lines.add(line
                     .replace("%score%", Integer.toString(score))
-                    .replace("%time%", stopwatch.toString())
+                    .replace("%time%", getTime())
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%highscoretime%", rank.time())
                     .replace("%topscore%", Integer.toString(top.score()))
@@ -209,7 +204,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         player.board.updateTitle(title
                 .replace("%score%", Integer.toString(score))
-                .replace("%time%", stopwatch.toString())
+                .replace("%time%", getTime())
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%highscoretime%", rank.time())
                 .replace("%topscore%", Integer.toString(top.score()))
@@ -316,15 +311,15 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         double[][] progress = calculateParameterization();
 
         // calculate recommendations for new heading
-        List<Vector3D> recommendations = updateHeading(progress);
+        List<Vector> recommendations = updateHeading(progress);
 
         if (!recommendations.isEmpty()) {
-            heading = new Vector3D(0, 0, 0);
+            heading = new Vector(0, 0, 0);
 
             // add all recommendations to heading.
             // this will allow the heading to become diagonal in case it reaches a corner:
             // if north and east are recommended, the heading of the parkour will go north-east.
-            for (Vector3D recommendation : recommendations) {
+            for (Vector recommendation : recommendations) {
                 heading.add(recommendation);
             }
         }
@@ -374,27 +369,19 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(angleBetween(stringToVector3D(Option.HEADING), heading));
+        offset.rotateAroundY(stringToVector(Option.HEADING).angle(heading));
 
         clone.add(offset);
 
         return clone.getBlock();
     }
 
-    private double angleBetween(Vector3D base, Vector3D other) {
-        if (base == other) {
-            return 0;
-        }
-
-        return Math.toDegrees(Math.atan2(base.z, base.x) - Math.atan2(other.z, other.x));
-    }
-
-    private Vector3D stringToVector3D(String direction) {
+    private Vector stringToVector(String direction) {
         return switch (direction.toLowerCase()) {
-            case "north" -> new Vector3D(0, 0, -1);
-            case "south" -> new Vector3D(0, 0, 1);
-            case "west" -> new Vector3D(-1, 0, 0);
-            default -> new Vector3D(1, 0, 0); // east
+            case "north" -> new Vector(0, 0, -1);
+            case "south" -> new Vector(0, 0, 1);
+            case "west" -> new Vector(-1, 0, 0);
+            default -> new Vector(1, 0, 0); // east
         };
     }
 
@@ -450,7 +437,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
      * @param progress The 2-dimensional array resulting from {@link #calculateParameterization()}
      * @return a list of new proposed headings
      */
-    public List<Vector3D> updateHeading(double[][] progress) {
+    public List<Vector> updateHeading(double[][] progress) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -459,21 +446,21 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         double tz = progress[2][0];
         double borderMarginZ = progress[2][1];
 
-        List<Vector3D> directions = new ArrayList<>();
+        List<Vector> directions = new ArrayList<>();
         // check border
         if (tx < borderMarginX) {
-            directions.add(new Vector3D(1, 0, 0));
-            // x should increase
+            directions.add(new Vector(1, 0, 0));
+            // x should Vector
         } else if (tx > 1 - borderMarginX) {
-            directions.add(new Vector3D(-1, 0, 0));
+            directions.add(new Vector(-1, 0, 0));
             // x should decrease
         }
 
         if (tz < borderMarginZ) {
-            directions.add(new Vector3D(0, 0, 1));
+            directions.add(new Vector(0, 0, 1));
             // z should increase
         } else if (tz > 1 - borderMarginZ) {
-            directions.add(new Vector3D(0, 0, -1));
+            directions.add(new Vector(0, 0, -1));
             // z should decrease
         }
 
@@ -511,12 +498,12 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         totalScore++;
         checkRewards();
 
-        new PlayerScoreEvent(player).call();
+        new ParkourScoreEvent(player).call();
     }
 
     @Override
     public void fall() {
-        new PlayerFallEvent(player).call();
+        new ParkourFallEvent(player).call();
         reset(true);
     }
 
@@ -680,9 +667,9 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         }
 
         int score = this.score;
-        String time = stopwatch.toString();
+        String time = getTime();
 
-        if (profile.get("showFallMessage").asBoolean() && regenerate && time != null) {
+        if (profile.get("showFallMessage").asBoolean() && regenerate) {
             String message;
             int number = 0;
             if (score == record.score()) {
@@ -711,27 +698,39 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         this.score = 0;
         start = null;
-        stopwatch.stop();
 
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
         }
     }
 
-    private String durationToString() {
+    /**
+     * @return The current duration of the run.
+     */
+    public String getTime() {
+        if (start == null) {
+            return "0.0s";
+        }
+
         Duration duration = Duration.between(start, Instant.now());
 
         StringBuilder builder = new StringBuilder(" ");
-        
+
+        if (duration.toHoursPart() > 0) {
+            builder.append("%dh".formatted(duration.toHoursPart()));
+        }
+        if (duration.toMinutesPart() > 0) {
+            builder.append("%dm".formatted(duration.toMinutesPart()));
+        }
         if (duration.toMillisPart() > 0) {
-            builder.append("%d ms".formatted(duration.toMillisPart()));
+            builder.append("%d.%ss".formatted(duration.toSecondsPart(), Integer.toString(duration.toMillisPart()).charAt(0)));
         }
 
         return builder.toString();
     }
 
     protected void registerScore() {
-        getGamemode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), stopwatch.toString(), player.calculateDifficultyScore(), score));
+        getGamemode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), getTime(), player.calculateDifficultyScore(), score));
     }
 
     /**
@@ -794,7 +793,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                 }
 
                 setBlock(selectedBlock, next);
-                new BlockGenerateEvent(selectedBlock, this, player).call();
+                new ParkourBlockGenerateEvent(selectedBlock, this, player).call();
 
                 positionIndexMap.put(selectedBlock, positionIndexTotal);
                 positionIndexTotal++;
