@@ -22,7 +22,6 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -199,7 +198,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                     .replace("%highscoretime%", rank.time())
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name())
-                    .replace("%session%", session.getSessionId()));
+                    .replace("%session%", session.getPlayers().get(0).getName())); // todo find a better way
         }
 
         player.board.updateTitle(title
@@ -209,7 +208,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
                 .replace("%highscoretime%", rank.time())
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name())
-                .replace("%session%", session.getSessionId()));
+                .replace("%session%", session.getPlayers().get(0).getName()));
         player.board.updateLines(lines);
     }
 
@@ -539,7 +538,7 @@ public class DefaultGenerator extends DefaultGeneratorChances {
         session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
         updateScoreboard();
 
-        session.updateSpectators();
+        session.getSpectators().forEach(ParkourSpectator::update);
         player.player.setSaturation(20);
 
         Location playerLocation = player.getLocation();
@@ -701,6 +700,8 @@ public class DefaultGenerator extends DefaultGeneratorChances {
 
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
+        } else {
+            island.destroy();
         }
     }
 

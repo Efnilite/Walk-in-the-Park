@@ -5,7 +5,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -85,7 +84,10 @@ public class PlayerManagementMenu {
 
                 switch (click) {
                     case LEFT -> {
-                        IP.getDivider().generate(ParkourPlayer.register(sessionBukkitPlayer));
+                        Session2.Builder.create()
+                                .addPlayers(ParkourUser.register(sessionBukkitPlayer))
+                                .complete();
+
                         other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked"));
 
                         viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice"));

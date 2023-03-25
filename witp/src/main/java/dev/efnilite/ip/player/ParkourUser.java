@@ -4,13 +4,14 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.api.event.ParkourLeaveEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.session.chat.ChatType;
 import dev.efnilite.ip.util.Util;
@@ -47,11 +48,6 @@ public abstract class ParkourUser {
      * This user's scoreboard
      */
     public FastBoard board;
-
-    /**
-     * This user's session id
-     */
-    public String sessionId;
 
     /**
      * This user's PreviousData
@@ -151,6 +147,8 @@ public abstract class ParkourUser {
     protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
         Player pl = user.player;
 
+        new ParkourLeaveEvent(user).call();
+
         try {
             Session2 session = user.session;
 
@@ -160,19 +158,18 @@ public abstract class ParkourUser {
                 int remaining = 0;
                 // remove spectators
                 if (session != null) {
-                    if (session.getGamemode() instanceof MultiGamemode gamemode) {
+                    if (generator.getGamemode() instanceof MultiGamemode gamemode) {
                         gamemode.leave(pl, session);
                     }
 
                     session.removePlayers(pp);
 
-                    if (session.getGamemode().getName().contains("team")) {
+                    if (generator.getGamemode().getName().contains("team")) {
                         remaining = session.getPlayers().size();
                     }
 
                     for (ParkourSpectator spectator : session.getSpectators()) {
-                        ParkourPlayer spp = ParkourPlayer.register(spectator.player);
-                        IP.getDivider().generate(spp);
+                        Gamemodes.DEFAULT.create(spectator.player);
 
                         session.removeSpectators(spectator);
                     }
@@ -181,7 +178,8 @@ public abstract class ParkourUser {
                 if (remaining == 0) {
                     // reset generator (remove blocks) and delete island
                     generator.reset(false);
-                    WorldDivider2.leave(session);
+
+                    WorldDivider2.disassociate(session);
                 }
 
                 pp.save(saveAsync);
@@ -189,7 +187,7 @@ public abstract class ParkourUser {
                 spectator.unregister();
 
                 if (session != null) {
-                    spectator.getSession().removeSpectators(spectator);
+                    spectator.session.removeSpectators(spectator);
                 }
             }
             if (user.board != null && !user.board.isDeleted()) {

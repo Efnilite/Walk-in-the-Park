@@ -2,18 +2,21 @@ package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.event.ParkourSpectateEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.base.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -36,6 +39,8 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourSpectator(@NotNull Player player, @NotNull Session2 session, @Nullable PreviousData previousData) {
         super(player, previousData);
 
+        new ParkourSpectateEvent(this).call();
+
         this.session = session;
         this.closest = session.getPlayers().get(0);
 
@@ -53,6 +58,28 @@ public class ParkourSpectator extends ParkourUser {
 
         sendTranslated("play.spectator.join");
         runClosestChecker();
+    }
+
+    public void update() {
+        Player bukkitPlayer = player;
+        Player watchingPlayer = closest.player;
+
+        Entity target = bukkitPlayer.getSpectatorTarget();
+
+        if (watchingPlayer.getLocation().distanceSquared(bukkitPlayer.getLocation()) > 10000) {
+            if (bukkitPlayer.getGameMode() == GameMode.SPECTATOR) { // if player is a spectator
+                bukkitPlayer.setSpectatorTarget(null);
+                teleport(watchingPlayer.getLocation());
+                bukkitPlayer.setSpectatorTarget(target);
+            } else { // if player isn't a spectator (bedrock)?
+                teleport(watchingPlayer.getLocation());
+            }
+        }
+        String string = Strings.colour(Locales.getString(bukkitPlayer, "play.spectator.action_bar"));
+        bukkitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(string));
+
+        player.setGameMode(GameMode.SPECTATOR);
+        updateScoreboard();
     }
 
     public void updateScoreboard() {
@@ -97,7 +124,7 @@ public class ParkourSpectator extends ParkourUser {
                     .replace("%highscore%", Integer.toString(rank.score()))
                     .replace("%topscore%", Integer.toString(top.score()))
                     .replace("%topplayer%", top.name())
-                    .replace("%session%", getSession().getSessionId()));
+                    .replace("%session%", session.getPlayers().get(0).getName()));
         }
 
         board.updateTitle(title.replace("%score%", Integer.toString(generator.score))
@@ -105,7 +132,7 @@ public class ParkourSpectator extends ParkourUser {
                 .replace("%highscore%", Integer.toString(rank.score()))
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%topplayer%", top.name())
-                .replace("%session%", getSession().getSessionId()));
+                .replace("%session%", session.getPlayers().get(0).getName()));
         board.updateLines(lines);
     }
 

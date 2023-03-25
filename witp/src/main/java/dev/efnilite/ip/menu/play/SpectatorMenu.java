@@ -42,7 +42,7 @@ public class SpectatorMenu {
                 continue;
             }
 
-            if (user != null && session.getSessionId().equals(user.sessionId)) { // don't let player join their own session
+            if (user != null && session == user.session) { // don't let player join their own session
                 continue;
             }
 

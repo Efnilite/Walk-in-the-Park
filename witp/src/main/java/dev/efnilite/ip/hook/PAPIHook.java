@@ -93,7 +93,7 @@ public class PAPIHook extends PlaceholderExpansion {
         if (user instanceof ParkourPlayer) {
             pp = (ParkourPlayer) user;
         } else if (user instanceof ParkourSpectator) {
-            pp = ((ParkourSpectator) user).getClosest();
+            pp = ((ParkourSpectator) user).closest;
         }
 
         if (pp != null) {

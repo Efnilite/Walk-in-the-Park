@@ -43,7 +43,7 @@ public class DefaultGamemode implements Gamemode {
         }
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp != null && pp.getSession().getGamemode() instanceof DefaultGamemode) {
+        if (pp != null && pp.getGenerator().getGamemode() instanceof DefaultGamemode) {
             return;
         }
         player.closeInventory();

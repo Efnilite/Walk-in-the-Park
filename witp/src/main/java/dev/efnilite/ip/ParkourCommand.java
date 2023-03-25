@@ -13,7 +13,6 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.Session2;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
@@ -213,14 +212,15 @@ public class ParkourCommand extends ViCommand {
 
                 String type = args[1]; // get mode from second arg
                 Gamemode gamemode = IP.getRegistry().getGamemode(type);
-                Session2 session = Session2.getSession(type.toUpperCase());
+                ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
 
                 if (gamemode == null) {
-                    if (session == null) {
-                        Util.send(sender, IP.PREFIX + "Unknown lobby! Try typing the code again."); // could not find, so go to default
+                    if (sessionOwner == null) {
+                        Util.send(sender, IP.PREFIX + "Unknown player! Try typing the name again."); // could not find, so go to default
                     } else {
                         ParkourUser user = ParkourUser.getUser(player);
-                        if (user != null && user.getSession().getSessionId().equals(type.toUpperCase())) {
+                        Session2 session = sessionOwner.session;
+                        if (user != null && user.session == session) {
                             return true;
                         }
 

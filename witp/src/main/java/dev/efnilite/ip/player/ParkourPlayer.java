@@ -3,6 +3,7 @@ package dev.efnilite.ip.player;
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.Profile;
@@ -207,6 +208,8 @@ public class ParkourPlayer extends ParkourUser {
         UUID uuid = pp.player.getUniqueId();
         JOIN_COUNT++;
 
+        new ParkourJoinEvent(pp).call();
+        
         if (!Option.SQL) {
             if (pp.file.exists()) {
                 try {
