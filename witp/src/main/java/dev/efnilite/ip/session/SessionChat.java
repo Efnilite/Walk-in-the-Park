@@ -1,20 +1,19 @@
-package dev.efnilite.ip.session.chat;
+package dev.efnilite.ip.session;
 
 import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session2;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
- * Handles chat-related events
+ * Handles session chat-related events
  */
-public class ChatHandler implements Listener {
+public class SessionChat implements Listener {
 
     @EventHandler
     public void chat(AsyncPlayerChatEvent event) {
@@ -26,7 +25,7 @@ public class ChatHandler implements Listener {
             return;
         }
 
-        Session2 session = user.session;
+        Session session = user.session;
 
         if (session.muted.contains(user)) {
             return;
@@ -53,5 +52,16 @@ public class ChatHandler implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * An enum for all available chat types that a player can select while playing
+     */
+    public enum ChatType {
+
+        LOBBY_ONLY,
+        PLAYERS_ONLY,
+        PUBLIC
+
     }
 }

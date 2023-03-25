@@ -6,7 +6,7 @@ import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.chat.ChatType;
+import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
@@ -46,7 +46,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = ChatType.LOBBY_ONLY;
+                    u.chatType = SessionChat.ChatType.LOBBY_ONLY;
                 }
 
                 return true;
@@ -54,7 +54,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = ChatType.PLAYERS_ONLY;
+                    u.chatType = SessionChat.ChatType.PLAYERS_ONLY;
                 }
 
                 return true;
@@ -62,7 +62,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = ChatType.PUBLIC;
+                    u.chatType = SessionChat.ChatType.PUBLIC;
                 }
 
                 return true;

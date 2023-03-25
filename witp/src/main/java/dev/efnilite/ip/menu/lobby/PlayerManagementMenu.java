@@ -5,7 +5,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -37,7 +37,7 @@ public class PlayerManagementMenu {
             return;
         }
 
-        Session2 session = viewer.session;
+        Session session = viewer.session;
 
         PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
         add(menu, viewer, Colls.map(player -> player, session.getPlayers()));
@@ -55,7 +55,7 @@ public class PlayerManagementMenu {
     }
 
     private void add(PagedMenu menu, ParkourUser viewer, List<ParkourUser> users) {
-        Session2 session = viewer.session;
+        Session session = viewer.session;
 
         for (ParkourUser other : users) {
             if (other == viewer) {
@@ -84,7 +84,7 @@ public class PlayerManagementMenu {
 
                 switch (click) {
                     case LEFT -> {
-                        Session2.Builder.create()
+                        Session.Builder.create()
                                 .addPlayers(ParkourUser.register(sessionBukkitPlayer))
                                 .complete();
 

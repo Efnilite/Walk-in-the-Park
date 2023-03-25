@@ -13,7 +13,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.command.ViCommand;
@@ -219,7 +219,7 @@ public class ParkourCommand extends ViCommand {
                         Util.send(sender, IP.PREFIX + "Unknown player! Try typing the name again."); // could not find, so go to default
                     } else {
                         ParkourUser user = ParkourUser.getUser(player);
-                        Session2 session = sessionOwner.session;
+                        Session session = sessionOwner.session;
                         if (user != null && user.session == session) {
                             return true;
                         }

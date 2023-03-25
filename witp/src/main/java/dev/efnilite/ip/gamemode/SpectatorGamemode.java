@@ -7,7 +7,7 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class SpectatorGamemode implements Gamemode {
         throw new IllegalAccessError("SpectatorGamemode uses #create(Player, Session) for instance creation");
     }
 
-    public void create(Player player, Session2 session) {
+    public void create(Player player, Session session) {
         if (!Option.JOINING) {
             player.sendMessage(Strings.colour(IP.PREFIX + "Joining is currently disabled."));
             return;

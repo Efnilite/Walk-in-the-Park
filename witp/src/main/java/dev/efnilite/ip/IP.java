@@ -2,7 +2,6 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.Registry;
-import dev.efnilite.ip.api.event.Handler;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -13,7 +12,7 @@ import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
-import dev.efnilite.ip.session.chat.ChatHandler;
+import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.util.sql.SQLManager;
 import dev.efnilite.ip.world.WorldManager;
@@ -153,7 +152,7 @@ public final class IP extends ViPlugin {
         // ----- Events -----
 
         registerListener(new Handler());
-        registerListener(new ChatHandler());
+        registerListener(new SessionChat());
         registerCommand("ip", new ParkourCommand());
 
         // ----- Metrics -----

@@ -1,6 +1,6 @@
 package dev.efnilite.ip.api;
 
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import org.bukkit.entity.Player;
 
 /**
@@ -13,12 +13,12 @@ public interface MultiGamemode extends Gamemode {
      *
      * @param player The player
      */
-    void join(Player player, Session2 session);
+    void join(Player player, Session session);
 
     /**
      * Removes a player from this gamemode.
      *
      * @param player The player
      */
-    void leave(Player player, Session2 session);
+    void leave(Player player, Session session);
 }

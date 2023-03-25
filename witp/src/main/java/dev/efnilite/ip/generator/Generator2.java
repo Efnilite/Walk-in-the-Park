@@ -1,6 +1,6 @@
 package dev.efnilite.ip.generator;
 
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import org.bukkit.util.Vector;
 
 /**
@@ -22,11 +22,11 @@ public class Generator2 {
     public final Profile profile;
 
     /**
-     * This generator's {@link Session2}.
+     * This generator's {@link Session}.
      */
-    public final Session2 session;
+    public final Session session;
 
-    public Generator2(Session2 session) {
+    public Generator2(Session session) {
         this.session = session;
 
         this.profile = new Profile();

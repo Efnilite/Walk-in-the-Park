@@ -7,9 +7,9 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.world.WorldDivider2;
+import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.AutoSliderItem;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -37,7 +37,7 @@ public class SpectatorMenu {
 
         List<MenuItem> display = new ArrayList<>();
 
-        for (Session2 session : WorldDivider2.SESSIONS.values()) {
+        for (Session session : WorldDivider.SESSIONS.values()) {
             if (!session.isAcceptingSpectators.apply(session)) { // only showcase sessions with spectators enabled
                 continue;
             }

@@ -5,7 +5,7 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.schematic.Schematic;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,14 +26,14 @@ public final class Island {
     /**
      * The session.
      */
-    public final Session2 session;
+    public final Session session;
 
     /**
      * The schematic.
      */
     public final Schematic schematic;
 
-    public Island(Session2 session, Schematic schematic) {
+    public Island(Session session, Schematic schematic) {
         this.session = session;
         this.schematic = schematic;
     }
@@ -42,7 +42,7 @@ public final class Island {
      * Builds the island and teleports the player.
      */
     public void build() {
-        blocks = schematic.paste(WorldDivider2.toLocation(session).subtract(0, schematic.dimensions.getY(), 0));
+        blocks = schematic.paste(WorldDivider.toLocation(session).subtract(0, schematic.dimensions.getY(), 0));
 
         Material playerMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.spawn.player-block").toUpperCase());
         Material parkourMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.parkour.begin-block").toUpperCase());

@@ -21,7 +21,7 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.Island;
@@ -80,9 +80,9 @@ public class ParkourGenerator {
     public List<GeneratorOption> generatorOptions;
 
     /**
-     * The {@link Session2} associated with this Generator.
+     * The {@link Session} associated with this Generator.
      */
-    public final Session2 session;
+    public final Session session;
 
     /**
      * This Generator's {@link Profile}.
@@ -212,7 +212,7 @@ public class ParkourGenerator {
      *
      * @param session The session associated with this generator
      */
-    public ParkourGenerator(@NotNull Session2 session, GeneratorOption... generatorOptions) {
+    public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
         this.session = session;
         this.profile = new Profile();
 

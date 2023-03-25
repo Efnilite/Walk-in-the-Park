@@ -8,7 +8,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.session.Session2;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Strings;
@@ -36,7 +36,7 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourPlayer closest;
     protected BukkitTask closestChecker;
 
-    public ParkourSpectator(@NotNull Player player, @NotNull Session2 session, @Nullable PreviousData previousData) {
+    public ParkourSpectator(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
         super(player, previousData);
 
         new ParkourSpectateEvent(this).call();

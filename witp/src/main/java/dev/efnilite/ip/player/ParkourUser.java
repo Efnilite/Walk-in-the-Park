@@ -12,10 +12,10 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.session.Session2;
-import dev.efnilite.ip.session.chat.ChatType;
+import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.world.WorldDivider2;
+import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,7 +37,7 @@ import java.util.*;
  */
 public abstract class ParkourUser {
 
-    public Session2 session;
+    public Session session;
 
     /**
      * This user's locale
@@ -55,9 +55,9 @@ public abstract class ParkourUser {
     public PreviousData previousData;
 
     /**
-     * The selected {@link ChatType}
+     * The selected {@link SessionChat.ChatType}
      */
-    public ChatType chatType = ChatType.PUBLIC;
+    public SessionChat.ChatType chatType = SessionChat.ChatType.PUBLIC;
 
     /**
      * The Bukkit player instance associated with this user.
@@ -150,7 +150,7 @@ public abstract class ParkourUser {
         new ParkourLeaveEvent(user).call();
 
         try {
-            Session2 session = user.session;
+            Session session = user.session;
 
             if (user instanceof ParkourPlayer pp) {
                 ParkourGenerator generator = pp.getGenerator();
@@ -179,7 +179,7 @@ public abstract class ParkourUser {
                     // reset generator (remove blocks) and delete island
                     generator.reset(false);
 
-                    WorldDivider2.disassociate(session);
+                    WorldDivider.disassociate(session);
                 }
 
                 pp.save(saveAsync);
