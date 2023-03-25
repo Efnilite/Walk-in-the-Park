@@ -37,7 +37,7 @@ public class Schematics {
                 Schematic schematic = new Schematic().file(fileName);
                 schematic.read();
 
-                if (schematic.isSupported()) {
+                if (schematic.isSupported) {
                     cache.put(fileName, schematic);
                 }
             }

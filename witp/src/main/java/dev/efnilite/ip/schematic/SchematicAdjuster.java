@@ -1,10 +1,10 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class SchematicAdjuster {
             return null;
         }
         Schematic.SchematicBlock start = schematic.findFromMaterial(Material.LIME_WOOL);
-        Vector3D to = start.getRelativePosition();
-        adjustTo = adjustTo.subtract(to.toBukkitVector());
+        Vector to = start.relativePosition;
+        adjustTo = adjustTo.subtract(to);
 
         return schematic.pasteAdjusted(adjustTo, getAngle(Option.HEADING));
     }

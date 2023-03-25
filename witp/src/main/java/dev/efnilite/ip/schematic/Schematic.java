@@ -2,9 +2,9 @@ package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
-import dev.efnilite.vilib.vector.Vector3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,28 +34,33 @@ public class Schematic {
     /**
      * If the schematic has been read already
      */
-    private boolean read;
+    public boolean read;
 
     /**
-     * Stores values of location
+     * Signifies the bounding box of a schematic.
+     * Array where the first item is the smallest location and second item is the largest.
      */
-    private Dimensions dimensions;
+    private Location[] zone;
+
+    public Vector dimensions;
 
     /**
      * The blocks if present
      */
-    private List<SchematicBlock> blocks;
+    @Nullable
+    public List<SchematicBlock> blocks;
 
     /**
      * The file associated if present
      */
-    private File file;
+    @Nullable
+    public File file;
 
     /**
      * Whether this schematic is supported on the current version.
-     * (if this schematic features an unknown material it will be declared as unsupported)
+     * If this schematic features an unknown material it will be declared as unsupported.
      */
-    private boolean isSupported;
+    public boolean isSupported;
 
     /**
      * The constructor while creating a new schematic from 2 positions
@@ -64,7 +69,9 @@ public class Schematic {
      * @param pos2 The second position
      */
     public Schematic(@NotNull Location pos1, @NotNull Location pos2) {
-        this.dimensions = new Dimensions(pos1, pos2);
+        this.zone = new Location[]{Locations.min(pos1, pos2), Locations.max(pos1, pos2)};
+        this.dimensions = toDimensions();
+
         this.blocks = new ArrayList<>();
         this.read = false;
         this.isSupported = true;
@@ -117,29 +124,22 @@ public class Schematic {
     }
 
     /**
-     * Saves without a player
-     */
-    public void save() {
-        this.save(null);
-    }
-
-    /**
      * Saves a schematic file
      */
     public void save(@Nullable Player player) {
         Task.create(IP.getPlugin()).async().execute(() -> {
             try {
                 Time.timerStart("save schematic %s".formatted(file.getName()));
-                if (dimensions == null || blocks == null) {
+                if (zone == null || blocks == null) {
                     IP.logging().error("Data of schematic is null while trying to save!");
                     return;
                 }
 
-                for (Block currentBlock : getBlocks(dimensions.getMaximumPoint(), dimensions.getMinimumPoint())) {
+                for (Block currentBlock : getBlocks(zone[0], zone[1])) {
                     if (currentBlock.getType() == Material.AIR) { // skip air if enabled
                         continue;
                     }
-                    Vector3D relativeOffset = Vector3D.fromBukkit(currentBlock.getLocation().subtract(dimensions.getMinimumPoint()).toVector());
+                    Vector relativeOffset = currentBlock.getLocation().subtract(zone[0]).toVector();
                     blocks.add(new SchematicBlock(currentBlock, relativeOffset));
                 }
 
@@ -160,7 +160,7 @@ public class Schematic {
                 // filtered to prevent double entries in palette
                 HashSet<String> filtered = new HashSet<>();
                 Map<String, Integer> palette = new HashMap<>();
-                blocks.forEach(block -> filtered.add(block.getData().getAsString(true))); // get each of the block types
+                blocks.forEach(block -> filtered.add(block.data.getAsString(true))); // get each of the block types
 
                 // write palette as 0>minecraft:block[data]
                 int index = 0;
@@ -178,11 +178,11 @@ public class Schematic {
                 // write all vectors per block type
                 StringJoiner joiner = new StringJoiner("/");
                 for (SchematicBlock block : blocks) {
-                    String current = block.getData().getAsString();
+                    String current = block.data.getAsString();
                     String id = Integer.toString(palette.get(current));
 
-                    Vector3D rel = block.getRelativePosition();
-                    joiner.add(id + "(" + (int) rel.x + "," + (int) rel.y + "," + (int) rel.z + ")"); // id(x,y,z) -> 3(2,3,-3)
+                    Vector rel = block.relativePosition;
+                    joiner.add(id + "(" + rel.toString() + ")"); // id(x,y,z) -> 3(2,3,-3)
                 }
 
                 // finish
@@ -266,7 +266,7 @@ public class Schematic {
             }
 
             Matcher vectorMatcher = vectorPattern.matcher(block);
-            Vector3D vector = null;
+            Vector vector = null;
             while (vectorMatcher.find()) {
                 vector = VectorUtil.parseVector(vectorMatcher.group());
             }
@@ -275,8 +275,7 @@ public class Schematic {
         }
         this.blocks = blocks;
 
-        Vector3D readDimensions = VectorUtil.parseVector(lines.get(0));
-        this.dimensions = new Dimensions((int) readDimensions.x, (int) readDimensions.y, (int) readDimensions.z);
+        this.dimensions = VectorUtil.parseVector(lines.get(0));
     }
 
     private @Nullable BlockData checkLegacyMaterials(String full, String fileName) {
@@ -294,15 +293,15 @@ public class Schematic {
         return Bukkit.createBlockData(legacy);
     }
 
-    public List<Block> paste(Location at, SchematicAdjuster.RotationAngle angle) {
+    public List<Block> paste(Location at) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector()));
+        this.zone = new Location[]{at, at.clone().add(toDimensions())};
 
-        Location min = dimensions.getMinimumPoint();
+        Location min = zone[0];
         List<Block> affectedBlocks = new ArrayList<>();
         for (SchematicBlock block : blocks) {
-            Vector3D relativeOffset = block.getRelativePosition();
+            Vector relativeOffset = block.relativePosition;
 
             if (relativeOffset == null) {
                 IP.logging().error("Failed in reading schematic " + getName());
@@ -310,13 +309,11 @@ public class Schematic {
                 return affectedBlocks;
             }
 
-            relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);
-
             // all positions are saved to be relative to the minimum location
-            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
+            Location pasteLocation = min.clone().add(relativeOffset);
             Block affectedBlock = pasteLocation.getBlock();
 
-            setBlock(affectedBlock, block.getData());
+            setBlock(affectedBlock, block.data);
             affectedBlocks.add(affectedBlock);
         }
         return affectedBlocks;
@@ -333,24 +330,24 @@ public class Schematic {
     public @Nullable List<Block> pasteAdjusted(Location at, SchematicAdjuster.RotationAngle angle) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
-        this.dimensions = new Dimensions(at, at.clone().add(dimensions.toVector3D().toBukkitVector()));
+        this.zone = new Location[]{at, at.clone().add(toDimensions())};
 
         // -- Preparing for paste --
 
-        Location min = dimensions.getMinimumPoint();
+        Location min = zone[0];
         Location other = null;
         Map<Location, BlockData> rotated = new HashMap<>();
         for (SchematicBlock block : blocks) { // go through blocks
-            Vector3D relativeOffset = block.getRelativePosition().clone();
+            Vector relativeOffset = block.relativePosition.clone();
             relativeOffset = VectorUtil.rotateAround(relativeOffset, angle);
 
             // all positions are saved to be relative to the minimum location
-            Location pasteLocation = min.clone().add(relativeOffset.toBukkitVector());
+            Location pasteLocation = min.clone().add(relativeOffset);
 
-            if (block.getData().getMaterial() == Material.LIME_WOOL) { // finds the lime wool pasting location
+            if (block.data.getMaterial() == Material.LIME_WOOL) { // finds the lime wool pasting location
                 other = pasteLocation.clone();
             }
-            rotated.put(pasteLocation.clone(), block.getData()); // put the final locations back
+            rotated.put(pasteLocation.clone(), block.data); // put the final locations back
         }
 
         if (other == null) { // if no lime wool
@@ -367,9 +364,9 @@ public class Schematic {
         // get the opposite angle of the one being pasted at
         SchematicAdjuster.RotationAngle opposite = SchematicAdjuster.RotationAngle.getFromInteger(angle.getOpposite());
         // turn it in a specific way
-        Vector3D turn = VectorUtil.defaultRotate(Vector3D.fromBukkit(difference), opposite);
+        Vector turn = VectorUtil.defaultRotate(difference, opposite);
         // add it to the difference
-        difference.add(turn.toBukkitVector());
+        difference.add(turn);
 
         Pattern pattern = Pattern.compile("facing=(\\w+)");
 
@@ -429,7 +426,7 @@ public class Schematic {
     public SchematicBlock findFromMaterial(Material material) {
         read();
         for (SchematicBlock block : blocks) {
-            if (block.getData().getMaterial() == material) {
+            if (block.data.getMaterial() == material) {
                 return block;
             }
         }
@@ -484,19 +481,14 @@ public class Schematic {
         }
     }
 
-    public List<Block> getBlocks(Location position, Location position2) {
-        World w = position.getWorld();
+    public List<Block> getBlocks(Location minL, Location maxL) {
+        World w = minL.getWorld();
         List<Block> add = new ArrayList<>();
         Location location = new Location(w, 0, 0, 0);
-        int max = Math.max(position.getBlockX(), position2.getBlockX());
-        int mix = Math.min(position.getBlockX(), position2.getBlockX());
-        int may = Math.max(position.getBlockY(), position2.getBlockY());
-        int miy = Math.min(position.getBlockY(), position2.getBlockY());
-        int maz = Math.max(position.getBlockZ(), position2.getBlockZ());
-        int miz = Math.min(position.getBlockZ(), position2.getBlockZ());
-        for (int x = mix; x <= max; x++) {
-            for (int y = miy; y <= may; y++) {
-                for (int z = miz; z <= maz; z++) {
+
+        for (int x = minL.getBlockX(); x <= maxL.getBlockX(); x++) {
+            for (int y = minL.getBlockY(); y <= maxL.getBlockY(); y++) {
+                for (int z = minL.getBlockZ(); z <= maxL.getBlockZ(); z++) {
                     location.setX(x);
                     location.setY(y);
                     location.setZ(z);
@@ -510,40 +502,29 @@ public class Schematic {
         return add;
     }
 
-    public boolean isSupported() {
-        return isSupported;
-    }
-
-    public Dimensions getDimensions() {
+    public Location[] getZone() {
         read();
-        return dimensions;
+
+        return zone;
     }
 
-    public File getFile() {
-        return file;
+    private Vector toDimensions() {
+        return zone[1].subtract(zone[0]).toVector();
     }
 
     protected static class SchematicBlock {
 
-        private final Vector3D relativePosition;
-        private final BlockData data;
+        public final Vector relativePosition;
+        public final BlockData data;
 
-        public SchematicBlock(Block block, Vector3D relativePosition) {
+        public SchematicBlock(Block block, Vector relativePosition) {
             this.relativePosition = relativePosition;
             this.data = block.getBlockData();
         }
 
-        public SchematicBlock(BlockData data, Vector3D relativePosition) {
+        public SchematicBlock(BlockData data, Vector relativePosition) {
             this.relativePosition = relativePosition;
             this.data = data;
-        }
-
-        public Vector3D getRelativePosition() {
-            return relativePosition;
-        }
-
-        public BlockData getData() {
-            return data;
         }
     }
 }
