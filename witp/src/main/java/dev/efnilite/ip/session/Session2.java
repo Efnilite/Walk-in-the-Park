@@ -1,6 +1,6 @@
 package dev.efnilite.ip.session;
 
-import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;

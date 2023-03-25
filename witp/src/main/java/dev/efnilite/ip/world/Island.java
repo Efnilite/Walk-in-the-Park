@@ -2,7 +2,7 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.generator.DefaultGenerator;
+import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.session.Session2;
@@ -61,7 +61,7 @@ public final class Island {
             ps.setYaw(Config.GENERATION.getInt("advanced.island.spawn.yaw"));
             ps.setPitch(Config.GENERATION.getInt("advanced.island.spawn.pitch"));
 
-            ((DefaultGenerator) pp.getGenerator()).generateFirst(player.getLocation(), parkour.getLocation());
+            ((ParkourGenerator) pp.getGenerator()).generateFirst(player.getLocation(), parkour.getLocation());
             pp.setup(player.getLocation().add(0.5, 0, 0.5), true);
         } catch (IndexOutOfBoundsException ex) {
             IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic.getName()), "check if you used the same material as the one in generation.yml", ex);

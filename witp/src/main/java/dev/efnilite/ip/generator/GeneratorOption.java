@@ -1,7 +1,5 @@
 package dev.efnilite.ip.generator;
 
-import dev.efnilite.ip.generator.base.ParkourGenerator;
-
 /**
  * Options for {@link ParkourGenerator}s.
  */

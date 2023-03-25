@@ -3,8 +3,7 @@ package dev.efnilite.ip.hook;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.generator.DefaultGenerator;
-import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
@@ -139,11 +138,11 @@ public class PAPIHook extends PlaceholderExpansion {
                         return score.time();
                     }
                 default:
-                    if (params.contains("score_until_") && generator instanceof DefaultGenerator defaultGenerator) {
+                    if (params.contains("score_until_")) {
                         String replaced = params.replace("score_until_", "");
                         int interval = Integer.parseInt(replaced);
                         if (interval > 0) {
-                            return Integer.toString(interval - (defaultGenerator.totalScore % interval)); // 100 - (5 % 100) = 95
+                            return Integer.toString(interval - (generator.totalScore % interval)); // 100 - (5 % 100) = 95
                         } else {
                             return "0";
                         }

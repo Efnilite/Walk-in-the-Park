@@ -7,7 +7,7 @@ import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.Profile;
-import dev.efnilite.ip.generator.base.ParkourGenerator;
+import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
@@ -209,7 +209,7 @@ public class ParkourPlayer extends ParkourUser {
         JOIN_COUNT++;
 
         new ParkourJoinEvent(pp).call();
-        
+
         if (!Option.SQL) {
             if (pp.file.exists()) {
                 try {
