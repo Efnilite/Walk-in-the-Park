@@ -47,7 +47,21 @@ public class WorldDivider2 {
         SESSIONS.remove(getSectionId(session));
     }
 
-    // returns the id of a section based on the session instance
+    /**
+     * @param session The session.
+     * @return The location at the center of section n.
+     */
+    public static Location toLocation(Session2 session) {
+        int[] coords = Util.spiralAt(getSectionId(session));
+
+        return new Location(WorldManager.getWorld(),
+                coords[0] * Option.BORDER_SIZE,
+                (Option.MAX_Y + Option.MIN_Y) / 2.0,
+                coords[1] * Option.BORDER_SIZE);
+    }
+
+
+    // returns the section id from the session instance
     private static int getSectionId(Session2 session) {
         List<Map.Entry<Integer, Session2>> filtered = Colls.filter(set -> set.getValue() == session, new ArrayList<>(SESSIONS.entrySet()));
 
@@ -59,28 +73,11 @@ public class WorldDivider2 {
     }
 
     /**
-     * Returns location at the center of section n.
-     *
-     * @param n The section.
-     * @return The location at the center.
+     * @param session The session.
+     * @return Array where the first item is the smallest location and second item is the largest.
      */
-    public static Location toLocation(int n) {
-        int[] coords = Util.spiralAt(n);
-
-        return new Location(WorldManager.getWorld(),
-                coords[0] * Option.BORDER_SIZE,
-                (Option.MAX_Y + Option.MIN_Y) / 2.0,
-                coords[1] * Option.BORDER_SIZE);
-    }
-
-    /**
-     * Returns array where the first item is the smallest location and second item is the largest.
-     *
-     * @param n The section.
-     * @return An array with the min/max location.
-     */
-    public static Location[] toSelection(int n) {
-        Location center = toLocation(n);
+    public static Location[] toSelection(Session2 session) {
+        Location center = toLocation(session);
 
         // get the min and max locations
         Location max = center.clone().add(Option.BORDER_SIZE / 2, 0, Option.BORDER_SIZE / 2);
