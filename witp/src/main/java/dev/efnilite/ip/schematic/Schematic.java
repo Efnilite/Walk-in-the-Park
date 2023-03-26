@@ -70,7 +70,7 @@ public class Schematic {
      */
     public Schematic(@NotNull Location pos1, @NotNull Location pos2) {
         this.zone = new Location[]{Locations.min(pos1, pos2), Locations.max(pos1, pos2)};
-        this.dimensions = toDimensions();
+        this.dimensions = zone[1].subtract(zone[0]).toVector();
 
         this.blocks = new ArrayList<>();
         this.read = false;
@@ -296,7 +296,7 @@ public class Schematic {
     public List<Block> paste(Location at) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
-        this.zone = new Location[]{at, at.clone().add(toDimensions())};
+        this.zone = new Location[]{at, at.clone().add(dimensions)};
 
         Location min = zone[0];
         List<Block> affectedBlocks = new ArrayList<>();
@@ -330,7 +330,7 @@ public class Schematic {
     public @Nullable List<Block> pasteAdjusted(Location at, SchematicAdjuster.RotationAngle angle) {
         read();
         // update dimensions to match min location, giving you an idea where it will be pasted
-        this.zone = new Location[]{at, at.clone().add(toDimensions())};
+        this.zone = new Location[]{at, at.clone().add(dimensions)};
 
         // -- Preparing for paste --
 
@@ -362,7 +362,7 @@ public class Schematic {
         Vector difference = other.clone().subtract(at).toVector();
 
         // get the opposite angle of the one being pasted at
-        SchematicAdjuster.RotationAngle opposite = SchematicAdjuster.RotationAngle.getFromInteger(angle.getOpposite());
+        SchematicAdjuster.RotationAngle opposite = SchematicAdjuster.RotationAngle.getFromInteger(angle.opposite);
         // turn it in a specific way
         Vector turn = VectorUtil.defaultRotate(difference, opposite);
         // add it to the difference
@@ -434,9 +434,9 @@ public class Schematic {
     }
 
     private String getFaceFromAngle(String original, SchematicAdjuster.RotationAngle rotationAngle) {
-        int angle = rotationAngle.getAngle();
+        int angle = rotationAngle.angle;
         switch (original) {
-            case "north":
+            case "north" -> {
                 if (angle % 270 == 0) {
                     return "east";
                 } else if (angle % 180 == 0) {
@@ -446,7 +446,8 @@ public class Schematic {
                 } else {
                     return "north";
                 }
-            case "west":
+            }
+            case "west" -> {
                 if (angle % 270 == 0) {
                     return "north";
                 } else if (angle % 180 == 0) {
@@ -456,7 +457,8 @@ public class Schematic {
                 } else {
                     return "west";
                 }
-            case "south":
+            }
+            case "south" -> {
                 if (angle % 270 == 0) {
                     return "west";
                 } else if (angle % 180 == 0) {
@@ -466,7 +468,8 @@ public class Schematic {
                 } else {
                     return "south";
                 }
-            case "east":
+            }
+            case "east" -> {
                 if (angle % 270 == 0) {
                     return "south";
                 } else if (angle % 180 == 0) {
@@ -476,8 +479,10 @@ public class Schematic {
                 } else {
                     return "east";
                 }
-            default:
+            }
+            default -> {
                 return "north";
+            }
         }
     }
 
@@ -500,16 +505,6 @@ public class Schematic {
             }
         }
         return add;
-    }
-
-    public Location[] getZone() {
-        read();
-
-        return zone;
-    }
-
-    private Vector toDimensions() {
-        return zone[1].subtract(zone[0]).toVector();
     }
 
     protected static class SchematicBlock {

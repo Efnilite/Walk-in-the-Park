@@ -52,8 +52,8 @@ public class ParkourPlayer extends ParkourUser {
      * The uuid of the player
      */
     public UUID uuid;
-    protected ParkourGenerator generator;
-    protected File file;
+    public ParkourGenerator generator;
+    public File file;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -81,7 +81,17 @@ public class ParkourPlayer extends ParkourUser {
     public void updateGeneratorSettings() {
         Profile profile = generator.profile;
 
-        profile.set("schematicDifficulty", schematicDifficulty.toString()).set("blockLead", blockLead.toString()).set("useScoreDifficulty", useScoreDifficulty.toString()).set("particles", particles.toString()).set("sound", sound.toString()).set("useSpecialBlocks", useSpecialBlocks.toString()).set("showFallMessage", showFallMessage.toString()).set("showScoreboard", showScoreboard.toString()).set("useSchematic", useSchematic.toString()).set("selectedTime", selectedTime.toString()).set("style", style);
+        profile.set("schematicDifficulty", schematicDifficulty.toString())
+                .set("blockLead", blockLead.toString())
+                .set("useScoreDifficulty", useScoreDifficulty.toString())
+                .set("particles", particles.toString())
+                .set("sound", sound.toString())
+                .set("useSpecialBlocks", useSpecialBlocks.toString())
+                .set("showFallMessage", showFallMessage.toString())
+                .set("showScoreboard", showScoreboard.toString())
+                .set("useSchematic", useSchematic.toString())
+                .set("selectedTime", selectedTime.toString())
+                .set("style", style);
     }
 
     public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty, String blockLead, Boolean particles, Boolean sound, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial, Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
@@ -130,7 +140,8 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private void resetPlayerPreferences() {
-        setSettings(null, null, null, null, null, null, null, null, null, null, null, null, null);
+        setSettings(null, null, null, null, null, null,
+                null, null, null, null, null, null, null);
     }
 
     /**
@@ -216,7 +227,10 @@ public class ParkourPlayer extends ParkourUser {
                     FileReader reader = new FileReader(pp.file);
                     ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
-                    pp.setSettings(stringValue(from.selectedTime), from.style, from._locale, stringValue(from.schematicDifficulty), stringValue(from.blockLead), from.particles, from.sound, from.useScoreDifficulty, from.useSchematic, from.useSpecialBlocks, from.showFallMessage, from.showScoreboard, from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
+                    pp.setSettings(stringValue(from.selectedTime), from.style, from._locale, stringValue(from.schematicDifficulty),
+                            stringValue(from.blockLead), from.particles, from.sound, from.useScoreDifficulty, from.useSchematic,
+                            from.useSpecialBlocks, from.showFallMessage, from.showScoreboard,
+                            from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
                     reader.close();
                 } catch (Throwable throwable) {
                     IP.logging().stack("Error while reading file of player " + pp.player.getName(), throwable);
@@ -286,15 +300,6 @@ public class ParkourPlayer extends ParkourUser {
         return player == null ? null : getPlayer(player.getUniqueId());
     }
 
-    /**
-     * Gets the player's {@link ParkourGenerator}
-     *
-     * @return the ParkourGenerator associated with this player
-     */
-    public @NotNull ParkourGenerator getGenerator() {
-        return generator;
-    }
-
     public void setup(Location to, boolean runGenerator) {
         if (to != null) {
             teleport(to);
@@ -338,7 +343,7 @@ public class ParkourPlayer extends ParkourUser {
         }
 
         if (runGenerator) {
-            getGenerator().startTick();
+            generator.startTick();
         }
     }
 
@@ -355,13 +360,5 @@ public class ParkourPlayer extends ParkourUser {
             case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
             default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
         };
-    }
-
-    public void setGenerator(ParkourGenerator generator) {
-        this.generator = generator;
-
-        updateGeneratorSettings();
-
-        generator.updatePreferences();
     }
 }

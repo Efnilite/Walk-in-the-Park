@@ -162,6 +162,7 @@ public class Session {
         private Function<Session, Boolean> isAcceptingPlayers;
         private Function<Session, Boolean> isAcceptingSpectators;
         private ParkourPlayer[] players;
+        private Function<Session, ParkourGenerator> generator;
 
         /**
          * Creates a new builder.
@@ -212,6 +213,19 @@ public class Session {
         }
 
         /**
+         * Adds the generator.
+         *
+         * @param f The generator.
+         * @return This instance.
+         */
+        // todo move to generator?
+        public Builder generator(Function<Session, ParkourGenerator> f) {
+            generator = f;
+
+            return this;
+        }
+
+        /**
          * Builds a new session instance with the provided settings.
          * Assigns the session with {@link WorldDivider#associate(Session)}.
          *
@@ -225,6 +239,17 @@ public class Session {
             if (players != null) session.addPlayers(players);
 
             WorldDivider.associate(session);
+
+            // todo move to generator?
+            Arrays.asList(players).forEach(p -> {
+                p.session = session;
+                p.generator = generator.apply(session);
+
+                p.updateGeneratorSettings();
+                p.generator.updatePreferences();
+
+                p.generator.island.build();
+            });
 
             return session;
         }

@@ -140,7 +140,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return new SliderItem().initial(player.showScoreboard ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
                 player.showScoreboard = true;
                 player.board = new FastBoard(p);
-                player.getGenerator().updateScoreboard();
+                player.generator.updateScoreboard();
 
                 player.updateGeneratorSettings();
                 return true;
@@ -326,7 +326,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
             }
             // todo add enchantment on select
 
-            Item item = Locales.getItem(user.player, ParkourOption.STYLES.getPath() + "style_item", name).material(Colls.random(styleType.styles.get(name)));
+            Item item = Locales.getItem(user.player, ParkourOption.STYLES.getPath() + ".style_item", name).material(Colls.random(styleType.styles.get(name)));
 
             items.add(item.glowing(user.style.equals(name)).click(event -> {
                 user.style = name;
@@ -431,7 +431,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
-        if (player.getGenerator().score > 0) {
+        if (player.generator.score > 0) {
             event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.getLocale(), "settings.parkour_settings.items.no_change").click((event1) -> {
 
             }), event).stay(5 * 20));

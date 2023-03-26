@@ -153,7 +153,7 @@ public abstract class ParkourUser {
             Session session = user.session;
 
             if (user instanceof ParkourPlayer pp) {
-                ParkourGenerator generator = pp.getGenerator();
+                ParkourGenerator generator = pp.generator;
 
                 int remaining = 0;
                 // remove spectators

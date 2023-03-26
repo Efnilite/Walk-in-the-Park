@@ -94,7 +94,7 @@ public class ParkourSpectator extends ParkourUser {
         ParkourPlayer player = closest;
         ParkourGenerator generator = player.generator;
 
-        Leaderboard leaderboard = player.getGenerator().getGamemode().getLeaderboard();
+        Leaderboard leaderboard = generator.getGamemode().getLeaderboard();
 
         String title = Strings.colour(Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title")));
         List<String> lines = new ArrayList<>();

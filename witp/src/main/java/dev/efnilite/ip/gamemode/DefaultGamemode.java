@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -43,13 +44,14 @@ public class DefaultGamemode implements Gamemode {
         }
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp != null && pp.getGenerator().getGamemode() instanceof DefaultGamemode) {
+        if (pp != null && pp.generator.getGamemode() instanceof DefaultGamemode) {
             return;
         }
         player.closeInventory();
 
         Session.Builder.create()
                 .addPlayers(ParkourUser.register(player))
+                .generator(ParkourGenerator::new)
                 .complete();
     }
 

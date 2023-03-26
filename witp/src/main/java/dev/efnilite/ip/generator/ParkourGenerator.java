@@ -25,6 +25,7 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.Island;
+import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -72,7 +73,7 @@ public class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    public Vector heading;
+    public Vector heading = stringToVector(Option.HEADING);
 
     /**
      * Generator options
@@ -89,12 +90,12 @@ public class ParkourGenerator {
      *
      * @see Profile
      */
-    public final Profile profile;
+    public final Profile profile = new Profile();
 
     /**
      * The random for this Thread, which is useful in randomly generating parkour
      */
-    protected final ThreadLocalRandom random;
+    protected final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     /**
      * The island instance.
@@ -109,27 +110,27 @@ public class ParkourGenerator {
     /**
      * The chances of which distance the jump should have
      */
-    public final HashMap<Integer, Integer> distanceChances;
+    public final HashMap<Integer, Integer> distanceChances = new HashMap<>();
 
     /**
      * Variable to determine how much the chance should be of a jump type, depending on the player's score
      */
-    public final HashMap<Integer, Double> adaptiveDistanceChances;
+    public final HashMap<Integer, Double> adaptiveDistanceChances = new HashMap<>();
 
     /**
      * The chances of which height the jump should have
      */
-    public final HashMap<Integer, Integer> heightChances;
+    public final HashMap<Integer, Integer> heightChances = new HashMap<>();
 
     /**
      * The chances of which type of special jump
      */
-    public final HashMap<Integer, Integer> specialChances;
+    public final HashMap<Integer, Integer> specialChances = new HashMap<>();
 
     /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
-    public final HashMap<Integer, Integer> defaultChances;
+    public final HashMap<Integer, Integer> defaultChances = new HashMap<>();
 
     /**
      * The total score achieved in this Generator instance
@@ -214,36 +215,17 @@ public class ParkourGenerator {
      */
     public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
         this.session = session;
-        this.profile = new Profile();
-
         this.generatorOptions = Arrays.asList(generatorOptions);
-        this.random = ThreadLocalRandom.current();
-        this.island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
 
-        this.player = session.getPlayers().get(0);
-        this.distanceChances = new HashMap<>();
-        this.heightChances = new HashMap<>();
-        this.specialChances = new HashMap<>();
-        this.defaultChances = new HashMap<>();
-        this.adaptiveDistanceChances = new HashMap<>();
+        player = session.getPlayers().get(0);
+        island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
+
+        mostRecentBlock = player.getLocation().clone();
+        lastStandingPlayerLocation = mostRecentBlock.clone();
+
+        zone = WorldDivider.toSelection(session);
 
         calculateChances();
-
-        this.mostRecentBlock = player.getLocation().clone();
-        this.lastStandingPlayerLocation = mostRecentBlock.clone();
-        this.heading = stringToVector(Option.HEADING);
-    }
-
-    /**
-     * Whether the option is present
-     *
-     * @param   option
-     *          The option
-     *
-     * @return true if yes, false if not.
-     */
-    public boolean option(GeneratorOption option) {
-        return generatorOptions.contains(option);
     }
 
     /**
@@ -306,13 +288,13 @@ public class ParkourGenerator {
             defaultChances.put(percentage, 0);
             percentage++;
         }
-        if (!option(GeneratorOption.DISABLE_SCHEMATICS)) { // schematics
+        if (!generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) { // schematics
             for (int i = 0; i < Option.SCHEMATICS; i++) {
                 defaultChances.put(percentage, 1);
                 percentage++;
             }
         }
-        if (!option(GeneratorOption.DISABLE_SPECIAL)) { // special
+        if (!generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) { // special
             for (int i = 0; i < Option.SPECIAL; i++) {
                 defaultChances.put(percentage, 2);
                 percentage++;
@@ -353,7 +335,7 @@ public class ParkourGenerator {
 
         // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
         int one, two, three, four;
-        if (profile.get("useScoreDifficulty").asBoolean() && option(GeneratorOption.DISABLE_ADAPTIVE)) {
+        if (profile.get("useScoreDifficulty").asBoolean() && generatorOptions.contains(GeneratorOption.DISABLE_ADAPTIVE)) {
 
             if (score <= Option.MULTIPLIER) {
                 one = (int) (Option.NORMAL_ONE_BLOCK + (adaptiveDistanceChances.get(1) * score));
@@ -590,7 +572,7 @@ public class ParkourGenerator {
         }
 
         // if selection angle is reduced, halve the current sideways step
-        if (option(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
+        if (generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
             if (ds > 1) {
                 ds = 1;
             } else if (ds < -1) {
@@ -748,7 +730,9 @@ public class ParkourGenerator {
     }
 
     public void startTick() {
-        task = Task.create(IP.getPlugin()).repeat(option(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK).execute(new BukkitRunnable() {
+        task = Task.create(IP.getPlugin())
+                .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
+                .execute(new BukkitRunnable() {
             @Override
             public void run() {
                 if (stopped) {
@@ -948,16 +932,20 @@ public class ParkourGenerator {
 
         Duration duration = Duration.between(start, Instant.now());
 
-        StringBuilder builder = new StringBuilder(" ");
+        StringJoiner builder = new StringJoiner(" ");
 
         if (duration.toHoursPart() > 0) {
-            builder.append("%dh".formatted(duration.toHoursPart()));
+            builder.add("%dh".formatted(duration.toHoursPart()));
         }
         if (duration.toMinutesPart() > 0) {
-            builder.append("%dm".formatted(duration.toMinutesPart()));
+            builder.add("%dm".formatted(duration.toMinutesPart()));
         }
-        if (duration.toMillisPart() > 0) {
-            builder.append("%d.%ss".formatted(duration.toSecondsPart(), Integer.toString(duration.toMillisPart()).charAt(0)));
+        if (duration.toSecondsPart() > 0 || duration.toMillisPart() > 0) {
+            long rounded = Math.round(duration.toMillisPart() / 100.0);
+
+            if (rounded > 9) rounded = 9;
+
+            builder.add("%d.%ss".formatted(duration.toSecondsPart(), rounded));
         }
 
         return builder.toString();

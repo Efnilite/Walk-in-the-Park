@@ -3,7 +3,9 @@ Finished folders:
 - hook
 - leaderboard
 - reward
+- session
 - style
+- world
 
 Todo:
 - api
@@ -12,7 +14,5 @@ Todo:
 - menu
 - player
 - schematic
-- session
 - util
-- world
 - parent package

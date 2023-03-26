@@ -56,8 +56,8 @@ public class SchematicAdjuster {
         ANGLE_180(180, 0),
         ANGLE_270(270, 90);
 
-        private final int angle;
-        private final int opposite;
+        public final int angle;
+        public final int opposite;
 
         RotationAngle(int angle, int opposite) {
             this.angle = angle;
@@ -66,14 +66,6 @@ public class SchematicAdjuster {
 
         public static RotationAngle getFromInteger(int angle) {
             return valueOf("ANGLE_" + angle);
-        }
-
-        public int getAngle() {
-            return angle;
-        }
-
-        public int getOpposite() {
-            return opposite;
         }
     }
 }

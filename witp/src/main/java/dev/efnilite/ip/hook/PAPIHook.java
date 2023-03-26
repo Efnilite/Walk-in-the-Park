@@ -96,7 +96,7 @@ public class PAPIHook extends PlaceholderExpansion {
         }
 
         if (pp != null) {
-            ParkourGenerator generator = pp.getGenerator();
+            ParkourGenerator generator = pp.generator;
             switch (params) {
                 case "score":
                 case "current_score":

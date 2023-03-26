@@ -59,9 +59,7 @@ public class SessionChat implements Listener {
      */
     public enum ChatType {
 
-        LOBBY_ONLY,
-        PLAYERS_ONLY,
-        PUBLIC
+        LOBBY_ONLY, PLAYERS_ONLY, PUBLIC
 
     }
 }

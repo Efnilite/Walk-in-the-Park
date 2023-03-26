@@ -227,7 +227,7 @@ public class ParkourCommand extends ViCommand {
                         if (session.isAcceptingPlayers.apply(session)) {
                             Gamemodes.DEFAULT.create(player);
                         } else {
-                            Gamemodes.SPECTATOR.create(player);
+                            Gamemodes.SPECTATOR.create(player, session);
                         }
                     }
                 } else {
