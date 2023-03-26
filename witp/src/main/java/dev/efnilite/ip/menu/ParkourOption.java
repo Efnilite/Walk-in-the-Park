@@ -1,4 +1,4 @@
-package dev.efnilite.ip;
+package dev.efnilite.ip.menu;
 
 import dev.efnilite.ip.config.Option;
 import org.bukkit.permissions.Permissible;
@@ -50,14 +50,14 @@ public enum ParkourOption {
     ADMIN("admin", "ip.admin");
 
     /**
-     * The name of the option
+     * The path in config files for this option.
      */
-    private final String path;
+    public final String path;
 
     /**
-     * The permission required to change this option
+     * The permission for this option.
      */
-    private final String permission;
+    public final String permission;
 
     ParkourOption(String path, String permission) {
         this.path = path;
@@ -65,13 +65,10 @@ public enum ParkourOption {
     }
 
     /**
-     * Checks if a permissible has the current permission, if permissions are enabled.
-     * This also checks to see if the option is enabled.
-     *
-     * @param permissible The permissible
-     * @return true if the permissible is allowed to view/perform this option, false if not.
+     * @param permissible The player
+     * @return True if the player is allowed to view/perform this option, false if not.
      */
-    public boolean check(Permissible permissible) {
+    public boolean mayPerform(Permissible permissible) {
         boolean value = Option.OPTIONS_ENABLED.getOrDefault(this, true);
 
         if (value) {
@@ -81,13 +78,5 @@ public enum ParkourOption {
             return true;
         }
         return false;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getPermission() {
-        return permission;
     }
 }

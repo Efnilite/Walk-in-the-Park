@@ -1,9 +1,9 @@
 package dev.efnilite.ip.menu.lobby;
 
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
@@ -23,7 +23,7 @@ public class LobbyMenu extends DynamicMenu {
                 .click(event -> Menus.PLAYER_MANAGEMENT.open(player)), player -> {
             ParkourUser user = ParkourUser.getUser(player);
 
-            return ParkourOption.PLAYER_MANAGEMENT.check(player)
+            return ParkourOption.PLAYER_MANAGEMENT.mayPerform(player)
                     && user instanceof ParkourPlayer
                     && user.session.getPlayers().get(0) == user;
         });
@@ -66,7 +66,7 @@ public class LobbyMenu extends DynamicMenu {
         }, player -> {
             ParkourUser user = ParkourUser.getUser(player);
 
-            return ParkourOption.VISIBILITY.check(player) && user instanceof ParkourPlayer && user.session.getPlayers().get(0) == user;
+            return ParkourOption.VISIBILITY.mayPerform(player) && user instanceof ParkourPlayer && user.session.getPlayers().get(0) == user;
         });
 
         // Always allow closing of the menu

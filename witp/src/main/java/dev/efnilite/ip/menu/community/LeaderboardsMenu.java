@@ -1,11 +1,11 @@
 package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -27,7 +27,7 @@ public class LeaderboardsMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name"));
+        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
@@ -62,6 +62,7 @@ public class LeaderboardsMenu {
 
                 .item(22, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE).open(player);
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
+                .open(player);
     }
 }

@@ -49,7 +49,8 @@ public class LangMenu {
 
                 .item(22, Locales.getItem(user.getLocale(), "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
 
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.LIGHT_BLUE_STAINED_GLASS_PANE).open(user.player);
+                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.LIGHT_BLUE_STAINED_GLASS_PANE)
+                .open(user.player);
     }
 
 }

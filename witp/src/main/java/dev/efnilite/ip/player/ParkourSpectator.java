@@ -1,12 +1,12 @@
 package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.event.ParkourSpectateEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;

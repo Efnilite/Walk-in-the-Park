@@ -1,7 +1,7 @@
 package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;

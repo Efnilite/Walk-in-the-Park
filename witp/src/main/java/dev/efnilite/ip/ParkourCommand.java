@@ -7,6 +7,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
@@ -65,7 +66,7 @@ public class ParkourCommand extends ViCommand {
             // Main menu
             if (player == null) {
                 sendHelpMessages(sender);
-            } else if (ParkourOption.MAIN.check(player)) {
+            } else if (ParkourOption.MAIN.mayPerform(player)) {
                 Menus.MAIN.open(player);
             }
             return true;
@@ -80,7 +81,7 @@ public class ParkourCommand extends ViCommand {
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
                     }
-                    if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+                    if (!sender.hasPermission(ParkourOption.ADMIN.permission)) {
                         sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
                     }
@@ -97,7 +98,7 @@ public class ParkourCommand extends ViCommand {
                     if (!cooldown(sender, "migrate", 2500)) {
                         return true;
                     }
-                    if (!sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+                    if (!sender.hasPermission(ParkourOption.ADMIN.permission)) {
                         sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
                     } else if (!Option.SQL) {
@@ -143,7 +144,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    if (!ParkourOption.JOIN.check(player)) {
+                    if (!ParkourOption.JOIN.mayPerform(player)) {
                         Util.send(sender, Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }
@@ -165,13 +166,13 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "menu", "main" -> {
-                    if (!ParkourOption.MAIN.check(player)) {
+                    if (!ParkourOption.MAIN.mayPerform(player)) {
                         Menus.MAIN.open(player);
                     }
                     return true;
                 }
                 case "play" -> {
-                    if (!ParkourOption.PLAY.check(player)) {
+                    if (!ParkourOption.PLAY.mayPerform(player)) {
                         return true;
                     }
                     Menus.PLAY.open(player);
@@ -179,7 +180,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
                 case "schematic" -> {
-                    if (!player.hasPermission(ParkourOption.SCHEMATIC.getPermission())) { // default players shouldn't have access even if perms are disabled
+                    if (!player.hasPermission(ParkourOption.SCHEMATIC.permission)) { // default players shouldn't have access even if perms are disabled
                         Util.send(sender, Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }
@@ -205,7 +206,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                if (!ParkourOption.JOIN.check(player)) {
+                if (!ParkourOption.JOIN.mayPerform(player)) {
                     Util.send(sender, Locales.getString(defaultLocale, "other.no_do"));
                     return true;
                 }
@@ -234,7 +235,7 @@ public class ParkourCommand extends ViCommand {
                     gamemode.click(player);
                 }
                 return true;
-            } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 Location playerLocation = player.getLocation();
                 Location[] existingSelection = selections.get(player);
@@ -305,9 +306,9 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
 
-                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
                         Gamemodes.DEFAULT.create(other);
                     }
@@ -356,9 +357,9 @@ public class ParkourCommand extends ViCommand {
 
                 Gamemodes.DEFAULT.create(other);
                 return true;
-            } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
 
-                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                     for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
                         ParkourUser.leave(other);
                     }
@@ -380,7 +381,7 @@ public class ParkourCommand extends ViCommand {
 
                 ParkourUser.leave(user);
                 return true;
-            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 if (!cooldown(sender, "recoverinventory", 2500)) {
                     return true;
                 }
@@ -406,12 +407,12 @@ public class ParkourCommand extends ViCommand {
                         Util.send(sender, IP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");
                     }
                 });
-            } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 if (!cooldown(sender, "reset", 2500)) {
                     return true;
                 }
 
-                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+                if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                     for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
                         Leaderboard leaderboard = gamemode.getLeaderboard();
 
@@ -466,7 +467,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
 
                 // check permissions
-                if (!ParkourOption.LEADERBOARDS.check(player)) {
+                if (!ParkourOption.LEADERBOARDS.mayPerform(player)) {
                     Util.send(sender, Locales.getString(defaultLocale, "other.no_do"));
                     return true;
                 }
@@ -481,7 +482,7 @@ public class ParkourCommand extends ViCommand {
                 }
             }
         } else if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
                 if (args[1].equalsIgnoreCase("paste")) {
                     String name = args[2];
                     Schematic schematic = Schematics.getSchematic(name);
@@ -503,20 +504,20 @@ public class ParkourCommand extends ViCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            if (ParkourOption.JOIN.check(sender)) {
+            if (ParkourOption.JOIN.mayPerform(sender)) {
                 completions.add("join");
                 completions.add("leave");
             }
-            if (ParkourOption.MAIN.check(sender)) {
+            if (ParkourOption.MAIN.mayPerform(sender)) {
                 completions.add("menu");
             }
-            if (ParkourOption.PLAY.check(sender)) {
+            if (ParkourOption.PLAY.mayPerform(sender)) {
                 completions.add("play");
             }
-            if (ParkourOption.LEADERBOARDS.check(sender)) {
+            if (ParkourOption.LEADERBOARDS.mayPerform(sender)) {
                 completions.add("leaderboards");
             }
-            if (sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            if (sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("schematic");
                 completions.add("reload");
                 completions.add("forcejoin");
@@ -527,27 +528,27 @@ public class ParkourCommand extends ViCommand {
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("everyone");
                 for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
                     completions.add(pp.getName());
                 }
-            } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save", "paste"));
-            } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("nearest");
                 completions.add("everyone");
 
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }
-            } else if (args[0].equalsIgnoreCase("forceleave") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("forceleave") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("everyone");
 
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }
-            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+            } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     completions.add(pl.getName());
                 }
@@ -563,20 +564,20 @@ public class ParkourCommand extends ViCommand {
         Util.send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
         Util.send(sender, "");
         Util.send(sender, "<gray>/parkour <dark_gray>- Main command");
-        if (sender.hasPermission(ParkourOption.JOIN.getPermission())) {
+        if (sender.hasPermission(ParkourOption.JOIN.permission)) {
             Util.send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default gamemode or specify a mode.");
             Util.send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
         }
-        if (sender.hasPermission(ParkourOption.MAIN.getPermission())) {
+        if (sender.hasPermission(ParkourOption.MAIN.permission)) {
             Util.send(sender, "<gray>/parkour menu <dark_gray>- Open the menu");
         }
-        if (sender.hasPermission(ParkourOption.PLAY.getPermission())) {
+        if (sender.hasPermission(ParkourOption.PLAY.permission)) {
             Util.send(sender, "<gray>/parkour play <dark_gray>- Mode selection menu");
         }
-        if (sender.hasPermission(ParkourOption.LEADERBOARDS.getPermission())) {
+        if (sender.hasPermission(ParkourOption.LEADERBOARDS.permission)) {
             Util.send(sender, "<gray>/parkour leaderboard [type]<dark_gray>- Open the leaderboard of a gamemode");
         }
-        if (sender.hasPermission(ParkourOption.ADMIN.getPermission())) {
+        if (sender.hasPermission(ParkourOption.ADMIN.permission)) {
             Util.send(sender, "<gray>/ip schematic <dark_gray>- Create a schematic");
             Util.send(sender, "<gray>/ip reload <dark_gray>- Reloads the messages-v3.yml file");
             Util.send(sender, "<gray>/ip migrate <dark_gray>- Migrate your JSON files to MySQL");

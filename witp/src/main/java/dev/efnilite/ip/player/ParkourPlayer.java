@@ -2,12 +2,12 @@ package dev.efnilite.ip.player;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.generator.ParkourGenerator;
+import dev.efnilite.ip.generator.Profile;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.ip.util.sql.Statement;
@@ -313,19 +313,19 @@ public class ParkourPlayer extends ParkourUser {
 
                 player.getInventory().clear();
 
-                if (ParkourOption.PLAY.check(player)) {
+                if (ParkourOption.PLAY.mayPerform(player)) {
                     items.add(0, Locales.getItem(getLocale(), "play.item"));
                 }
 
-                if (ParkourOption.COMMUNITY.check(player)) {
+                if (ParkourOption.COMMUNITY.mayPerform(player)) {
                     items.add(items.size(), Locales.getItem(getLocale(), "community.item"));
                 }
 
-                if (ParkourOption.SETTINGS.check(player)) {
+                if (ParkourOption.SETTINGS.mayPerform(player)) {
                     items.add(items.size(), Locales.getItem(getLocale(), "settings.item"));
                 }
 
-                if (ParkourOption.LOBBY.check(player)) {
+                if (ParkourOption.LOBBY.mayPerform(player)) {
                     items.add(items.size(), Locales.getItem(getLocale(), "lobby.item"));
                 }
 

@@ -1,7 +1,7 @@
 package dev.efnilite.ip.session;
 
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;

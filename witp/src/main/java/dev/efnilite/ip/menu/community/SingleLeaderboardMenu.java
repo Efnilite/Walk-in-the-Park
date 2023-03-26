@@ -1,11 +1,11 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.Score;
 import dev.efnilite.ip.util.Util;
@@ -37,11 +37,11 @@ public class SingleLeaderboardMenu {
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
-        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.getPath() + ".name"));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
 
-        Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".head");
+        Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".head");
 
         Map<UUID, Score> sorted = sort.sort(leaderboard.getScores());
 
@@ -89,7 +89,7 @@ public class SingleLeaderboardMenu {
             default -> Sort.SCORE;
         };
 
-        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.getPath() + ".sort.values");
+        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.path + ".sort.values");
 
         String name = switch (next) {
             case SCORE -> values.get(0);
@@ -105,7 +105,7 @@ public class SingleLeaderboardMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> menu.page(-1)))
 
-                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.getPath() + ".sort", name.toLowerCase()).click(event -> open(player, gamemode, next)))
+                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, gamemode, next)))
 
                 .item(23, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
 

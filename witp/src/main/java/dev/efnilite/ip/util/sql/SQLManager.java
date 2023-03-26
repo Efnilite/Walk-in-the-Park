@@ -21,6 +21,7 @@ public class SQLManager {
      * Applies a connection to the database.
      * This method is also used to reconnect to
      */
+    // todo remove all this garbage
     public void connect() {
         this.database = Option.SQL_DB;
 

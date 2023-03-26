@@ -1,9 +1,9 @@
 package dev.efnilite.ip.menu.settings;
 
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.SessionChat;
@@ -28,9 +28,9 @@ public class SettingsMenu extends DynamicMenu {
             if (pp != null) {
                 pp.generator.menu();
             }
-        }), player -> ParkourOption.PARKOUR_SETTINGS.check(player) && ParkourUser.isPlayer(player));
+        }), player -> ParkourOption.PARKOUR_SETTINGS.mayPerform(player) && ParkourUser.isPlayer(player));
 
-        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? Locales.getString(user.getLocale(), "name") : "?").click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))), player -> ParkourOption.LANG.check(player) && ParkourUser.isUser(player));
+        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? Locales.getString(user.getLocale(), "name") : "?").click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))), player -> ParkourOption.LANG.mayPerform(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 2, (player, user) -> {
             // user has to be not-null to see this item
@@ -67,13 +67,16 @@ public class SettingsMenu extends DynamicMenu {
 
                 return true;
             });
-        }, player -> ParkourOption.CHAT.check(player) && ParkourUser.isUser(player));
+        }, player -> ParkourOption.CHAT.mayPerform(player) && ParkourUser.isUser(player));
 
         registerMainItem(2, 0, (player, user) -> Locales.getItem(player, "other.close").click(event -> event.getPlayer().closeInventory()), player -> true);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "settings.name")).fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).animation(new SplitMiddleOutAnimation()).distributeRowsEvenly();
+        Menu menu = new Menu(3, Locales.getString(player, "settings.name"))
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
+                .animation(new SplitMiddleOutAnimation())
+                .distributeRowsEvenly();
 
         display(player, menu);
     }

@@ -1,7 +1,7 @@
 package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
 
@@ -97,7 +97,7 @@ public class Option {
 
         String prefix = "default-values";
         for (ParkourOption option : options) {
-            String parent = "%s.%s".formatted(prefix, option.getPath());
+            String parent = "%s.%s".formatted(prefix, option.path);
 
             // register enabled value
             OPTIONS_ENABLED.put(option, Config.CONFIG.getBoolean("%s.enabled".formatted(parent)));

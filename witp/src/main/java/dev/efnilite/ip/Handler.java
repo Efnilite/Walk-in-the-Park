@@ -1,13 +1,11 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourCommand;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
@@ -70,7 +68,8 @@ public class Handler implements EventWatcher {
         }
         if (player.isOp() && WorldManager.WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
-            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " + "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
+            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
+                    "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             Util.send(player, "");
         }
 
@@ -283,7 +282,7 @@ public class Handler implements EventWatcher {
         boolean passes;
 
         if (Option.PERMISSIONS) {
-            passes = ParkourOption.ADMIN.check(player);
+            passes = ParkourOption.ADMIN.mayPerform(player);
         } else {
             passes = player.isOp();
         }

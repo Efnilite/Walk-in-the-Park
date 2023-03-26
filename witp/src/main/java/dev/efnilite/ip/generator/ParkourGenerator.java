@@ -1,7 +1,6 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.ParkourOption;
 import dev.efnilite.ip.api.Gamemode;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
@@ -13,6 +12,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.Score;

@@ -44,7 +44,7 @@ public class SelectStatement extends Statement {
      */
     public @Nullable LinkedHashMap<String, List<Object>> fetch() throws SQLException {
         if (columns.isEmpty()) {
-            throw new InvalidStatementException("Invalid SelectStatement");
+            throw new IllegalArgumentException("Invalid SelectStatement");
         }
 
         StringBuilder statement = new StringBuilder("SELECT ");

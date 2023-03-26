@@ -33,7 +33,7 @@ public class UpdertStatement extends Statement {
     @Override
     public void query() throws InvalidStatementException {
         if (defaults.isEmpty() || condition == null) {
-            throw new InvalidStatementException("Invalid UpdertStatement");
+            throw new IllegalArgumentException("Invalid UpdertStatement");
         }
         SelectStatement statement = new SelectStatement(manager, table);
         statement.addColumns("*").addCondition(condition);
