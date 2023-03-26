@@ -1,19 +1,31 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Stores schematics, so they don't have to be read every time.
  */
 public class Schematics {
 
-    public static volatile Map<String, Schematic> cache = new HashMap<>();
+    private static final int SCHEMATIC_COUNT = 21;
+
+    private static final String URL = "https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/";
+
+    private static final File FOLDER = IP.getInFolder("schematics");
+
+    private static final Map<String, Schematic> CACHE = new HashMap<>();
 
     /**
      * Reads all files.
@@ -22,15 +34,18 @@ public class Schematics {
         Task.create(IP.getPlugin()).async().execute(() -> {
             Time.timerStart("ip load schematics");
 
-            cache.clear();
-            File folder = IP.getInFolder("schematics");
+            if (!FOLDER.exists()) {
+                FOLDER.mkdirs();
+            }
 
-            File[] files = folder.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
+            File[] files = FOLDER.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 
             if (files == null) {
+                download();
                 return;
             }
 
+            CACHE.clear();
             for (File file : files) {
                 String fileName = file.getName();
 
@@ -38,13 +53,36 @@ public class Schematics {
                 schematic.read();
 
                 if (schematic.isSupported) {
-                    cache.put(fileName, schematic);
+                    CACHE.put(fileName, schematic);
                 }
             }
 
-            IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - cache.keySet().size()));
+            IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - CACHE.keySet().size()));
             IP.logging().info("Loaded all schematics in %d ms!".formatted(Time.timerEnd("ip load schematics")));
         }).run();
+    }
+
+    // downloads all schematics
+    public static void download() {
+        IP.logging().info("Downloading schematics...");
+
+        List<String> schematics = new ArrayList<>();
+        schematics.addAll(Arrays.asList("spawn-island.witp", "spawn-island-duels.witp"));
+        schematics.addAll(Colls.map("parkour-%d.witp"::formatted, Colls.range(SCHEMATIC_COUNT + 1)));
+        schematics.forEach(Schematics::downloadFile);
+    }
+
+    // downloads a singular file to the schematics folder
+    private static void downloadFile(String name) {
+        try (InputStream stream = new URL("%s%s".formatted(URL, name)).openStream()) {
+            Files.copy(stream, Paths.get(FOLDER.toString(), name));
+        } catch (FileAlreadyExistsException ex) {
+            // do nothing
+        } catch (UnknownHostException ex) {
+            IP.logging().stack("Internet error while downloading schematic %s".formatted(name), ex);
+        } catch (Exception ex) {
+            IP.logging().stack("Error while downloading schematic %s".formatted(name), ex);
+        }
     }
 
     /**
@@ -52,6 +90,6 @@ public class Schematics {
      * @return A schematic instance by name.
      */
     public static Schematic getSchematic(String name) {
-        return cache.get(name);
+        return CACHE.get(name);
     }
 }

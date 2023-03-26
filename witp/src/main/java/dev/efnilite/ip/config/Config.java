@@ -4,20 +4,12 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.vilib.lib.configupdater.configupdater.ConfigUpdater;
-import dev.efnilite.vilib.util.Task;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +18,10 @@ import java.util.List;
  */
 public enum Config {
 
-    CONFIG("config.yml"), GENERATION("generation.yml"), REWARDS("rewards-v2.yml"), SCHEMATICS("schematics.yml");
+    CONFIG("config.yml"),
+    GENERATION("generation.yml"),
+    REWARDS("rewards-v2.yml"),
+    SCHEMATICS("schematics.yml");
 
     /**
      * Reloads all config files.
@@ -36,66 +31,12 @@ public enum Config {
             config.load();
         }
 
-        // read rewards file
+        // read config stuff
         Rewards.init();
         Locales.init();
-
-        if (schematics()) {
-            // read schematics again
-            Schematics.init();
-        }
+        Schematics.init();
 
         IP.logging().info("Loaded all config files");
-    }
-
-    // todo fix
-    private static boolean schematics() {
-        if (IP.getInFolder("schematics/spawn-island-duels.witp").exists()) {
-            return true;
-        }
-
-        String[] schematics = new String[]{"spawn-island.witp", "spawn-island-duels.witp"};
-        File folder = IP.getInFolder("schematics");
-        folder.mkdirs();
-
-        IP.logging().info("Downloading missing schematics...");
-        int structureCount = 21;
-
-        Task.create(IP.getPlugin()).async().execute(() -> {
-            try {
-                for (String schematic : schematics) {
-                    Path path = Paths.get(folder.toString(), schematic);
-                    if (path.toFile().exists()) {
-                        continue;
-                    }
-
-                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/" + schematic).openStream();
-                    Files.copy(stream, path);
-                    stream.close();
-                }
-                for (int i = 1; i <= structureCount; i++) {
-                    Path path = Paths.get(folder.toString(), "parkour-%d.witp".formatted(i));
-                    if (path.toFile().exists()) {
-                        continue;
-                    }
-
-                    InputStream stream = new URL("https://github.com/Efnilite/Walk-in-the-Park/raw/main/schematics/parkour-" + i + ".witp").openStream();
-                    Files.copy(stream, path);
-                    stream.close();
-                }
-
-                Schematics.init();
-                IP.logging().info("Downloaded all schematics");
-            } catch (FileAlreadyExistsException ex) {
-                // do nothing
-            } catch (UnknownHostException ex) {
-                IP.logging().stack("Stopped download of schematics", "join the Discord and send this error to receive help", ex);
-            } catch (Throwable throwable) {
-                IP.logging().stack("Stopped download of schematics", "delete the schematics folder and restart the server", throwable);
-            }
-        }).run();
-
-        return false;
     }
 
     /**

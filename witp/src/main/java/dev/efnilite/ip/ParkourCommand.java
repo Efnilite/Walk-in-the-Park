@@ -42,15 +42,14 @@ public class ParkourCommand extends ViCommand {
 
     public static final HashMap<Player, Location[]> selections = new HashMap<>();
 
-    private ItemStack wand;
+    private static final ItemStack wand;
 
-    public ParkourCommand() {
-        if (Version.isHigherOrEqual(Version.V1_14)) {
-            wand = new Item(
-                    Material.GOLDEN_AXE, "<dark_red><bold>IP Schematic Wand")
-                    .lore("<gray>Left click: first position", "<gray>Right click: second position").build();
-            Persistents.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
-        }
+    static {
+        wand = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand")
+                .lore("<gray>Left click: first position", "<gray>Right click: second position")
+                .build();
+
+        Persistents.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
     }
 
     @Override
@@ -499,7 +498,7 @@ public class ParkourCommand extends ViCommand {
         }
         return true;
     }
-    
+
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();

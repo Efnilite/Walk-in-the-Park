@@ -47,7 +47,7 @@ public record RewardString(@NotNull String string) {
             try {
                 VaultHook.deposit(player.player, Double.parseDouble(string));
             } catch (NumberFormatException ex) {
-                IP.logging().stack(string + " is not a valid money reward", "Check your rewards file for incorrect numbers");
+                IP.logging().stack("%s is not a valid money reward".formatted(string), "check your rewards file for incorrect numbers");
             }
 
         } else {

@@ -76,15 +76,6 @@ public abstract class StyleType {
         styles.put(name.toLowerCase(), materials);
     }
 
-    /**
-     * Gets a map of all the registered styles under this style type
-     *
-     * @return the style type
-     */
-    public HashMap<String, List<Material>> getStyles() {
-        return styles;
-    }
-
     @Nullable
     private List<Material> getPossibleMaterials(@NotNull String name, @NotNull String path, @NotNull FileConfiguration file) {
         List<Material> materials = new ArrayList<>();

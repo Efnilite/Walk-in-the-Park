@@ -31,7 +31,7 @@ public class UpdertStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException {
+    public void query() {
         if (defaults.isEmpty() || condition == null) {
             throw new IllegalArgumentException("Invalid UpdertStatement");
         }

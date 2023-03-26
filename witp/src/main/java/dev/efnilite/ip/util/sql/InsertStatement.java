@@ -17,7 +17,7 @@ public class InsertStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException {
+    public void query() {
         if (values.isEmpty()) {
             throw new IllegalArgumentException("Invalid InsertStatement");
         }

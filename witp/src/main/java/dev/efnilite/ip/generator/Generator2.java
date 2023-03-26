@@ -1,6 +1,8 @@
 package dev.efnilite.ip.generator;
 
+import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.world.Island;
 import org.bukkit.util.Vector;
 
 /**
@@ -19,24 +21,21 @@ public class Generator2 {
     /**
      * This generator's {@link Profile}.
      */
-    public final Profile profile;
+    public final Profile profile = new Profile();
 
     /**
      * This generator's {@link Session}.
      */
     public final Session session;
 
+    /**
+     * This generator's {@link Island} manager.
+     */
+    public final Island island;
+
     public Generator2(Session session) {
         this.session = session;
 
-        this.profile = new Profile();
+        this.island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
     }
-
-    //   1
-    //   1 2
-    //   1 2 3
-    // o 1 2 3 4 = dz 4 - dx   dy = 0
-    //   1 2 3
-    //   1 2
-    //   1
 }

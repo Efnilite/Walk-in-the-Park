@@ -17,11 +17,14 @@ public class SessionChat implements Listener {
 
     @EventHandler
     public void chat(AsyncPlayerChatEvent event) {
-        Player sender = event.getPlayer();
+        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT)) {
+            return;
+        }
 
+        Player sender = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(sender);
 
-        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT) || user == null) {
+        if (user == null) {
             return;
         }
 

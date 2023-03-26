@@ -110,4 +110,37 @@ public final class Colls {
 
         return items;
     }
+
+    /**
+     * @param start The start. Inclusive.
+     * @param end The end. Exclusive.
+     * @param step The increment between values.
+     * @return List with all ints from start to end with increment step.
+     */
+    public static List<Integer> range(int start, int end, int step) {
+        List<Integer> items = new ArrayList<>();
+
+        for (int i = start; i < end; i += step) {
+            items.add(i);
+        }
+
+        return items;
+    }
+
+    /**
+     * @param start The start. Inclusive.
+     * @param end The end. Exclusive.
+     * @return List with all ints from start to end with increment 1.
+     */
+    public static List<Integer> range(int start, int end) {
+        return range(start, end, 1);
+    }
+
+    /**
+     * @param end The end. Exclusive.
+     * @return List with all ints from 0 to end with increment 1.
+     */
+    public static List<Integer> range(int end) {
+        return range(0, end, 1);
+    }
 }

@@ -493,7 +493,7 @@ public class ParkourGenerator {
 
         // if found style is null, get the first registered style to prevent big boy errors
         if (material == null) {
-            String newStyle = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).getStyles().keySet()).get(0);
+            String newStyle = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).styles.keySet()).get(0);
 
             profile.set("style", newStyle);
 
@@ -736,6 +736,7 @@ public class ParkourGenerator {
             @Override
             public void run() {
                 if (stopped) {
+                    this.cancel();
                     return;
                 }
 
@@ -851,8 +852,6 @@ public class ParkourGenerator {
             if (task == null) {// incomplete setup as task is the last thing to start
                 IP.logging().warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
                 IP.logging().warn("You don't have to report this warning.");
-            } else {
-                task.cancel();
             }
         }
 

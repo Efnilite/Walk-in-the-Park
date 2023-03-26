@@ -17,9 +17,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Class for handling leaderboards per Gamemode
- *
- * @author Efnilite
+ * Class for handling leaderboards.
  */
 public class Leaderboard {
 
@@ -31,17 +29,17 @@ public class Leaderboard {
     /**
      * The file that the data of this leaderboard is stored in.
      */
-    private final String file;
+    public final String file;
 
     /**
      * The gamemode that this leaderboard belongs to
      */
-    private final String gamemode;
+    public final String gamemode;
 
     /**
      * A map of all scores for this gamemode
      */
-    private final Map<UUID, Score> scores = new LinkedHashMap<>();
+    public final Map<UUID, Score> scores = new LinkedHashMap<>();
 
     /**
      * A map of all scores for this gamemode, used for serializing.
@@ -365,28 +363,7 @@ public class Leaderboard {
         return new ArrayList<>(scores.values()).get(rank - 1);
     }
 
-    /**
-     * Gets all scores
-     *
-     * @return all scores
-     */
-    public Map<UUID, Score> getScores() {
-        return scores;
-    }
-
-    /**
-     * Returns the gamemode of this leaderboard
-     *
-     * @return the gamemode of this leaderboard
-     */
-    @NotNull
-    public String getGamemode() {
-        return gamemode;
-    }
-
-    /*
-     * return the table name
-     */
+    // return the table name
     private String getTableName() {
         return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, gamemode);
     }

@@ -23,7 +23,7 @@ public class UpdateStatement extends Statement {
     }
 
     @Override
-    public void query() throws InvalidStatementException {
+    public void query() {
         if (condition == null || values.isEmpty()) {
             throw new IllegalArgumentException("Invalid UpdateStatement");
         }

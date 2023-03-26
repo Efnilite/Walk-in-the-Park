@@ -43,7 +43,7 @@ public class SingleLeaderboardMenu {
 
         Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".head");
 
-        Map<UUID, Score> sorted = sort.sort(leaderboard.getScores());
+        Map<UUID, Score> sorted = sort.sort(leaderboard.scores);
 
         for (UUID uuid : sorted.keySet()) {
             int rank = items.size() + 1;

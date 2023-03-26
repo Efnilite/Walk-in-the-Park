@@ -10,5 +10,5 @@ public abstract class Statement {
         this.table = table;
     }
 
-    public abstract void query() throws InvalidStatementException;
+    public abstract void query();
 }
