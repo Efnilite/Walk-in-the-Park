@@ -1,34 +1,30 @@
 package dev.efnilite.ip.world;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.vilib.util.Version;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 
-import java.io.File;
-import java.nio.file.Files;
-
-public abstract class WorldManager {
+public interface WorldManager {
 
     /**
      * Implementation for creating a world.
      *
      * @return The created world.
      */
-    public abstract World createWorld();
+    World createWorld();
 
     /**
      * Implementation for deleting a world.
      */
-    public abstract void deleteWorld();
+    void deleteWorld();
 
     /**
      * Creates a new world and sets all according settings in it.
      */
-    public static void create() {
+    static void create() {
         World world = getWorld();
 
         if (!Option.JOINING || (!Option.DELETE_ON_RELOAD && world != null)) {
@@ -64,7 +60,7 @@ public abstract class WorldManager {
     /**
      * Deletes the world.
      */
-    public static void delete() {
+    static void delete() {
         if (!Option.DELETE_ON_RELOAD || !Option.JOINING) {
             return;
         }
@@ -77,7 +73,7 @@ public abstract class WorldManager {
      *
      * @return the Bukkit world wherein IP is currently active.
      */
-    public static World getWorld() {
+    static World getWorld() {
         return Bukkit.getWorld(Option.WORLD_NAME);
     }
 
@@ -86,85 +82,11 @@ public abstract class WorldManager {
      *
      * @return The appropriate instance.
      */
-    public static WorldManager getInstance() {
+    static WorldManager getInstance() {
         if (WorldManagerMV.MANAGER != null) {
             return new WorldManagerMV();
         } else {
             return new WorldManagerMC();
-        }
-    }
-
-    /**
-     * Multiverse world manager.
-     */
-    public static class WorldManagerMV extends WorldManager {
-
-        public static MVWorldManager MANAGER;
-
-        static {
-            MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-
-            if (core != null) {
-                MANAGER = core.getMVWorldManager();
-            }
-        }
-
-        @Override
-        public World createWorld() {
-            if (MANAGER == null) {
-                return null;
-            }
-
-            MANAGER.addWorld(Option.WORLD_NAME, World.Environment.NORMAL, null, WorldType.FLAT, false, VoidGenerator.getMultiverseGenerator());
-            MultiverseWorld world = MANAGER.getMVWorld(Option.WORLD_NAME);
-
-            // optimizations to reduce memory usage
-            world.setAllowAnimalSpawn(false);
-            world.setAllowMonsterSpawn(false);
-            world.setKeepSpawnInMemory(false);
-
-            return world.getCBWorld();
-        }
-
-        @Override
-        public void deleteWorld() {
-            if (MANAGER == null) {
-                return;
-            }
-
-            MANAGER.deleteWorld(Option.WORLD_NAME, false); // deleteFromConfig
-        }
-    }
-
-    /**
-     * Minecraft world manager.
-     */
-    public static class WorldManagerMC extends WorldManager {
-
-        @Override
-        public World createWorld() {
-            World world = null;
-
-            try {
-                WorldCreator creator = new WorldCreator(Option.WORLD_NAME).generateStructures(false).type(WorldType.NORMAL).generator(Version.isHigherOrEqual(Version.V1_17) ? new VoidGenerator.VoidGenerator_v1_17() : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
-                        .environment(World.Environment.NORMAL);
-
-                world = Bukkit.createWorld(creator);
-            } catch (Exception ex) {
-                IP.logging().stack("Error while trying to create the parkour world", "delete the parkour world folder and restart the server", ex);
-            }
-            return world;
-        }
-
-        @Override
-        public void deleteWorld() {
-            Bukkit.unloadWorld(Option.WORLD_NAME, false);
-
-            try {
-                Files.delete(new File(Option.WORLD_NAME).toPath());
-            } catch (Exception ex) {
-                IP.logging().warn("Error while trying to delete parkour world: %s".formatted(ex.getMessage()));
-            }
         }
     }
 }
