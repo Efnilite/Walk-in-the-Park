@@ -2,28 +2,21 @@ package dev.efnilite.ip.player;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.util.sql.SelectStatement;
-import dev.efnilite.ip.util.sql.Statement;
-import dev.efnilite.ip.util.sql.UpdertStatement;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.*;
 
 /**
@@ -48,12 +41,7 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String _locale;
     public @Expose List<String> collectedRewards;
 
-    /**
-     * The uuid of the player
-     */
-    public UUID uuid;
     public ParkourGenerator generator;
-    public File file;
 
     /**
      * Creates a new instance of a ParkourPlayer<br>
@@ -61,10 +49,6 @@ public class ParkourPlayer extends ParkourUser {
      */
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
-
-        this.uuid = player.getUniqueId();
-
-        this.file = IP.getInFolder("players/%s.json".formatted(uuid.toString()));
 
         setLocale((String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
         this._locale = getLocale();
@@ -139,7 +123,7 @@ public class ParkourPlayer extends ParkourUser {
         return value == null ? def : value;
     }
 
-    private void resetPlayerPreferences() {
+    public void resetPlayerPreferences() {
         setSettings(null, null, null, null, null, null,
                 null, null, null, null, null, null, null);
     }
@@ -148,36 +132,12 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the player's data to their file
      */
     public void save(boolean async) {
-        Runnable runnable = () -> {
-            try {
-                if (Option.SQL) {
-                    Statement statement = new UpdertStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options").setDefault("uuid", uuid.toString()).setDefault("selectedTime", selectedTime).setDefault("style", style).setDefault("blockLead", blockLead).setDefault("useParticles", particles).setDefault("useDifficulty", useScoreDifficulty).setDefault("useStructure", useSchematic).setDefault("useSpecial", useSpecialBlocks).setDefault("showFallMsg", showFallMessage).setDefault("showScoreboard", showScoreboard).setDefault("collectedRewards", String.join(",", collectedRewards)).setDefault("locale", getLocale()).setDefault("schematicDifficulty", schematicDifficulty).setDefault("sound", sound).setCondition("`uuid` = '" + uuid.toString() + "'"); // saves all options
-                    statement.query();
-                } else {
-                    if (file == null) {
-                        file = IP.getInFolder("players/%s.json".formatted(uuid.toString()));
-                    }
-                    if (!file.exists()) {
-                        File folder = IP.getInFolder("players");
-                        if (!folder.exists()) {
-                            folder.mkdirs();
-                        }
-                        file.createNewFile();
-                    }
-                    FileWriter writer = new FileWriter(file);
-                    IP.getGson().toJson(ParkourPlayer.this, writer);
-                    writer.flush();
-                    writer.close();
-                }
-            } catch (Throwable throwable) {
-                IP.logging().stack("Error while saving data of player " + player.getName(), throwable);
-            }
-        };
+        Runnable write = () -> IP.getStorage().writePlayer(this);
 
         if (async) {
-            Task.create(IP.getPlugin()).async().execute(runnable).run();
+            Task.create(IP.getPlugin()).async().execute(write).run();
         } else {
-            runnable.run();
+            write.run();
         }
     }
 
@@ -213,91 +173,16 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    // Internal registering service
-    @ApiStatus.Internal
-    protected static ParkourPlayer register0(@NotNull ParkourPlayer pp) {
-        UUID uuid = pp.player.getUniqueId();
-        JOIN_COUNT++;
-
-        new ParkourJoinEvent(pp).call();
-
-        if (!Option.SQL) {
-            if (pp.file.exists()) {
-                try {
-                    FileReader reader = new FileReader(pp.file);
-                    ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
-
-                    pp.setSettings(stringValue(from.selectedTime), from.style, from._locale, stringValue(from.schematicDifficulty),
-                            stringValue(from.blockLead), from.particles, from.sound, from.useScoreDifficulty, from.useSchematic,
-                            from.useSpecialBlocks, from.showFallMessage, from.showScoreboard,
-                            from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
-                    reader.close();
-                } catch (Throwable throwable) {
-                    IP.logging().stack("Error while reading file of player " + pp.player.getName(), throwable);
-                }
-            } else {
-                pp.resetPlayerPreferences();
-            }
-
-            players.put(pp.player, pp);
-            pp.save(true);
-        } else {
-            try {
-                SelectStatement options = new SelectStatement(IP.getSqlManager(), Option.SQL_PREFIX + "options").addColumns("uuid", "style", "blockLead", "useParticles", "useDifficulty", "useStructure", // counting starts from 0
-                        "useSpecial", "showFallMsg", "showScoreboard", "selectedTime", "collectedRewards", "locale", "schematicDifficulty", "sound").addCondition("uuid = '" + uuid + "'");
-                Map<String, List<Object>> map = options.fetch();
-                List<Object> objects = map != null ? map.get(uuid.toString()) : null;
-                if (objects != null) {
-                    pp.setSettings((String) objects.get(8), (String) objects.get(0), (String) objects.get(10), (String) objects.get(11), (String) objects.get(1), translateSqlBoolean((String) objects.get(2)), translateSqlBoolean((String) objects.get(12)), translateSqlBoolean((String) objects.get(3)), translateSqlBoolean((String) objects.get(4)), translateSqlBoolean((String) objects.get(5)), translateSqlBoolean((String) objects.get(6)), translateSqlBoolean((String) objects.get(7)), (String) objects.get(9));
-                } else {
-                    pp.resetPlayerPreferences();
-                    pp.save(true);
-                }
-            } catch (Throwable throwable) {
-                IP.logging().stack("Error while reading SQL data of player " + pp.player.getName(), throwable);
-            }
-
-            players.put(pp.player, pp);
-        }
-        return pp;
-    }
-
-    private static boolean translateSqlBoolean(String string) {
-        return string == null || string.equals("1");
-    }
-
-    @Nullable
-    private static String stringValue(Object object) {
-        if (object == null) {
-            return null;
-        } else {
-            return String.valueOf(object);
-        }
-    }
-
-    /**
-     * Gets a ParkourPlayer from their UUID
-     *
-     * @param uuid The uuid
-     * @return the ParkourPlayer
-     */
-    public static @Nullable ParkourPlayer getPlayer(UUID uuid) {
-        for (Player p : players.keySet()) {
-            if (p.getUniqueId() == uuid) {
-                return players.get(p);
-            }
-        }
-        return null;
-    }
-
     /**
      * Gets a ParkourPlayer from a regular Player
      *
      * @param player The Bukkit Player
      * @return the ParkourPlayer
      */
-    public static @Nullable ParkourPlayer getPlayer(@Nullable Player player) {
-        return player == null ? null : getPlayer(player.getUniqueId());
+    public static @Nullable ParkourPlayer getPlayer(@NotNull Player player) {
+        List<ParkourPlayer> filtered = Colls.filter(other -> other.getUUID() == player.getUniqueId(), getActivePlayers());
+
+        return filtered.size() > 0 ? filtered.get(0) : null;
     }
 
     public void setup(Location to, boolean runGenerator) {

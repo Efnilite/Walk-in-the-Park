@@ -1,19 +1,12 @@
 package dev.efnilite.ip.leaderboard;
 
-import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.player.Score;
-import dev.efnilite.ip.util.sql.SelectStatement;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -22,42 +15,19 @@ import java.util.*;
 public class Leaderboard {
 
     /**
-     * The folder that is used by the leaderboard storage
+     * The mode that this leaderboard belongs to
      */
-    public static final String FOLDER = IP.getInFolder("leaderboards").toString();
+    public final String mode;
 
     /**
-     * The file that the data of this leaderboard is stored in.
-     */
-    public final String file;
-
-    /**
-     * The gamemode that this leaderboard belongs to
-     */
-    public final String gamemode;
-
-    /**
-     * A map of all scores for this gamemode
+     * A map of all scores for this mode
      */
     public final Map<UUID, Score> scores = new LinkedHashMap<>();
 
-    /**
-     * A map of all scores for this gamemode, used for serializing.
-     */
-    @Expose
-    private final Map<UUID, String> serialized = new LinkedHashMap<>();
-
-    public Leaderboard(@NotNull String gamemode) {
-        this.gamemode = gamemode.toLowerCase();
-        this.file = "%s/%s.json".formatted(FOLDER, gamemode.toLowerCase());
+    public Leaderboard(@NotNull String mode) {
+        this.mode = mode.toLowerCase();
 
         if (Option.SQL) {
-            IP.getSqlManager().validateConnection();
-
-            IP.getSqlManager().sendQuery("""
-                    USE `%s`;
-                    """.formatted(Option.SQL_DB));
-
             IP.getSqlManager().sendQuery("""
                     CREATE TABLE IF NOT EXISTS `%s`
                     (
@@ -69,24 +39,6 @@ public class Leaderboard {
                     )
                     CHARSET = utf8 ENGINE = InnoDB;
                     """.formatted(getTableName()));
-
-        } else {
-            File file = new File(this.file);
-
-            if (!file.exists()) {
-                File folder = new File(FOLDER);
-
-                if (!folder.exists()) {
-                    folder.mkdirs();
-                }
-
-                try {
-                    file.createNewFile();
-                } catch (IOException ex) {
-                    IP.logging().stack("Error while creating leaderboard file",
-                            "delete leaderboard file %s and restart your server".formatted(file), ex);
-                }
-            }
         }
 
         // read all data
@@ -105,60 +57,12 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
-        if (Option.SQL) {
-            if (async) {
-                Task.create(IP.getPlugin()).async().execute(this::_writeSql).run();
-            } else {
-                _writeSql();
-            }
+        Runnable write = () -> IP.getStorage().writeScores(mode, scores);
+
+        if (async) {
+            Task.create(IP.getPlugin()).async().execute(write).run();
         } else {
-            if (async) {
-                Task.create(IP.getPlugin()).async().execute(this::_writeFile).run();
-            } else {
-                _writeFile();
-            }
-        }
-    }
-
-    /*
-     * writes all data to the mysql table
-     */
-    private void _writeSql() {
-        for (UUID uuid : scores.keySet()) {
-            Score score = scores.get(uuid);
-
-            if (score == null) {
-                continue;
-            }
-
-            // insert all
-            IP.getSqlManager().sendQuery("""
-                    INSERT INTO `%s`
-                    (uuid, name, time, difficulty, score)
-                    VALUES
-                    ('%s', '%s', '%s', '%s', %d)
-                    ON DUPLICATE KEY UPDATE
-                    name = '%s', time = '%s', difficulty = '%s', score = %d;
-                    """.formatted(getTableName(), uuid.toString(), score.name(), score.time(), score.difficulty(),
-                    score.score(), score.name(), score.time(), score.difficulty(), score.score()));
-        }
-    }
-
-    /*
-     * writes all leaderboard data to the file
-     */
-    private void _writeFile() {
-        if (!new File(file).exists()) {
-            return;
-        }
-
-        try (FileWriter writer = new FileWriter(file)) {
-            IP.getGson().toJson(this, writer);
-
-            writer.flush();
-        } catch (IOException ex) {
-            IP.logging().stack("Error while trying to write to leaderboard file %s".formatted(gamemode),
-                    "reload/restart your server", ex);
+            write.run();
         }
     }
 
@@ -166,104 +70,24 @@ public class Leaderboard {
      * Reads all scores from the leaderboard file
      */
     public void read(boolean async) {
-        if (Option.SQL) {
-            if (async) {
-                Task.create(IP.getPlugin()).async().execute(this::_readSql).run();
-            } else {
-                _readSql();
-            }
-        } else {
-            if (async) {
-                Task.create(IP.getPlugin()).async().execute(this::_readFile).run();
-            } else {
-                _readFile();
-            }
-        }
-    }
-
-    /*
-     * read leaderboard data from table
-     */
-    private void _readSql() {
-        try {
-            SelectStatement statement = new SelectStatement(IP.getSqlManager(), getTableName())
-                    .addColumns("uuid", "name", "time", "difficulty", "score"); // select all
-
-            // fetch all data
-            Map<String, List<Object>> fetched = statement.fetch();
-
-            if (fetched == null) {
-                return;
-            }
-
-            Map<UUID, Score> copy = new HashMap<>();
-            // loop over data to setup scores variable
-            for (String uuid : fetched.keySet()) {
-                List<Object> objects = fetched.get(uuid);
-
-                String name = (String) objects.get(0);
-                String time = (String) objects.get(1);
-                String difficulty = (String) objects.get(2);
-                String score = (String) objects.get(3);
-
-                copy.put(UUID.fromString(uuid), new Score(name, time, difficulty, Integer.parseInt(score)));
-            }
-
-            // only clear if reading has succeeded
+        Runnable read = () -> {
             scores.clear();
+            scores.putAll(IP.getStorage().readScores(mode));
 
-            scores.putAll(copy);
-        } catch (SQLException ex) {
-            IP.logging().stack("Error while trying to read SQL leaderboard data", "restart/reload your server", ex);
+            sort();
+        };
+
+        if (async) {
+            Task.create(IP.getPlugin()).async().execute(read).run();
+        } else {
+            read.run();
         }
-
-        sort();
-    }
-
-    /*
-     * read leaderboard data from the file
-     */
-    private void _readFile() {
-        if (!new File(file).exists()) {
-            return;
-        }
-
-        try (FileReader reader = new FileReader(file)) {
-            Leaderboard read = IP.getGson().fromJson(reader, Leaderboard.class);
-
-            if (read != null) {
-                serialized.clear();
-                serialized.putAll(read.serialized);
-
-                Map<UUID, Score> copy = new HashMap<>();
-                for (UUID uuid : serialized.keySet()) {
-                    String val = serialized.get(uuid);
-
-                    if (val == null) {
-                        continue;
-                    }
-
-                    copy.put(uuid, Score.fromString(val));
-                }
-
-                // only clear if reading has succeeded
-                scores.clear();
-
-                scores.putAll(copy);
-            }
-        } catch (IOException ex) {
-            IP.logging().stack("Error while trying to read leaderboard file %s".formatted(gamemode), "send this file to the developer", ex);
-        }
-
-        sort();
     }
 
     /**
      * Sorts all scores in the map
      */
     public void sort() {
-        // sort map by values
-
         // get all entries in a list
         List<Map.Entry<UUID, Score>> toSort = new ArrayList<>(scores.entrySet());
 
@@ -272,18 +96,10 @@ public class Leaderboard {
 
         // compile map back together
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
-        for (Map.Entry<UUID, Score> entry : toSort) {
-            sorted.put(entry.getKey(), entry.getValue());
-        }
+        toSort.forEach(entry -> sorted.put(entry.getKey(), entry.getValue()));
 
         scores.clear();
         scores.putAll(sorted);
-
-        serialized.clear();
-
-        for (UUID uuid : scores.keySet()) {
-            serialized.put(uuid, scores.get(uuid).toString());
-        }
     }
 
     /**
@@ -295,8 +111,6 @@ public class Leaderboard {
      */
     @Nullable
     public Score put(@NotNull UUID uuid, @NotNull Score score) {
-        serialized.put(uuid, score.toString());
-
         Score previous = scores.put(uuid, score);
 
         sort();
@@ -312,13 +126,11 @@ public class Leaderboard {
      */
     @Nullable
     public Score reset(@NotNull UUID uuid) {
-        serialized.remove(uuid);
-
         return scores.remove(uuid);
     }
 
     /**
-     * Resets all registered scores for this gamemode
+     * Resets all registered scores for this mode
      */
     public void resetAll() {
         for (UUID uuid : scores.keySet()) {
@@ -364,7 +176,7 @@ public class Leaderboard {
     }
 
     // return the table name
-    private String getTableName() {
-        return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, gamemode);
+    public String getTableName() {
+        return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, mode);
     }
 }

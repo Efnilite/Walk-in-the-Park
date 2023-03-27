@@ -32,9 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
@@ -91,42 +88,6 @@ public class ParkourCommand extends ViCommand {
                     Option.init(false);
 
                     Util.send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reloadIP") + "ms!");
-                    return true;
-                }
-                case "migrate" -> {
-                    if (!cooldown(sender, "migrate", 2500)) {
-                        return true;
-                    }
-                    if (!sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                        sender.sendMessage(defaultLocale, "other.no_do");
-                        return true;
-                    } else if (!Option.SQL) {
-                        Util.send(sender, IP.PREFIX + "You have disabled SQL support in the config!");
-                        return true;
-                    }
-                    Time.timerStart("migrate");
-                    File folder = IP.getInFolder("players");
-
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                        return true;
-                    }
-
-                    for (File file : folder.listFiles()) {
-                        FileReader reader;
-                        try {
-                            reader = new FileReader(file);
-                        } catch (FileNotFoundException ex) {
-                            IP.logging().stack("Could not find file to migrate", ex);
-                            Util.send(sender, IP.PREFIX + "<red>Could not find that file, try again!");
-                            return true;
-                        }
-                        ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
-                        String name = file.getName();
-                        from.uuid = UUID.fromString(name.substring(0, name.lastIndexOf('.')));
-                        from.save(true);
-                    }
-                    Util.send(sender, IP.PREFIX + "Your players' data has been migrated in " + Time.timerEnd("migrate") + "ms!");
                     return true;
                 }
             }
@@ -523,7 +484,6 @@ public class ParkourCommand extends ViCommand {
                 completions.add("forceleave");
                 completions.add("reset");
                 completions.add("recoverinventory");
-                completions.add("migrate");
             }
             return completions(args[0], completions);
         } else if (args.length == 2) {
@@ -579,7 +539,6 @@ public class ParkourCommand extends ViCommand {
         if (sender.hasPermission(ParkourOption.ADMIN.permission)) {
             Util.send(sender, "<gray>/ip schematic <dark_gray>- Create a schematic");
             Util.send(sender, "<gray>/ip reload <dark_gray>- Reloads the messages-v3.yml file");
-            Util.send(sender, "<gray>/ip migrate <dark_gray>- Migrate your JSON files to MySQL");
             Util.send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
             Util.send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             Util.send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");

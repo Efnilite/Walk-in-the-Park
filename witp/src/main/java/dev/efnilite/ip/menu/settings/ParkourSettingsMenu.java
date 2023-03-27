@@ -102,25 +102,21 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
             return new SliderItem().initial(times.indexOf(player.selectedTime)).add(0, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")), event -> {
                 player.selectedTime = 0;
-                player.updateVisualTime(player.selectedTime);
 
                 player.updateGeneratorSettings();
                 return true;
             }).add(1, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")), event -> {
                 player.selectedTime = 6000;
-                player.updateVisualTime(player.selectedTime);
 
                 player.updateGeneratorSettings();
                 return true;
             }).add(2, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")), event -> {
                 player.selectedTime = 12000;
-                player.updateVisualTime(player.selectedTime);
 
                 player.updateGeneratorSettings();
                 return true;
             }).add(3, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")), event -> {
                 player.selectedTime = 18000;
-                player.updateVisualTime(player.selectedTime);
 
                 player.updateGeneratorSettings();
                 return true;

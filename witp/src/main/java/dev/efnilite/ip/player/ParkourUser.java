@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Gamemodes;
 import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.api.event.ParkourLeaveEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
@@ -14,10 +15,10 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -66,8 +67,8 @@ public abstract class ParkourUser {
 
     public static int JOIN_COUNT;
 
-    protected static final Map<Player, ParkourUser> users = new HashMap<>();
-    protected static final Map<Player, ParkourPlayer> players = new HashMap<>();
+    private static final Map<Player, ParkourUser> users = new HashMap<>();
+    private static final Map<Player, ParkourPlayer> players = new HashMap<>();
 
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
@@ -99,7 +100,15 @@ public abstract class ParkourUser {
             unregister(existing, false, false, true);
         }
 
-        return ParkourPlayer.register0(new ParkourPlayer(player, data));
+        ParkourPlayer pp = new ParkourPlayer(player, data);
+
+        // stats
+        JOIN_COUNT++;
+        new ParkourJoinEvent(pp).call();
+
+        IP.getStorage().readPlayer(pp);
+        players.put(pp.player, pp);
+        return pp;
     }
 
     /**
@@ -233,34 +242,15 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Gets a user from their UUID
-     *
-     * @param uuid the user's UUID
-     * @return the ParkourUser instance associated with this uuid. Returns null if there isn't an active player.
-     */
-    public static @Nullable ParkourUser getUser(@NotNull UUID uuid) {
-        Player player = Bukkit.getPlayer(uuid);
-
-        if (player == null) {
-            return null;
-        }
-
-        return getUser(player);
-    }
-
-    /**
      * Gets a user from a Bukkit Player
      *
      * @param player The Bukkit Player
      * @return the associated {@link ParkourUser}
      */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        for (ParkourUser user : users.values()) {
-            if (user.player.getUniqueId() == player.getUniqueId()) {
-                return user;
-            }
-        }
-        return null;
+        List<ParkourUser> filtered = Colls.filter(other -> other.getUUID() == player.getUniqueId(), getUsers());
+
+        return filtered.size() > 0 ? filtered.get(0) : null;
     }
 
     /**
@@ -350,27 +340,21 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Gets the UUID of the player
-     *
-     * @return the uuid
+     * @return The player's uuid
      */
     public UUID getUUID() {
         return player.getUniqueId();
     }
 
     /**
-     * Gets the location of the player
-     *
-     * @return the player's location
+     * @return The player's location
      */
     public Location getLocation() {
         return player.getLocation();
     }
 
     /**
-     * Returns the player's locale
-     *
-     * @return the locale
+     * @return The player's locale
      */
     public @NotNull String getLocale() {
         if (locale == null) {
@@ -381,9 +365,7 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Returns the player's name
-     *
-     * @return the name of the player
+     * @return The player's name
      */
     public String getName() {
         return player.getName();

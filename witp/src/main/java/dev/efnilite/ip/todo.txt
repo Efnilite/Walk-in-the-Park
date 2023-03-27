@@ -1,7 +1,6 @@
 Finished folders:
 - config
 - hook
-- leaderboard
 - reward
 - session
 - style
@@ -12,6 +11,7 @@ Todo:
 - gamemode
 - generator
 - menu
+- leaderboard
 - player
 - schematic
 - util

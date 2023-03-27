@@ -10,6 +10,9 @@ import dev.efnilite.ip.gamemode.SpectatorGamemode;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
+import dev.efnilite.ip.io.Storage;
+import dev.efnilite.ip.io.StorageDisk;
+import dev.efnilite.ip.io.StorageSQL;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.SessionChat;
@@ -48,6 +51,7 @@ public final class IP extends ViPlugin {
     private static IP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
+    private static Storage storage;
 
     @Nullable
     private static FloodgateHook floodgateHook;
@@ -103,9 +107,12 @@ public final class IP extends ViPlugin {
             try {
                 sqlManager = new SQLManager();
                 sqlManager.connect();
+                storage = new StorageSQL();
             } catch(Throwable throwable){
                 logging().stack("There was an error while starting IP", throwable);
             }
+        } else {
+            storage = new StorageDisk();
         }
 
         // ----- Registry -----
@@ -233,6 +240,10 @@ public final class IP extends ViPlugin {
 
     public static Registry getRegistry() {
         return registry;
+    }
+
+    public static Storage getStorage() {
+        return storage;
     }
 
     public static SQLManager getSqlManager() {
