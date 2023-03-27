@@ -1,13 +1,10 @@
-package dev.efnilite.ip.util.sql;
+package dev.efnilite.ip.io;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import org.bukkit.Bukkit;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Main MySQL handler
@@ -15,7 +12,6 @@ import java.sql.SQLException;
 public class SQLManager {
 
     private Connection connection;
-    private String database;
 
     /**
      * Applies a connection to the database.
@@ -23,8 +19,6 @@ public class SQLManager {
      */
     // todo remove all this garbage
     public void connect() {
-        this.database = Option.SQL_DB;
-
         try {
             IP.logging().info("Connecting to SQL");
 
@@ -36,7 +30,9 @@ public class SQLManager {
             }
 
             // Connect
-            connection = DriverManager.getConnection("jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB + "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" + "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
+            connection = DriverManager.getConnection("jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
+                    "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" +
+                    "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
 
             init();
 
@@ -64,12 +60,30 @@ public class SQLManager {
         }
     }
 
+
+    /**
+     * Sends a query to the database.
+     *
+     * @param sql The query.
+     * @return The result.
+     */
+    public ResultSet sendQuery(String sql) {
+        validateConnection();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            return statement.executeQuery();
+        } catch (SQLException ex) {
+            IP.logging().stack("Could not send query %s".formatted(sql), ex);
+            return null;
+        }
+    }
+
     /**
      * Sends a query to the database.
      *
      * @param sql The query.
      */
-    public void sendQuery(String sql) {
+    public void sendUpdate(String sql) {
         validateConnection();
 
         try {
@@ -77,7 +91,7 @@ public class SQLManager {
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ex) {
-            IP.logging().stack("Could not send query " + sql, ex);
+            IP.logging().stack("Could not send query %s".formatted(sql), ex);
         }
     }
 
@@ -86,7 +100,7 @@ public class SQLManager {
      *
      * @param sql The query.
      */
-    public void sendQuerySuppressed(String sql) {
+    public void sendUpdateSuppressed(String sql) {
         validateConnection();
 
         try {
@@ -103,29 +117,29 @@ public class SQLManager {
      * This contains suppressedQueries to update outdated dbs.
      */
     private void init() {
-        sendQuery("CREATE DATABASE IF NOT EXISTS `" + database + "`;");
-        sendQuery("USE `" + database + "`;");
+        sendUpdate("CREATE DATABASE IF NOT EXISTS `" + Option.SQL_DB + "`;");
+        sendUpdate("USE `" + Option.SQL_DB + "`;");
 
-        sendQuery("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " + "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " + "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " + "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
+        sendUpdate("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " + "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " + "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " + "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
 
         // v3.0.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`;");
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL;");
+        sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`;");
+        sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL;");
 
         // v3.1.0
-        sendQuerySuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
+        sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
 
         // v3.6.0
-        sendQuerySuppressed("""
+        sendUpdateSuppressed("""
                 ALTER TABLE `%s` ADD `locale` VARCHAR(8);
                 """.formatted(Option.SQL_PREFIX + "options"));
 
-        sendQuerySuppressed("""
+        sendUpdateSuppressed("""
                 ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;
                 """.formatted(Option.SQL_PREFIX + "options"));
 
         // v4.0.0
-        sendQuerySuppressed("""
+        sendUpdateSuppressed("""
                 ALTER TABLE `%s` ADD `sound` BOOLEAN;
                 """.formatted(Option.SQL_PREFIX + "options"));
 
@@ -142,14 +156,5 @@ public class SQLManager {
         } catch (SQLException ex) {
             IP.logging().stack("Error while trying to close connection to SQL database", ex);
         }
-    }
-
-    /**
-     * Returns the connection
-     *
-     * @return the connection
-     */
-    public Connection getConnection() {
-        return connection;
     }
 }

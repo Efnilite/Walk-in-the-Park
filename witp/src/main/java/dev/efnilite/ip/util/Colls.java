@@ -1,7 +1,9 @@
 package dev.efnilite.ip.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -29,18 +31,50 @@ public final class Colls {
     /**
      * @param f    The function to apply to each item in collection.
      * @param coll The collection.
-     * @param <T>  The original list type.
-     * @param <N>  The new list type.
+     * @param <OV> The original list type.
+     * @param <NV> The new list type.
      * @return coll where f has been applied to each item. Retains order.
      */
-    public static <T, N> List<N> map(Function<T, N> f, List<T> coll) {
-        List<N> newColl = new ArrayList<>();
+    public static <OV, NV> List<NV> mapv(Function<OV, NV> f, List<OV> coll) {
+        List<NV> newColl = new ArrayList<>();
 
-        for (T item : coll) {
+        for (OV item : coll) {
             newColl.add(f.apply(item));
         }
 
         return newColl;
+    }
+
+    /**
+     * @param f    The function to apply to each value in collection. Arguments are the key and original value.
+     * @param map  The map.
+     * @param <K>  The key type.
+     * @param <OV> The original list type.
+     * @param <NV> The new list type.
+     * @return map where f has been applied to each value. Returns {@link HashMap}.
+     */
+    public static <K, OV, NV> Map<K, NV> mapv(BiFunction<K, OV, NV> f, Map<K, OV> map) {
+        Map<K, NV> newMap = new HashMap<>();
+
+        map.forEach((key, value) -> newMap.put(key, f.apply(key, value)));
+
+        return newMap;
+    }
+
+    /**
+     * @param f    The function to apply to each key in collection. Arguments are the original key and value.
+     * @param map  The map.
+     * @param <OK> The original key type.
+     * @param <NK> The new key type.
+     * @param <V>  The value type.
+     * @return map where f has been applied to each key. Returns {@link HashMap}.
+     */
+    public static <OK, NK, V> Map<NK, V> mapk(BiFunction<OK, V, NK> f, Map<OK, V> map) {
+        Map<NK, V> newMap = new HashMap<>();
+
+        map.forEach((key, value) -> newMap.put(f.apply(key, value), value));
+
+        return newMap;
     }
 
     /**
@@ -113,8 +147,8 @@ public final class Colls {
 
     /**
      * @param start The start. Inclusive.
-     * @param end The end. Exclusive.
-     * @param step The increment between values.
+     * @param end   The end. Exclusive.
+     * @param step  The increment between values.
      * @return List with all ints from start to end with increment step.
      */
     public static List<Integer> range(int start, int end, int step) {
@@ -129,7 +163,7 @@ public final class Colls {
 
     /**
      * @param start The start. Inclusive.
-     * @param end The end. Exclusive.
+     * @param end   The end. Exclusive.
      * @return List with all ints from start to end with increment 1.
      */
     public static List<Integer> range(int start, int end) {

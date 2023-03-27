@@ -6,6 +6,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
+import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.Colls;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
@@ -26,6 +28,54 @@ import java.util.*;
  * @author Efnilite
  */
 public class ParkourPlayer extends ParkourUser {
+
+    public static final Map<String, OptionContainer> PLAYER_COLUMNS = new HashMap<>();
+
+    static {
+        PLAYER_COLUMNS.put("uuid", new OptionContainer(null, null));
+        PLAYER_COLUMNS.put("style", new OptionContainer(ParkourOption.STYLES, (player, v) -> player.style = v));
+        PLAYER_COLUMNS.put("blockLead", new OptionContainer(ParkourOption.LEADS, (player, v) -> player.blockLead = Integer.parseInt(v)));
+        PLAYER_COLUMNS.put("useParticles", new OptionContainer(ParkourOption.PARTICLES, (player, v) -> player.particles = parseBoolean(v)));
+        PLAYER_COLUMNS.put("useDifficulty", new OptionContainer(ParkourOption.SCORE_DIFFICULTY, (player, v) -> player.useScoreDifficulty = parseBoolean(v)));
+        PLAYER_COLUMNS.put("useStructure", new OptionContainer(ParkourOption.USE_SCHEMATICS, (player, v) -> player.useSchematic = parseBoolean(v)));
+        PLAYER_COLUMNS.put("useSpecial", new OptionContainer(ParkourOption.SPECIAL_BLOCKS, (player, v) -> player.useSpecialBlocks = parseBoolean(v)));
+        PLAYER_COLUMNS.put("showFallMsg", new OptionContainer(ParkourOption.FALL_MESSAGE, (player, v) -> player.showFallMessage = parseBoolean(v)));
+        PLAYER_COLUMNS.put("showScoreboard", new OptionContainer(ParkourOption.SCOREBOARD, (player, v) -> player.showScoreboard = parseBoolean(v)));
+        PLAYER_COLUMNS.put("selectedTime", new OptionContainer(ParkourOption.TIME, (player, v) -> player.selectedTime = Integer.parseInt(v)));
+        PLAYER_COLUMNS.put("collectedRewards", new OptionContainer(null, (player, v) -> player.collectedRewards = Arrays.asList(v.split(","))));
+        PLAYER_COLUMNS.put("locale", new OptionContainer(ParkourOption.LANG, (player, v) -> {
+            player._locale = v;
+            player.setLocale(v);
+        }));
+        PLAYER_COLUMNS.put("schematicDifficulty", new OptionContainer(ParkourOption.SCHEMATIC_DIFFICULTY, (player, v) -> player.schematicDifficulty = Double.parseDouble(v)));
+        PLAYER_COLUMNS.put("sound", new OptionContainer(ParkourOption.SOUND, (player, v) -> player.sound = parseBoolean(v)));
+    }
+
+    private static boolean parseBoolean(String string) {
+        return string == null || string.equals("1");
+    }
+
+    public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) {
+
+    }
+
+    /**
+     * Sets the user's settings. If an item is not included, the setting gets reset.
+     * @param settings The settings map.
+     */
+    public void setSettings(@NotNull Map<String, Object> settings) {
+        PLAYER_COLUMNS.keySet().forEach(key -> {
+            Object value = settings.get(key);
+            OptionContainer container = PLAYER_COLUMNS.get(key);
+
+            if (value == null || !Option.OPTIONS_ENABLED.get(container.option)) {
+                container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
+                return;
+            }
+
+            container.consumer.accept(this, String.valueOf(value));
+        });
+    }
 
     public @Expose Double schematicDifficulty;
     public @Expose Integer blockLead;
@@ -50,7 +100,7 @@ public class ParkourPlayer extends ParkourUser {
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
 
-        setLocale((String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
+        setLocale(Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
         this._locale = getLocale();
 
         // generic player settings
@@ -78,61 +128,11 @@ public class ParkourPlayer extends ParkourUser {
                 .set("style", style);
     }
 
-    public void setSettings(String selectedTime, String style, String locale, String schematicDifficulty, String blockLead, Boolean particles, Boolean sound, Boolean useDifficulty, Boolean useStructure, Boolean useSpecial, Boolean showDeathMsg, Boolean showScoreboard, String collectedRewards) {
-
-        this.collectedRewards = new ArrayList<>();
-        if (collectedRewards != null) {
-            for (String s : collectedRewards.split(",")) {
-                if (!s.isEmpty() && !this.collectedRewards.contains(s)) { // prevent empty strings and duplicates
-                    this.collectedRewards.add(s);
-                }
-            }
-        }
-
-        // Adjustable defaults
-        this.style = orDefault(style, (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.STYLES), null);
-        this._locale = orDefault(locale, (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG), null);
-        setLocale(_locale);
-
-        this.useSpecialBlocks = orDefault(useSpecial, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SPECIAL_BLOCKS), ParkourOption.SPECIAL_BLOCKS);
-        this.showFallMessage = orDefault(showDeathMsg, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.FALL_MESSAGE), ParkourOption.FALL_MESSAGE);
-        this.useScoreDifficulty = orDefault(useDifficulty, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCORE_DIFFICULTY), ParkourOption.SCHEMATIC_DIFFICULTY);
-        this.useSchematic = orDefault(useStructure, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.USE_SCHEMATICS), ParkourOption.USE_SCHEMATICS);
-        this.showScoreboard = orDefault(showScoreboard, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD), ParkourOption.SCOREBOARD);
-        this.particles = orDefault(particles, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.PARTICLES), ParkourOption.PARTICLES);
-        this.sound = orDefault(sound, (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SOUND), ParkourOption.SOUND);
-
-        this.blockLead = Integer.parseInt(orDefault(blockLead, String.valueOf(Option.OPTIONS_DEFAULTS.get(ParkourOption.LEADS)), ParkourOption.LEADS));
-        this.selectedTime = Integer.parseInt(orDefault(selectedTime, String.valueOf(Option.OPTIONS_DEFAULTS.get(ParkourOption.TIME)), ParkourOption.TIME));
-
-        this.schematicDifficulty = Double.parseDouble(orDefault(schematicDifficulty, String.valueOf(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCHEMATIC_DIFFICULTY)), ParkourOption.SCHEMATIC_DIFFICULTY));
-    }
-
-    private <T> T orDefault(T value, T def, @Nullable ParkourOption option) {
-        // check for null default values
-        if (def == null) {
-            IP.logging().stack("Default value is null!", "Please see if there are any errors above. Check your config.");
-        }
-
-        // if option is disabled, return the default value
-        // this allows users to set unchangeable settings
-        if (option != null && !Option.OPTIONS_ENABLED.get(option)) {
-            return def;
-        }
-
-        return value == null ? def : value;
-    }
-
-    public void resetPlayerPreferences() {
-        setSettings(null, null, null, null, null, null,
-                null, null, null, null, null, null, null);
-    }
-
     /**
      * Saves the player's data to their file
      */
     public void save(boolean async) {
-        Runnable write = () -> IP.getStorage().writePlayer(this);
+        Runnable write = () -> Storage.getInstance().writePlayer(this);
 
         if (async) {
             Task.create(IP.getPlugin()).async().execute(write).run();

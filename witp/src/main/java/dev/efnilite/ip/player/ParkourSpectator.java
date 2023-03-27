@@ -83,7 +83,7 @@ public class ParkourSpectator extends ParkourUser {
     }
 
     public void updateScoreboard() {
-        if (!(boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
+        if (!Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
             return;
         }
 
@@ -116,7 +116,7 @@ public class ParkourSpectator extends ParkourUser {
 
 
         // update lines
-        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
+        for (String line : Colls.mapv(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line.replace("%score%", Integer.toString(generator.score))

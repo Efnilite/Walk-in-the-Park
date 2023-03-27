@@ -384,7 +384,7 @@ public class ParkourGenerator {
             return;
         }
 
-        if (!(boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
+        if (!Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
             return;
         }
 
@@ -413,7 +413,7 @@ public class ParkourGenerator {
         rank = rank == null ? new Score("?", "?", "?", 0) : rank;
 
         // update lines
-        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
+        for (String line : Colls.mapv(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line

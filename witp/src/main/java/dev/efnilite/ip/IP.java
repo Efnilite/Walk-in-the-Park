@@ -17,7 +17,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.style.DefaultStyleType;
-import dev.efnilite.ip.util.sql.SQLManager;
+import dev.efnilite.ip.io.SQLManager;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.lib.bstats.bukkit.Metrics;
@@ -51,7 +51,7 @@ public final class IP extends ViPlugin {
     private static IP instance;
     private static SQLManager sqlManager;
     private static Registry registry;
-    private static Storage storage;
+    private static Storage storage; // todo Storage#getInstance to instance field and move SQLManager into StorageSQL
 
     @Nullable
     private static FloodgateHook floodgateHook;
@@ -240,10 +240,6 @@ public final class IP extends ViPlugin {
 
     public static Registry getRegistry() {
         return registry;
-    }
-
-    public static Storage getStorage() {
-        return storage;
     }
 
     public static SQLManager getSqlManager() {

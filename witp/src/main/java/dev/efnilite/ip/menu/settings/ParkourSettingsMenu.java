@@ -149,7 +149,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 player.updateGeneratorSettings();
                 return true;
             });
-        }, player -> checkOptions(player, ParkourOption.SCOREBOARD, disabled) && (boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD));
+        }, player -> checkOptions(player, ParkourOption.SCOREBOARD, disabled) && Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)));
 
         // show fall message
         registerMainItem(2, 1, (p, user) -> {

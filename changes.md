@@ -4,3 +4,5 @@
 - Added option to change style items
 - Fixed scoreboard timer not going up consistently
 - Fixed rewards parsing when rewards are disabled
+- Fixed players getting a default style while styles are disabled
+- Fixed players getting a default locale while locales are disabled

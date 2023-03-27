@@ -61,15 +61,11 @@ public class WorldDivider {
     }
 
 
-    // returns the section id from the session instance
+    // returns the section id from the session instance. -1 if no found.
     private static int getSectionId(Session session) {
-        List<Map.Entry<Integer, Session>> filtered = Colls.filter(set -> set.getValue() == session, new ArrayList<>(SESSIONS.entrySet()));
+        List<Map.Entry<Integer, Session>> filtered = Colls.filter(entry -> entry.getValue() == session, new ArrayList<>(SESSIONS.entrySet()));
 
-        if (filtered.size() == 0) {
-            return -1;
-        } else {
-            return filtered.get(0).getKey();
-        }
+        return filtered.size() > 0 ? filtered.get(0).getKey() : -1;
     }
 
     /**

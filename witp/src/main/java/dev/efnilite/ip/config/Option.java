@@ -39,7 +39,7 @@ public class Option {
     public static int OPTIONS_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
-    public static Map<ParkourOption, Object> OPTIONS_DEFAULTS;
+    public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
 
     // Worlds
     public static boolean DELETE_ON_RELOAD;
@@ -110,7 +110,7 @@ public class Option {
             Object value = Config.CONFIG.get("%s.default".formatted(parent));
 
             if (value != null) {
-                OPTIONS_DEFAULTS.put(option, value);
+                OPTIONS_DEFAULTS.put(option, String.valueOf(value));
             }
         }
 

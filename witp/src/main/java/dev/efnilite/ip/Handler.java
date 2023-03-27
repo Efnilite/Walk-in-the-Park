@@ -13,6 +13,7 @@ import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.VoidGenerator;
 import dev.efnilite.ip.world.WorldManager;
+import dev.efnilite.ip.world.WorldManagerMV;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -66,7 +67,7 @@ public class Handler implements EventWatcher {
             Util.send(player, IP.PREFIX + "Your version is outdated. " + "Please visit the Spigot page to update.");
             Util.send(player, "");
         }
-        if (player.isOp() && WorldManager.WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
+        if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             Util.send(player, "");
             Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
                     "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");

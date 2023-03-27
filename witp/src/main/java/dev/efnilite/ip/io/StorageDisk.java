@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Local disk (json) storage manager.
+ */
 public final class StorageDisk implements Storage {
 
     @Override
@@ -71,26 +74,33 @@ public final class StorageDisk implements Storage {
     @Override
     public void readPlayer(@NotNull ParkourPlayer player) {
         if (!getPlayerFile(player).exists()) {
-            player.resetPlayerPreferences();
+            player.setSettings(new HashMap<>());
             return;
         }
 
         try (FileReader reader = new FileReader(getPlayerFile(player))) {
             ParkourPlayer from = IP.getGson().fromJson(reader, ParkourPlayer.class);
 
-            player.setSettings(stringValue(from.selectedTime), from.style, from._locale,
-                    stringValue(from.schematicDifficulty), stringValue(from.blockLead),
-                    from.particles, from.sound, from.useScoreDifficulty, from.useSchematic,
-                    from.useSpecialBlocks, from.showFallMessage, from.showScoreboard,
-                    from.collectedRewards != null ? String.join(",", from.collectedRewards) : null);
+            Map<String, Object> settings = new HashMap<>();
 
+            settings.put("style", from.style);
+            settings.put("blockLead", from.blockLead);
+            settings.put("useParticles", from.particles);
+            settings.put("useDifficulty", from.useScoreDifficulty);
+            settings.put("useStructure", from.useSchematic);
+            settings.put("useSpecial", from.useSpecialBlocks);
+            settings.put("showFallMsg", from.showFallMessage);
+            settings.put("showScoreboard", from.showScoreboard);
+            settings.put("selectedTime", from.selectedTime);
+            settings.put("collectedRewards", from.collectedRewards);
+            settings.put("locale", from._locale);
+            settings.put("schematicDifficulty", from.schematicDifficulty);
+            settings.put("sound", from.sound);
+
+            player.setSettings(settings);
         } catch (IOException ex) {
             IP.logging().stack("Error while trying to read disk data of %s".formatted(player.getName()), ex);
         }
-    }
-
-    private String stringValue(Object object) {
-        return object == null ? null : String.valueOf(object);
     }
 
     @Override

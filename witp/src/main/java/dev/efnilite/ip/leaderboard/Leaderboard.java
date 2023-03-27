@@ -2,6 +2,7 @@ package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.player.Score;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class Leaderboard {
         this.mode = mode.toLowerCase();
 
         if (Option.SQL) {
-            IP.getSqlManager().sendQuery("""
+            IP.getSqlManager().sendUpdate("""
                     CREATE TABLE IF NOT EXISTS `%s`
                     (
                         uuid       CHAR(36) NOT NULL PRIMARY KEY,
@@ -57,7 +58,7 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
-        Runnable write = () -> IP.getStorage().writeScores(mode, scores);
+        Runnable write = () -> Storage.getInstance().writeScores(mode, scores);
 
         if (async) {
             Task.create(IP.getPlugin()).async().execute(write).run();
@@ -72,7 +73,7 @@ public class Leaderboard {
     public void read(boolean async) {
         Runnable read = () -> {
             scores.clear();
-            scores.putAll(IP.getStorage().readScores(mode));
+            scores.putAll(Storage.getInstance().readScores(mode));
 
             sort();
         };

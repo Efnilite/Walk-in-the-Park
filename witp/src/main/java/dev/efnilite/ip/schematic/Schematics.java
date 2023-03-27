@@ -68,7 +68,7 @@ public class Schematics {
 
         List<String> schematics = new ArrayList<>();
         schematics.addAll(Arrays.asList("spawn-island.witp", "spawn-island-duels.witp"));
-        schematics.addAll(Colls.map("parkour-%d.witp"::formatted, Colls.range(SCHEMATIC_COUNT + 1)));
+        schematics.addAll(Colls.mapv("parkour-%d.witp"::formatted, Colls.range(SCHEMATIC_COUNT + 1)));
         schematics.forEach(Schematics::downloadFile);
     }
 

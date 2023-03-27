@@ -11,6 +11,7 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
+import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
@@ -24,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +78,7 @@ public abstract class ParkourUser {
             player.removePotionEffect(effect.getType()); // clear player effects
         }
 
-        if ((boolean) Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)) {
+        if (Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
             this.board = new FastBoard(player);
         }
         // remove duplicates
@@ -106,7 +106,7 @@ public abstract class ParkourUser {
         JOIN_COUNT++;
         new ParkourJoinEvent(pp).call();
 
-        IP.getStorage().readPlayer(pp);
+        Storage.getInstance().readPlayer(pp);
         players.put(pp.player, pp);
         return pp;
     }
@@ -148,12 +148,6 @@ public abstract class ParkourUser {
      *                            at all times, unless your plugin is in the process of disabling.
      */
     public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
-        unregister0(user, restorePreviousData, kickIfBungee, saveAsync);
-    }
-
-    // Internal unregistering service
-    @ApiStatus.Internal
-    protected static void unregister0(@NotNull ParkourUser user, boolean sendBack, boolean kickIfBungee, boolean saveAsync) {
         Player pl = user.player;
 
         new ParkourLeaveEvent(user).call();
@@ -210,14 +204,14 @@ public abstract class ParkourUser {
         players.remove(pl);
         users.remove(pl);
 
-        if (sendBack && Option.BUNGEECORD && kickIfBungee) {
+        if (restorePreviousData && Option.BUNGEECORD && kickIfBungee) {
             sendPlayer(pl, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
         if (user.previousData == null) {
             IP.logging().warn("No previous data found for " + user.getName());
         } else {
-            user.previousData.apply(sendBack);
+            user.previousData.apply(restorePreviousData);
 
             if (user instanceof ParkourPlayer) {
                 user.previousData.giveRewards((ParkourPlayer) user);
