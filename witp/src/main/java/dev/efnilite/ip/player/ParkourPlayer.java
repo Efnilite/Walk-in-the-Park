@@ -6,7 +6,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
-import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.util.Colls;
@@ -59,24 +58,6 @@ public class ParkourPlayer extends ParkourUser {
 
     }
 
-    /**
-     * Sets the user's settings. If an item is not included, the setting gets reset.
-     * @param settings The settings map.
-     */
-    public void setSettings(@NotNull Map<String, Object> settings) {
-        PLAYER_COLUMNS.keySet().forEach(key -> {
-            Object value = settings.get(key);
-            OptionContainer container = PLAYER_COLUMNS.get(key);
-
-            if (value == null || !Option.OPTIONS_ENABLED.get(container.option)) {
-                container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
-                return;
-            }
-
-            container.consumer.accept(this, String.valueOf(value));
-        });
-    }
-
     public @Expose Double schematicDifficulty;
     public @Expose Integer blockLead;
     public @Expose Boolean useScoreDifficulty;
@@ -91,6 +72,9 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose String _locale;
     public @Expose List<String> collectedRewards;
 
+    /**
+     * This player's generator.
+     */
     public ParkourGenerator generator;
 
     /**
@@ -107,6 +91,24 @@ public class ParkourPlayer extends ParkourUser {
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setInvisible(false);
+    }
+
+    /**
+     * Sets the user's settings. If an item is not included, the setting gets reset.
+     * @param settings The settings map.
+     */
+    public void setSettings(@NotNull Map<String, Object> settings) {
+        PLAYER_COLUMNS.keySet().forEach(key -> {
+            Object value = settings.get(key);
+            OptionContainer container = PLAYER_COLUMNS.get(key);
+
+            if (value == null || !Option.OPTIONS_ENABLED.get(container.option)) {
+                container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
+                return;
+            }
+
+            container.consumer.accept(this, String.valueOf(value));
+        });
     }
 
     /**
@@ -132,7 +134,7 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the player's data to their file
      */
     public void save(boolean async) {
-        Runnable write = () -> Storage.getInstance().writePlayer(this);
+        Runnable write = () -> IP.getStorage().writePlayer(this);
 
         if (async) {
             Task.create(IP.getPlugin()).async().execute(write).run();

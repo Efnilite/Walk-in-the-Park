@@ -1,8 +1,10 @@
 package dev.efnilite.ip.util;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.vilib.util.Strings;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * General utilities
@@ -19,8 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Efnilite
  */
 public class Util {
-
-    private static final char[] RANDOM_DIGITS = "1234567890".toCharArray();
 
     public static void send(CommandSender sender, String message) {
         sender.sendMessage(Strings.colour(message));
@@ -59,31 +58,6 @@ public class Util {
         }
     }
 
-    public static boolean listContains(List<String> list, String... strings) {
-        for (String s : list) {
-            for (String string : strings) {
-                if (s.contains(string)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Random digits
-     *
-     * @return a string with an amount of random digits
-     */
-    public static String randomDigits(int amount) {
-        StringBuilder random = new StringBuilder();
-        for (int i = 0; i < amount; i++) {
-            random.append(RANDOM_DIGITS[ThreadLocalRandom.current().nextInt(RANDOM_DIGITS.length - 1)]);
-        }
-        return random.toString();
-    }
-
     public static @NotNull List<String> getChildren(FileConfiguration file, String path, boolean deep) {
         ConfigurationSection section = file.getConfigurationSection(path);
         if (section == null) {
@@ -100,7 +74,7 @@ public class Util {
      * @return true if the player is a Bedrock player, false if not.
      */
     public static boolean isBedrockPlayer(Player player) {
-        return IP.getFloodgateHook() != null && IP.getFloodgateHook().isBedrockPlayer(player);
+        return Bukkit.getPluginManager().isPluginEnabled("floodgate") && FloodgateHook.isBedrockPlayer(player);
     }
 
     /**

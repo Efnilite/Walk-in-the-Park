@@ -35,7 +35,7 @@ public class PreviousData {
 
     private final Collection<PotionEffect> effects;
 
-    private final List<RewardString> rewardsLeaveList = new ArrayList<>();
+    public List<RewardString> rewardsLeaveList = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
         this.player = player;
@@ -109,15 +109,6 @@ public class PreviousData {
         if (inventoryData != null) {
             inventoryData.apply(false);
         }
-    }
-
-    /**
-     * Adds a reward to the leave list
-     *
-     * @param string The reward to give on leave
-     */
-    public void addReward(RewardString string) {
-        rewardsLeaveList.add(string);
     }
 
     /**

@@ -7,7 +7,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.gamemode.SpectatorGamemode;
-import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.io.Storage;
@@ -17,7 +16,6 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.style.DefaultStyleType;
-import dev.efnilite.ip.io.SQLManager;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.lib.bstats.bukkit.Metrics;
@@ -49,12 +47,9 @@ public final class IP extends ViPlugin {
     public static final String REQUIRED_VILIB_VERSION = "1.1.0";
 
     private static IP instance;
-    private static SQLManager sqlManager;
     private static Registry registry;
-    private static Storage storage; // todo Storage#getInstance to instance field and move SQLManager into StorageSQL
+    private static Storage storage;
 
-    @Nullable
-    private static FloodgateHook floodgateHook;
     @Nullable
     private static PAPIHook placeholderHook;
 
@@ -103,17 +98,7 @@ public final class IP extends ViPlugin {
 
         // ----- SQL and data -----
 
-        if (Option.SQL) {
-            try {
-                sqlManager = new SQLManager();
-                sqlManager.connect();
-                storage = new StorageSQL();
-            } catch(Throwable throwable){
-                logging().stack("There was an error while starting IP", throwable);
-            }
-        } else {
-            storage = new StorageDisk();
-        }
+        storage = Option.SQL ? new StorageSQL() : new StorageDisk();
 
         // ----- Registry -----
 
@@ -137,13 +122,6 @@ public final class IP extends ViPlugin {
             placeholderHook = new PAPIHook();
             placeholderHook.register();
         }
-
-        if (getServer().getPluginManager().isPluginEnabled("floodgate")) {
-            logging().info("Connecting with Floodgate...");
-            floodgateHook = new FloodgateHook();
-        }
-
-        // ----- Hooks and Bungee -----
 
         if (Option.BUNGEECORD) {
             logging().info("Connecting with BungeeCord..");
@@ -186,10 +164,6 @@ public final class IP extends ViPlugin {
         // write all IP gamemodes
         Gamemodes.DEFAULT.getLeaderboard().write(false);
 
-        if (sqlManager != null) {
-            sqlManager.close();
-        }
-
         World world = Bukkit.getWorld(Option.WORLD_NAME);
         if (world != null) {
             for (Player player : world.getPlayers()) {
@@ -197,6 +171,7 @@ public final class IP extends ViPlugin {
             }
         }
 
+        storage.close();
         WorldManager.delete();
     }
 
@@ -233,16 +208,11 @@ public final class IP extends ViPlugin {
         return placeholderHook;
     }
 
-    @Nullable
-    public static FloodgateHook getFloodgateHook() {
-        return floodgateHook;
-    }
-
     public static Registry getRegistry() {
         return registry;
     }
 
-    public static SQLManager getSqlManager() {
-        return sqlManager;
+    public static Storage getStorage() {
+        return storage;
     }
 }

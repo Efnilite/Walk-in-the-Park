@@ -5,13 +5,14 @@ Finished folders:
 - session
 - style
 - world
+- leaderboard
+- io
 
 Todo:
 - api
 - gamemode
 - generator
 - menu
-- leaderboard
 - player
 - schematic
 - util

@@ -143,9 +143,6 @@ public class Schematic {
                     blocks.add(new SchematicBlock(currentBlock, relativeOffset));
                 }
 
-                // create file
-                file.createNewFile();
-
                 FileWriter writer = new FileWriter(file);
                 String separator = System.lineSeparator();
 

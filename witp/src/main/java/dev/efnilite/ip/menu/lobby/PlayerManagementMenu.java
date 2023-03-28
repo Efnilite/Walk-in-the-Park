@@ -41,8 +41,8 @@ public class PlayerManagementMenu {
         Session session = viewer.session;
 
         PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
-        add(menu, viewer, Colls.mapv(player -> player, session.getPlayers()));
-        add(menu, viewer, Colls.mapv(player -> player, session.getSpectators()));
+        add(menu, viewer, Colls.map(player -> player, session.getPlayers()));
+        add(menu, viewer, Colls.map(player -> player, session.getSpectators()));
 
         menu.displayRows(0, 1)
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT)

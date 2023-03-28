@@ -65,7 +65,7 @@ public class Rewards {
                     continue;
                 }
 
-                rewardMap.put(value, Colls.mapv(RewardString::new, commands));
+                rewardMap.put(value, Colls.map(RewardString::new, commands));
             } catch (NumberFormatException ex) {
                 IP.logging().stack("%s is not a valid score".formatted(score), "check the rewards file for incorrect numbers", ex);
             }

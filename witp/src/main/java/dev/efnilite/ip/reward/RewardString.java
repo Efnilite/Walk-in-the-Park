@@ -31,7 +31,7 @@ public record RewardString(@NotNull String string) {
         // Check for extra data
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            player.previousData.addReward(new RewardString(string));
+            player.previousData.rewardsLeaveList.add(new RewardString(string));
             return;
         }
 

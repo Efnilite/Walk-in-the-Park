@@ -83,10 +83,6 @@ public interface WorldManager {
      * @return The appropriate instance.
      */
     static WorldManager getInstance() {
-        if (WorldManagerMV.MANAGER != null) {
-            return new WorldManagerMV();
-        } else {
-            return new WorldManagerMC();
-        }
+        return WorldManagerMV.MANAGER != null ? new WorldManagerMV() : new WorldManagerMC();
     }
 }

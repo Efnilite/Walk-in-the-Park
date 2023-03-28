@@ -31,7 +31,7 @@ public class LeaderboardsMenu {
 
         Gamemode latest = null;
         List<MenuItem> items = new ArrayList<>();
-        for (Gamemode gm : IP.getRegistry().getGamemodes()) {
+        for (Gamemode gm : IP.getRegistry().getModes()) {
             if (gm.getLeaderboard() == null || !gm.isVisible()) {
                 continue;
             }

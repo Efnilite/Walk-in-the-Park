@@ -103,7 +103,7 @@ public class ParkourSpectator extends ParkourUser {
         if (leaderboard != null) {
 
             // only get score at rank if lines contains variables
-            if (Util.listContains(lines, "topscore", "topplayer")) {
+            if (Colls.filter(line -> line.contains("topscore") || line.contains("topplayer"), lines).size() > 0) {
                 top = leaderboard.getScoreAtRank(1);
             }
 
@@ -116,7 +116,7 @@ public class ParkourSpectator extends ParkourUser {
 
 
         // update lines
-        for (String line : Colls.mapv(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
+        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line.replace("%score%", Integer.toString(generator.score))
@@ -165,6 +165,7 @@ public class ParkourSpectator extends ParkourUser {
      */
     public void unregister() {
         closestChecker.cancel();
+        session.removeSpectators(this);
 
         player.setInvisible(false);
     }

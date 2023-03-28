@@ -2,7 +2,6 @@ package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.player.Score;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
@@ -28,19 +27,7 @@ public class Leaderboard {
     public Leaderboard(@NotNull String mode) {
         this.mode = mode.toLowerCase();
 
-        if (Option.SQL) {
-            IP.getSqlManager().sendUpdate("""
-                    CREATE TABLE IF NOT EXISTS `%s`
-                    (
-                        uuid       CHAR(36) NOT NULL PRIMARY KEY,
-                        name       VARCHAR(16),
-                        time       VARCHAR(16),
-                        difficulty VARCHAR(3),
-                        score      INT
-                    )
-                    CHARSET = utf8 ENGINE = InnoDB;
-                    """.formatted(getTableName()));
-        }
+        IP.getStorage().init(mode);
 
         // read all data
         read(true);
@@ -58,42 +45,36 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
-        Runnable write = () -> Storage.getInstance().writeScores(mode, scores);
-
-        if (async) {
-            Task.create(IP.getPlugin()).async().execute(write).run();
-        } else {
-            write.run();
-        }
+        run(() -> IP.getStorage().writeScores(mode, scores), async);
     }
 
     /**
      * Reads all scores from the leaderboard file
      */
     public void read(boolean async) {
-        Runnable read = () -> {
+        run(() -> {
             scores.clear();
-            scores.putAll(Storage.getInstance().readScores(mode));
+            scores.putAll(IP.getStorage().readScores(mode));
 
             sort();
-        };
+        }, async);
+    }
 
+    private void run(Runnable runnable, boolean async) {
         if (async) {
-            Task.create(IP.getPlugin()).async().execute(read).run();
+            Task.create(IP.getPlugin()).async().execute(runnable).run();
         } else {
-            read.run();
+            runnable.run();
         }
     }
 
-    /**
-     * Sorts all scores in the map
-     */
-    public void sort() {
+    // sorts all scores in the map
+    private void sort() {
         // get all entries in a list
         List<Map.Entry<UUID, Score>> toSort = new ArrayList<>(scores.entrySet());
 
         // sort in reverse natural order
-        toSort.sort((one, two) -> two.getValue().score() - one.getValue().score());
+        toSort.sort(Comparator.comparingInt(entry -> entry.getValue().score()));
 
         // compile map back together
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
@@ -126,7 +107,7 @@ public class Leaderboard {
      * @return the previous value if one was found
      */
     @Nullable
-    public Score reset(@NotNull UUID uuid) {
+    public Score remove(@NotNull UUID uuid) {
         return scores.remove(uuid);
     }
 
@@ -135,7 +116,7 @@ public class Leaderboard {
      */
     public void resetAll() {
         for (UUID uuid : scores.keySet()) {
-            reset(uuid);
+            remove(uuid);
         }
     }
 
@@ -151,10 +132,8 @@ public class Leaderboard {
     }
 
     /**
-     * Gets the rank of the provided UUID
-     *
-     * @param uuid The UUID
-     * @return the
+     * @param uuid The uuid
+     * @return The rank. Starts from 1. Returns 0 if no ranking is found.
      */
     public int getRank(@NotNull UUID uuid) {
         return new ArrayList<>(scores.keySet()).indexOf(uuid) + 1;
@@ -174,10 +153,5 @@ public class Leaderboard {
         }
 
         return new ArrayList<>(scores.values()).get(rank - 1);
-    }
-
-    // return the table name
-    public String getTableName() {
-        return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, mode);
     }
 }

@@ -172,7 +172,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 String type = args[1]; // get mode from second arg
-                Gamemode gamemode = IP.getRegistry().getGamemode(type);
+                Gamemode gamemode = IP.getRegistry().getMode(type);
                 ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
 
                 if (gamemode == null) {
@@ -252,7 +252,7 @@ public class ParkourCommand extends ViCommand {
                             return true;
                         }
 
-                        String code = Util.randomDigits(6);
+                        String code = UUID.randomUUID().toString().split("-")[0];
 
                         Util.send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
                         Util.send(player, "<gray>Your schematic is being saved..");
@@ -373,7 +373,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
+                    for (Gamemode gamemode : IP.getRegistry().getModes()) {
                         Leaderboard leaderboard = gamemode.getLeaderboard();
 
                         if (leaderboard == null) {
@@ -410,14 +410,14 @@ public class ParkourCommand extends ViCommand {
                     UUID finalUuid = uuid;
                     String finalName = name;
 
-                    for (Gamemode gamemode : IP.getRegistry().getGamemodes()) {
+                    for (Gamemode gamemode : IP.getRegistry().getModes()) {
                         Leaderboard leaderboard = gamemode.getLeaderboard();
 
                         if (leaderboard == null) {
                             continue;
                         }
 
-                        leaderboard.reset(finalUuid);
+                        leaderboard.remove(finalUuid);
                     }
 
                     Util.send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
@@ -432,7 +432,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                Gamemode gamemode = IP.getRegistry().getGamemode(args[1].toLowerCase());
+                Gamemode gamemode = IP.getRegistry().getMode(args[1].toLowerCase());
 
                 // if found gamemode is null, return to default
                 if (gamemode == null) {

@@ -21,6 +21,16 @@ import java.util.UUID;
 public final class StorageDisk implements Storage {
 
     @Override
+    public void init(String mode) {
+        // nothing to see here...
+    }
+
+    @Override
+    public void close() {
+        // nothing to see here...
+    }
+
+    @Override
     public @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
         File file = getLeaderboardFile(mode);
 

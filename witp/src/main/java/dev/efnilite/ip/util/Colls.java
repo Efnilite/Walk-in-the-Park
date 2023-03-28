@@ -35,7 +35,7 @@ public final class Colls {
      * @param <NV> The new list type.
      * @return coll where f has been applied to each item. Retains order.
      */
-    public static <OV, NV> List<NV> mapv(Function<OV, NV> f, List<OV> coll) {
+    public static <OV, NV> List<NV> map(Function<OV, NV> f, List<OV> coll) {
         List<NV> newColl = new ArrayList<>();
 
         for (OV item : coll) {

@@ -11,7 +11,7 @@ public class FloodgateHook {
      * @param player The player.
      * @return True if this player is a bedrock player, false if not.
      */
-    public boolean isBedrockPlayer(Player player) {
+    public static boolean isBedrockPlayer(Player player) {
         return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
     }
 }

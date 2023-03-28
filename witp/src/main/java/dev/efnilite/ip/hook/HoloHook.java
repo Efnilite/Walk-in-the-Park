@@ -33,7 +33,7 @@ public class HoloHook {
 
             String gamemode = split[0].toLowerCase();
 
-            Gamemode gm = IP.getRegistry().getGamemode(gamemode);
+            Gamemode gm = IP.getRegistry().getMode(gamemode);
 
             if (gm == null) {
                 return "?";

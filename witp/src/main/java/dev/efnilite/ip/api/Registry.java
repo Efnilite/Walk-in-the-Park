@@ -15,58 +15,28 @@ import java.util.List;
  */
 public final class Registry {
 
-    private volatile boolean closed;
-    private final HashMap<String, Gamemode> gamemodes;
-    private final HashMap<String, StyleType> styleTypes;
-
-    public Registry() {
-        this.gamemodes = new LinkedHashMap<>();
-        this.styleTypes = new LinkedHashMap<>();
-    }
+    private final HashMap<String, Gamemode> modes = new LinkedHashMap<>();
+    private final HashMap<String, StyleType> styleTypes = new LinkedHashMap<>();
 
     /**
      * Registers a style type. This doesn't need materials, so you can pass the materials as null.
      * Example: #registerType(new DefaultStyle(null));
      *
-     * @param style The style type.
+     * @param type The style type.
      */
-    public void registerType(@NotNull StyleType style) {
-        if (!closed) {
-            this.styleTypes.put(style.getName(), style);
-            IP.logging().info("Registered style type " + style.getName() + "!");
-        } else {
-            throw new IllegalStateException("Register attempt while registry is closed");
-        }
+    public void registerType(@NotNull StyleType type) {
+        styleTypes.put(type.getName(), type);
+        IP.logging().info("Registered style type %s".formatted(type.getName()));
     }
 
     /**
      * Registers a gamemode. Registrations are only accepted until the first time a player opens the Gamemode menu.
      *
-     * @param gamemode The instance of the gamemode that's to be registered
+     * @param mode The instance of the gamemode that's to be registered
      */
-    public void register(@NotNull Gamemode gamemode) {
-        if (!closed) {
-            this.gamemodes.put(gamemode.getName(), gamemode);
-            IP.logging().info("Registered gamemode " + gamemode.getName() + "!");
-        } else {
-            throw new IllegalStateException("Register attempt while registry is closed");
-        }
-    }
-
-    /**
-     * Returns a gamemode by a specific name
-     *
-     * @param name The name
-     * @return the Gamemode instance associated with this name or null if there is no Gamemode for this name.
-     */
-    @Nullable
-    public Gamemode getGamemode(@NotNull String name) {
-        return gamemodes.get(name);
-    }
-
-    @Nullable
-    public StyleType getStyleType(@NotNull String name) {
-        return styleTypes.get(name);
+    public void register(@NotNull Gamemode mode) {
+        modes.put(mode.getName(), mode);
+        IP.logging().info("Registered gamemode %s".formatted(mode.getName()));
     }
 
     public StyleType getTypeFromStyle(@NotNull String style) {
@@ -78,15 +48,29 @@ public final class Registry {
         return styleTypes.get("default");
     }
 
+    /**
+     * @param name The mode name.
+     * @return The {@link Gamemode} instance. May be null.
+     */
+    @Nullable
+    public Gamemode getMode(@NotNull String name) {
+        return modes.get(name);
+    }
+
+    /**
+     * @param name The style name.
+     * @return The {@link StyleType} instance. May be null.
+     */
+    @Nullable
+    public StyleType getStyleType(@NotNull String name) {
+        return styleTypes.get(name);
+    }
+
     public List<StyleType> getStyleTypes() {
         return new ArrayList<>(styleTypes.values());
     }
 
-    public List<Gamemode> getGamemodes() {
-        return new ArrayList<>(gamemodes.values());
-    }
-
-    public void close() {
-        closed = true;
+    public List<Gamemode> getModes() {
+        return new ArrayList<>(modes.values());
     }
 }

@@ -2,7 +2,6 @@ package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.world.Island;
 import org.bukkit.util.Vector;
 
 /**

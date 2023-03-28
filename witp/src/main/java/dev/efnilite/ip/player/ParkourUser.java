@@ -11,7 +11,6 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
-import dev.efnilite.ip.io.Storage;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
@@ -28,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -38,6 +38,9 @@ import java.util.*;
  */
 public abstract class ParkourUser {
 
+    /**
+     * This player's session.
+     */
     public Session session;
 
     /**
@@ -65,6 +68,11 @@ public abstract class ParkourUser {
      */
     public final Player player;
 
+    /**
+     * The {@link Instant} when the player joined.
+     */
+    public final Instant joined;
+
     public static int JOIN_COUNT;
 
     private static final Map<Player, ParkourUser> users = new HashMap<>();
@@ -72,6 +80,8 @@ public abstract class ParkourUser {
 
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
+        this.joined = Instant.now();
+
         this.previousData = previousData == null ? new PreviousData(player) : previousData;
 
         for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -106,7 +116,7 @@ public abstract class ParkourUser {
         JOIN_COUNT++;
         new ParkourJoinEvent(pp).call();
 
-        Storage.getInstance().readPlayer(pp);
+        IP.getStorage().readPlayer(pp);
         players.put(pp.player, pp);
         return pp;
     }
@@ -188,10 +198,6 @@ public abstract class ParkourUser {
                 pp.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
                 spectator.unregister();
-
-                if (session != null) {
-                    spectator.session.removeSpectators(spectator);
-                }
             }
             if (user.board != null && !user.board.isDeleted()) {
                 user.board.delete();
@@ -352,7 +358,7 @@ public abstract class ParkourUser {
      */
     public @NotNull String getLocale() {
         if (locale == null) {
-            locale = (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+            locale = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
         }
 
         return locale;

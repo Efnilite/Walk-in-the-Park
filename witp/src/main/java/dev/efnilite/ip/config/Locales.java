@@ -28,10 +28,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * Locale message/item handler.
+ */
 public class Locales {
 
-    // a list of all nodes
-    // used to check against missing nodes
+    // a list of all nodes, used to check against missing nodes
     private static List<String> resourceNodes;
 
     /**
@@ -39,6 +41,9 @@ public class Locales {
      */
     public static final Map<String, FileConfiguration> locales = new HashMap<>();
 
+    /**
+     * Initializes this Locale handler.
+     */
     public static void init() {
         Plugin plugin = IP.getPlugin();
 
@@ -121,7 +126,7 @@ public class Locales {
     public static String getString(Player player, String path) {
         ParkourUser user = ParkourUser.getUser(player);
 
-        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         return getString(locale, path);
     }

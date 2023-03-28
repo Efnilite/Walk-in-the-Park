@@ -10,7 +10,7 @@ public class Gamemodes {
     public static SpectatorGamemode SPECTATOR;
 
     public static void init() {
-        DEFAULT = (DefaultGamemode) IP.getRegistry().getGamemode("default");
-        SPECTATOR = (SpectatorGamemode) IP.getRegistry().getGamemode("spectator");
+        DEFAULT = (DefaultGamemode) IP.getRegistry().getMode("default");
+        SPECTATOR = (SpectatorGamemode) IP.getRegistry().getMode("spectator");
     }
 }

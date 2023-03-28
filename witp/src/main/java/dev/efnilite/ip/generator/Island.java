@@ -1,4 +1,4 @@
-package dev.efnilite.ip.world;
+package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
@@ -6,6 +6,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
+import dev.efnilite.ip.world.WorldDivider;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

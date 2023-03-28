@@ -184,7 +184,7 @@ public class PAPIHook extends PlaceholderExpansion {
             String name = matcher.group(1);
             rank = Integer.parseInt(matcher.group(2));
 
-            Gamemode gamemode = IP.getRegistry().getGamemode(name);
+            Gamemode gamemode = IP.getRegistry().getMode(name);
             if (gamemode != null) {
                 leaderboard = gamemode.getLeaderboard();
             } else {
