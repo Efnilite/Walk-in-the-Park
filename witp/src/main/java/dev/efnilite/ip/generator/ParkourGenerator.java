@@ -15,7 +15,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.player.Score;
+import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;

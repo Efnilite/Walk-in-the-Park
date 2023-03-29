@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.data;
+package dev.efnilite.ip.schematic.v2.data;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Handles skull data processing
  */
-public class InstanceDataSkull implements InstanceData {
+public class StateSkull implements State {
 
     @Override
     public @Nullable String serialize(BlockData data) {

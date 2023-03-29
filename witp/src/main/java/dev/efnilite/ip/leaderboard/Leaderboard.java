@@ -2,7 +2,6 @@ package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.player.Score;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

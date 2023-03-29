@@ -1,9 +1,6 @@
 package dev.efnilite.ip.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,10 +8,19 @@ import java.util.function.Function;
 public final class Colls {
 
     /**
+     * @param coll The collection.
+     * @param <T>  The type.
+     * @return List where all items are distinct.
+     */
+    public static <T> Set<T> distinct(Collection<T> coll) {
+        return new HashSet<>(coll);
+    }
+
+    /**
      * @param f    The function to apply.
      * @param coll The collection.
      * @param <T>  The type.
-     * @return All items in coll where f returns true.
+     * @return List with all items in coll where f returns true.
      */
     public static <T> List<T> filter(Function<T, Boolean> f, List<T> coll) {
         List<T> newColl = new ArrayList<>();
@@ -33,7 +39,7 @@ public final class Colls {
      * @param coll The collection.
      * @param <OV> The original list type.
      * @param <NV> The new list type.
-     * @return coll where f has been applied to each item. Retains order.
+     * @return List where f has been applied to each item in coll. Retains order.
      */
     public static <OV, NV> List<NV> map(Function<OV, NV> f, List<OV> coll) {
         List<NV> newColl = new ArrayList<>();
@@ -51,7 +57,7 @@ public final class Colls {
      * @param <K>  The key type.
      * @param <OV> The original list type.
      * @param <NV> The new list type.
-     * @return map where f has been applied to each value. Returns {@link HashMap}.
+     * @return Map where f has been applied to each value in map. Returns {@link HashMap}.
      */
     public static <K, OV, NV> Map<K, NV> mapv(BiFunction<K, OV, NV> f, Map<K, OV> map) {
         Map<K, NV> newMap = new HashMap<>();
@@ -67,7 +73,7 @@ public final class Colls {
      * @param <OK> The original key type.
      * @param <NK> The new key type.
      * @param <V>  The value type.
-     * @return map where f has been applied to each key. Returns {@link HashMap}.
+     * @return Map where f has been applied to each key in map. Returns {@link HashMap}.
      */
     public static <OK, NK, V> Map<NK, V> mapk(BiFunction<OK, V, NK> f, Map<OK, V> map) {
         Map<NK, V> newMap = new HashMap<>();
@@ -87,16 +93,14 @@ public final class Colls {
      * @param <T>        The type.
      * @return A single value of the same type.
      */
-    public static <T> T reduce(List<T> coll, T startValue, BiFunction<T, T, T> f) {
-        T item = startValue;
+    public static <T> T reduce(Collection<T> coll, T startValue, BiFunction<T, T, T> f) {
+        T old = startValue;
 
-        for (int i = 1; i < coll.size() - 1; i++) {
-            T newItem = coll.get(i);
-
-            item = f.apply(item, newItem);
+        for (T new_ : coll) {
+            old = f.apply(old, new_);
         }
 
-        return item;
+        return old;
     }
 
     /**
@@ -108,16 +112,19 @@ public final class Colls {
      * @param <T>  The type.
      * @return A single value of the same type.
      */
-    public static <T> T reduce(List<T> coll, BiFunction<T, T, T> f) {
-        T item = coll.get(0);
+    public static <T> T reduce(Collection<T> coll, BiFunction<T, T, T> f) {
+        T old = null;
 
-        for (int i = 1; i < coll.size() - 1; i++) {
-            T newItem = coll.get(i);
+        for (T new_ : coll) {
+            if (old == null) {
+                old = new_;
+                continue;
+            }
 
-            item = f.apply(item, newItem);
+            old = f.apply(old, new_);
         }
 
-        return item;
+        return old;
     }
 
     /**

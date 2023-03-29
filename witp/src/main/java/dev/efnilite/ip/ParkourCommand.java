@@ -14,6 +14,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
+import dev.efnilite.ip.schematic.v2.io.SchematicIO;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
@@ -22,9 +23,11 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
+import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,6 +35,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 
+import java.io.File;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
@@ -42,20 +46,41 @@ public class ParkourCommand extends ViCommand {
     private static final ItemStack wand;
 
     static {
-        wand = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand")
-                .lore("<gray>Left click: first position", "<gray>Right click: second position")
-                .build();
+        wand = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand").lore("<gray>Left click: first position", "<gray>Right click: second position").build();
 
         Persistents.setPersistentData(wand, "ip", PersistentDataType.STRING, "true");
     }
 
+    private List<Block> getBlocks(Location minL, Location maxL) {
+        World w = minL.getWorld();
+        List<Block> add = new ArrayList<>();
+        Location location = new Location(w, 0, 0, 0);
+
+        for (int x = minL.getBlockX(); x <= maxL.getBlockX(); x++) {
+            for (int y = minL.getBlockY(); y <= maxL.getBlockY(); y++) {
+                for (int z = minL.getBlockZ(); z <= maxL.getBlockZ(); z++) {
+                    location.setX(x);
+                    location.setY(y);
+                    location.setZ(z);
+
+                    if (location.getBlock().getType() != Material.AIR) {
+                        add.add(location.clone().getBlock());
+                    }
+                }
+            }
+        }
+        return add;
+    }
+
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        String defaultLocale = (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
+        String defaultLocale = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
 
-        Player player = null;
+        Player player;
         if (sender instanceof Player) {
             player = (Player) sender;
+        } else {
+            player = null;
         }
 
         if (args.length == 0) {
@@ -68,6 +93,21 @@ public class ParkourCommand extends ViCommand {
             return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
+                case "t" -> {
+                    Location l = player.getLocation();
+
+                    new Schematic(l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50))
+                            .file("hello")
+                            .save(player);
+
+
+                    Task.create(IP.getPlugin())
+                            .async()
+                            .execute(() ->
+                                    new SchematicIO().save(new File("hello"), getBlocks(l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50))))
+                            .run();
+                }
+
                 // Help menu
                 case "help" -> {
                     sendHelpMessages(sender);
@@ -216,28 +256,26 @@ public class ParkourCommand extends ViCommand {
                         Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            selections.put(player, new Location[] { playerLocation, null });
+                            selections.put(player, new Location[]{playerLocation, null});
                             return true;
                         }
 
-                        selections.put(player, new Location[] { playerLocation, existingSelection[1] });
+                        selections.put(player, new Location[]{playerLocation, existingSelection[1]});
 
-                        Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(),
-                                new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;
                     }
                     case "pos2" -> {
                         Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            selections.put(player, new Location[] { null, playerLocation });
+                            selections.put(player, new Location[]{null, playerLocation});
                             return true;
                         }
 
-                        selections.put(player, new Location[] { existingSelection[0], playerLocation });
+                        selections.put(player, new Location[]{existingSelection[0], playerLocation});
 
-                        Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(),
-                                new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
+                        Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;
                     }
                     case "save" -> {
@@ -260,9 +298,7 @@ public class ParkourCommand extends ViCommand {
                         Util.send(player, "<gray>You can change the file name to whatever number you like.");
                         Util.send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
-                        new Schematic(existingSelection[0], existingSelection[1])
-                                .file("parkour-" + code)
-                                .save(player);
+                        new Schematic(existingSelection[0], existingSelection[1]).file("parkour-" + code).save(player);
                         return true;
                     }
                 }
@@ -359,8 +395,7 @@ public class ParkourCommand extends ViCommand {
                             Util.send(sender, IP.PREFIX + "Giving " + arg1.getName() + " their items now...");
                         } else {
                             Util.send(sender, IP.PREFIX + "<red>There was an error decoding an item of " + arg1.getName());
-                            Util.send(sender, IP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " +
-                                    "Check the console for more information.");
+                            Util.send(sender, IP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " + "Check the console for more information.");
                         }
                     } else {
                         Util.send(sender, IP.PREFIX + "<red>There was an error recovering the inventory of " + arg1.getName() + " from their file");
@@ -542,8 +577,7 @@ public class ParkourCommand extends ViCommand {
             Util.send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
             Util.send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             Util.send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");
-            Util.send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
-                    " <red>Useful for recovering data after server crashes or errors when leaving.");
+            Util.send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory." + " <red>Useful for recovering data after server crashes or errors when leaving.");
         }
         Util.send(sender, "");
 

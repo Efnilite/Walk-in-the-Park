@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.data;
+package dev.efnilite.ip.schematic.v2.data;
 
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles data that is not included in {@link BlockData} but is useful in schematics.
  */
-public interface InstanceData {
+public interface State {
 
     /**
      * @param data The {@link BlockData} to serialize.

@@ -129,13 +129,14 @@ public class Schematic {
     public void save(@Nullable Player player) {
         Task.create(IP.getPlugin()).async().execute(() -> {
             try {
-                Time.timerStart("save schematic %s".formatted(file.getName()));
                 if (zone == null || blocks == null) {
                     IP.logging().error("Data of schematic is null while trying to save!");
                     return;
                 }
+                List<Block> blocks1 = getBlocks(zone[0], zone[1]);
 
-                for (Block currentBlock : getBlocks(zone[0], zone[1])) {
+                long now = System.currentTimeMillis();
+                for (Block currentBlock : blocks1) {
                     if (currentBlock.getType() == Material.AIR) { // skip air if enabled
                         continue;
                     }
@@ -187,10 +188,7 @@ public class Schematic {
                 writer.flush();
                 writer.close();
 
-                if (player == null) {
-                    return;
-                }
-                Util.send(player, IP.PREFIX + "Your schematic has been saved in <red>" + Time.timerEnd("save schematic %s".formatted(file.getName())) + "ms<gray>!");
+                Util.send(player, IP.PREFIX + "Your schematic has been saved in <red>" + (System.currentTimeMillis() - now) + "ms<gray>!");
             } catch (IOException ex) {
                 IP.logging().stack("Error while saving schematic " + file, ex);
             }
@@ -483,7 +481,7 @@ public class Schematic {
         }
     }
 
-    public List<Block> getBlocks(Location minL, Location maxL) {
+    private List<Block> getBlocks(Location minL, Location maxL) {
         World w = minL.getWorld();
         List<Block> add = new ArrayList<>();
         Location location = new Location(w, 0, 0, 0);

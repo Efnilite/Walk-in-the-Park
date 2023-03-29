@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.data;
+package dev.efnilite.ip.schematic.v2.data;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles sign data processing
  */
-public class InstanceDataSpawner implements InstanceData {
+public class StateCreatureSpawner implements State {
 
     @Override
     public @Nullable String serialize(BlockData data) {
@@ -19,7 +19,7 @@ public class InstanceDataSpawner implements InstanceData {
             return null;
         }
 
-        return IP.getGson().toJson(new SpawnDataContainer(spawner.getSpawnedType(), spawner.getDelay(),
+        return IP.getGson().toJson(new SpawnerDataContainer(spawner.getSpawnedType(), spawner.getDelay(),
                 spawner.getMinSpawnDelay(), spawner.getMaxSpawnDelay(), spawner.getMaxNearbyEntities(),
                 spawner.getRequiredPlayerRange(), spawner.getSpawnCount(), spawner.getSpawnRange()));
     }
@@ -28,7 +28,7 @@ public class InstanceDataSpawner implements InstanceData {
     public @NotNull BlockData deserialize(BlockData data, String extra) {
         CreatureSpawner spawner = (CreatureSpawner) data;
 
-        SpawnDataContainer container = IP.getGson().fromJson(extra, SpawnDataContainer.class);
+        SpawnerDataContainer container = IP.getGson().fromJson(extra, SpawnerDataContainer.class);
         spawner.setSpawnedType(container.spawnedType);
         spawner.setDelay(container.delay);
         spawner.setMinSpawnDelay(container.minDelay);
@@ -41,6 +41,6 @@ public class InstanceDataSpawner implements InstanceData {
         return (BlockData) spawner;
     }
 
-    private record SpawnDataContainer(@Expose EntityType spawnedType, @Expose int delay, @Expose int minDelay, @Expose int maxDelay,
-                                      @Expose int maxNearby, @Expose int playerRange, @Expose int spawnCount, @Expose int spawnRange) {}
+    private record SpawnerDataContainer(@Expose EntityType spawnedType, @Expose int delay, @Expose int minDelay, @Expose int maxDelay,
+                                        @Expose int maxNearby, @Expose int playerRange, @Expose int spawnCount, @Expose int spawnRange) {}
 }

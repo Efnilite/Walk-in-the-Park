@@ -1,7 +1,7 @@
-package dev.efnilite.ip.io;
+package dev.efnilite.ip.storage;
 
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.Score;
+import dev.efnilite.ip.leaderboard.Score;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

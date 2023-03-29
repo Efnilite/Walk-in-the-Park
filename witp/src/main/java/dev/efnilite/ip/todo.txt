@@ -6,7 +6,7 @@ Finished folders:
 - style
 - world
 - leaderboard
-- io
+- storage
 
 Todo:
 - api

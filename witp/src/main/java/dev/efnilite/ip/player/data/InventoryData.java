@@ -80,13 +80,6 @@ public class InventoryData {
     public void saveFile() {
         Task.create(IP.getPlugin()).async().execute(() -> {
             try {
-                if (!file.exists()) {
-                    File folder = IP.getInFolder("inventories");
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
-                    file.createNewFile();
-                }
                 FileWriter writer = new FileWriter(file);
                 IP.getGson().toJson(this, writer);
                 writer.flush();

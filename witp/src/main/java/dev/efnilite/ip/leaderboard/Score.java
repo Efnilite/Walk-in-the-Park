@@ -1,4 +1,4 @@
-package dev.efnilite.ip.player;
+package dev.efnilite.ip.leaderboard;
 
 /**
  * Represents a record, used to keep track of the score a player may achieve.

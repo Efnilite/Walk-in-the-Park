@@ -1,6 +1,5 @@
 package dev.efnilite.ip.menu.lobby;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.menu.Menus;
@@ -90,18 +89,18 @@ public class PlayerManagementMenu {
                                 .generator(ParkourGenerator::new)
                                 .complete();
 
-                        other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.kicked"));
+                        other.sendTranslated("lobby.player_management.kicked");
 
-                        viewer.send(IP.PREFIX + Locales.getString(viewer.getLocale(), "lobby.player_management.advice"));
+                        viewer.sendTranslated("lobby.player_management.advice");
                         open(viewer.player);
                     }
                     case RIGHT -> {
                         session.mute(other);
 
                         if (!muted) {
-                            other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.muted"));
+                            other.sendTranslated("lobby.player_management.muted");
                         } else {
-                            other.send(IP.PREFIX + Locales.getString(other.getLocale(), "lobby.player_management.unmuted"));
+                            other.sendTranslated("lobby.player_management.unmuted");
                         }
 
                         open(viewer.player);

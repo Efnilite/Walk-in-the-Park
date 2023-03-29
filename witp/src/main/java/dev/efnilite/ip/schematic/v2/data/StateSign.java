@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.data;
+package dev.efnilite.ip.schematic.v2.data;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles sign data processing
  */
-public class InstanceDataSign implements InstanceData {
+public class StateSign implements State {
 
     @Override
     public @Nullable String serialize(BlockData data) {

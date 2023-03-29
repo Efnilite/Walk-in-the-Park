@@ -1,9 +1,9 @@
-package dev.efnilite.ip.io;
+package dev.efnilite.ip.storage;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.Score;
+import dev.efnilite.ip.leaderboard.Score;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
