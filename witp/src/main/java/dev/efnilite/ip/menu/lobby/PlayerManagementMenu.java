@@ -84,7 +84,7 @@ public class PlayerManagementMenu {
 
                 switch (click) {
                     case LEFT -> {
-                        Session.Builder.create()
+                        Session.create()
                                 .addPlayers(ParkourUser.register(sessionBukkitPlayer))
                                 .generator(ParkourGenerator::new)
                                 .complete();

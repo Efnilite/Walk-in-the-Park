@@ -14,7 +14,7 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.schematic.v2.io.DefaultSchematicIO;
+import dev.efnilite.ip.schematic.v2.io.SchematicWriter;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Persistents;
 import dev.efnilite.ip.util.Util;
@@ -104,7 +104,7 @@ public class ParkourCommand extends ViCommand {
                     Task.create(IP.getPlugin())
                             .async()
                             .execute(() ->
-                                    new DefaultSchematicIO().save(new File("hello"), getBlocks(l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50))))
+                                    new SchematicWriter().save(new File("hello"), l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50)))
                             .run();
                 }
 

@@ -21,6 +21,15 @@ import java.util.function.Function;
 public class Session {
 
     /**
+     * Creates a new builder.
+     *
+     * @return A new builder instance.
+     */
+    public static Builder create() {
+        return new Builder();
+    }
+
+    /**
      * The generator.
      */
     public ParkourGenerator generator;
@@ -163,15 +172,6 @@ public class Session {
         private Function<Session, Boolean> isAcceptingSpectators;
         private ParkourPlayer[] players;
         private Function<Session, ParkourGenerator> generator;
-
-        /**
-         * Creates a new builder.
-         *
-         * @return A new builder instance.
-         */
-        public static Builder create() {
-            return new Builder();
-        }
 
         /**
          * Sets the accepting players function.

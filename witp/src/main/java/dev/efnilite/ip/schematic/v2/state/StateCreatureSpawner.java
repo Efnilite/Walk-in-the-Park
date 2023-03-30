@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.v2.data;
+package dev.efnilite.ip.schematic.v2.state;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;

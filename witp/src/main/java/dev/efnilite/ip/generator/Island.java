@@ -48,7 +48,7 @@ public final class Island {
         Material parkourMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.parkour.begin-block").toUpperCase());
 
         try {
-            Block player = Colls.filter(block -> block.getType() == playerMaterial, blocks).get(0);
+            Block player = blocks.stream().filter(block -> block.getType() == playerMaterial).findFirst().get();
             Block parkour = Colls.filter(block -> block.getType() == parkourMaterial, blocks).get(0);
 
             player.setType(Material.AIR);
@@ -64,7 +64,8 @@ public final class Island {
             pp.generator.generateFirst(player.getLocation(), parkour.getLocation());
             pp.setup(ps, true);
         } catch (IndexOutOfBoundsException ex) {
-            IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic.getName()), "check if you used the same material as the one in generation.yml", ex);
+            IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic.getName()),
+                    "check if you used the same material as the one in generation.yml", ex);
 
             blocks.forEach(block -> block.setType(Material.AIR));
         }

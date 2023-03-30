@@ -8,15 +8,6 @@ import java.util.function.Function;
 public final class Colls {
 
     /**
-     * @param coll The collection.
-     * @param <T>  The type.
-     * @return List where all items are distinct.
-     */
-    public static <T> Set<T> distinct(Collection<T> coll) {
-        return new HashSet<>(coll);
-    }
-
-    /**
      * @param f    The function to apply.
      * @param coll The collection.
      * @param <T>  The type.
@@ -79,6 +70,42 @@ public final class Colls {
         Map<NK, V> newMap = new HashMap<>();
 
         map.forEach((key, value) -> newMap.put(f.apply(key, value), value));
+
+        return newMap;
+    }
+
+    /**
+     * Maps kf to each key and vf to each value. Modifications of k/v are independent of each other but executed at the same time.
+     *
+     * @param kf   The function to apply to each key in collection. Argument is the original key.
+     * @param vf   The function to apply to each value in collection. Argument is the original value.
+     * @param map  The map.
+     * @param <OK> The original key type.
+     * @param <NK> The new key type.
+     * @param <OV> The original value type.
+     * @param <NV> The new value type.
+     * @return Map where kf has been applied to each key and vf to each value. Returns {@link HashMap}.
+     */
+    public static <OK, NK, OV, NV> Map<NK, NV> mapkv(Function<OK, NK> kf, Function<OV, NV> vf, Map<OK, OV> map) {
+        Map<NK, NV> newMap = new HashMap<>();
+
+        map.forEach((key, value) -> newMap.put(kf.apply(key), vf.apply(value)));
+
+        return newMap;
+    }
+
+    /**
+     * Maps all keys to values.
+     *
+     * @param map The map.
+     * @param <K> The key type.
+     * @param <V> The value type.
+     * @return Map where every value is the key to each key. Returns {@link HashMap}.
+     */
+    public static <K, V> Map<V, K> inverse(Map<K, V> map) {
+        Map<V, K> newMap = new HashMap<>();
+
+        map.forEach((k, v) -> newMap.put(v, k));
 
         return newMap;
     }

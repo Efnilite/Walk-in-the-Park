@@ -49,7 +49,7 @@ public class DefaultGamemode implements Gamemode {
         }
         player.closeInventory();
 
-        Session.Builder.create()
+        Session.create()
                 .addPlayers(ParkourUser.register(player))
                 .generator(ParkourGenerator::new)
                 .complete();
