@@ -18,6 +18,7 @@ import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -112,9 +113,8 @@ public class Handler implements EventWatcher {
 
     @EventHandler
     public void leave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        String playerName = player.getName();
-        ParkourUser user = ParkourUser.getUser(player);
+        ParkourUser user = ParkourUser.getUser(event.getPlayer());
+
         if (user == null) {
             return;
         }
@@ -122,56 +122,82 @@ public class Handler implements EventWatcher {
         if (Option.INVENTORY_HANDLING) {
             PreviousData data = user.previousData;
             if (data != null) {
-                quitPreviousData.put(playerName, data);
+                quitPreviousData.put(user.getName(), data);
             }
         }
 
-        ParkourPlayer.leave(user);
-    }
-
-    @EventHandler
-    public void damage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            if (ParkourUser.getUser((Player) event.getEntity()) != null) {
-                event.setCancelled(true);
-            }
-        }
+        ParkourUser.leave(user);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void command(PlayerCommandPreprocessEvent event) {
-        if (Option.FOCUS_MODE) {
-            ParkourUser user = ParkourUser.getUser(event.getPlayer());
-            if (user != null) {
-                String command = event.getMessage().toLowerCase();
-                for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
-                    if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
-                        return;                                     // yes, so let event go through
-                    }
-                }
-                event.setCancelled(true);
-                user.sendTranslated("other.no_do");
+        if (!Option.FOCUS_MODE) {
+            return;
+        }
+
+        ParkourUser user = ParkourUser.getUser(event.getPlayer());
+
+        if (user == null) {
+            return;
+        }
+
+        String command = event.getMessage().toLowerCase();
+        for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
+            if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
+                return;                                     // yes, so let event go through
             }
         }
+
+        user.sendTranslated("other.no_do");
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        if (ParkourUser.getUser(event.getPlayer()) != null) {
-            event.setCancelled(true);
-        }
+        handleRestriction(event.getPlayer(), event);
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        if (ParkourUser.getUser(event.getPlayer()) != null) {
-            event.setCancelled(true);
-        }
+        handleRestriction(event.getPlayer(), event);
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        if (ParkourUser.getUser(event.getPlayer()) != null) {
+        handleRestriction(event.getPlayer(), event);
+    }
+
+    @EventHandler
+    public void damage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        handleRestriction(player, event);
+    }
+
+    private void handleRestriction(Player player, Cancellable event) {
+        if (ParkourUser.getUser(player) == null) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventory(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+
+        ParkourUser user = ParkourUser.getUser(player);
+
+        if (user == null) {
+            return;
+        }
+
+        // prevent users from transferring items to possible vaults
+        if (event.getInventory().getType() != InventoryType.CRAFTING) {
             event.setCancelled(true);
         }
     }
@@ -283,13 +309,7 @@ public class Handler implements EventWatcher {
         ParkourUser user = ParkourUser.getUser(player);
         UUID parkourWorld = WorldManager.getWorld().getUID();
 
-        boolean passes;
-
-        if (Option.PERMISSIONS) {
-            passes = ParkourOption.ADMIN.mayPerform(player);
-        } else {
-            passes = player.isOp();
-        }
+        boolean passes = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
         // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
         if (player.getWorld().getUID() == parkourWorld && user == null && !passes) {
@@ -299,22 +319,6 @@ public class Handler implements EventWatcher {
         // leaving world will unregister player
         if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {
             ParkourUser.unregister(user, false, false, true);
-        }
-    }
-
-    @EventHandler
-    public void onInventory(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player player) {
-            ParkourUser user = ParkourUser.getUser(player);
-
-            if (user == null) {
-                return;
-            }
-
-            // prevent users from transferring items to possible vaults
-            if (event.getInventory().getType() != InventoryType.CRAFTING) {
-                event.setCancelled(true);
-            }
         }
     }
 }

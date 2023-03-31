@@ -1,6 +1,5 @@
 package dev.efnilite.ip.gamemode;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -9,8 +8,8 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
-import dev.efnilite.vilib.util.Strings;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +38,7 @@ public class DefaultGamemode implements Mode {
     @Override
     public void create(Player player) {
         if (!Option.JOINING) {
-            player.sendMessage(Strings.colour(IP.PREFIX + "Joining is currently disabled."));
+            Util.send(player, "<red><bold>Joining is currently disabled.");
             return;
         }
 

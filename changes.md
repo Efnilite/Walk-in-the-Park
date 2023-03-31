@@ -6,6 +6,13 @@
   - Added schematic support to spawners
   - 70% saving time reduction
   - 37% file size reduction
+- Reworked difficulty score
+  - Changed weights of each setting
+  - Now allows for difficulties above 0.8
+- Reworked points awarded for schematic
+  - Points received now depends on the difficulty of the schematic
+  - Old formula: always 10 points
+  - New formula: difficulty * 15, e.g. 0.5 * 15 = 7 points
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
 - Fixed scoreboard timer not going up consistently
@@ -14,5 +21,5 @@
 - Fixed players getting a default locale while locales are disabled
 - Fixed scoreboard not showing when default scoreboard is set to false
 - Removed adaptive distance
-  - Its effects were too small to be noticed in regular gameplay. 
+  - Its effects were too small to be noticed in regular gameplay
 - Removed unused keys from config.yml and generation.yml
