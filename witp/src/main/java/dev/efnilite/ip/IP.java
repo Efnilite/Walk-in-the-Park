@@ -1,6 +1,6 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
@@ -110,7 +110,7 @@ public final class IP extends ViPlugin {
 
         registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);
 
-        Gamemodes.init();
+        Modes.init();
 
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
@@ -162,7 +162,7 @@ public final class IP extends ViPlugin {
         }
 
         // write all IP gamemodes
-        Gamemodes.DEFAULT.getLeaderboard().write(false);
+        Modes.DEFAULT.getLeaderboard().write(false);
 
         World world = Bukkit.getWorld(Option.WORLD_NAME);
         if (world != null) {

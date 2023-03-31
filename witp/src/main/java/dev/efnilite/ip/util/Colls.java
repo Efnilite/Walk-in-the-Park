@@ -117,9 +117,8 @@ public final class Colls {
          * @param consumer The consumer.
          */
         public void forEach(BiConsumer<K, V> consumer) {
-            map.forEach(consumer::accept);
+            map.forEach(consumer);
         }
-
 
         /**
          * Maps all keys to values.

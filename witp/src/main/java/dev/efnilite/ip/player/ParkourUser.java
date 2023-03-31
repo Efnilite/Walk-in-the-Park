@@ -3,8 +3,8 @@ package dev.efnilite.ip.player;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemodes;
-import dev.efnilite.ip.api.MultiGamemode;
+import dev.efnilite.ip.api.Modes;
+import dev.efnilite.ip.api.MultiMode;
 import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.api.event.ParkourLeaveEvent;
 import dev.efnilite.ip.config.Config;
@@ -170,18 +170,18 @@ public abstract class ParkourUser {
                 int remaining = 0;
                 // remove spectators
                 if (session != null) {
-                    if (generator.getGamemode() instanceof MultiGamemode gamemode) {
+                    if (generator.getMode() instanceof MultiMode gamemode) {
                         gamemode.leave(pl, session);
                     }
 
                     session.removePlayers(pp);
 
-                    if (generator.getGamemode().getName().contains("team")) {
+                    if (generator.getMode().getName().contains("team")) {
                         remaining = session.getPlayers().size();
                     }
 
                     for (ParkourSpectator spectator : session.getSpectators()) {
-                        Gamemodes.DEFAULT.create(spectator.player);
+                        Modes.DEFAULT.create(spectator.player);
 
                         session.removeSpectators(spectator);
                     }

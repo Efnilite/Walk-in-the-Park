@@ -7,7 +7,6 @@ import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * <p>Divides the parkour world in sections, each with an active session.</p>
@@ -50,20 +49,22 @@ public class WorldDivider {
      * @return The location at the center of section n.
      */
     public static Location toLocation(Session session) {
-        int[] coords = Util.spiralAt(getSectionId(session));
+        int[] xz = Util.spiralAt(getSectionId(session));
 
         return new Location(WorldManager.getWorld(),
-                coords[0] * Option.BORDER_SIZE,
+                xz[0] * Option.BORDER_SIZE,
                 (Option.MAX_Y + Option.MIN_Y) / 2.0,
-                coords[1] * Option.BORDER_SIZE);
+                xz[1] * Option.BORDER_SIZE);
     }
 
 
     // returns the section id from the session instance. -1 if no found.
     private static int getSectionId(Session session) {
-        Optional<Map.Entry<Integer, Session>> filtered = SESSIONS.entrySet().stream().filter(entry -> entry.getValue() == session).findFirst();
-
-        return filtered.isPresent() ? filtered.get().getKey() : -1;
+        return SESSIONS.entrySet().stream()
+                .filter(entry -> entry.getValue() == session)
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(-1);
     }
 
     /**
@@ -80,6 +81,6 @@ public class WorldDivider {
         max.setY(Option.MAX_Y);
         min.setY(Option.MIN_Y);
 
-        return new Location[]{min, max};
+        return new Location[] { min, max };
     }
 }

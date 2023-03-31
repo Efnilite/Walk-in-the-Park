@@ -1,6 +1,6 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -75,7 +75,7 @@ public class Handler implements EventWatcher {
 
         // Bungeecord joining
         if (Option.BUNGEECORD) {
-            Gamemodes.DEFAULT.create(player);
+            Modes.DEFAULT.create(player);
         } else if (player.getWorld().getUID().equals(WorldManager.getWorld().getUID())) {
             World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
             if (fallback != null) {

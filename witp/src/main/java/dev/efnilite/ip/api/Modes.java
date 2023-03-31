@@ -4,7 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.gamemode.SpectatorGamemode;
 
-public class Gamemodes {
+public class Modes {
 
     public static DefaultGamemode DEFAULT;
     public static SpectatorGamemode SPECTATOR;

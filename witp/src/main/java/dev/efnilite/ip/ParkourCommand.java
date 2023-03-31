@@ -1,7 +1,7 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Mode;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -141,7 +141,7 @@ public class ParkourCommand extends ViCommand {
                         return true;
                     }
 
-                    Gamemodes.DEFAULT.create(player);
+                    Modes.DEFAULT.create(player);
                     return true;
                 }
                 case "leave" -> {
@@ -199,7 +199,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 String type = args[1]; // get mode from second arg
-                Gamemode gamemode = IP.getRegistry().getMode(type);
+                Mode gamemode = IP.getRegistry().getMode(type);
                 ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
 
                 if (gamemode == null) {
@@ -213,9 +213,9 @@ public class ParkourCommand extends ViCommand {
                         }
 
                         if (session.isAcceptingPlayers.apply(session)) {
-                            Gamemodes.DEFAULT.create(player);
+                            Modes.DEFAULT.create(player);
                         } else {
-                            Gamemodes.SPECTATOR.create(player, session);
+                            Modes.SPECTATOR.create(player, session);
                         }
                     }
                 } else {
@@ -293,7 +293,7 @@ public class ParkourCommand extends ViCommand {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        Gamemodes.DEFAULT.create(other);
+                        Modes.DEFAULT.create(other);
                     }
                     send(sender, IP.PREFIX + "Successfully force joined everyone!");
                     return true;
@@ -328,7 +328,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     send(sender, IP.PREFIX + "Successfully force joined " + closest.getName() + "!");
-                    Gamemodes.DEFAULT.create(closest);
+                    Modes.DEFAULT.create(closest);
                     return true;
                 }
 
@@ -338,7 +338,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                Gamemodes.DEFAULT.create(other);
+                Modes.DEFAULT.create(other);
                 return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
 
@@ -395,7 +395,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    for (Gamemode gamemode : IP.getRegistry().getModes()) {
+                    for (Mode gamemode : IP.getRegistry().getModes()) {
                         Leaderboard leaderboard = gamemode.getLeaderboard();
 
                         if (leaderboard == null) {
@@ -432,7 +432,7 @@ public class ParkourCommand extends ViCommand {
                     UUID finalUuid = uuid;
                     String finalName = name;
 
-                    for (Gamemode gamemode : IP.getRegistry().getModes()) {
+                    for (Mode gamemode : IP.getRegistry().getModes()) {
                         Leaderboard leaderboard = gamemode.getLeaderboard();
 
                         if (leaderboard == null) {
@@ -454,7 +454,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                Gamemode gamemode = IP.getRegistry().getMode(args[1].toLowerCase());
+                Mode gamemode = IP.getRegistry().getMode(args[1].toLowerCase());
 
                 // if found gamemode is null, return to default
                 if (gamemode == null) {

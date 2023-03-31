@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class SingleLeaderboardMenu {
 
-    public void open(Player player, Gamemode gamemode, Sort sort) {
+    public void open(Player player, Mode gamemode, Sort sort) {
         Leaderboard leaderboard = gamemode.getLeaderboard();
 
         // init vars

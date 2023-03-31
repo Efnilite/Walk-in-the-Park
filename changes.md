@@ -12,3 +12,7 @@
 - Fixed rewards parsing when rewards are disabled
 - Fixed players getting a default style while styles are disabled
 - Fixed players getting a default locale while locales are disabled
+- Fixed scoreboard not showing when default scoreboard is set to false
+- Removed adaptive distance
+  - Its effects were too small to be noticed in regular gameplay. 
+- Removed unused keys from config.yml and generation.yml

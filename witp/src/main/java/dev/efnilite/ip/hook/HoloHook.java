@@ -1,7 +1,7 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
@@ -33,7 +33,7 @@ public class HoloHook {
 
             String gamemode = split[0].toLowerCase();
 
-            Gamemode gm = IP.getRegistry().getMode(gamemode);
+            Mode gm = IP.getRegistry().getMode(gamemode);
 
             if (gm == null) {
                 return "?";

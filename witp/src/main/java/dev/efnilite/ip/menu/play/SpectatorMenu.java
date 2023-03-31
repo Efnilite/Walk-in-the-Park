@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.play;
 
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -69,7 +69,7 @@ public class SpectatorMenu {
                     }
                 }
 
-                slider.add(index, item, (event) -> Gamemodes.SPECTATOR.create(player, session));
+                slider.add(index, item, (event) -> Modes.SPECTATOR.create(player, session));
             }
 
             display.add(slider);

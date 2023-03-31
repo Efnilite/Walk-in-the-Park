@@ -1,7 +1,7 @@
 package dev.efnilite.ip.gamemode;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The default parkour gamemode
  */
-public class DefaultGamemode implements Gamemode {
+public class DefaultGamemode implements Mode {
 
     private final Leaderboard leaderboard = new Leaderboard(getName());
 
@@ -44,7 +44,7 @@ public class DefaultGamemode implements Gamemode {
         }
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp != null && pp.generator.getGamemode() instanceof DefaultGamemode) {
+        if (pp != null && pp.generator.getMode() instanceof DefaultGamemode) {
             return;
         }
         player.closeInventory();

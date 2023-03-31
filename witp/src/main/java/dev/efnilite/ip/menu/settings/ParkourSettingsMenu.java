@@ -136,7 +136,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return new SliderItem().initial(player.showScoreboard ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
                 player.showScoreboard = true;
                 player.board = new FastBoard(p);
-                player.generator.updateScoreboard();
 
                 player.updateGeneratorSettings();
                 return true;

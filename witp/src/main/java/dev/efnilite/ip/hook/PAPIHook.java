@@ -1,8 +1,8 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Mode;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
@@ -55,7 +55,7 @@ public class PAPIHook extends PlaceholderExpansion {
                 return IP.getPlugin().getDescription().getVersion();
             case "leader":
             case "record_player":
-                Score score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+                Score score = Modes.DEFAULT.getLeaderboard().getScoreAtRank(1);
 
                 if (score == null) {
                     return "?";
@@ -65,7 +65,7 @@ public class PAPIHook extends PlaceholderExpansion {
             case "leader_score":
             case "record_score":
             case "record":
-                score = Gamemodes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+                score = Modes.DEFAULT.getLeaderboard().getScoreAtRank(1);
 
                 if (score == null) {
                     return "?";
@@ -119,10 +119,10 @@ public class PAPIHook extends PlaceholderExpansion {
                 case "difficulty_string":
                     return parseDifficulty(pp.schematicDifficulty);
                 case "rank":
-                    return Integer.toString(Gamemodes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
+                    return Integer.toString(Modes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
                 case "highscore":
                 case "high_score":
-                    Score score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+                    Score score = Modes.DEFAULT.getLeaderboard().get(player.getUniqueId());
 
                     if (score == null) {
                         return "?";
@@ -130,7 +130,7 @@ public class PAPIHook extends PlaceholderExpansion {
                         return Integer.toString(score.score());
                     }
                 case "high_score_time":
-                    score = Gamemodes.DEFAULT.getLeaderboard().get(player.getUniqueId());
+                    score = Modes.DEFAULT.getLeaderboard().get(player.getUniqueId());
 
                     if (score == null) {
                         return "?";
@@ -184,17 +184,17 @@ public class PAPIHook extends PlaceholderExpansion {
             String name = matcher.group(1);
             rank = Integer.parseInt(matcher.group(2));
 
-            Gamemode gamemode = IP.getRegistry().getMode(name);
+            Mode gamemode = IP.getRegistry().getMode(name);
             if (gamemode != null) {
                 leaderboard = gamemode.getLeaderboard();
             } else {
-                leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+                leaderboard = Modes.DEFAULT.getLeaderboard();
             }
             // use generic format
             // x_rank
         } else {
             rank = Integer.parseInt(rankData);
-            leaderboard = Gamemodes.DEFAULT.getLeaderboard();
+            leaderboard = Modes.DEFAULT.getLeaderboard();
         }
 
         if (rank > 0) {

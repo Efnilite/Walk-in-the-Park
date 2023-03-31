@@ -4,19 +4,19 @@ import dev.efnilite.ip.session.Session;
 import org.bukkit.entity.Player;
 
 /**
- * Class for Gamemodes featuring multiple players.
+ * Class for modes featuring multiple players.
  */
-public interface MultiGamemode extends Gamemode {
+public interface MultiMode extends Mode {
 
     /**
-     * Adds a player to this gamemode.
+     * Adds a player to this mode.
      *
      * @param player The player
      */
     void join(Player player, Session session);
 
     /**
-     * Removes a player from this gamemode.
+     * Removes a player from this mode.
      *
      * @param player The player
      */

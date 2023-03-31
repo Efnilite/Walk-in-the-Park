@@ -1,7 +1,7 @@
 package dev.efnilite.ip.gamemode;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class SpectatorGamemode implements Gamemode {
+public class SpectatorGamemode implements Mode {
 
     @Override
     public @NotNull String getName() {

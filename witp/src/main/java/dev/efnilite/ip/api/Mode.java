@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * Interface for all Gamemodes.
  * Every registered Gamemode needs to inherit this class, because it needs identifying functions.
  */
-public interface Gamemode {
+public interface Mode {
 
     /**
      * @return The internal name used for this gamemode.

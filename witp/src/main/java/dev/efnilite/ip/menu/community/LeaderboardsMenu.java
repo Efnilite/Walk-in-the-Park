@@ -1,7 +1,7 @@
 package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
+import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -29,9 +29,9 @@ public class LeaderboardsMenu {
 
         PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
 
-        Gamemode latest = null;
+        Mode latest = null;
         List<MenuItem> items = new ArrayList<>();
-        for (Gamemode gm : IP.getRegistry().getModes()) {
+        for (Mode gm : IP.getRegistry().getModes()) {
             if (gm.getLeaderboard() == null || !gm.isVisible()) {
                 continue;
             }

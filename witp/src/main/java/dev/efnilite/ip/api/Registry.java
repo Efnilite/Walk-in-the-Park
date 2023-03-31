@@ -15,7 +15,7 @@ import java.util.List;
  */
 public final class Registry {
 
-    private final HashMap<String, Gamemode> modes = new LinkedHashMap<>();
+    private final HashMap<String, Mode> modes = new LinkedHashMap<>();
     private final HashMap<String, StyleType> styleTypes = new LinkedHashMap<>();
 
     /**
@@ -34,7 +34,7 @@ public final class Registry {
      *
      * @param mode The instance of the gamemode that's to be registered
      */
-    public void register(@NotNull Gamemode mode) {
+    public void register(@NotNull Mode mode) {
         modes.put(mode.getName(), mode);
         IP.logging().info("Registered gamemode %s".formatted(mode.getName()));
     }
@@ -50,10 +50,10 @@ public final class Registry {
 
     /**
      * @param name The mode name.
-     * @return The {@link Gamemode} instance. May be null.
+     * @return The {@link Mode} instance. May be null.
      */
     @Nullable
-    public Gamemode getMode(@NotNull String name) {
+    public Mode getMode(@NotNull String name) {
         return modes.get(name);
     }
 
@@ -70,7 +70,7 @@ public final class Registry {
         return new ArrayList<>(styleTypes.values());
     }
 
-    public List<Gamemode> getModes() {
+    public List<Mode> getModes() {
         return new ArrayList<>(modes.values());
     }
 }
