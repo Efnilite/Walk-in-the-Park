@@ -19,13 +19,10 @@ import java.util.List;
 public class LobbyMenu extends DynamicMenu {
 
     public LobbyMenu() {
-        registerMainItem(1, 0, (player, user) -> Locales.getItem(player, "lobby.player_management.item")
-                .click(event -> Menus.PLAYER_MANAGEMENT.open(player)), player -> {
+        registerMainItem(1, 0, (player, user) -> Locales.getItem(player, "lobby.player_management.item").click(event -> Menus.PLAYER_MANAGEMENT.open(player)), player -> {
             ParkourUser user = ParkourUser.getUser(player);
 
-            return ParkourOption.PLAYER_MANAGEMENT.mayPerform(player)
-                    && user instanceof ParkourPlayer
-                    && user.session.getPlayers().get(0) == user;
+            return ParkourOption.PLAYER_MANAGEMENT.mayPerform(player) && user instanceof ParkourPlayer && user.session.getPlayers().get(0) == user;
         });
 
         registerMainItem(1, 1, (player, user) -> {
@@ -35,8 +32,7 @@ public class LobbyMenu extends DynamicMenu {
                 case PUBLIC -> 0;
                 case ID_ONLY -> 1;
                 case PRIVATE -> 2;
-            }).add(0, Locales.getItem(player, "lobby.visibility")
-                    .modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // public
+            }).add(0, Locales.getItem(player, "lobby.visibility").modifyLore(lore -> lore.replace("%s", values.get(2))), event -> { // public
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
@@ -44,8 +40,7 @@ public class LobbyMenu extends DynamicMenu {
                 }
 
                 return true;
-            }).add(1, Locales.getItem(player, "lobby.visibility")
-                    .modifyLore(lore -> lore.replace("%s", values.get(1))), event -> { // id only
+            }).add(1, Locales.getItem(player, "lobby.visibility").modifyLore(lore -> lore.replace("%s", values.get(1))), event -> { // id only
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
@@ -53,8 +48,7 @@ public class LobbyMenu extends DynamicMenu {
                 }
 
                 return true;
-            }).add(2, Locales.getItem(player, "lobby.visibility")
-                    .modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
+            }).add(2, Locales.getItem(player, "lobby.visibility").modifyLore(lore -> lore.replace("%s", values.get(0))), event -> { // private
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
@@ -69,9 +63,7 @@ public class LobbyMenu extends DynamicMenu {
             return ParkourOption.VISIBILITY.mayPerform(player) && user instanceof ParkourPlayer && user.session.getPlayers().get(0) == user;
         });
 
-        // Always allow closing of the menu
-        registerMainItem(2, 10, (player, user) -> Locales.getItem(player, "other.close")
-                .click(event -> event.getPlayer().closeInventory()), player -> true);
+        registerMainItem(2, 10, (player, user) -> Locales.getItem(player, "other.close").click(event -> event.getPlayer().closeInventory()), player -> true);
     }
 
     /**
@@ -80,11 +72,9 @@ public class LobbyMenu extends DynamicMenu {
      * @param player The player to open the menu to
      */
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "lobby.name"))
+        display(player, new Menu(3, Locales.getString(player, "lobby.name"))
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleInAnimation())
-                .distributeRowsEvenly();
-
-        display(player, menu);
+                .distributeRowsEvenly());
     }
 }

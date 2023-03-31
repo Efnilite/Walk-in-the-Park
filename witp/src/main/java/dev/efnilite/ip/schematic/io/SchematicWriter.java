@@ -1,7 +1,7 @@
-package dev.efnilite.ip.schematic.v2.io;
+package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.schematic.v2.state.State;
+import dev.efnilite.ip.schematic.state.State;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
 import org.bukkit.Material;

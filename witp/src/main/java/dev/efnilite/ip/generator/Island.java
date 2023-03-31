@@ -3,7 +3,7 @@ package dev.efnilite.ip.generator;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.schematic.v2.Schematic2;
+import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldDivider;
 import org.bukkit.Location;
@@ -31,9 +31,9 @@ public final class Island {
     /**
      * The schematic.
      */
-    public final Schematic2 schematic;
+    public final Schematic schematic;
 
-    public Island(Session session, Schematic2 schematic) {
+    public Island(Session session, Schematic schematic) {
         this.session = session;
         this.schematic = schematic;
     }

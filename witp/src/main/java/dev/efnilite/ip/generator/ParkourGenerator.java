@@ -11,17 +11,15 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
+import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
-import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.schematic.v2.Schematic2;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -46,13 +44,10 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
@@ -74,7 +69,7 @@ public class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    public Vector heading = stringToVector(Option.HEADING);
+    public Vector heading = Option.HEADING.clone();
 
     /**
      * Generator options
@@ -219,7 +214,7 @@ public class ParkourGenerator {
         this.generatorOptions = Arrays.asList(generatorOptions);
 
         player = session.getPlayers().get(0);
-        island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
+        island = new Island(session, Schematics.CACHE.get("spawn-island"));
 
         mostRecentBlock = player.getLocation().clone();
         lastStandingPlayerLocation = mostRecentBlock.clone();
@@ -590,20 +585,11 @@ public class ParkourGenerator {
         Location clone = current.clone();
 
         // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(stringToVector(Option.HEADING).angle(heading));
+        offset.rotateAroundY(Option.HEADING.clone().angle(heading));
 
         clone.add(offset);
 
         return clone.getBlock();
-    }
-
-    private Vector stringToVector(String direction) {
-        return switch (direction.toLowerCase()) {
-            case "north" -> new Vector(0, 0, -1);
-            case "south" -> new Vector(0, 0, 1);
-            case "west" -> new Vector(-1, 0, 0);
-            default -> new Vector(1, 0, 0); // east
-        };
     }
 
     /**
@@ -1028,88 +1014,78 @@ public class ParkourGenerator {
                 }
             }
             case 1 -> {
-                File folder = IP.getInFolder("schematics");
-                List<File> files = Arrays.asList(folder.listFiles((dir, name) -> name.contains("parkour-")));
-                File file = null;
-                if (!files.isEmpty()) {
-                    boolean passed = true;
-                    while (passed) {
-                        file = files.get(random.nextInt(files.size()));
-                        if (profile.get("schematicDifficulty").asDouble() == 0) {
-                            profile.set("schematicDifficulty", "0.2");
-                        }
-                        if (getDifficulty(file.getName()) < profile.get("schematicDifficulty").asDouble()) {
-                            passed = false;
-                        }
-                    }
-                } else {
-                    IP.logging().error("No structures to choose from!");
-                    generate(); // generate if no schematic is found
-                    return;
-                }
-                Schematic2 schematic = Schematics.getSchematic(file.getName());
+                List<String> schematics = new ArrayList<>(Schematics.CACHE.keySet());
+
+                // select random schematic
+                double difficulty = profile.get("schematicDifficulty").asDouble();
+                String schematicName;
+                while (getDifficulty(schematicName = Colls.random(schematics)) <= difficulty) {}
+
+                Schematic schematic = Schematics.CACHE.get(schematicName);
 
                 schematicCooldown = Option.SCHEMATIC_COOLDOWN;
-                List<Block> blocks = selectBlocks();
-                if (blocks.isEmpty()) {
+                schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
+
+                if (schematicBlocks.isEmpty()) {
+                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NullPointerException());
+                    player.send("<red><bold>Error while trying to paste schematic. Contact the server owner.");
+                    generate();
                     return;
                 }
 
-                Block selectedBlock = blocks.get(0);
-
-                try {
-                    schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
-                    waitForSchematicCompletion = true;
-                } catch (IOException ex) {
-                    IP.logging().stack("There was an error while trying to paste schematic %s".formatted(schematic.getFile().getName()),
-                            "delete this file and restart the server", ex);
-                    reset(true);
-                    return;
-                }
-
-                if (schematicBlocks == null || schematicBlocks.isEmpty()) {
-                    IP.logging().error("0 blocks found in structure!");
-                    player.send("<red>There was an error while trying to paste a structure! If you don't want this to happen again, you can disable them in the menu.");
-                    reset(true);
-                    return;
-                }
-
-                for (Block schematicBlock : schematicBlocks) {
-                    if (schematicBlock.getType() == Material.RED_WOOL) {
-                        mostRecentBlock = schematicBlock.getLocation();
-                        break;
-                    }
-                }
+                waitForSchematicCompletion = true;
             }
-            default -> IP.logging().stack("Illegal jump type with id " + type, new IllegalArgumentException());
+            default -> IP.logging().stack("Error while trying to generate parkour with id %d".formatted(type), new IllegalArgumentException());
         }
     }
 
-    private void pasteAdjusted(Schematic2 schematic, Location location) {
-        Optional<Vector> start = schematic.getVectorBlockMap()
+    private @NotNull List<Block> rotatedPaste(Schematic schematic, Location location) {
+        if (schematic == null || location == null) {
+            return Collections.emptyList();
+        }
+
+        Optional<Vector> optionalStart = schematic.getVectorBlockMap()
                 .entrySet()
                 .stream()
                 .filter(e -> e.getValue().getMaterial() == Material.GREEN_WOOL)
                 .map(Map.Entry::getKey)
                 .findAny();
 
-        Optional<Vector> end = schematic.getVectorBlockMap()
+        Optional<Vector> optionalEnd = schematic.getVectorBlockMap()
                 .entrySet()
                 .stream()
                 .filter(e -> e.getValue().getMaterial() == Material.RED_WOOL)
                 .map(Map.Entry::getKey)
                 .findAny();
 
-        if (start.isEmpty()) {
-            IP.logging().stack("Error while trying to find start of schematic", "check if you placed a green wool block");
-            return;
+        if (optionalStart.isEmpty()) {
+            IP.logging().stack("Error while trying to find start of schematic",
+                    "check if you placed a green wool block");
+            return Collections.emptyList();
         }
-        if (end.isEmpty()) {
-            IP.logging().stack("Error while trying to find end of schematic", "check if you placed a red wool block");
-            return;
+        if (optionalEnd.isEmpty()) {
+            IP.logging().stack("Error while trying to find end of schematic",
+                    "check if you placed a red wool block");
+            return Collections.emptyList();
         }
 
-        schematic.paste(location.subtract(start.get()));
+        Vector start = optionalStart.get();
+        Vector end = optionalEnd.get();
+
+        // update most recent block
+        mostRecentBlock = location.clone().add(end);
+
+        // use the approximate direction of the schematic to determine if
+        // and by how much we need to rotate the schematic to line up to the current heading.
+        Vector direction = end.clone()
+                .subtract(start)
+                .setY(0) // avoid pitching
+                .normalize();
+
+        double angle = direction.angle(heading);
+        Vector angledDirection = direction.clone().rotateAroundY(angle);
+
+        return schematic.paste(location.subtract(start), angledDirection);
     }
 
     /**
@@ -1119,7 +1095,7 @@ public class ParkourGenerator {
      * @return the difficulty, ranging from 0 to 1
      */
     private double getDifficulty(String fileName) {
-        int index = Integer.parseInt(fileName.split("-")[1].replace(".witp", ""));
+        int index = Integer.parseInt(fileName.split("-")[1]);
 
         return Config.SCHEMATICS.getDouble("difficulty.%d".formatted(index));
     }
@@ -1180,11 +1156,9 @@ public class ParkourGenerator {
     }
 
     protected void deleteStructure() {
-        for (Block block : schematicBlocks) {
-            block.setType(Material.AIR);
-        }
-
+        schematicBlocks.forEach(block -> block.setType(Material.AIR));
         schematicBlocks.clear();
+
         deleteStructure = false;
         schematicCooldown = Option.SCHEMATIC_COOLDOWN;
     }
@@ -1195,9 +1169,6 @@ public class ParkourGenerator {
         } else {
             block.setBlockData(data, false);
         }
-
-        // fixes players receiving delayed update
-        player.player.sendBlockChange(block.getLocation(), data);
     }
 
     /**

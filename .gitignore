@@ -24,7 +24,4 @@ hs_err_pid*
 
 .idea/
 target/
-.run/
-run/
-WITP.iml
-ipex/
+witp.iml

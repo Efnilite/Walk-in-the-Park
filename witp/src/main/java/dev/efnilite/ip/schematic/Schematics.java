@@ -1,7 +1,6 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.schematic.v2.Schematic2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -26,7 +25,7 @@ public class Schematics {
 
     private static final File FOLDER = IP.getInFolder("schematics");
 
-    private static final Map<String, Schematic2> CACHE = new HashMap<>();
+    public static final Map<String, Schematic> CACHE = new HashMap<>();
 
     /**
      * Reads all files.
@@ -50,7 +49,7 @@ public class Schematics {
             for (File file : files) {
                 String fileName = file.getName();
 
-                Schematic2 schematic = Schematic2.create().load(fileName);
+                Schematic schematic = Schematic.create().load(fileName);
 
                 if (schematic.isSupported()) {
                     CACHE.put(fileName, schematic);
@@ -83,13 +82,5 @@ public class Schematics {
         } catch (Exception ex) {
             IP.logging().stack("Error while downloading schematic %s".formatted(name), ex);
         }
-    }
-
-    /**
-     * @param name The name.
-     * @return A schematic instance by name.
-     */
-    public static Schematic2 getSchematic(String name) {
-        return CACHE.get(name);
     }
 }

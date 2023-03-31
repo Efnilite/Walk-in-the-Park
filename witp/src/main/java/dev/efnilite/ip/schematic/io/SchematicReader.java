@@ -1,8 +1,8 @@
-package dev.efnilite.ip.schematic.v2.io;
+package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.schematic.v2.Schematic2;
-import dev.efnilite.ip.schematic.v2.state.State;
+import dev.efnilite.ip.schematic.Schematic;
+import dev.efnilite.ip.schematic.state.State;
 import dev.efnilite.ip.util.Colls;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
@@ -15,7 +15,7 @@ public class SchematicReader {
 
     /**
      * @param file The file.
-     * @return A new {@link Schematic2} instance based on the read blocks.
+     * @return A new {@link Schematic} instance based on the read blocks.
      */
     @SuppressWarnings("unchecked")
     public Map<Vector, BlockData> read(File file) {

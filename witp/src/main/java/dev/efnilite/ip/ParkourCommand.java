@@ -12,8 +12,8 @@ import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
+import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.ip.schematic.v2.Schematic2;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -92,7 +92,7 @@ public class ParkourCommand extends ViCommand {
                 case "t" -> {
                     Location l = player.getLocation();
 
-                    Schematic2.create().save("hello", l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50));
+                    Schematic.create().save("hello", l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50));
                 }
 
                 // Help menu
@@ -285,7 +285,7 @@ public class ParkourCommand extends ViCommand {
                         send(player, "<gray>You can change the file name to whatever number you like.");
                         send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
-                        Schematic2.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
+                        Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
                         return true;
                     }
                 }
@@ -467,7 +467,7 @@ public class ParkourCommand extends ViCommand {
             if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
                 if (args[1].equalsIgnoreCase("paste")) {
                     String name = args[2];
-                    Schematic2 schematic = Schematics.getSchematic(name);
+                    Schematic schematic = Schematics.CACHE.get(name);
                     if (schematic == null) {
                         send(sender, IP.PREFIX + "Couldn't find " + name);
                         return true;

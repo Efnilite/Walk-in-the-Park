@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class Option {
     public static List<Integer> POSSIBLE_LEADS;
 
     // Advanced settings
-    public static String HEADING;
+    public static Vector HEADING;
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
     public static boolean SETTINGS_ENABLED;
@@ -138,7 +139,7 @@ public class Option {
         BUNGEECORD = Config.CONFIG.getBoolean("bungeecord.enabled");
 
         // Generation
-        HEADING = Config.GENERATION.getString("advanced.island.parkour.heading");
+        HEADING = stringToVector(Config.GENERATION.getString("advanced.island.parkour.heading"));
 
         // Scoring
         ALL_POINTS = Config.CONFIG.getBoolean("scoring.all-points");
@@ -148,6 +149,15 @@ public class Option {
             BORDER_SIZE = Config.GENERATION.getDouble("advanced.border-size");
             SQL = Config.CONFIG.getBoolean("sql.enabled");
         }
+    }
+
+    private static Vector stringToVector(String direction) {
+        return switch (direction.toLowerCase()) {
+            case "north" -> new org.bukkit.util.Vector(0, 0, -1);
+            case "south" -> new org.bukkit.util.Vector(0, 0, 1);
+            case "west" -> new org.bukkit.util.Vector(-1, 0, 0);
+            default -> new Vector(1, 0, 0); // east
+        };
     }
 
     private static Location parseLocation(String location) {

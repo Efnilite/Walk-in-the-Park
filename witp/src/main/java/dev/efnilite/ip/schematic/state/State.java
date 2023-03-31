@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.v2.state;
+package dev.efnilite.ip.schematic.state;
 
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;

@@ -176,7 +176,7 @@ public class Locales {
     @NotNull
     public static Item getItem(@NotNull Player player, String path, String... replace) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         return getItem(locale, path, replace);
     }
@@ -195,7 +195,7 @@ public class Locales {
             return new Item(Material.STONE, "");
         }
 
-        final FileConfiguration base = locales.get(locale);
+        FileConfiguration base = locales.get(locale);
 
         String material = base.getString("%s.material".formatted(path));
         String name = base.getString("%s.name".formatted(path));
@@ -211,28 +211,26 @@ public class Locales {
             lore = "";
         }
 
-        Pattern pattern = Pattern.compile("%[a-z]");
+        int idx = 0;
         Matcher matcher = pattern.matcher(name);
-
-        int index = 0;
         while (matcher.find()) {
-            if (index == replace.length) {
+            if (idx == replace.length) {
                 break;
             }
 
-            name = name.replaceFirst(matcher.group(), replace[index]);
-            index++;
+            name = name.replaceFirst(matcher.group(), replace[idx]);
+            idx++;
         }
 
         matcher = pattern.matcher(lore);
 
         while (matcher.find()) {
-            if (index == replace.length) {
+            if (idx == replace.length) {
                 break;
             }
 
-            lore = lore.replaceFirst(matcher.group(), replace[index]);
-            index++;
+            lore = lore.replaceFirst(matcher.group(), replace[idx]);
+            idx++;
         }
 
         Item item = new Item(Material.getMaterial(material.toUpperCase()), name);
@@ -243,4 +241,6 @@ public class Locales {
 
         return item;
     }
+
+    private static final Pattern pattern = Pattern.compile("%[a-z]");
 }

@@ -1,9 +1,9 @@
-package dev.efnilite.ip.schematic.v2;
+package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.schematic.v2.io.SchematicPaster;
-import dev.efnilite.ip.schematic.v2.io.SchematicReader;
-import dev.efnilite.ip.schematic.v2.io.SchematicWriter;
+import dev.efnilite.ip.schematic.io.SchematicPaster;
+import dev.efnilite.ip.schematic.io.SchematicReader;
+import dev.efnilite.ip.schematic.io.SchematicWriter;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Schematic2 {
+public class Schematic {
 
     /**
      * @return A new schematic builder.
@@ -38,7 +38,7 @@ public class Schematic2 {
      *
      * @param file The file.
      */
-    public Schematic2(@NotNull File file) {
+    public Schematic(@NotNull File file) {
         this.file = file;
 
         try {
@@ -106,20 +106,20 @@ public class Schematic2 {
          * Loads a schematic.
          *
          * @param file The file.
-         * @return A new {@link Schematic2} instance.
+         * @return A new {@link Schematic} instance.
          */
-        public Schematic2 load(File file) {
-            return new Schematic2(file);
+        public Schematic load(File file) {
+            return new Schematic(file);
         }
 
         /**
          * Loads a schematic.
          *
          * @param file The file.
-         * @return A new {@link Schematic2} instance.
+         * @return A new {@link Schematic} instance.
          */
-        public Schematic2 load(String file) {
-            return new Schematic2(new File(file));
+        public Schematic load(String file) {
+            return new Schematic(new File(file));
         }
 
         /**

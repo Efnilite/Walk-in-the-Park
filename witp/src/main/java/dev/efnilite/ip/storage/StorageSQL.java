@@ -2,8 +2,8 @@ package dev.efnilite.ip.storage;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.leaderboard.Score;
+import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.util.Colls;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;

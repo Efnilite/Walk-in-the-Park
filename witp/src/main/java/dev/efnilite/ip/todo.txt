@@ -8,6 +8,7 @@ Finished folders:
 - world
 - leaderboard
 - storage
+- util
 
 Todo:
 - api
@@ -15,5 +16,4 @@ Todo:
 - generator
 - menu
 - player
-- util
 - parent package

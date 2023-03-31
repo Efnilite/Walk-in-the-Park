@@ -1,4 +1,4 @@
-package dev.efnilite.ip.schematic.v2.io;
+package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.Colls;

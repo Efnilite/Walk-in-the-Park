@@ -35,6 +35,6 @@ public class Generator2 {
     public Generator2(Session session) {
         this.session = session;
 
-        this.island = new Island(session, Schematics.getSchematic("spawn-island.witp"));
+        this.island = new Island(session, Schematics.CACHE.get("spawn-island.witp"));
     }
 }
