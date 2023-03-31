@@ -10,7 +10,6 @@ import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
@@ -104,7 +103,7 @@ public class ParkourSpectator extends ParkourUser {
         if (leaderboard != null) {
 
             // only get score at rank if lines contains variables
-            if (Colls.filter(line -> line.contains("topscore") || line.contains("topplayer"), lines).size() > 0) {
+            if (lines.stream().anyMatch(line -> line.contains("topscore") || line.contains("topplayer"))) {
                 top = leaderboard.getScoreAtRank(1);
             }
 
@@ -115,9 +114,8 @@ public class ParkourSpectator extends ParkourUser {
         top = top == null ? new Score("?", "?", "?", 0) : top;
         rank = rank == null ? new Score("?", "?", "?", 0) : rank;
 
-
         // update lines
-        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
+        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines").stream().map(Strings::colour).toList()) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line.replace("%score%", Integer.toString(generator.score))

@@ -23,12 +23,17 @@ public class SchematicReader {
             var palette = (Map<String, Integer>) stream.readObject();
             var offsets = (Map<String, Object[]>) stream.readObject();
 
-            // inverse map and parse String -> BlockData
-            Map<Integer, BlockData> paletteRef = Colls.mapv((k, ov) -> Bukkit.createBlockData(ov), Colls.inverse(palette));
+            Map<Integer, BlockData> paletteRef = Colls.thread(palette).inverse().mapv((k, ov) -> {
+                try {
+                    return Bukkit.createBlockData(ov);
+                } catch (IllegalArgumentException ex) {
+                    return null;
+                }
+            }).get();
 
             // create final map by parse Map<String, Object> -> Vector and applying possible State
 
-            return Colls.mapkv(this::fromString, v -> {
+            return Colls.thread(offsets).mapkv(this::fromString, v -> {
                 BlockData data = paletteRef.get((int) v[0]);
 
                 if (v.length == 1) {
@@ -39,7 +44,7 @@ public class SchematicReader {
                 String extra = (String) v[1];
 
                 return state != null ? state.deserialize(data, extra) : data;
-            }, offsets);
+            }).get();
         } catch (IOException | ClassNotFoundException ex) {
             IP.logging().stack("Error while trying to read schematic %s".formatted(file), ex);
         }

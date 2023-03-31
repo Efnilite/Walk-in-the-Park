@@ -9,8 +9,6 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.util.Persistents;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.VoidGenerator;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.ip.world.WorldManagerMV;
@@ -32,12 +30,13 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+import static dev.efnilite.ip.util.Util.send;
 
 /**
  * Internal event handler
@@ -63,15 +62,15 @@ public class Handler implements EventWatcher {
 
         // OP join messages
         if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
-            Util.send(player, "");
-            Util.send(player, IP.PREFIX + "Your version is outdated. " + "Please visit the Spigot page to update.");
-            Util.send(player, "");
+            send(player, "");
+            send(player, IP.PREFIX + "Your version is outdated. " + "Please visit the Spigot page to update.");
+            send(player, "");
         }
         if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
-            Util.send(player, "");
-            Util.send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
+            send(player, "");
+            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
                     "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
-            Util.send(player, "");
+            send(player, "");
         }
 
         // Bungeecord joining
@@ -86,7 +85,7 @@ public class Handler implements EventWatcher {
                 IP.logging().warn("No backup worlds have been set! A random one will be selected for " + playerName);
                 for (World last : Bukkit.getWorlds()) {
                     if (!(last.getName().equals(Option.WORLD_NAME))) {
-                        Util.send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
+                        send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
                         player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         return;
                     }
@@ -183,7 +182,11 @@ public class Handler implements EventWatcher {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!player.hasPermission("witp.schematic") || item.getType().isAir() || !Persistents.hasPersistentData(item, "ip", PersistentDataType.STRING) || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
+        if (!player.hasPermission("ip.admin") ||
+                item.getItemMeta() == null ||
+                !item.getItemMeta().getDisplayName().contains("Schematic Wand") ||
+                event.getClickedBlock() == null ||
+                event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 
@@ -195,7 +198,7 @@ public class Handler implements EventWatcher {
         switch (action) {
             case LEFT_CLICK_BLOCK -> {
 
-                Util.send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
+                send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
                     ParkourCommand.selections.put(player, new Location[]{location, null});
@@ -207,7 +210,7 @@ public class Handler implements EventWatcher {
                 Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
             case RIGHT_CLICK_BLOCK -> {
-                Util.send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
+                send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
                     ParkourCommand.selections.put(player, new Location[]{null, location});

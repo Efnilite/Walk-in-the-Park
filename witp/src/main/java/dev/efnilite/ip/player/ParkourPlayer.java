@@ -8,7 +8,6 @@ import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
@@ -98,17 +97,17 @@ public class ParkourPlayer extends ParkourUser {
      * @param settings The settings map.
      */
     public void setSettings(@NotNull Map<String, Object> settings) {
-        PLAYER_COLUMNS.keySet().forEach(key -> {
+        for (String key : PLAYER_COLUMNS.keySet()) {
             Object value = settings.get(key);
             OptionContainer container = PLAYER_COLUMNS.get(key);
 
             if (value == null || !Option.OPTIONS_ENABLED.get(container.option)) {
                 container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
-                return;
+                continue;
             }
 
             container.consumer.accept(this, String.valueOf(value));
-        });
+        }
     }
 
     /**
@@ -182,7 +181,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return the ParkourPlayer
      */
     public static @Nullable ParkourPlayer getPlayer(@NotNull Player player) {
-        List<ParkourPlayer> filtered = Colls.filter(other -> other.getUUID() == player.getUniqueId(), getActivePlayers());
+        List<ParkourPlayer> filtered = getActivePlayers().stream().filter(other -> other.getUUID() == player.getUniqueId()).toList();
 
         return filtered.size() > 0 ? filtered.get(0) : null;
     }

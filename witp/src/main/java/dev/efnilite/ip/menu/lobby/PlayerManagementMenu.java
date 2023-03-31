@@ -6,7 +6,6 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -19,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,8 +40,8 @@ public class PlayerManagementMenu {
         Session session = viewer.session;
 
         PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
-        add(menu, viewer, Colls.map(player -> player, session.getPlayers()));
-        add(menu, viewer, Colls.map(player -> player, session.getSpectators()));
+        add(menu, viewer, session.getPlayers().stream().map(player -> (ParkourUser) player).toList());
+        add(menu, viewer, session.getSpectators().stream().map(player -> (ParkourUser) player).toList());
 
         menu.displayRows(0, 1)
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT)
@@ -54,7 +54,7 @@ public class PlayerManagementMenu {
                 .open(p);
     }
 
-    private void add(PagedMenu menu, ParkourUser viewer, List<ParkourUser> users) {
+    private void add(PagedMenu menu, ParkourUser viewer, Collection<ParkourUser> users) {
         Session session = viewer.session;
 
         for (ParkourUser other : users) {

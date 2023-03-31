@@ -2,7 +2,6 @@ package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.util.Colls;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +64,7 @@ public class Rewards {
                     continue;
                 }
 
-                rewardMap.put(value, Colls.map(RewardString::new, commands));
+                rewardMap.put(value, commands.stream().map(RewardString::new).toList());
             } catch (NumberFormatException ex) {
                 IP.logging().stack("%s is not a valid score".formatted(score), "check the rewards file for incorrect numbers", ex);
             }

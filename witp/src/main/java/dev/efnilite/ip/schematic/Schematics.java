@@ -1,6 +1,7 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.schematic.v2.Schematic2;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -25,7 +26,7 @@ public class Schematics {
 
     private static final File FOLDER = IP.getInFolder("schematics");
 
-    private static final Map<String, Schematic> CACHE = new HashMap<>();
+    private static final Map<String, Schematic2> CACHE = new HashMap<>();
 
     /**
      * Reads all files.
@@ -49,10 +50,9 @@ public class Schematics {
             for (File file : files) {
                 String fileName = file.getName();
 
-                Schematic schematic = new Schematic().file(fileName);
-                schematic.read();
+                Schematic2 schematic = Schematic2.create().load(fileName);
 
-                if (schematic.isSupported) {
+                if (schematic.isSupported()) {
                     CACHE.put(fileName, schematic);
                 }
             }
@@ -68,7 +68,7 @@ public class Schematics {
 
         List<String> schematics = new ArrayList<>();
         schematics.addAll(Arrays.asList("spawn-island.witp", "spawn-island-duels.witp"));
-        schematics.addAll(Colls.map("parkour-%d.witp"::formatted, Colls.range(SCHEMATIC_COUNT + 1)));
+        schematics.addAll(Colls.range(SCHEMATIC_COUNT + 1).stream().map("parkour-%d.witp"::formatted).toList());
         schematics.forEach(Schematics::downloadFile);
     }
 
@@ -89,7 +89,7 @@ public class Schematics {
      * @param name The name.
      * @return A schematic instance by name.
      */
-    public static Schematic getSchematic(String name) {
+    public static Schematic2 getSchematic(String name) {
         return CACHE.get(name);
     }
 }

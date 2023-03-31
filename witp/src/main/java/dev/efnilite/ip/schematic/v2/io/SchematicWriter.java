@@ -2,7 +2,6 @@ package dev.efnilite.ip.schematic.v2.io;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.schematic.v2.state.State;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,8 +81,8 @@ public class SchematicWriter {
     // the first item in the array is the generic BlockData of that block.
     // the second item in the array is the special data of that block, as encoded by the State instances.
     private Map<String, Object[]> getOffsetData(List<Block> blocks, Map<String, Integer> palette) {
-        List<Location> locations = Colls.map(Block::getLocation, blocks);
-        Location min = Colls.reduce(locations, Locations::min);
+        List<Location> locations = blocks.stream().map(Block::getLocation).toList();
+        Location min = locations.stream().reduce(Locations::min).orElseThrow();
 
         Map<String, Object[]> offsetData = new HashMap<>();
 

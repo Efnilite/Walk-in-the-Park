@@ -6,43 +6,120 @@ import dev.efnilite.ip.schematic.v2.io.SchematicReader;
 import dev.efnilite.ip.schematic.v2.io.SchematicWriter;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class Schematic2 {
 
     /**
-     * @return A new schematic bulider.
+     * @return A new schematic builder.
      */
     public static Builder create() {
         return new Builder();
     }
 
-    static class Builder {
+    private final File file;
+    private Map<Vector, BlockData> vectorBlockMap;
+
+    /**
+     * Constructor.
+     *
+     * @param file The file.
+     */
+    public Schematic2(@NotNull File file) {
+        this.file = file;
+
+        try {
+            this.vectorBlockMap = CompletableFuture.supplyAsync(() -> new SchematicReader().read(file)).get();
+        } catch (InterruptedException | ExecutionException ex) {
+            IP.logging().stack("Error while trying to read schematic %s".formatted(file), ex);
+        }
+    }
+
+    /**
+     * Pastes a schematic.
+     *
+     * @param location The smallest location.
+     */
+    public List<Block> paste(Location location) {
+        return new SchematicPaster().paste(location, vectorBlockMap);
+    }
+
+    /**
+     * Pastes a schematic at angles rotation.
+     *
+     * @param location The smallest location.
+     * @param rotation The rotation.
+     */
+    public List<Block> paste(Location location, Vector rotation) {
+        return new SchematicPaster().paste(location, rotation, vectorBlockMap);
+    }
+
+    /**
+     * @return The dimensions of this schematic.
+     */
+    public Vector getDimensions() {
+        Set<Vector> offsets = vectorBlockMap.keySet();
+
+        Vector min = offsets.stream().reduce((a, b) -> new Vector(min(a.getX(), b.getX()), min(a.getY(), b.getY()), min(a.getZ(), b.getZ()))).get();
+        Vector max = offsets.stream().reduce((a, b) -> new Vector(max(a.getX(), b.getX()), max(a.getY(), b.getY()), max(a.getZ(), b.getZ()))).get();
+
+        return max.subtract(min);
+    }
+
+    /**
+     * @return True when this schematic contains no unknown {@link BlockData}, false if it does.
+     */
+    public boolean isSupported() {
+        return !vectorBlockMap.containsValue(null);
+    }
+
+    /**
+     * @return The map of vectors mapped to each {@link BlockData}.
+     */
+    public Map<Vector, BlockData> getVectorBlockMap() {
+        return vectorBlockMap;
+    }
+
+    /**
+     * @return The file.
+     */
+    public File getFile() {
+        return file;
+    }
+
+    public static class Builder {
 
         /**
          * Loads a schematic.
          *
          * @param file The file.
-         * @return The builder for loaded schematics.
+         * @return A new {@link Schematic2} instance.
          */
-        public BuilderLoaded load(File file) {
-            return new BuilderLoaded(file);
+        public Schematic2 load(File file) {
+            return new Schematic2(file);
         }
 
         /**
          * Loads a schematic.
          *
          * @param file The file.
-         * @return The builder for loaded schematics.
+         * @return A new {@link Schematic2} instance.
          */
-        public BuilderLoaded load(String file) {
-            return new BuilderLoaded(new File(file));
+        public Schematic2 load(String file) {
+            return new Schematic2(new File(file));
         }
 
         /**
@@ -65,48 +142,6 @@ public class Schematic2 {
          */
         public void save(File file, Location pos1, Location pos2) {
             Task.create(IP.getPlugin()).async().execute(() -> new SchematicWriter().save(file, pos1, pos2)).run();
-        }
-    }
-
-    /**
-     * Builder for loaded schematics.
-     */
-    static class BuilderLoaded {
-
-        private Map<Vector, BlockData> vectorBlockMap;
-
-        public BuilderLoaded(File file) {
-            try {
-                this.vectorBlockMap = CompletableFuture.supplyAsync(() -> new SchematicReader().read(file)).get();
-            } catch (InterruptedException | ExecutionException ex) {
-                IP.logging().stack("Error while trying to read schematic %s".formatted(file), ex);
-            }
-        }
-
-        /**
-         * Pastes a schematic.
-         *
-         * @param location The smallest location.
-         */
-        public void paste(Location location) {
-            new SchematicPaster().paste(location, vectorBlockMap);
-        }
-
-        /**
-         * Pastes a schematic at angles rotation.
-         *
-         * @param location The smallest location.
-         * @param rotation The rotation.
-         */
-        public void paste(Location location, Vector rotation) {
-            new SchematicPaster().paste(location, rotation, vectorBlockMap);
-        }
-
-        /**
-         * @return The map of vectors mapped to each {@link BlockData}.
-         */
-        public Map<Vector, BlockData> getVectorBlockMap() {
-            return vectorBlockMap;
         }
     }
 }

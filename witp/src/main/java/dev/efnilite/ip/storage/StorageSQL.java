@@ -113,14 +113,14 @@ public final class StorageSQL implements Storage {
                 return;
             }
 
-            Map<String, Object> settings = Colls.mapv((key, value) -> {
+            Map<String, Object> settings = Colls.thread(ParkourPlayer.PLAYER_COLUMNS).mapv((key, value) -> {
                 try {
                     return results.getObject(key);
                 } catch (SQLException ex) {
                     IP.logging().stack("Error while trying to read SQL data of %s, option = %s".formatted(player.getName(), key), ex);
                     return null;
                 }
-            }, ParkourPlayer.PLAYER_COLUMNS);
+            }).get();
 
             player.setSettings(settings);
         } catch (SQLException ex) {

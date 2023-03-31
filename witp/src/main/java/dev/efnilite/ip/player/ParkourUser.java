@@ -15,7 +15,6 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
@@ -248,7 +247,7 @@ public abstract class ParkourUser {
      * @return the associated {@link ParkourUser}
      */
     public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        List<ParkourUser> filtered = Colls.filter(other -> other.getUUID() == player.getUniqueId(), getUsers());
+        List<ParkourUser> filtered = getUsers().stream().filter(other -> other.getUUID() == player.getUniqueId()).toList();
 
         return filtered.size() > 0 ? filtered.get(0) : null;
     }

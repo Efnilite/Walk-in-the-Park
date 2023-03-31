@@ -21,6 +21,7 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.SchematicAdjuster;
 import dev.efnilite.ip.schematic.Schematics;
+import dev.efnilite.ip.schematic.v2.Schematic2;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
@@ -51,6 +52,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
@@ -400,7 +402,7 @@ public class ParkourGenerator {
         if (leaderboard != null) {
 
             // only get score at rank if lines contains variables
-            if (Colls.filter(line -> line.contains("topscore") || line.contains("topplayer"), lines).size() > 0) {
+            if (lines.stream().anyMatch(line -> line.contains("topscore") || line.contains("topplayer"))) {
                 top = leaderboard.getScoreAtRank(1);
             }
 
@@ -412,7 +414,7 @@ public class ParkourGenerator {
         rank = rank == null ? new Score("?", "?", "?", 0) : rank;
 
         // update lines
-        for (String line : Colls.map(Strings::colour, Locales.getStringList(player.getLocale(), "scoreboard.lines"))) {
+        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines").stream().map(Strings::colour).toList()) {
             line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
 
             lines.add(line
@@ -1045,7 +1047,7 @@ public class ParkourGenerator {
                     generate(); // generate if no schematic is found
                     return;
                 }
-                Schematic schematic = Schematics.getSchematic(file.getName());
+                Schematic2 schematic = Schematics.getSchematic(file.getName());
 
                 schematicCooldown = Option.SCHEMATIC_COOLDOWN;
                 List<Block> blocks = selectBlocks();
@@ -1059,7 +1061,8 @@ public class ParkourGenerator {
                     schematicBlocks = SchematicAdjuster.pasteAdjusted(schematic, selectedBlock.getLocation());
                     waitForSchematicCompletion = true;
                 } catch (IOException ex) {
-                    IP.logging().stack("There was an error while trying to paste schematic " + schematic.getName(), "delete this file and restart the server", ex);
+                    IP.logging().stack("There was an error while trying to paste schematic %s".formatted(schematic.getFile().getName()),
+                            "delete this file and restart the server", ex);
                     reset(true);
                     return;
                 }
@@ -1080,6 +1083,33 @@ public class ParkourGenerator {
             }
             default -> IP.logging().stack("Illegal jump type with id " + type, new IllegalArgumentException());
         }
+    }
+
+    private void pasteAdjusted(Schematic2 schematic, Location location) {
+        Optional<Vector> start = schematic.getVectorBlockMap()
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().getMaterial() == Material.GREEN_WOOL)
+                .map(Map.Entry::getKey)
+                .findAny();
+
+        Optional<Vector> end = schematic.getVectorBlockMap()
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().getMaterial() == Material.RED_WOOL)
+                .map(Map.Entry::getKey)
+                .findAny();
+
+        if (start.isEmpty()) {
+            IP.logging().stack("Error while trying to find start of schematic", "check if you placed a green wool block");
+            return;
+        }
+        if (end.isEmpty()) {
+            IP.logging().stack("Error while trying to find end of schematic", "check if you placed a red wool block");
+            return;
+        }
+
+        schematic.paste(location.subtract(start.get()));
     }
 
     /**

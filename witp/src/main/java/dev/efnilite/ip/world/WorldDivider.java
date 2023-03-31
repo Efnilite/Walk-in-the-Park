@@ -2,14 +2,12 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Divides the parkour world in sections, each with an active session.</p>
@@ -63,9 +61,9 @@ public class WorldDivider {
 
     // returns the section id from the session instance. -1 if no found.
     private static int getSectionId(Session session) {
-        List<Map.Entry<Integer, Session>> filtered = Colls.filter(entry -> entry.getValue() == session, new ArrayList<>(SESSIONS.entrySet()));
+        Optional<Map.Entry<Integer, Session>> filtered = SESSIONS.entrySet().stream().filter(entry -> entry.getValue() == session).findFirst();
 
-        return filtered.size() > 0 ? filtered.get(0).getKey() : -1;
+        return filtered.isPresent() ? filtered.get().getKey() : -1;
     }
 
     /**
