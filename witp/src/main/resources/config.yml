@@ -109,12 +109,6 @@ world:
 # -= General options =-
 options:
 
-  # -= Options menu enabled =-
-  # If the options menu is enabled.
-  # This is the menu you can open on join of parkour.
-  # True = players get access to the menu by the compass, false = players can't customize anything
-  enabled: true
-
   # -= Leads options =-
   leads:
 

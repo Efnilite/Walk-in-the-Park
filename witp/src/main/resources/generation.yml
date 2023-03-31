@@ -104,20 +104,3 @@ advanced:
   # The amount of ticks between checks of the player's location and score.
   # Lowering this is not recommended. Raising this may cause additional lag.
   generator-check: 2
-
-  # -= Height gap =-
-  # The height gap used for determining the max distance between 2 blocks.
-  height-gap: 4.5
-
-  # From which score the difficulty multiplier is maxed (so from e.g.
-  # 750 score you get more 4 block jumps than at 200 score)
-  maxed-multiplier: 500
-
-  # -= Score difficulty maxes =-
-  # The chances of all jumps when the distance multiplier is maxed out.
-  # This is only if a player has the Score difficulty option enabled.
-  maxed-values:
-    1-block: 5
-    2-block: 15
-    3-block: 25
-    4-block: 55

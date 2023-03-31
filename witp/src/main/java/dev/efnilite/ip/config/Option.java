@@ -79,7 +79,6 @@ public class Option {
 
         // Options
 
-        SETTINGS_ENABLED = Config.CONFIG.getBoolean("options.enabled");
         OPTIONS_TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
         HEALTH_HANDLING = Config.CONFIG.getBoolean("options.health-handling");
         INVENTORY_SAVING = Config.CONFIG.getBoolean("options.inventory-saving");
@@ -223,47 +222,47 @@ public class Option {
     // --------------------------------------------------------------
     // Generation
 
-    public static int NORMAL;
-    public static int SPECIAL;
-    public static int SCHEMATICS;
+    public static double NORMAL;
+    public static double SPECIAL;
+    public static double SCHEMATICS;
 
-    public static int SPECIAL_ICE;
-    public static int SPECIAL_SLAB;
-    public static int SPECIAL_PANE;
-    public static int SPECIAL_FENCE;
+    public static double SPECIAL_ICE;
+    public static double SPECIAL_SLAB;
+    public static double SPECIAL_PANE;
+    public static double SPECIAL_FENCE;
 
-    public static int NORMAL_ONE_BLOCK;
-    public static int NORMAL_TWO_BLOCK;
-    public static int NORMAL_THREE_BLOCK;
-    public static int NORMAL_FOUR_BLOCK;
+    public static double NORMAL_ONE_BLOCK;
+    public static double NORMAL_TWO_BLOCK;
+    public static double NORMAL_THREE_BLOCK;
+    public static double NORMAL_FOUR_BLOCK;
 
-    public static int NORMAL_UP;
-    public static int NORMAL_LEVEL;
-    public static int NORMAL_DOWN;
-    public static int NORMAL_DOWN2;
+    public static double NORMAL_UP;
+    public static double NORMAL_LEVEL;
+    public static double NORMAL_DOWN;
+    public static double NORMAL_DOWN2;
 
     public static int MAX_Y;
     public static int MIN_Y;
 
     private static void initGeneration() {
-        NORMAL = Config.GENERATION.getInt("generation.normal-jump.chance");
-        SCHEMATICS = Config.GENERATION.getInt("generation.structures.chance");
-        SPECIAL = Config.GENERATION.getInt("generation.normal-jump.special.chance");
+        NORMAL = Config.GENERATION.getInt("generation.normal-jump.chance") / 100.0;
+        SCHEMATICS = Config.GENERATION.getInt("generation.structures.chance") / 100.0;
+        SPECIAL = Config.GENERATION.getInt("generation.normal-jump.special.chance") / 100.0;
 
-        SPECIAL_ICE = Config.GENERATION.getInt("generation.normal-jump.special.ice");
-        SPECIAL_SLAB = Config.GENERATION.getInt("generation.normal-jump.special.slab");
-        SPECIAL_PANE = Config.GENERATION.getInt("generation.normal-jump.special.pane");
-        SPECIAL_FENCE = Config.GENERATION.getInt("generation.normal-jump.special.fence");
+        SPECIAL_ICE = Config.GENERATION.getInt("generation.normal-jump.special.ice") / 100.0;
+        SPECIAL_SLAB = Config.GENERATION.getInt("generation.normal-jump.special.slab") / 100.0;
+        SPECIAL_PANE = Config.GENERATION.getInt("generation.normal-jump.special.pane") / 100.0;
+        SPECIAL_FENCE = Config.GENERATION.getInt("generation.normal-jump.special.fence") / 100.0;
 
-        NORMAL_ONE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.1-block");
-        NORMAL_TWO_BLOCK = Config.GENERATION.getInt("generation.normal-jump.2-block");
-        NORMAL_THREE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.3-block");
-        NORMAL_FOUR_BLOCK = Config.GENERATION.getInt("generation.normal-jump.4-block");
+        NORMAL_ONE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.1-block") / 100.0;
+        NORMAL_TWO_BLOCK = Config.GENERATION.getInt("generation.normal-jump.2-block") / 100.0;
+        NORMAL_THREE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.3-block") / 100.0;
+        NORMAL_FOUR_BLOCK = Config.GENERATION.getInt("generation.normal-jump.4-block") / 100.0;
 
-        NORMAL_UP = Config.GENERATION.getInt("generation.normal-jump.up");
-        NORMAL_LEVEL = Config.GENERATION.getInt("generation.normal-jump.level");
-        NORMAL_DOWN = Config.GENERATION.getInt("generation.normal-jump.down");
-        NORMAL_DOWN2 = Config.GENERATION.getInt("generation.normal-jump.down2");
+        NORMAL_UP = Config.GENERATION.getInt("generation.normal-jump.up") / 100.0;
+        NORMAL_LEVEL = Config.GENERATION.getInt("generation.normal-jump.level") / 100.0;
+        NORMAL_DOWN = Config.GENERATION.getInt("generation.normal-jump.down") / 100.0;
+        NORMAL_DOWN2 = Config.GENERATION.getInt("generation.normal-jump.down2") / 100.0;
 
         MAX_Y = Config.GENERATION.getInt("generation.settings.max-y");
         MIN_Y = Config.GENERATION.getInt("generation.settings.min-y");
@@ -281,25 +280,11 @@ public class Option {
 
     public static double BORDER_SIZE;
     public static int GENERATOR_CHECK;
-    public static double HEIGHT_GAP;
-    public static double MULTIPLIER;
-
-    public static int MAXED_ONE_BLOCK;
-    public static int MAXED_TWO_BLOCK;
-    public static int MAXED_THREE_BLOCK;
-    public static int MAXED_FOUR_BLOCK;
-
     public static int SCHEMATIC_COOLDOWN;
 
     private static void initAdvancedGeneration() {
         GENERATOR_CHECK = Config.GENERATION.getInt("advanced.generator-check");
-        HEIGHT_GAP = Config.GENERATION.getDouble("advanced.height-gap");
-        MULTIPLIER = Config.GENERATION.getDouble("advanced.maxed-multiplier");
 
-        MAXED_ONE_BLOCK = Config.GENERATION.getInt("advanced.maxed-values.1-block");
-        MAXED_TWO_BLOCK = Config.GENERATION.getInt("advanced.maxed-values.2-block");
-        MAXED_THREE_BLOCK = Config.GENERATION.getInt("advanced.maxed-values.3-block");
-        MAXED_FOUR_BLOCK = Config.GENERATION.getInt("advanced.maxed-values.4-block");
         SCHEMATIC_COOLDOWN = Config.GENERATION.getInt("advanced.schematic-cooldown");
     }
 
