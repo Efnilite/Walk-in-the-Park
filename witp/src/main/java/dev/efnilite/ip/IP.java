@@ -5,8 +5,8 @@ import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.gamemode.DefaultGamemode;
-import dev.efnilite.ip.gamemode.SpectatorGamemode;
+import dev.efnilite.ip.gamemode.DefaultMode;
+import dev.efnilite.ip.gamemode.SpectatorMode;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.player.ParkourUser;
@@ -104,8 +104,8 @@ public final class IP extends ViPlugin {
 
         registry = new Registry();
 
-        registry.register(new DefaultGamemode());
-        registry.register(new SpectatorGamemode());
+        registry.register(new DefaultMode());
+        registry.register(new SpectatorMode());
         registry.registerType(new DefaultStyleType());
 
         registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);

@@ -252,9 +252,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
     public void open(ParkourPlayer user) {
         Player player = user.player;
 
-        Menu menu = new Menu(4, Locales.getString(player, "settings.name")).distributeRowEvenly(0, 1, 2, 3).item(27, Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer()))).fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE);
-
-        display(player, menu);
+        display(player, new Menu(4, Locales.getString(player, "settings.name"))
+                .distributeRowEvenly(0, 1, 2, 3)
+                .item(27, Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
     }
 
     public void openStylesMenu(ParkourPlayer user) {
@@ -270,9 +271,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         }
 
         menu.distributeRowEvenly(1)
-
                 .item(22, Locales.getItem(user.getLocale(), "other.close").click(event -> open(user)))
-
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
     }
 

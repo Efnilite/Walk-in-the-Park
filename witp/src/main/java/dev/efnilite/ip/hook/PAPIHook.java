@@ -178,8 +178,8 @@ public class PAPIHook extends PlaceholderExpansion {
         Leaderboard leaderboard;
         Matcher matcher = INFINITE_REGEX.matcher(rankData);
 
-        // use gamemode-specific format
-        // x_gamemode_rank
+        // use mode-specific format
+        // x_mode_rank
         if (matcher.matches()) {
             String name = matcher.group(1);
             rank = Integer.parseInt(matcher.group(2));

@@ -132,13 +132,12 @@ public final class StorageSQL implements Storage {
     public void writePlayer(@NotNull ParkourPlayer player) {
         sendUpdate("""
                 INSERT INTO `%s`
-                (uuid, style, blockLead, useParticles, useDifficulty, useStructure, useSpecial, showFallMsg, showScoreboard,
+                (uuid, style, blockLead, useParticles, useStructure, useSpecial, showFallMsg, showScoreboard,
                  selectedTime, collectedRewards, locale, schematicDifficulty, sound)
-                VALUES ('%s', '%s', %d, %b, %b, %b, %b, %b, %b, %d, '%s', '%s', %f, %b)
+                VALUES ('%s', '%s', %d, %b, %b, %b, %b, %b, %d, '%s', '%s', %f, %b)
                 ON DUPLICATE KEY UPDATE style               = '%s',
                                         blockLead           = %d,
                                         useParticles        = %b,
-                                        useDifficulty       = %b,
                                         useStructure        = %b,
                                         useSpecial          = %b,
                                         showFallMsg         = %b,
@@ -150,12 +149,12 @@ public final class StorageSQL implements Storage {
                                         sound               = %b;
                                         """
                 .formatted("%soptions".formatted(Option.SQL_PREFIX), player.getUUID(), player.style, player.blockLead,
-                        player.particles, player.useScoreDifficulty, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
+                        player.particles, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.getLocale(),
                         player.schematicDifficulty, player.sound,
 
                         player.style, player.blockLead,
-                        player.particles, player.useScoreDifficulty, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
+                        player.particles, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.getLocale(),
                         player.schematicDifficulty, player.sound));
     }

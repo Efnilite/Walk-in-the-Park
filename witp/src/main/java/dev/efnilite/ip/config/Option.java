@@ -32,7 +32,6 @@ public class Option {
     public static Vector HEADING;
     public static boolean JOINING;
     public static boolean PERMISSIONS_STYLES;
-    public static boolean SETTINGS_ENABLED;
     public static boolean HEALTH_HANDLING;
     public static boolean INVENTORY_SAVING;
     public static String ALT_INVENTORY_SAVING_COMMAND;

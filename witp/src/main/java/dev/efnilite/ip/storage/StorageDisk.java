@@ -96,7 +96,6 @@ public final class StorageDisk implements Storage {
             settings.put("style", from.style);
             settings.put("blockLead", from.blockLead);
             settings.put("useParticles", from.particles);
-            settings.put("useDifficulty", from.useScoreDifficulty);
             settings.put("useStructure", from.useSchematic);
             settings.put("useSpecial", from.useSpecialBlocks);
             settings.put("showFallMsg", from.showFallMessage);

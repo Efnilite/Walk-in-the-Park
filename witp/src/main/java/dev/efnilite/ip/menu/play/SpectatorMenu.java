@@ -31,7 +31,7 @@ public class SpectatorMenu {
 
     public void open(Player player) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
         PagedMenu spectator = new PagedMenu(3, Locales.getString(player, "play.spectator.name"));
 

@@ -34,6 +34,10 @@ public class SingleLeaderboardMenu {
     public void open(Player player, Mode mode, Sort sort) {
         Leaderboard leaderboard = mode.getLeaderboard();
 
+        if (leaderboard == null) {
+            return;
+        }
+
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();

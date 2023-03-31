@@ -8,7 +8,7 @@ import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.gamemode.DefaultGamemode;
+import dev.efnilite.ip.gamemode.DefaultMode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
@@ -56,7 +56,7 @@ public class ParkourGenerator {
     /**
      * The amount of blocks that trail behind the player.
      */
-    private static int BLOCK_TRAIL = 2;
+    private static final int BLOCK_TRAIL = 2;
 
     /**
      * This generator's score
@@ -469,7 +469,7 @@ public class ParkourGenerator {
         if (!Rewards.REWARDS_ENABLED || score == 0 || totalScore == 0) {
             return;
         }
-        if (!(getMode() instanceof DefaultGamemode)) {
+        if (!(getMode() instanceof DefaultMode)) {
             return;
         }
 

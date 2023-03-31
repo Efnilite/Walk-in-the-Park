@@ -26,6 +26,10 @@ public class LobbyMenu extends DynamicMenu {
         });
 
         registerMainItem(1, 1, (player, user) -> {
+            if (user == null) {
+                return null;
+            }
+
             List<String> values = Locales.getStringList(user.getLocale(), "lobby.visibility.values");
 
             return new SliderItem().initial(switch (user.session.visibility) {

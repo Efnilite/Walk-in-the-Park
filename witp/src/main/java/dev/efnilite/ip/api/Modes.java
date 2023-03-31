@@ -1,16 +1,16 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.gamemode.DefaultGamemode;
-import dev.efnilite.ip.gamemode.SpectatorGamemode;
+import dev.efnilite.ip.gamemode.DefaultMode;
+import dev.efnilite.ip.gamemode.SpectatorMode;
 
 public class Modes {
 
-    public static DefaultGamemode DEFAULT;
-    public static SpectatorGamemode SPECTATOR;
+    public static DefaultMode DEFAULT;
+    public static SpectatorMode SPECTATOR;
 
     public static void init() {
-        DEFAULT = (DefaultGamemode) IP.getRegistry().getMode("default");
-        SPECTATOR = (SpectatorGamemode) IP.getRegistry().getMode("spectator");
+        DEFAULT = (DefaultMode) IP.getRegistry().getMode("default");
+        SPECTATOR = (SpectatorMode) IP.getRegistry().getMode("spectator");
     }
 }
