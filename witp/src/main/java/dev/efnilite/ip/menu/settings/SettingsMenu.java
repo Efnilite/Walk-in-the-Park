@@ -73,11 +73,9 @@ public class SettingsMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "settings.name"))
+        display(player, new Menu(3, Locales.getString(player, "settings.name"))
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
-                .distributeRowsEvenly();
-
-        display(player, menu);
+                .distributeRowsEvenly());
     }
 }

@@ -44,12 +44,9 @@ public class PlayerManagementMenu {
         add(menu, viewer, session.getSpectators().stream().map(player -> (ParkourUser) player).toList());
 
         menu.displayRows(0, 1)
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT)
-                        .click(event -> menu.page(-1)))
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT)
-                        .click(event -> menu.page(1)))
-                .item(22, Locales.getItem(viewer.getLocale(), "other.close")
-                        .click(event -> Menus.LOBBY.open(event.getPlayer())))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> menu.page(1)))
+                .item(22, Locales.getItem(viewer.getLocale(), "other.close").click(event -> Menus.LOBBY.open(event.getPlayer())))
                 .fillBackground(Util.isBedrockPlayer(p) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }
@@ -62,7 +59,6 @@ public class PlayerManagementMenu {
                 continue;
             }
 
-            Player sessionBukkitPlayer = other.player;
             Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", other.getName());
             item.material(Material.PLAYER_HEAD);
 
@@ -70,13 +66,12 @@ public class PlayerManagementMenu {
 
             List<String> lore = new ArrayList<>();
             if (muted) {
-                String[] top = Locales.getString(viewer.getLocale(), "lobby.player_management.head.top").split("\\|\\|");
-
-                lore.addAll(List.of(top));
+                // add top
+                lore.addAll(List.of(Locales.getString(viewer.getLocale(), "lobby.player_management.head.top").split("\\|\\|")));
             }
-            String[] bottom = Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom").split("\\|\\|");
 
-            lore.addAll(List.of(bottom));
+            // add bottom
+            lore.addAll(List.of(Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom").split("\\|\\|")));
 
             // Player head gathering
             item.material(Material.PLAYER_HEAD).lore(lore).click(event -> {
@@ -85,7 +80,7 @@ public class PlayerManagementMenu {
                 switch (click) {
                     case LEFT -> {
                         Session.create()
-                                .addPlayers(ParkourUser.register(sessionBukkitPlayer))
+                                .addPlayers(ParkourUser.register(other.player))
                                 .generator(ParkourGenerator::new)
                                 .complete();
 
@@ -112,12 +107,12 @@ public class PlayerManagementMenu {
             stack.setType(Material.PLAYER_HEAD);
 
             // bedrock has no player skull support
-            if (menu.getTotalToDisplay().size() <= 36 && !Util.isBedrockPlayer(sessionBukkitPlayer)) {
+            if (menu.getTotalToDisplay().size() <= 36 && !Util.isBedrockPlayer(other.player)) {
                 if (other.getName() != null && !other.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
                     SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                     if (meta != null) {
-                        SkullSetter.setPlayerHead(sessionBukkitPlayer, meta);
+                        SkullSetter.setPlayerHead(other.player, meta);
                         item.meta(meta);
                     }
                 }

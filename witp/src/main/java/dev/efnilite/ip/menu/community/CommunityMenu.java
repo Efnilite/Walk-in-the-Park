@@ -16,18 +16,14 @@ import org.bukkit.entity.Player;
 public class CommunityMenu extends DynamicMenu {
 
     public CommunityMenu() {
-        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "community.leaderboards.item")
-                .click(event -> Menus.LEADERBOARDS.open(event.getPlayer())), ParkourOption.LEADERBOARDS::mayPerform);
-        registerMainItem(2, 10, (player, user) -> Locales.getItem(player, "other.close")
-                .click(event -> event.getPlayer().closeInventory()), player -> true);
+        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "community.leaderboards.item").click(event -> Menus.LEADERBOARDS.open(event.getPlayer())), ParkourOption.LEADERBOARDS::mayPerform);
+        registerMainItem(2, 10, (player, user) -> Locales.getItem(player, "other.close").click(event -> event.getPlayer().closeInventory()), player -> true);
     }
 
     public void open(Player player) {
-        Menu menu = new Menu(3, Locales.getString(player, "community.name"))
+        display(player, new Menu(3, Locales.getString(player, "community.name"))
                 .distributeRowsEvenly()
                 .animation(new WaveWestAnimation())
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE);
-
-        display(player, menu);
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE));
     }
 }

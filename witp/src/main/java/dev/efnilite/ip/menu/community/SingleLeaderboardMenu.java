@@ -31,17 +31,17 @@ import java.util.stream.Collectors;
  */
 public class SingleLeaderboardMenu {
 
-    public void open(Player player, Mode gamemode, Sort sort) {
-        Leaderboard leaderboard = gamemode.getLeaderboard();
+    public void open(Player player, Mode mode, Sort sort) {
+        Leaderboard leaderboard = mode.getLeaderboard();
 
         // init vars
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
-        PagedMenu menu = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player, "%s.name".formatted(ParkourOption.LEADERBOARDS.path)));
 
         List<MenuItem> items = new ArrayList<>();
 
-        Item base = Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".head");
+        Item base = Locales.getItem(player, "%s.head".formatted(ParkourOption.LEADERBOARDS.path));
 
         Map<UUID, Score> sorted = sort.sort(leaderboard.scores);
 
@@ -89,7 +89,7 @@ public class SingleLeaderboardMenu {
             default -> Sort.SCORE;
         };
 
-        List<String> values = Locales.getStringList(locale, ParkourOption.LEADERBOARDS.path + ".sort.values");
+        List<String> values = Locales.getStringList(locale, "%s.sort.values".formatted(ParkourOption.LEADERBOARDS.path));
 
         String name = switch (next) {
             case SCORE -> values.get(0);
@@ -97,19 +97,14 @@ public class SingleLeaderboardMenu {
             case DIFFICULTY -> values.get(2);
         };
 
-        menu.displayRows(0, 1).addToDisplay(items)
-
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click(event -> menu.page(1)))
-
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click(event -> menu.page(-1)))
-
-                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, gamemode, next)))
-
+        menu.displayRows(0, 1)
+                .addToDisplay(items)
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> menu.page(1)))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
+                .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, mode, next)))
                 .item(23, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
-
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player);
+                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
+                .open(player);
     }
 
     public enum Sort {

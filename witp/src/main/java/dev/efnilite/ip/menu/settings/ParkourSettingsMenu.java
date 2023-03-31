@@ -240,33 +240,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
             });
         }, player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
 
-        // show score difficulty
-        registerMainItem(2, 5, (p, user) -> {
-            Item item = Locales.getItem(p, ParkourOption.SCORE_DIFFICULTY.path);
-
-            if (!(user instanceof ParkourPlayer player)) {
-                return item;
-            }
-
-            return new SliderItem().initial(player.useScoreDifficulty ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                if (allowSettingChange(player, event)) {
-                    player.useScoreDifficulty = true;
-
-                    player.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                if (allowSettingChange(player, event)) {
-                    player.useScoreDifficulty = false;
-
-                    player.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            });
-        }, player -> checkOptions(player, ParkourOption.SCORE_DIFFICULTY, disabled));
-
         // Always allow closing of the menu
         registerMainItem(3, 10, (player, user) -> Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())), player -> true);
     }
@@ -354,7 +327,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         // init menu
         Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.path + ".name"));
 
-        List<Double> difficulties = Arrays.asList(0.2, 0.4, 0.6, 0.8);
+        List<Double> difficulties = Arrays.asList(0.25, 0.5, 0.75, 1.0);
         List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
 
         Item item = Locales.getItem(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.path);
@@ -362,7 +335,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem().initial(difficulties.indexOf(user.schematicDifficulty)).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))), event -> {
                 if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.2;
+                    user.schematicDifficulty = 0.25;
 
                     user.updateGeneratorSettings();
                     return true;
@@ -370,7 +343,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return false;
             }).add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))), event -> {
                 if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.4;
+                    user.schematicDifficulty = 0.5;
 
                     user.updateGeneratorSettings();
                     return true;
@@ -378,7 +351,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return false;
             }).add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))), event -> {
                 if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.6;
+                    user.schematicDifficulty = 0.75;
 
                     user.updateGeneratorSettings();
                     return true;
@@ -386,7 +359,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return false;
             }).add(3, item.clone().material(Material.SKELETON_SKULL).modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))), event -> {
                 if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.8;
+                    user.schematicDifficulty = 1.0;
 
                     user.updateGeneratorSettings();
                     return true;

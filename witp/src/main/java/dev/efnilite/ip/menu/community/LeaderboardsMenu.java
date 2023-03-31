@@ -25,9 +25,9 @@ public class LeaderboardsMenu {
 
     public void open(Player player) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? (String) Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu gamemode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
+        PagedMenu mode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
 
         Mode latest = null;
         List<MenuItem> items = new ArrayList<>();
@@ -52,16 +52,11 @@ public class LeaderboardsMenu {
             return;
         }
 
-        gamemode.displayRows(0, 1).addToDisplay(items)
-
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click(event -> gamemode.page(1)))
-
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click(event -> gamemode.page(-1)))
-
+        mode.displayRows(0, 1)
+                .addToDisplay(items)
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> mode.page(1)))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> mode.page(-1)))
                 .item(22, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
-
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
                 .open(player);
     }
