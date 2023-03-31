@@ -14,7 +14,7 @@ public class HoloHook {
     public static void init() {
         try {
             Class.forName("me.filoghost.holographicdisplays.api.HolographicDisplaysAPI");
-        } catch (Throwable throwable) {
+        } catch (Exception ex) {
             IP.logging().warn("##");
             IP.logging().warn("## IP only supports Holographic Displays v3.0.0 or higher!");
             IP.logging().warn("## This hook will now be disabled.");
@@ -31,15 +31,13 @@ public class HoloHook {
             // {ip_leaderboard: default, score, #1}
             String[] split = argument.replace(" ", "").split(",");
 
-            String gamemode = split[0].toLowerCase();
+            Mode mode = IP.getRegistry().getMode(split[0].toLowerCase());
 
-            Mode gm = IP.getRegistry().getMode(gamemode);
-
-            if (gm == null) {
+            if (mode == null) {
                 return "?";
             }
 
-            Leaderboard leaderboard = gm.getLeaderboard();
+            Leaderboard leaderboard = mode.getLeaderboard();
 
             String type = split[1].toLowerCase();
             String rank = split[2].replace("#", "");

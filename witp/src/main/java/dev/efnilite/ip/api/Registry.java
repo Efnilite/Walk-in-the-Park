@@ -30,13 +30,13 @@ public final class Registry {
     }
 
     /**
-     * Registers a gamemode. Registrations are only accepted until the first time a player opens the Gamemode menu.
+     * Registers a mode. Registrations are only accepted until the first time a player opens the mode menu.
      *
-     * @param mode The instance of the gamemode that's to be registered
+     * @param mode The instance of the mode that's to be registered
      */
     public void register(@NotNull Mode mode) {
         modes.put(mode.getName(), mode);
-        IP.logging().info("Registered gamemode %s".formatted(mode.getName()));
+        IP.logging().info("Registered mode %s".formatted(mode.getName()));
     }
 
     public StyleType getTypeFromStyle(@NotNull String style) {

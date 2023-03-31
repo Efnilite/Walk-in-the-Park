@@ -199,10 +199,10 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 String type = args[1]; // get mode from second arg
-                Mode gamemode = IP.getRegistry().getMode(type);
+                Mode mode = IP.getRegistry().getMode(type);
                 ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
 
-                if (gamemode == null) {
+                if (mode == null) {
                     if (sessionOwner == null) {
                         send(sender, IP.PREFIX + "Unknown player! Try typing the name again."); // could not find, so go to default
                     } else {
@@ -219,7 +219,7 @@ public class ParkourCommand extends ViCommand {
                         }
                     }
                 } else {
-                    gamemode.click(player);
+                    mode.click(player);
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
@@ -395,8 +395,8 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    for (Mode gamemode : IP.getRegistry().getModes()) {
-                        Leaderboard leaderboard = gamemode.getLeaderboard();
+                    for (Mode mode : IP.getRegistry().getModes()) {
+                        Leaderboard leaderboard = mode.getLeaderboard();
 
                         if (leaderboard == null) {
                             continue;
@@ -432,8 +432,8 @@ public class ParkourCommand extends ViCommand {
                     UUID finalUuid = uuid;
                     String finalName = name;
 
-                    for (Mode gamemode : IP.getRegistry().getModes()) {
-                        Leaderboard leaderboard = gamemode.getLeaderboard();
+                    for (Mode mode : IP.getRegistry().getModes()) {
+                        Leaderboard leaderboard = mode.getLeaderboard();
 
                         if (leaderboard == null) {
                             continue;
@@ -454,13 +454,13 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                Mode gamemode = IP.getRegistry().getMode(args[1].toLowerCase());
+                Mode mode = IP.getRegistry().getMode(args[1].toLowerCase());
 
                 // if found gamemode is null, return to default
-                if (gamemode == null) {
+                if (mode == null) {
                     Menus.LEADERBOARDS.open(player);
                 } else {
-                    Menus.SINGLE_LEADERBOARD.open(player, gamemode, SingleLeaderboardMenu.Sort.SCORE);
+                    Menus.SINGLE_LEADERBOARD.open(player, mode, SingleLeaderboardMenu.Sort.SCORE);
                 }
             }
         } else if (args.length == 3) {
@@ -546,7 +546,7 @@ public class ParkourCommand extends ViCommand {
         send(sender, "");
         send(sender, "<gray>/parkour <dark_gray>- Main command");
         if (sender.hasPermission(ParkourOption.JOIN.permission)) {
-            send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default gamemode or specify a mode.");
+            send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default mode or specify one.");
             send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
         }
         if (sender.hasPermission(ParkourOption.MAIN.permission)) {
@@ -556,15 +556,16 @@ public class ParkourCommand extends ViCommand {
             send(sender, "<gray>/parkour play <dark_gray>- Mode selection menu");
         }
         if (sender.hasPermission(ParkourOption.LEADERBOARDS.permission)) {
-            send(sender, "<gray>/parkour leaderboard [type]<dark_gray>- Open the leaderboard of a gamemode");
+            send(sender, "<gray>/parkour leaderboard [type]<dark_gray>- Open the leaderboard of a mode");
         }
         if (sender.hasPermission(ParkourOption.ADMIN.permission)) {
             send(sender, "<gray>/ip schematic <dark_gray>- Create a schematic");
             send(sender, "<gray>/ip reload <dark_gray>- Reloads the messages-v3.yml file");
-            send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all highscores. <red>This can't be recovered!");
+            send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all high scores. <red>This can't be recovered!");
             send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");
-            send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory." + " <red>Useful for recovering data after server crashes or errors when leaving.");
+            send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
+                    " <red>Useful for recovering data after server crashes or errors when leaving.");
         }
         send(sender, "");
 

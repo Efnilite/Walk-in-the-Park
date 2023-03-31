@@ -1,4 +1,4 @@
-package dev.efnilite.ip.gamemode;
+package dev.efnilite.ip.mode;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Mode;
@@ -33,7 +33,7 @@ public class SpectatorMode implements Mode {
 
     @Override
     public void create(Player player) {
-        throw new IllegalAccessError("SpectatorGamemode uses #create(Player, Session) for instance creation");
+        throw new IllegalAccessError("SpectatorMode uses #create(Player, Session) for instance creation");
     }
 
     public void create(Player player, Session session) {

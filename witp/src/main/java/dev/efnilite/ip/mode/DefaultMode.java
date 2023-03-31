@@ -1,4 +1,4 @@
-package dev.efnilite.ip.gamemode;
+package dev.efnilite.ip.mode;
 
 import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Locales;

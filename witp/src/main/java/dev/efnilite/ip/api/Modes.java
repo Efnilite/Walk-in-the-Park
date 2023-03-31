@@ -1,8 +1,8 @@
 package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.gamemode.DefaultMode;
-import dev.efnilite.ip.gamemode.SpectatorMode;
+import dev.efnilite.ip.mode.DefaultMode;
+import dev.efnilite.ip.mode.SpectatorMode;
 
 public class Modes {
 

@@ -8,7 +8,7 @@ import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.gamemode.DefaultMode;
+import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;

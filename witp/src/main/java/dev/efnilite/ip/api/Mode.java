@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Interface for all Gamemodes.
- * Every registered Gamemode needs to inherit this class, because it needs identifying functions.
+ * Interface for all modes.
+ * Every registered mode needs to inherit this class, because it needs identifying functions.
  */
 public interface Mode {
 
     /**
-     * @return The internal name used for this gamemode.
+     * @return The internal name used for this mode.
      */
     @NotNull String getName();
 
@@ -29,7 +29,7 @@ public interface Mode {
     @Nullable Leaderboard getLeaderboard();
 
     /**
-     * Creates this Gamemode instance with a given Player.
+     * Creates this mode instance with a given Player.
      * For preserving {@link dev.efnilite.ip.player.data.PreviousData}, use {@link dev.efnilite.ip.player.ParkourUser#getUser(Player)}}
      *
      * @param player The player
@@ -37,7 +37,7 @@ public interface Mode {
     void create(Player player);
 
     /**
-     * What this Gamemode should do when it is selected in a menu.
+     * What this mode should do when it is selected in a menu.
      *
      * @param player The player who clicked.
      */
