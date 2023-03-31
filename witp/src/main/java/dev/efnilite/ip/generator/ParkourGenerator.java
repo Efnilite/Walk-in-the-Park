@@ -1,8 +1,8 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Gamemode;
-import dev.efnilite.ip.api.Gamemodes;
+import dev.efnilite.ip.api.Mode;
+import dev.efnilite.ip.api.Modes;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
@@ -13,7 +13,6 @@ import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
-import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.reward.RewardString;
@@ -22,6 +21,7 @@ import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
+import dev.efnilite.ip.util.Probs;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldManager;
@@ -64,7 +64,7 @@ public class ParkourGenerator {
     /**
      * The zone in which the parkour can take place. (playable area)
      */
-    public Location[] zone;
+    public final Location[] zone;
 
     /**
      * The direction of the parkour
@@ -74,7 +74,7 @@ public class ParkourGenerator {
     /**
      * Generator options
      */
-    public List<GeneratorOption> generatorOptions;
+    public final List<GeneratorOption> generatorOptions;
 
     /**
      * The {@link Session} associated with this Generator.
@@ -106,27 +106,22 @@ public class ParkourGenerator {
     /**
      * The chances of which distance the jump should have
      */
-    public final HashMap<Integer, Integer> distanceChances = new HashMap<>();
-
-    /**
-     * Variable to determine how much the chance should be of a jump type, depending on the player's score
-     */
-    public final HashMap<Integer, Double> adaptiveDistanceChances = new HashMap<>();
+    public final HashMap<Integer, Double> distanceChances = new HashMap<>();
 
     /**
      * The chances of which height the jump should have
      */
-    public final HashMap<Integer, Integer> heightChances = new HashMap<>();
+    public final HashMap<Integer, Double> heightChances = new HashMap<>();
 
     /**
      * The chances of which type of special jump
      */
-    public final HashMap<Integer, Integer> specialChances = new HashMap<>();
+    public final HashMap<Material, Double> specialChances = new HashMap<>();
 
     /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
-    public final HashMap<Integer, Integer> defaultChances = new HashMap<>();
+    public final HashMap<Integer, Double> defaultChances = new HashMap<>();
 
     /**
      * The total score achieved in this Generator instance
@@ -175,11 +170,6 @@ public class ParkourGenerator {
     protected boolean waitForSchematicCompletion = false;
 
     /**
-     * The most recently spawned block
-     */
-    protected Location mostRecentBlock;
-
-    /**
      * The last location the player was found standing in
      */
     protected Location lastStandingPlayerLocation;
@@ -199,10 +189,8 @@ public class ParkourGenerator {
      */
     protected int lastPositionIndexPlayer = -1;
 
-    /**
-     * A map which stores all blocks and their number values. The first block generated will have a value of 0.
-     */
-    protected final LinkedHashMap<Block, Integer> positionIndexMap = new LinkedHashMap<>();
+
+    public List<Block> blocks = new ArrayList<>();
 
     /**
      * Creates a new ParkourGenerator instance
@@ -215,10 +203,6 @@ public class ParkourGenerator {
 
         player = session.getPlayers().get(0);
         island = new Island(session, Schematics.CACHE.get("spawn-island"));
-
-        mostRecentBlock = player.getLocation().clone();
-        lastStandingPlayerLocation = mostRecentBlock.clone();
-
         zone = WorldDivider.toSelection(session);
 
         calculateChances();
@@ -227,180 +211,53 @@ public class ParkourGenerator {
     /**
      * Calculates all chances for every variable
      */
-    public void calculateChances() {
-        calculateAdaptiveDistance();
-        calculateDefault();
-        calculateHeight();
-        calculateDistance();
-        calculateSpecial();
-    }
-
-    /**
-     * Calculates the chances of which type of special jump
-     */
-    public void calculateSpecial() {
-        specialChances.clear();
-
-        int percentage = 0;
-        for (int i = 0; i < Option.SPECIAL_ICE; i++) {
-            specialChances.put(percentage, 0);
-            percentage++;
-        }
-        for (int i = 0; i < Option.SPECIAL_SLAB; i++) {
-            specialChances.put(percentage, 1);
-            percentage++;
-        }
-        for (int i = 0; i < Option.SPECIAL_PANE; i++) {
-            specialChances.put(percentage, 2);
-            percentage++;
-        }
-        for (int i = 0; i < Option.SPECIAL_FENCE; i++) {
-            specialChances.put(percentage, 3);
-            percentage++;
-        }
-    }
-
-    /**
-     * Calculates chances for adaptive distances
-     */
-    public void calculateAdaptiveDistance() {
-        adaptiveDistanceChances.clear();
-
-        double multiplier = Option.MULTIPLIER;
-        adaptiveDistanceChances.put(1, (Option.MAXED_ONE_BLOCK - Option.NORMAL_ONE_BLOCK) / multiplier);
-        adaptiveDistanceChances.put(2, (Option.MAXED_TWO_BLOCK - Option.NORMAL_TWO_BLOCK) / multiplier);
-        adaptiveDistanceChances.put(3, (Option.MAXED_THREE_BLOCK - Option.NORMAL_THREE_BLOCK) / multiplier);
-        adaptiveDistanceChances.put(4, (Option.MAXED_FOUR_BLOCK - Option.NORMAL_FOUR_BLOCK) / multiplier);
-    }
-
-    /**
-     * Calculates the chances of default jump types
-     */
-    public void calculateDefault() {
+    protected void calculateChances() {
+        // default
         defaultChances.clear();
 
-        int percentage = 0;
-        for (int i = 0; i < Option.NORMAL; i++) { // normal
-            defaultChances.put(percentage, 0);
-            percentage++;
-        }
-        if (!generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) { // schematics
-            for (int i = 0; i < Option.SCHEMATICS; i++) {
-                defaultChances.put(percentage, 1);
-                percentage++;
-            }
-        }
-        if (!generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) { // special
-            for (int i = 0; i < Option.SPECIAL; i++) {
-                defaultChances.put(percentage, 2);
-                percentage++;
-            }
-        }
-    }
+        defaultChances.put(0, Option.NORMAL);
+        defaultChances.put(1, Option.SCHEMATICS);
+        defaultChances.put(2, Option.SPECIAL);
 
-    /**
-     * Calculates the chances of height
-     */
-    public void calculateHeight() {
+        // height
         heightChances.clear();
 
-        int percentage = 0;
-        for (int i = 0; i < Option.NORMAL_UP; i++) {
-            heightChances.put(percentage, 1);
-            percentage++;
-        }
-        for (int i = 0; i < Option.NORMAL_LEVEL; i++) {
-            heightChances.put(percentage, 0);
-            percentage++;
-        }
-        for (int i = 0; i < Option.NORMAL_DOWN; i++) {
-            heightChances.put(percentage, -1);
-            percentage++;
-        }
-        for (int i = 0; i < Option.NORMAL_DOWN2; i++) {
-            heightChances.put(percentage, -2);
-            percentage++;
-        }
-    }
+        heightChances.put(1, Option.NORMAL_UP);
+        heightChances.put(0, Option.NORMAL_LEVEL);
+        heightChances.put(-1, Option.NORMAL_DOWN);
+        heightChances.put(-2, Option.NORMAL_DOWN2);
 
-    /**
-     * Calculates the chances of distance, factoring in if the player uses adaptive difficulty
-     */
-    public void calculateDistance() {
+        // distance
         distanceChances.clear();
 
-        // If the player uses difficulty, slowly increase the chances of harder jumps (depends on user settings though)
-        int one, two, three, four;
-        if (profile.get("useScoreDifficulty").asBoolean() && generatorOptions.contains(GeneratorOption.DISABLE_ADAPTIVE)) {
+        distanceChances.put(1, Option.NORMAL_ONE_BLOCK);
+        distanceChances.put(2, Option.NORMAL_TWO_BLOCK);
+        distanceChances.put(3, Option.NORMAL_THREE_BLOCK);
+        distanceChances.put(4, Option.NORMAL_FOUR_BLOCK);
 
-            if (score <= Option.MULTIPLIER) {
-                one = (int) (Option.NORMAL_ONE_BLOCK + (adaptiveDistanceChances.get(1) * score));
-                two = (int) (Option.NORMAL_TWO_BLOCK + (adaptiveDistanceChances.get(2) * score));
-                three = (int) (Option.NORMAL_THREE_BLOCK + (adaptiveDistanceChances.get(3) * score));
-                four = (int) (Option.NORMAL_FOUR_BLOCK + (adaptiveDistanceChances.get(4) * score));
-            } else {
-                one = Option.MAXED_ONE_BLOCK;
-                two = Option.MAXED_TWO_BLOCK;
-                three = Option.MAXED_THREE_BLOCK;
-                four = Option.MAXED_FOUR_BLOCK;
-            }
-        } else {
-            one = Option.NORMAL_ONE_BLOCK;
-            two = Option.NORMAL_TWO_BLOCK;
-            three = Option.NORMAL_THREE_BLOCK;
-            four = Option.NORMAL_FOUR_BLOCK;
-        }
+        // special
+        specialChances.clear();
 
-        int percentage = 0;
-        for (int i = 0; i < one; i++) { // regenerate the chances for distance
-            distanceChances.put(percentage, 1);
-            percentage++;
-        }
-        for (int i = 0; i < two; i++) {
-            distanceChances.put(percentage, 2);
-            percentage++;
-        }
-        for (int i = 0; i < three; i++) {
-            distanceChances.put(percentage, 3);
-            percentage++;
-        }
-        for (int i = 0; i < four; i++) {
-            distanceChances.put(percentage, 4);
-            percentage++;
-        }
+        specialChances.put(Material.PACKED_ICE, Option.SPECIAL_ICE);
+        specialChances.put(Material.SMOOTH_QUARTZ_SLAB, Option.SPECIAL_SLAB);
+        specialChances.put(Material.GLASS_PANE, Option.SPECIAL_PANE);
+        specialChances.put(Material.OAK_FENCE, Option.SPECIAL_FENCE);
     }
 
-    public Gamemode getGamemode() {
-        return Gamemodes.DEFAULT;
-    }
-
-    public void updateScoreboard() {
+    protected void updateScoreboard() {
         // board can be null a few ticks after on player leave
-        if (player == null || player.board == null || player.board.isDeleted()) {
+        if (player == null || player.board == null || player.board.isDeleted() || !profile.get("showScoreboard").asBoolean()) {
             return;
         }
 
-        if (!Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
-            return;
-        }
-
-        if (!profile.get("showScoreboard").asBoolean()) {
-            return;
-        }
-
-        Leaderboard leaderboard = getGamemode().getLeaderboard();
+        Leaderboard leaderboard = getMode().getLeaderboard();
 
         String title = Strings.colour(Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title")));
         List<String> lines = new ArrayList<>();
 
         Score top = null, rank = null;
         if (leaderboard != null) {
-
-            // only get score at rank if lines contains variables
-            if (lines.stream().anyMatch(line -> line.contains("topscore") || line.contains("topplayer"))) {
-                top = leaderboard.getScoreAtRank(1);
-            }
-
+            top = leaderboard.getScoreAtRank(1);
             rank = leaderboard.get(player.getUUID());
         }
 
@@ -437,52 +294,40 @@ public class ParkourGenerator {
         // no preferences here...
     }
 
-    public void particles(List<Block> applyTo) {
-        if (profile.get("particles").asBoolean()) {
-            ParticleData<?> data = Option.PARTICLE_DATA;
-
-            // display particle
-            switch (Option.PARTICLE_SHAPE) {
-                case DOT -> {
-                    data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5);
-                    Particles.draw(mostRecentBlock.clone().add(0.5, 1, 0.5), data);
-                }
-                case CIRCLE -> {
-                    data.size(5);
-                    Particles.circle(mostRecentBlock.clone().add(0.5, 0.5, 0.5), data, (int) Math.sqrt(applyTo.size()), 20);
-                }
-                case BOX -> {
-                    Location min = new Location(blockSpawn.getWorld(), Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-                    Location max = new Location(blockSpawn.getWorld(), Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
-                    for (Block block : applyTo) {
-                        Location loc = block.getLocation();
-                        min = Locations.min(min, loc);
-                        max = Locations.max(max, loc);
-                    }
-
-                    if (min.getBlockX() == Integer.MIN_VALUE || max.getBlockX() == Integer.MAX_VALUE) { // to not crash the server (lol)
-                        return;
-                    }
-
-                    data.size(1);
-                    Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data, 0.2);
-                }
-            }
-
+    protected void particles(List<Block> blocks) {
+        if (!profile.get("particles").asBoolean()) {
+            return;
         }
 
-        if (profile.get("sound").asBoolean()) {
-            // play sound
-            for (ParkourPlayer viewer : session.getPlayers()) {
-                viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
-            }
-            for (ParkourSpectator viewer : session.getSpectators()) {
-                viewer.player.playSound(mostRecentBlock, Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
-            }
+        ParticleData<?> data = Option.PARTICLE_DATA;
+        List<Location> locations = blocks.stream().map(Block::getLocation).toList();
+        Location max = locations.stream().reduce(Locations::max).orElseThrow();
+        Location min = locations.stream().reduce(Locations::min).orElseThrow();
+        Location center = min.clone().add(max.clone().subtract(min));
+
+        // display particle
+        switch (Option.PARTICLE_SHAPE) {
+            case DOT -> Particles.draw(center.add(0.5, 1, 0.5), data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5));
+            case CIRCLE -> Particles.circle(center.add(0.5, 0.5, 0.5), data.size(5), (int) Math.sqrt(blocks.size()), 20);
+            case BOX -> Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data.size(1), 0.2);
         }
     }
 
-    public BlockData selectBlockData() {
+    protected void sound() {
+        if (!profile.get("sound").asBoolean()) {
+            return;
+        }
+
+        // play sound
+        for (ParkourPlayer viewer : session.getPlayers()) {
+            viewer.player.playSound(getLatest().getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+        }
+        for (ParkourSpectator viewer : session.getSpectators()) {
+            viewer.player.playSound(getLatest().getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+        }
+    }
+
+    protected BlockData selectBlockData() {
         String style = profile.get("style").value();
 
         Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
@@ -494,34 +339,26 @@ public class ParkourGenerator {
             profile.set("style", newStyle);
 
             return selectBlockData();
-        } else {
-            return material.createBlockData();
         }
+        return material.createBlockData();
     }
 
-    public List<Block> selectBlocks() {
-        int dy = getRandomChance(heightChances);
-        int gap = getRandomChance(distanceChances);
+    protected List<Block> selectBlocks() {
+        int dy = Probs.random(heightChances);
+        int gap = Probs.random(distanceChances);
 
         if (dy > 0 && gap < 2) { // prevent blocks from spawning on top of each other
             gap = 2;
         }
 
-        return List.of(selectNext(mostRecentBlock, gap, dy));
+        return List.of(selectNext(getLatest(), gap, dy));
     }
 
-    /**
-     * Selects the next block that will continue the parkour.
-     * This is done by choosing a random value for the sideways movement.
-     * Based on this sideways movement, a value for forward movement will be chosen.
-     * This is done to ensure players are able to complete the jump.
-     *
-     * @param current The current location to check from.
-     * @param range   The range that should be checked.
-     * @param dy      The difference in height.
-     * @return a randomly selected block.
-     */
-    protected Block selectNext(Location current, int range, int dy) {
+    // Selects the next block that will continue the parkour.
+    // This is done by choosing a random value for the sideways movement.
+    // Based on this sideways movement, a value for forward movement will be chosen.
+    // This is done to ensure players are able to complete the jump.
+    private Block selectNext(Block current, int range, int dy) {
         // calculate the player's location as parameter form to make it easier to detect
         // when a player is near the edge of the playable area
         double[][] progress = calculateParameterization();
@@ -542,7 +379,7 @@ public class ParkourGenerator {
 
         dy = updateHeight(progress, dy);
 
-        switch (mostRecentBlock.getBlock().getType()) {
+        switch (getLatest().getType()) {
             case PACKED_ICE -> range += 0.5;
             case SMOOTH_QUARTZ_SLAB -> dy = 0;
             case WHITE_STAINED_GLASS_PANE -> range -= 0.5;
@@ -582,7 +419,7 @@ public class ParkourGenerator {
         Vector offset = new Vector(df, dy, ds);
 
         // update current loc
-        Location clone = current.clone();
+        Location clone = current.getLocation();
 
         // add all offsets to a vector and rotate it to match current direction
         offset.rotateAroundY(Option.HEADING.clone().angle(heading));
@@ -592,14 +429,10 @@ public class ParkourGenerator {
         return clone.getBlock();
     }
 
-    /**
-     * Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
-     * Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
-     * This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
-     *
-     * @return a 2-dimensional array where the first array index is used to specify x, y and z and the second used to specify the type.
-     */
-    public double[][] calculateParameterization() {
+    // Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
+    // Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
+    // This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
+    private double[][] calculateParameterization() {
         Location min = zone[0];
         Location max = zone[1];
 
@@ -610,9 +443,9 @@ public class ParkourGenerator {
 
         // the relative x, y and z coordinates
         // relative being from the min point of the selection zone
-        double relativeX = mostRecentBlock.getX() - min.getX();
-        double relativeY = mostRecentBlock.getY() - min.getY();
-        double relativeZ = mostRecentBlock.getZ() - min.getZ();
+        double relativeX = getLatest().getX() - min.getX();
+        double relativeY = getLatest().getY() - min.getY();
+        double relativeZ = getLatest().getZ() - min.getZ();
 
         // get progress along axes
         // tx = 0 means that the player is at the same x coordinate as the min point (origin)
@@ -635,16 +468,11 @@ public class ParkourGenerator {
         return new double[][] {{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
     }
 
-    /**
-     * Updates the heading to make sure it avoids the border of the selected zone.
-     * When the most recent block is detected to be within a 5-block radius of the border,
-     * the heading will automatically be turned around to ensure that the edge does not get
-     * destroyed.
-     *
-     * @param progress The 2-dimensional array resulting from {@link #calculateParameterization()}
-     * @return a list of new proposed headings
-     */
-    public List<Vector> updateHeading(double[][] progress) {
+    // Updates the heading to make sure it avoids the border of the selected zone.
+    // When the most recent block is detected to be within a 5-block radius of the border,
+    // the heading will automatically be turned around to ensure that the edge does not get
+    // destroyed.
+    private List<Vector> updateHeading(double[][] progress) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -674,17 +502,11 @@ public class ParkourGenerator {
         return directions;
     }
 
-    /**
-     * Updates the height to make sure the player doesn't go below the playable zone.
-     * If the current height is fine, it will return the value of parameter currentHeight.
-     * If the current height is within the border margin, it will return a value (1 or -1)
-     * to make sure the player doesn't go below this value
-     *
-     * @param progress      The 2-dimensional array generated by {@link #calculateParameterization()}
-     * @param currentHeight The height the system wants to currently use
-     * @return the updated height
-     */
-    public int updateHeight(double[][] progress, int currentHeight) {
+    // Updates the height to make sure the player doesn't go below the playable zone.
+    // If the current height is fine, it will return the value of parameter currentHeight.
+    // If the current height is within the border margin, it will return a value (1 or -1)
+    // to make sure the player doesn't go below this value
+    private int updateHeight(double[][] progress, int currentHeight) {
         double ty = progress[1][0];
         double borderMarginY = progress[1][1];
 
@@ -699,7 +521,7 @@ public class ParkourGenerator {
         }
     }
 
-    public void score() {
+    protected void score() {
         score++;
         totalScore++;
         checkRewards();
@@ -707,7 +529,37 @@ public class ParkourGenerator {
         new ParkourScoreEvent(player).call();
     }
 
-    public void fall() {
+    private void checkRewards() {
+        if (!Rewards.REWARDS_ENABLED || score == 0 || totalScore == 0) {
+            return;
+        }
+        if (!(getMode() instanceof DefaultGamemode)) {
+            return;
+        }
+
+        // check generic score rewards
+        List<RewardString> strings = Rewards.SCORE_REWARDS.get(score);
+        if (strings != null) {
+            strings.forEach(s -> s.execute(player));
+        }
+
+        // gets the correct type of score to check based on the config option
+        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
+        for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
+            if (typeToCheck % interval == 0) {
+                strings = Rewards.INTERVAL_REWARDS.get(interval);
+                strings.forEach(s -> s.execute(player));
+            }
+        }
+
+        strings = Rewards.ONE_TIME_REWARDS.get(score);
+        if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
+            strings.forEach(s -> s.execute(player));
+            player.collectedRewards.add(Integer.toString(score));
+        }
+    }
+
+    protected void fall() {
         new ParkourFallEvent(player).call();
         reset(true);
     }
@@ -780,10 +632,11 @@ public class ParkourGenerator {
             return;
         }
 
-        if (!positionIndexMap.containsKey(blockBelowPlayer)) {
-            return;
+        if (!blocks.contains(blockBelowPlayer)) {
+            return; // player is on an unknown block
         }
-        int currentIndex = positionIndexMap.get(blockBelowPlayer); // current index of the player
+
+        int currentIndex = blocks.indexOf(blockBelowPlayer); // current index of the player
         int deltaFromLast = currentIndex - lastPositionIndexPlayer;
 
         if (deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
@@ -800,16 +653,16 @@ public class ParkourGenerator {
 
         int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= blockLead) {
-            generate(blockLead - deltaCurrentTotal + 1); // generate the remaining amount so it will match
+            generate(blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
         }
         lastPositionIndexPlayer = currentIndex;
 
         // delete trailing blocks
-        for (Block block : new ArrayList<>(positionIndexMap.keySet())) {
-            int index = positionIndexMap.get(block);
-            if (currentIndex - index > blockTrail) {
+        for (int idx = 0; idx < blocks.size(); idx++) {
+            Block block = blocks.get(idx);
+
+            if (currentIndex - idx > blockTrail) {
                 block.setType(Material.AIR);
-                positionIndexMap.remove(block);
             }
         }
 
@@ -824,8 +677,6 @@ public class ParkourGenerator {
         } else {
             score();
         }
-
-        calculateDistance();
     }
 
     /**
@@ -842,13 +693,10 @@ public class ParkourGenerator {
             }
         }
 
-        for (Block block : positionIndexMap.keySet()) {
-            block.setType(Material.AIR);
-        }
-
         lastPositionIndexPlayer = 0;
-        positionIndexTotal = 0;
-        positionIndexMap.clear();
+
+        blocks.forEach(block -> block.setType(Material.AIR));
+        blocks.clear();
 
         waitForSchematicCompletion = false;
         deleteStructure();
@@ -857,7 +705,7 @@ public class ParkourGenerator {
             player.teleport(playerSpawn);
         }
 
-        Leaderboard leaderboard = getGamemode().getLeaderboard();
+        Leaderboard leaderboard = getMode().getLeaderboard();
 
         Score record = null;
         if (leaderboard != null) {
@@ -908,37 +756,41 @@ public class ParkourGenerator {
         }
     }
 
-    /**
-     * @return The current duration of the run.
-     */
-    public String getTime() {
-        if (start == null) {
-            return "0.0s";
-        }
-
-        Duration duration = Duration.between(start, Instant.now());
-
-        StringJoiner builder = new StringJoiner(" ");
-
-        if (duration.toHoursPart() > 0) {
-            builder.add("%dh".formatted(duration.toHoursPart()));
-        }
-        if (duration.toMinutesPart() > 0) {
-            builder.add("%dm".formatted(duration.toMinutesPart()));
-        }
-        if (duration.toSecondsPart() > 0 || duration.toMillisPart() > 0) {
-            long rounded = Math.round(duration.toMillisPart() / 100.0);
-
-            if (rounded > 9) rounded = 9;
-
-            builder.add("%d.%ss".formatted(duration.toSecondsPart(), rounded));
-        }
-
-        return builder.toString();
+    protected void registerScore() {
+        getMode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), getTime(), player.calculateDifficultyScore(), score));
     }
 
-    protected void registerScore() {
-        getGamemode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), getTime(), player.calculateDifficultyScore(), score));
+    private void deleteStructure() {
+        schematicBlocks.forEach(block -> block.setType(Material.AIR));
+        schematicBlocks.clear();
+
+        deleteStructure = false;
+        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+    }
+
+    /**
+     * Generates a specific amount of blocks ahead of the player
+     *
+     * @param amount The amount
+     */
+    public void generate(int amount) {
+        for (int i = 0; i < amount + 1; i++) {
+            generate();
+        }
+    }
+
+    /**
+     * Generates the first few blocks (which come off the spawn island)
+     *
+     * @param spawn The spawn of the player
+     * @param block The location used to begin the parkour of off
+     */
+    public void generateFirst(Location spawn, Location block) {
+        playerSpawn = spawn.clone();
+        lastStandingPlayerLocation = spawn.clone();
+        blockSpawn = block.clone();
+
+        generate(profile.get("blockLead").asInt());
     }
 
     /**
@@ -954,7 +806,7 @@ public class ParkourGenerator {
             return;
         }
 
-        int type = getRandomChance(defaultChances); // 0 = normal, 1 = structures, 2 = special
+        int type = Probs.random(defaultChances); // 0 = normal, 1 = structures, 2 = special
 
         if (type == 1) {
             type = schematicCooldown == 0 && profile.get("useSchematic").asBoolean() ? type : Numbers.random(0, 2) * 2;
@@ -965,24 +817,10 @@ public class ParkourGenerator {
                 BlockData next;
 
                 if (type == 2 && profile.get("useSpecialBlocks").asBoolean()) { // if special
-                    int value = getRandomChance(specialChances);
-                    switch (value) {
-                        // ice
-                        case 0 -> next = Material.PACKED_ICE.createBlockData();
-                        // slab
-                        case 1 -> {
-                            next = Material.SMOOTH_QUARTZ_SLAB.createBlockData();
-                            ((Slab) next).setType(Slab.Type.BOTTOM);
-                        }
-                        // pane
-                        case 2 -> next = Material.WHITE_STAINED_GLASS_PANE.createBlockData();
-                        // fence
-                        case 3 -> next = Material.OAK_FENCE.createBlockData();
-                        // ???
-                        default -> {
-                            next = Material.STONE.createBlockData();
-                            IP.logging().stack("Invalid special block ID " + value, new IllegalArgumentException());
-                        }
+                    next = Probs.random(specialChances).createBlockData();
+
+                    if (next instanceof Slab) {
+                        ((Slab) next).setType(Slab.Type.BOTTOM);
                     }
                 } else {
                     next = selectBlockData();
@@ -996,18 +834,21 @@ public class ParkourGenerator {
                 Block selectedBlock = blocks.get(0);
 
                 if (next.getMaterial() == Material.OAK_FENCE) {
-                    selectedBlock = WorldManager.getWorld().getBlockAt(selectedBlock.getX(), mostRecentBlock.getBlockY(), selectedBlock.getZ());
+                    selectedBlock = WorldManager.getWorld().getBlockAt(selectedBlock.getX(), getLatest().getY(), selectedBlock.getZ());
                 }
 
-                setBlock(selectedBlock, next);
+                if (next instanceof Fence || next instanceof GlassPane) {
+                    selectedBlock.setType(next.getMaterial(), true);
+                } else {
+                    selectedBlock.setBlockData(next, false);
+                }
+
                 new ParkourBlockGenerateEvent(selectedBlock, this, player).call();
 
-                positionIndexMap.put(selectedBlock, positionIndexTotal);
-                positionIndexTotal++;
-
-                mostRecentBlock = selectedBlock.getLocation().clone();
+                blocks.add(selectedBlock);
 
                 particles(blocks);
+                sound();
 
                 if (schematicCooldown > 0) {
                     schematicCooldown--;
@@ -1044,16 +885,12 @@ public class ParkourGenerator {
             return Collections.emptyList();
         }
 
-        Optional<Vector> optionalStart = schematic.getVectorBlockMap()
-                .entrySet()
-                .stream()
+        Optional<Vector> optionalStart = schematic.getVectorBlockMap().entrySet().stream()
                 .filter(e -> e.getValue().getMaterial() == Material.GREEN_WOOL)
                 .map(Map.Entry::getKey)
                 .findAny();
 
-        Optional<Vector> optionalEnd = schematic.getVectorBlockMap()
-                .entrySet()
-                .stream()
+        Optional<Vector> optionalEnd = schematic.getVectorBlockMap().entrySet().stream()
                 .filter(e -> e.getValue().getMaterial() == Material.RED_WOOL)
                 .map(Map.Entry::getKey)
                 .findAny();
@@ -1073,7 +910,7 @@ public class ParkourGenerator {
         Vector end = optionalEnd.get();
 
         // update most recent block
-        mostRecentBlock = location.clone().add(end);
+        blocks.add(location.clone().add(end).getBlock());
 
         // use the approximate direction of the schematic to determine if
         // and by how much we need to rotate the schematic to line up to the current heading.
@@ -1088,101 +925,46 @@ public class ParkourGenerator {
         return schematic.paste(location.subtract(start), angledDirection);
     }
 
-    /**
-     * Gets the difficulty of a schematic according to schematics.yml
-     *
-     * @param fileName The name of the file (parkour-x.nbt)
-     * @return the difficulty, ranging from 0 to 1
-     */
+    private Block getLatest() {
+        return blocks.get(blocks.size() - 1);
+    }
+
     private double getDifficulty(String fileName) {
-        int index = Integer.parseInt(fileName.split("-")[1]);
-
-        return Config.SCHEMATICS.getDouble("difficulty.%d".formatted(index));
+        return Config.SCHEMATICS.getDouble("difficulty.%d".formatted(Integer.parseInt(fileName.split("[-.]")[1])));
     }
 
     /**
-     * Generates a specific amount of blocks ahead of the player
-     *
-     * @param amount The amount
+     * @return The current duration of the run.
      */
-    public void generate(int amount) {
-        for (int i = 0; i < amount; i++) {
-            generate();
-        }
-    }
-
-    protected int getRandomChance(HashMap<Integer, Integer> map) {
-        List<Integer> keys = new ArrayList<>(map.keySet());
-        if (keys.isEmpty()) {
-            calculateChances();
-            return 1;
+    public String getTime() {
+        if (start == null) {
+            return "0.0s";
         }
 
-        return map.get(Colls.random(keys));
+        Duration duration = Duration.between(start, Instant.now());
+        StringJoiner builder = new StringJoiner(" ");
+
+        if (duration.toHoursPart() > 0) {
+            builder.add("%dh".formatted(duration.toHoursPart()));
+        }
+        if (duration.toMinutesPart() > 0) {
+            builder.add("%dm".formatted(duration.toMinutesPart()));
+        }
+        if (duration.toSecondsPart() > 0 || duration.toMillisPart() > 0) {
+            long rounded = Math.round(duration.toMillisPart() / 100.0);
+
+            if (rounded > 9) rounded = 9;
+
+            builder.add("%d.%ss".formatted(duration.toSecondsPart(), rounded));
+        }
+
+        return builder.toString();
     }
 
     /**
-     * Checks a player's rewards and gives them if necessary
+     * @return This generator's mode.
      */
-    public void checkRewards() {
-        if (!Rewards.REWARDS_ENABLED || score == 0 || totalScore == 0) {
-            return;
-        }
-
-        if (!(getGamemode() instanceof DefaultGamemode)) {
-            return;
-        }
-
-        // check generic score rewards
-        List<RewardString> strings = Rewards.SCORE_REWARDS.get(score);
-        if (strings != null) {
-            strings.forEach(s -> s.execute(player));
-        }
-
-        // gets the correct type of score to check based on the config option
-        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
-        for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
-            if (typeToCheck % interval == 0) {
-                strings = Rewards.INTERVAL_REWARDS.get(interval);
-                strings.forEach(s -> s.execute(player));
-            }
-        }
-
-        strings = Rewards.ONE_TIME_REWARDS.get(score);
-        if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
-            strings.forEach(s -> s.execute(player));
-            player.collectedRewards.add(Integer.toString(score));
-        }
-    }
-
-    protected void deleteStructure() {
-        schematicBlocks.forEach(block -> block.setType(Material.AIR));
-        schematicBlocks.clear();
-
-        deleteStructure = false;
-        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
-    }
-
-    protected void setBlock(Block block, BlockData data) {
-        if (data instanceof Fence || data instanceof GlassPane) {
-            block.setType(data.getMaterial(), true);
-        } else {
-            block.setBlockData(data, false);
-        }
-    }
-
-    /**
-     * Generates the first few blocks (which come off the spawn island)
-     *
-     * @param spawn The spawn of the player
-     * @param block The location used to begin the parkour of off
-     */
-    public void generateFirst(Location spawn, Location block) {
-        playerSpawn = spawn.clone();
-        lastStandingPlayerLocation = spawn.clone();
-        blockSpawn = block.clone();
-        mostRecentBlock = block.clone();
-
-        generate(profile.get("blockLead").asInt() + 1);
+    public Mode getMode() {
+        return Modes.DEFAULT;
     }
 }
