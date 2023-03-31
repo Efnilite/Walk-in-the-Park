@@ -34,7 +34,6 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("style", new OptionContainer(ParkourOption.STYLES, (player, v) -> player.style = v));
         PLAYER_COLUMNS.put("blockLead", new OptionContainer(ParkourOption.LEADS, (player, v) -> player.blockLead = Integer.parseInt(v)));
         PLAYER_COLUMNS.put("useParticles", new OptionContainer(ParkourOption.PARTICLES, (player, v) -> player.particles = parseBoolean(v)));
-        PLAYER_COLUMNS.put("useDifficulty", new OptionContainer(ParkourOption.SCORE_DIFFICULTY, (player, v) -> player.useScoreDifficulty = parseBoolean(v)));
         PLAYER_COLUMNS.put("useStructure", new OptionContainer(ParkourOption.USE_SCHEMATICS, (player, v) -> player.useSchematic = parseBoolean(v)));
         PLAYER_COLUMNS.put("useSpecial", new OptionContainer(ParkourOption.SPECIAL_BLOCKS, (player, v) -> player.useSpecialBlocks = parseBoolean(v)));
         PLAYER_COLUMNS.put("showFallMsg", new OptionContainer(ParkourOption.FALL_MESSAGE, (player, v) -> player.showFallMessage = parseBoolean(v)));
@@ -59,7 +58,6 @@ public class ParkourPlayer extends ParkourUser {
 
     public @Expose Double schematicDifficulty;
     public @Expose Integer blockLead;
-    public @Expose Boolean useScoreDifficulty;
     public @Expose Boolean particles;
     public @Expose Boolean sound;
     public @Expose Boolean useSpecialBlocks;
@@ -118,7 +116,6 @@ public class ParkourPlayer extends ParkourUser {
 
         profile.set("schematicDifficulty", schematicDifficulty.toString())
                 .set("blockLead", blockLead.toString())
-                .set("useScoreDifficulty", useScoreDifficulty.toString())
                 .set("particles", particles.toString())
                 .set("sound", sound.toString())
                 .set("useSpecialBlocks", useSpecialBlocks.toString())
@@ -139,38 +136,6 @@ public class ParkourPlayer extends ParkourUser {
             Task.create(IP.getPlugin()).async().execute(write).run();
         } else {
             write.run();
-        }
-    }
-
-    /**
-     * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
-     * the player to achieve this score using their settings.
-     *
-     * @return a number from 0 to 1 (both inclusive)
-     */
-    public String calculateDifficultyScore() {
-        try {
-            double score = 0.0;
-            if (useSpecialBlocks) {
-                score += 0.3;          // sum:      0.3
-            }
-            if (useScoreDifficulty) {
-                score += 0.2;       //           0.5
-            }
-            if (useSchematic) {
-                if (schematicDifficulty == 0.3) {
-                    score += 0.1;      //    0.6
-                } else if (schematicDifficulty == 0.5) {
-                    score += 0.3; //    0.8
-                } else if (schematicDifficulty == 0.7) {
-                    score += 0.4; //    0.9
-                } else if (schematicDifficulty == 0.8) {
-                    score += 0.5; //    1.0
-                }
-            }
-            return Double.toString(score).substring(0, 3);
-        } catch (NullPointerException ex) {
-            return "?";
         }
     }
 

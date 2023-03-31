@@ -35,7 +35,6 @@ public enum ParkourOption {
     PARTICLES("settings.parkour_settings.items.particles", "ip.settings.particles"),
     SOUND("settings.parkour_settings.items.sound", "ip.settings.sound"),
     SPECIAL_BLOCKS("settings.parkour_settings.items.special_blocks", "ip.settings.special_blocks"),
-    SCORE_DIFFICULTY("settings.parkour_settings.items.score_difficulty", "ip.settings.score_difficulty"),
 
     LANG("settings.lang", "ip.settings.lang"),
     CHAT("settings.chat", "ip.settings.chat"),

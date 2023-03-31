@@ -11,6 +11,8 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
+import dev.efnilite.ip.leaderboard.Leaderboard;
+import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
@@ -18,6 +20,7 @@ import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
+import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -170,8 +173,8 @@ public abstract class ParkourUser {
                 int remaining = 0;
                 // remove spectators
                 if (session != null) {
-                    if (generator.getMode() instanceof MultiMode gamemode) {
-                        gamemode.leave(pl, session);
+                    if (generator.getMode() instanceof MultiMode mode) {
+                        mode.leave(pl, session);
                     }
 
                     session.removePlayers(pp);
@@ -181,9 +184,8 @@ public abstract class ParkourUser {
                     }
 
                     for (ParkourSpectator spectator : session.getSpectators()) {
-                        Modes.DEFAULT.create(spectator.player);
-
                         session.removeSpectators(spectator);
+                        Modes.DEFAULT.create(spectator.player);
                     }
                 }
 
@@ -201,9 +203,9 @@ public abstract class ParkourUser {
             if (user.board != null && !user.board.isDeleted()) {
                 user.board.delete();
             }
-        } catch (Throwable throwable) { // safeguard to prevent people from losing data
-            IP.logging().stack("Error while trying to make player " + user.getName() + " leave", throwable);
-            user.send(IP.PREFIX + "<red>There was an error while trying to handle leaving.");
+        } catch (Exception ex) { // safeguard to prevent people from losing data
+            IP.logging().stack("Error while trying to make player %s leave".formatted(user.getName()), ex);
+            user.send("<red><bold>There was an error while trying to handle leaving.");
         }
 
         players.remove(pl);
@@ -316,17 +318,42 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Updates the player's visual time.
-     *
-     * @param selectedTime The selected time is the 24-hour format with 3 extra zeroes on the end.
+     * Updates the scoreboard for the specified generator.
+     * @param generator The generator.
      */
-    public void updateVisualTime(int selectedTime) {
-        int newTime = 18000 + selectedTime;
-        if (newTime >= 24000) {
-            newTime -= 24000;
+    public void updateScoreboard(ParkourGenerator generator) {
+        // board can be null a few ticks after on player leave
+        if (board == null || board.isDeleted() || !generator.profile.get("showScoreboard").asBoolean()) {
+            return;
         }
 
-        player.setPlayerTime(newTime, false);
+        Leaderboard leaderboard = generator.getMode().getLeaderboard();
+
+        String title = Strings.colour(Util.translate(player, Locales.getString(player.getLocale(), "scoreboard.title")));
+        List<String> lines = new ArrayList<>();
+
+        Score top = new Score("?", "?", "?", 0);
+        if (leaderboard != null && leaderboard.getScoreAtRank(1) != null) {
+            top = leaderboard.getScoreAtRank(1);
+        }
+
+        // update lines
+        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines").stream().map(Strings::colour).toList()) {
+            lines.add(replace(Util.translate(player, line), top, generator));
+        }
+
+        board.updateTitle(replace(title, top, generator));
+        board.updateLines(lines);
+    }
+
+    private String replace(String s, Score top, ParkourGenerator generator) {
+        return s.replace("%score%", Integer.toString(generator.score))
+                .replace("%time%", generator.getTime())
+                .replace("%highscore%", Integer.toString(top.score()))
+                .replace("%highscoretime%", top.time())
+                .replace("%topscore%", Integer.toString(top.score()))
+                .replace("%topplayer%", top.name())
+                .replace("%session%", session.getPlayers().get(0).getName());
     }
 
     /**
