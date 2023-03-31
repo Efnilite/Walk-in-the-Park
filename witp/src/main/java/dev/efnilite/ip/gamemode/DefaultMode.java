@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The default parkour gamemode
+ * The default parkour mode
  */
-public class DefaultGamemode implements Mode {
+public class DefaultMode implements Mode {
 
     private final Leaderboard leaderboard = new Leaderboard(getName());
 
@@ -31,6 +31,7 @@ public class DefaultGamemode implements Mode {
     }
 
     @Override
+    @NotNull
     public Leaderboard getLeaderboard() {
         return leaderboard;
     }
@@ -43,7 +44,7 @@ public class DefaultGamemode implements Mode {
         }
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp != null && pp.generator.getMode() instanceof DefaultGamemode) {
+        if (pp != null && pp.generator.getMode() instanceof DefaultMode) {
             return;
         }
         player.closeInventory();

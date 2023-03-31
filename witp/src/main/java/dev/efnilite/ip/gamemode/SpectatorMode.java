@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class SpectatorGamemode implements Mode {
+public class SpectatorMode implements Mode {
 
     @Override
     public @NotNull String getName() {
