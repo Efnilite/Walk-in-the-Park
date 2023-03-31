@@ -7,7 +7,6 @@ import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.gamemode.DefaultGamemode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -22,14 +21,12 @@ import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Probs;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Numbers;
-import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,6 +52,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Efnilite
  */
 public class ParkourGenerator {
+
+    /**
+     * The amount of blocks that trail behind the player.
+     */
+    private static int BLOCK_TRAIL = 2;
 
     /**
      * This generator's score
@@ -87,11 +89,6 @@ public class ParkourGenerator {
      * @see Profile
      */
     public final Profile profile = new Profile();
-
-    /**
-     * The random for this Thread, which is useful in randomly generating parkour
-     */
-    protected final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     /**
      * The island instance.
@@ -144,11 +141,6 @@ public class ParkourGenerator {
     public Location blockSpawn;
 
     /**
-     * The amount of blocks that will trail the player's current index.
-     */
-    public int blockTrail = 2;
-
-    /**
      * The task used in checking the player's current location
      */
     public BukkitTask task;
@@ -164,7 +156,7 @@ public class ParkourGenerator {
     public Instant start;
 
     /**
-     * Whether the stucture should be deleted on the next jump.
+     * Whether the schematic should be deleted on the next jump.
      */
     protected boolean deleteStructure = false;
     protected boolean waitForSchematicCompletion = false;
@@ -180,15 +172,9 @@ public class ParkourGenerator {
     protected List<Block> schematicBlocks = new ArrayList<>();
 
     /**
-     * The count total. This is always bigger (or the same) than the positionIndexPlayer
-     */
-    protected int positionIndexTotal = 0;
-
-    /**
      * The player's current position index.
      */
     protected int lastPositionIndexPlayer = -1;
-
 
     public List<Block> blocks = new ArrayList<>();
 
@@ -242,56 +228,6 @@ public class ParkourGenerator {
         specialChances.put(Material.SMOOTH_QUARTZ_SLAB, Option.SPECIAL_SLAB);
         specialChances.put(Material.GLASS_PANE, Option.SPECIAL_PANE);
         specialChances.put(Material.OAK_FENCE, Option.SPECIAL_FENCE);
-    }
-
-    protected void updateScoreboard() {
-        // board can be null a few ticks after on player leave
-        if (player == null || player.board == null || player.board.isDeleted() || !profile.get("showScoreboard").asBoolean()) {
-            return;
-        }
-
-        Leaderboard leaderboard = getMode().getLeaderboard();
-
-        String title = Strings.colour(Util.translate(player.player, Locales.getString(player.getLocale(), "scoreboard.title")));
-        List<String> lines = new ArrayList<>();
-
-        Score top = null, rank = null;
-        if (leaderboard != null) {
-            top = leaderboard.getScoreAtRank(1);
-            rank = leaderboard.get(player.getUUID());
-        }
-
-        // set generic score if score is not found
-        top = top == null ? new Score("?", "?", "?", 0) : top;
-        rank = rank == null ? new Score("?", "?", "?", 0) : rank;
-
-        // update lines
-        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines").stream().map(Strings::colour).toList()) {
-            line = Util.translate(player.player, line); // add support for PAPI placeholders in scoreboard
-
-            lines.add(line
-                    .replace("%score%", Integer.toString(score))
-                    .replace("%time%", getTime())
-                    .replace("%highscore%", Integer.toString(rank.score()))
-                    .replace("%highscoretime%", rank.time())
-                    .replace("%topscore%", Integer.toString(top.score()))
-                    .replace("%topplayer%", top.name())
-                    .replace("%session%", session.getPlayers().get(0).getName())); // todo find a better way
-        }
-
-        player.board.updateTitle(title
-                .replace("%score%", Integer.toString(score))
-                .replace("%time%", getTime())
-                .replace("%highscore%", Integer.toString(rank.score()))
-                .replace("%highscoretime%", rank.time())
-                .replace("%topscore%", Integer.toString(top.score()))
-                .replace("%topplayer%", top.name())
-                .replace("%session%", session.getPlayers().get(0).getName()));
-        player.board.updateLines(lines);
-    }
-
-    public void updatePreferences() {
-        // no preferences here...
     }
 
     protected void particles(List<Block> blocks) {
@@ -401,7 +337,7 @@ public class ParkourGenerator {
 
             // make sure df is always 1 by making sure adjustedRange > ds
             // +1 to follow exclusivity of upper bound
-            ds = random.nextInt(-adjustedRange + 1, adjustedRange);
+            ds = ThreadLocalRandom.current().nextInt(-adjustedRange + 1, adjustedRange);
         }
 
         // if selection angle is reduced, halve the current sideways step
@@ -593,25 +529,21 @@ public class ParkourGenerator {
             return;
         }
 
-        session.getPlayers().forEach(player -> player.updateVisualTime(player.selectedTime));
-        updateScoreboard();
-
-        session.getSpectators().forEach(ParkourSpectator::update);
-        player.player.setSaturation(20);
-
-        Location playerLocation = player.getLocation();
-
-        if (playerLocation.getWorld() != playerSpawn.getWorld()) { // sometimes player worlds don't match (somehow)
-            player.teleport(playerSpawn);
-            return;
+        for (ParkourPlayer other : session.getPlayers()) {
+            updateVisualTime(other, other.selectedTime);
+            other.updateScoreboard(this);
+            other.player.setSaturation(20);
+        }
+        for (ParkourSpectator spectator : session.getSpectators()) {
+            spectator.update();
         }
 
-        if (lastStandingPlayerLocation.getY() - playerLocation.getY() > 10 && playerSpawn.distance(playerLocation) > 5) { // Fall check
+        if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // Fall check
             fall();
             return;
         }
 
-        Location belowPlayer = playerLocation.clone().subtract(0, 1, 0);
+        Location belowPlayer = player.getLocation().subtract(0, 1, 0);
         Block blockBelowPlayer = belowPlayer.getBlock(); // Get the block below
 
         if (blockBelowPlayer.getType() == Material.AIR) {
@@ -622,7 +554,7 @@ public class ParkourGenerator {
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteStructure) { // Structure deletion check
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < calculateDifficultyScore() * 15; i++) {
                 score();
             }
             waitForSchematicCompletion = false;
@@ -643,15 +575,11 @@ public class ParkourGenerator {
             return;
         }
 
-        if (start == null) { // start stopwatch when first point is achieved
-            start = Instant.now();
-        }
-
-        lastStandingPlayerLocation = playerLocation.clone();
+        lastStandingPlayerLocation = player.getLocation();
 
         int blockLead = profile.get("blockLead").asInt();
 
-        int deltaCurrentTotal = positionIndexTotal - currentIndex; // delta between current index and total
+        int deltaCurrentTotal = blocks.size() - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= blockLead) {
             generate(blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
         }
@@ -661,7 +589,7 @@ public class ParkourGenerator {
         for (int idx = 0; idx < blocks.size(); idx++) {
             Block block = blocks.get(idx);
 
-            if (currentIndex - idx > blockTrail) {
+            if (currentIndex - idx > BLOCK_TRAIL) {
                 block.setType(Material.AIR);
             }
         }
@@ -670,13 +598,23 @@ public class ParkourGenerator {
             deleteStructure();
         }
 
-        if (Option.ALL_POINTS) { // score handling
-            for (int i = 0; i < deltaFromLast; i++) { // score the difference
-                score();
-            }
-        } else {
+        for (int i = 0; i < (Option.ALL_POINTS ? deltaFromLast : 1); i++) { // score the difference
             score();
         }
+
+        if (start == null) { // start stopwatch when first point is achieved
+            start = Instant.now();
+        }
+    }
+
+    // updates the player time
+    private void updateVisualTime(ParkourPlayer player, int selectedTime) {
+        int newTime = 18000 + selectedTime;
+        if (newTime >= 24000) {
+            newTime -= 24000;
+        }
+
+        player.player.setPlayerTime(newTime, false);
     }
 
     /**
@@ -685,16 +623,15 @@ public class ParkourGenerator {
      * @param regenerate false if this is the last reset (when the player leaves), true for resets by falling
      */
     public void reset(boolean regenerate) {
-        if (!regenerate) {
-            stopped = true;
-            if (task == null) {// incomplete setup as task is the last thing to start
-                IP.logging().warn("Incomplete joining setup: there has probably been an error somewhere. Please report this error to the developer!");
-                IP.logging().warn("You don't have to report this warning.");
-            }
+        stopped = !regenerate;
+
+        if (!regenerate && task == null) {
+            IP.logging().warn("## Incomplete joining setup.");
+            IP.logging().warn("## There has probably been an error somewhere. Please report this error!");
+            IP.logging().warn("## You don't have to report this warning.");
         }
 
         lastPositionIndexPlayer = 0;
-
         blocks.forEach(block -> block.setType(Material.AIR));
         blocks.clear();
 
@@ -716,12 +653,12 @@ public class ParkourGenerator {
             record = new Score(player.getName(), "?", "?", 0);
         }
 
-        int score = this.score;
         String time = getTime();
 
         if (profile.get("showFallMessage").asBoolean() && regenerate) {
             String message;
             int number = 0;
+
             if (score == record.score()) {
                 message = "settings.parkour_settings.items.fall_message.formats.tied";
             } else if (score > record.score()) {
@@ -743,21 +680,34 @@ public class ParkourGenerator {
         }
 
         if (leaderboard != null && score > record.score()) {
-            registerScore();
+            leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(calculateDifficultyScore()).substring(0, 3), score));
         }
 
-        this.score = 0;
+        score = 0;
         start = null;
 
         if (regenerate) { // generate back the blocks
             generateFirst(playerSpawn, blockSpawn);
-        } else {
-            island.destroy();
+            return;
         }
+
+        island.destroy();
     }
 
-    protected void registerScore() {
-        getMode().getLeaderboard().put(player.getUUID(), new Score(player.getName(), getTime(), player.calculateDifficultyScore(), score));
+    // Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
+    // the player to achieve this score using their settings.
+    private double calculateDifficultyScore() {
+        double score = 0;
+
+        if (profile.get("useSpecialBlocks").asBoolean())                score += 0.5;
+        if (profile.get("useStructure").asBoolean()) {
+            if (profile.get("schematicDifficulty").asDouble() <= 0.25)  score += 0.2;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.5)   score += 0.3;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.75)  score += 0.4;
+            if (profile.get("schematicDifficulty").asDouble() <= 1.0)   score += 0.5;
+        }
+
+        return score;
     }
 
     private void deleteStructure() {

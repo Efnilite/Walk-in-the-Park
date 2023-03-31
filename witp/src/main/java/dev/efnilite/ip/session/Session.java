@@ -246,7 +246,6 @@ public class Session {
                 p.generator = generator.apply(session);
 
                 p.updateGeneratorSettings();
-                p.generator.updatePreferences();
 
                 p.generator.island.build();
             });
