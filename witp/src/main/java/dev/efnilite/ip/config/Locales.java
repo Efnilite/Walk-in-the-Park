@@ -126,7 +126,7 @@ public class Locales {
     public static String getString(Player player, String path) {
         ParkourUser user = ParkourUser.getUser(player);
 
-        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
         return getString(locale, path);
     }
@@ -176,7 +176,7 @@ public class Locales {
     @NotNull
     public static Item getItem(@NotNull Player player, String path, String... replace) {
         ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
+        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
         return getItem(locale, path, replace);
     }

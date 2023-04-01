@@ -87,6 +87,11 @@ public class Session {
         for (ParkourPlayer player : players) {
             this.players.remove(player.getUUID());
         }
+
+        if (this.players.size() == 0) {
+            generator.reset(false);
+            WorldDivider.disassociate(this);
+        }
     }
 
     /**

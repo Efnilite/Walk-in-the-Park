@@ -25,14 +25,14 @@ public class LangMenu {
             return;
         }
 
-        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), "settings.lang.name"));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.locale, "settings.lang.name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String lang : Locales.locales.keySet()) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name"));
 
-            items.add(item.glowing(user.getLocale().equals(lang)).click(event -> {
-                user.setLocale(lang);
+            items.add(item.glowing(user.locale.equals(lang)).click(event -> {
+                user.locale = lang;
                 user._locale = lang;
                 Menus.SETTINGS.open(event.getPlayer());
             }));
@@ -41,7 +41,7 @@ public class LangMenu {
         style.displayRows(0, 1).addToDisplay(items)
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> style.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> style.page(-1)))
-                .item(22, Locales.getItem(user.getLocale(), "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
+                .item(22, Locales.getItem(user.locale, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.LIGHT_BLUE_STAINED_GLASS_PANE)
                 .open(user.player);
     }

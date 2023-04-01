@@ -82,6 +82,7 @@ public class ParkourSpectator extends ParkourUser {
     /**
      * Stops the closest checker runnable.
      */
+    @Override
     public void unregister() {
         closestChecker.cancel();
         session.removeSpectators(this);

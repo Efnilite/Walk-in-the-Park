@@ -39,14 +39,14 @@ public class PlayerManagementMenu {
 
         Session session = viewer.session;
 
-        PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.getLocale(), "lobby.player_management.name"));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(viewer.locale, "lobby.player_management.name"));
         add(menu, viewer, session.getPlayers().stream().map(player -> (ParkourUser) player).toList());
         add(menu, viewer, session.getSpectators().stream().map(player -> (ParkourUser) player).toList());
 
         menu.displayRows(0, 1)
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> menu.page(1)))
-                .item(22, Locales.getItem(viewer.getLocale(), "other.close").click(event -> Menus.LOBBY.open(event.getPlayer())))
+                .item(22, Locales.getItem(viewer.locale, "other.close").click(event -> Menus.LOBBY.open(event.getPlayer())))
                 .fillBackground(Util.isBedrockPlayer(p) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }
@@ -59,7 +59,7 @@ public class PlayerManagementMenu {
                 continue;
             }
 
-            Item item = Locales.getItem(viewer.getLocale(), "lobby.player_management.head", other.getName());
+            Item item = Locales.getItem(viewer.locale, "lobby.player_management.head", other.getName());
             item.material(Material.PLAYER_HEAD);
 
             boolean muted = session.muted.contains(other);
@@ -67,11 +67,11 @@ public class PlayerManagementMenu {
             List<String> lore = new ArrayList<>();
             if (muted) {
                 // add top
-                lore.addAll(List.of(Locales.getString(viewer.getLocale(), "lobby.player_management.head.top").split("\\|\\|")));
+                lore.addAll(List.of(Locales.getString(viewer.locale, "lobby.player_management.head.top").split("\\|\\|")));
             }
 
             // add bottom
-            lore.addAll(List.of(Locales.getString(viewer.getLocale(), "lobby.player_management.head.bottom").split("\\|\\|")));
+            lore.addAll(List.of(Locales.getString(viewer.locale, "lobby.player_management.head.bottom").split("\\|\\|")));
 
             // Player head gathering
             item.material(Material.PLAYER_HEAD).lore(lore).click(event -> {

@@ -1,8 +1,6 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.mode.Mode;
-import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
@@ -12,20 +10,19 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.mode.DefaultMode;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Probs;
 import dev.efnilite.ip.world.WorldDivider;
-import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
-import dev.efnilite.vilib.util.Numbers;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,7 +30,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.GlassPane;
-import org.bukkit.block.data.type.Slab;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -112,12 +108,12 @@ public class ParkourGenerator {
     /**
      * The chances of which type of special jump
      */
-    public final HashMap<Material, Double> specialChances = new HashMap<>();
+    public final HashMap<BlockData, Double> specialChances = new HashMap<>();
 
     /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
-    public final HashMap<Integer, Double> defaultChances = new HashMap<>();
+    public final HashMap<JumpType, Double> defaultChances = new HashMap<>();
 
     /**
      * The total score achieved in this Generator instance
@@ -157,7 +153,7 @@ public class ParkourGenerator {
     /**
      * Whether the schematic should be deleted on the next jump.
      */
-    protected boolean deleteStructure = false;
+    protected boolean deleteSchematic = false;
     protected boolean waitForSchematicCompletion = false;
 
     /**
@@ -175,7 +171,7 @@ public class ParkourGenerator {
      */
     protected int lastPositionIndexPlayer = -1;
 
-    public List<Block> blocks = new ArrayList<>();
+    public List<Block> history = new ArrayList<>();
 
     /**
      * Creates a new ParkourGenerator instance
@@ -200,9 +196,9 @@ public class ParkourGenerator {
         // default
         defaultChances.clear();
 
-        defaultChances.put(0, Option.NORMAL);
-        defaultChances.put(1, Option.SCHEMATICS);
-        defaultChances.put(2, Option.SPECIAL);
+        defaultChances.put(JumpType.DEFAULT, Option.NORMAL);
+        defaultChances.put(JumpType.SCHEMATIC, Option.SCHEMATICS);
+        defaultChances.put(JumpType.SPECIAL, Option.SPECIAL);
 
         // height
         heightChances.clear();
@@ -223,10 +219,10 @@ public class ParkourGenerator {
         // special
         specialChances.clear();
 
-        specialChances.put(Material.PACKED_ICE, Option.SPECIAL_ICE);
-        specialChances.put(Material.SMOOTH_QUARTZ_SLAB, Option.SPECIAL_SLAB);
-        specialChances.put(Material.GLASS_PANE, Option.SPECIAL_PANE);
-        specialChances.put(Material.OAK_FENCE, Option.SPECIAL_FENCE);
+        specialChances.put(Material.PACKED_ICE.createBlockData(), Option.SPECIAL_ICE);
+        specialChances.put(Material.SMOOTH_QUARTZ_SLAB.createBlockData("[half=bottom]"), Option.SPECIAL_SLAB);
+        specialChances.put(Material.GLASS_PANE.createBlockData(), Option.SPECIAL_PANE);
+        specialChances.put(Material.OAK_FENCE.createBlockData(), Option.SPECIAL_FENCE);
     }
 
     protected void particles(List<Block> blocks) {
@@ -248,17 +244,17 @@ public class ParkourGenerator {
         }
     }
 
-    protected void sound() {
+    protected void sound(List<Block> blocks) {
         if (!profile.get("sound").asBoolean()) {
             return;
         }
 
         // play sound
         for (ParkourPlayer viewer : session.getPlayers()) {
-            viewer.player.playSound(getLatest().getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
         for (ParkourSpectator viewer : session.getSpectators()) {
-            viewer.player.playSound(getLatest().getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
+            viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
         }
     }
 
@@ -519,11 +515,6 @@ public class ParkourGenerator {
      * Starts the check
      */
     public void tick() {
-        if (session == null) {
-            reset(false);
-            return;
-        }
-
         for (ParkourPlayer other : session.getPlayers()) {
             updateVisualTime(other, other.selectedTime);
             other.updateScoreboard(this);
@@ -548,22 +539,22 @@ public class ParkourGenerator {
             blockBelowPlayer = belowPlayer.getBlock();
         }
 
-        if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteStructure) { // Structure deletion check
+        if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteSchematic) { // Structure deletion check
             for (int i = 0; i < calculateDifficultyScore() * 15; i++) {
                 score();
             }
             waitForSchematicCompletion = false;
             schematicCooldown = Option.SCHEMATIC_COOLDOWN;
             generate(profile.get("blockLead").asInt());
-            deleteStructure = true;
+            deleteSchematic = true;
             return;
         }
 
-        if (!blocks.contains(blockBelowPlayer)) {
+        if (!history.contains(blockBelowPlayer)) {
             return; // player is on an unknown block
         }
 
-        int currentIndex = blocks.indexOf(blockBelowPlayer); // current index of the player
+        int currentIndex = history.indexOf(blockBelowPlayer); // current index of the player
         int deltaFromLast = currentIndex - lastPositionIndexPlayer;
 
         if (deltaFromLast <= 0) { // the player is actually making progress and not going backwards (current index is higher than the previous)
@@ -574,22 +565,22 @@ public class ParkourGenerator {
 
         int blockLead = profile.get("blockLead").asInt();
 
-        int deltaCurrentTotal = blocks.size() - currentIndex; // delta between current index and total
+        int deltaCurrentTotal = history.size() - currentIndex; // delta between current index and total
         if (deltaCurrentTotal <= blockLead) {
             generate(blockLead - deltaCurrentTotal); // generate the remaining amount so it will match
         }
         lastPositionIndexPlayer = currentIndex;
 
         // delete trailing blocks
-        for (int idx = 0; idx < blocks.size(); idx++) {
-            Block block = blocks.get(idx);
+        for (int idx = 0; idx < history.size(); idx++) {
+            Block block = history.get(idx);
 
             if (currentIndex - idx > BLOCK_TRAIL) {
                 block.setType(Material.AIR);
             }
         }
 
-        if (deleteStructure) { // deletes the structure if the player goes to the next block (reason why it's last)
+        if (deleteSchematic) { // deletes the structure if the player goes to the next block (reason why it's last)
             deleteStructure();
         }
 
@@ -627,40 +618,27 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
-        blocks.forEach(block -> block.setType(Material.AIR));
-        blocks.clear();
+        history.forEach(block -> block.setType(Material.AIR));
+        history.clear();
 
         waitForSchematicCompletion = false;
         deleteStructure();
 
-        if (regenerate) {
-            player.teleport(playerSpawn);
-        }
-
         Leaderboard leaderboard = getMode().getLeaderboard();
-
-        Score record = null;
-        if (leaderboard != null) {
-            record = leaderboard.get(player.getUUID());
-        }
-
-        if (record == null) {
-            record = new Score(player.getName(), "?", "?", 0);
-        }
-
+        int record = leaderboard != null ? leaderboard.get(player.getUUID()).score() : 0;
         String time = getTime();
 
         if (profile.get("showFallMessage").asBoolean() && regenerate) {
             String message;
             int number = 0;
 
-            if (score == record.score()) {
+            if (score == record) {
                 message = "settings.parkour_settings.items.fall_message.formats.tied";
-            } else if (score > record.score()) {
-                number = score - record.score();
+            } else if (score > record) {
+                number = score - record;
                 message = "settings.parkour_settings.items.fall_message.formats.beat";
             } else {
-                number = record.score() - score;
+                number = record - score;
                 message = "settings.parkour_settings.items.fall_message.formats.miss";
             }
 
@@ -668,20 +646,23 @@ public class ParkourGenerator {
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
                 players.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
                 players.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
-                players.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record.score()));
+                players.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record));
                 players.sendTranslated(message, Integer.toString(number));
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
             }
         }
 
-        if (leaderboard != null && score > record.score()) {
-            leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(calculateDifficultyScore()).substring(0, 3), score));
+        if (leaderboard != null && score > record) {
+            for (ParkourPlayer player : session.getPlayers()) {
+                leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(calculateDifficultyScore()).substring(0, 3), score));
+            }
         }
 
         score = 0;
         start = null;
 
         if (regenerate) { // generate back the blocks
+            player.teleport(playerSpawn);
             generateFirst(playerSpawn, blockSpawn);
             return;
         }
@@ -709,7 +690,7 @@ public class ParkourGenerator {
         schematicBlocks.forEach(block -> block.setType(Material.AIR));
         schematicBlocks.clear();
 
-        deleteStructure = false;
+        deleteSchematic = false;
         schematicCooldown = Option.SCHEMATIC_COOLDOWN;
     }
 
@@ -751,77 +732,51 @@ public class ParkourGenerator {
             return;
         }
 
-        int type = Probs.random(defaultChances); // 0 = normal, 1 = structures, 2 = special
+        JumpType jump = schematicCooldown > 0 ? Probs.random(defaultChances) : JumpType.DEFAULT;
 
-        if (type == 1) {
-            type = schematicCooldown == 0 && profile.get("useSchematic").asBoolean() ? type : Numbers.random(0, 2) * 2;
-        }
-
-        switch (type) {
-            case 0, 2 -> {
-                BlockData next;
-
-                if (type == 2 && profile.get("useSpecialBlocks").asBoolean()) { // if special
-                    next = Probs.random(specialChances).createBlockData();
-
-                    if (next instanceof Slab) {
-                        ((Slab) next).setType(Slab.Type.BOTTOM);
-                    }
-                } else {
-                    next = selectBlockData();
-                }
-
+        switch (jump) {
+            case DEFAULT, SPECIAL -> {
                 List<Block> blocks = selectBlocks();
+
                 if (blocks.isEmpty()) {
+                    IP.logging().stack("Error while trying to generate parkour", new IllegalStateException("No blocks to generate found"));
                     return;
                 }
 
-                Block selectedBlock = blocks.get(0);
+                for (Block block : blocks) {
+                    BlockData data = jump == JumpType.SPECIAL ? Probs.random(specialChances) : selectBlockData();
 
-                if (next.getMaterial() == Material.OAK_FENCE) {
-                    selectedBlock = WorldManager.getWorld().getBlockAt(selectedBlock.getX(), getLatest().getY(), selectedBlock.getZ());
+                    block.setBlockData(data, data instanceof Fence || data instanceof GlassPane);
                 }
 
-                if (next instanceof Fence || next instanceof GlassPane) {
-                    selectedBlock.setType(next.getMaterial(), true);
-                } else {
-                    selectedBlock.setBlockData(next, false);
-                }
-
-                new ParkourBlockGenerateEvent(selectedBlock, this, player).call();
-
-                blocks.add(selectedBlock);
+                new ParkourBlockGenerateEvent(blocks, this, player).call();
 
                 particles(blocks);
-                sound();
+                sound(blocks);
 
-                if (schematicCooldown > 0) {
-                    schematicCooldown--;
-                }
+                history.addAll(blocks);
+                schematicCooldown--;
             }
-            case 1 -> {
+            case SCHEMATIC -> {
                 List<String> schematics = new ArrayList<>(Schematics.CACHE.keySet());
 
-                // select random schematic
                 double difficulty = profile.get("schematicDifficulty").asDouble();
-                String schematicName;
-                while (getDifficulty(schematicName = Colls.random(schematics)) <= difficulty) {}
 
-                Schematic schematic = Schematics.CACHE.get(schematicName);
+                Schematic schematic = Schematics.CACHE.get(schematics.stream()
+                        .filter(name -> getDifficulty(name) <= difficulty)
+                        .findAny() // select random schematic
+                        .orElseThrow());
 
-                schematicCooldown = Option.SCHEMATIC_COOLDOWN;
                 schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
 
                 if (schematicBlocks.isEmpty()) {
-                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NullPointerException());
-                    player.send("<red><bold>Error while trying to paste schematic. Contact the server owner.");
-                    generate();
+                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NullPointerException("No schematic blocks found"));
                     return;
                 }
 
+                schematicCooldown = Option.SCHEMATIC_COOLDOWN;
                 waitForSchematicCompletion = true;
             }
-            default -> IP.logging().stack("Error while trying to generate parkour with id %d".formatted(type), new IllegalArgumentException());
         }
     }
 
@@ -855,7 +810,7 @@ public class ParkourGenerator {
         Vector end = optionalEnd.get();
 
         // update most recent block
-        blocks.add(location.clone().add(end).getBlock());
+        history.add(location.clone().add(end).getBlock());
 
         // use the approximate direction of the schematic to determine if
         // and by how much we need to rotate the schematic to line up to the current heading.
@@ -871,7 +826,7 @@ public class ParkourGenerator {
     }
 
     private Block getLatest() {
-        return blocks.get(blocks.size() - 1);
+        return history.get(history.size() - 1);
     }
 
     private double getDifficulty(String fileName) {
@@ -911,5 +866,9 @@ public class ParkourGenerator {
      */
     public Mode getMode() {
         return Modes.DEFAULT;
+    }
+
+    private enum JumpType {
+        DEFAULT, SCHEMATIC, SPECIAL
     }
 }

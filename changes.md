@@ -20,7 +20,8 @@
 - Fixed players getting a default style while styles are disabled
 - Fixed players getting a default locale while locales are disabled
 - Fixed scoreboard not showing when default scoreboard is set to false
-- Fixed losing items when player was a spectator for a lobby that was disbanded 
+- Fixed losing items when player was a spectator for a lobby that was disbanded
+- Fixed multiplayer modes not registering scores for all players
 - Removed adaptive distance
   - Its effects were too small to be noticed in regular gameplay
 - Removed unused keys from config.yml and generation.yml

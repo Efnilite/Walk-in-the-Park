@@ -7,6 +7,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
@@ -42,7 +43,7 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("collectedRewards", new OptionContainer(null, (player, v) -> player.collectedRewards = Arrays.asList(v.split(","))));
         PLAYER_COLUMNS.put("locale", new OptionContainer(ParkourOption.LANG, (player, v) -> {
             player._locale = v;
-            player.setLocale(v);
+            player.locale = (v);
         }));
         PLAYER_COLUMNS.put("schematicDifficulty", new OptionContainer(ParkourOption.SCHEMATIC_DIFFICULTY, (player, v) -> player.schematicDifficulty = Double.parseDouble(v)));
         PLAYER_COLUMNS.put("sound", new OptionContainer(ParkourOption.SOUND, (player, v) -> player.sound = parseBoolean(v)));
@@ -81,13 +82,27 @@ public class ParkourPlayer extends ParkourUser {
     public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
         super(player, previousData);
 
-        setLocale(Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG));
-        this._locale = getLocale();
+        this._locale = locale;
 
         // generic player settings
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setInvisible(false);
+    }
+
+    @Override
+    public void unregister() {
+        if (generator.getMode() instanceof MultiMode mode) {
+            mode.leave(player, session);
+        }
+
+        session.removePlayers(this);
+
+        for (ParkourSpectator spectator : session.getSpectators()) {
+            register(spectator.player);
+        }
+
+        save(IP.getPlugin().isEnabled());
     }
 
     /**
@@ -165,22 +180,22 @@ public class ParkourPlayer extends ParkourUser {
                 player.getInventory().clear();
 
                 if (ParkourOption.PLAY.mayPerform(player)) {
-                    items.add(0, Locales.getItem(getLocale(), "play.item"));
+                    items.add(0, Locales.getItem(locale, "play.item"));
                 }
 
                 if (ParkourOption.COMMUNITY.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(getLocale(), "community.item"));
+                    items.add(items.size(), Locales.getItem(locale, "community.item"));
                 }
 
                 if (ParkourOption.SETTINGS.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(getLocale(), "settings.item"));
+                    items.add(items.size(), Locales.getItem(locale, "settings.item"));
                 }
 
                 if (ParkourOption.LOBBY.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(getLocale(), "lobby.item"));
+                    items.add(items.size(), Locales.getItem(locale, "lobby.item"));
                 }
 
-                items.add(items.size(), Locales.getItem(getLocale(), "other.quit"));
+                items.add(items.size(), Locales.getItem(locale, "other.quit"));
 
                 List<Integer> slots = getEvenlyDistributedSlots(items.size());
                 for (int i = 0; i < items.size(); i++) {

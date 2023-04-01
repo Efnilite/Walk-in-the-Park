@@ -127,14 +127,12 @@ public class Leaderboard {
     }
 
     /**
-     * Returns a {@link Score} associated with a UUID
-     *
-     * @param uuid The UUID
-     * @return the highest {@link Score} instance associated with the given UUID
+     * @param uuid The {@link UUID} to get.
+     * @return The {@link Score} associated with the player. If null, returns a {@link Score} instance with "?".
      */
-    @Nullable
+    @NotNull
     public Score get(@NotNull UUID uuid) {
-        return scores.get(uuid);
+        return scores.getOrDefault(uuid, new Score("?", "?", "?", 0));
     }
 
     /**

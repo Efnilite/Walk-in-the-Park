@@ -30,13 +30,13 @@ public class SettingsMenu extends DynamicMenu {
             }
         }), player -> ParkourOption.PARKOUR_SETTINGS.mayPerform(player) && ParkourUser.isPlayer(player));
 
-        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? Locales.getString(user.getLocale(), "name") : "?").click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))), player -> ParkourOption.LANG.mayPerform(player) && ParkourUser.isUser(player));
+        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? Locales.getString(user.locale, "name") : "?").click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))), player -> ParkourOption.LANG.mayPerform(player) && ParkourUser.isUser(player));
 
         registerMainItem(1, 2, (player, user) -> {
             // user has to be not-null to see this item
             assert user != null;
 
-            List<String> values = Locales.getStringList(user.getLocale(), "settings.chat.values");
+            List<String> values = Locales.getStringList(user.locale, "settings.chat.values");
 
             return new SliderItem().initial(switch (user.chatType) {
                 case LOBBY_ONLY -> 0;

@@ -12,12 +12,10 @@ import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
-import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Location;
@@ -46,7 +44,7 @@ public abstract class ParkourUser {
     /**
      * This user's locale
      */
-    private String locale;
+    public String locale = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
 
     /**
      * This user's scoreboard
@@ -90,6 +88,11 @@ public abstract class ParkourUser {
     }
 
     /**
+     * Unregisters this user.
+     */
+    protected abstract void unregister();
+
+    /**
      * Registers a player. This registers the player internally.
      * This automatically unregisters the player if it is already registered.
      *
@@ -101,7 +104,7 @@ public abstract class ParkourUser {
         ParkourUser existing = getUser(player);
         if (existing != null) {
             data = existing.previousData;
-            unregister(existing, false, false, true);
+            unregister(existing, false, false);
         }
 
         ParkourPlayer pp = new ParkourPlayer(player, data);
@@ -131,15 +134,15 @@ public abstract class ParkourUser {
 
     /**
      * Makes a player leave. This sends a leave message to all other active Parkour players.
-     * This uses {@link #unregister(ParkourUser, boolean, boolean, boolean)}, but with preset values.
+     * This uses {@link #unregister(ParkourUser, boolean, boolean)}, but with preset values.
      * Leaving always makes the player go back to their previous position, they will always be kicked if this plugin
      * is running Bungeecord mode, and their data will always be automatically saved. If you want to unregister a
-     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean, boolean)}.
+     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean)}.
      *
      * @param user The user instance
      */
     public static void leave(@NotNull ParkourUser user) {
-        unregister(user, true, true, true);
+        unregister(user, true, true);
     }
 
     /**
@@ -148,38 +151,12 @@ public abstract class ParkourUser {
      * @param user                The user to unregister.
      * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
      * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
-     * @param saveAsync           Whether to save player data asynchronously. This is recommended to be true
-     *                            at all times, unless your plugin is in the process of disabling.
      */
-    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
         new ParkourLeaveEvent(user).call();
 
         try {
-            Session session = user.session;
-
-            if (user instanceof ParkourPlayer player) {
-                ParkourGenerator generator = player.generator;
-
-                if (generator.getMode() instanceof MultiMode mode) {
-                    mode.leave(user.player, session);
-                }
-
-                session.removePlayers(player);
-
-                for (ParkourSpectator spectator : session.getSpectators()) {
-                    register(spectator.player);
-                }
-
-                if (session.getPlayers().size() == 0) {
-                    // reset generator (remove blocks) and delete island
-                    generator.reset(false);
-                    WorldDivider.disassociate(session);
-                }
-
-                player.save(saveAsync);
-            } else if (user instanceof ParkourSpectator spectator) {
-                spectator.unregister();
-            }
+            user.unregister();
 
             if (user.board != null && !user.board.isDeleted()) {
                 user.board.delete();
@@ -197,14 +174,10 @@ public abstract class ParkourUser {
             return;
         }
 
-        if (user.previousData == null) {
-            IP.logging().warn("No previous data found for " + user.getName());
-        } else {
-            user.previousData.apply(restorePreviousData);
+        user.previousData.apply(restorePreviousData);
 
-            if (user instanceof ParkourPlayer player) {
-                user.previousData.rewardsLeaveList.forEach(r -> r.execute(player));
-            }
+        if (user instanceof ParkourPlayer player) {
+            user.previousData.onLeave.forEach(r -> r.execute(player));
         }
 
         user.player.resetPlayerTime();
@@ -297,7 +270,7 @@ public abstract class ParkourUser {
      * @param format Any objects that may be given to the formatting of the string.
      */
     public void sendTranslated(String key, Object... format) {
-        send(Locales.getString(getLocale(), key).formatted(format));
+        send(Locales.getString(locale, key).formatted(format));
     }
 
     /**
@@ -340,15 +313,6 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Sets this player's locale
-     *
-     * @param locale The locale
-     */
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    /**
      * @return The player's uuid
      */
     public UUID getUUID() {
@@ -360,17 +324,6 @@ public abstract class ParkourUser {
      */
     public Location getLocation() {
         return player.getLocation();
-    }
-
-    /**
-     * @return The player's locale
-     */
-    public @NotNull String getLocale() {
-        if (locale == null) {
-            locale = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
-        }
-
-        return locale;
     }
 
     /**

@@ -318,7 +318,7 @@ public class Handler implements EventWatcher {
 
         // leaving world will unregister player
         if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {
-            ParkourUser.unregister(user, false, false, true);
+            ParkourUser.unregister(user, false, false);
         }
     }
 }

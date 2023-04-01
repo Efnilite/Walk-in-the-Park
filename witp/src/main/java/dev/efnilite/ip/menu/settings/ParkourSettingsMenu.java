@@ -260,18 +260,18 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     public void openStylesMenu(ParkourPlayer user) {
         // init menu
-        Menu menu = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.path + ".name"));
+        Menu menu = new Menu(3, Locales.getString(user.locale, ParkourOption.STYLES.path + ".name"));
 
         int slot = 9;
         for (StyleType type : IP.getRegistry().getStyleTypes()) {
-            Item item = type.getItem(user.getLocale());
+            Item item = type.getItem(user.locale);
 
             menu.item(slot, item.click(event -> openSingleStyleMenu(user, type)));
             slot++;
         }
 
         menu.distributeRowEvenly(1)
-                .item(22, Locales.getItem(user.getLocale(), "other.close").click(event -> open(user)))
+                .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
     }
 
@@ -283,7 +283,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
         // init menu
-        PagedMenu style = new PagedMenu(3, Locales.getString(user.getLocale(), ParkourOption.STYLES.path + ".name"));
+        PagedMenu style = new PagedMenu(3, Locales.getString(user.locale, ParkourOption.STYLES.path + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
         for (String name : styleType.styles.keySet()) {
@@ -312,7 +312,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
                         .click(event -> style.page(-1)))
 
-                .item(22, Locales.getItem(user.getLocale(), "other.close").click(event -> open(user)))
+                .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
 
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
     }
@@ -324,12 +324,12 @@ public class ParkourSettingsMenu extends DynamicMenu {
      */
     public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
         // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.getLocale(), ParkourOption.SCHEMATIC.path + ".name"));
+        Menu schematics = new Menu(3, Locales.getString(user.locale, ParkourOption.SCHEMATIC.path + ".name"));
 
         List<Double> difficulties = Arrays.asList(0.25, 0.5, 0.75, 1.0);
-        List<String> values = Locales.getStringList(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
+        List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
 
-        Item item = Locales.getItem(user.getLocale(), ParkourOption.SCHEMATIC_DIFFICULTY.path);
+        Item item = Locales.getItem(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path);
 
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
             schematics.item(10, new SliderItem().initial(difficulties.indexOf(user.schematicDifficulty)).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))), event -> {
@@ -367,7 +367,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
             }));
         }
 
-        item = Locales.getItem(user.getLocale(), ParkourOption.USE_SCHEMATICS.path);
+        item = Locales.getItem(user.locale, ParkourOption.USE_SCHEMATICS.path);
 
         if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
             schematics.item(9, new SliderItem().initial(user.useSchematic ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
@@ -391,7 +391,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         schematics.distributeRowEvenly(0, 1, 2)
 
-                .item(26, Locales.getItem(user.getLocale(), "other.close").click(event -> open(user)))
+                .item(26, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
 
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.CYAN_STAINED_GLASS_PANE).open(user.player);
     }
@@ -399,7 +399,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
         if (player.generator.score > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.getLocale(), "settings.parkour_settings.items.no_change").click((event1) -> {
+            event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {
 
             }), event).stay(5 * 20));
             event.getMenu().updateItem(event.getSlot());

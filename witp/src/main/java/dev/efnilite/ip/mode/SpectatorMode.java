@@ -46,7 +46,7 @@ public class SpectatorMode implements Mode {
         ParkourSpectator spectator;
 
         if (user != null) {
-            ParkourUser.unregister(user, false, false, true);
+            ParkourUser.unregister(user, false, false);
             spectator = new ParkourSpectator(player, session, user.previousData);
         } else {
             spectator = new ParkourSpectator(player, session, null);
