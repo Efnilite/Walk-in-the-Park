@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.NoSuchElementException;
+
 public class VaultHook {
 
     private static Economy economy;
@@ -25,7 +27,7 @@ public class VaultHook {
             RegisteredServiceProvider<Economy> service = Bukkit.getServicesManager().getRegistration(Economy.class);
 
             if (service == null) {
-                IP.logging().stack("Error while trying to fetch the Vault economy!", new IllegalStateException());
+                IP.logging().stack("Error while trying to fetch the Vault economy", new NoSuchElementException("No economy found"));
                 return;
             }
 

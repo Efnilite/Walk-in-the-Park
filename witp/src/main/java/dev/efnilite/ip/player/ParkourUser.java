@@ -44,6 +44,7 @@ public abstract class ParkourUser {
     /**
      * This user's locale
      */
+    @NotNull
     public String locale = Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG);
 
     /**
@@ -54,6 +55,7 @@ public abstract class ParkourUser {
     /**
      * This user's PreviousData
      */
+    @NotNull
     public PreviousData previousData;
 
     /**
@@ -169,7 +171,7 @@ public abstract class ParkourUser {
         players.remove(user.player);
         users.remove(user.player);
 
-        if (restorePreviousData && Option.BUNGEECORD && kickIfBungee) {
+        if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
             sendPlayer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
@@ -248,7 +250,6 @@ public abstract class ParkourUser {
      * @param to Where the player will be teleported to
      */
     public void teleport(@NotNull Location to) {
-        player.leaveVehicle();
         player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
@@ -285,7 +286,7 @@ public abstract class ParkourUser {
 
         Leaderboard leaderboard = generator.getMode().getLeaderboard();
 
-        String title = Strings.colour(Util.translate(player, Locales.getString(player.getLocale(), "scoreboard.title")));
+        String title = Strings.colour(Util.translate(player, Locales.getString(locale, "scoreboard.title")));
         List<String> lines = new ArrayList<>();
 
         Score top = new Score("?", "?", "?", 0);
@@ -294,7 +295,7 @@ public abstract class ParkourUser {
         }
 
         // update lines
-        for (String line : Locales.getStringList(player.getLocale(), "scoreboard.lines").stream().map(Strings::colour).toList()) {
+        for (String line : Locales.getStringList(locale, "scoreboard.lines").stream().map(Strings::colour).toList()) {
             lines.add(replace(Util.translate(player, line), top, generator));
         }
 

@@ -739,7 +739,7 @@ public class ParkourGenerator {
                 List<Block> blocks = selectBlocks();
 
                 if (blocks.isEmpty()) {
-                    IP.logging().stack("Error while trying to generate parkour", new IllegalStateException("No blocks to generate found"));
+                    IP.logging().stack("Error while trying to generate parkour", new NoSuchElementException("No blocks to generate found"));
                     return;
                 }
 
@@ -770,7 +770,7 @@ public class ParkourGenerator {
                 schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
 
                 if (schematicBlocks.isEmpty()) {
-                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NullPointerException("No schematic blocks found"));
+                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NoSuchElementException("No schematic blocks found"));
                     return;
                 }
 

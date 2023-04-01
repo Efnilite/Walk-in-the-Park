@@ -1,9 +1,9 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
+import dev.efnilite.ip.mode.Mode;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 
 public class HoloHook {

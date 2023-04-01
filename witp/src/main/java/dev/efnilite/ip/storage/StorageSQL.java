@@ -161,7 +161,7 @@ public final class StorageSQL implements Storage {
 
     public void connect() {
         try {
-            IP.logging().info("Connecting to MySQL...");
+            IP.logging().info("Connecting to MySQL");
 
             try { // load drivers
                 Class.forName("com.mysql.cj.jdbc.Driver"); // for newer versions
@@ -196,8 +196,8 @@ public final class StorageSQL implements Storage {
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
 
             IP.logging().info("Successfully connected");
-        } catch (Throwable throwable) {
-            IP.logging().stack("Could not connect to SQL database", "check your SQL settings in the config", throwable);
+        } catch (Exception ex) {
+            IP.logging().stack("Could not connect to SQL database", "check your SQL settings in the config", ex);
             Bukkit.getPluginManager().disablePlugin(IP.getPlugin()); // disable plugin since data handling without db will go horribly wrong
         }
     }
@@ -212,10 +212,8 @@ public final class StorageSQL implements Storage {
             if (!connection.isValid(10)) {
                 connect();
             }
-        } catch (SQLException ex) {
-            IP.logging().stack("Could not confirm connection to SQL database", ex);
         } catch (Exception ex) {
-            IP.logging().stack("Could not reconnect to SQL database", ex);
+            IP.logging().stack("Error while trying to reconnect to MySQL", ex);
         }
     }
 
@@ -231,7 +229,7 @@ public final class StorageSQL implements Storage {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             return statement.executeQuery();
         } catch (SQLException ex) {
-            IP.logging().stack("Could not send query %s".formatted(sql), ex);
+            IP.logging().stack("Error while sending query %s".formatted(sql), ex);
             return null;
         }
     }
@@ -249,7 +247,7 @@ public final class StorageSQL implements Storage {
             statement.executeUpdate();
             statement.close();
         } catch (SQLException ex) {
-            IP.logging().stack("Could not send query %s".formatted(sql), ex);
+            IP.logging().stack("Error while sending query %s".formatted(sql), ex);
         }
     }
 

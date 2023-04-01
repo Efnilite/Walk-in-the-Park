@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Config management class.
@@ -192,7 +193,7 @@ public enum Config {
     // checks if the specified path exists to avoid developer error
     private void check(@NotNull String path) {
         if (!isPath(path)) {
-            throw new IllegalStateException("Unknown path %s in %s".formatted(path, fileName));
+            throw new NoSuchElementException("Unknown path %s in %s".formatted(path, fileName));
         }
     }
 }

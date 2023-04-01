@@ -1,7 +1,5 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.mode.Mode;
-import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -9,6 +7,8 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -23,7 +23,6 @@ import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +36,7 @@ import static dev.efnilite.ip.util.Util.send;
 @SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
-    public static final HashMap<Player, Location[]> selections = new HashMap<>();
+    public static final HashMap<Player, Location[]> SELECTIONS = new HashMap<>();
 
     private static final ItemStack wand;
 
@@ -45,27 +44,6 @@ public class ParkourCommand extends ViCommand {
         wand = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand")
                 .lore("<gray>Left click: first position", "<gray>Right click: second position")
                 .build();
-    }
-
-    private List<Block> getBlocks(Location minL, Location maxL) {
-        World w = minL.getWorld();
-        List<Block> add = new ArrayList<>();
-        Location location = new Location(w, 0, 0, 0);
-
-        for (int x = minL.getBlockX(); x <= maxL.getBlockX(); x++) {
-            for (int y = minL.getBlockY(); y <= maxL.getBlockY(); y++) {
-                for (int z = minL.getBlockZ(); z <= maxL.getBlockZ(); z++) {
-                    location.setX(x);
-                    location.setY(y);
-                    location.setZ(z);
-
-                    if (location.getBlock().getType() != Material.AIR) {
-                        add.add(location.clone().getBlock());
-                    }
-                }
-            }
-        }
-        return add;
     }
 
     @Override
@@ -225,7 +203,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 Location playerLocation = player.getLocation();
-                Location[] existingSelection = selections.get(player);
+                Location[] existingSelection = SELECTIONS.get(player);
 
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
@@ -243,11 +221,11 @@ public class ParkourCommand extends ViCommand {
                         send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            selections.put(player, new Location[]{playerLocation, null});
+                            SELECTIONS.put(player, new Location[]{playerLocation, null});
                             return true;
                         }
 
-                        selections.put(player, new Location[]{playerLocation, existingSelection[1]});
+                        SELECTIONS.put(player, new Location[]{playerLocation, existingSelection[1]});
 
                         Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;
@@ -256,11 +234,11 @@ public class ParkourCommand extends ViCommand {
                         send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            selections.put(player, new Location[]{null, playerLocation});
+                            SELECTIONS.put(player, new Location[]{null, playerLocation});
                             return true;
                         }
 
-                        selections.put(player, new Location[]{existingSelection[0], playerLocation});
+                        SELECTIONS.put(player, new Location[]{existingSelection[0], playerLocation});
 
                         Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;

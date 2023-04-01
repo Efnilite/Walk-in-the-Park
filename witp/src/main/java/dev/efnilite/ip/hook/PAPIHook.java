@@ -1,11 +1,11 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.mode.Mode;
-import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;

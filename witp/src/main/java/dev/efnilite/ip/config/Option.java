@@ -24,7 +24,7 @@ public class Option {
     public static boolean FOCUS_MODE;
     public static List<String> FOCUS_MODE_WHITELIST;
     public static boolean GO_BACK;
-    public static boolean BUNGEECORD;
+    public static boolean ON_JOIN;
 
     public static List<Integer> POSSIBLE_LEADS;
 
@@ -134,7 +134,7 @@ public class Option {
 
         // Bungeecord
         GO_BACK = Config.CONFIG.getBoolean("bungeecord.go-back-enabled");
-        BUNGEECORD = Config.CONFIG.getBoolean("bungeecord.enabled");
+        ON_JOIN = Config.CONFIG.getBoolean("bungeecord.enabled");
 
         // Generation
         HEADING = stringToVector(Config.GENERATION.getString("advanced.island.parkour.heading"));

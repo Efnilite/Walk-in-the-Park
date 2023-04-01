@@ -120,7 +120,7 @@ public final class IP extends ViPlugin {
             placeholderHook.register();
         }
 
-        if (Option.BUNGEECORD) {
+        if (Option.ON_JOIN) {
             logging.info("Connecting with BungeeCord..");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
