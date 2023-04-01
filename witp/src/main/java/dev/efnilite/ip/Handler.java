@@ -1,6 +1,5 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -34,7 +33,10 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static dev.efnilite.ip.util.Util.send;
@@ -48,67 +50,52 @@ public class Handler implements EventWatcher {
     /**
      * If a player quits and rejoins, give them their stuff back
      */
-    private final HashMap<String, PreviousData> quitPreviousData = new HashMap<>();
+    private final HashMap<UUID, PreviousData> quitPreviousData = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String playerName = player.getName();
+        UUID uuid = player.getUniqueId();
 
-        PreviousData data = quitPreviousData.get(playerName);
-        if (data != null) {
-            data.apply(false);
-            quitPreviousData.remove(playerName);
-        }
-
-        // OP join messages
+        // admin messages
         if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
             send(player, "");
-            send(player, IP.PREFIX + "Your version is outdated. " + "Please visit the Spigot page to update.");
+            send(player, IP.PREFIX + "Your version is outdated. Please visit the Spigot page to update.");
             send(player, "");
         }
+
         if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             send(player, "");
-            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. " +
-                    "This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
+            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             send(player, "");
         }
 
-        // Bungeecord joining
-        if (Option.BUNGEECORD) {
-            Modes.DEFAULT.create(player);
-        } else if (player.getWorld().getUID().equals(WorldManager.getWorld().getUID())) {
-            World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
-            if (fallback != null) {
-                // If players who left in the world end up in the world itself while not being a player
-                player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            } else {
-                IP.logging().warn("No backup worlds have been set! A random one will be selected for " + playerName);
-                for (World last : Bukkit.getWorlds()) {
-                    if (!(last.getName().equals(Option.WORLD_NAME))) {
-                        send(player, IP.PREFIX + "<red>There was an error while trying to find the parkour world.");
-                        player.teleport(last.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                        return;
-                    }
-                }
-                IP.logging().error("There are no worlds for player " + playerName + " to fall back to. " + playerName + " will be kicked.");
-                player.kickPlayer("There are no accessible worlds for you to go to - please rejoin");
-            }
+        if (quitPreviousData.containsKey(uuid)) {
+            quitPreviousData.get(uuid).apply(false);
+            quitPreviousData.remove(uuid);
         }
-    }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void tpSpec(PlayerTeleportEvent event) {
-        Player player = event.getPlayer();
-
-        ParkourUser user = ParkourUser.getUser(player);
-        if (user == null) { // the player who teleported is null
+        if (Option.ON_JOIN) {
+            ParkourUser.register(player);
             return;
         }
 
-        if (event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
-            event.setCancelled(true);
+        if (player.getWorld() != WorldManager.getWorld()) {
+            return;
         }
+
+        World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
+
+        if (fallback != null) {
+            player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            return;
+        }
+
+        player.teleport(Bukkit.getWorlds().stream()
+                .filter(world -> world != WorldManager.getWorld())
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
+                .getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     @EventHandler
@@ -119,12 +106,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        if (Option.INVENTORY_HANDLING) {
-            PreviousData data = user.previousData;
-            if (data != null) {
-                quitPreviousData.put(user.getName(), data);
-            }
-        }
+        quitPreviousData.put(user.getUUID(), user.previousData);
 
         ParkourUser.leave(user);
     }
@@ -152,55 +134,6 @@ public class Handler implements EventWatcher {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        handleRestriction(event.getPlayer(), event);
-    }
-
-    @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        handleRestriction(event.getPlayer(), event);
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        handleRestriction(event.getPlayer(), event);
-    }
-
-    @EventHandler
-    public void damage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
-
-        handleRestriction(player, event);
-    }
-
-    private void handleRestriction(Player player, Cancellable event) {
-        if (ParkourUser.getUser(player) == null) {
-            return;
-        }
-
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onInventory(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) {
-            return;
-        }
-
-        ParkourUser user = ParkourUser.getUser(player);
-
-        if (user == null) {
-            return;
-        }
-
-        // prevent users from transferring items to possible vaults
-        if (event.getInventory().getType() != InventoryType.CRAFTING) {
-            event.setCancelled(true);
-        }
-    }
 
     @EventHandler
     public void interactWand(PlayerInteractEvent event) {
@@ -209,15 +142,15 @@ public class Handler implements EventWatcher {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (!player.hasPermission("ip.admin") ||
-                item.getItemMeta() == null ||
-                !item.getItemMeta().getDisplayName().contains("Schematic Wand") ||
-                event.getClickedBlock() == null ||
-                event.getHand() != EquipmentSlot.HAND) {
+            item.getItemMeta() == null ||
+            !item.getItemMeta().getDisplayName().contains("Schematic Wand") ||
+            event.getClickedBlock() == null ||
+            event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 
         Location location = event.getClickedBlock().getLocation();
-        Location[] existingSelection = ParkourCommand.selections.get(player);
+        Location[] existingSelection = ParkourCommand.SELECTIONS.get(player);
 
         event.setCancelled(true);
 
@@ -227,11 +160,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[]{location, null});
+                    ParkourCommand.SELECTIONS.put(player, new Location[]{location, null});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[]{location, existingSelection[1]});
+                ParkourCommand.SELECTIONS.put(player, new Location[]{location, existingSelection[1]});
 
                 Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
@@ -239,11 +172,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[]{null, location});
+                    ParkourCommand.SELECTIONS.put(player, new Location[]{null, location});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[]{existingSelection[0], location});
+                ParkourCommand.SELECTIONS.put(player, new Location[]{existingSelection[0], location});
 
                 Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
@@ -272,6 +205,7 @@ public class Handler implements EventWatcher {
         if (!action) {
             return;
         }
+
         Material held = getHeldItem(player).getType();
 
         Material play = Locales.getItem(player, "play.item").getMaterial();
@@ -280,21 +214,20 @@ public class Handler implements EventWatcher {
         Material lobby = Locales.getItem(player, "lobby.item").getMaterial();
         Material quit = Locales.getItem(player, "other.quit").getMaterial();
 
+        event.setCancelled(true);
+
         if (held == play) {
-            event.setCancelled(true);
             Menus.PLAY.open(player);
         } else if (held == community) {
-            event.setCancelled(true);
             Menus.COMMUNITY.open(player);
         } else if (held == settings) {
-            event.setCancelled(true);
             Menus.SETTINGS.open(player);
         } else if (held == lobby) {
-            event.setCancelled(true);
             Menus.LOBBY.open(player);
         } else if (held == quit) {
-            event.setCancelled(true);
             ParkourUser.leave(player);
+        } else {
+            event.setCancelled(false);
         }
     }
 
@@ -304,21 +237,70 @@ public class Handler implements EventWatcher {
     }
 
     @EventHandler
-    public void onSwitch(PlayerChangedWorldEvent event) {
+    public void switchWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        UUID parkourWorld = WorldManager.getWorld().getUID();
+        World parkourWorld = WorldManager.getWorld();
 
-        boolean passes = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
+        boolean isAdmin = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
-        // joining world will kick player if they aren't registered to prevent teleporting to players, exception for players with op
-        if (player.getWorld().getUID() == parkourWorld && user == null && !passes) {
+        if (player.getWorld() == parkourWorld && user == null && !isAdmin) {
             player.kickPlayer("You can't enter the parkour world by teleporting!");
+            return;
         }
 
-        // leaving world will unregister player
-        if (event.getFrom().getUID() == parkourWorld && user != null && player.getTicksLived() > 100) {
+        if (event.getFrom() == parkourWorld && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
             ParkourUser.unregister(user, false, false);
         }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        handleRestriction(event.getPlayer(), event);
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event) {
+        handleRestriction(event.getPlayer(), event);
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+        handleRestriction(event.getPlayer(), event);
+    }
+
+    @EventHandler
+    public void damage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        handleRestriction(player, event);
+    }
+
+    @EventHandler
+    public void inventory(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player) || event.getInventory().getType() == InventoryType.CRAFTING) {
+            return;
+        }
+
+        handleRestriction(player, event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void spectate(PlayerTeleportEvent event) {
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            return;
+        }
+
+        handleRestriction(event.getPlayer(), event);
+    }
+
+    private void handleRestriction(Player player, Cancellable event) {
+        if (ParkourUser.getUser(player) == null) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
 }
