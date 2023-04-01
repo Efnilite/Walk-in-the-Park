@@ -1,8 +1,8 @@
 package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Mode;
-import dev.efnilite.ip.api.MultiMode;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -33,22 +33,23 @@ public class SingleMenu {
         List<Mode> modes = IP.getRegistry().getModes();
 
         if (modes.size() == 1) {
-            modes.get(0).click(player);
+            modes.get(0).create(player);
             return;
         }
 
         List<MenuItem> items = new ArrayList<>();
-        for (Mode gm : modes) {
-            boolean permissions = Option.PERMISSIONS && !player.hasPermission("ip.gamemode." + gm.getName());
+        for (Mode mode : modes) {
+            boolean permissions = Option.PERMISSIONS && !player.hasPermission("ip.gamemode." + mode.getName());
 
-            if (permissions || gm instanceof MultiMode || !gm.isVisible()) {
+            Item item = mode.getItem(locale);
+
+            if (permissions || mode instanceof MultiMode || item == null) {
                 continue;
             }
 
-            Item item = gm.getItem(locale);
             items.add(item.clone().click(event -> {
                 if (user == null || Duration.between(user.joined, Instant.now()).toSeconds() > 3) {
-                    gm.click(player);
+                    mode.create(player);
                 }
             }));
         }

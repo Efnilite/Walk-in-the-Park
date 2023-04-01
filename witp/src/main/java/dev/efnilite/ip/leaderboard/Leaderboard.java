@@ -2,6 +2,7 @@ package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,12 +20,18 @@ public class Leaderboard {
     public final String mode;
 
     /**
+     * The way in which items will be sorted.
+     */
+    public final SingleLeaderboardMenu.Sort sort;
+
+    /**
      * A map of all scores for this mode
      */
     public final Map<UUID, Score> scores = new LinkedHashMap<>();
 
-    public Leaderboard(@NotNull String mode) {
+    public Leaderboard(@NotNull String mode, SingleLeaderboardMenu.Sort sort) {
         this.mode = mode.toLowerCase();
+        this.sort = sort;
 
         IP.getStorage().init(mode);
 

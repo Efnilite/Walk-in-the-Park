@@ -3,8 +3,6 @@ package dev.efnilite.ip.player;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Modes;
-import dev.efnilite.ip.api.MultiMode;
 import dev.efnilite.ip.api.event.ParkourJoinEvent;
 import dev.efnilite.ip.api.event.ParkourLeaveEvent;
 import dev.efnilite.ip.config.Config;
@@ -14,6 +12,7 @@ import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
@@ -25,7 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
-import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,17 +81,11 @@ public abstract class ParkourUser {
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
         this.joined = Instant.now();
-
         this.previousData = previousData == null ? new PreviousData(player) : previousData;
-
-        for (PotionEffect effect : player.getActivePotionEffects()) {
-            player.removePotionEffect(effect.getType()); // clear player effects
-        }
 
         if (Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
             this.board = new FastBoard(player);
         }
-        // remove duplicates
         users.put(player, this);
     }
 
@@ -160,46 +152,35 @@ public abstract class ParkourUser {
      *                            at all times, unless your plugin is in the process of disabling.
      */
     public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean saveAsync) {
-        Player pl = user.player;
-
         new ParkourLeaveEvent(user).call();
 
         try {
             Session session = user.session;
 
-            if (user instanceof ParkourPlayer pp) {
-                ParkourGenerator generator = pp.generator;
+            if (user instanceof ParkourPlayer player) {
+                ParkourGenerator generator = player.generator;
 
-                int remaining = 0;
-                // remove spectators
-                if (session != null) {
-                    if (generator.getMode() instanceof MultiMode mode) {
-                        mode.leave(pl, session);
-                    }
-
-                    session.removePlayers(pp);
-
-                    if (generator.getMode().getName().contains("team")) {
-                        remaining = session.getPlayers().size();
-                    }
-
-                    for (ParkourSpectator spectator : session.getSpectators()) {
-                        session.removeSpectators(spectator);
-                        Modes.DEFAULT.create(spectator.player);
-                    }
+                if (generator.getMode() instanceof MultiMode mode) {
+                    mode.leave(user.player, session);
                 }
 
-                if (remaining == 0) {
+                session.removePlayers(player);
+
+                for (ParkourSpectator spectator : session.getSpectators()) {
+                    register(spectator.player);
+                }
+
+                if (session.getPlayers().size() == 0) {
                     // reset generator (remove blocks) and delete island
                     generator.reset(false);
-
                     WorldDivider.disassociate(session);
                 }
 
-                pp.save(saveAsync);
+                player.save(saveAsync);
             } else if (user instanceof ParkourSpectator spectator) {
                 spectator.unregister();
             }
+
             if (user.board != null && !user.board.isDeleted()) {
                 user.board.delete();
             }
@@ -208,25 +189,26 @@ public abstract class ParkourUser {
             user.send("<red><bold>There was an error while trying to handle leaving.");
         }
 
-        players.remove(pl);
-        users.remove(pl);
+        players.remove(user.player);
+        users.remove(user.player);
 
         if (restorePreviousData && Option.BUNGEECORD && kickIfBungee) {
-            sendPlayer(pl, Config.CONFIG.getString("bungeecord.return_server"));
+            sendPlayer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
+
         if (user.previousData == null) {
             IP.logging().warn("No previous data found for " + user.getName());
         } else {
             user.previousData.apply(restorePreviousData);
 
-            if (user instanceof ParkourPlayer) {
-                user.previousData.giveRewards((ParkourPlayer) user);
+            if (user instanceof ParkourPlayer player) {
+                user.previousData.rewardsLeaveList.forEach(r -> r.execute(player));
             }
         }
 
-        pl.resetPlayerTime();
-        pl.resetPlayerWeather();
+        user.player.resetPlayerTime();
+        user.player.resetPlayerWeather();
     }
 
     // Sends a player to a BungeeCord server. server is the server name.
@@ -234,6 +216,7 @@ public abstract class ParkourUser {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(server);
+
         try {
             player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {

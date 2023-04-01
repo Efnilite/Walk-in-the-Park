@@ -173,7 +173,7 @@ public final class StorageSQL implements Storage {
                     "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" +
                     "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
 
-            sendUpdate("CREATE DATABASE IF NOT EXISTS `" + Option.SQL_DB + "`;");
+            sendUpdate("CREATE DATABASE IF NOT EXISTS `%s`;".formatted(Option.SQL_DB));
             sendUpdate("USE `" + Option.SQL_DB + "`;");
 
             sendUpdate("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " + "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " + "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useStructure` BOOLEAN, `useSpecial` BOOLEAN, " + "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
@@ -186,20 +186,14 @@ public final class StorageSQL implements Storage {
             sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
 
             // v3.6.0
-            sendUpdateSuppressed("""
-                ALTER TABLE `%s` ADD `locale` VARCHAR(8);
-                """.formatted(Option.SQL_PREFIX + "options"));
-
-            sendUpdateSuppressed("""
-                ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;
-                """.formatted(Option.SQL_PREFIX + "options"));
+            sendUpdateSuppressed("ALTER TABLE `%s` ADD `locale` VARCHAR(8);".formatted(Option.SQL_PREFIX + "options"));
+            sendUpdateSuppressed("ALTER TABLE `%s` ADD `schematicDifficulty` DOUBLE;".formatted(Option.SQL_PREFIX + "options"));
 
             // v4.0.0
-            sendUpdateSuppressed("""
-                ALTER TABLE `%s` ADD `sound` BOOLEAN;
-                """.formatted(Option.SQL_PREFIX + "options"));
+            sendUpdateSuppressed("ALTER TABLE `%s` ADD `sound` BOOLEAN;".formatted(Option.SQL_PREFIX + "options"));
 
-            IP.logging().info("Initialized database");
+            // v5.0.0
+            sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
 
             IP.logging().info("Successfully connected");
         } catch (Throwable throwable) {

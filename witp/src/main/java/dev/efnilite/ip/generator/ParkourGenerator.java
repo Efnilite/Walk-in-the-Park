@@ -1,20 +1,19 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Mode;
-import dev.efnilite.ip.api.Modes;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.reward.RewardString;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
@@ -460,37 +459,33 @@ public class ParkourGenerator {
     protected void score() {
         score++;
         totalScore++;
-        checkRewards();
 
+        checkRewards();
         new ParkourScoreEvent(player).call();
     }
 
     private void checkRewards() {
-        if (!Rewards.REWARDS_ENABLED || score == 0 || totalScore == 0) {
-            return;
-        }
-        if (!(getMode() instanceof DefaultMode)) {
+        if (!Rewards.REWARDS_ENABLED || score == 0 || !(getMode() instanceof DefaultMode)) {
             return;
         }
 
         // check generic score rewards
-        List<RewardString> strings = Rewards.SCORE_REWARDS.get(score);
-        if (strings != null) {
-            strings.forEach(s -> s.execute(player));
+        if (Rewards.SCORE_REWARDS.containsKey(score)) {
+            Rewards.SCORE_REWARDS.get(score).forEach(s -> s.execute(player));
         }
 
         // gets the correct type of score to check based on the config option
-        int typeToCheck = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
+        int intervalScore = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
         for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
-            if (typeToCheck % interval == 0) {
-                strings = Rewards.INTERVAL_REWARDS.get(interval);
-                strings.forEach(s -> s.execute(player));
+            if (intervalScore % interval != 0) {
+                continue;
             }
+
+            Rewards.INTERVAL_REWARDS.get(interval).forEach(s -> s.execute(player));
         }
 
-        strings = Rewards.ONE_TIME_REWARDS.get(score);
-        if (strings != null && !player.collectedRewards.contains(Integer.toString(score))) {
-            strings.forEach(s -> s.execute(player));
+        if (Rewards.ONE_TIME_REWARDS.containsKey(score) && !player.collectedRewards.contains(Integer.toString(score))) {
+            Rewards.ONE_TIME_REWARDS.get(score).forEach(s -> s.execute(player));
             player.collectedRewards.add(Integer.toString(score));
         }
     }

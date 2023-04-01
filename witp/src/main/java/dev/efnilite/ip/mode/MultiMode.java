@@ -1,4 +1,4 @@
-package dev.efnilite.ip.api;
+package dev.efnilite.ip.mode;
 
 import dev.efnilite.ip.session.Session;
 import org.bukkit.entity.Player;

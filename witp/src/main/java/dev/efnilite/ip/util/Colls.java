@@ -23,22 +23,13 @@ public final class Colls {
         return new MapThreader<>(map);
     }
 
-    public interface Threader<T> {
-
-        /**
-         * @return The value.
-         */
-        T get();
-
-    }
-
     /**
      * Threads through maps. Modifications return {@link HashMap}.
      *
      * @param <K> The key type.
      * @param <V> The value type.
      */
-    public static class MapThreader<K, V> implements Threader<Map<K, V>> {
+    public static class MapThreader<K, V> {
 
         private Map<K, V> map;
 
@@ -46,7 +37,6 @@ public final class Colls {
             this.map = map;
         }
 
-        @Override
         public Map<K, V> get() {
             return map;
         }

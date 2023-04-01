@@ -1,4 +1,4 @@
-package dev.efnilite.ip.api;
+package dev.efnilite.ip.mode;
 
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -19,9 +19,9 @@ public interface Mode {
 
     /**
      * @param locale The locale of the menu, used to adjust the name.
-     * @return The item used in menus to show this mode.
+     * @return The item used in menus to show this mode. If this item is null, the mode won't be displayed.
      */
-    @NotNull Item getItem(String locale);
+    @Nullable Item getItem(String locale);
 
     /**
      * @return The {@link Leaderboard} that belongs to this mode
@@ -29,23 +29,10 @@ public interface Mode {
     @Nullable Leaderboard getLeaderboard();
 
     /**
-     * Creates this mode instance with a given Player.
-     * For preserving {@link dev.efnilite.ip.player.data.PreviousData}, use {@link dev.efnilite.ip.player.ParkourUser#getUser(Player)}}
+     * Method that gets called when a mode is clicked in the menu or joined using /parkour join.
      *
-     * @param player The player
+     * @param player The player.
      */
     void create(Player player);
-
-    /**
-     * What this mode should do when it is selected in a menu.
-     *
-     * @param player The player who clicked.
-     */
-    void click(Player player);
-
-    /**
-     * @return True if this mode should be visible in menus, false if not.
-     */
-    boolean isVisible();
 
 }

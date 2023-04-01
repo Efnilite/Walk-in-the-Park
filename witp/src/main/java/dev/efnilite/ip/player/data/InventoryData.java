@@ -1,105 +1,77 @@
 package dev.efnilite.ip.player.data;
 
-import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.vilib.serialization.ObjectSerializer;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class InventoryData {
 
-    private File file;
-    private Player player;
-    private final HashMap<Integer, ItemStack> loadedInventory = new HashMap<>();
-    @Expose
-    private final HashMap<Integer, String> inventory = new HashMap<>();
+    private final File file;
+    private final Player player;
+    private Map<Integer, ItemStack> items = new HashMap<>();
 
     public InventoryData(Player player) {
         this.player = player;
-
-        this.file = IP.getInFolder("inventories/%s.json".formatted(player.getUniqueId()));
+        this.file = IP.getInFolder("inventories/%s".formatted(player.getUniqueId()));
     }
 
     /**
-     * Applies the player's inventory
+     * Gives all items to the player.
      */
-    public boolean apply(boolean readFromFile) {
+    public void apply() {
         player.getInventory().clear();
-        boolean wasSuccessful = true;
+        items.forEach((slot, item) -> player.getInventory().setItem(slot, item));
+    }
 
-        for (int slot : inventory.keySet()) {
-            if (readFromFile) {
-                ItemStack item = ObjectSerializer.deserialize64(inventory.get(slot));
-                if (item == null) {
-                    wasSuccessful = false;
-                    continue;
-                }
-
-                player.getInventory().setItem(slot, item);
-            } else {
-                player.getInventory().setItem(slot, loadedInventory.get(slot));
-            }
+    /**
+     * Loads inventory data from file.
+     *
+     * @param onFinish What to do when the async procedure has finished.
+     */
+    public void load(Consumer<@Nullable InventoryData> onFinish) {
+        if (!file.exists()) {
+            onFinish.accept(null);
+            return;
         }
 
-        return wasSuccessful;
+        Task.create(IP.getPlugin()).async().execute(() -> loadFile(onFinish)).run();
     }
 
-    public void readFile(Consumer<@Nullable InventoryData> successfulCallback) {
-        Task.create(IP.getPlugin()).async().execute(() -> {
-            try {
-                if (!file.exists()) {
-                    successfulCallback.accept(null);
-                    return;
-                }
-                FileReader reader = new FileReader(file);
-                InventoryData data = IP.getGson().fromJson(reader, InventoryData.class);
-                data.player = player;
-                data.file = file;
-                successfulCallback.accept(data);
+    private void loadFile(Consumer<@Nullable InventoryData> onFinish) {
+        try (BukkitObjectInputStream stream = new BukkitObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+            items = (Map<Integer, ItemStack>) stream.readObject();
 
-                reader.close();
-            } catch (IOException ex) {
-                IP.logging().stack("Error while reading inventory of " + player.getName() + " from file " + file.getName(), ex);
-                successfulCallback.accept(null);
-            }
-        }).run();
-    }
-
-    public void saveFile() {
-        Task.create(IP.getPlugin()).async().execute(() -> {
-            try {
-                FileWriter writer = new FileWriter(file);
-                IP.getGson().toJson(this, writer);
-                writer.flush();
-                writer.close();
-            } catch (IOException ex) {
-                IP.logging().stack("Error while saving inventory of " + player.getName() + " to file " + file.getName(), ex);
-            }
-        }).run();
+            onFinish.accept(this);
+        } catch (IOException | ClassNotFoundException ex) {
+            IP.logging().stack("Error while reading inventory of %s from file %s".formatted(player.getName(), file.getName()), ex);
+            onFinish.accept(null);
+        }
     }
 
     /**
      * Saves the inventory to cache, so if the player leaves the player gets their items back
+     *
+     * @param toFile Whether the file should be updated.
      */
-    public void saveInventory() {
+    public void save(boolean toFile) {
         int index = 0;
+
         Inventory inventory = this.player.getInventory();
         for (ItemStack item : inventory.getContents()) {
             if (item != null) {
-                this.inventory.put(index, ObjectSerializer.serialize64(item));
-                this.loadedInventory.put(index, item);
+                this.items.put(index, item);
             }
 
             index++;
@@ -108,6 +80,19 @@ public class InventoryData {
         String command = Option.ALT_INVENTORY_SAVING_COMMAND;
         if (command != null && command.length() > 0) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.getName()));
+        }
+
+        if (toFile) {
+            Task.create(IP.getPlugin()).async().execute(this::saveFile).run();
+        }
+    }
+
+    private void saveFile() {
+        try (ObjectOutputStream stream = new BukkitObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+            stream.writeObject(items);
+            stream.flush();
+        } catch (IOException ex) {
+            IP.logging().stack("Error while saving inventory of %s to file %s".formatted(player.getName(), file.getName()), ex);
         }
     }
 }

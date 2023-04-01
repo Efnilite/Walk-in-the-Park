@@ -1,7 +1,7 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Mode;
-import dev.efnilite.ip.api.Modes;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -219,7 +219,7 @@ public class ParkourCommand extends ViCommand {
                         }
                     }
                 } else {
-                    mode.click(player);
+                    mode.create(player);
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
@@ -374,16 +374,10 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                InventoryData data = new InventoryData(arg1);
-                data.readFile(readData -> {
-                    if (readData != null) {
+                new InventoryData(arg1).load(result -> {
+                    if (result != null) {
                         send(sender, IP.PREFIX + "Successfully recovered the inventory of " + arg1.getName() + " from their file");
-                        if (readData.apply(true)) {
-                            send(sender, IP.PREFIX + "Giving " + arg1.getName() + " their items now...");
-                        } else {
-                            send(sender, IP.PREFIX + "<red>There was an error decoding an item of " + arg1.getName());
-                            send(sender, IP.PREFIX + "" + arg1.getName() + "'s file has been manually edited or has no saved inventory. " + "Check the console for more information.");
-                        }
+                        send(sender, IP.PREFIX + "Giving " + arg1.getName() + " their items now...");
                     } else {
                         send(sender, IP.PREFIX + "<red>There was an error recovering the inventory of " + arg1.getName() + " from their file");
                         send(sender, IP.PREFIX + arg1.getName() + " has no saved inventory or there was an error. Check the console.");

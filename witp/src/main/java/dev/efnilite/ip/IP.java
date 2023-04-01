@@ -1,6 +1,6 @@
 package dev.efnilite.ip;
 
-import dev.efnilite.ip.api.Modes;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;

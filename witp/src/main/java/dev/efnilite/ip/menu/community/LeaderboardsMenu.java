@@ -1,9 +1,10 @@
 package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Mode;
+import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
@@ -27,24 +28,20 @@ public class LeaderboardsMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.getLocale();
 
-        PagedMenu mode = new PagedMenu(3, Locales.getString(player, ParkourOption.LEADERBOARDS.path + ".name"));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player, "%s.name".formatted(ParkourOption.LEADERBOARDS.path)));
 
         Mode latest = null;
         List<MenuItem> items = new ArrayList<>();
-        for (Mode gm : IP.getRegistry().getModes()) {
-            if (gm.getLeaderboard() == null || !gm.isVisible()) {
+        for (Mode mode : IP.getRegistry().getModes()) {
+            Leaderboard leaderboard = mode.getLeaderboard();
+            Item item = mode.getItem(locale);
+
+            if (leaderboard == null || item == null) {
                 continue;
             }
 
-            Item item = gm.getItem(locale);
-            items.add(item.clone().click(event -> {
-                if (gm.getName().equals("time-trial") || gm.getName().equals("duels")) {
-                    Menus.SINGLE_LEADERBOARD.open(player, gm, SingleLeaderboardMenu.Sort.TIME);
-                } else {
-                    Menus.SINGLE_LEADERBOARD.open(player, gm, SingleLeaderboardMenu.Sort.SCORE);
-                }
-            }));
-            latest = gm;
+            items.add(item.clone().click(event -> Menus.SINGLE_LEADERBOARD.open(player, mode, leaderboard.sort)));
+            latest = mode;
         }
 
         if (items.size() == 1) {
@@ -52,10 +49,10 @@ public class LeaderboardsMenu {
             return;
         }
 
-        mode.displayRows(0, 1)
+        menu.displayRows(0, 1)
                 .addToDisplay(items)
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> mode.page(1)))
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> mode.page(-1)))
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> menu.page(1)))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
                 .open(player);

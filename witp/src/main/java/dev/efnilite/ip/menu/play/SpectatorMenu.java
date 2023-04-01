@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.play;
 
-import dev.efnilite.ip.api.Modes;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;

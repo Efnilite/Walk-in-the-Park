@@ -1,7 +1,5 @@
 package dev.efnilite.ip.mode;
 
-import dev.efnilite.ip.IP;
-import dev.efnilite.ip.api.Mode;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
@@ -10,9 +8,9 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Strings;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SpectatorMode implements Mode {
 
@@ -22,23 +20,25 @@ public class SpectatorMode implements Mode {
     }
 
     @Override
-    public @NotNull Item getItem(String locale) {
-        return new Item(Material.STONE, "");
+    @Nullable
+    public Item getItem(String locale) {
+        return null;
     }
 
     @Override
+    @Nullable
     public Leaderboard getLeaderboard() {
         return null;
     }
 
     @Override
     public void create(Player player) {
-        throw new IllegalAccessError("SpectatorMode uses #create(Player, Session) for instance creation");
+        Menus.SPECTATOR.open(player);
     }
 
     public void create(Player player, Session session) {
         if (!Option.JOINING) {
-            player.sendMessage(Strings.colour(IP.PREFIX + "Joining is currently disabled."));
+            player.sendMessage(Strings.colour("<red><bold>Joining is currently disabled."));
             return;
         }
 
@@ -53,15 +53,5 @@ public class SpectatorMode implements Mode {
         }
 
         session.addSpectators(spectator);
-    }
-
-    @Override
-    public void click(Player player) {
-        Menus.SPECTATOR.open(player);
-    }
-
-    @Override
-    public boolean isVisible() {
-        return false;
     }
 }
