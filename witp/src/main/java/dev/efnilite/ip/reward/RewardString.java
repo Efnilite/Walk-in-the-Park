@@ -23,19 +23,19 @@ public record RewardString(@NotNull String string) {
         }
         String string = this.string;
 
-        // Check for placeholders
+        // check for placeholders
         if (string.toLowerCase().contains("%player%")) {
             string = string.replaceAll("%player%", player.getName());
         }
 
-        // Check for extra data
+        // check for extra data
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            player.previousData.rewardsLeaveList.add(new RewardString(string));
+            player.previousData.onLeave.add(new RewardString(string));
             return;
         }
 
-        // Check for things to perform
+        // check for things to perform
         if (string.toLowerCase().contains("send:")) {
             string = string.replaceFirst("send:", "");
 
@@ -47,9 +47,8 @@ public record RewardString(@NotNull String string) {
             try {
                 VaultHook.deposit(player.player, Double.parseDouble(string));
             } catch (NumberFormatException ex) {
-                IP.logging().stack("%s is not a valid money reward".formatted(string), "check your rewards file for incorrect numbers");
+                IP.logging().stack("Error while trying to process Vault reward", "check your rewards file for incorrect numbers", ex);
             }
-
         } else {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string);
         }

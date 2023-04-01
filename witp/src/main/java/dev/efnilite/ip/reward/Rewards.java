@@ -54,19 +54,23 @@ public class Rewards {
         for (String score : Config.REWARDS.getChildren(path)) {
 
             // read commands for this score
-            List<String> commands = Config.REWARDS.getStringList("%s.%s".formatted(path, score));
+            List<RewardString> rewardStrings = Config.REWARDS.getStringList("%s.%s".formatted(path, score)).stream()
+                    .map(RewardString::new)
+                    .toList();
 
             try {
                 int value = Integer.parseInt(score);
 
-                if (value <= 0) {
-                    IP.logging().stack("%s is not a valid score (should be above 1 and an integer)".formatted(score), "check the rewards file for incorrect numbers");
+                if (value < 1) {
+                    IP.logging().stack("Error while trying to read rewards",
+                            "check the rewards file for incorrect numbers",
+                            new IllegalArgumentException("%s is not a valid score".formatted(value)));
                     continue;
                 }
 
-                rewardMap.put(value, commands.stream().map(RewardString::new).toList());
+                rewardMap.put(value, rewardStrings);
             } catch (NumberFormatException ex) {
-                IP.logging().stack("%s is not a valid score".formatted(score), "check the rewards file for incorrect numbers", ex);
+                IP.logging().stack("Error while trying to read rewards", "check the rewards file for incorrect numbers", ex);
             }
         }
 

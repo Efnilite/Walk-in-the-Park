@@ -98,46 +98,40 @@ public class PAPIHook extends PlaceholderExpansion {
         if (pp != null) {
             ParkourGenerator generator = pp.generator;
             switch (params) {
-                case "score":
-                case "current_score":
+                case "score", "current_score" -> {
                     return Integer.toString(generator.score);
-                case "time":
-                case "current_time":
+                }
+                case "time", "current_time" -> {
                     return generator.getTime();
-                case "blocklead":
-                case "lead":
+                }
+                case "blocklead", "lead" -> {
                     return Integer.toString(pp.blockLead);
-                case "style":
+                }
+                case "style" -> {
                     return pp.style;
-                case "time_pref":
-                case "time_preference":
+                }
+                case "time_pref", "time_preference" -> {
                     return Integer.toString(pp.selectedTime);
-                case "scoreboard":
+                }
+                case "scoreboard" -> {
                     return pp.showScoreboard.toString();
-                case "difficulty":
+                }
+                case "difficulty" -> {
                     return Double.toString(pp.schematicDifficulty);
-                case "difficulty_string":
+                }
+                case "difficulty_string" -> {
                     return parseDifficulty(pp.schematicDifficulty);
-                case "rank":
+                }
+                case "rank" -> {
                     return Integer.toString(Modes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
-                case "highscore":
-                case "high_score":
-                    Score score = Modes.DEFAULT.getLeaderboard().get(player.getUniqueId());
-
-                    if (score == null) {
-                        return "?";
-                    } else {
-                        return Integer.toString(score.score());
-                    }
-                case "high_score_time":
-                    score = Modes.DEFAULT.getLeaderboard().get(player.getUniqueId());
-
-                    if (score == null) {
-                        return "?";
-                    } else {
-                        return score.time();
-                    }
-                default:
+                }
+                case "highscore", "high_score" -> {
+                    return Integer.toString(Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).score());
+                }
+                case "high_score_time" -> {
+                    return Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).time();
+                }
+                default -> {
                     if (params.contains("score_until_")) {
                         String replaced = params.replace("score_until_", "");
                         int interval = Integer.parseInt(replaced);
@@ -147,7 +141,7 @@ public class PAPIHook extends PlaceholderExpansion {
                             return "0";
                         }
                     }
-                    break;
+                }
             }
         }
 
@@ -155,21 +149,16 @@ public class PAPIHook extends PlaceholderExpansion {
     }
 
     private String parseDifficulty(double difficulty) {
-        if (difficulty > 1) {
-            IP.logging().error("Invalid difficulty, above 1: " + difficulty);
-            return "unknown";
-        }
-        if (difficulty <= 0.3) {
+        if (difficulty <= 0.25) {
             return "easy";
         } else if (difficulty <= 0.5) {
             return "medium";
-        } else if (difficulty <= 0.7) {
+        } else if (difficulty <= 0.75) {
             return "hard";
-        } else if (difficulty >= 0.8) {
+        } else if (difficulty <= 1) {
             return "very hard";
-        } else {
-            return "unknown";
         }
+        return "?";
     }
 
 

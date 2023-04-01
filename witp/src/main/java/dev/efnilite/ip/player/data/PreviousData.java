@@ -30,7 +30,10 @@ public class PreviousData {
     private final GameMode gamemode;
     private final Location location;
     private final Collection<PotionEffect> effects;
-    public List<RewardString> rewardsLeaveList = new ArrayList<>();
+    /**
+     * List of all {@link RewardString} to execute on leave.
+     */
+    public List<RewardString> onLeave = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
         this.player = player;

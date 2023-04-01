@@ -21,8 +21,8 @@ public class SessionChat implements Listener {
             return;
         }
 
-        Player sender = event.getPlayer();
-        ParkourUser user = ParkourUser.getUser(sender);
+        Player player = event.getPlayer();
+        ParkourUser user = ParkourUser.getUser(player);
 
         if (user == null) {
             return;
@@ -39,19 +39,19 @@ public class SessionChat implements Listener {
                 event.setCancelled(true);
 
                 // send it to all players
-                for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.sendTranslated("settings.chat.formats.lobby", sender.getName(), event.getMessage());
+                for (ParkourPlayer other : session.getPlayers()) {
+                    other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage());
                 }
-                for (ParkourSpectator sp : session.getSpectators()) {
-                    sp.sendTranslated("settings.chat.formats.lobby", sender.getName(), event.getMessage());
+                for (ParkourSpectator other : session.getSpectators()) {
+                    other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage());
                 }
             }
             case PLAYERS_ONLY -> {
                 event.setCancelled(true);
 
                 // send it to all users
-                for (ParkourPlayer pp : session.getPlayers()) {
-                    pp.sendTranslated("settings.chat.formats.players", sender.getName(), event.getMessage());
+                for (ParkourPlayer other : session.getPlayers()) {
+                    other.sendTranslated("settings.chat.formats.players", player.getName(), event.getMessage());
                 }
             }
         }
