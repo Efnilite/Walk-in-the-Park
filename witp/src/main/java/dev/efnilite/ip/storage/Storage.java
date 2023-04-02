@@ -7,6 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * I/O handling.
+ *
+ * @author Efnilite
+ * @since 5.0.0
+ */
 public interface Storage {
 
     /**

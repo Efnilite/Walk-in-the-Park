@@ -11,6 +11,12 @@ import org.bukkit.util.Vector;
 import java.io.*;
 import java.util.Map;
 
+/**
+ * Schematic reading handler.
+ *
+ * @author Efnilite
+ * @since 5.0.0
+ */
 public class SchematicReader {
 
     /**

@@ -13,7 +13,7 @@ import java.util.Map;
  * <p>Iteration 2.</p>
  *
  * @author Efnilite
- * @since v5.0.0
+ * @since 5.0.0
  */
 public class WorldDivider {
 

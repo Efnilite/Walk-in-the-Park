@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles data that is not included in {@link BlockData} but is useful in schematics.
+ *
+ * @author Efnilite
+ * @since 5.0.0
  */
 public interface State {
 
@@ -27,6 +30,11 @@ public interface State {
     @NotNull
     BlockData deserialize(BlockData data, String extra);
 
+    /**
+     * @param data The data.
+     * @return The {@link State} instance which saves this data. Returns null if no implementation is found.
+     */
+    @Nullable
     static State getState(BlockData data) {
         // check special states
         if (data instanceof Sign) {
@@ -39,5 +47,4 @@ public interface State {
             return null;
         }
     }
-
 }

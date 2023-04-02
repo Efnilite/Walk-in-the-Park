@@ -18,6 +18,12 @@ import java.util.function.Supplier;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+/**
+ * Schematic pasting handler.
+ *
+ * @author Efnilite
+ * @since 5.0.0
+ */
 public class SchematicPaster {
 
     /**

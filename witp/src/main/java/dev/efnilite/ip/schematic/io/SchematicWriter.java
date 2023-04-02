@@ -14,6 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Schematic writing handler.
+ *
+ * @author Efnilite
+ * @since 5.0.0
+ */
 public class SchematicWriter {
 
     /**

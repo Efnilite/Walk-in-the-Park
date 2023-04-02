@@ -15,6 +15,8 @@ import java.util.UUID;
 
 /**
  * MySQL storage manager.
+ *
+ * @since 5.0.0
  */
 public final class StorageSQL implements Storage {
 
@@ -192,7 +194,7 @@ public final class StorageSQL implements Storage {
             // v4.0.0
             sendUpdateSuppressed("ALTER TABLE `%s` ADD `sound` BOOLEAN;".formatted(Option.SQL_PREFIX + "options"));
 
-            // v5.0.0
+            // 5.0.0
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
 
             IP.logging().info("Successfully connected");
@@ -202,11 +204,6 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    /**
-     * Checks whether this connection is still valid or not.
-     * This utilizes an internal ping command.
-     * If the connection is lost, try to reconnect.
-     */
     private void validateConnection() {
         try {
             if (!connection.isValid(10)) {
@@ -217,12 +214,7 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    /**
-     * Sends a query to the database.
-     *
-     * @param sql The query.
-     * @return The result.
-     */
+    // send query and get result
     private ResultSet sendQuery(String sql) {
         validateConnection();
 
@@ -234,11 +226,7 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    /**
-     * Sends a query to the database.
-     *
-     * @param sql The query.
-     */
+    // send update
     private void sendUpdate(String sql) {
         validateConnection();
 
@@ -251,11 +239,7 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    /**
-     * Sends a query to the database. If this query returns an error, ignore it.
-     *
-     * @param sql The query.
-     */
+    // if query throws an error, ignore it
     private void sendUpdateSuppressed(String sql) {
         validateConnection();
 

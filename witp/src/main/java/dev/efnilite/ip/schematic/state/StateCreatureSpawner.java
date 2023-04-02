@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Handles sign data processing
+ * Handles spawner data processing
  */
 public class StateCreatureSpawner implements State {
 

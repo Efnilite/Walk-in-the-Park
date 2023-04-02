@@ -21,6 +21,12 @@ import java.util.concurrent.ExecutionException;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+/**
+ * Main schematic handling class.
+ *
+ * @author Efnilite
+ * @since 5.0.0
+ */
 public class Schematic {
 
     /**

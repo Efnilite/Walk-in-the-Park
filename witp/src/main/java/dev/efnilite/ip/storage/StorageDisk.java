@@ -17,6 +17,8 @@ import java.util.UUID;
 
 /**
  * Local disk (json) storage manager.
+ *
+ * @since 5.0.0
  */
 public final class StorageDisk implements Storage {
 

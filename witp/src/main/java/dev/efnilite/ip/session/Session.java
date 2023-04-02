@@ -16,7 +16,7 @@ import java.util.function.Function;
  * <p>Iteration 2.</p>
  *
  * @author Efnilite
- * @since v5.0.0
+ * @since 5.0.0
  */
 public class Session {
 
