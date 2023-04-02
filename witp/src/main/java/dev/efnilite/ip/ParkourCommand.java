@@ -36,7 +36,7 @@ import static dev.efnilite.ip.util.Util.send;
 @SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
-    public static final HashMap<Player, Location[]> SELECTIONS = new HashMap<>();
+    public static final HashMap<Player, Location[]> selections = new HashMap<>();
 
     private static final ItemStack wand;
 
@@ -203,7 +203,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 Location playerLocation = player.getLocation();
-                Location[] existingSelection = SELECTIONS.get(player);
+                Location[] existingSelection = selections.get(player);
 
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
@@ -221,11 +221,11 @@ public class ParkourCommand extends ViCommand {
                         send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            SELECTIONS.put(player, new Location[]{playerLocation, null});
+                            selections.put(player, new Location[]{playerLocation, null});
                             return true;
                         }
 
-                        SELECTIONS.put(player, new Location[]{playerLocation, existingSelection[1]});
+                        selections.put(player, new Location[]{playerLocation, existingSelection[1]});
 
                         Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;
@@ -234,11 +234,11 @@ public class ParkourCommand extends ViCommand {
                         send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(playerLocation, true));
 
                         if (existingSelection == null) {
-                            SELECTIONS.put(player, new Location[]{null, playerLocation});
+                            selections.put(player, new Location[]{null, playerLocation});
                             return true;
                         }
 
-                        SELECTIONS.put(player, new Location[]{existingSelection[0], playerLocation});
+                        selections.put(player, new Location[]{existingSelection[0], playerLocation});
 
                         Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
                         return true;

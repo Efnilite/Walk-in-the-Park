@@ -28,7 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -281,7 +283,7 @@ public abstract class ParkourUser {
     private String replace(String s, Score top, ParkourGenerator generator) {
         return s.replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
-                .replace("%highscore%", Integer.toString(top.score()))
+                .replace("%highscore%", Integer.toString(top.score())) // todo make highscore return player high score, not top
                 .replace("%topscore%", Integer.toString(top.score()))
                 .replace("%highscoretime%", top.time())
                 .replace("%topplayer%", top.name())

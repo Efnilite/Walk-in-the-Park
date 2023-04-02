@@ -291,7 +291,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
             if (Option.PERMISSIONS_STYLES && !user.player.hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
-            // todo add enchantment on select
 
             Item item = Locales.getItem(user.player, ParkourOption.STYLES.path + ".style_item", name).material(Colls.random(styleType.styles.get(name)));
 
@@ -304,16 +303,11 @@ public class ParkourSettingsMenu extends DynamicMenu {
             }));
         }
 
-        style.displayRows(0, 1).addToDisplay(items)
-
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT) // next page
-                        .click(event -> style.page(1)))
-
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT) // previous page
-                        .click(event -> style.page(-1)))
-
+        style.displayRows(0, 1)
+                .addToDisplay(items)
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> style.page(1)))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> style.page(-1)))
                 .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
     }
 

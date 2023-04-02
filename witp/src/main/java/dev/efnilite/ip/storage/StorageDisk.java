@@ -20,6 +20,7 @@ import java.util.UUID;
  *
  * @since 5.0.0
  */
+// todo add concurrency locks
 public final class StorageDisk implements Storage {
 
     @Override

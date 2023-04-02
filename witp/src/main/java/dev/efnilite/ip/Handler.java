@@ -80,7 +80,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        if (player.getWorld() != WorldManager.getWorld()) {
+        if (!player.getWorld().equals(WorldManager.getWorld())) {
             return;
         }
 
@@ -92,7 +92,7 @@ public class Handler implements EventWatcher {
         }
 
         player.teleport(Bukkit.getWorlds().stream()
-                .filter(world -> world != WorldManager.getWorld())
+                .filter(world -> !world.equals(WorldManager.getWorld()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
                 .getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -148,7 +148,7 @@ public class Handler implements EventWatcher {
         }
 
         Location location = event.getClickedBlock().getLocation();
-        Location[] existingSelection = ParkourCommand.SELECTIONS.get(player);
+        Location[] existingSelection = ParkourCommand.selections.get(player);
 
         event.setCancelled(true);
 
@@ -157,11 +157,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.SELECTIONS.put(player, new Location[]{location, null});
+                    ParkourCommand.selections.put(player, new Location[]{location, null});
                     return;
                 }
 
-                ParkourCommand.SELECTIONS.put(player, new Location[]{location, existingSelection[1]});
+                ParkourCommand.selections.put(player, new Location[]{location, existingSelection[1]});
 
                 Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
@@ -169,11 +169,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.SELECTIONS.put(player, new Location[]{null, location});
+                    ParkourCommand.selections.put(player, new Location[]{null, location});
                     return;
                 }
 
-                ParkourCommand.SELECTIONS.put(player, new Location[]{existingSelection[0], location});
+                ParkourCommand.selections.put(player, new Location[]{existingSelection[0], location});
 
                 Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }

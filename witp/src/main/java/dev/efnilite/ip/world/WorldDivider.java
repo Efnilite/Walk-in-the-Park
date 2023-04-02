@@ -17,6 +17,9 @@ import java.util.Map;
  */
 public class WorldDivider {
 
+    /**
+     * Map with all session ids map to the session instances.
+     */
     public static final Map<Integer, Session> SESSIONS = new HashMap<>();
 
     /**
@@ -24,7 +27,7 @@ public class WorldDivider {
      *
      * @param session The session.
      */
-    public static void associate(Session session) {
+    public static synchronized void associate(Session session) {
         // attempts to get the closest available section to the center
         int n = 0;
 

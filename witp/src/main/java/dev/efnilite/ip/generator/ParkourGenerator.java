@@ -45,6 +45,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
  *
  * @author Efnilite
+ * @since 5.0.0
  */
 public class ParkourGenerator {
 
