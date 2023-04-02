@@ -28,7 +28,7 @@ public class SettingsMenu extends DynamicMenu {
             if (pp != null) {
                 pp.generator.menu();
             }
-        }), player -> ParkourOption.PARKOUR_SETTINGS.mayPerform(player) && ParkourUser.isPlayer(player));
+        }), player -> ParkourOption.PARKOUR_SETTINGS.mayPerform(player) && ParkourPlayer.isPlayer(player));
 
         registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "settings.lang.item", user != null ? Locales.getString(user.locale, "name") : "?").click(event -> Menus.LANG.open(ParkourPlayer.getPlayer(event.getPlayer()))), player -> ParkourOption.LANG.mayPerform(player) && ParkourUser.isUser(player));
 

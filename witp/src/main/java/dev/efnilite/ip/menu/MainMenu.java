@@ -26,5 +26,4 @@ public class MainMenu extends DynamicMenu {
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.WHITE_STAINED_GLASS_PANE)
                 .animation(new RandomAnimation()));
     }
-
 }

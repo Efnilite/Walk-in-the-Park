@@ -321,7 +321,7 @@ public class ParkourCommand extends ViCommand {
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    for (ParkourPlayer other : ParkourUser.getActivePlayers()) {
+                    for (ParkourPlayer other : ParkourPlayer.getPlayers()) {
                         ParkourUser.leave(other);
                     }
                     send(sender, IP.PREFIX + "Successfully force kicked everyone!");
@@ -483,7 +483,7 @@ public class ParkourCommand extends ViCommand {
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("reset") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("everyone");
-                for (ParkourPlayer pp : ParkourUser.getActivePlayers()) {
+                for (ParkourPlayer pp : ParkourPlayer.getPlayers()) {
                     completions.add(pp.getName());
                 }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission(ParkourOption.ADMIN.permission)) {

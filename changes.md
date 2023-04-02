@@ -22,6 +22,7 @@
 - Fixed scoreboard not showing when default scoreboard is set to false
 - Fixed losing items when player was a spectator for a lobby that was disbanded
 - Fixed multiplayer modes not registering scores for all players
+- Fixed changing name causing players to not get their items when they left
 - Removed adaptive distance
   - Its effects were too small to be noticed in regular gameplay
 - Removed unused keys from config.yml and generation.yml

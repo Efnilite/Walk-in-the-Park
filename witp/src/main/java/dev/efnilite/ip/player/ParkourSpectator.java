@@ -25,6 +25,10 @@ import java.util.Comparator;
  */
 public class ParkourSpectator extends ParkourUser {
 
+    /**
+     * The closest player.
+     */
+    @NotNull
     public ParkourPlayer closest;
     private final BukkitTask closestChecker;
 

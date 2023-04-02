@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * A class for menus where items are dynamically displayed; that is, depending on provided conditions.
  * These conditions are specified by the param {@code shouldDisplay} in the method {@link #registerMainItem(int, int, BiFunction, Predicate)}.
  */
-public class DynamicMenu {
+public abstract class DynamicMenu {
 
     protected final Map<Integer, List<ItemContainer>> registeredItems = new HashMap<>();
 

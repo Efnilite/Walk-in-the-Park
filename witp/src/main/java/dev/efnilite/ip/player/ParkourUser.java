@@ -16,8 +16,10 @@ import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
+import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Superclass of every type of player. This encompasses every player currently in the Parkour world.
@@ -35,6 +38,133 @@ import java.util.*;
  * @author Efnilite
  */
 public abstract class ParkourUser {
+
+    /**
+     * Registers a player. This registers the player internally.
+     * This automatically unregisters the player if it is already registered.
+     *
+     * @param player The player
+     * @return the ParkourPlayer instance of the newly joined player
+     */
+    public static @NotNull ParkourPlayer register(@NotNull Player player) {
+        PreviousData data = null;
+        ParkourUser existing = getUser(player);
+
+        if (existing != null) {
+            data = existing.previousData;
+            unregister(existing, false, false);
+        }
+
+        ParkourPlayer pp = new ParkourPlayer(player, data);
+
+        // stats
+        JOIN_COUNT++;
+        new ParkourJoinEvent(pp).call();
+
+        Task.create(IP.getPlugin()).async().execute(() -> IP.getStorage().readPlayer(pp)).run();
+        return pp;
+    }
+
+    /**
+     * This is the same as {@link #leave(ParkourUser)}, but instead for a Bukkit player instance.
+     *
+     * @param player The Bukkit player instance that will be removed from the game if the player is active.
+     * @see #leave(ParkourUser)
+     */
+    public static void leave(@NotNull Player player) {
+        ParkourUser user = getUser(player);
+        if (user == null) {
+            return;
+        }
+        leave(user);
+    }
+
+    /**
+     * Forces user to leave. Follows behaviour of /parkour leave.
+     *
+     * @param user The user.
+     */
+    public static void leave(@NotNull ParkourUser user) {
+        unregister(user, true, true);
+    }
+
+    /**
+     * Unregisters a Parkour user instance.
+     *
+     * @param user                The user to unregister.
+     * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
+     * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
+     */
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
+        new ParkourLeaveEvent(user).call();
+
+        try {
+            user.unregister();
+
+            if (user.board != null && !user.board.isDeleted()) {
+                user.board.delete();
+            }
+        } catch (Exception ex) { // safeguard to prevent people from losing data
+            IP.logging().stack("Error while trying to make player %s leave".formatted(user.getName()), ex);
+            user.send("<red><bold>There was an error while trying to handle leaving.");
+        }
+
+        if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
+            sendPlayer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
+            return;
+        }
+
+        user.previousData.apply(restorePreviousData);
+
+        if (user instanceof ParkourPlayer player) {
+            user.previousData.onLeave.forEach(r -> r.execute(player));
+        }
+
+        user.player.resetPlayerTime();
+        user.player.resetPlayerWeather();
+    }
+
+    // Sends a player to a BungeeCord server. server is the server name.
+    private static void sendPlayer(Player player, String server) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Connect");
+        out.writeUTF(server);
+
+        try {
+            player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
+        } catch (ChannelNotRegisteredException ex) {
+            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
+            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
+        }
+    }
+
+    /**
+     * @param player The player.
+     * @return True when this player is a {@link ParkourUser}, false if not.
+     */
+    public static boolean isUser(@Nullable Player player) {
+        return player != null && getUsers().stream().anyMatch(other -> other.player == player);
+    }
+
+    /**
+     * @param player The player.
+     * @return player as a {@link ParkourUser}, null if not found.
+     */
+    public static @Nullable ParkourUser getUser(@NotNull Player player) {
+        return getUsers().stream()
+                .filter(other -> other.getUUID() == player.getUniqueId())
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * @return List with all users.
+     */
+    public static List<ParkourUser> getUsers() {
+        return WorldDivider.SESSIONS.values().stream()
+                .flatMap(session -> Stream.concat(session.getPlayers().stream(), session.getSpectators().stream()))
+                .toList();
+    }
 
     /**
      * This player's session.
@@ -75,9 +205,6 @@ public abstract class ParkourUser {
 
     public static int JOIN_COUNT;
 
-    private static final Map<Player, ParkourUser> users = new HashMap<>();
-    private static final Map<Player, ParkourPlayer> players = new HashMap<>();
-
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
         this.joined = Instant.now();
@@ -86,7 +213,6 @@ public abstract class ParkourUser {
         if (Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD))) {
             this.board = new FastBoard(player);
         }
-        users.put(player, this);
     }
 
     /**
@@ -94,155 +220,6 @@ public abstract class ParkourUser {
      */
     protected abstract void unregister();
 
-    /**
-     * Registers a player. This registers the player internally.
-     * This automatically unregisters the player if it is already registered.
-     *
-     * @param player The player
-     * @return the ParkourPlayer instance of the newly joined player
-     */
-    public static @NotNull ParkourPlayer register(@NotNull Player player) {
-        PreviousData data = null;
-        ParkourUser existing = getUser(player);
-        if (existing != null) {
-            data = existing.previousData;
-            unregister(existing, false, false);
-        }
-
-        ParkourPlayer pp = new ParkourPlayer(player, data);
-
-        // stats
-        JOIN_COUNT++;
-        new ParkourJoinEvent(pp).call();
-
-        IP.getStorage().readPlayer(pp);
-        players.put(pp.player, pp);
-        return pp;
-    }
-
-    /**
-     * This is the same as {@link #leave(ParkourUser)}, but instead for a Bukkit player instance.
-     *
-     * @param player The Bukkit player instance that will be removed from the game if the player is active.
-     * @see #leave(ParkourUser)
-     */
-    public static void leave(@NotNull Player player) {
-        ParkourUser user = getUser(player);
-        if (user == null) {
-            return;
-        }
-        leave(user);
-    }
-
-    /**
-     * Makes a player leave. This sends a leave message to all other active Parkour players.
-     * This uses {@link #unregister(ParkourUser, boolean, boolean)}, but with preset values.
-     * Leaving always makes the player go back to their previous position, they will always be kicked if this plugin
-     * is running Bungeecord mode, and their data will always be automatically saved. If you want to unregister a
-     * player with different values for these params, please refer to using {@link #unregister(ParkourUser, boolean, boolean)}.
-     *
-     * @param user The user instance
-     */
-    public static void leave(@NotNull ParkourUser user) {
-        unregister(user, true, true);
-    }
-
-    /**
-     * Unregisters a Parkour user instance.
-     *
-     * @param user                The user to unregister.
-     * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
-     * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
-     */
-    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
-        new ParkourLeaveEvent(user).call();
-
-        try {
-            user.unregister();
-
-            if (user.board != null && !user.board.isDeleted()) {
-                user.board.delete();
-            }
-        } catch (Exception ex) { // safeguard to prevent people from losing data
-            IP.logging().stack("Error while trying to make player %s leave".formatted(user.getName()), ex);
-            user.send("<red><bold>There was an error while trying to handle leaving.");
-        }
-
-        players.remove(user.player);
-        users.remove(user.player);
-
-        if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
-            sendPlayer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
-            return;
-        }
-
-        user.previousData.apply(restorePreviousData);
-
-        if (user instanceof ParkourPlayer player) {
-            user.previousData.onLeave.forEach(r -> r.execute(player));
-        }
-
-        user.player.resetPlayerTime();
-        user.player.resetPlayerWeather();
-    }
-
-    // Sends a player to a BungeeCord server. server is the server name.
-    private static void sendPlayer(Player player, String server) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Connect");
-        out.writeUTF(server);
-
-        try {
-            player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
-        } catch (ChannelNotRegisteredException ex) {
-            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
-            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
-        }
-    }
-
-    /**
-     * Gets a user from a Bukkit Player
-     *
-     * @param player The Bukkit Player
-     * @return the associated {@link ParkourUser}
-     */
-    public static @Nullable ParkourUser getUser(@NotNull Player player) {
-        List<ParkourUser> filtered = getUsers().stream().filter(other -> other.getUUID() == player.getUniqueId()).toList();
-
-        return filtered.size() > 0 ? filtered.get(0) : null;
-    }
-
-    /**
-     * Checks whether the provided player is a {@link ParkourUser}.
-     * If the provided player is null, the method will automatically return false.
-     *
-     * @param player The player. Can be null.
-     * @return True if the player is a registered {@link ParkourUser}.
-     * False if the player isn't registered or the provided player is null.
-     */
-    public static boolean isUser(@Nullable Player player) {
-        return player != null && users.containsKey(player);
-    }
-
-    /**
-     * Checks whether the provided player is a {@link ParkourPlayer}.
-     * If the provided player is null, the method will automatically return false.
-     *
-     * @param player The player. Can be null.
-     * @return True if the player is a registered {@link ParkourPlayer}.
-     * False if the player isn't registered or the provided player is null.
-     */
-    public static boolean isPlayer(@Nullable Player player) {
-        return player != null && players.containsKey(player);
-    }
-
-    public static List<ParkourUser> getUsers() {
-        return new ArrayList<>(users.values());
-    }
-
-    public static List<ParkourPlayer> getActivePlayers() {
-        return new ArrayList<>(players.values());
-    }
 
     /**
      * Teleports the player asynchronously, which helps with unloaded chunks (?)
@@ -254,14 +231,12 @@ public abstract class ParkourUser {
     }
 
     /**
-     * Sends a message or array of it - coloured allowed, using the and sign
+     * Sends a message.
      *
-     * @param messages The message
+     * @param message The message
      */
-    public void send(String... messages) {
-        for (String message : messages) {
-            Util.send(player, message);
-        }
+    public void send(String message) {
+        Util.send(player, message);
     }
 
     /**
@@ -307,8 +282,8 @@ public abstract class ParkourUser {
         return s.replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
                 .replace("%highscore%", Integer.toString(top.score()))
-                .replace("%highscoretime%", top.time())
                 .replace("%topscore%", Integer.toString(top.score()))
+                .replace("%highscoretime%", top.time())
                 .replace("%topplayer%", top.name())
                 .replace("%session%", session.getPlayers().get(0).getName());
     }

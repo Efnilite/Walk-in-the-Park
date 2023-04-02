@@ -124,10 +124,8 @@ public class Handler implements EventWatcher {
         }
 
         String command = event.getMessage().toLowerCase();
-        for (String item : Option.FOCUS_MODE_WHITELIST) {   // i.e.: "msg", "w"
-            if (command.contains(item.toLowerCase())) {     // "/msg Efnilite hi" contains "msg"?
-                return;                                     // yes, so let event go through
-            }
+        if (Option.FOCUS_MODE_WHITELIST.stream().anyMatch(c -> command.contains(c.toLowerCase()))) {
+            return;
         }
 
         user.sendTranslated("other.no_do");
@@ -156,7 +154,6 @@ public class Handler implements EventWatcher {
 
         switch (action) {
             case LEFT_CLICK_BLOCK -> {
-
                 send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
@@ -240,16 +237,16 @@ public class Handler implements EventWatcher {
     public void switchWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        World parkourWorld = WorldManager.getWorld();
+        World parkour = WorldManager.getWorld();
 
         boolean isAdmin = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
-        if (player.getWorld() == parkourWorld && user == null && !isAdmin) {
+        if (player.getWorld() == parkour && user == null && !isAdmin) {
             player.kickPlayer("You can't enter the parkour world by teleporting!");
             return;
         }
 
-        if (event.getFrom() == parkourWorld && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
+        if (event.getFrom() == parkour && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
             ParkourUser.unregister(user, false, false);
         }
     }

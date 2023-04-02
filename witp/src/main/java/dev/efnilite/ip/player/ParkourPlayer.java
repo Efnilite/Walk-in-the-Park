@@ -9,6 +9,7 @@ import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
@@ -55,6 +56,34 @@ public class ParkourPlayer extends ParkourUser {
 
     public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) {
 
+    }
+
+    /**
+     * @param player The player.
+     * @return True when this player is a {@link ParkourPlayer}, false if not.
+     */
+    public static boolean isPlayer(@Nullable Player player) {
+        return player != null && getPlayers().stream().anyMatch(other -> other.player == player);
+    }
+
+    /**
+     * @param player The player.
+     * @return player as a {@link ParkourPlayer}, null if not found.
+     */
+    public static @Nullable ParkourPlayer getPlayer(@NotNull Player player) {
+        return getPlayers().stream()
+                .filter(other -> other.getUUID() == player.getUniqueId())
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * @return List with all players.
+     */
+    public static List<ParkourPlayer> getPlayers() {
+        return WorldDivider.SESSIONS.values().stream()
+                .flatMap(session -> session.getPlayers().stream())
+                .toList();
     }
 
     public @Expose Double schematicDifficulty;
@@ -152,18 +181,6 @@ public class ParkourPlayer extends ParkourUser {
         } else {
             write.run();
         }
-    }
-
-    /**
-     * Gets a ParkourPlayer from a regular Player
-     *
-     * @param player The Bukkit Player
-     * @return the ParkourPlayer
-     */
-    public static @Nullable ParkourPlayer getPlayer(@NotNull Player player) {
-        List<ParkourPlayer> filtered = getActivePlayers().stream().filter(other -> other.getUUID() == player.getUniqueId()).toList();
-
-        return filtered.size() > 0 ? filtered.get(0) : null;
     }
 
     public void setup(Location to, boolean runGenerator) {
