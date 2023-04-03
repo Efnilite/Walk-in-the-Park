@@ -34,6 +34,7 @@ import java.util.*;
 
 import static dev.efnilite.ip.util.Util.send;
 
+// todo fix this hot mess
 @SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
@@ -81,13 +82,13 @@ public class ParkourCommand extends ViCommand {
                         sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
                     }
-                    Time.timerStart("reloadIP");
+                    Time.timerStart("ip reload");
                     send(sender, IP.PREFIX + "Reloading config files..");
 
                     Config.reload();
                     Option.init(false);
 
-                    send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("reloadIP") + "ms!");
+                    send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("ip reload") + "ms!");
                     return true;
                 }
             }
@@ -144,6 +145,7 @@ public class ParkourCommand extends ViCommand {
                         send(sender, Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }
+
                     send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
                     send(player, "");
                     send(player, "<gray>Welcome to the schematic creating section.");

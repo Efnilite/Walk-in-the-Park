@@ -5,6 +5,9 @@ import dev.efnilite.vilib.event.EventWrapper;
 
 /**
  * Gets called when a player starts spectating a session. Read-only.
+ *
+ * @author Efnilite
+ * @since 5.0.0
  */
 public class ParkourSpectateEvent extends EventWrapper {
 

@@ -2,10 +2,8 @@ package dev.efnilite.ip.api.event;
 
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.vilib.event.EventWrapper;
-import org.bukkit.block.Block;
-
-import java.util.List;
 
 /**
  * Gets called when a new jump is generated. Read-only.
@@ -13,14 +11,14 @@ import java.util.List;
  * @author Efnilite
  * @since 5.0.0
  */
-public class ParkourBlockGenerateEvent extends EventWrapper {
+public class ParkourSchematicGenerateEvent extends EventWrapper {
 
-    public final List<Block> blocks;
+    public final Schematic schematic;
     public final ParkourGenerator generator;
     public final ParkourPlayer player;
 
-    public ParkourBlockGenerateEvent(List<Block> blocks, ParkourGenerator generator, ParkourPlayer player) {
-        this.blocks = blocks;
+    public ParkourSchematicGenerateEvent(Schematic schematic, ParkourGenerator generator, ParkourPlayer player) {
+        this.schematic = schematic;
         this.generator = generator;
         this.player = player;
     }

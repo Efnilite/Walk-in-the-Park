@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
+import dev.efnilite.ip.api.event.ParkourSchematicGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
@@ -516,7 +517,7 @@ public class ParkourGenerator {
     /**
      * Starts the check
      */
-    public void tick() {
+    protected void tick() {
         for (ParkourPlayer other : session.getPlayers()) {
             updateVisualTime(other, other.selectedTime);
             other.updateScoreboard(this);
@@ -526,7 +527,7 @@ public class ParkourGenerator {
             spectator.update();
         }
 
-        if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // Fall check
+        if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
             fall();
             return;
         }
@@ -606,9 +607,9 @@ public class ParkourGenerator {
     }
 
     /**
-     * Resets the parkour
+     * Resets the parkour. If regenerate is false, this generator is stopped and the island is destroyed.
      *
-     * @param regenerate false if this is the last reset (when the player leaves), true for resets by falling
+     * @param regenerate True if parkour should regenerate, false if not.
      */
     public void reset(boolean regenerate) {
         stopped = !regenerate;
@@ -773,6 +774,8 @@ public class ParkourGenerator {
 
                 schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
 
+                new ParkourSchematicGenerateEvent(schematic, this, player).call();
+
                 if (schematicBlocks.isEmpty()) {
                     IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NoSuchElementException("No schematic blocks found"));
                     return;
@@ -782,6 +785,10 @@ public class ParkourGenerator {
                 waitForSchematicCompletion = true;
             }
         }
+    }
+
+    private enum JumpType {
+        DEFAULT, SCHEMATIC, SPECIAL
     }
 
     private @NotNull List<Block> rotatedPaste(Schematic schematic, Location location) {
@@ -870,9 +877,5 @@ public class ParkourGenerator {
      */
     public Mode getMode() {
         return Modes.DEFAULT;
-    }
-
-    private enum JumpType {
-        DEFAULT, SCHEMATIC, SPECIAL
     }
 }
