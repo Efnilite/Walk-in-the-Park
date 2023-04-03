@@ -1,5 +1,6 @@
 package dev.efnilite.ip;
 
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -67,12 +68,6 @@ public class ParkourCommand extends ViCommand {
             return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
-                case "t" -> {
-                    Location l = player.getLocation();
-
-                    Schematic.create().save("hello", l.clone().subtract(50, 50, 50), l.clone().add(50, 50, 50));
-                }
-
                 // Help menu
                 case "help" -> {
                     sendHelpMessages(sender);
@@ -177,7 +172,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 String type = args[1]; // get mode from second arg
-                Mode mode = IP.getRegistry().getMode(type);
+                Mode mode = Registry.getMode(type);
                 ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
 
                 if (mode == null) {
@@ -367,7 +362,7 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    for (Mode mode : IP.getRegistry().getModes()) {
+                    for (Mode mode : Registry.getModes()) {
                         Leaderboard leaderboard = mode.getLeaderboard();
 
                         if (leaderboard == null) {
@@ -404,7 +399,7 @@ public class ParkourCommand extends ViCommand {
                     UUID finalUuid = uuid;
                     String finalName = name;
 
-                    for (Mode mode : IP.getRegistry().getModes()) {
+                    for (Mode mode : Registry.getModes()) {
                         Leaderboard leaderboard = mode.getLeaderboard();
 
                         if (leaderboard == null) {
@@ -426,7 +421,7 @@ public class ParkourCommand extends ViCommand {
                     return true;
                 }
 
-                Mode mode = IP.getRegistry().getMode(args[1].toLowerCase());
+                Mode mode = Registry.getMode(args[1].toLowerCase());
 
                 // if found gamemode is null, return to default
                 if (mode == null) {
@@ -536,8 +531,7 @@ public class ParkourCommand extends ViCommand {
             send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all high scores. <red>This can't be recovered!");
             send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");
-            send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory." +
-                    " <red>Useful for recovering data after server crashes or errors when leaving.");
+            send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory. <red>Useful for recovering data after server crashes or errors when leaving.");
         }
         send(sender, "");
 

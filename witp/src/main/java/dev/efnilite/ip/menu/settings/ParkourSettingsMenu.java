@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.settings;
 
-import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.DynamicMenu;
@@ -47,8 +47,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return;
             }
 
-            if (IP.getRegistry().getStyleTypes().size() == 1) {
-                openSingleStyleMenu(player, IP.getRegistry().getStyleTypes().get(0));
+            if (Registry.getStyleTypes().size() == 1) {
+                openSingleStyleMenu(player, Registry.getStyleTypes().get(0));
             } else {
                 openStylesMenu(player);
             }
@@ -263,7 +263,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         Menu menu = new Menu(3, Locales.getString(user.locale, ParkourOption.STYLES.path + ".name"));
 
         int slot = 9;
-        for (StyleType type : IP.getRegistry().getStyleTypes()) {
+        for (StyleType type : Registry.getStyleTypes()) {
             Item item = type.getItem(user.locale);
 
             menu.item(slot, item.click(event -> openSingleStyleMenu(user, type)));

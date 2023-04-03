@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.play;
 
-import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -30,7 +30,7 @@ public class SingleMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
-        List<Mode> modes = IP.getRegistry().getModes();
+        List<Mode> modes = Registry.getModes();
 
         if (modes.size() == 1) {
             modes.get(0).create(player);

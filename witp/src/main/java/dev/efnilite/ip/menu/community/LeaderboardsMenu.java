@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -32,7 +32,7 @@ public class LeaderboardsMenu {
 
         Mode latest = null;
         List<MenuItem> items = new ArrayList<>();
-        for (Mode mode : IP.getRegistry().getModes()) {
+        for (Mode mode : Registry.getModes()) {
             Leaderboard leaderboard = mode.getLeaderboard();
             Item item = mode.getItem(locale);
 

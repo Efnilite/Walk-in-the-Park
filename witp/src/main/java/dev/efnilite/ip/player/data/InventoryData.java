@@ -49,6 +49,7 @@ public class InventoryData {
         Task.create(IP.getPlugin()).async().execute(() -> loadFile(onFinish)).run();
     }
 
+    @SuppressWarnings("unchecked")
     private void loadFile(Consumer<@Nullable InventoryData> onFinish) {
         try (BukkitObjectInputStream stream = new BukkitObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
             items = (Map<Integer, ItemStack>) stream.readObject();

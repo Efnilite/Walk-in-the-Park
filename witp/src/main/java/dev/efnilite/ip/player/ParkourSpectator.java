@@ -68,18 +68,17 @@ public class ParkourSpectator extends ParkourUser {
         player.setGameMode(GameMode.SPECTATOR);
         updateScoreboard(closest.generator);
 
-        if (closest.getLocation().distanceSquared(player.getLocation()) < 10000) { // avoid sqrt
+        if (closest.getLocation().distanceSquared(player.getLocation()) < 100 * 100) { // avoid sqrt
             return;
         }
 
+        teleport(closest.getLocation());
         if (player.getGameMode() != GameMode.SPECTATOR) { // if player isn't in spectator or is a bedrock player
-            teleport(closest.getLocation());
             return;
         }
 
         // if player is a spectator
         player.setSpectatorTarget(null);
-        teleport(closest.getLocation());
         player.setSpectatorTarget(player.getSpectatorTarget());
     }
 

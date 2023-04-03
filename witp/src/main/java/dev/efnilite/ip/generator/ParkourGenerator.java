@@ -1,6 +1,7 @@
 package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.api.event.ParkourBlockGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
@@ -262,11 +263,11 @@ public class ParkourGenerator {
     protected BlockData selectBlockData() {
         String style = profile.get("style").value();
 
-        Material material = IP.getRegistry().getTypeFromStyle(style).get(style);
+        Material material = Registry.getTypeFromStyle(style).get(style);
 
         // if found style is null, get the first registered style to prevent big boy errors
         if (material == null) {
-            String newStyle = new ArrayList<>(IP.getRegistry().getStyleTypes().get(0).styles.keySet()).get(0);
+            String newStyle = new ArrayList<>(Registry.getStyleTypes().get(0).styles.keySet()).get(0);
 
             profile.set("style", newStyle);
 
@@ -671,9 +672,11 @@ public class ParkourGenerator {
         island.destroy();
     }
 
-    // Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
-    // the player to achieve this score using their settings.
-    private double calculateDifficultyScore() {
+    /**
+     * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
+     * the player to achieve this score using their settings.
+     */
+    public double calculateDifficultyScore() {
         double score = 0;
 
         if (profile.get("useSpecialBlocks").asBoolean())                score += 0.5;

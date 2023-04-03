@@ -9,6 +9,7 @@ import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
@@ -54,9 +55,7 @@ public class ParkourPlayer extends ParkourUser {
         return string == null || string.equals("1");
     }
 
-    public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) {
-
-    }
+    public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) { }
 
     /**
      * @param player The player.
@@ -192,36 +191,21 @@ public class ParkourPlayer extends ParkourUser {
         // -= Inventory =-
         if (Option.INVENTORY_HANDLING) {
             Task.create(IP.getPlugin()).delay(5).execute(() -> {
-                List<Item> items = new ArrayList<>();
-
                 player.getInventory().clear();
 
-                if (ParkourOption.PLAY.mayPerform(player)) {
-                    items.add(0, Locales.getItem(locale, "play.item"));
-                }
+                List<Item> items = new ArrayList<>();
 
-                if (ParkourOption.COMMUNITY.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(locale, "community.item"));
-                }
-
-                if (ParkourOption.SETTINGS.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(locale, "settings.item"));
-                }
-
-                if (ParkourOption.LOBBY.mayPerform(player)) {
-                    items.add(items.size(), Locales.getItem(locale, "lobby.item"));
-                }
+                if (ParkourOption.PLAY.mayPerform(player)) items.add(Locales.getItem(locale, "play.item"));
+                if (ParkourOption.COMMUNITY.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "community.item"));
+                if (ParkourOption.SETTINGS.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "settings.item"));
+                if (ParkourOption.LOBBY.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "lobby.item"));
 
                 items.add(items.size(), Locales.getItem(locale, "other.quit"));
 
                 List<Integer> slots = getEvenlyDistributedSlots(items.size());
-                for (int i = 0; i < items.size(); i++) {
-                    player.getInventory().setItem(slots.get(i), items.get(i).build());
-                }
+                Colls.range(0, items.size()).forEach(idx -> player.getInventory().setItem(slots.get(idx), items.get(idx).build()));
             }).run();
-        }
-
-        if (!Option.INVENTORY_HANDLING) {
+        } else {
             sendTranslated("other.customize");
         }
 
@@ -230,6 +214,7 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
+    // todo remove this
     private List<Integer> getEvenlyDistributedSlots(int amountInRow) {
         return switch (amountInRow) {
             case 0 -> Collections.emptyList();

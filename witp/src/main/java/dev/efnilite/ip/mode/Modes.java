@@ -1,6 +1,6 @@
 package dev.efnilite.ip.mode;
 
-import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 
 public class Modes {
 
@@ -8,7 +8,7 @@ public class Modes {
     public static SpectatorMode SPECTATOR;
 
     public static void init() {
-        DEFAULT = (DefaultMode) IP.getRegistry().getMode("default");
-        SPECTATOR = (SpectatorMode) IP.getRegistry().getMode("spectator");
+        DEFAULT = (DefaultMode) Registry.getMode("default");
+        SPECTATOR = (SpectatorMode) Registry.getMode("spectator");
     }
 }

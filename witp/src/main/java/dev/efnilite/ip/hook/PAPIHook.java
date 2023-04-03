@@ -1,6 +1,7 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
@@ -173,7 +174,7 @@ public class PAPIHook extends PlaceholderExpansion {
             String name = matcher.group(1);
             rank = Integer.parseInt(matcher.group(2));
 
-            Mode mode = IP.getRegistry().getMode(name);
+            Mode mode = Registry.getMode(name);
             if (mode != null) {
                 leaderboard = mode.getLeaderboard();
             } else {

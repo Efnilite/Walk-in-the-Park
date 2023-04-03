@@ -12,35 +12,41 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Class which features registration for custom modes/addons
+ * Registers stuff.
+ *
+ * @author Efnilite
+ * @since 5.0.0
  */
 public final class Registry {
 
-    private final HashMap<String, Mode> modes = new LinkedHashMap<>();
-    private final HashMap<String, StyleType> styleTypes = new LinkedHashMap<>();
+    private static final HashMap<String, Mode> modes = new LinkedHashMap<>();
+    private static final HashMap<String, StyleType> styleTypes = new LinkedHashMap<>();
 
     /**
-     * Registers a style type. This doesn't need materials, so you can pass the materials as null.
-     * Example: #registerType(new DefaultStyle(null));
+     * Registers a {@link StyleType}.
      *
-     * @param type The style type.
+     * @param type The type.
      */
-    public void registerType(@NotNull StyleType type) {
+    public static void register(@NotNull StyleType type) {
         styleTypes.put(type.getName(), type);
         IP.logging().info("Registered style type %s".formatted(type.getName()));
     }
 
     /**
-     * Registers a mode. Registrations are only accepted until the first time a player opens the mode menu.
+     * Registers a {@link Mode}.
      *
-     * @param mode The instance of the mode that's to be registered
+     * @param mode The mode.
      */
-    public void register(@NotNull Mode mode) {
+    public static void register(@NotNull Mode mode) {
         modes.put(mode.getName(), mode);
         IP.logging().info("Registered mode %s".formatted(mode.getName()));
     }
 
-    public StyleType getTypeFromStyle(@NotNull String style) {
+    /**
+     * @param style The style name.
+     * @return The style type based off of style.
+     */
+    public static StyleType getTypeFromStyle(@NotNull String style) {
         for (StyleType value : styleTypes.values()) {
             if (value.styles.containsKey(style.toLowerCase())) {
                 return value;
@@ -54,7 +60,7 @@ public final class Registry {
      * @return The {@link Mode} instance. May be null.
      */
     @Nullable
-    public Mode getMode(@NotNull String name) {
+    public static Mode getMode(@NotNull String name) {
         return modes.get(name);
     }
 
@@ -63,15 +69,21 @@ public final class Registry {
      * @return The {@link StyleType} instance. May be null.
      */
     @Nullable
-    public StyleType getStyleType(@NotNull String name) {
+    public static StyleType getStyleType(@NotNull String name) {
         return styleTypes.get(name);
     }
 
-    public List<StyleType> getStyleTypes() {
+    /**
+     * @return All style types in registration order.
+     */
+    public static List<StyleType> getStyleTypes() {
         return new ArrayList<>(styleTypes.values());
     }
 
-    public List<Mode> getModes() {
+    /**
+     * @return All modes in registration order.
+     */
+    public static List<Mode> getModes() {
         return new ArrayList<>(modes.values());
     }
 }

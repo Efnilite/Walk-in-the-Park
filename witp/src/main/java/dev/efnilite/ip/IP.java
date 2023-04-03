@@ -44,7 +44,6 @@ public final class IP extends ViPlugin {
     public static final String REQUIRED_VILIB_VERSION = "1.1.0";
 
     private static IP instance;
-    private static Registry registry;
     private static Storage storage;
 
     @Nullable
@@ -99,13 +98,11 @@ public final class IP extends ViPlugin {
 
         // ----- Registry -----
 
-        registry = new Registry();
+        Registry.register(new DefaultMode());
+        Registry.register(new SpectatorMode());
+        Registry.register(new DefaultStyleType());
 
-        registry.register(new DefaultMode());
-        registry.register(new SpectatorMode());
-        registry.registerType(new DefaultStyleType());
-
-        registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);
+        Registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);
 
         Modes.init();
 
@@ -144,8 +141,8 @@ public final class IP extends ViPlugin {
         metrics.addCustomChart(new SimplePie("using_rewards", () -> Boolean.toString(Rewards.REWARDS_ENABLED)));
         metrics.addCustomChart(new SimplePie("locale_count", () -> Integer.toString(Locales.locales.size())));
         metrics.addCustomChart(new SingleLineChart("player_joins", () -> {
-            int joins = ParkourUser.JOIN_COUNT;
-            ParkourUser.JOIN_COUNT = 0;
+            int joins = ParkourUser.joinCount;
+            ParkourUser.joinCount = 0;
             return joins;
         }));
 
@@ -198,10 +195,6 @@ public final class IP extends ViPlugin {
     @Nullable
     public static PAPIHook getPlaceholderHook() {
         return placeholderHook;
-    }
-
-    public static Registry getRegistry() {
-        return registry;
     }
 
     public static Storage getStorage() {

@@ -1,4 +1,5 @@
 Finished folders:
+- api
 - config
 - hook
 - reward
@@ -9,11 +10,10 @@ Finished folders:
 - leaderboard
 - storage
 - util
-
-Todo:
-- api
-- gamemode
-- generator
 - menu
 - player
+
+Todo:
+- gamemode
+- generator
 - parent package

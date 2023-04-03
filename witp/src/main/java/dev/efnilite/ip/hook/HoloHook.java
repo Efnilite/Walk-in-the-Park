@@ -1,6 +1,7 @@
 package dev.efnilite.ip.hook;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.mode.Mode;
@@ -31,7 +32,7 @@ public class HoloHook {
             // {ip_leaderboard: default, score, #1}
             String[] split = argument.replace(" ", "").split(",");
 
-            Mode mode = IP.getRegistry().getMode(split[0].toLowerCase());
+            Mode mode = Registry.getMode(split[0].toLowerCase());
 
             if (mode == null) {
                 return "?";
@@ -57,5 +58,4 @@ public class HoloHook {
             };
         });
     }
-
 }

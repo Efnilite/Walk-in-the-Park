@@ -26,18 +26,16 @@ public class PreviousData {
     private final int hunger;
     private final boolean flying;
     private final boolean allowFlight;
-    private final Player player;
     private final GameMode gamemode;
     private final Location location;
     private final Collection<PotionEffect> effects;
+
     /**
      * List of all {@link RewardString} to execute on leave.
      */
     public List<RewardString> onLeave = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
-        this.player = player;
-
         gamemode = player.getGameMode();
         location = player.getLocation();
         hunger = player.getFoodLevel();
@@ -64,7 +62,7 @@ public class PreviousData {
         }
     }
 
-    public void apply(boolean teleportBack) {
+    public void apply(Player player, boolean teleportBack) {
         try {
             if (teleportBack) {
                 player.teleport(Option.GO_BACK ? Option.GO_BACK_LOC : location);
@@ -88,7 +86,7 @@ public class PreviousData {
             for (PotionEffect effect : effects) {
                 player.addPotionEffect(effect);
             }
-        } catch (Exception ex) {// not optimal but there isn't another way
+        } catch (Exception ex) { // not the best way to do this... too bad!
             IP.logging().stack("Error while recovering stats of %s".formatted(player.getName()), ex);
         }
 

@@ -15,6 +15,9 @@ import java.util.NoSuchElementException;
 
 /**
  * Spawn island handler.
+ *
+ * @author Efnilite
+ * @since 5.0.0
  */
 public final class Island {
 

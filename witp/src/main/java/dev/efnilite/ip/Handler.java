@@ -71,7 +71,7 @@ public class Handler implements EventWatcher {
         }
 
         if (quitPreviousData.containsKey(uuid)) {
-            quitPreviousData.get(uuid).apply(false);
+            quitPreviousData.get(uuid).apply(player, false);
             quitPreviousData.remove(uuid);
         }
 
@@ -91,11 +91,7 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        player.teleport(Bukkit.getWorlds().stream()
-                .filter(world -> !world.equals(WorldManager.getWorld()))
-                .findAny()
-                .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
-                .getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        player.teleport(Bukkit.getWorlds().stream().filter(world -> !world.equals(WorldManager.getWorld())).findAny().orElseThrow(() -> new NoSuchElementException("No fallback world was found!")).getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     @EventHandler
@@ -139,11 +135,7 @@ public class Handler implements EventWatcher {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!player.hasPermission("ip.admin") ||
-            item.getItemMeta() == null ||
-            !item.getItemMeta().getDisplayName().contains("Schematic Wand") ||
-            event.getClickedBlock() == null ||
-            event.getHand() != EquipmentSlot.HAND) {
+        if (!player.hasPermission("ip.admin") || item.getItemMeta() == null || !item.getItemMeta().getDisplayName().contains("Schematic Wand") || event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 

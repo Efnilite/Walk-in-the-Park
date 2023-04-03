@@ -18,7 +18,6 @@ import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
-import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -60,7 +58,7 @@ public abstract class ParkourUser {
         ParkourPlayer pp = new ParkourPlayer(player, data);
 
         // stats
-        JOIN_COUNT++;
+        joinCount++;
         new ParkourJoinEvent(pp).call();
 
         Task.create(IP.getPlugin()).async().execute(() -> IP.getStorage().readPlayer(pp)).run();
@@ -112,11 +110,11 @@ public abstract class ParkourUser {
         }
 
         if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
-            sendPlayer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
+            sendPlayerToServer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
 
-        user.previousData.apply(restorePreviousData);
+        user.previousData.apply(user.player, restorePreviousData);
 
         if (user instanceof ParkourPlayer player) {
             user.previousData.onLeave.forEach(r -> r.execute(player));
@@ -127,7 +125,7 @@ public abstract class ParkourUser {
     }
 
     // Sends a player to a BungeeCord server. server is the server name.
-    private static void sendPlayer(Player player, String server) {
+    private static void sendPlayerToServer(Player player, String server) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(server);
@@ -205,7 +203,7 @@ public abstract class ParkourUser {
      */
     public final Instant joined;
 
-    public static int JOIN_COUNT;
+    public static int joinCount;
 
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
         this.player = player;
@@ -221,7 +219,6 @@ public abstract class ParkourUser {
      * Unregisters this user.
      */
     protected abstract void unregister();
-
 
     /**
      * Teleports the player asynchronously, which helps with unloaded chunks (?)
@@ -253,6 +250,7 @@ public abstract class ParkourUser {
 
     /**
      * Updates the scoreboard for the specified generator.
+     *
      * @param generator The generator.
      */
     public void updateScoreboard(ParkourGenerator generator) {
@@ -262,32 +260,32 @@ public abstract class ParkourUser {
         }
 
         Leaderboard leaderboard = generator.getMode().getLeaderboard();
-
-        String title = Strings.colour(Util.translate(player, Locales.getString(locale, "scoreboard.title")));
-        List<String> lines = new ArrayList<>();
-
-        Score top = new Score("?", "?", "?", 0);
-        if (leaderboard != null && leaderboard.getScoreAtRank(1) != null) {
-            top = leaderboard.getScoreAtRank(1);
+        Score top = leaderboard == null ? new Score("?", "?", "?", 0) : leaderboard.getScoreAtRank(1);
+        Score high = leaderboard == null ? new Score("?", "?", "?", 0) : leaderboard.get(getUUID());
+        if (top == null) {
+            top = new Score("?", "?", "?", 0);
         }
 
-        // update lines
-        for (String line : Locales.getStringList(locale, "scoreboard.lines").stream().map(Strings::colour).toList()) {
-            lines.add(replace(Util.translate(player, line), top, generator));
-        }
-
-        board.updateTitle(replace(title, top, generator));
-        board.updateLines(lines);
+        board.updateTitle(replace(Locales.getString(locale, "scoreboard.title"), top, high, generator));
+        board.updateLines(replace(Locales.getStringList(locale, "scoreboard.lines"), top, high, generator));
     }
 
-    private String replace(String s, Score top, ParkourGenerator generator) {
+    private List<String> replace(List<String> s, Score top, Score high, ParkourGenerator generator) {
+        return s.stream().map(line -> replace(line, top, high, generator)).toList();
+    }
+
+    private String replace(String s, Score top, Score high, ParkourGenerator generator) {
         return s.replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
-                .replace("%highscore%", Integer.toString(top.score())) // todo make highscore return player high score, not top
-                .replace("%topscore%", Integer.toString(top.score()))
-                .replace("%highscoretime%", top.time())
-                .replace("%topplayer%", top.name())
-                .replace("%session%", session.getPlayers().get(0).getName());
+                .replace("%difficulty%", Double.toString(generator.calculateDifficultyScore()))
+
+                .replace("%top_score%", Integer.toString(top.score()))
+                .replace("%top_player%", top.name())
+
+                .replace("%high_score%", Integer.toString(high.score()))
+                .replace("%high_score_time%", high.time())
+
+                .replace("%lobby%", session.getPlayers().get(0).getName());
     }
 
     /**
