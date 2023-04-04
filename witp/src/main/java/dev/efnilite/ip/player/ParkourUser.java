@@ -18,7 +18,6 @@ import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
-import dev.efnilite.vilib.util.Task;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -61,7 +60,8 @@ public abstract class ParkourUser {
         joinCount++;
         new ParkourJoinEvent(pp).call();
 
-        Task.create(IP.getPlugin()).async().execute(() -> IP.getStorage().readPlayer(pp)).run();
+//      todo make async:  Task.create(IP.getPlugin()).async().execute(() -> IP.getStorage().readPlayer(pp)).run();
+        IP.getStorage().readPlayer(pp);
         return pp;
     }
 

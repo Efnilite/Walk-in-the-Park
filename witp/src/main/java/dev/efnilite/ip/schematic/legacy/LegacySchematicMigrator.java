@@ -19,20 +19,23 @@ import java.util.stream.Stream;
 public class LegacySchematicMigrator {
 
     public void migrate() {
-        try (Stream<Path> stream = Files.walk(IP.getInFolder("schematics/").toPath())
-                .filter(path -> path.getFileName().endsWith(".witp"))) {
+        try (Stream<Path> stream = Files.walk(IP.getInFolder("schematics").toPath())
+                .filter(path -> path.toFile().getName().endsWith(".witp"))) {
 
             stream.map(Path::toFile)
                     .forEach(file -> {
+                        IP.logging().info("Migrating schematic %s".formatted(file.getName()));
+
                         read(file);
                         file.delete();
                     });
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            IP.logging().stack("Error while migrating schematics", ex);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void read(File file) {
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -42,10 +45,12 @@ public class LegacySchematicMigrator {
             return;
         }
 
-        Map<String, Integer> palette = getPalette(lines);
-        Map<String, Object[]> offsetData = getOffsetData(lines, palette);
+        Object[] data = getData(lines, getPossibleDuplicatePalette(lines));
 
-        // todo change file name
+        Map<String, Integer> palette = (Map<String, Integer>) data[0];
+        Map<String, Integer> offsetData = (Map<String, Integer>) data[1];
+
+        file = new File(file.getParent(), file.getName().split("\\.")[0]);
 
         // write to file
         try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
@@ -57,8 +62,8 @@ public class LegacySchematicMigrator {
         }
     }
 
-    private Map<String, Integer> getPalette(List<String> lines) {
-        Map<String, Integer> palette = new HashMap<>();
+    private Map<Integer, String> getPossibleDuplicatePalette(List<String> lines) {
+        Map<Integer, String> palette = new HashMap<>();
 
         boolean readingPalette = false; // palette is ? lines long
         for (String string : lines) { // reads the palette
@@ -70,19 +75,18 @@ public class LegacySchematicMigrator {
             }
             if (readingPalette) {
                 String[] elements = string.split(">");
-                palette.put(Bukkit.createBlockData(elements[1]).getAsString(), Integer.parseInt(elements[0]));
+                palette.put(Integer.parseInt(elements[0]), Bukkit.createBlockData(elements[1]).getAsString());
             }
         }
 
         return palette;
     }
 
-
     private final Pattern idPattern = Pattern.compile("^\\d+");
     private final Pattern vectorPattern = Pattern.compile("\\(-?\\d+,-?\\d+,-?\\d+\\)");
 
-    private Map<String, Object[]> getOffsetData(List<String> lines, Map<String, Integer> palette) {
-        Map<String, Object[]> offsetData = new HashMap<>();
+    private Object[] getData(List<String> lines, Map<Integer, String> palette) {
+        Map<String, String> intermediateOffsetData = new HashMap<>();
 
         String fileBlocks = lines.get(lines.size() - 1);
         String[] splitBlocks = fileBlocks.split("/");
@@ -98,25 +102,24 @@ public class LegacySchematicMigrator {
             }
 
             Matcher vectorMatcher = vectorPattern.matcher(block);
-            Vector vector = null;
+            Vector vector = new Vector();
             while (vectorMatcher.find()) {
                 vector = parseVector(vectorMatcher.group());
             }
 
-            offsetData.put(vector.toString(), new Object[] { getFromId(palette, id), null});
+            intermediateOffsetData.put(vector.toString(), palette.get(id));
         }
 
-        return offsetData;
-    }
+        // removes duplicates that apparently are present in schematics v1
+        Map<String, Integer> noDuplicatePalette = new HashMap<>();
+        intermediateOffsetData.values().stream().distinct().forEach(data -> noDuplicatePalette.put(data, noDuplicatePalette.size()));
 
-    private String getFromId(Map<String, Integer> palette, int id) {
-        return Colls.thread(palette)
-                .filter((k, v) -> v == id)
-                .get()
-                .keySet()
-                .stream()
-                .findAny()
-                .orElseThrow();
+        Map<String, Object[]> offsetData = Colls.thread(intermediateOffsetData)
+                .mapv((offset, data) -> noDuplicatePalette.get(data))
+                .mapv((offset, id) -> new Object[]{id, null})
+                .get();
+
+        return new Object[] { noDuplicatePalette, offsetData };
     }
 
     private Vector parseVector(String vector) {

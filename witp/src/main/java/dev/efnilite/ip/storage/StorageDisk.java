@@ -62,12 +62,10 @@ public final class StorageDisk implements Storage {
 
     @Override
     public void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
-        File file = getLeaderboardFile(mode);
-
         LeaderboardContainer container = new LeaderboardContainer();
         scores.forEach((uuid, score) -> container.serialized.put(uuid, score.toString()));
 
-        try (FileWriter writer = new FileWriter(file)) {
+        try (FileWriter writer = new FileWriter(getLeaderboardFile(mode))) {
             IP.getGson().toJson(container, writer);
             writer.flush();
         } catch (IOException ex) {

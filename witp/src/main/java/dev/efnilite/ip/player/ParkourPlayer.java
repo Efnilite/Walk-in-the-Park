@@ -142,7 +142,12 @@ public class ParkourPlayer extends ParkourUser {
             Object value = settings.get(key);
             OptionContainer container = PLAYER_COLUMNS.get(key);
 
-            if (value == null || !Option.OPTIONS_ENABLED.get(container.option)) {
+            if (container.consumer == null) {
+                continue;
+            }
+
+            if (value == null || !Option.OPTIONS_ENABLED.getOrDefault(container.option, true)) {
+                IP.logging().info("%s is null or disabled, v = %s".formatted(key, value));
                 container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
                 continue;
             }

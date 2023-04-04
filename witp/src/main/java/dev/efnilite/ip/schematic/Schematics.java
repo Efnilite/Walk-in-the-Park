@@ -1,6 +1,7 @@
 package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.schematic.legacy.LegacySchematicMigrator;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -38,6 +39,8 @@ public class Schematics {
                 FOLDER.mkdirs();
             }
 
+            new LegacySchematicMigrator().migrate();
+
             File[] files = FOLDER.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 
             if (files == null) {
@@ -47,12 +50,10 @@ public class Schematics {
 
             CACHE.clear();
             for (File file : files) {
-                String fileName = file.getName();
-
-                Schematic schematic = Schematic.create().load(fileName);
+                Schematic schematic = Schematic.create().load(file);
 
                 if (schematic.isSupported()) {
-                    CACHE.put(fileName, schematic);
+                    CACHE.put(file.getName(), schematic);
                 }
             }
 

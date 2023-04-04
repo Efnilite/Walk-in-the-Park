@@ -131,12 +131,12 @@ public class ParkourGenerator {
     /**
      * Where the player spawns on reset
      */
-    public Location playerSpawn;
+    public Block playerSpawn;
 
     /**
      * Where blocks from schematics spawn
      */
-    public Location blockSpawn;
+    public Block blockSpawn;
 
     /**
      * The task used in checking the player's current location
@@ -223,7 +223,7 @@ public class ParkourGenerator {
         specialChances.clear();
 
         specialChances.put(Material.PACKED_ICE.createBlockData(), Option.SPECIAL_ICE);
-        specialChances.put(Material.SMOOTH_QUARTZ_SLAB.createBlockData("[half=bottom]"), Option.SPECIAL_SLAB);
+        specialChances.put(Material.SMOOTH_QUARTZ_SLAB.createBlockData("[type=bottom]"), Option.SPECIAL_SLAB);
         specialChances.put(Material.GLASS_PANE.createBlockData(), Option.SPECIAL_PANE);
         specialChances.put(Material.OAK_FENCE.createBlockData(), Option.SPECIAL_FENCE);
     }
@@ -665,7 +665,7 @@ public class ParkourGenerator {
         start = null;
 
         if (regenerate) { // generate back the blocks
-            player.teleport(playerSpawn);
+            player.teleport(playerSpawn.getLocation());
             generateFirst(playerSpawn, blockSpawn);
             return;
         }
@@ -716,10 +716,11 @@ public class ParkourGenerator {
      * @param spawn The spawn of the player
      * @param block The location used to begin the parkour of off
      */
-    public void generateFirst(Location spawn, Location block) {
-        playerSpawn = spawn.clone();
-        lastStandingPlayerLocation = spawn.clone();
-        blockSpawn = block.clone();
+    public void generateFirst(Block spawn, Block block) {
+        playerSpawn = spawn;
+        lastStandingPlayerLocation = spawn.getLocation();
+        blockSpawn = block;
+        history.add(blockSpawn);
 
         generate(profile.get("blockLead").asInt());
     }
@@ -768,7 +769,7 @@ public class ParkourGenerator {
                 double difficulty = profile.get("schematicDifficulty").asDouble();
 
                 Schematic schematic = Schematics.CACHE.get(schematics.stream()
-                        .filter(name -> getDifficulty(name) <= difficulty)
+                        .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
                         .findAny() // select random schematic
                         .orElseThrow());
 
