@@ -65,6 +65,16 @@ public final class StorageDisk implements Storage {
         LeaderboardContainer container = new LeaderboardContainer();
         scores.forEach((uuid, score) -> container.serialized.put(uuid, score.toString()));
 
+        File file = getLeaderboardFile(mode);
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            } catch (IOException ex) {
+                IP.logging().stack("Error while trying to create leaderboard file %s".formatted(mode), ex);
+            }
+        }
+
         try (FileWriter writer = new FileWriter(getLeaderboardFile(mode))) {
             IP.getGson().toJson(container, writer);
             writer.flush();
