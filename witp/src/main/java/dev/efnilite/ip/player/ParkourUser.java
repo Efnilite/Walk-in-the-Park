@@ -283,6 +283,7 @@ public abstract class ParkourUser {
 
                 .replace("%top_score%", Integer.toString(top.score()))
                 .replace("%top_player%", top.name())
+                .replace("%top_time%", top.time())
 
                 .replace("%high_score%", Integer.toString(high.score()))
                 .replace("%high_score_time%", high.time())

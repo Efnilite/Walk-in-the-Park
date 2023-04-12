@@ -250,9 +250,9 @@ scoreboard:
     - "<blue>"
     - "<#F6A8A8>Score <white>%score%"
     - "<#F6A8A8>Tijd <white>%time%"
-    - "<#F6A8A8>High-score <white>%highscore%"
+    - "<#F6A8A8>High-score <white>%high_score%"
     - "<red>"
-    - "<dark_gray>%session%"
+    - "<dark_gray>%lobby%"
     - "<#FF6464><bold>server.ip"
 
 other:
