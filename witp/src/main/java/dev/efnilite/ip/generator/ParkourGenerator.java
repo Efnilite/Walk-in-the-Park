@@ -16,10 +16,12 @@ import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Probs;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.particle.ParticleData;
@@ -500,7 +502,8 @@ public class ParkourGenerator {
     public void startTick() {
         task = Task.create(IP.getPlugin())
                 .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
-                .execute(this::tick).run();
+                .execute(this::tick)
+                .run();
     }
 
     /**
@@ -626,7 +629,7 @@ public class ParkourGenerator {
         int record = leaderboard != null ? leaderboard.get(player.getUUID()).score() : 0;
         String time = getTime();
 
-        if (profile.get("showFallMessage").asBoolean() && regenerate) {
+        if (profile.get("showFallMessage").asBoolean()) {
             String message;
             int number = 0;
 
@@ -666,6 +669,10 @@ public class ParkourGenerator {
         }
 
         island.destroy();
+
+        for (ParkourSpectator spectator : session.getSpectators()) {
+            ParkourUser.register(spectator.player);
+        }
     }
 
     /**
@@ -733,7 +740,7 @@ public class ParkourGenerator {
             return;
         }
 
-        JumpType jump = schematicCooldown > 0 ? Probs.random(defaultChances) : JumpType.DEFAULT;
+        JumpType jump = schematicCooldown <= 0 ? Probs.random(defaultChances) : JumpType.DEFAULT;
 
         switch (jump) {
             case DEFAULT, SPECIAL -> {
@@ -763,10 +770,9 @@ public class ParkourGenerator {
 
                 double difficulty = profile.get("schematicDifficulty").asDouble();
 
-                Schematic schematic = Schematics.CACHE.get(schematics.stream()
+                Schematic schematic = Schematics.CACHE.get(Colls.random(schematics.stream()
                         .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
-                        .findAny() // select random schematic
-                        .orElseThrow());
+                        .toList()));
 
                 schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
 
@@ -793,7 +799,7 @@ public class ParkourGenerator {
         }
 
         Optional<Vector> optionalStart = schematic.getVectorBlockMap().entrySet().stream()
-                .filter(e -> e.getValue().getMaterial() == Material.GREEN_WOOL)
+                .filter(e -> e.getValue().getMaterial() == Material.LIME_WOOL)
                 .map(Map.Entry::getKey)
                 .findAny();
 
@@ -803,31 +809,38 @@ public class ParkourGenerator {
                 .findAny();
 
         if (optionalStart.isEmpty()) {
-            IP.logging().stack("Error while trying to find start of schematic",
-                    "check if you placed a green wool block");
+            IP.logging().stack("Error while trying to find start of schematic", "check if you placed a lime wool block");
             return Collections.emptyList();
         }
         if (optionalEnd.isEmpty()) {
-            IP.logging().stack("Error while trying to find end of schematic",
-                    "check if you placed a red wool block");
+            IP.logging().stack("Error while trying to find end of schematic", "check if you placed a red wool block");
             return Collections.emptyList();
         }
 
         Vector start = optionalStart.get();
         Vector end = optionalEnd.get();
-
-        // update most recent block
-        history.add(location.clone().add(end).getBlock());
+        IP.logging().info("Start: %s".formatted(start));
+        IP.logging().info("End: %s".formatted(end));
 
         // use the approximate direction of the schematic to determine if
         // and by how much we need to rotate the schematic to line up to the current heading.
-        Vector direction = end.clone()
-                .subtract(start)
+        Vector direction = end.clone().subtract(start);
+
+        direction.setX(Math.round(direction.getX())) // ensure 90deg angle
                 .setY(0) // avoid pitching
-                .normalize();
+                .setZ(Math.round(direction.getZ())); // ensure 90deg angle
+
+        IP.logging().info("Direction: %s".formatted(direction));
 
         double angle = direction.angle(heading);
+        IP.logging().info("Angle with heading: %s".formatted(angle));
+
         Vector angledDirection = direction.clone().rotateAroundY(angle);
+        IP.logging().info("Angle: %s".formatted(angledDirection));
+
+        // update most recent block, should follow rotation
+        Vector newEnd = end.clone().rotateAroundY(angle);
+        history.add(location.clone().add(newEnd).getBlock());
 
         return schematic.paste(location.subtract(start), angledDirection);
     }

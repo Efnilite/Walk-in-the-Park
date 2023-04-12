@@ -43,7 +43,7 @@ public class Schematics {
 
             File[] files = FOLDER.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 
-            if (files == null) {
+            if (files == null || files.length == 0) {
                 download();
                 return;
             }
@@ -67,8 +67,8 @@ public class Schematics {
         IP.logging().info("Downloading schematics...");
 
         List<String> schematics = new ArrayList<>();
-        schematics.addAll(Arrays.asList("spawn-island.witp", "spawn-island-duels.witp"));
-        schematics.addAll(Colls.range(SCHEMATIC_COUNT + 1).stream().map("parkour-%d.witp"::formatted).toList());
+        schematics.addAll(Arrays.asList("spawn-island", "spawn-island-duels"));
+        schematics.addAll(Colls.range(1, SCHEMATIC_COUNT + 1).stream().map("parkour-%d"::formatted).toList());
         schematics.forEach(Schematics::downloadFile);
     }
 

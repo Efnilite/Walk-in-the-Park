@@ -89,6 +89,13 @@ public class InventoryData {
     }
 
     private void saveFile() {
+        try {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        } catch (IOException ex) {
+            IP.logging().stack("Error while creating file to save inventory of %s to file %s".formatted(player.getName(), file.getName()), ex);
+        }
+
         try (ObjectOutputStream stream = new BukkitObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
             stream.writeObject(items);
             stream.flush();

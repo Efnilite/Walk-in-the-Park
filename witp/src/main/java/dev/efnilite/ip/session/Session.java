@@ -32,7 +32,7 @@ public class Session {
     /**
      * The generator.
      */
-    public ParkourGenerator generator;
+//   todo public ParkourGenerator generator;
 
     /**
      * The visibility of this session. Default public.
@@ -88,8 +88,8 @@ public class Session {
             this.players.remove(player.getUUID());
         }
 
-        if (this.players.size() == 0) {
-            generator.reset(false);
+        if (players.length > 0 && this.players.size() == 0) {
+            players[0].generator.reset(false);
             WorldDivider.disassociate(this);
         }
     }

@@ -52,7 +52,9 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     private static boolean parseBoolean(String string) {
-        return string == null || string.equals("1");
+        return string == null
+                || string.equals("1") // for MySQL
+                || string.equals("true"); // for disk
     }
 
     public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) { }
@@ -126,15 +128,12 @@ public class ParkourPlayer extends ParkourUser {
 
         session.removePlayers(this);
 
-        for (ParkourSpectator spectator : session.getSpectators()) {
-            register(spectator.player);
-        }
-
         save(IP.getPlugin().isEnabled());
     }
 
     /**
      * Sets the user's settings. If an item is not included, the setting gets reset.
+     *
      * @param settings The settings map.
      */
     public void setSettings(@NotNull Map<String, Object> settings) {
@@ -148,10 +147,11 @@ public class ParkourPlayer extends ParkourUser {
 
             if (value == null || !Option.OPTIONS_ENABLED.getOrDefault(container.option, true)) {
                 IP.logging().info("%s is null or disabled, v = %s".formatted(key, value));
-                container.consumer.accept(this, Option.OPTIONS_DEFAULTS.get(container.option));
+                container.consumer.accept(this, Option.OPTIONS_DEFAULTS.getOrDefault(container.option, ""));
                 continue;
             }
 
+            IP.logging().info("Option: %s | Value: %s".formatted(key, value));
             container.consumer.accept(this, String.valueOf(value));
         }
     }
