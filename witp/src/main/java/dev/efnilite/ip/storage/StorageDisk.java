@@ -125,11 +125,22 @@ public final class StorageDisk implements Storage {
 
     @Override
     public void writePlayer(@NotNull ParkourPlayer player) {
-        try (FileWriter writer = new FileWriter(getPlayerFile(player))) {
+        File file = getPlayerFile(player);
+
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            } catch (IOException ex) {
+                IP.logging().stack("Error while trying to create file to write disk data of %s to file %s".formatted(player.getName(), file), ex);
+            }
+        }
+
+        try (FileWriter writer = new FileWriter(file)) {
             IP.getGson().toJson(player, writer);
             writer.flush();
         } catch (IOException ex) {
-            IP.logging().stack("Error while trying to write disk data of %s".formatted(player.getName()), ex);
+            IP.logging().stack("Error while trying to write disk data of %s to file %s".formatted(player.getName(), file), ex);
         }
     }
 
