@@ -32,7 +32,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.GlassPane;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -501,28 +500,24 @@ public class ParkourGenerator {
     public void startTick() {
         task = Task.create(IP.getPlugin())
                 .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
-                .execute(new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (stopped) {
-                    this.cancel();
-                    return;
-                }
-
-                tick();
-            }
-        }).run();
+                .execute(this::tick).run();
     }
 
     /**
      * Starts the check
      */
     protected void tick() {
+        if (stopped) {
+            task.cancel();
+            return;
+        }
+
         for (ParkourPlayer other : session.getPlayers()) {
             updateVisualTime(other, other.selectedTime);
             other.updateScoreboard(this);
             other.player.setSaturation(20);
         }
+
         for (ParkourSpectator spectator : session.getSpectators()) {
             spectator.update();
         }
