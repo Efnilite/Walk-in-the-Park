@@ -80,7 +80,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return List with all players.
      */
     public static List<ParkourPlayer> getPlayers() {
-        return WorldDivider.SESSIONS.values().stream()
+        return WorldDivider.sessions.values().stream()
                 .flatMap(session -> session.getPlayers().stream())
                 .toList();
     }

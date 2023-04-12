@@ -20,7 +20,7 @@ public class WorldDivider {
     /**
      * Map with all session ids map to the session instances.
      */
-    public static final Map<Integer, Session> SESSIONS = new HashMap<>();
+    public static final Map<Integer, Session> sessions = new HashMap<>();
 
     /**
      * Associates a session to a specific section.
@@ -31,11 +31,11 @@ public class WorldDivider {
         // attempts to get the closest available section to the center
         int n = 0;
 
-        while (SESSIONS.get(n) != null) {
+        while (sessions.containsKey(n)) {
             n++;
         }
 
-        SESSIONS.put(n, session);
+        sessions.put(n, session);
     }
 
     /**
@@ -44,7 +44,7 @@ public class WorldDivider {
      * @param session The session.
      */
     public static void disassociate(Session session) {
-        SESSIONS.remove(getSectionId(session));
+        sessions.remove(getSectionId(session));
     }
 
     /**
@@ -63,7 +63,7 @@ public class WorldDivider {
 
     // returns the section id from the session instance. -1 if no found.
     private static int getSectionId(Session session) {
-        return SESSIONS.entrySet().stream()
+        return sessions.entrySet().stream()
                 .filter(entry -> entry.getValue() == session)
                 .map(Map.Entry::getKey)
                 .findFirst()

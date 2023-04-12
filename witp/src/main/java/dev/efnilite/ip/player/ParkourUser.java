@@ -18,6 +18,7 @@ import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
+import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -161,7 +162,7 @@ public abstract class ParkourUser {
      * @return List with all users.
      */
     public static List<ParkourUser> getUsers() {
-        return WorldDivider.SESSIONS.values().stream()
+        return WorldDivider.sessions.values().stream()
                 .flatMap(session -> Stream.concat(session.getPlayers().stream(), session.getSpectators().stream()))
                 .toList();
     }
@@ -275,7 +276,8 @@ public abstract class ParkourUser {
     }
 
     private String replace(String s, Score top, Score high, ParkourGenerator generator) {
-        return s.replace("%score%", Integer.toString(generator.score))
+        return Strings.colour(s
+                .replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
                 .replace("%difficulty%", Double.toString(generator.calculateDifficultyScore()))
 
@@ -285,7 +287,7 @@ public abstract class ParkourUser {
                 .replace("%high_score%", Integer.toString(high.score()))
                 .replace("%high_score_time%", high.time())
 
-                .replace("%lobby%", session.getPlayers().get(0).getName());
+                .replace("%lobby%", session.getPlayers().get(0).getName()));
     }
 
     /**

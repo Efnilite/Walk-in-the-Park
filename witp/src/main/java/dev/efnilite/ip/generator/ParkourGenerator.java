@@ -131,12 +131,12 @@ public class ParkourGenerator {
     /**
      * Where the player spawns on reset
      */
-    public Block playerSpawn;
+    public Location playerSpawn;
 
     /**
      * Where blocks from schematics spawn
      */
-    public Block blockSpawn;
+    public Location blockSpawn;
 
     /**
      * The task used in checking the player's current location
@@ -665,7 +665,7 @@ public class ParkourGenerator {
         start = null;
 
         if (regenerate) { // generate back the blocks
-            player.teleport(playerSpawn.getLocation());
+            player.teleport(playerSpawn);
             generateFirst(playerSpawn, blockSpawn);
             return;
         }
@@ -716,11 +716,11 @@ public class ParkourGenerator {
      * @param spawn The spawn of the player
      * @param block The location used to begin the parkour of off
      */
-    public void generateFirst(Block spawn, Block block) {
+    public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn;
-        lastStandingPlayerLocation = spawn.getLocation();
+        lastStandingPlayerLocation = spawn;
         blockSpawn = block;
-        history.add(blockSpawn);
+        history.add(blockSpawn.getBlock());
 
         generate(profile.get("blockLead").asInt());
     }

@@ -27,7 +27,6 @@ public final class Probs {
         return (1 / (sd * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * (a * a));
     }
 
-
     /**
      * @param distribution A map where each key is mapped to a probability.
      * @param <K>          The key type.
