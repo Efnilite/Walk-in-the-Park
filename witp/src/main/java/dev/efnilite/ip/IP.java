@@ -25,11 +25,15 @@ import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main class of Infinite Parkour
@@ -152,7 +156,7 @@ public final class IP extends ViPlugin {
     @Override
     public void disable() {
         for (ParkourUser user : ParkourUser.getUsers()) {
-            ParkourUser.unregister(user, true, false);
+            ParkourUser.leave(user);
         }
 
         // write all IP gamemodes
@@ -162,6 +166,23 @@ public final class IP extends ViPlugin {
 
         storage.close();
         WorldManager.delete();
+
+        List<Location> locations = drawCircle(10, new Location(WorldManager.getWorld(), 0, 0, 0), 0, 0);
+    }
+
+    public static List<Location> drawCircle(Integer radius, Location center, float yaw, float pitch) {
+        List<Location> locations = new ArrayList<>();
+        for (int i = 0; i < 360; i++) {
+            double x = radius * Math.cos(Math.toRadians(i));
+            double y = 0;
+            double z = radius * Math.sin(Math.toRadians(i));
+
+            // Rotate the circle around the center based on yaw and pitch
+            Vector rotated = new Vector(x, y, z).rotateAroundY(-yaw).rotateAroundX(pitch);
+            Location location = center.clone().add(rotated);
+            locations.add(location);
+        }
+        return locations;
     }
 
     @Override

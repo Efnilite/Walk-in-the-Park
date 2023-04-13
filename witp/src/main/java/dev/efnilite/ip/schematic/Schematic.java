@@ -30,6 +30,11 @@ import static java.lang.Math.min;
 public class Schematic {
 
     /**
+     * The version of this library instance.
+     */
+    public static final int VERSION = 1;
+
+    /**
      * @return A new schematic builder.
      */
     public static Builder create() {
@@ -67,7 +72,7 @@ public class Schematic {
      * Pastes a schematic at angles rotation.
      *
      * @param location The smallest location.
-     * @param rotation The rotation.
+     * @param rotation The rotation where x = roll in rad, y = yaw in rad and z = pitch in rad.
      */
     public List<Block> paste(Location location, Vector rotation) {
         return new SchematicPaster().paste(location, rotation, vectorBlockMap);

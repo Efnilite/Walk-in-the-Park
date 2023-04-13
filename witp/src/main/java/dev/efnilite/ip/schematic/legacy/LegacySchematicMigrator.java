@@ -54,6 +54,7 @@ public class LegacySchematicMigrator {
 
         // write to file
         try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+            stream.writeObject(1); // version
             stream.writeObject(palette);
             stream.writeObject(offsetData);
             stream.flush();

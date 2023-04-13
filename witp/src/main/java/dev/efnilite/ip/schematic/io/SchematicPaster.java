@@ -43,7 +43,7 @@ public class SchematicPaster {
      * Pastes a schematic at angles rotation with the provided map of offsets and BlockData.
      *
      * @param location      The smallest location.
-     * @param rotation      The rotation.
+     * @param rotation      The rotation where x = roll in rad, y = yaw in rad and z = pitch in rad.
      * @param vectorDataMap The map.
      * @return The affected blocks.
      */
@@ -67,9 +67,11 @@ public class SchematicPaster {
 
     // 3d rotation matrix constants, calculate once instead of however many blocks we have times
     private double[] getRotationConstants(Vector rotation) {
-        double a = rotation.getX();
+        // rotation in roll pitch yaw
+        // matrix in yaw (a) pitch (b) roll (y)
+        double a = rotation.getZ();
         double b = rotation.getY();
-        double y = rotation.getZ();
+        double y = rotation.getX();
 
         // src https://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
         return new double[] {

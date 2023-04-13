@@ -822,27 +822,31 @@ public class ParkourGenerator {
         IP.logging().info("Start: %s".formatted(start));
         IP.logging().info("End: %s".formatted(end));
 
-        // use the approximate direction of the schematic to determine if
-        // and by how much we need to rotate the schematic to line up to the current heading.
-        Vector direction = end.clone().subtract(start);
+        Vector startToEnd = end.clone().subtract(start);
+        IP.logging().info("Direction: %s".formatted(startToEnd));
 
-        direction.setX(Math.round(direction.getX())) // ensure 90deg angle
-                .setY(0) // avoid pitching
-                .setZ(Math.round(direction.getZ())); // ensure 90deg angle
+        // the normalized direction of the schematic snapped to 90 deg angles
+        Vector directionPer90Deg = Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ())
+                ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
+                : new Vector(0, 0, Math.signum(startToEnd.getZ()));  // z > x
 
-        IP.logging().info("Direction: %s".formatted(direction));
+        IP.logging().info("Direction per 90deg: %s".formatted(directionPer90Deg));
 
-        double angle = direction.angle(heading);
-        IP.logging().info("Angle with heading: %s".formatted(angle));
+        // the angle between heading and normalized direction of schematic, also snapped to 90 deg angles
+        double anglePer90Deg = angleInY(heading, directionPer90Deg);
+        IP.logging().info("Angle: %s".formatted(anglePer90Deg));
 
-        Vector angledDirection = direction.clone().rotateAroundY(angle);
-        IP.logging().info("Angle: %s".formatted(angledDirection));
+        IP.logging().info("At: %s".formatted(location.clone().subtract(start).toVector()));
 
-        // update most recent block, should follow rotation
-        Vector newEnd = end.clone().rotateAroundY(angle);
-        history.add(location.clone().add(newEnd).getBlock());
+        history.add(location.clone().add(end).getBlock());
 
-        return schematic.paste(location.subtract(start), angledDirection);
+        return schematic.paste(location.clone().subtract(start), new Vector(0, anglePer90Deg, 0)); // only yaw
+    }
+
+    private double angleInY(Vector a, Vector b) {
+        double dot = a.getX() * b.getX() + a.getZ() * b.getZ();
+        double det = a.getX() * b.getZ() - a.getZ() * b.getX();
+        return Math.atan2(det, dot);
     }
 
     private Block getLatest() {

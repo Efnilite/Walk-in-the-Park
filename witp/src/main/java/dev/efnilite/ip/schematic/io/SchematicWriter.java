@@ -1,6 +1,7 @@
 package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.state.State;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
@@ -37,6 +38,7 @@ public class SchematicWriter {
 
         // write to file
         try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+            stream.writeObject(Schematic.VERSION);
             stream.writeObject(palette);
             stream.writeObject(offsetData);
             stream.flush();
