@@ -39,6 +39,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -175,7 +176,7 @@ public class ParkourGenerator {
      */
     protected int lastPositionIndexPlayer = -1;
 
-    public List<Block> history = new ArrayList<>();
+    protected List<Block> history = new ArrayList<>();
 
     /**
      * Creates a new ParkourGenerator instance
@@ -819,34 +820,24 @@ public class ParkourGenerator {
 
         Vector start = optionalStart.get();
         Vector end = optionalEnd.get();
-        IP.logging().info("Start: %s".formatted(start));
-        IP.logging().info("End: %s".formatted(end));
-
         Vector startToEnd = end.clone().subtract(start);
-        IP.logging().info("Direction: %s".formatted(startToEnd));
 
-        // the normalized direction of the schematic snapped to 90 deg angles
-        Vector directionPer90Deg = Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ())
-                ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
-                : new Vector(0, 0, Math.signum(startToEnd.getZ()));  // z > x
+        // the angle between heading and normalized direction of schematic, snapped to 90 deg angles
+        double anglePer90Deg = angleInY(heading,
+                Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ())  // normalized direction of schematic snapped to 90 deg angles
+                    ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
+                    : new Vector(0, 0, Math.signum(startToEnd.getZ()))); // z > x
 
-        IP.logging().info("Direction per 90deg: %s".formatted(directionPer90Deg));
+        Location rotatedStart = location.clone().subtract(start.clone().rotateAroundY(anglePer90Deg));
+        Vector rotatedStartToEnd = startToEnd.clone().rotateAroundY(anglePer90Deg);
 
-        // the angle between heading and normalized direction of schematic, also snapped to 90 deg angles
-        double anglePer90Deg = angleInY(heading, directionPer90Deg);
-        IP.logging().info("Angle: %s".formatted(anglePer90Deg));
-
-        IP.logging().info("At: %s".formatted(location.clone().subtract(start).toVector()));
-
-        history.add(location.clone().add(end).getBlock());
-
-        return schematic.paste(location.clone().subtract(start), new Vector(0, anglePer90Deg, 0)); // only yaw
+        history.add(location.clone().add(rotatedStartToEnd).getBlock());
+        return schematic.paste(rotatedStart, new Vector(0, anglePer90Deg, 0)); // only yaw
     }
 
     private double angleInY(Vector a, Vector b) {
-        double dot = a.getX() * b.getX() + a.getZ() * b.getZ();
         double det = a.getX() * b.getZ() - a.getZ() * b.getX();
-        return Math.atan2(det, dot);
+        return Math.atan2(det, a.dot(b));
     }
 
     private Block getLatest() {
@@ -861,28 +852,10 @@ public class ParkourGenerator {
      * @return The current duration of the run.
      */
     public String getTime() {
-        if (start == null) {
-            return "0.0s";
-        }
+        SimpleDateFormat format = new SimpleDateFormat("mm:ss:SSS");
+        Date date = new Date(start != null ? Duration.between(start, Instant.now()).toMillis() : 0);
 
-        Duration duration = Duration.between(start, Instant.now());
-        StringJoiner builder = new StringJoiner(" ");
-
-        if (duration.toHoursPart() > 0) {
-            builder.add("%dh".formatted(duration.toHoursPart()));
-        }
-        if (duration.toMinutesPart() > 0) {
-            builder.add("%dm".formatted(duration.toMinutesPart()));
-        }
-        if (duration.toSecondsPart() > 0 || duration.toMillisPart() > 0) {
-            long rounded = Math.round(duration.toMillisPart() / 100.0);
-
-            if (rounded > 9) rounded = 9;
-
-            builder.add("%d.%ss".formatted(duration.toSecondsPart(), rounded));
-        }
-
-        return builder.toString();
+        return format.format(date);
     }
 
     /**
