@@ -286,9 +286,7 @@ public abstract class ParkourUser {
                 .replace("%top_time%", top.time())
 
                 .replace("%high_score%", Integer.toString(high.score()))
-                .replace("%high_score_time%", high.time())
-
-                .replace("%lobby%", session.getPlayers().get(0).getName()));
+                .replace("%high_score_time%", high.time()));
     }
 
     /**

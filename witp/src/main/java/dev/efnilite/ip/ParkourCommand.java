@@ -483,6 +483,10 @@ public class ParkourCommand extends ViCommand {
                 for (ParkourPlayer pp : ParkourPlayer.getPlayers()) {
                     completions.add(pp.getName());
                 }
+            } else if (args[0].equalsIgnoreCase("join") && sender.hasPermission(ParkourOption.JOIN.permission)) {
+                for (ParkourPlayer pp : ParkourPlayer.getPlayers()) {
+                    completions.add(pp.getName());
+                }
             } else if (args[0].equalsIgnoreCase("schematic") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.addAll(Arrays.asList("wand", "pos1", "pos2", "save", "paste"));
             } else if (args[0].equalsIgnoreCase("forcejoin") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
