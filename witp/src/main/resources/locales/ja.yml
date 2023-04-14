@@ -252,7 +252,6 @@ scoreboard:
     - "<#F6A8A8>時間 <white>%time%"
     - "<#F6A8A8>高得点 <white>%high_score%"
     - "<red>"
-    - "<dark_gray>%lobby%"
     - "<#FF6464><bold>server.ip"
 
 other:

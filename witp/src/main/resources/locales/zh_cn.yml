@@ -244,7 +244,6 @@ scoreboard:
     - "<#F6A8A8>时间 <white>%time%"
     - "<#F6A8A8>最高分数 <white>%high_score%"
     - "<red>"
-    - "<dark_gray>%lobby%"
     - "<#FF6464><bold>server.ip"
 
 other:
