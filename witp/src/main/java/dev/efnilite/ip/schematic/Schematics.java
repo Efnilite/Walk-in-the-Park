@@ -67,8 +67,8 @@ public class Schematics {
         IP.logging().info("Downloading schematics...");
 
         List<String> schematics = new ArrayList<>();
-        schematics.addAll(Arrays.asList("spawn-island", "spawn-island-duels"));
-        schematics.addAll(Colls.range(1, SCHEMATIC_COUNT + 1).stream().map("parkour-%d"::formatted).toList());
+        schematics.addAll(Arrays.asList("spawn-island.witp", "spawn-island-duels.witp"));
+        schematics.addAll(Colls.range(1, SCHEMATIC_COUNT + 1).stream().map("parkour-%d.witp"::formatted).toList());
         schematics.forEach(Schematics::downloadFile);
     }
 

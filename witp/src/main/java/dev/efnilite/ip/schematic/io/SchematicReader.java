@@ -26,7 +26,7 @@ public class SchematicReader {
     @SuppressWarnings("unchecked")
     public Map<Vector, BlockData> read(File file) {
         try (ObjectInputStream stream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-//            var version = (int) stream.readObject();
+            var version = (int) stream.readObject();
             var palette = (Map<String, Integer>) stream.readObject();
             var offsets = (Map<String, Object[]>) stream.readObject();
 
