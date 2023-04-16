@@ -39,7 +39,6 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -676,6 +675,14 @@ public class ParkourGenerator {
         }
     }
 
+    private void deleteStructure() {
+        schematicBlocks.forEach(block -> block.setType(Material.AIR));
+        schematicBlocks.clear();
+
+        deleteSchematic = false;
+        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+    }
+
     /**
      * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
      * the player to achieve this score using their settings.
@@ -692,14 +699,6 @@ public class ParkourGenerator {
         }
 
         return score;
-    }
-
-    private void deleteStructure() {
-        schematicBlocks.forEach(block -> block.setType(Material.AIR));
-        schematicBlocks.clear();
-
-        deleteSchematic = false;
-        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
     }
 
     /**
@@ -790,10 +789,6 @@ public class ParkourGenerator {
         }
     }
 
-    private enum JumpType {
-        DEFAULT, SCHEMATIC, SPECIAL
-    }
-
     private @NotNull List<Block> rotatedPaste(Schematic schematic, Location location) {
         if (schematic == null || location == null) {
             return Collections.emptyList();
@@ -852,10 +847,9 @@ public class ParkourGenerator {
      * @return The current duration of the run.
      */
     public String getTime() {
-        SimpleDateFormat format = new SimpleDateFormat("mm:ss:SSS");
         Date date = new Date(start != null ? Duration.between(start, Instant.now()).toMillis() : 0);
 
-        return format.format(date);
+        return Score.TIME_FORMAT.format(date);
     }
 
     /**
@@ -863,5 +857,9 @@ public class ParkourGenerator {
      */
     public Mode getMode() {
         return Modes.DEFAULT;
+    }
+
+    private enum JumpType {
+        DEFAULT, SCHEMATIC, SPECIAL
     }
 }

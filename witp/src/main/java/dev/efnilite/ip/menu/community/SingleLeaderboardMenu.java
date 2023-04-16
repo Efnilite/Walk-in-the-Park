@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -13,7 +14,6 @@ import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
-import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,24 +150,11 @@ public class SingleLeaderboardMenu {
     }
 
     private static long toMillis(@NotNull String string) {
-        long total = 0; // total duration in ms
-
-        for (String part : string.trim().split(" ")) {
-            if (part.contains("h")) { // measure hours
-                int h = Integer.parseInt(part.replace("h", ""));
-
-                total += Time.toMillis((long) h * Time.SECONDS_PER_HOUR);
-            } else if (part.contains("m")) {
-                int m = Integer.parseInt(part.replace("m", ""));
-
-                total += Time.toMillis((long) m * Time.SECONDS_PER_MINUTE);
-            } else if (part.contains("s")) {
-                double s = Double.parseDouble(part.replace("s", ""));
-
-                total += s * 1000;
-            }
+        try {
+            return Score.TIME_FORMAT.parse(string.trim()).getTime();
+        } catch (ParseException ex) {
+            IP.logging().stack("Error while trying to parse date format", ex);
+            return 0;
         }
-
-        return total;
     }
 }
