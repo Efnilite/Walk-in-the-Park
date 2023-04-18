@@ -19,6 +19,7 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -276,7 +277,7 @@ public abstract class ParkourUser {
     }
 
     private String replace(String s, Score top, Score high, ParkourGenerator generator) {
-        return Strings.colour(s
+        return Strings.colour(translate(player, s)
                 .replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
                 .replace("%difficulty%", Double.toString(generator.calculateDifficultyScore()))
@@ -287,6 +288,11 @@ public abstract class ParkourUser {
 
                 .replace("%high_score%", Integer.toString(high.score()))
                 .replace("%high_score_time%", high.time()));
+    }
+
+    // translate papi
+    private String translate(Player player, String string) {
+        return IP.getPlaceholderHook() == null ? string : PlaceholderAPI.setPlaceholders(player, string);
     }
 
     /**

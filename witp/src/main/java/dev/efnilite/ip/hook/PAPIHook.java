@@ -51,28 +51,17 @@ public class PAPIHook extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, @NotNull String params) {
         // placeholders that don't require a player
         switch (params) {
-            case "version":
-            case "ver":
+            case "version", "ver" -> {
                 return IP.getPlugin().getDescription().getVersion();
-            case "leader":
-            case "record_player":
+            }
+            case "leader", "record_player" -> {
                 Score score = Modes.DEFAULT.getLeaderboard().getScoreAtRank(1);
-
-                if (score == null) {
-                    return "?";
-                } else {
-                    return score.name();
-                }
-            case "leader_score":
-            case "record_score":
-            case "record":
-                score = Modes.DEFAULT.getLeaderboard().getScoreAtRank(1);
-
-                if (score == null) {
-                    return "?";
-                } else {
-                    return Integer.toString(score.score());
-                }
+                return score != null ? score.name() : "?";
+            }
+            case "leader_score", "record_score", "record" -> {
+                Score score = Modes.DEFAULT.getLeaderboard().getScoreAtRank(1);
+                return score != null ? Integer.toString(score.score()) : "?";
+            }
         }
 
         if (params.contains("player_rank_")) {

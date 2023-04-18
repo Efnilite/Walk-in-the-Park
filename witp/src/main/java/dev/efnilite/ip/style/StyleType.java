@@ -20,14 +20,7 @@ public abstract class StyleType {
     /**
      * The registered styles under this type, along with the possible materials they feature
      */
-    public HashMap<String, List<Material>> styles;
-
-    /**
-     * Constructor for this type
-     */
-    public StyleType() {
-        this.styles = new HashMap<>();
-    }
+    public HashMap<String, List<Material>> styles = new HashMap<>();
 
     /**
      * @return The internal name used for this type. Must be unique.
@@ -64,16 +57,6 @@ public abstract class StyleType {
         for (String style : list) { // get all styles in the path
             styles.put(style, getPossibleMaterials(style, path, file));
         }
-    }
-
-    /**
-     * Adds a style without reading from config
-     *
-     * @param name      The name of this style
-     * @param materials The materials belonging to this style
-     */
-    public void addStyle(@NotNull String name, @NotNull List<Material> materials) {
-        styles.put(name.toLowerCase(), materials);
     }
 
     @Nullable

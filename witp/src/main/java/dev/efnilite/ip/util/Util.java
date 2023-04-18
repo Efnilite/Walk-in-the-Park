@@ -1,9 +1,7 @@
 package dev.efnilite.ip.util;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.vilib.util.Strings;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -75,19 +73,5 @@ public class Util {
      */
     public static boolean isBedrockPlayer(Player player) {
         return Bukkit.getPluginManager().isPluginEnabled("floodgate") && FloodgateHook.isBedrockPlayer(player);
-    }
-
-    /**
-     * Translates any placeholders found by PlaceholderAPI
-     *
-     * @param player The player
-     * @param string The string that will be translated
-     * @return the translated string
-     */
-    public static String translate(Player player, String string) {
-        if (IP.getPlaceholderHook() == null) {
-            return string;
-        }
-        return PlaceholderAPI.setPlaceholders(player, string);
     }
 }

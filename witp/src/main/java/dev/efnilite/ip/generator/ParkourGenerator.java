@@ -420,7 +420,7 @@ public class ParkourGenerator {
         // check border
         if (tx < borderMarginX) {
             directions.add(new Vector(1, 0, 0));
-            // x should Vector
+            // x should increase
         } else if (tx > 1 - borderMarginX) {
             directions.add(new Vector(-1, 0, 0));
             // x should decrease
@@ -840,7 +840,7 @@ public class ParkourGenerator {
     }
 
     private double getDifficulty(String fileName) {
-        return Config.SCHEMATICS.getDouble("difficulty.%d".formatted(Integer.parseInt(fileName.split("[-.]")[1])));
+        return Config.SCHEMATICS.getDouble("difficulty.%s".formatted(fileName.split("[-.]")[1]));
     }
 
     /**

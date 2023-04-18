@@ -34,7 +34,7 @@ public record Score(String name, String time, String difficulty, int score) {
     public static Score fromString(String string) {
         String[] parts = string.split(SPLITTER);
 
-        return new Score(parts[0], parts[1], parseV1Score(parts[2]), Integer.parseInt(parts[3]));
+        return new Score(parts[0], parseV1Score(parts[1]), parts[2], Integer.parseInt(parts[3]));
     }
 
     @Override

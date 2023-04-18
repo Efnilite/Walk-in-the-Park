@@ -7,6 +7,7 @@
   - 70% saving time reduction
   - 37% file size reduction on large files
   - Schematics no longer need to be built facing north
+  - Parkour schematics no longer need to end in a number to be accepted in schematics.yml
 - Reworked difficulty score
   - Changed weights of each setting
   - Now allows for difficulties above 0.8

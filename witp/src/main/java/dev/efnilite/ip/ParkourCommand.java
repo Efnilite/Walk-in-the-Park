@@ -466,7 +466,7 @@ public class ParkourCommand extends ViCommand {
                 completions.add("play");
             }
             if (ParkourOption.LEADERBOARDS.mayPerform(sender)) {
-                completions.add("leaderboards");
+                completions.add("leaderboard");
             }
             if (sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 completions.add("schematic");
