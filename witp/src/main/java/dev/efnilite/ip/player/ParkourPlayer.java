@@ -23,8 +23,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
- * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode
- * besides Spectator Mode. Please note that this is NOT the same as {@link ParkourUser} itself.
+ * Subclass of {@link ParkourUser}. This class is used for players who are actively playing Parkour in any (default) mode.
  *
  * @author Efnilite
  */
@@ -42,10 +41,15 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("showFallMsg", new OptionContainer(ParkourOption.FALL_MESSAGE, (player, v) -> player.showFallMessage = parseBoolean(v)));
         PLAYER_COLUMNS.put("showScoreboard", new OptionContainer(ParkourOption.SCOREBOARD, (player, v) -> player.showScoreboard = parseBoolean(v)));
         PLAYER_COLUMNS.put("selectedTime", new OptionContainer(ParkourOption.TIME, (player, v) -> player.selectedTime = Integer.parseInt(v)));
-        PLAYER_COLUMNS.put("collectedRewards", new OptionContainer(null, (player, v) -> player.collectedRewards = Arrays.asList(v.split(","))));
+        PLAYER_COLUMNS.put("collectedRewards", new OptionContainer(null, (player, v) -> {
+            player.collectedRewards = new ArrayList<>();
+            if (!v.isEmpty()) {
+                player.collectedRewards.addAll(Arrays.asList(v.split(",")));
+            }
+        }));
         PLAYER_COLUMNS.put("locale", new OptionContainer(ParkourOption.LANG, (player, v) -> {
             player._locale = v;
-            player.locale = (v);
+            player.locale = v;
         }));
         PLAYER_COLUMNS.put("schematicDifficulty", new OptionContainer(ParkourOption.SCHEMATIC_DIFFICULTY, (player, v) -> player.schematicDifficulty = Double.parseDouble(v)));
         PLAYER_COLUMNS.put("sound", new OptionContainer(ParkourOption.SOUND, (player, v) -> player.sound = parseBoolean(v)));
@@ -146,12 +150,10 @@ public class ParkourPlayer extends ParkourUser {
             }
 
             if (value == null || !Option.OPTIONS_ENABLED.getOrDefault(container.option, true)) {
-                IP.logging().info("%s is null or disabled, v = %s".formatted(key, value));
                 container.consumer.accept(this, Option.OPTIONS_DEFAULTS.getOrDefault(container.option, ""));
                 continue;
             }
 
-            IP.logging().info("Option: %s | Value: %s".formatted(key, value));
             container.consumer.accept(this, String.valueOf(value));
         }
     }

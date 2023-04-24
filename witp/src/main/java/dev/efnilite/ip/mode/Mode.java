@@ -13,9 +13,11 @@ import org.jetbrains.annotations.Nullable;
 public interface Mode {
 
     /**
-     * @return The internal name used for this mode.
+     * Method that gets called when a mode is clicked in the menu or joined using /parkour join.
+     *
+     * @param player The player.
      */
-    @NotNull String getName();
+    void create(Player player);
 
     /**
      * @param locale The locale of the menu, used to adjust the name.
@@ -29,10 +31,8 @@ public interface Mode {
     @Nullable Leaderboard getLeaderboard();
 
     /**
-     * Method that gets called when a mode is clicked in the menu or joined using /parkour join.
-     *
-     * @param player The player.
+     * @return The internal name used for this mode.
      */
-    void create(Player player);
+    @NotNull String getName();
 
 }

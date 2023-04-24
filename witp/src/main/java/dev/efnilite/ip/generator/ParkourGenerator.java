@@ -65,7 +65,7 @@ public class ParkourGenerator {
     /**
      * The zone in which the parkour can take place. (playable area)
      */
-    public final Location[] zone;
+    public Location[] zone;
 
     /**
      * The direction of the parkour
@@ -118,6 +118,7 @@ public class ParkourGenerator {
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
     public final HashMap<JumpType, Double> defaultChances = new HashMap<>();
+    public final HashMap<JumpType, Double> noSchematicChances = new HashMap<>();
 
     /**
      * The total score achieved in this Generator instance
@@ -200,9 +201,15 @@ public class ParkourGenerator {
         // default
         defaultChances.clear();
 
-        defaultChances.put(JumpType.DEFAULT, Option.NORMAL);
+        defaultChances.put(JumpType.DEFAULT, Option.DEFAULT);
         defaultChances.put(JumpType.SCHEMATIC, Option.SCHEMATICS);
         defaultChances.put(JumpType.SPECIAL, Option.SPECIAL);
+
+        // no schematic
+        noSchematicChances.clear();
+
+        noSchematicChances.put(JumpType.DEFAULT, Option.DEFAULT);
+        noSchematicChances.put(JumpType.SPECIAL, Option.SPECIAL);
 
         // height
         heightChances.clear();
@@ -254,12 +261,8 @@ public class ParkourGenerator {
         }
 
         // play sound
-        for (ParkourPlayer viewer : session.getPlayers()) {
-            viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
-        }
-        for (ParkourSpectator viewer : session.getSpectators()) {
-            viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH);
-        }
+        session.getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
+        session.getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
     }
 
     protected BlockData selectBlockData() {
@@ -509,21 +512,19 @@ public class ParkourGenerator {
     /**
      * Starts the check
      */
-    protected void tick() {
+    public void tick() {
         if (stopped) {
             task.cancel();
             return;
         }
 
-        for (ParkourPlayer other : session.getPlayers()) {
+        session.getPlayers().forEach(other -> {
             updateVisualTime(other, other.selectedTime);
             other.updateScoreboard(this);
             other.player.setSaturation(20);
-        }
+        });
 
-        for (ParkourSpectator spectator : session.getSpectators()) {
-            spectator.update();
-        }
+        session.getSpectators().forEach(ParkourSpectator::update);
 
         if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
             fall();
@@ -728,19 +729,14 @@ public class ParkourGenerator {
     }
 
     /**
-     * Generates the next parkour block, choosing between structures and normal jumps.
-     * If it's a normal jump, it will get a random distance between them and whether it
-     * goes up or not.
-     * <p>
-     * Note: please be cautious when messing about with parkour generation, since even simple changes
-     * could break the entire plugin
+     * Generates the next parkour block or schematic.
      */
     public void generate() {
         if (waitForSchematicCompletion) {
             return;
         }
 
-        JumpType jump = schematicCooldown <= 0 ? Probs.random(defaultChances) : JumpType.DEFAULT;
+        JumpType jump = schematicCooldown <= 0 ? Probs.random(defaultChances) : Probs.random(noSchematicChances);
 
         switch (jump) {
             case DEFAULT, SPECIAL -> {
@@ -766,15 +762,16 @@ public class ParkourGenerator {
                 schematicCooldown--;
             }
             case SCHEMATIC -> {
-                List<String> schematics = new ArrayList<>(Schematics.CACHE.keySet());
-
                 double difficulty = profile.get("schematicDifficulty").asDouble();
 
-                Schematic schematic = Schematics.CACHE.get(Colls.random(schematics.stream()
+                Schematic schematic = Schematics.CACHE.get(Colls.random(Schematics.CACHE.keySet().stream()
                         .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
                         .toList()));
 
                 schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
+
+                particles(schematicBlocks);
+                sound(schematicBlocks);
 
                 new ParkourSchematicGenerateEvent(schematic, this, player).call();
 
@@ -819,14 +816,14 @@ public class ParkourGenerator {
 
         // the angle between heading and normalized direction of schematic, snapped to 90 deg angles
         double anglePer90Deg = angleInY(heading,
-                Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ())  // normalized direction of schematic snapped to 90 deg angles
+                Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ()) // normalized direction of schematic snapped to 90 deg angles
                     ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
                     : new Vector(0, 0, Math.signum(startToEnd.getZ()))); // z > x
 
         Location rotatedStart = location.clone().subtract(start.clone().rotateAroundY(anglePer90Deg));
         Vector rotatedStartToEnd = startToEnd.clone().rotateAroundY(anglePer90Deg);
 
-        history.add(location.clone().add(rotatedStartToEnd).getBlock());
+        history.add(location.clone().add(rotatedStartToEnd).subtract(0, 1, 0).getBlock());
         return schematic.paste(rotatedStart, new Vector(0, anglePer90Deg, 0)); // only yaw
     }
 

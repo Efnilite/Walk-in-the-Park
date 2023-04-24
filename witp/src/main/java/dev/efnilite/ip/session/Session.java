@@ -254,7 +254,6 @@ public class Session {
 
                 p.generator.island.build();
             });
-
             return session;
         }
     }

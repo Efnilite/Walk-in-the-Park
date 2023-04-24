@@ -221,7 +221,7 @@ public class Option {
     // --------------------------------------------------------------
     // Generation
 
-    public static double NORMAL;
+    public static double DEFAULT;
     public static double SPECIAL;
     public static double SCHEMATICS;
 
@@ -244,7 +244,7 @@ public class Option {
     public static int MIN_Y;
 
     private static void initGeneration() {
-        NORMAL = Config.GENERATION.getInt("generation.normal-jump.chance") / 100.0;
+        DEFAULT = Config.GENERATION.getInt("generation.normal-jump.chance") / 100.0;
         SCHEMATICS = Config.GENERATION.getInt("generation.structures.chance") / 100.0;
         SPECIAL = Config.GENERATION.getInt("generation.normal-jump.special.chance") / 100.0;
 
