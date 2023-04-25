@@ -10,6 +10,7 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
+import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
@@ -175,23 +176,31 @@ public class ParkourCommand extends ViCommand {
 
                 String type = args[1]; // get mode from second arg
                 Mode mode = Registry.getMode(type);
-                ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(Bukkit.getPlayer(type));
+                Player other = Bukkit.getPlayer(type);
+
+                if (other == null) {
+                    send(sender, IP.PREFIX + "Unknown player! Try typing the name again."); // could not find, so go to default
+                    return true;
+                }
+
+                ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(other);
 
                 if (mode == null) {
                     if (sessionOwner == null) {
                         send(sender, IP.PREFIX + "Unknown player! Try typing the name again."); // could not find, so go to default
-                    } else {
-                        ParkourUser user = ParkourUser.getUser(player);
-                        Session session = sessionOwner.session;
-                        if (user != null && user.session == session) {
-                            return true;
-                        }
+                        return true;
+                    }
 
-                        if (session.isAcceptingPlayers.apply(session)) {
-                            Modes.DEFAULT.create(player);
-                        } else {
-                            Modes.SPECTATOR.create(player, session);
-                        }
+                    ParkourUser user = ParkourUser.getUser(player);
+                    Session session = sessionOwner.session;
+                    if (user != null && user.session == session) {
+                        return true;
+                    }
+
+                    if (session.isAcceptingPlayers()) {
+                        ((MultiMode) session.generator.getMode()).join(player, session);
+                    } else {
+                        Modes.SPECTATOR.create(player, session);
                     }
                 } else {
                     mode.create(player);

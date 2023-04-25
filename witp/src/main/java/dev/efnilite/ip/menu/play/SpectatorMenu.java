@@ -38,7 +38,7 @@ public class SpectatorMenu {
         List<MenuItem> display = new ArrayList<>();
 
         for (Session session : WorldDivider.sessions.values()) {
-            if (!session.isAcceptingSpectators.apply(session)) { // only showcase sessions with spectators enabled
+            if (!session.isAcceptingSpectators()) { // only showcase sessions with spectators enabled
                 continue;
             }
 
