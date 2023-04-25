@@ -204,7 +204,10 @@ settings:
 
 lobby:
   name: "<white>Lobby"
-  
+
+  other_join: '<dark_green><bold>+ <reset><gray>%s a rejoins le Lobby'
+  other_leave: '<red><bold>- <reset><gray>%s à quitté le lobby'
+
   item:
     material: "iron_ingot"
     name: "<#EB608C><bold>Votre Lobby"

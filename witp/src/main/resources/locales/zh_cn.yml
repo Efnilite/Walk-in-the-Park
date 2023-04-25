@@ -197,6 +197,9 @@ settings:
 lobby:
   name: "<white>大厅"
 
+  other_join: '<dark_green><bold>+ <reset><gray>%s joined your lobby'
+  other_leave: '<red><bold>- <reset><gray>%s left your lobby'
+
   item:
     material: "iron_ingot"
     name: "<#EB608C><bold>你的大厅"

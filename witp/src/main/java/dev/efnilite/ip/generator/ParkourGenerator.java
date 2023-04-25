@@ -209,48 +209,50 @@ public class ParkourGenerator {
         this(session, Schematics.CACHE.get("spawn-island"), generatorOptions);
     }
 
+
     /**
-     * Calculates all chances for every variable
+     * Ensures generator preferences in profile can't be overridden by the player changing settings.
+     */
+    public void overrideProfile() { }
+
+    /**
+     * Calculates all chances for every variable.
+     * Modification is possible in the generator constructor or through external map changes.
      */
     protected void calculateChances() {
-        // default
         defaultChances.clear();
-
         defaultChances.put(JumpType.DEFAULT, Option.DEFAULT);
         defaultChances.put(JumpType.SCHEMATIC, Option.SCHEMATICS);
         defaultChances.put(JumpType.SPECIAL, Option.SPECIAL);
 
-        // no schematic
         noSchematicChances.clear();
-
         noSchematicChances.put(JumpType.DEFAULT, Option.DEFAULT);
         noSchematicChances.put(JumpType.SPECIAL, Option.SPECIAL);
 
-        // height
         heightChances.clear();
-
         heightChances.put(1, Option.NORMAL_UP);
         heightChances.put(0, Option.NORMAL_LEVEL);
         heightChances.put(-1, Option.NORMAL_DOWN);
         heightChances.put(-2, Option.NORMAL_DOWN2);
 
-        // distance
         distanceChances.clear();
-
         distanceChances.put(1, Option.NORMAL_ONE_BLOCK);
         distanceChances.put(2, Option.NORMAL_TWO_BLOCK);
         distanceChances.put(3, Option.NORMAL_THREE_BLOCK);
         distanceChances.put(4, Option.NORMAL_FOUR_BLOCK);
 
-        // special
         specialChances.clear();
-
         specialChances.put(Material.PACKED_ICE.createBlockData(), Option.SPECIAL_ICE);
         specialChances.put(Material.SMOOTH_QUARTZ_SLAB.createBlockData("[type=bottom]"), Option.SPECIAL_SLAB);
         specialChances.put(Material.GLASS_PANE.createBlockData(), Option.SPECIAL_PANE);
         specialChances.put(Material.OAK_FENCE.createBlockData(), Option.SPECIAL_FENCE);
     }
 
+    /**
+     * Generates particles around blocks.
+     *
+     * @param blocks The blocks.
+     */
     protected void particles(List<Block> blocks) {
         if (!profile.get("particles").asBoolean()) {
             return;
@@ -272,6 +274,11 @@ public class ParkourGenerator {
         }
     }
 
+    /**
+     * Generates sound around blocks.
+     *
+     * @param blocks The blocks.
+     */
     protected void sound(List<Block> blocks) {
         if (!profile.get("sound").asBoolean()) {
             return;
@@ -613,7 +620,7 @@ public class ParkourGenerator {
     }
 
     // updates the player time
-    private void updateVisualTime(ParkourPlayer player, int selectedTime) {
+    protected void updateVisualTime(ParkourPlayer player, int selectedTime) {
         int newTime = 18000 + selectedTime;
         if (newTime >= 24000) {
             newTime -= 24000;

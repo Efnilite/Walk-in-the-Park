@@ -1,5 +1,6 @@
 package dev.efnilite.ip.session;
 
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
@@ -71,9 +72,12 @@ public class Session {
      *
      * @param players The players to add.
      */
-    // todo add join message
     public void addPlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
+            for (ParkourPlayer to : getPlayers()) {
+                to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
+            }
+
             this.players.put(player.getUUID(), player);
         }
     }
@@ -85,6 +89,10 @@ public class Session {
      */
     public void removePlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
+            for (ParkourPlayer to : getPlayers()) {
+                to.send(Locales.getString(player.locale, "play.multi.other_leave").formatted(player.getName()));
+            }
+
             this.players.remove(player.getUUID());
         }
 

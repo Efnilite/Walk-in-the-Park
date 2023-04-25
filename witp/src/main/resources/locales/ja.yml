@@ -205,6 +205,9 @@ settings:
 lobby:
   name: "<white>ロビー"
 
+  other_join: '<dark_green><bold>+ <reset><gray>%sはロビーに入った'
+  other_leave: '<red><bold>- <reset><gray>%sはロビーに出た'
+
   item:
     material: "iron_ingot"
     name: "<#EB608C><bold>ロビー"

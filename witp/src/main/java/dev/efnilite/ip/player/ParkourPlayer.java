@@ -168,6 +168,8 @@ public class ParkourPlayer extends ParkourUser {
                 .set("useSchematic", useSchematic.toString())
                 .set("selectedTime", selectedTime.toString())
                 .set("style", style);
+
+        session.generator.overrideProfile();
     }
 
     /**
@@ -183,10 +185,11 @@ public class ParkourPlayer extends ParkourUser {
         }
     }
 
-    public void setup(Location to, boolean runGenerator) {
+    public void setup(Location to) {
         if (to != null) {
             teleport(to);
         }
+
         player.setGameMode(GameMode.ADVENTURE);
 
         // -= Inventory =-
@@ -208,10 +211,6 @@ public class ParkourPlayer extends ParkourUser {
             }).run();
         } else {
             sendTranslated("other.customize");
-        }
-
-        if (runGenerator) {
-            session.generator.startTick();
         }
     }
 

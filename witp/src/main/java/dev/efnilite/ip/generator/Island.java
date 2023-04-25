@@ -59,13 +59,13 @@ public final class Island {
 
             ParkourPlayer pp = session.getPlayers().get(0);
 
-            // todo remove ugliness
             Location ps = player.getLocation().add(0.5, 0, 0.5);
             ps.setYaw(Config.GENERATION.getInt("advanced.island.spawn.yaw"));
             ps.setPitch(Config.GENERATION.getInt("advanced.island.spawn.pitch"));
 
             session.generator.generateFirst(ps, parkour.getLocation());
-            pp.setup(ps, true);
+            session.generator.startTick();
+            pp.setup(ps);
         } catch (NoSuchElementException ex) {
             IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic),
                     "check if you used the same material as the one in generation.yml", ex);

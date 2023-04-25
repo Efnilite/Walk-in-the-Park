@@ -205,6 +205,9 @@ settings:
 lobby:
   name: "<white>Lobby"
 
+  other_join: '<dark_green><bold>+ <gray>%s is je lobby gejoined'
+  other_leave: '<red><bold>_ <gray>%s heeft je lobby verlaten'
+
   item:
     material: "iron_ingot"
     name: "<#EB608C><bold>Jouw Lobby"
