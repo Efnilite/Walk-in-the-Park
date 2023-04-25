@@ -77,7 +77,9 @@ public class Session {
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
             }
+        }
 
+        for (ParkourPlayer player : players) {
             this.players.put(player.getUUID(), player);
         }
     }
@@ -89,11 +91,13 @@ public class Session {
      */
     public void removePlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
-            for (ParkourPlayer to : getPlayers()) {
-                to.send(Locales.getString(player.locale, "play.multi.other_leave").formatted(player.getName()));
-            }
-
             this.players.remove(player.getUUID());
+        }
+
+        for (ParkourPlayer player : players) {
+            for (ParkourPlayer to : getPlayers()) {
+                to.send(Locales.getString(player.locale, "lobby.other_leave").formatted(player.getName()));
+            }
         }
 
         if (players.length > 0 && this.players.size() == 0) {

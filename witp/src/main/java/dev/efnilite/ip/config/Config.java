@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ import java.util.NoSuchElementException;
  */
 public enum Config {
 
-    CONFIG("config.yml"),
-    GENERATION("generation.yml"),
-    REWARDS("rewards-v2.yml"),
-    SCHEMATICS("schematics.yml");
+    CONFIG("config.yml", List.of("styles")),
+    GENERATION("generation.yml", null),
+    REWARDS("rewards-v2.yml", null),
+    SCHEMATICS("schematics.yml", List.of("difficulty"));
 
     /**
      * Reloads all config files.
@@ -55,8 +56,14 @@ public enum Config {
      */
     public final String fileName;
 
-    Config(String fileName) {
+    /**
+     * The sections in the file that will be ignored when updating the keys.
+     */
+    public final List<String> ignoredSections;
+
+    Config(String fileName, @Nullable List<String> ignoredSections) {
         this.fileName = fileName;
+        this.ignoredSections = ignoredSections;
         this.path = IP.getInFolder(fileName);
 
         if (!path.exists()) {
@@ -80,11 +87,7 @@ public enum Config {
      */
     public void update() {
         try {
-            ConfigUpdater.update(IP.getPlugin(), fileName, path, switch (fileName) {
-                case "config.yml" -> List.of("styles");
-                case "schematics.yml" -> List.of("difficulty");
-                default -> null;
-            });
+            ConfigUpdater.update(IP.getPlugin(), fileName, path, ignoredSections);
         } catch (Exception ex) {
             IP.logging().stack("Error while trying to update config file", ex);
         }

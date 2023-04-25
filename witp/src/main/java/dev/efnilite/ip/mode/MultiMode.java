@@ -21,4 +21,9 @@ public interface MultiMode extends Mode {
      * @param player The player
      */
     void leave(Player player, Session session);
+
+    /**
+     * @return The max player count.
+     */
+    int getMaxPlayers();
 }
