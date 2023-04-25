@@ -392,7 +392,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
     private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
-        if (player.generator.score > 0) {
+        if (player.session.generator.score > 0) {
             event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {
 
             }), event).stay(5 * 20));

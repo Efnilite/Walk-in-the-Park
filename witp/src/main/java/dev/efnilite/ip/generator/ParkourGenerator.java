@@ -176,22 +176,37 @@ public class ParkourGenerator {
      */
     protected int lastPositionIndexPlayer = -1;
 
+    /**
+     * The history of generated blocks. The most recently generated block is the last item in the list.
+     */
     protected List<Block> history = new ArrayList<>();
 
     /**
      * Creates a new ParkourGenerator instance
      *
-     * @param session The session associated with this generator
+     * @param session          The session.
+     * @param schematic        The schematic to use for the spawn island.
+     * @param generatorOptions The options.
      */
-    public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
+    public ParkourGenerator(@NotNull Session session, @NotNull Schematic schematic, GeneratorOption... generatorOptions) {
         this.session = session;
         this.generatorOptions = Arrays.asList(generatorOptions);
 
         player = session.getPlayers().get(0);
-        island = new Island(session, Schematics.CACHE.get("spawn-island"));
+        island = new Island(session, schematic);
         zone = WorldDivider.toSelection(session);
 
         calculateChances();
+    }
+
+    /**
+     * Creates a new ParkourGenerator instance.
+     *
+     * @param session          The session.
+     * @param generatorOptions The options.
+     */
+    public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
+        this(session, Schematics.CACHE.get("spawn-island"), generatorOptions);
     }
 
     /**
@@ -249,8 +264,10 @@ public class ParkourGenerator {
 
         // display particle
         switch (Option.PARTICLE_SHAPE) {
-            case DOT -> Particles.draw(center.add(0.5, 1, 0.5), data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5));
-            case CIRCLE -> Particles.circle(center.add(0.5, 0.5, 0.5), data.size(5), (int) Math.sqrt(blocks.size()), 20);
+            case DOT ->
+                    Particles.draw(center.add(0.5, 1, 0.5), data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5));
+            case CIRCLE ->
+                    Particles.circle(center.add(0.5, 0.5, 0.5), data.size(5), (int) Math.sqrt(blocks.size()), 20);
             case BOX -> Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data.size(1), 0.2);
         }
     }
@@ -296,7 +313,7 @@ public class ParkourGenerator {
     // This is done by choosing a random value for the sideways movement.
     // Based on this sideways movement, a value for forward movement will be chosen.
     // This is done to ensure players are able to complete the jump.
-    private Block selectNext(Block current, int range, int dy) {
+    protected Block selectNext(Block current, int range, int dy) {
         // calculate the player's location as parameter form to make it easier to detect
         // when a player is near the edge of the playable area
         double[][] progress = calculateParameterization();
@@ -370,7 +387,7 @@ public class ParkourGenerator {
     // Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
     // Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
     // This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
-    private double[][] calculateParameterization() {
+    protected double[][] calculateParameterization() {
         Location min = zone[0];
         Location max = zone[1];
 
@@ -403,14 +420,14 @@ public class ParkourGenerator {
         double borderMarginY = (0.5 * safeDistance) / dy;
         double borderMarginZ = safeDistance / dz;
 
-        return new double[][] {{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
+        return new double[][]{{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
     }
 
     // Updates the heading to make sure it avoids the border of the selected zone.
     // When the most recent block is detected to be within a 5-block radius of the border,
     // the heading will automatically be turned around to ensure that the edge does not get
     // destroyed.
-    private List<Vector> updateHeading(double[][] progress) {
+    protected List<Vector> updateHeading(double[][] progress) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -444,7 +461,7 @@ public class ParkourGenerator {
     // If the current height is fine, it will return the value of parameter currentHeight.
     // If the current height is within the border margin, it will return a value (1 or -1)
     // to make sure the player doesn't go below this value
-    private int updateHeight(double[][] progress, int currentHeight) {
+    protected int updateHeight(double[][] progress, int currentHeight) {
         double ty = progress[1][0];
         double borderMarginY = progress[1][1];
 
@@ -691,26 +708,15 @@ public class ParkourGenerator {
     public double calculateDifficultyScore() {
         double score = 0;
 
-        if (profile.get("useSpecialBlocks").asBoolean())                score += 0.5;
+        if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
         if (profile.get("useStructure").asBoolean()) {
-            if (profile.get("schematicDifficulty").asDouble() <= 0.25)  score += 0.2;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.5)   score += 0.3;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.75)  score += 0.4;
-            if (profile.get("schematicDifficulty").asDouble() <= 1.0)   score += 0.5;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
+            if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
         }
 
         return score;
-    }
-
-    /**
-     * Generates a specific amount of blocks ahead of the player
-     *
-     * @param amount The amount
-     */
-    public void generate(int amount) {
-        for (int i = 0; i < amount + 1; i++) {
-            generate();
-        }
     }
 
     /**
@@ -726,6 +732,17 @@ public class ParkourGenerator {
         history.add(blockSpawn.getBlock());
 
         generate(profile.get("blockLead").asInt());
+    }
+
+    /**
+     * Generates a specific amount of blocks ahead of the player
+     *
+     * @param amount The amount
+     */
+    public void generate(int amount) {
+        for (int i = 0; i < amount + 1; i++) {
+            generate();
+        }
     }
 
     /**
@@ -817,8 +834,8 @@ public class ParkourGenerator {
         // the angle between heading and normalized direction of schematic, snapped to 90 deg angles
         double anglePer90Deg = angleInY(heading,
                 Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ()) // normalized direction of schematic snapped to 90 deg angles
-                    ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
-                    : new Vector(0, 0, Math.signum(startToEnd.getZ()))); // z > x
+                        ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
+                        : new Vector(0, 0, Math.signum(startToEnd.getZ()))); // z > x
 
         Location rotatedStart = location.clone().subtract(start.clone().rotateAroundY(anglePer90Deg));
         Vector rotatedStartToEnd = startToEnd.clone().rotateAroundY(anglePer90Deg);
@@ -832,7 +849,7 @@ public class ParkourGenerator {
         return Math.atan2(det, a.dot(b));
     }
 
-    private Block getLatest() {
+    protected Block getLatest() {
         return history.get(history.size() - 1);
     }
 
@@ -856,7 +873,7 @@ public class ParkourGenerator {
         return Modes.DEFAULT;
     }
 
-    private enum JumpType {
+    protected enum JumpType {
         DEFAULT, SCHEMATIC, SPECIAL
     }
 }

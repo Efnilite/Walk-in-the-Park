@@ -47,7 +47,7 @@ public class DefaultMode implements Mode {
         }
 
         ParkourPlayer pp = ParkourPlayer.getPlayer(player);
-        if (pp != null && pp.generator.getMode() instanceof DefaultMode) {
+        if (pp != null && pp.session.generator.getMode() instanceof DefaultMode) {
             return;
         }
         player.closeInventory();

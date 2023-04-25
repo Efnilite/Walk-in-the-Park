@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
@@ -105,11 +104,6 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose List<String> collectedRewards;
 
     /**
-     * This player's generator.
-     */
-    public ParkourGenerator generator;
-
-    /**
      * Creates a new instance of a ParkourPlayer<br>
      * If you are using the API, please use {@link ParkourPlayer#register(Player)} instead
      */
@@ -126,7 +120,7 @@ public class ParkourPlayer extends ParkourUser {
 
     @Override
     public void unregister() {
-        if (generator.getMode() instanceof MultiMode mode) {
+        if (session.generator.getMode() instanceof MultiMode mode) {
             mode.leave(player, session);
         }
 
@@ -162,7 +156,7 @@ public class ParkourPlayer extends ParkourUser {
      * Forces this player's generator to match the settings of this player.
      */
     public void updateGeneratorSettings() {
-        Profile profile = generator.profile;
+        Profile profile = session.generator.profile;
 
         profile.set("schematicDifficulty", schematicDifficulty.toString())
                 .set("blockLead", blockLead.toString())
@@ -217,7 +211,7 @@ public class ParkourPlayer extends ParkourUser {
         }
 
         if (runGenerator) {
-            generator.startTick();
+            session.generator.startTick();
         }
     }
 

@@ -66,7 +66,7 @@ public class ParkourSpectator extends ParkourUser {
     public void update() {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Strings.colour(Locales.getString(player, "play.spectator.action_bar"))));
         player.setGameMode(GameMode.SPECTATOR);
-        updateScoreboard(closest.generator);
+        updateScoreboard(session.generator);
 
         if (closest.getLocation().distanceSquared(player.getLocation()) < 100 * 100) { // avoid sqrt
             return;

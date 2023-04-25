@@ -32,7 +32,7 @@ public class Session {
     /**
      * The generator.
      */
-//   todo public ParkourGenerator generator;
+    public ParkourGenerator generator;
 
     /**
      * The visibility of this session. Default public.
@@ -42,12 +42,12 @@ public class Session {
     /**
      * Function that takes the current session and returns whether new players should be accepted.
      */
-    public Function<Session, Boolean> isAcceptingPlayers = session -> false;
+    private Function<Session, Boolean> isAcceptingPlayers = session -> false;
 
     /**
      * Function that takes the current session and returns whether new spectators should be accepted.
      */
-    public Function<Session, Boolean> isAcceptingSpectators = session -> session.visibility == Visibility.PUBLIC;
+    private Function<Session, Boolean> isAcceptingSpectators = session -> session.visibility == Visibility.PUBLIC;
 
     /**
      * List of muted users.
@@ -64,7 +64,7 @@ public class Session {
      */
     protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
 
-    private Session() { }
+    protected Session() { }
 
     /**
      * Adds provided players to this session's player list.
@@ -89,7 +89,7 @@ public class Session {
         }
 
         if (players.length > 0 && this.players.size() == 0) {
-            players[0].generator.reset(false);
+            generator.reset(false);
             WorldDivider.disassociate(this);
         }
     }
@@ -132,13 +132,6 @@ public class Session {
     }
 
     /**
-     * @return The spectators.
-     */
-    public List<ParkourSpectator> getSpectators() {
-        return new ArrayList<>(spectators.values());
-    }
-
-    /**
      * Toggles mute for the specified user.
      *
      * @param user The user to (un)mute.
@@ -147,6 +140,28 @@ public class Session {
         if (!muted.remove(user)) {
             muted.add(user);
         }
+    }
+
+    /**
+     * @return True when players may join this session, false if not.
+     */
+    public boolean isAcceptingPlayers() {
+        return isAcceptingPlayers.apply(this);
+    }
+
+
+    /**
+     * @return True when spectators may join this session, false if not.
+     */
+    public boolean isAcceptingSpectators() {
+        return isAcceptingSpectators.apply(this);
+    }
+
+    /**
+     * @return The spectators.
+     */
+    public List<ParkourSpectator> getSpectators() {
+        return new ArrayList<>(spectators.values());
     }
 
     public enum Visibility {
@@ -237,22 +252,24 @@ public class Session {
          * @return The constructed session.
          */
         public Session complete() {
+            if (generator == null) throw new IllegalArgumentException("No generator");
+
             Session session = new Session();
 
             if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
             if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
             if (players != null) session.addPlayers(players);
+            if (generator != null) session.generator = generator.apply(session);
 
             WorldDivider.associate(session);
 
             // todo move to generator?
             Arrays.asList(players).forEach(p -> {
                 p.session = session;
-                p.generator = generator.apply(session);
 
                 p.updateGeneratorSettings();
 
-                p.generator.island.build();
+                session.generator.island.build();
             });
             return session;
         }
