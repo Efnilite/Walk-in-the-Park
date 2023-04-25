@@ -54,7 +54,7 @@ public class ParkourSpectator extends ParkourUser {
         closestChecker = Task.create(IP.getPlugin())
                 .async()
                 .execute(() -> closest = session.getPlayers().stream()
-                        .min(Comparator.comparing(other -> other.getLocation().distance(player.getLocation())))
+                        .min(Comparator.comparing(other -> other.getLocation().distanceSquared(player.getLocation()))) // x or x^2 doesn't matter in getting smallest
                         .orElseThrow())
                 .repeat(10)
                 .run();

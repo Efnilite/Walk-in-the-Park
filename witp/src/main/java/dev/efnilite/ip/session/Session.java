@@ -238,7 +238,6 @@ public class Session {
          * @param f The generator.
          * @return This instance.
          */
-        // todo move to generator?
         public Builder generator(Function<Session, ParkourGenerator> f) {
             generator = f;
 
@@ -266,11 +265,11 @@ public class Session {
             // todo move to generator?
             Arrays.asList(players).forEach(p -> {
                 p.session = session;
-
                 p.updateGeneratorSettings();
-
-                session.generator.island.build();
             });
+
+            session.generator.island.build();
+
             return session;
         }
     }
