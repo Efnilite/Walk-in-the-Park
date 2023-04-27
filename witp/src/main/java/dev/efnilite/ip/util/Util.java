@@ -31,6 +31,10 @@ public class Util {
      */
     // https://math.stackexchange.com/a/163101
     public static int[] spiralAt(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Invalid n bound: %d".formatted(n));
+        }
+
         n++; // one-index
         int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
         int t = 2 * k + 1;
