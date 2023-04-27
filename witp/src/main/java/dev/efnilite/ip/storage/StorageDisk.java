@@ -66,16 +66,9 @@ public final class StorageDisk implements Storage {
         scores.forEach((uuid, score) -> container.serialized.put(uuid, score.toString()));
 
         File file = getLeaderboardFile(mode);
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            } catch (IOException ex) {
-                IP.logging().stack("Error while trying to create leaderboard file %s".formatted(mode), ex);
-            }
-        }
+        createFile(file);
 
-        try (FileWriter writer = new FileWriter(getLeaderboardFile(mode))) {
+        try (FileWriter writer = new FileWriter(file)) {
             IP.getGson().toJson(container, writer);
             writer.flush();
         } catch (IOException ex) {
@@ -87,9 +80,9 @@ public final class StorageDisk implements Storage {
         return IP.getInFolder("leaderboards/%s.json".formatted(mode.toLowerCase()));
     }
 
-    private static class LeaderboardContainer {
+    public static class LeaderboardContainer {
         @Expose
-        private final Map<UUID, String> serialized = new LinkedHashMap<>();
+        public final Map<UUID, String> serialized = new LinkedHashMap<>();
     }
 
     @Override
@@ -127,20 +120,26 @@ public final class StorageDisk implements Storage {
     public void writePlayer(@NotNull ParkourPlayer player) {
         File file = getPlayerFile(player);
 
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            } catch (IOException ex) {
-                IP.logging().stack("Error while trying to create file to write disk data of %s to file %s".formatted(player.getName(), file), ex);
-            }
-        }
+        createFile(file);
 
         try (FileWriter writer = new FileWriter(file)) {
             IP.getGson().toJson(player, writer);
             writer.flush();
         } catch (IOException ex) {
             IP.logging().stack("Error while trying to write disk data of %s to file %s".formatted(player.getName(), file), ex);
+        }
+    }
+
+    private void createFile(File file) {
+        if (file.exists()) {
+            return;
+        }
+
+        try {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        } catch (IOException ex) {
+            IP.logging().stack("Error while trying to create file %s".formatted(file), ex);
         }
     }
 

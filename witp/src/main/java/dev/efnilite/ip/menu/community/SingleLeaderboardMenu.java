@@ -1,6 +1,5 @@
 package dev.efnilite.ip.menu.community;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -21,9 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.NotNull;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,8 +120,8 @@ public class SingleLeaderboardMenu {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
                 return scores.entrySet().stream().sorted((o1, o2) -> {
-                            long one = toMillis(o1.getValue().time());
-                            long two = toMillis(o2.getValue().time());
+                            long one = o1.getValue().toMillis();
+                            long two = o2.getValue().toMillis();
 
                             return Math.toIntExact(one - two); // natural order (lower == better)
                         }) // reverse natural order
@@ -147,14 +144,5 @@ public class SingleLeaderboardMenu {
         };
 
         abstract Map<UUID, Score> sort(Map<UUID, Score> scores);
-    }
-
-    private static long toMillis(@NotNull String string) {
-        try {
-            return Score.TIME_FORMAT.parse(string.trim()).getTime();
-        } catch (ParseException ex) {
-            IP.logging().stack("Error while trying to parse date format", ex);
-            return 0;
-        }
     }
 }

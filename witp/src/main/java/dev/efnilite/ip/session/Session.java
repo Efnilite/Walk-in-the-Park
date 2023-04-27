@@ -267,18 +267,20 @@ public class Session {
 
             Session session = new Session();
 
+            WorldDivider.associate(session);
+
             if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
             if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
             if (players != null) session.addPlayers(players);
             if (generator != null) session.generator = generator.apply(session);
 
-            WorldDivider.associate(session);
-
-            // todo move to generator?
-            Arrays.asList(players).forEach(p -> {
-                p.session = session;
-                p.updateGeneratorSettings();
-            });
+            if (players != null) {
+                // todo move to generator?
+                Arrays.asList(players).forEach(p -> {
+                    p.session = session;
+                    p.updateGeneratorSettings();
+                });
+            }
 
             session.generator.island.build();
 

@@ -384,7 +384,7 @@ public class ParkourGenerator {
         Location clone = current.getLocation();
 
         // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(Option.HEADING.clone().angle(heading));
+        offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
 
         clone.add(offset);
 
@@ -868,9 +868,7 @@ public class ParkourGenerator {
      * @return The current duration of the run.
      */
     public String getTime() {
-        Date date = new Date(start != null ? Duration.between(start, Instant.now()).toMillis() : 0);
-
-        return Score.TIME_FORMAT.format(date);
+        return Score.timeFromMillis(start != null ? (int) Duration.between(start, Instant.now()).toMillis() : 0);
     }
 
     /**

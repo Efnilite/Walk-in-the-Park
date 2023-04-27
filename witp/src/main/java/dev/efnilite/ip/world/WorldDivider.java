@@ -61,13 +61,13 @@ public class WorldDivider {
     }
 
 
-    // returns the section id from the session instance. -1 if no found.
+    // returns the section id from the session instance. error if no found.
     private static int getSectionId(Session session) {
         return sessions.entrySet().stream()
                 .filter(entry -> entry.getValue() == session)
                 .map(Map.Entry::getKey)
                 .findFirst()
-                .orElse(-1);
+                .orElseThrow();
     }
 
     /**
