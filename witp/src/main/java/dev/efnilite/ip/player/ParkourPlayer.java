@@ -42,8 +42,11 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("selectedTime", new OptionContainer(ParkourOption.TIME, (player, v) -> player.selectedTime = Integer.parseInt(v)));
         PLAYER_COLUMNS.put("collectedRewards", new OptionContainer(null, (player, v) -> {
             player.collectedRewards = new ArrayList<>();
+
             if (!v.isEmpty()) {
-                player.collectedRewards.addAll(Arrays.asList(v.split(",")));
+                player.collectedRewards.addAll(Arrays.stream(v.replaceAll("[ \\[\\]]", "").split(","))
+                        .distinct()
+                        .toList());
             }
         }));
         PLAYER_COLUMNS.put("locale", new OptionContainer(ParkourOption.LANG, (player, v) -> {
