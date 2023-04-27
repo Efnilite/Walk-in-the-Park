@@ -69,7 +69,7 @@ public class Locales {
                 plugin.saveResource("locales/en.yml", false);
                 plugin.saveResource("locales/nl.yml", false);
                 plugin.saveResource("locales/fr.yml", false);
-                plugin.saveResource("locales/ja.yml", false);
+                plugin.saveResource("locales/jp.yml", false);
                 plugin.saveResource("locales/zh_cn.yml", false);
             }
 

@@ -84,19 +84,19 @@ public class SingleLeaderboardMenu {
             items.add(item);
         }
 
+        List<String> values = Locales.getStringList(locale, "%s.sort.values".formatted(ParkourOption.LEADERBOARDS.path));
+
+        String name = switch (sort) {
+            case SCORE -> values.get(0);
+            case TIME -> values.get(1);
+            case DIFFICULTY -> values.get(2);
+        };
+
         // get next sorting type
         Sort next = switch (sort) {
             case SCORE -> Sort.TIME;
             case TIME -> Sort.DIFFICULTY;
             default -> Sort.SCORE;
-        };
-
-        List<String> values = Locales.getStringList(locale, "%s.sort.values".formatted(ParkourOption.LEADERBOARDS.path));
-
-        String name = switch (next) {
-            case SCORE -> values.get(0);
-            case TIME -> values.get(1);
-            case DIFFICULTY -> values.get(2);
         };
 
         menu.displayRows(0, 1)
@@ -114,7 +114,7 @@ public class SingleLeaderboardMenu {
         SCORE {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores; // already sorted
+                return scores; // already sorted // todo doesn't work
             }
         }, TIME {
             @Override

@@ -280,7 +280,7 @@ public abstract class ParkourUser {
         return Strings.colour(translate(player, s)
                 .replace("%score%", Integer.toString(generator.score))
                 .replace("%time%", generator.getTime())
-                .replace("%difficulty%", Double.toString(generator.calculateDifficultyScore()))
+                .replace("%difficulty%", Double.toString(generator.getDifficultyScore()))
 
                 .replace("%top_score%", Integer.toString(top.score()))
                 .replace("%top_player%", top.name())

@@ -17,6 +17,7 @@
   - New formula: difficulty * 15, e.g. 0.5 * 15 = 7 points
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed leaderboard sorting mode not being clear
 - Fixed scoreboard timer not going up consistently
 - Fixed rewards parsing when rewards are disabled
 - Fixed players getting a default style while styles are disabled

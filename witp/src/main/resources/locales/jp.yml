@@ -1,4 +1,4 @@
-# English (English, en)
+# 日本語 (Japanese, jp)
 # By Efnilite
 # Copy this file and rename it to add your own language!
 # Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
@@ -28,13 +28,13 @@ play:
     default:
       material: "barrel"
       name: "<#6693E7><bold>デフォルト"
-      lore: "<dark_gray>The default gamemode."
+      lore: "<dark_gray>デフォルトのゲームモード。"
 
   spectator:
     name: "<white>見物"
 
     join: "<#4CB3FF>今、見物です。 ゲームモードを変えるかやめるか\"/parkour\"を使います。"
-    action_bar: "<#4CB3FF>You are a spectator <gray>• <#4CB3FF>Use \"/parkour\" to leave."
+    action_bar: "<#4CB3FF>今、見物人です。 <gray>• <#4CB3FF>\"/parkour\"を使う to leave."
 
     other_join: "<dark_green><bold>+ <reset><gray>%s started spectating you"
     other_leave: "<red><bold>- <reset><gray>%s stopped spectating you"
@@ -50,19 +50,19 @@ play:
       lore: ""
 
 community:
-  name: "<white>Community"
+  name: "<white>コミュニティ"
 
   item:
     material: "oak_boat"
-    name: "<#60C9DF><bold>Community"
+    name: "<#60C9DF><bold>コミュニティ"
     lore: ""
 
   leaderboards:
-    name: "<white>Leaderboards"
+    name: "<white>リーダーボード"
 
     item:
       material: "gold_nugget"
-      name: "<#6693E7><bold>Leaderboards"
+      name: "<#6693E7><bold>リーダーボード"
       lore: ""
 
     sort:
@@ -77,11 +77,11 @@ community:
       lore: "<#5574AF>得点: <gray>%s||<#5574AF>時間: <gray>%t||<#5574AF>難しさ: <gray>%d<dark_gray>/1.0"
 
 settings:
-  name: "<white>Settings"
+  name: "<white>設定"
 
   item:
     material: "comparator"
-    name: "<#6086EB><bold>Settings"
+    name: "<#6086EB><bold>設定"
     lore: ""
 
   lang:
@@ -109,7 +109,7 @@ settings:
 
     item:
       material: "redstone"
-      name: "<#A10404><bold>Parkour Settings"
+      name: "<#A10404><bold>パルクールの設定"
       lore: "<dark_gray>Change the way your parkour appears."
 
     items:
@@ -130,12 +130,12 @@ settings:
         item:
           material: "crafting_table"
           name: "<#6693E7><bold>スタイル"
-          lore: "<#5574AF>今: <gray>%s||<gray>Choose which blocks will be used."
+          lore: "<#5574AF>今: <gray>%s||<gray>ブロックのスタイル。"
 
       leads:
         material: "feather"
-        name: "<#6693E7><bold>先のブロックの量"
-        lore: "<#5574AF>今: <gray>%s blocks||<gray>How many blocks will||<gray>be generated in front of you."
+        name: "<#6693E7><bold>先のブロックの数"
+        lore: "<#5574AF>今: <gray>%sブロック||<gray>先のブロックの数。"
 
       time:
         material: "clock"
@@ -145,13 +145,13 @@ settings:
       schematic_difficulty:
         material: ""
         name: "<#6693E7><bold>スキマティクの難しさ"
-        lore: "<#5574AF>今: <gray>%s||<gray>The difficulty of schematics"
+        lore: "<#5574AF>今: <gray>%s||<gray>スキマティクの難しさ。"
         values: ["初級", "中級", "高級", "上級"]
 
       schematic_use:
         material: ""
         name: "スキマティクの使用"
-        lore: "<gray>今: %s||<gray>If enabled static schematics||<gray>will appear throughout the parkour."
+        lore: "<gray>今: %s||<gray>オン時、schematics will appear throughout the parkour."
 
       schematic:
         name: "<white>スキマティク"
@@ -164,7 +164,7 @@ settings:
       scoreboard:
         material: ""
         name: "スコアボードを見せる"
-        lore: "<gray>今: %s||<gray>If enabled shows the scoreboard."
+        lore: "<gray>今: %s||<gray>オン時、スコアボードを見せる。"
 
       fall_message:
         item:
@@ -185,22 +185,22 @@ settings:
       particles:
         material: ""
         name: "パチケるを見せる"
-        lore: "<gray>今: %s||<gray>If enabled, every generated block||<gray>will show particles."
+        lore: "<gray>今: %s||<gray>オン時、every generated block||<gray>will show particles."
 
       sound:
         material: ""
         name: "音のプレイ"
-        lore: "<gray>今: %s||<gray>If enabled, every generated block||<gray>will play a sound."
+        lore: "<gray>今: %s||<gray>オン時、every generated block||<gray>will play a sound."
 
       special_blocks:
         material: ""
         name: "特別のブロックの使用"
-        lore: "<gray>今: %s||<gray>If enabled, uses special blocks like ice and slabs."
+        lore: "<gray>今: %s||<gray>オン時、uses special blocks like ice and slabs."
 
       score_difficulty:
         material: ""
         name: "得点の難しさ"
-        lore: "<gray>今: %s||<gray>When enabled, the higher score you have,||<gray>the more difficult it gets."
+        lore: "<gray>今: %s||<gray>オン時、 the higher score you have,||<gray>the more difficult it gets."
 
 lobby:
   name: "<white>ロビー"
@@ -229,8 +229,8 @@ lobby:
 
     item:
       material: "cake"
-      name: "<#8DC9E5><bold>Manage Players"
-      lore: "<dark_gray>Kick or mute players here."
+      name: "<#8DC9E5><bold>Manage プレイヤー"
+      lore: "<dark_gray>プレイヤーをキックするやミュートする。"
 
     head:
       material: ""
@@ -260,7 +260,7 @@ scoreboard:
 other:
 
   no_do: "<gray>これをできません。"
-  no_teleporting: "<white>You can''t enter the parkour world by teleporting!"
+  no_teleporting: "<white>パルクールの世界にテレポート　can't be used。"
   customize: "<gray>Customize your parkour experience by using \"/parkour\""
 
   quit:

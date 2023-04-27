@@ -566,7 +566,7 @@ public class ParkourGenerator {
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteSchematic) { // Structure deletion check
-            for (int i = 0; i < calculateDifficultyScore() * 15; i++) {
+            for (int i = 0; i < getDifficultyScore() * 15; i++) {
                 score();
             }
             waitForSchematicCompletion = false;
@@ -680,7 +680,7 @@ public class ParkourGenerator {
 
         if (leaderboard != null && score > record) {
             for (ParkourPlayer player : session.getPlayers()) {
-                leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(calculateDifficultyScore()).substring(0, 3), score));
+                leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(getDifficultyScore()).substring(0, 3), score));
             }
         }
 
@@ -709,50 +709,6 @@ public class ParkourGenerator {
     }
 
     /**
-     * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
-     * the player to achieve this score using their settings.
-     */
-    public double calculateDifficultyScore() {
-        double score = 0;
-
-        if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
-        if (profile.get("useStructure").asBoolean()) {
-            if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
-            if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
-        }
-
-        return score;
-    }
-
-    /**
-     * Generates the first few blocks (which come off the spawn island)
-     *
-     * @param spawn The spawn of the player
-     * @param block The location used to begin the parkour of off
-     */
-    public void generateFirst(Location spawn, Location block) {
-        playerSpawn = spawn;
-        lastStandingPlayerLocation = spawn;
-        blockSpawn = block;
-        history.add(blockSpawn.getBlock());
-
-        generate(profile.get("blockLead").asInt());
-    }
-
-    /**
-     * Generates a specific amount of blocks ahead of the player
-     *
-     * @param amount The amount
-     */
-    public void generate(int amount) {
-        for (int i = 0; i < amount + 1; i++) {
-            generate();
-        }
-    }
-
-    /**
      * Generates the next parkour block or schematic.
      */
     public void generate() {
@@ -760,7 +716,7 @@ public class ParkourGenerator {
             return;
         }
 
-        JumpType jump = schematicCooldown <= 0 ? Probs.random(defaultChances) : Probs.random(noSchematicChances);
+        JumpType jump = (schematicCooldown <= 0 && !generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) ? Probs.random(defaultChances) : Probs.random(noSchematicChances);
 
         switch (jump) {
             case DEFAULT, SPECIAL -> {
@@ -772,7 +728,7 @@ public class ParkourGenerator {
                 }
 
                 for (Block block : blocks) {
-                    BlockData data = jump == JumpType.SPECIAL ? Probs.random(specialChances) : selectBlockData();
+                    BlockData data = (jump == JumpType.SPECIAL && !generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) ? Probs.random(specialChances) : selectBlockData();
 
                     block.setBlockData(data, data instanceof Fence || data instanceof GlassPane);
                 }
@@ -862,6 +818,50 @@ public class ParkourGenerator {
 
     private double getDifficulty(String fileName) {
         return Config.SCHEMATICS.getDouble("difficulty.%s".formatted(fileName.split("[-.]")[1]));
+    }
+
+    /**
+     * Generates a specific amount of blocks ahead of the player
+     *
+     * @param amount The amount
+     */
+    public void generate(int amount) {
+        for (int i = 0; i < amount + 1; i++) {
+            generate();
+        }
+    }
+
+    /**
+     * Generates the first few blocks (which come off the spawn island)
+     *
+     * @param spawn The spawn of the player
+     * @param block The location used to begin the parkour of off
+     */
+    public void generateFirst(Location spawn, Location block) {
+        playerSpawn = spawn;
+        lastStandingPlayerLocation = spawn;
+        blockSpawn = block;
+        history.add(blockSpawn.getBlock());
+
+        generate(profile.get("blockLead").asInt());
+    }
+
+    /**
+     * Calculates a score between 0 (inclusive) and 1 (inclusive) to determine how difficult it was for
+     * the player to achieve this score using their settings.
+     */
+    public double getDifficultyScore() {
+        double score = 0;
+
+        if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
+        if (profile.get("useStructure").asBoolean()) {
+            if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
+            if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
+            if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
+        }
+
+        return score;
     }
 
     /**
