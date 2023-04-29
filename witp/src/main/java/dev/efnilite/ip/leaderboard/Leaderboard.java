@@ -76,15 +76,11 @@ public class Leaderboard {
 
     // sorts all scores in the map
     private void sort() {
-        // get all entries in a list
-        List<Map.Entry<UUID, Score>> toSort = new ArrayList<>(scores.entrySet());
-
-        // sort in reverse natural order
-        toSort.sort(Comparator.comparingInt(entry -> entry.getValue().score()));
-
-        // compile map back together
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
-        toSort.forEach(entry -> sorted.put(entry.getKey(), entry.getValue()));
+
+        scores.entrySet().stream()
+                .sorted((one, two) -> two.getValue().score() - one.getValue().score())
+                .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
 
         scores.clear();
         scores.putAll(sorted);
