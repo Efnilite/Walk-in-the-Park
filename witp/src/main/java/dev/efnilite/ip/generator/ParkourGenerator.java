@@ -118,7 +118,6 @@ public class ParkourGenerator {
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
     public final HashMap<JumpType, Double> defaultChances = new HashMap<>();
-    public final HashMap<JumpType, Double> noSchematicChances = new HashMap<>();
 
     /**
      * The total score achieved in this Generator instance
@@ -224,10 +223,6 @@ public class ParkourGenerator {
         defaultChances.put(JumpType.DEFAULT, Option.DEFAULT);
         defaultChances.put(JumpType.SCHEMATIC, Option.SCHEMATICS);
         defaultChances.put(JumpType.SPECIAL, Option.SPECIAL);
-
-        noSchematicChances.clear();
-        noSchematicChances.put(JumpType.DEFAULT, Option.DEFAULT);
-        noSchematicChances.put(JumpType.SPECIAL, Option.SPECIAL);
 
         heightChances.clear();
         heightChances.put(1, Option.NORMAL_UP);
@@ -716,7 +711,14 @@ public class ParkourGenerator {
             return;
         }
 
-        JumpType jump = (schematicCooldown <= 0 && !generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) ? Probs.random(defaultChances) : Probs.random(noSchematicChances);
+        JumpType jump;
+        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) {
+            Map<JumpType, Double> map = new HashMap<>(defaultChances);
+            map.remove(JumpType.SCHEMATIC);
+            jump = Probs.random(map);
+        } else {
+            jump = Probs.random(defaultChances);
+        }
 
         switch (jump) {
             case DEFAULT, SPECIAL -> {
