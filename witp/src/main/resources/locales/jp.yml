@@ -22,7 +22,7 @@ play:
 
     item:
       material: "ender_pearl"
-      name: "<#6E92B1><bold>シングルプレい"
+      name: "<#6E92B1><bold>シングルプレイ"
       lore: ""
 
     default:
@@ -36,8 +36,8 @@ play:
     join: "<#4CB3FF>今、見物です。 ゲームモードを変えるかやめるか\"/parkour\"を使います。"
     action_bar: "<#4CB3FF>今、見物人です。 <gray>• <#4CB3FF>\"/parkour\"を使う to leave."
 
-    other_join: "<dark_green><bold>+ <reset><gray>%s started spectating you"
-    other_leave: "<red><bold>- <reset><gray>%s stopped spectating you"
+    other_join: "<dark_green><bold>+ <reset><gray>%sはあなたを見物するを始めた。"
+    other_leave: "<red><bold>- <reset><gray>%sはあなたを見物するを止めた。"
 
     item:
       material: "glass"
@@ -158,8 +158,8 @@ settings:
 
         item:
           material: "scaffolding"
-          name: "<#6693E7><bold>スキマティク"
-          lore: "<gray>Change schematic settings"
+          name: "<#6693E7><bold>スキマティクの設定"
+          lore: "<gray>スキマティクの設定。"
 
       scoreboard:
         material: ""
@@ -189,7 +189,7 @@ settings:
 
       sound:
         material: ""
-        name: "音のプレイ"
+        name: "音をプレイする"
         lore: "<gray>今: %s||<gray>オン時、every generated block||<gray>will play a sound."
 
       special_blocks:
@@ -220,7 +220,7 @@ lobby:
     values: ["私立", "invite-only", "公共"]
 
   player_management:
-    name: "<white>Manage players"
+    name: "<white>プレイヤーのマネジメント"
 
     kicked: "You've been kicked from your lobby by the lobby owner."
     advice: "Set your lobby visibility to invite-only or private to avoid people randomly joining."
@@ -229,7 +229,7 @@ lobby:
 
     item:
       material: "cake"
-      name: "<#8DC9E5><bold>Manage プレイヤー"
+      name: "<#8DC9E5><bold>プレイヤーのマネジメント"
       lore: "<dark_gray>プレイヤーをキックするやミュートする。"
 
     head:
@@ -247,7 +247,7 @@ styles:
 
 scoreboard:
 
-  title: "<#FF6464><bold>無限パルクール"
+  title: "<#FF6464><bold>無限なパルクール"
 
   lines:
     - "<blue>"
@@ -265,7 +265,7 @@ other:
 
   quit:
     material: "barrier"
-    name: "<#D71F1F><bold>やめる"
+    name: "<#D71F1F><bold>終了"
     lore: ""
 
   close:
