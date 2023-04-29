@@ -222,10 +222,10 @@ lobby:
   player_management:
     name: "<white>Gérer les joueurs"
     
-    kicked: "Vous avez été kick de votre lobby par l'owner."
-    advice: "Définissez la visibilité de votre lobby comme étant sur invitation seulement ou privée afin d'éviter que des personnes ne rejoigne."
-    muted: "Vous avez été mute par l'owner du Lobby."
-    unmuted: "Vous avez été unmute par l'owner du Lobby."
+    kicked: "<gray>Vous avez été kick de votre lobby par l'owner."
+    advice: "<gray>Définissez la visibilité de votre lobby comme étant sur invitation seulement ou privée afin d'éviter que des personnes ne rejoigne."
+    muted: "<gray>Vous avez été mute par l'owner du Lobby."
+    unmuted: "<gray>Vous avez été unmute par l'owner du Lobby."
     
     item:
       material: "cake"

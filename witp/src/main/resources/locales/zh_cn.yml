@@ -214,10 +214,10 @@ lobby:
   player_management:
     name: "<white>管理玩家"
 
-    kicked: "你被房主踢出了大厅"
-    advice: "将你的大厅能见度设置为只接受邀请或私人可以避免人们随机加入"
-    muted: "你被房主禁言了"
-    unmuted: "你被房主解除禁言了"
+    kicked: "<gray>你被房主踢出了大厅"
+    advice: "<gray>将你的大厅能见度设置为只接受邀请或私人可以避免人们随机加入"
+    muted: "<gray>你被房主禁言了"
+    unmuted: "<gray>你被房主解除禁言了"
 
     item:
       material: "cake"

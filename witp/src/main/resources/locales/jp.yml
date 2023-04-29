@@ -217,15 +217,15 @@ lobby:
     material: "firework_rocket"
     name: "<#A1E1DD><bold>見える"
     lore: "<dark_gray>今: <#2BD4E2><bold>%s||<dark_gray>Select who can join your lobby."
-    values: ["私立", "invite-only", "公共"]
+    values: ["私立", "招きだけ", "公共"]
 
   player_management:
     name: "<white>プレイヤーのマネジメント"
 
-    kicked: "You've been kicked from your lobby by the lobby owner."
-    advice: "Set your lobby visibility to invite-only or private to avoid people randomly joining."
-    muted: "You've been muted by the lobby owner."
-    unmuted: "You've been unmuted by the lobby owner."
+    kicked: "<gray>You've been kicked from your lobby by the lobby owner."
+    advice: "<gray>Set your lobby visibility to invite-only or private to avoid people randomly joining."
+    muted: "<gray>You've been muted by the lobby owner."
+    unmuted: "<gray>You've been unmuted by the lobby owner."
 
     item:
       material: "cake"
@@ -237,7 +237,7 @@ lobby:
       name: "<#4BD16D><bold>%s"
       lore: ""
       top: "<dark_gray>ロビーにミュートかった||"
-      bottom: "<#8DE5A3>Left click<dark_gray> to kick from lobby||<#8DE5A3>Right click<dark_gray> to (un)mute in lobby"
+      bottom: "<#8DE5A3>左クリック<dark_gray>でロビーからキックする。||<#8DE5A3>右クリック<dark_gray> to (un)mute in lobby"
 
 styles:
   default:
@@ -260,7 +260,7 @@ scoreboard:
 other:
 
   no_do: "<gray>これをできません。"
-  no_teleporting: "<white>パルクールの世界にテレポート　can't be used。"
+  no_teleporting: "<white>パルクールの世界にテレポートするをできません。"
   customize: "<gray>Customize your parkour experience by using \"/parkour\""
 
   quit:

@@ -222,10 +222,10 @@ lobby:
   player_management:
     name: "<white>Spelers beheren"
 
-    kicked: "Je bent uit je vorige lobby gegooid door de eigenaar van de lobby."
-    advice: "Zet je lobbyzichtbaarheid naar alleen met invite of privé om te voorkomen dat willekeurige mensen joinen."
-    muted: "Je bent door de eigenaar van de lobby gemute."
-    unmuted: "Je bent door de eigenaar van de lobby ge-unmute."
+    kicked: "<gray>Je bent uit je vorige lobby gegooid door de eigenaar van de lobby."
+    advice: "<gray>Zet je lobbyzichtbaarheid naar alleen met invite of privé om te voorkomen dat willekeurige mensen joinen."
+    muted: "<gray>Je bent door de eigenaar van de lobby gemute."
+    unmuted: "<gray>Je bent door de eigenaar van de lobby ge-unmute."
 
     item:
       material: "cake"
