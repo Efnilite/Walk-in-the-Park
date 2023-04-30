@@ -114,7 +114,7 @@ public class SingleLeaderboardMenu {
         SCORE {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores; // already sorted // todo doesn't work
+                return scores; // already sorted
             }
         }, TIME {
             @Override

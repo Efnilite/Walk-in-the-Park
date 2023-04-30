@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Class for style types
+ * todo remove this, replace with Style class
  */
 public abstract class StyleType {
 
@@ -50,7 +51,7 @@ public abstract class StyleType {
         List<String> list = Util.getChildren(file, path, false);
 
         if (list.isEmpty()) {
-            IP.logging().error("Style path " + path + " not found");
+            IP.logging().error("Style path %s not found".formatted(path));
             return;
         }
 
@@ -62,15 +63,15 @@ public abstract class StyleType {
     @Nullable
     private List<Material> getPossibleMaterials(@NotNull String name, @NotNull String path, @NotNull FileConfiguration file) {
         List<Material> materials = new ArrayList<>();
-        String possible = file.getString(path + "." + name);
+        String possible = file.getString("%s.%s".formatted(path, name));
 
         if (possible == null) {
-            IP.logging().warn("Style at path " + path + " doesn't exist but is registered!");
+            IP.logging().warn("Style at path %s doesn't exist but is registered!".formatted(path));
             return null;
         }
 
-        for (String material : possible.replaceAll("[\\[\\]]", "").split(", ")) {
-            Material mat = Material.getMaterial(material.toUpperCase());
+        for (String material : possible.replaceAll("[\\[\\]]", "").split(",")) {
+            Material mat = Material.getMaterial(material.trim().toUpperCase());
             if (mat == null) {
                 continue;
             }
