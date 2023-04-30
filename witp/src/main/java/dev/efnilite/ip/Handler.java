@@ -92,10 +92,11 @@ public class Handler implements EventWatcher {
         }
 
         player.teleport(Bukkit.getWorlds().stream()
-                    .filter(world -> !world.equals(WorldManager.getWorld()))
-                    .findAny()
-                    .orElseThrow(() -> new NoSuchElementException("No fallback world was found!")).getSpawnLocation(),
-                PlayerTeleportEvent.TeleportCause.PLUGIN);
+                .filter(world -> !world.equals(WorldManager.getWorld()))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
+                .getSpawnLocation(),
+            PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     @EventHandler
@@ -237,7 +238,7 @@ public class Handler implements EventWatcher {
 
         boolean isAdmin = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
-        if (player.getWorld() == parkour && user == null && !isAdmin) {
+        if (player.getWorld() == parkour && user == null && !isAdmin && player.getTicksLived() > 20) {
             player.kickPlayer("You can't enter the parkour world by teleporting!");
             return;
         }
