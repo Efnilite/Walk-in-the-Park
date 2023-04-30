@@ -26,10 +26,6 @@ public class DefaultStyleType extends StyleType {
     public Material get(String style) {
         List<Material> materials = styles.get(style);
 
-        if (materials == null) {
-            return null;
-        }
-
-        return Colls.random(materials);
+        return materials != null ? Colls.random(materials) : null;
     }
 }

@@ -23,7 +23,6 @@ import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Time;
-import dev.efnilite.vilib.util.Version;
 import org.bukkit.*;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -35,19 +34,14 @@ import java.util.*;
 
 import static dev.efnilite.ip.util.Util.send;
 
-// todo fix this hot mess
 @SuppressWarnings("deprecation")
 public class ParkourCommand extends ViCommand {
 
     public static final HashMap<Player, Location[]> selections = new HashMap<>();
 
-    private static final ItemStack wand;
-
-    static {
-        wand = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand")
-                .lore("<gray>Left click: first position", "<gray>Right click: second position")
-                .build();
-    }
+    private static final ItemStack WAND = new Item(Material.GOLDEN_AXE, "<red><bold>Schematic Wand")
+            .lore("<gray>Left click: first position", "<gray>Right click: second position")
+            .build();
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
@@ -67,18 +61,14 @@ public class ParkourCommand extends ViCommand {
             } else if (ParkourOption.MAIN.mayPerform(player)) {
                 Menus.MAIN.open(player);
             }
-            return true;
         } else if (args.length == 1) {
             switch (args[0].toLowerCase()) {
-                // Help menu
-                case "help" -> {
-                    sendHelpMessages(sender);
-                    return true;
-                }
+                case "help" -> sendHelpMessages(sender);
                 case "reload" -> {
                     if (!cooldown(sender, "reload", 2500)) {
                         return true;
                     }
+
                     if (!sender.hasPermission(ParkourOption.ADMIN.permission)) {
                         sender.sendMessage(defaultLocale, "other.no_do");
                         return true;
@@ -90,7 +80,6 @@ public class ParkourCommand extends ViCommand {
                     Option.init(false);
 
                     send(sender, IP.PREFIX + "Reloaded all config files in " + Time.timerEnd("ip reload") + "ms!");
-                    return true;
                 }
             }
             if (player == null) {
@@ -99,7 +88,6 @@ public class ParkourCommand extends ViCommand {
             switch (args[0]) {
                 case "leaderboard" -> {
                     player.performCommand("ip leaderboard invalid");
-                    return true;
                 }
                 case "join" -> {
                     if (!cooldown(sender, "join", 2500)) {
@@ -117,29 +105,23 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     Modes.DEFAULT.create(player);
-                    return true;
                 }
                 case "leave" -> {
                     if (!cooldown(sender, "leave", 2500)) {
                         return true;
                     }
                     ParkourUser.leave(player);
-
-                    return true;
                 }
                 case "menu", "main" -> {
                     if (!ParkourOption.MAIN.mayPerform(player)) {
                         Menus.MAIN.open(player);
                     }
-                    return true;
                 }
                 case "play" -> {
                     if (!ParkourOption.PLAY.mayPerform(player)) {
                         return true;
                     }
                     Menus.PLAY.open(player);
-
-                    return true;
                 }
                 case "schematic" -> {
                     if (!player.hasPermission(ParkourOption.SCHEMATIC.permission)) { // default players shouldn't have access even if perms are disabled
@@ -151,16 +133,13 @@ public class ParkourCommand extends ViCommand {
                     send(player, "");
                     send(player, "<gray>Welcome to the schematic creating section.");
                     send(player, "<gray>You can use the following commands:");
-                    if (Version.isHigherOrEqual(Version.V1_14)) {
-                        send(player, "<red>/ip schematic wand <dark_gray>- <gray>Get the schematic wand");
-                    }
+                    send(player, "<red>/ip schematic wand <dark_gray>- <gray>Get the schematic wand");
                     send(player, "<red>/ip schematic pos1 <dark_gray>- <gray>Set the first position of your selection");
                     send(player, "<red>/ip schematic pos2 <dark_gray>- <gray>Set the second position of your selection");
                     send(player, "<red>/ip schematic save <dark_gray>- <gray>Save your selection to a schematic file");
                     send(player, "<red>/ip schematic paste <file> <dark_gray>- <gray>Paste a schematic file");
                     send(player, "");
                     send(player, "<dark_gray><underlined>Have any questions or need help? Join the Discord!");
-                    return true;
                 }
             }
         } else if (args.length == 2) {
@@ -205,7 +184,6 @@ public class ParkourCommand extends ViCommand {
                 } else {
                     mode.create(player);
                 }
-                return true;
             } else if (args[0].equalsIgnoreCase("schematic") && player != null && player.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 Location playerLocation = player.getLocation();
@@ -213,15 +191,12 @@ public class ParkourCommand extends ViCommand {
 
                 switch (args[1].toLowerCase()) {
                     case "wand" -> {
-                        if (Version.isHigherOrEqual(Version.V1_14)) {
-                            player.getInventory().addItem(wand);
+                        player.getInventory().addItem(WAND);
 
-                            send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
-                            send(player, "<gray>Use your IP Schematic Wand to easily select schematics.");
-                            send(player, "<gray>Use <dark_gray>left click<gray> to set the first position, and <dark_gray>right click <gray>for the second!");
-                            send(player, "<gray>If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands <gray>instead.");
-                        }
-                        return true;
+                        send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
+                        send(player, "<gray>Use your IP Schematic Wand to easily select schematics.");
+                        send(player, "<gray>Use <dark_gray>left click<gray> to set the first position, and <dark_gray>right click <gray>for the second!");
+                        send(player, "<gray>If you can't place a block and need to set a position mid-air, use <dark_gray>the pos commands <gray>instead.");
                     }
                     case "pos1" -> {
                         send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(playerLocation, true));
@@ -234,7 +209,6 @@ public class ParkourCommand extends ViCommand {
                         selections.put(player, new Location[]{playerLocation, existingSelection[1]});
 
                         Particles.box(BoundingBox.of(playerLocation, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
-                        return true;
                     }
                     case "pos2" -> {
                         send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(playerLocation, true));
@@ -247,7 +221,6 @@ public class ParkourCommand extends ViCommand {
                         selections.put(player, new Location[]{existingSelection[0], playerLocation});
 
                         Particles.box(BoundingBox.of(existingSelection[0], playerLocation), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
-                        return true;
                     }
                     case "save" -> {
                         if (!cooldown(sender, "schematic-save", 2500)) {
@@ -270,7 +243,6 @@ public class ParkourCommand extends ViCommand {
                         send(player, "<dark_gray>Be sure to add this schematic to &r<dark_gray>schematics.yml!");
 
                         Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
-                        return true;
                     }
                 }
             } else if (args[0].equalsIgnoreCase("forcejoin") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
@@ -323,7 +295,6 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 Modes.DEFAULT.create(other);
-                return true;
             } else if (args[0].equalsIgnoreCase("forceleave") && args[1] != null && sender.hasPermission(ParkourOption.ADMIN.permission)) {
 
                 if (args[1].equalsIgnoreCase("everyone") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
@@ -347,7 +318,6 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 ParkourUser.leave(user);
-                return true;
             } else if (args[0].equalsIgnoreCase("recoverinventory") && sender.hasPermission(ParkourOption.ADMIN.permission)) {
                 if (!cooldown(sender, "recoverinventory", 2500)) {
                     return true;
@@ -422,8 +392,6 @@ public class ParkourCommand extends ViCommand {
 
                     send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
                 }
-
-                return true;
             } else if (args[0].equalsIgnoreCase("leaderboard")) {
 
                 // check permissions
@@ -522,9 +490,9 @@ public class ParkourCommand extends ViCommand {
         }
     }
 
-    public static void sendHelpMessages(CommandSender sender) {
+    private void sendHelpMessages(CommandSender sender) {
         send(sender, "");
-        send(sender, "<dark_gray><strikethrough>---------------<reset> " + IP.NAME + " <dark_gray><strikethrough>---------------<reset>");
+        send(sender, "<dark_gray><strikethrough>---------------<reset> %s <dark_gray><strikethrough>---------------<reset>".formatted(IP.NAME));
         send(sender, "");
         send(sender, "<gray>/parkour <dark_gray>- Main command");
         if (sender.hasPermission(ParkourOption.JOIN.permission)) {
@@ -549,6 +517,5 @@ public class ParkourCommand extends ViCommand {
             send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory. <red>Useful for recovering data after server crashes or errors when leaving.");
         }
         send(sender, "");
-
     }
 }

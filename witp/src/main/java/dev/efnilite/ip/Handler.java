@@ -91,7 +91,11 @@ public class Handler implements EventWatcher {
             return;
         }
 
-        player.teleport(Bukkit.getWorlds().stream().filter(world -> !world.equals(WorldManager.getWorld())).findAny().orElseThrow(() -> new NoSuchElementException("No fallback world was found!")).getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        player.teleport(Bukkit.getWorlds().stream()
+                    .filter(world -> !world.equals(WorldManager.getWorld()))
+                    .findAny()
+                    .orElseThrow(() -> new NoSuchElementException("No fallback world was found!")).getSpawnLocation(),
+                PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     @EventHandler
@@ -286,7 +290,7 @@ public class Handler implements EventWatcher {
     }
 
     private void handleRestriction(Player player, Cancellable event) {
-        if (ParkourUser.getUser(player) == null) {
+        if (!ParkourUser.isUser(player)) {
             return;
         }
 

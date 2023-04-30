@@ -26,8 +26,8 @@ public class Session {
      *
      * @return A new builder instance.
      */
-    public static Builder create() {
-        return new Builder();
+    public static Builder create(Function<Session, ParkourGenerator> generatorFunction) {
+        return new Builder(generatorFunction);
     }
 
     /**
@@ -203,7 +203,11 @@ public class Session {
         private Function<Session, Boolean> isAcceptingPlayers;
         private Function<Session, Boolean> isAcceptingSpectators;
         private ParkourPlayer[] players;
-        private Function<Session, ParkourGenerator> generator;
+        private final Function<Session, ParkourGenerator> generator;
+
+        private Builder(Function<Session, ParkourGenerator> generator) {
+            this.generator = generator;
+        }
 
         /**
          * Sets the accepting players function.
@@ -245,26 +249,12 @@ public class Session {
         }
 
         /**
-         * Adds the generator.
-         *
-         * @param f The generator.
-         * @return This instance.
-         */
-        public Builder generator(Function<Session, ParkourGenerator> f) {
-            generator = f;
-
-            return this;
-        }
-
-        /**
          * Builds a new session instance with the provided settings.
          * Assigns the session with {@link WorldDivider#associate(Session)}.
          *
          * @return The constructed session.
          */
         public Session complete() {
-            if (generator == null) throw new IllegalArgumentException("No generator");
-
             Session session = new Session();
 
             WorldDivider.associate(session);
@@ -272,7 +262,8 @@ public class Session {
             if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
             if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
             if (players != null) session.addPlayers(players);
-            if (generator != null) session.generator = generator.apply(session);
+
+            session.generator = generator.apply(session);
 
             if (players != null) {
                 // todo move to generator?

@@ -15,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-// todo yikes!
 public class LegacySchematicMigrator {
 
     public void migrate() {

@@ -69,9 +69,6 @@ public class Util {
     }
 
     /**
-     * Returns whether the provided player is a Bedrock player.
-     * This check is provided by Floodgate
-     *
      * @param player The player
      * @return true if the player is a Bedrock player, false if not.
      */

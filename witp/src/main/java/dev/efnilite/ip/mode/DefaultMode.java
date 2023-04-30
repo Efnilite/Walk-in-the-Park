@@ -52,9 +52,8 @@ public class DefaultMode implements Mode {
         }
         player.closeInventory();
 
-        Session.create()
+        Session.create(ParkourGenerator::new)
                 .addPlayers(ParkourUser.register(player))
-                .generator(ParkourGenerator::new)
                 .complete();
     }
 }

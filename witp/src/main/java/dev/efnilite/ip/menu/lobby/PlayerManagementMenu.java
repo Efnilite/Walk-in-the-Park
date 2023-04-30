@@ -79,9 +79,8 @@ public class PlayerManagementMenu {
 
                 switch (click) {
                     case LEFT -> {
-                        Session.create()
+                        Session.create(ParkourGenerator::new)
                                 .addPlayers(ParkourUser.register(other.player))
-                                .generator(ParkourGenerator::new)
                                 .complete();
 
                         other.sendTranslated("lobby.player_management.kicked");

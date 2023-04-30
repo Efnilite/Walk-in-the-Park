@@ -62,7 +62,6 @@ public abstract class ParkourUser {
         joinCount++;
         new ParkourJoinEvent(pp).call();
 
-//      todo make async:  Task.create(IP.getPlugin()).async().execute(() -> IP.getStorage().readPlayer(pp)).run();
         IP.getStorage().readPlayer(pp);
         return pp;
     }
@@ -135,8 +134,8 @@ public abstract class ParkourUser {
         try {
             player.sendPluginMessage(IP.getPlugin(), "BungeeCord", out.toByteArray());
         } catch (ChannelNotRegisteredException ex) {
-            IP.logging().error("Tried to send " + player.getName() + " to server " + server + " but this server is not registered!");
-            player.kickPlayer("There was an error while trying to move you to server " + server + ", please rejoin.");
+            IP.logging().stack("Error while trying to send %s to server %s. This server is not registered.".formatted(player.getName(), server), ex);
+            player.kickPlayer("Couldn't move you to %s. Please rejoin.".formatted(server));
         }
     }
 
@@ -205,6 +204,9 @@ public abstract class ParkourUser {
      */
     public final Instant joined;
 
+    /**
+     * The amount of players that have joined while the plugin has been enabled.
+     */
     public static int joinCount;
 
     public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
