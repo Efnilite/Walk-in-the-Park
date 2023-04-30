@@ -23,7 +23,6 @@ import dev.efnilite.vilib.util.Unicodes;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,12 +67,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
             int slot = 0;
             for (int value : leads) {
-                item.add(slot, displayItem.clone().amount(value).modifyLore(line -> line.replace("%s", Integer.toString(value))), event2 -> {
-                    player.blockLead = value;
-
-                    player.updateGeneratorSettings();
-                    return true;
-                });
+                item.add(slot, displayItem.clone()
+                            .amount(value)
+                            .modifyLore(line -> line.replace("%s", Integer.toString(value))),
+                        event2 -> handleSettingChange(player, () -> player.blockLead = value));
                 slot++;
             }
             return item;
@@ -84,7 +81,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
             if (!(user instanceof ParkourPlayer player)) {
                 return;
             }
-
             openSchematicMenu(player, disabled);
         }), player -> checkOptions(player, ParkourOption.SCHEMATIC, disabled));
 
@@ -100,27 +96,20 @@ public class ParkourSettingsMenu extends DynamicMenu {
             // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
             List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
 
-            return new SliderItem().initial(times.indexOf(player.selectedTime)).add(0, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")), event -> {
-                player.selectedTime = 0;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(1, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")), event -> {
-                player.selectedTime = 6000;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(2, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")), event -> {
-                player.selectedTime = 12000;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(3, item.clone().modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")), event -> {
-                player.selectedTime = 18000;
-
-                player.updateGeneratorSettings();
-                return true;
-            });
+            return new SliderItem()
+                .initial(times.indexOf(player.selectedTime))
+                .add(0, item.clone()
+                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
+                        event -> handleSettingChange(player, () -> player.selectedTime = 0))
+                    .add(1, item.clone()
+                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
+                        event -> handleSettingChange(player, () -> player.selectedTime = 6000))
+                    .add(2, item.clone()
+                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
+                        event -> handleSettingChange(player, () -> player.selectedTime = 12000))
+                    .add(3, item.clone()
+                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
+                        event -> handleSettingChange(player, () -> player.selectedTime = 18000));
         }, player -> checkOptions(player, ParkourOption.TIME, disabled));
 
         // ---------- bottom row ----------
@@ -133,21 +122,26 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            return new SliderItem().initial(player.showScoreboard ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                player.showScoreboard = true;
-                player.board = new FastBoard(p);
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                player.showScoreboard = false;
-                if (player.board != null && !player.board.isDeleted()) {
-                    player.board.delete();
-                }
-
-                player.updateGeneratorSettings();
-                return true;
-            });
+            return new SliderItem()
+                .initial(player.showScoreboard ? 0 : 1)
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleSettingChange(player, () -> {
+                            player.showScoreboard = true;
+                            player.board = new FastBoard(p);
+                        }))
+                .add(1, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleSettingChange(player, () -> {
+                        player.showScoreboard = false;
+                        if (player.board != null && !player.board.isDeleted()) {
+                            player.board.delete();
+                        }
+                    }));
         }, player -> checkOptions(player, ParkourOption.SCOREBOARD, disabled) && Boolean.parseBoolean(Option.OPTIONS_DEFAULTS.get(ParkourOption.SCOREBOARD)));
 
         // show fall message
@@ -158,17 +152,18 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            return new SliderItem().initial(player.showFallMessage ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                player.showFallMessage = true;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                player.showFallMessage = false;
-
-                player.updateGeneratorSettings();
-                return true;
-            });
+            return new SliderItem()
+                .initial(player.showFallMessage ? 0 : 1)
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleSettingChange(player, () -> player.showFallMessage = true))
+                .add(1, item.clone()
+                    .material(Material.RED_STAINED_GLASS_PANE)
+                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                event -> handleSettingChange(player, () -> player.showFallMessage = false));
         }, player -> checkOptions(player, ParkourOption.FALL_MESSAGE, disabled));
 
         // show sound
@@ -179,17 +174,17 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            return new SliderItem().initial(player.particles ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                player.particles = true;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                player.particles = false;
-
-                player.updateGeneratorSettings();
-                return true;
-            });
+            return new SliderItem()
+                .initial(player.particles ? 0 : 1)
+                .add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleSettingChange(player, () -> player.particles = true))
+                .add(1, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleSettingChange(player, () -> player.particles = false));
         }, player -> checkOptions(player, ParkourOption.PARTICLES, disabled));
 
         // show sound
@@ -200,17 +195,18 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            return new SliderItem().initial(player.sound ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                player.sound = true;
-
-                player.updateGeneratorSettings();
-                return true;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                player.sound = false;
-
-                player.updateGeneratorSettings();
-                return true;
-            });
+            return new SliderItem()
+                .initial(player.sound ? 0 : 1)
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleSettingChange(player, () -> player.sound = true))
+                .add(1, item.clone()
+                    .material(Material.RED_STAINED_GLASS_PANE)
+                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleSettingChange(player, () -> player.sound = false));
         }, player -> checkOptions(player, ParkourOption.SOUND, disabled));
 
         // show special blocks
@@ -221,27 +217,25 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            return new SliderItem().initial(player.useSpecialBlocks ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                if (allowSettingChange(player, event)) {
-                    player.useSpecialBlocks = true;
-
-                    player.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                if (allowSettingChange(player, event)) {
-                    player.useSpecialBlocks = false;
-
-                    player.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            });
+            return new SliderItem()
+                .initial(player.useSpecialBlocks ? 0 : 1)
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleScoreSettingChange(player, event, () -> player.useSpecialBlocks = true))
+                .add(1, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleScoreSettingChange(player, event, () -> player.useSpecialBlocks = false));
         }, player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
 
         // Always allow closing of the menu
-        registerMainItem(3, 10, (player, user) -> Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())), player -> true);
+        registerMainItem(3, 10,
+                (player, user) -> Locales.getItem(player, "other.close")
+                    .click(event -> Menus.SETTINGS.open(event.getPlayer())),
+                player -> true);
     }
 
     /**
@@ -253,9 +247,9 @@ public class ParkourSettingsMenu extends DynamicMenu {
         Player player = user.player;
 
         display(player, new Menu(4, Locales.getString(player, "settings.name"))
-                .distributeRowEvenly(0, 1, 2, 3)
-                .item(27, Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
+            .distributeRowEvenly(0, 1, 2, 3)
+            .item(27, Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
+            .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
     }
 
     public void openStylesMenu(ParkourPlayer user) {
@@ -271,8 +265,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
         }
 
         menu.distributeRowEvenly(1)
-                .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
+            .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
+            .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
     }
 
     /**
@@ -292,15 +286,14 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 continue;
             }
 
-            Item item = Locales.getItem(user.player, ParkourOption.STYLES.path + ".style_item", name).material(Colls.random(styleType.styles.get(name)));
-
-            items.add(item.glowing(user.style.equals(name)).click(event -> {
-                user.style = name;
-
-                user.updateGeneratorSettings();
-
-                open(user);
-            }));
+            items.add(Locales.getItem(user.player, ParkourOption.STYLES.path + ".style_item", name)
+                .material(Colls.random(styleType.styles.get(name)))
+                .glowing(user.style.equals(name))
+                .click(event -> {
+                    user.style = name;
+                    user.updateGeneratorSettings();
+                    open(user);
+                }));
         }
 
         style.displayRows(0, 1)
@@ -326,80 +319,62 @@ public class ParkourSettingsMenu extends DynamicMenu {
         Item item = Locales.getItem(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path);
 
         if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
-            schematics.item(10, new SliderItem().initial(difficulties.indexOf(user.schematicDifficulty)).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.25;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(1, item.clone().material(Material.YELLOW_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.5;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(2, item.clone().material(Material.ORANGE_STAINED_GLASS_PANE).modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 0.75;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(3, item.clone().material(Material.SKELETON_SKULL).modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.schematicDifficulty = 1.0;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }));
+            schematics.item(10, new SliderItem()
+                .initial(difficulties.indexOf(user.schematicDifficulty))
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
+                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.25))
+                .add(1, item.clone()
+                        .material(Material.YELLOW_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
+                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.5))
+                .add(2, item.clone()
+                        .material(Material.ORANGE_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
+                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.75))
+                .add(3, item.clone()
+                        .material(Material.SKELETON_SKULL)
+                        .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
+                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 1.0)));
         }
 
         item = Locales.getItem(user.locale, ParkourOption.USE_SCHEMATICS.path);
 
         if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
-            schematics.item(9, new SliderItem().initial(user.useSchematic ? 0 : 1).add(0, item.clone().material(Material.LIME_STAINED_GLASS_PANE).modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.useSchematic = true;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }).add(1, item.clone().material(Material.RED_STAINED_GLASS_PANE).modifyName(name -> "<red><bold>" + ChatColor.stripColor(name)).modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))), event -> {
-                if (allowSettingChange(user, event)) {
-                    user.useSchematic = false;
-
-                    user.updateGeneratorSettings();
-                    return true;
-                }
-                return false;
-            }));
+            schematics.item(9, new SliderItem().initial(user.useSchematic ? 0 : 1)
+                .add(0, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
+                    event -> handleScoreSettingChange(user, event, () -> user.useSchematic = true))
+                .add(1, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleScoreSettingChange(user, event, () -> user.useSchematic = false)));
         }
 
         schematics.distributeRowEvenly(0, 1, 2)
-
                 .item(26, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-
                 .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.CYAN_STAINED_GLASS_PANE).open(user.player);
     }
 
-    // If a player has a score above 0, disable options which change difficulty to keep leaderboards fair
-    private boolean allowSettingChange(ParkourPlayer player, MenuClickEvent event) {
-        if (player.session.generator.score > 0) {
-            event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {
-
-            }), event).stay(5 * 20));
-            event.getMenu().updateItem(event.getSlot());
-            return false;
-        }
+    private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {
+        onAllowed.run();
+        player.updateGeneratorSettings();
         return true;
+    }
+
+    private boolean handleScoreSettingChange(ParkourPlayer player, MenuClickEvent event, Runnable onAllowed) {
+        if (player.session.generator.score == 0) {
+            return handleSettingChange(player, onAllowed);
+        }
+
+        event.getMenu().item(event.getSlot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {}), event).stay(5 * 20));
+        event.getMenu().updateItem(event.getSlot());
+        return false;
+
     }
 
     // replaces true/false with a checkmark and cross
@@ -408,7 +383,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
     }
 
     // check if option is allowed to be displayed
-    private boolean checkOptions(@NotNull Player player, @NotNull ParkourOption option, ParkourOption[] disabled) {
+    private boolean checkOptions(Player player, ParkourOption option, ParkourOption[] disabled) {
         return !Arrays.asList(disabled).contains(option) && option.mayPerform(player);
     }
 }
