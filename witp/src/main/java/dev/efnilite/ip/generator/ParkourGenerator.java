@@ -55,7 +55,7 @@ public class ParkourGenerator {
     /**
      * The amount of blocks that trail behind the player.
      */
-    private static final int BLOCK_TRAIL = 2;
+    public static final int BLOCK_TRAIL = 2;
 
     /**
      * This generator's score
@@ -63,9 +63,49 @@ public class ParkourGenerator {
     public int score = 0;
 
     /**
+     * The total score achieved in this Generator instance
+     */
+    public int totalScore = 0;
+
+    /**
+     * The schematic cooldown
+     */
+    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+
+    /**
+     * Whether this generator has been stopped
+     */
+    public boolean stopped = false;
+
+    /**
      * The zone in which the parkour can take place. (playable area)
      */
     public Location[] zone;
+
+    /**
+     * The player
+     */
+    public ParkourPlayer player;
+
+    /**
+     * The task used in checking the player's current location
+     */
+    public BukkitTask task;
+
+    /**
+     * Where blocks from schematics spawn
+     */
+    public Location blockSpawn;
+
+    /**
+     * Where the player spawns on reset
+     */
+    public Location playerSpawn;
+
+    /**
+     * Instant when run started.
+     */
+    public Instant start;
 
     /**
      * The direction of the parkour
@@ -84,8 +124,6 @@ public class ParkourGenerator {
 
     /**
      * This Generator's {@link Profile}.
-     *
-     * @see Profile
      */
     public final Profile profile = new Profile();
 
@@ -93,11 +131,6 @@ public class ParkourGenerator {
      * The island instance.
      */
     public final Island island;
-
-    /**
-     * The player
-     */
-    public ParkourPlayer player;
 
     /**
      * The chances of which distance the jump should have
@@ -118,41 +151,6 @@ public class ParkourGenerator {
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
     public final HashMap<JumpType, Double> defaultChances = new HashMap<>();
-
-    /**
-     * The total score achieved in this Generator instance
-     */
-    public int totalScore = 0;
-
-    /**
-     * The schematic cooldown
-     */
-    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
-
-    /**
-     * Where the player spawns on reset
-     */
-    public Location playerSpawn;
-
-    /**
-     * Where blocks from schematics spawn
-     */
-    public Location blockSpawn;
-
-    /**
-     * The task used in checking the player's current location
-     */
-    public BukkitTask task;
-
-    /**
-     * Whether this generator has been stopped
-     */
-    public boolean stopped = false;
-
-    /**
-     * Instant when run started.
-     */
-    public Instant start;
 
     /**
      * Whether the schematic should be deleted on the next jump.
@@ -207,7 +205,6 @@ public class ParkourGenerator {
     public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
         this(session, Schematics.CACHE.get("spawn-island"), generatorOptions);
     }
-
 
     /**
      * Ensures generator preferences in profile can't be overridden by the player changing settings.

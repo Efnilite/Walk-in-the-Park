@@ -4,13 +4,12 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.util.Colls;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
@@ -40,7 +39,8 @@ public class SchematicPaster {
     }
 
     /**
-     * Pastes a schematic at angles rotation with the provided map of offsets and BlockData.
+     * Pastes a schematic at angle rotation with the provided map of offsets and BlockData.
+     * Rotates {@link Directional} blocks.
      *
      * @param location      The smallest location.
      * @param rotation      The rotation where x = roll in rad, y = yaw in rad and z = pitch in rad.
@@ -51,18 +51,38 @@ public class SchematicPaster {
         return paste(() -> {
             double[] constants = getRotationConstants(rotation);
 
-            return Colls.thread(vectorDataMap).mapk((vector, v) -> {
-                double x = vector.getX();
-                double y = vector.getY();
-                double z = vector.getZ();
+            return Colls.thread(vectorDataMap).mapkv(
+                    (vector) -> location.clone().add(rotate(vector, constants)).getBlock(),
+                    (data) -> {
+                        if (data instanceof Directional directional) {
+                            Vector direction = directional.getFacing().getDirection();
+                            Vector rotated = rotate(direction, constants);
+                            directional.setFacing(getClosestMatchingBlockFace(directional, rotated));
+                        }
 
-                double newX = constants[0] * x + constants[1] * y + constants[2] * z;
-                double newY = constants[3] * x + constants[4] * y + constants[5] * z;
-                double newZ = constants[6] * x + constants[7] * y + constants[8] * z;
-
-                return location.clone().add(newX, newY, newZ).getBlock();
-            }).get();
+                        return data;
+                    }
+            ).get();
         });
+    }
+
+    // returns an available BlockFace that matches the closest to the rotated direction of the block
+    private BlockFace getClosestMatchingBlockFace(Directional directional, Vector rotated) {
+        return directional.getFaces().stream()
+                .min(Comparator.comparingDouble(f -> Math.abs(f.getDirection().angle(rotated))))
+                .orElseThrow();
+    }
+
+    private Vector rotate(Vector vector, double[] rotationConstants) {
+        double x = vector.getX();
+        double y = vector.getY();
+        double z = vector.getZ();
+
+        double newX = rotationConstants[0] * x + rotationConstants[1] * y + rotationConstants[2] * z;
+        double newY = rotationConstants[3] * x + rotationConstants[4] * y + rotationConstants[5] * z;
+        double newZ = rotationConstants[6] * x + rotationConstants[7] * y + rotationConstants[8] * z;
+
+        return new Vector(newX, newY, newZ);
     }
 
     // 3d rotation matrix constants, calculate once instead of however many blocks we have times

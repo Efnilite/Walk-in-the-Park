@@ -28,16 +28,16 @@ play:
     default:
       material: "barrel"
       name: "<#6693E7><bold>デフォルト"
-      lore: "<dark_gray>デフォルトのゲームモード。"
+      lore: "<dark_gray>デフォルトのモード。"
 
   spectator:
     name: "<white>見物"
 
-    join: "<#4CB3FF>今、見物です。 ゲームモードを変えるかやめるか\"/parkour\"を使います。"
+    join: "<#4CB3FF>今、見物です。 モードを変えるかやめるか\"/parkour\"を使います。"
     action_bar: "<#4CB3FF>今、見物人です。 <gray>• <#4CB3FF>\"/parkour\"を使う to leave."
 
-    other_join: "<dark_green><bold>+ <reset><gray>%sはあなたを見物するを始めた。"
-    other_leave: "<red><bold>- <reset><gray>%sはあなたを見物するを止めた。"
+    other_join: "<dark_green><bold>+ <reset><gray>%sはあなたを見物するを始めました。"
+    other_leave: "<red><bold>- <reset><gray>%sはあなたを見物するを止めました。"
 
     item:
       material: "glass"
@@ -67,7 +67,7 @@ community:
 
     sort:
       material: "bookshelf"
-      name: "<#DEA11F><bold>Sort by %s"
+      name: "<#DEA11F><bold>%sで並べ替えします。"
       lore: ""
       values: ["得点", "時間", "難しさ"]
 
@@ -189,7 +189,7 @@ settings:
 
       sound:
         material: ""
-        name: "音をプレイする"
+        name: "音をプレイします"
         lore: "<gray>今: %s||<gray>オン時、every generated block||<gray>will play a sound."
 
       special_blocks:
