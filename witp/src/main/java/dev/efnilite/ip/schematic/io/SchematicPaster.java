@@ -67,6 +67,7 @@ public class SchematicPaster {
     }
 
     // returns an available BlockFace that matches the closest to the rotated direction of the block
+    // todo fix
     private BlockFace getClosestMatchingBlockFace(Directional directional, Vector rotated) {
         return directional.getFaces().stream()
                 .min(Comparator.comparingDouble(f -> Math.abs(f.getDirection().angle(rotated))))

@@ -115,6 +115,7 @@ public final class StorageSQL implements Storage {
                 return;
             }
 
+            results.next(); // move cursor
             Map<String, Object> settings = Colls.thread(ParkourPlayer.PLAYER_COLUMNS).mapv((key, value) -> {
                 try {
                     return results.getObject(key);
@@ -218,8 +219,8 @@ public final class StorageSQL implements Storage {
     private ResultSet sendQuery(String sql) {
         validateConnection();
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return statement.executeQuery();
+        try {
+            return connection.prepareStatement(sql).executeQuery();
         } catch (SQLException ex) {
             IP.logging().stack("Error while sending query %s".formatted(sql), ex);
             return null;
@@ -230,10 +231,8 @@ public final class StorageSQL implements Storage {
     private void sendUpdate(String sql) {
         validateConnection();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
-            statement.close();
         } catch (SQLException ex) {
             IP.logging().stack("Error while sending query %s".formatted(sql), ex);
         }
@@ -243,12 +242,10 @@ public final class StorageSQL implements Storage {
     private void sendUpdateSuppressed(String sql) {
         validateConnection();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
-            statement.close();
         } catch (SQLException ignored) {
-            // ignored
+
         }
     }
 }
