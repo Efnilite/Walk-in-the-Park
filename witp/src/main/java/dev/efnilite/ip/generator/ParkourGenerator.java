@@ -217,21 +217,21 @@ public class ParkourGenerator {
      */
     protected void calculateChances() {
         defaultChances.clear();
-        defaultChances.put(JumpType.DEFAULT, Option.DEFAULT);
-        defaultChances.put(JumpType.SCHEMATIC, Option.SCHEMATICS);
-        defaultChances.put(JumpType.SPECIAL, Option.SPECIAL);
+        defaultChances.put(JumpType.DEFAULT, Option.TYPE_NORMAL);
+        defaultChances.put(JumpType.SCHEMATIC, Option.TYPE_SCHEMATICS);
+        defaultChances.put(JumpType.SPECIAL, Option.TYPE_SPECIAL);
 
         heightChances.clear();
-        heightChances.put(1, Option.NORMAL_UP);
-        heightChances.put(0, Option.NORMAL_LEVEL);
-        heightChances.put(-1, Option.NORMAL_DOWN);
-        heightChances.put(-2, Option.NORMAL_DOWN2);
+        heightChances.put(1, Option.NORMAL_HEIGHT_1);
+        heightChances.put(0, Option.NORMAL_HEIGHT_0);
+        heightChances.put(-1, Option.NORMAL_HEIGHT_NEG1);
+        heightChances.put(-2, Option.NORMAL_HEIGHT_NEG2);
 
         distanceChances.clear();
-        distanceChances.put(1, Option.NORMAL_ONE_BLOCK);
-        distanceChances.put(2, Option.NORMAL_TWO_BLOCK);
-        distanceChances.put(3, Option.NORMAL_THREE_BLOCK);
-        distanceChances.put(4, Option.NORMAL_FOUR_BLOCK);
+        distanceChances.put(1, Option.NORMAL_DISTANCE_1);
+        distanceChances.put(2, Option.NORMAL_DISTANCE_2);
+        distanceChances.put(3, Option.NORMAL_DISTANCE_3);
+        distanceChances.put(4, Option.NORMAL_DISTANCE_4);
 
         specialChances.clear();
         specialChances.put(Material.PACKED_ICE.createBlockData(), Option.SPECIAL_ICE);

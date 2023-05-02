@@ -2,52 +2,37 @@
 # Settings for parkour generation
 generation:
 
-  # -= Normal jump settings =-
-  # The settings for normal jumps
-  normal-jump:
+  # -= Jump type =-
+  # The chance of each type of jump. Can be above 100%.
+  type:
+    normal: 85
+    special: 10
+    schematic: 5
 
-    # -= Normal jump chance =-
-    # The chance for normal jumps to appear (in %). This means a block jump that isn't ice, slab or a schematic.
-    # When compared to structures.chance and special.chance this should be 100%, but it can be more.
-    chance: 85
-
+  # -= Normal jump chances =-
+  normal:
     # -= Distance chances =-
     # The chances of the different distances in %. Can be above 100%.
-    1-block: 5
-    2-block: 30
-    3-block: 55
-    4-block: 10
+    distance:
+      1: 5
+      2: 30
+      3: 55
+      4: 10
 
     # -= Height chances =-
     # The chances of the different heights a jump can have in %. Can be above 100%.
-    up: 15
-    level: 70
-    down: 10
-    down2: 5 # Goes down 2 blocks
+    height:
+      1: 20
+      0: 65
+      -1: 10
+      -2: 5
 
-    # -= Special blocks settings =-
-    # Settings for special block jumps.
-    # Note: these jumps use the chances for normal jumps for distance.
-    special:
-
-      # -= Special jump chance =-
-      # The chance for special jumps to appear (in %).
-      chance: 10
-
-      # -= Special jump types chance =-
-      # The type of block
-      ice: 50
-      slab: 30 # for bottom-side half slabs
-      pane: 10 # for glass panes
-      fence: 10
-
-  # -= Schematic settings =-
-  # The settings for schematic chances. This used to be called structures, hence the name.
-  structures:
-
-    # -= Schematic appear chance =-
-    # The chance for structures to appear (in %)
-    chance: 5
+  # -= Special jump chances =-
+  special:
+    ice: 50
+    slab: 30
+    pane: 10
+    fence: 10
 
   # -= Jump settings =-
   settings:
@@ -94,7 +79,7 @@ advanced:
 
   # -= Border size =-
   # The diameter of the playing area of a person in the single mode.
-  border-size: 10000
+  border-size: 5000
 
   # -= Schematic cooldown =-
   # The amount of blocks that provide a cooldown for the schematics.

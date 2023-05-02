@@ -51,13 +51,27 @@ public class SchematicPaster {
         return paste(() -> {
             double[] constants = getRotationConstants(rotation);
 
+            // todo fix wth??
+
+            // todo add:
+            // - MultipleFacing
+            // - Orientable
+
             return Colls.thread(vectorDataMap).mapkv(
                     (vector) -> location.clone().add(rotate(vector, constants)).getBlock(),
                     (data) -> {
                         if (data instanceof Directional directional) {
+                            IP.logging().info("rotation: %s".formatted(rotation));
                             Vector direction = directional.getFacing().getDirection();
+                            IP.logging().info("direction: %s".formatted(direction));
                             Vector rotated = rotate(direction, constants);
-                            directional.setFacing(getClosestMatchingBlockFace(directional, rotated));
+                            IP.logging().info("rotated: %s".formatted(rotated));
+                            BlockFace closestMatchingBlockFace = getClosestMatchingBlockFace(directional, rotated);
+
+                            IP.logging().info("current facing: %s".formatted(directional.getFacing().name()));
+                            IP.logging().info("closest facing: %s".formatted(closestMatchingBlockFace.name()));
+
+                            directional.setFacing(closestMatchingBlockFace);
                         }
 
                         return data;
@@ -70,7 +84,7 @@ public class SchematicPaster {
     // todo fix
     private BlockFace getClosestMatchingBlockFace(Directional directional, Vector rotated) {
         return directional.getFaces().stream()
-                .min(Comparator.comparingDouble(f -> Math.abs(f.getDirection().angle(rotated))))
+                .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
                 .orElseThrow();
     }
 

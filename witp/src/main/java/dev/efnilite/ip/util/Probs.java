@@ -16,6 +16,18 @@ public final class Probs {
     }
 
     /**
+     * @param mean The average value.
+     * @param sd   The standard deviation.
+     * @param x    The x-coordinate.
+     * @return The normal distributed chance at x.
+     */
+    public static double normalpdf(double mean, double sd, double x) {
+        double a = (x - mean) / sd;
+
+        return (1 / (sd * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * (a * a));
+    }
+
+    /**
      * @param distribution A map where each key is mapped to a probability.
      * @param <K>          The key type.
      * @return A random item from the list, based on the probabilities.

@@ -221,47 +221,47 @@ public class Option {
     // --------------------------------------------------------------
     // Generation
 
-    public static double DEFAULT;
-    public static double SPECIAL;
-    public static double SCHEMATICS;
+    public static double TYPE_NORMAL;
+    public static double TYPE_SPECIAL;
+    public static double TYPE_SCHEMATICS;
 
     public static double SPECIAL_ICE;
     public static double SPECIAL_SLAB;
     public static double SPECIAL_PANE;
     public static double SPECIAL_FENCE;
 
-    public static double NORMAL_ONE_BLOCK;
-    public static double NORMAL_TWO_BLOCK;
-    public static double NORMAL_THREE_BLOCK;
-    public static double NORMAL_FOUR_BLOCK;
+    public static double NORMAL_DISTANCE_1;
+    public static double NORMAL_DISTANCE_2;
+    public static double NORMAL_DISTANCE_3;
+    public static double NORMAL_DISTANCE_4;
 
-    public static double NORMAL_UP;
-    public static double NORMAL_LEVEL;
-    public static double NORMAL_DOWN;
-    public static double NORMAL_DOWN2;
+    public static double NORMAL_HEIGHT_1;
+    public static double NORMAL_HEIGHT_0;
+    public static double NORMAL_HEIGHT_NEG1;
+    public static double NORMAL_HEIGHT_NEG2;
 
     public static int MAX_Y;
     public static int MIN_Y;
 
     private static void initGeneration() {
-        DEFAULT = Config.GENERATION.getInt("generation.normal-jump.chance") / 100.0;
-        SCHEMATICS = Config.GENERATION.getInt("generation.structures.chance") / 100.0;
-        SPECIAL = Config.GENERATION.getInt("generation.normal-jump.special.chance") / 100.0;
+        TYPE_NORMAL = Config.GENERATION.getInt("generation.type.normal") / 100.0;
+        TYPE_SPECIAL = Config.GENERATION.getInt("generation.type.schematic") / 100.0;
+        TYPE_SCHEMATICS = Config.GENERATION.getInt("generation.type.special") / 100.0;
 
-        SPECIAL_ICE = Config.GENERATION.getInt("generation.normal-jump.special.ice") / 100.0;
-        SPECIAL_SLAB = Config.GENERATION.getInt("generation.normal-jump.special.slab") / 100.0;
-        SPECIAL_PANE = Config.GENERATION.getInt("generation.normal-jump.special.pane") / 100.0;
-        SPECIAL_FENCE = Config.GENERATION.getInt("generation.normal-jump.special.fence") / 100.0;
+        SPECIAL_ICE = Config.GENERATION.getInt("generation.special.ice") / 100.0;
+        SPECIAL_SLAB = Config.GENERATION.getInt("generation.special.slab") / 100.0;
+        SPECIAL_PANE = Config.GENERATION.getInt("generation.special.pane") / 100.0;
+        SPECIAL_FENCE = Config.GENERATION.getInt("generation.special.fence") / 100.0;
 
-        NORMAL_ONE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.1-block") / 100.0;
-        NORMAL_TWO_BLOCK = Config.GENERATION.getInt("generation.normal-jump.2-block") / 100.0;
-        NORMAL_THREE_BLOCK = Config.GENERATION.getInt("generation.normal-jump.3-block") / 100.0;
-        NORMAL_FOUR_BLOCK = Config.GENERATION.getInt("generation.normal-jump.4-block") / 100.0;
+        NORMAL_DISTANCE_1 = Config.GENERATION.getInt("generation.normal.distance.1") / 100.0;
+        NORMAL_DISTANCE_2 = Config.GENERATION.getInt("generation.normal.distance.2") / 100.0;
+        NORMAL_DISTANCE_3 = Config.GENERATION.getInt("generation.normal.distance.3") / 100.0;
+        NORMAL_DISTANCE_4 = Config.GENERATION.getInt("generation.normal.distance.4") / 100.0;
 
-        NORMAL_UP = Config.GENERATION.getInt("generation.normal-jump.up") / 100.0;
-        NORMAL_LEVEL = Config.GENERATION.getInt("generation.normal-jump.level") / 100.0;
-        NORMAL_DOWN = Config.GENERATION.getInt("generation.normal-jump.down") / 100.0;
-        NORMAL_DOWN2 = Config.GENERATION.getInt("generation.normal-jump.down2") / 100.0;
+        NORMAL_HEIGHT_1 = Config.GENERATION.getInt("generation.normal.height.1") / 100.0;
+        NORMAL_HEIGHT_0 = Config.GENERATION.getInt("generation.normal.height.0") / 100.0;
+        NORMAL_HEIGHT_NEG1 = Config.GENERATION.getInt("generation.normal.height.-1") / 100.0;
+        NORMAL_HEIGHT_NEG2 = Config.GENERATION.getInt("generation.normal.height.-2") / 100.0;
 
         MAX_Y = Config.GENERATION.getInt("generation.settings.max-y");
         MIN_Y = Config.GENERATION.getInt("generation.settings.min-y");
