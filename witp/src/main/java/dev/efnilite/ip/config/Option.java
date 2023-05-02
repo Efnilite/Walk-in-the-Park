@@ -60,6 +60,7 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
+        initStyles("styles.list", "default");
 
         STORAGE_UPDATE_INTERVAL = Config.CONFIG.getInt("storage-update-interval");
 
@@ -299,27 +300,25 @@ public class Option {
 
     // --------------------------------------------------------------
 
-    private static final String STYLES_PATH = "styles.list";
-
-    private static void initStyles() {
+    public static void initStyles(String path, String type) {
         BiFunction<List<BlockData>, Session, BlockData> defaultMaterialSelector = (materials, session) -> Colls.random(materials);
 
-        for (String style : Config.CONFIG.getChildren(STYLES_PATH, false)) {
+        for (String style : Config.CONFIG.getChildren(path, false)) {
             Registry.register(new Style(
                 style,
-                Config.CONFIG.getStringList("%s.%s".formatted(STYLES_PATH, style)).stream()
+                Config.CONFIG.getStringList("%s.%s".formatted(path, style)).stream()
                     .map(name -> {
-                        Material material = Material.getMaterial(name);
+                        Material material = Material.getMaterial(name.toUpperCase());
 
                         if (material == null) {
                             IP.logging().warn("Unknown material %s in style %s".formatted(name, style));
-                            return Material.STONE.createBlockData();
+                            return Material.SMOOTH_QUARTZ.createBlockData();
                         }
 
                         return material.createBlockData();
                     })
                     .toList(),
-                "default",
+                type,
                 defaultMaterialSelector));
         }
     }
