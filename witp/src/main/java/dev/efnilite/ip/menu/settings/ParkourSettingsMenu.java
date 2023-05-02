@@ -8,7 +8,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.style.StyleType;
+import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.Menu;
@@ -46,11 +46,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return;
             }
 
-            if (Registry.getStyleTypes().size() == 1) {
-                openSingleStyleMenu(player, Registry.getStyleTypes().get(0));
-            } else {
-                openStylesMenu(player);
-            }
+            openStyleMenu(player);
         }), player -> checkOptions(player, ParkourOption.STYLES, disabled));
 
         // leads
@@ -252,56 +248,38 @@ public class ParkourSettingsMenu extends DynamicMenu {
             .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
     }
 
-    public void openStylesMenu(ParkourPlayer user) {
-        // init menu
-        Menu menu = new Menu(3, Locales.getString(user.locale, ParkourOption.STYLES.path + ".name"));
-
-        int slot = 9;
-        for (StyleType type : Registry.getStyleTypes()) {
-            Item item = type.getItem(user.locale);
-
-            menu.item(slot, item.click(event -> openSingleStyleMenu(user, type)));
-            slot++;
-        }
-
-        menu.distributeRowEvenly(1)
-            .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-            .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
-    }
-
     /**
-     * Opens the style menu for a specific style type
+     * Opens the style menu
      *
-     * @param user      The ParkourPlayer instance
-     * @param styleType The style type
+     * @param player      The ParkourPlayer instance
      */
-    public void openSingleStyleMenu(ParkourPlayer user, StyleType styleType) {
+    public void openStyleMenu(ParkourPlayer player) {
         // init menu
-        PagedMenu style = new PagedMenu(3, Locales.getString(user.locale, ParkourOption.STYLES.path + ".name"));
+        PagedMenu menu = new PagedMenu(3, Locales.getString(player.locale, ParkourOption.STYLES.path + ".name"));
 
         List<MenuItem> items = new ArrayList<>();
-        for (String name : styleType.styles.keySet()) {
-            String perm = ParkourOption.STYLES.permission + "." + name.toLowerCase();
-            if (Option.PERMISSIONS_STYLES && !user.player.hasPermission(perm.replace(" ", "."))) {
+        for (Style style : Registry.getStyles()) {
+            String perm = ParkourOption.STYLES.permission + "." + style.name().toLowerCase();
+            if (Option.PERMISSIONS_STYLES && !player.player.hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
 
-            items.add(Locales.getItem(user.player, ParkourOption.STYLES.path + ".style_item", name)
-                .material(Colls.random(styleType.styles.get(name)))
-                .glowing(user.style.equals(name))
+            items.add(Locales.getItem(player.player, ParkourOption.STYLES.path + ".style_item", style.name(), style.category())
+                .material(Colls.random(style.materials()).getMaterial())
+                .glowing(player.style.equals(style.name()))
                 .click(event -> {
-                    user.style = name;
-                    user.updateGeneratorSettings();
-                    open(user);
+                    player.style = style.name();
+                    player.updateGeneratorSettings();
+                    open(player);
                 }));
         }
 
-        style.displayRows(0, 1)
+        menu.displayRows(0, 1)
                 .addToDisplay(items)
-                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> style.page(1)))
-                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> style.page(-1)))
-                .item(22, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(user.player);
+                .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>" + Unicodes.DOUBLE_ARROW_RIGHT).click(event -> menu.page(1)))
+                .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
+                .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)))
+                .fillBackground(Util.isBedrockPlayer(player.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player.player);
     }
 
     /**

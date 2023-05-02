@@ -21,6 +21,7 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Colls;
 import dev.efnilite.ip.util.Probs;
 import dev.efnilite.ip.world.WorldDivider;
@@ -280,19 +281,14 @@ public class ParkourGenerator {
     }
 
     protected BlockData selectBlockData() {
-        String style = profile.get("style").value();
+        Style style = Registry.getStyle(profile.get("style").value());
 
-        Material material = Registry.getTypeFromStyle(style).get(style);
-
-        // if found style is null, get the first registered style to prevent big boy errors
-        if (material == null) {
-            String newStyle = new ArrayList<>(Registry.getStyleTypes().get(0).styles.keySet()).get(0);
-
-            profile.set("style", newStyle);
-
+        if (style == null) {
+            profile.set("style", Registry.getStyles().get(0).name());
             return selectBlockData();
         }
-        return material.createBlockData();
+
+        return style.get(session);
     }
 
     protected List<Block> selectBlocks() {
@@ -328,9 +324,8 @@ public class ParkourGenerator {
         height = updateHeight(progress, height);
 
         int randomOffset = getRandomOffset(height, distance);
-        IP.logging().info("h %d d %d o %d".formatted(height, distance, randomOffset));
 
-        Vector offset = new Vector(distance + 1, height, randomOffset);
+        Vector offset = new Vector((distance - height) + 1, height, randomOffset);
 
         // rotate offset to match heading
         offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
@@ -339,28 +334,23 @@ public class ParkourGenerator {
     }
 
     private int getRandomOffset(int height, int distance) {
-        List<int[]> possibilities = new ArrayList<>();
-        for (int loopDistance = 1; loopDistance <= 4; loopDistance++) {
-            int maxOffset = 4 - loopDistance;
-
-            for (int loopOffset = -maxOffset; loopOffset <= maxOffset; loopOffset++) {
-                possibilities.add(new int[] {loopOffset, loopDistance});
-            }
-        }
+        int maxOffset = (4 - height) - (distance - height);
 
         double mean = 0;
         double sd = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
 
-        Map<int[], Double> distribution = possibilities.stream()
-                .map(xz -> new int[]{xz[0], xz[1] - height})
-                .filter(xz -> xz[1] == distance)
-                .collect(Collectors.toMap(xz -> xz, xz -> Probs.normalpdf(mean, sd, xz[0])));
+        List<Integer> possibleOffsets = Colls.range(-maxOffset, maxOffset + 1);
+        Map<Integer, Double> distribution = possibleOffsets.stream()
+                .collect(Collectors.toMap(xz -> xz, xz -> Probs.normalpdf(mean, sd, xz)));
 
-        distribution.forEach((k, v) -> IP.logging().info("%s -> %s".formatted(Arrays.toString(k), v)));
+        IP.logging().info("h %d d %d max_o %d".formatted(height, (distance - height), maxOffset));
+        distribution.forEach((k, v) -> IP.logging().info("%s -> %s".formatted(k, v)));
 
-        int[] random = Probs.random(distribution);
+        int random = Probs.random(distribution);
+        IP.logging().info("-> o %d".formatted(random));
+        IP.logging().info("");
 
-        return random[0];
+        return random;
     }
 
     // Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
@@ -616,7 +606,6 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
-        history.remove(0); // ensure starting block (usually part of the spawn schematic) doesn't get deleted
         history.forEach(block -> block.setType(Material.AIR));
         history.clear();
 

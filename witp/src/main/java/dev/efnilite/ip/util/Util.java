@@ -4,13 +4,7 @@ import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * General utilities
@@ -58,14 +52,6 @@ public class Util {
         } else {
             return new int[]{k, k - (m - n - t)};
         }
-    }
-
-    public static @NotNull List<String> getChildren(FileConfiguration file, String path, boolean deep) {
-        ConfigurationSection section = file.getConfigurationSection(path);
-        if (section == null) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(section.getKeys(deep));
     }
 
     /**

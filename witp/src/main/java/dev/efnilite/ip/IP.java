@@ -15,7 +15,6 @@ import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.ip.storage.StorageDisk;
 import dev.efnilite.ip.storage.StorageSQL;
-import dev.efnilite.ip.style.DefaultStyleType;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.lib.bstats.bukkit.Metrics;
@@ -104,9 +103,6 @@ public final class IP extends ViPlugin {
 
         Registry.register(new DefaultMode());
         Registry.register(new SpectatorMode());
-        Registry.register(new DefaultStyleType());
-
-        Registry.getStyleType("default").addConfigStyles("styles.list", Config.CONFIG.fileConfiguration);
 
         Modes.init();
 

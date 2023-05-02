@@ -2,14 +2,14 @@ package dev.efnilite.ip.api;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.mode.Mode;
-import dev.efnilite.ip.style.StyleType;
+import dev.efnilite.ip.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Registers stuff.
@@ -19,18 +19,8 @@ import java.util.List;
  */
 public final class Registry {
 
-    private static final HashMap<String, Mode> modes = new LinkedHashMap<>();
-    private static final HashMap<String, StyleType> styleTypes = new LinkedHashMap<>();
-
-    /**
-     * Registers a {@link StyleType}.
-     *
-     * @param type The type.
-     */
-    public static void register(@NotNull StyleType type) {
-        styleTypes.put(type.getName(), type);
-        IP.logging().info("Registered style type %s".formatted(type.getName()));
-    }
+    private static final Map<String, Mode> modes = new HashMap<>();
+    private static final Map<String, Style> styles = new HashMap<>();
 
     /**
      * Registers a {@link Mode}.
@@ -42,17 +32,9 @@ public final class Registry {
         IP.logging().info("Registered mode %s".formatted(mode.getName()));
     }
 
-    /**
-     * @param style The style name.
-     * @return The style type based off of style.
-     */
-    public static StyleType getTypeFromStyle(@NotNull String style) {
-        for (StyleType value : styleTypes.values()) {
-            if (value.styles.containsKey(style.toLowerCase())) {
-                return value;
-            }
-        }
-        return styleTypes.get("default");
+    public static void register(@NotNull Style style) {
+        styles.put(style.name(), style);
+        IP.logging().info("Registered style %s".formatted(style.name()));
     }
 
     /**
@@ -64,20 +46,13 @@ public final class Registry {
         return modes.get(name);
     }
 
-    /**
-     * @param name The style name.
-     * @return The {@link StyleType} instance. May be null.
-     */
     @Nullable
-    public static StyleType getStyleType(@NotNull String name) {
-        return styleTypes.get(name);
+    public static Style getStyle(@NotNull String name) {
+        return styles.get(name);
     }
 
-    /**
-     * @return All style types in registration order.
-     */
-    public static List<StyleType> getStyleTypes() {
-        return new ArrayList<>(styleTypes.values());
+    public static List<Style> getStyles() {
+        return new ArrayList<>(styles.values());
     }
 
     /**

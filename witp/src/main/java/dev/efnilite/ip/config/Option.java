@@ -1,12 +1,18 @@
 package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.style.Style;
+import dev.efnilite.ip.util.Colls;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * Class for variables required in generating without accessing the file a lot (constants)
@@ -199,6 +205,10 @@ public class Option {
         PARTICLE_DATA = new ParticleData<>(PARTICLE_TYPE, null, 10, 0, 0, 0, 0);
     }
 
+    public enum ParticleShape {
+        DOT, CIRCLE, BOX
+    }
+
     // --------------------------------------------------------------
     // MySQL
     public static boolean SQL;
@@ -287,7 +297,30 @@ public class Option {
         SCHEMATIC_COOLDOWN = Config.GENERATION.getInt("advanced.schematic-cooldown");
     }
 
-    public enum ParticleShape {
-        DOT, CIRCLE, BOX
+    // --------------------------------------------------------------
+
+    private static final String STYLES_PATH = "styles.list";
+
+    private static void initStyles() {
+        BiFunction<List<BlockData>, Session, BlockData> defaultMaterialSelector = (materials, session) -> Colls.random(materials);
+
+        for (String style : Config.CONFIG.getChildren(STYLES_PATH, false)) {
+            Registry.register(new Style(
+                style,
+                Config.CONFIG.getStringList("%s.%s".formatted(STYLES_PATH, style)).stream()
+                    .map(name -> {
+                        Material material = Material.getMaterial(name);
+
+                        if (material == null) {
+                            IP.logging().warn("Unknown material %s in style %s".formatted(name, style));
+                            return Material.STONE.createBlockData();
+                        }
+
+                        return material.createBlockData();
+                    })
+                    .toList(),
+                "default",
+                defaultMaterialSelector));
+        }
     }
 }

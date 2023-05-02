@@ -125,7 +125,7 @@ settings:
         style_item:
           material: ""
           name: "<white><bold>%s"
-          lore: ""
+          lore: "<#5574AF>Category: <gray>%s"
 
         item:
           material: "crafting_table"
@@ -238,12 +238,6 @@ lobby:
       lore: ""
       top: "<dark_gray>Muté dans le lobby||"
       bottom: "<#8DE5A3>Clique gauche<dark_gray> pour kick du lobby||<#8DE5A3>Clique droit<dark_gray> pour (un)mute dans le lobby"
-
-styles:
-  default:
-    material: "poppy"
-    name: "<#348EDB><bold>Defaut"
-    lore: ""
 
 scoreboard:
   

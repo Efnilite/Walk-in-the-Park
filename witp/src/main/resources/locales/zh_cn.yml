@@ -119,6 +119,11 @@ settings:
       styles:
         name: "<white>Styles"
 
+        style_item:
+          material: ""
+          name: "<white><bold>%s"
+          lore: "<#5574AF>Category: <gray>%s"
+
         item:
           material: "crafting_table"
           name: "<#6693E7><bold>风格"
@@ -230,12 +235,6 @@ lobby:
       lore: ""
       top: "<dark_gray>在大厅被禁言||"
       bottom: "<#8DE5A3>左键点击<dark_gray> 踢出大厅||<#8DE5A3>右键点击<dark_gray> （解除）禁言"
-
-styles:
-  default:
-    material: "poppy"
-    name: "<#348EDB><bold>默认"
-    lore: ""
 
 scoreboard:
 

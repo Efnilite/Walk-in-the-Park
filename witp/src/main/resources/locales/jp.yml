@@ -125,7 +125,7 @@ settings:
         style_item:
           material: ""
           name: "<white><bold>%s"
-          lore: ""
+          lore: "<#5574AF>種類: <gray>%s"
 
         item:
           material: "crafting_table"
@@ -238,12 +238,6 @@ lobby:
       lore: ""
       top: "<dark_gray>ロビーにミュートかった||"
       bottom: "<#8DE5A3>左クリック<dark_gray>でロビーからキックする。||<#8DE5A3>右クリック<dark_gray> to (un)mute in lobby"
-
-styles:
-  default:
-    material: "poppy"
-    name: "<#348EDB><bold>デフォルト"
-    lore: ""
 
 scoreboard:
 

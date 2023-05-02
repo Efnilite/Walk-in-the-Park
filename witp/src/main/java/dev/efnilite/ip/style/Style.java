@@ -1,19 +1,37 @@
 package dev.efnilite.ip.style;
 
-import org.bukkit.Material;
+import dev.efnilite.ip.session.Session;
+import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
-public class Style {
+/**
+ * Represents a style.
+ *
+ * @param name             The style name.
+ * @param materials        The possible style {@link BlockData}s.
+ * @param category         The name of this style's category, like "default" or "incremental".
+ * @param materialSelector The function that selects the {@link BlockData}.
+ *                         Provided arguments are the current possible {@link BlockData}s used by this style and the session.
+ *                         Returns the material that will be used for the next parkour block.
+ */
+public record Style(@NotNull String name, @NotNull List<BlockData> materials, @NotNull String category,
+                    @NotNull BiFunction<List<BlockData>, Session, BlockData> materialSelector) {
 
-    public final String name;
-    public final List<Material> materials;
-    public final String category;
+    public Style {
+        if (materials.isEmpty()) {
+            throw new IllegalArgumentException("Materials can't be empty");
+        }
+    }
 
-    public Style(@NotNull String name, @NotNull List<Material> materials, @NotNull String category) {
-        this.name = name;
-        this.materials = materials;
-        this.category = category;
+    /**
+     * @param session The session.
+     * @return The {@link BlockData}
+     */
+    @NotNull
+    public BlockData get(@NotNull Session session) {
+        return materialSelector.apply(materials, session);
     }
 }
