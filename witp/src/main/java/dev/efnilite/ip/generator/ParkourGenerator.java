@@ -43,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
@@ -303,146 +302,35 @@ public class ParkourGenerator {
     // Based on this sideways movement, a value for forward movement will be chosen.
     // This is done to ensure players are able to complete the jump.
     protected Block selectNext(Block current, int distance, int height) {
-        // calculate the player's location as parameter form to make it easier to detect
-        // when a player is near the edge of the playable area
-        double[][] progress = calculateParameterization();
+        JumpDirector director = new JumpDirector(BoundingBox.of(zone[0], zone[1]), getLatest().getLocation().toVector());
 
-        // calculate recommendations for new heading
-        List<Vector> recommendations = updateHeading(progress);
+        Vector recommendedHeading = director.getRecommendedHeading();
 
-        if (!recommendations.isEmpty()) {
-            heading = new Vector(0, 0, 0);
-
-            // add all recommendations to heading.
-            // this will allow the heading to become diagonal in case it reaches a corner:
-            // if north and east are recommended, the heading of the parkour will go north-east.
-            for (Vector recommendation : recommendations) {
-                heading.add(recommendation);
-            }
+        if (!recommendedHeading.equals(new Vector(0, 0, 0))) {
+            heading = recommendedHeading;
         }
 
-        height = updateHeight(progress, height);
+        int recommendedHeight = director.getRecommendedHeight();
 
-        int randomOffset = getRandomOffset(height, distance);
+        if (recommendedHeight != 0) {
+            height = recommendedHeight;
+        }
 
-        Vector offset = new Vector((distance - height) + 1, height, randomOffset);
+        if (height > 0) {
+            height = Math.max(height - distance, 1);
+        }
+
+        double mean = 0;
+        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
+
+        int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
+
+        Vector offset = new Vector(distance + 1, height, randomOffset);
 
         // rotate offset to match heading
         offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
 
         return current.getLocation().add(offset).getBlock();
-    }
-
-    private int getRandomOffset(int height, int distance) {
-        int maxOffset = (4 - height) - (distance - height);
-
-        double mean = 0;
-        double sd = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
-
-        List<Integer> possibleOffsets = Colls.range(-maxOffset, maxOffset + 1);
-        Map<Integer, Double> distribution = possibleOffsets.stream()
-                .collect(Collectors.toMap(xz -> xz, xz -> Probs.normalpdf(mean, sd, xz)));
-
-        IP.logging().info("h %d d %d max_o %d".formatted(height, (distance - height), maxOffset));
-        distribution.forEach((k, v) -> IP.logging().info("%s -> %s".formatted(k, v)));
-
-        int random = Probs.random(distribution);
-        IP.logging().info("-> o %d".formatted(random));
-        IP.logging().info("");
-
-        return random;
-    }
-
-    // Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
-    // Returns a 2-dimensional array where the first array index is used to select the x, y and z (0, 1 and 2 respectively).
-    // This returns an array where the first index is tx and second index is borderMarginX (see comments below for explanation).
-    protected double[][] calculateParameterization() {
-        Location min = zone[0];
-        Location max = zone[1];
-
-        // the total dimensions
-        double dx = max.getX() - min.getX();
-        double dy = max.getY() - min.getY();
-        double dz = max.getZ() - min.getZ();
-
-        // the relative x, y and z coordinates
-        // relative being from the min point of the selection zone
-        double relativeX = getLatest().getX() - min.getX();
-        double relativeY = getLatest().getY() - min.getY();
-        double relativeZ = getLatest().getZ() - min.getZ();
-
-        // get progress along axes
-        // tx = 0 means that the player is at the same x coordinate as the min point (origin)
-        // tx = 1 means that the player is at the same x coordinate as the max point
-        // everything between is the progress between these two points, relatively speaking
-        double tx = relativeX / dx;
-        double ty = relativeY / dy;
-        double tz = relativeZ / dz;
-
-        // the minimum distance allowed to the border
-        // max block jump distance is 5, so 6 is the max safe distance
-        double safeDistance = 6;
-
-        // the margin until the border
-        // if tx < borderMarginX, it means the x coordinate is within 'safeDistance' blocks of the border
-        double borderMarginX = safeDistance / dx;
-        double borderMarginY = (0.5 * safeDistance) / dy;
-        double borderMarginZ = safeDistance / dz;
-
-        return new double[][]{{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
-    }
-
-    // Updates the heading to make sure it avoids the border of the selected zone.
-    // When the most recent block is detected to be within a 5-block radius of the border,
-    // the heading will automatically be turned around to ensure that the edge does not get
-    // destroyed.
-    protected List<Vector> updateHeading(double[][] progress) {
-        // get x values from progress array
-        double tx = progress[0][0];
-        double borderMarginX = progress[0][1];
-
-        // get z values from progress array
-        double tz = progress[2][0];
-        double borderMarginZ = progress[2][1];
-
-        List<Vector> directions = new ArrayList<>();
-        // check border
-        if (tx < borderMarginX) {
-            directions.add(new Vector(1, 0, 0));
-            // x should increase
-        } else if (tx > 1 - borderMarginX) {
-            directions.add(new Vector(-1, 0, 0));
-            // x should decrease
-        }
-
-        if (tz < borderMarginZ) {
-            directions.add(new Vector(0, 0, 1));
-            // z should increase
-        } else if (tz > 1 - borderMarginZ) {
-            directions.add(new Vector(0, 0, -1));
-            // z should decrease
-        }
-
-        return directions;
-    }
-
-    // Updates the height to make sure the player doesn't go below the playable zone.
-    // If the current height is fine, it will return the value of parameter currentHeight.
-    // If the current height is within the border margin, it will return a value (1 or -1)
-    // to make sure the player doesn't go below this value
-    protected int updateHeight(double[][] progress, int currentHeight) {
-        double ty = progress[1][0];
-        double borderMarginY = progress[1][1];
-
-        if (ty < borderMarginY) {
-            return 1;
-            // y should increase
-        } else if (ty > 1 - borderMarginY) {
-            return -1;
-            // y should decrease
-        } else {
-            return currentHeight;
-        }
     }
 
     protected void score() {
@@ -559,18 +447,16 @@ public class ParkourGenerator {
         }
         lastPositionIndexPlayer = currentIndex;
 
-        // delete trailing blocks
-        for (int idx = 0; idx < history.size(); idx++) {
-            Block block = history.get(idx);
-
-            if (currentIndex - idx > BLOCK_TRAIL) {
-                block.setType(Material.AIR);
+        for (int i = currentIndex - BLOCK_TRAIL; i < currentIndex; i++) {
+            // avoid setting beginning block to air
+            if (i == 0) {
+                continue;
             }
+
+            history.get(i).setType(Material.AIR);
         }
 
-        if (deleteSchematic) { // deletes the structure if the player goes to the next block (reason why it's last)
-            deleteStructure();
-        }
+        deleteSchematic();
 
         for (int i = 0; i < (Option.ALL_POINTS ? deltaFromLast : 1); i++) { // score the difference
             score();
@@ -610,7 +496,8 @@ public class ParkourGenerator {
         history.clear();
 
         waitForSchematicCompletion = false;
-        deleteStructure();
+        deleteSchematic = true;
+        deleteSchematic();
 
         Leaderboard leaderboard = getMode().getLeaderboard();
         int record = leaderboard != null ? leaderboard.get(player.getUUID()).score() : 0;
@@ -662,7 +549,11 @@ public class ParkourGenerator {
         }
     }
 
-    private void deleteStructure() {
+    private void deleteSchematic() {
+        if (!deleteSchematic) {
+            return;
+        }
+
         schematicBlocks.forEach(block -> block.setType(Material.AIR));
         schematicBlocks.clear();
 
