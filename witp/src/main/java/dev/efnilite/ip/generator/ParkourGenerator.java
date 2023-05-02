@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * The class that generates the parkour, which each {@link ParkourPlayer} has.
@@ -296,21 +296,17 @@ public class ParkourGenerator {
     }
 
     protected List<Block> selectBlocks() {
-        int dy = Probs.random(heightChances);
-        int gap = Probs.random(distanceChances);
+        int height = Probs.random(heightChances);
+        int distance = Probs.random(distanceChances);
 
-        if (dy > 0 && gap < 2) { // prevent blocks from spawning on top of each other
-            gap = 2;
-        }
-
-        return List.of(selectNext(getLatest(), gap, dy));
+        return List.of(selectNext(getLatest(), distance, height));
     }
 
     // Selects the next block that will continue the parkour.
     // This is done by choosing a random value for the sideways movement.
     // Based on this sideways movement, a value for forward movement will be chosen.
     // This is done to ensure players are able to complete the jump.
-    protected Block selectNext(Block current, int range, int dy) {
+    protected Block selectNext(Block current, int distance, int height) {
         // calculate the player's location as parameter form to make it easier to detect
         // when a player is near the edge of the playable area
         double[][] progress = calculateParameterization();
@@ -329,56 +325,42 @@ public class ParkourGenerator {
             }
         }
 
-        dy = updateHeight(progress, dy);
+        height = updateHeight(progress, height);
 
-        switch (getLatest().getType()) {
-            case PACKED_ICE -> range += 0.5;
-            case SMOOTH_QUARTZ_SLAB -> dy = 0;
-            case WHITE_STAINED_GLASS_PANE -> range -= 0.5;
-        }
+        int randomOffset = getRandomOffset(height, distance);
+        IP.logging().info("h %d d %d o %d".formatted(height, distance, randomOffset));
 
-        // the adjusted dy, used to get the updated max range
-        int ady = dy;
+        Vector offset = new Vector(distance + 1, height, randomOffset);
 
-        // change coefficient of line if dy is below 0
-        if (dy < 0) {
-            ady = (int) Math.ceil(0.5 * dy); // use ceil since ceiling of negative is closer to 0
-        }
+        // rotate offset to match heading
+        offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
 
-        // the max range, adjusted to the difference in height
-        int adjustedRange = range - ady;
+        return current.getLocation().add(offset).getBlock();
+    }
 
-        int ds = 0;
-        if (-adjustedRange + 1 < adjustedRange) { // prevent illegal random args
+    private int getRandomOffset(int height, int distance) {
+        List<int[]> possibilities = new ArrayList<>();
+        for (int loopDistance = 1; loopDistance <= 4; loopDistance++) {
+            int maxOffset = 4 - loopDistance;
 
-            // make sure df is always 1 by making sure adjustedRange > ds
-            // +1 to follow exclusivity of upper bound
-            ds = ThreadLocalRandom.current().nextInt(-adjustedRange + 1, adjustedRange);
-        }
-
-        // if selection angle is reduced, halve the current sideways step
-        if (generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE)) {
-            if (ds > 1) {
-                ds = 1;
-            } else if (ds < -1) {
-                ds = -1;
+            for (int loopOffset = -maxOffset; loopOffset <= maxOffset; loopOffset++) {
+                possibilities.add(new int[] {loopOffset, loopDistance});
             }
         }
 
-        // delta forwards
-        int df = adjustedRange - Math.abs(ds);
+        double mean = 0;
+        double sd = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
 
-        Vector offset = new Vector(df, dy, ds);
+        Map<int[], Double> distribution = possibilities.stream()
+                .map(xz -> new int[]{xz[0], xz[1] - height})
+                .filter(xz -> xz[1] == distance)
+                .collect(Collectors.toMap(xz -> xz, xz -> Probs.normalpdf(mean, sd, xz[0])));
 
-        // update current loc
-        Location clone = current.getLocation();
+        distribution.forEach((k, v) -> IP.logging().info("%s -> %s".formatted(Arrays.toString(k), v)));
 
-        // add all offsets to a vector and rotate it to match current direction
-        offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
+        int[] random = Probs.random(distribution);
 
-        clone.add(offset);
-
-        return clone.getBlock();
+        return random[0];
     }
 
     // Calculates the player's position in a parameter form, to make it easier to detect when the player is near the edge of the border.
@@ -706,15 +688,15 @@ public class ParkourGenerator {
             return;
         }
 
-        JumpType jump;
-        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS)) {
-            Map<JumpType, Double> map = new HashMap<>(defaultChances);
-            map.remove(JumpType.SCHEMATIC);
-            jump = Probs.random(map);
-        } else {
-            jump = Probs.random(defaultChances);
+        Map<JumpType, Double> chances = new HashMap<>(defaultChances);
+        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS) || !profile.get("useStructure").asBoolean()) {
+            chances.remove(JumpType.SCHEMATIC);
+        }
+        if (!profile.get("useSpecialBlocks").asBoolean()) {
+            chances.remove(JumpType.SPECIAL);
         }
 
+        JumpType jump = Probs.random(chances);
         switch (jump) {
             case DEFAULT, SPECIAL -> {
                 List<Block> blocks = selectBlocks();
