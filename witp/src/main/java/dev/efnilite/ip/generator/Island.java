@@ -63,11 +63,11 @@ public final class Island {
             ps.setYaw(Config.GENERATION.getInt("advanced.island.spawn.yaw"));
             ps.setPitch(Config.GENERATION.getInt("advanced.island.spawn.pitch"));
 
-            session.generator.generateFirst(ps, parkour.getLocation());
+            session.generator.generateFirst(ps, parkour.getLocation().subtract(session.generator.heading));
             session.generator.startTick();
             pp.setup(ps);
         } catch (NoSuchElementException ex) {
-            IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic),
+            IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic.getFile().getName()),
                     "check if you used the same material as the one in generation.yml", ex);
 
             blocks.forEach(block -> block.setType(Material.AIR));

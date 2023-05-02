@@ -1,7 +1,10 @@
 package dev.efnilite.ip.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Probs {
@@ -32,7 +35,11 @@ public final class Probs {
      * @param <K>          The key type.
      * @return A random item from the list, based on the probabilities.
      */
-    public static <K> K random(Map<K, Double> distribution) {
+    public static <K> K random(@NotNull Map<K, Double> distribution) {
+        if (distribution.isEmpty()) {
+            throw new NoSuchElementException("No elements in distribution map");
+        }
+
         double total = 0;
 
         Map<K, Double> cumulative = new LinkedHashMap<>();

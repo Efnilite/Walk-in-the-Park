@@ -1,20 +1,35 @@
 **[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
+- Reworked block generation
+  - Fixed invisible blocks
+  - Jump distance is now actually the distance between blocks
+    - 4 block jumps now have a gap of 4 blocks
+    - 3 block jumps now have a gap of 3 blocks
+    - 2 block jumps now have a gap of 2 blocks
+    - 1 block jumps now have a gap of 1 block
+  - Removed 0-block jumps
+  - Removed parkour clutter
+  - Improved performance
+  - Improved reliability
+- Reworked difficulty score
+  - Changed weights of each setting
+  - Now allows for difficulties above 0.8: possible difficulties are now 0.25, 0.5, 0.75 and 1.0 instead of 0.2, 0.4, 0.6 and 0.8.
 - Reworked schematics
   - Added schematic support to signs
-  - Added schematic support to skulls
+  - Added schematic support to player heads
   - Added schematic support to spawners
   - 70% saving time reduction
   - 37% file size reduction on large files
   - Schematics no longer need to be built facing north
   - Parkour schematics no longer need to end in a number to be accepted in schematics.yml
-- Reworked difficulty score
-  - Changed weights of each setting
-  - Now allows for difficulties above 0.8
 - Reworked points awarded for schematic
   - Points received now depends on the difficulty of the schematic
   - Old formula: always 10 points
   - New formula: difficulty * 15, e.g. 0.5 * 15 = 7 points
+- Reworked storage system
+  - Improved reliability
+
+- Added Japanese localization
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
 - Fixed leaderboard sorting mode not being clear
@@ -26,6 +41,7 @@
 - Fixed losing items when player was a spectator for a lobby that was disbanded
 - Fixed multiplayer modes not registering scores for all players
 - Fixed changing name causing players to not get their items when they left
+- Fixed players being locked out of joining after a server crash
 - Removed adaptive distance
   - Its effects were too small to be noticed in regular gameplay
 - Removed unused keys from config.yml and generation.yml

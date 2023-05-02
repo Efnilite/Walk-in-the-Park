@@ -4,14 +4,14 @@
 # just add '658391: 0.6'. Any questions? Join the Discord.
 
 # -------- The difficulty of schematics --------
-# These are represented by a number below or equal to 1.
+# These are represented by a number below or equal to 1.0.
 
 # Difficulties are also represented by an easy word, which is nice for users.
 # Players who pick i.e. "hard" will get every schematic below difficulty 0.7, so sometimes they will get easy (0.3).
-# 0.8 to 1.0 = very hard
-# 0.4 to 0.6 = hard
-# 0.2 to 0.4 = medium
-# 0.0 to 0.2 = easy
+# 0.75 to 1.0 = very hard
+# 0.5 to 0.75 = hard
+# 0.25 to 0.5 = medium
+# 0.0 to 0.25 = easy
 
 difficulty:
   1: 0.25

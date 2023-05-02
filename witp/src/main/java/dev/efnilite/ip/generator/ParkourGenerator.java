@@ -616,6 +616,7 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
+        history.remove(0); // ensure starting block (usually part of the spawn schematic) doesn't get deleted
         history.forEach(block -> block.setType(Material.AIR));
         history.clear();
 
@@ -819,7 +820,7 @@ public class ParkourGenerator {
     public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn;
         lastStandingPlayerLocation = spawn;
-        blockSpawn = block;
+        blockSpawn = block; // avoid 5 block jumps
         history.add(blockSpawn.getBlock());
 
         generate(profile.get("blockLead").asInt());
