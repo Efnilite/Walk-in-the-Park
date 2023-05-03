@@ -32,6 +32,7 @@
 - Added Japanese localization
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed world deletion not working at all
 - Fixed leaderboard sorting mode not being clear
 - Fixed scoreboard timer not going up consistently
 - Fixed rewards parsing when rewards are disabled

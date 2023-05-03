@@ -10,6 +10,9 @@ import org.bukkit.WorldType;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 /**
  * Minecraft world manager.
@@ -36,12 +39,21 @@ public class WorldManagerMC implements WorldManager {
 
     @Override
     public void deleteWorld() {
+        File file = new File(Option.WORLD_NAME);
+
+        // world has already been deleted
+        if (!file.exists()) {
+            return;
+        }
+
         Bukkit.unloadWorld(Option.WORLD_NAME, false);
 
-        try {
-            Files.delete(new File(Option.WORLD_NAME).toPath());
+        try (Stream<Path> files = Files.walk(file.toPath())) {
+            files.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
         } catch (Exception ex) {
-            IP.logging().warn("Error while trying to delete parkour world: %s".formatted(ex.getMessage()));
+            IP.logging().stack("Error while trying to delete the parkour world", ex);
         }
     }
 }
