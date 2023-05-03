@@ -135,13 +135,12 @@ public final class StorageSQL implements Storage {
     public void writePlayer(@NotNull ParkourPlayer player) {
         sendUpdate("""
                 INSERT INTO `%s`
-                (uuid, style, blockLead, useParticles, useStructure, useSpecial, showFallMsg, showScoreboard,
+                (uuid, style, blockLead, useParticles, useSpecial, showFallMsg, showScoreboard,
                  selectedTime, collectedRewards, locale, schematicDifficulty, sound)
-                VALUES ('%s', '%s', %d, %b, %b, %b, %b, %b, %d, '%s', '%s', %f, %b)
+                VALUES ('%s', '%s', %d, %b, %b, %b, %b, %d, '%s', '%s', %f, %b)
                 ON DUPLICATE KEY UPDATE style               = '%s',
                                         blockLead           = %d,
                                         useParticles        = %b,
-                                        useStructure        = %b,
                                         useSpecial          = %b,
                                         showFallMsg         = %b,
                                         showScoreboard      = %b,
@@ -152,12 +151,12 @@ public final class StorageSQL implements Storage {
                                         sound               = %b;
                                         """
                 .formatted("%soptions".formatted(Option.SQL_PREFIX), player.getUUID(), player.style, player.blockLead,
-                        player.particles, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
+                        player.particles, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.locale,
                         player.schematicDifficulty, player.sound,
 
                         player.style, player.blockLead,
-                        player.particles, player.useSchematic, player.useSpecialBlocks, player.showFallMessage,
+                        player.particles, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.locale,
                         player.schematicDifficulty, player.sound));
     }
@@ -197,6 +196,7 @@ public final class StorageSQL implements Storage {
 
             // 5.0.0
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
+            sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useStructure`;".formatted(Option.SQL_PREFIX));
 
             IP.logging().info("Connected to MySQL");
         } catch (Exception ex) {

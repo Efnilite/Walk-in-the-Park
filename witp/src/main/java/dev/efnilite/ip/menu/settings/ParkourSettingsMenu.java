@@ -72,14 +72,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return item;
         }, player -> checkOptions(player, ParkourOption.LEADS, disabled));
 
-        // schematics
-        registerMainItem(1, 9, (p, user) -> Locales.getItem(p, ParkourOption.SCHEMATIC.path + ".item").click(event -> {
-            if (!(user instanceof ParkourPlayer player)) {
-                return;
-            }
-            openSchematicMenu(player, disabled);
-        }), player -> checkOptions(player, ParkourOption.SCHEMATIC, disabled));
-
         // time
         registerMainItem(1, 10, (p, user) -> {
             Item item = Locales.getItem(p, ParkourOption.TIME.path);
@@ -227,6 +219,41 @@ public class ParkourSettingsMenu extends DynamicMenu {
                     event -> handleScoreSettingChange(player, event, () -> player.useSpecialBlocks = false));
         }, player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
 
+        // schematics
+        registerMainItem(2, 5, (p, user) -> {
+            Item item = Locales.getItem(p, ParkourOption.SCHEMATIC_DIFFICULTY.path);
+
+            if (!(user instanceof ParkourPlayer player)) {
+                return item;
+            }
+
+            List<Double> difficulties = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
+            List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
+
+            return new SliderItem()
+                .initial(difficulties.indexOf(player.schematicDifficulty))
+                .add(0, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(0))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.0))
+                .add(1, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(0))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.25))
+                .add(2, item.clone()
+                        .material(Material.YELLOW_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(1))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.5))
+                .add(3, item.clone()
+                        .material(Material.ORANGE_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(2))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.75))
+                .add(4, item.clone()
+                        .material(Material.SKELETON_SKULL)
+                        .modifyLore(line -> line.replace("%s", values.get(3))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 1.0));
+        }, player -> checkOptions(player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled));
+
         // Always allow closing of the menu
         registerMainItem(3, 10,
                 (player, user) -> Locales.getItem(player, "other.close")
@@ -280,62 +307,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>" + Unicodes.DOUBLE_ARROW_LEFT).click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)))
                 .fillBackground(Util.isBedrockPlayer(player.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player.player);
-    }
-
-    /**
-     * Opens the schematic customization menu
-     *
-     * @param user The ParkourPlayer instance
-     */
-    public void openSchematicMenu(ParkourPlayer user, ParkourOption[] disabled) {
-        // init menu
-        Menu schematics = new Menu(3, Locales.getString(user.locale, ParkourOption.SCHEMATIC.path + ".name"));
-
-        List<Double> difficulties = Arrays.asList(0.25, 0.5, 0.75, 1.0);
-        List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
-
-        Item item = Locales.getItem(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path);
-
-        if (checkOptions(user.player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled)) {
-            schematics.item(10, new SliderItem()
-                .initial(difficulties.indexOf(user.schematicDifficulty))
-                .add(0, item.clone()
-                        .material(Material.LIME_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", "<#0DCB07>" + values.get(0))),
-                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.25))
-                .add(1, item.clone()
-                        .material(Material.YELLOW_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", "<yellow>" + values.get(1))),
-                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.5))
-                .add(2, item.clone()
-                        .material(Material.ORANGE_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", "<#FF6C17>" + values.get(2))),
-                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 0.75))
-                .add(3, item.clone()
-                        .material(Material.SKELETON_SKULL)
-                        .modifyLore(line -> line.replace("%s", "<dark_red>" + values.get(3))),
-                    event -> handleScoreSettingChange(user, event, () -> user.schematicDifficulty = 1.0)));
-        }
-
-        item = Locales.getItem(user.locale, ParkourOption.USE_SCHEMATICS.path);
-
-        if (checkOptions(user.player, ParkourOption.USE_SCHEMATICS, disabled)) {
-            schematics.item(9, new SliderItem().initial(user.useSchematic ? 0 : 1)
-                .add(0, item.clone()
-                        .material(Material.LIME_STAINED_GLASS_PANE)
-                        .modifyName(name -> "<#0DCB07><bold>" + ChatColor.stripColor(name))
-                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
-                    event -> handleScoreSettingChange(user, event, () -> user.useSchematic = true))
-                .add(1, item.clone()
-                        .material(Material.RED_STAINED_GLASS_PANE)
-                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
-                    event -> handleScoreSettingChange(user, event, () -> user.useSchematic = false)));
-        }
-
-        schematics.distributeRowEvenly(0, 1, 2)
-                .item(26, Locales.getItem(user.locale, "other.close").click(event -> open(user)))
-                .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.CYAN_STAINED_GLASS_PANE).open(user.player);
     }
 
     private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {

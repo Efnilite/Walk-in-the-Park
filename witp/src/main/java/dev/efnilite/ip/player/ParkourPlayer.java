@@ -35,7 +35,6 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("style", new OptionContainer(ParkourOption.STYLES, (player, v) -> player.style = v));
         PLAYER_COLUMNS.put("blockLead", new OptionContainer(ParkourOption.LEADS, (player, v) -> player.blockLead = Integer.parseInt(v)));
         PLAYER_COLUMNS.put("useParticles", new OptionContainer(ParkourOption.PARTICLES, (player, v) -> player.particles = parseBoolean(v)));
-        PLAYER_COLUMNS.put("useStructure", new OptionContainer(ParkourOption.USE_SCHEMATICS, (player, v) -> player.useSchematic = parseBoolean(v)));
         PLAYER_COLUMNS.put("useSpecial", new OptionContainer(ParkourOption.SPECIAL_BLOCKS, (player, v) -> player.useSpecialBlocks = parseBoolean(v)));
         PLAYER_COLUMNS.put("showFallMsg", new OptionContainer(ParkourOption.FALL_MESSAGE, (player, v) -> player.showFallMessage = parseBoolean(v)));
         PLAYER_COLUMNS.put("showScoreboard", new OptionContainer(ParkourOption.SCOREBOARD, (player, v) -> player.showScoreboard = parseBoolean(v)));
@@ -100,7 +99,6 @@ public class ParkourPlayer extends ParkourUser {
     public @Expose Boolean useSpecialBlocks;
     public @Expose Boolean showFallMessage;
     public @Expose Boolean showScoreboard;
-    public @Expose Boolean useSchematic;
     public @Expose Integer selectedTime;
     public @Expose String style;
     public @Expose String _locale;
@@ -168,7 +166,6 @@ public class ParkourPlayer extends ParkourUser {
                 .set("useSpecialBlocks", useSpecialBlocks.toString())
                 .set("showFallMessage", showFallMessage.toString())
                 .set("showScoreboard", showScoreboard.toString())
-                .set("useSchematic", useSchematic.toString())
                 .set("selectedTime", selectedTime.toString())
                 .set("style", style);
 

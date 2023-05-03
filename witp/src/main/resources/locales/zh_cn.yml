@@ -139,24 +139,11 @@ settings:
         name: "<#6693E7><bold>时间"
         lore: "<#5574AF>当前: <gray>%s||<gray>你当前的虚拟时间"
 
-      schematic_difficulty:
+      schematics:
         material: ""
         name: "<#6693E7><bold>结构难度"
         lore: "<#5574AF>当前: <gray>%s||<gray>结构的难度"
-        values: ["简单", "普通", "困难", "地狱"]
-
-      schematic_use:
-        material: ""
-        name: "使用结构"
-        lore: "<gray>当前: %s||<gray>当启用时||<gray>跑酷外会出现基本结构"
-
-      schematic:
-        name: "<white>结构"
-
-        item:
-          material: "scaffolding"
-          name: "<#6693E7><bold>结构"
-          lore: "<gray>修改你的结构设置"
+        values: ["<red>off", "<#0DCB07>简单", "<yellow>普通", "<#FF6C17>困难", "<dark_red>地狱"]
 
       scoreboard:
         material: ""

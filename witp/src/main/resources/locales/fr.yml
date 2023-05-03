@@ -141,25 +141,12 @@ settings:
         material: "clock"
         name: "<#6693E7><bold>Temps"
         lore: "<#5574AF>Pour le moment: <gray>%s||<gray>Votre temps visuel actuel."
-      
-      schematic_difficulty:
+
+      schematics:
         material: ""
         name: "<#6693E7><bold>Difficulté des schématique"
         lore: "<#5574AF>Pour le moment: <gray>%s||<gray>La difficulté des schématique"
-        values: ["simple", "moyen", "dur", "très dur"]
-      
-      schematic_use:
-        material: ""
-        name: "Utiliser des schematics"
-        lore: "<gray>Pour le moment: %s||<gray>Si activé, les schémas statiques||<gray>apparaitront durant le parcour."
-      
-      schematic:
-        name: "<white>Schematics"
-        
-        item:
-          material: "scaffolding"
-          name: "<#6693E7><bold>Schematics"
-          lore: "<gray>Changer les paramètres des schematics"
+        values: ["<red>désactivé", "<#0DCB07>simple", "<yellow>moyen", "<#FF6C17>dur", "<dark_red>très dur"]
       
       scoreboard:
         material: ""

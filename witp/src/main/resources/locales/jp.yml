@@ -142,24 +142,11 @@ settings:
         name: "<#6693E7><bold>時間"
         lore: "<#5574AF>今: <gray>%s||<gray>今の時間。"
 
-      schematic_difficulty:
+      schematics:
         material: ""
         name: "<#6693E7><bold>スキマティクの難しさ"
         lore: "<#5574AF>今: <gray>%s||<gray>スキマティクの難しさ。"
-        values: ["初級", "中級", "高級", "上級"]
-
-      schematic_use:
-        material: ""
-        name: "スキマティクの使用"
-        lore: "<gray>今: %s||<gray>オン時、schematics will appear throughout the parkour."
-
-      schematic:
-        name: "<white>スキマティク"
-
-        item:
-          material: "scaffolding"
-          name: "<#6693E7><bold>スキマティクの設定"
-          lore: "<gray>スキマティクの設定。"
+        values: ["<red>オフ", "<#0DCB07>初級", "<yellow>中級", "<#FF6C17>高級", "<dark_red>上級"]
 
       scoreboard:
         material: ""
@@ -178,9 +165,9 @@ settings:
         high_score: "<#80C7FD><bold>高得点 <reset><white>%s"
 
         formats:
-          miss: "<gray>You missed your 高得点 by %s points!"
-          beat: "<gray>You beat your 高得点 by %s points!"
-          tied: "<gray>You tied your 高得点!"
+          miss: "<gray>You missed your high score by %s points!"
+          beat: "<gray>You beat your high score by %s points!"
+          tied: "<gray>You tied your high score!"
 
       particles:
         material: ""

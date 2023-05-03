@@ -142,24 +142,11 @@ settings:
         name: "<#6693E7><bold>Time"
         lore: "<#5574AF>Currently: <gray>%s||<gray>Your current visual time."
 
-      schematic_difficulty:
+      schematics:
         material: ""
         name: "<#6693E7><bold>Schematic difficulty"
         lore: "<#5574AF>Currently: <gray>%s||<gray>The difficulty of schematics"
-        values: ["easy", "medium", "hard", "very hard"]
-
-      schematic_use:
-        material: ""
-        name: "Use schematics"
-        lore: "<gray>Currently: %s||<gray>If enabled static schematics||<gray>will appear throughout the parkour."
-
-      schematic:
-        name: "<white>Schematics"
-
-        item:
-          material: "scaffolding"
-          name: "<#6693E7><bold>Schematics"
-          lore: "<gray>Change schematic settings"
+        values: ["<red>off", "<#0DCB07>easy", "<yellow>medium", "<#FF6C17>hard", "<dark_red>very hard"]
 
       scoreboard:
         material: ""

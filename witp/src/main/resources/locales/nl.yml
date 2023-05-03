@@ -142,24 +142,11 @@ settings:
         name: "<#6693E7><bold>Tijd"
         lore: "<#5574AF>Huidige waarde: <gray>%s||<gray>Je huidige visuele tijd."
 
-      schematic_difficulty:
+      schematics:
         material: ""
         name: "<#6693E7><bold>Schematicmoeilijkheid"
         lore: "<#5574AF>Huidige waarde: <gray>%s||<gray>De moeilijkheid van de schematics"
-        values: ["makkelijk", "medium", "moeilijk", "erg moeilijk"]
-
-      schematic_use:
-        material: ""
-        name: "Schematics gebuiken"
-        lore: "<gray>Huidige waarde: %s||<gray>Als dit aan staat zullen er schematics||<gray>in het parkour verschijnen."
-
-      schematic:
-        name: "<white>Schematics"
-
-        item:
-          material: "scaffolding"
-          name: "<#6693E7><bold>Schematics"
-          lore: "<gray>Verander de instellingen van schematics"
+        values: ["<red>uit", "<#0DCB07>makkelijk", "<yellow>medium", "<#FF6C17>moeilijk", "<dark_red>erg moeilijk"]
 
       scoreboard:
         material: ""
