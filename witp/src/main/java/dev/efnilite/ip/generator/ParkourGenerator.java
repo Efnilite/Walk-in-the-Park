@@ -316,6 +316,12 @@ public class ParkourGenerator {
             height = recommendedHeight;
         }
 
+        // ensure special is possible
+        switch (getLatest().getType()) {
+            case SMOOTH_QUARTZ_SLAB -> height = Math.min(height, 0);
+            case GLASS_PANE -> distance = Math.min(distance, 3);
+        }
+
         if (height > 0) {
             distance = Math.max(distance - height, 1);
         }
@@ -447,7 +453,7 @@ public class ParkourGenerator {
         }
         lastPositionIndexPlayer = currentIndex;
 
-        for (int i = currentIndex - BLOCK_TRAIL; i > currentIndex - 2 * BLOCK_TRAIL; i--) {
+        for (int i = currentIndex - BLOCK_TRAIL; i >= currentIndex - 2 * BLOCK_TRAIL; i--) {
             // avoid setting beginning block to air
             if (i <= 0) {
                 continue;
@@ -588,18 +594,24 @@ public class ParkourGenerator {
                     return;
                 }
 
+                List<Block> movedBlocks = new ArrayList<>();
                 for (Block block : blocks) {
                     BlockData data = (jump == JumpType.SPECIAL && !generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) ? Probs.random(specialChances) : selectBlockData();
 
+                    if (data instanceof Fence) {
+                        block = block.getLocation().subtract(0, 1, 0).getBlock();
+                    }
+
                     block.setBlockData(data, data instanceof Fence || data instanceof GlassPane);
+                    movedBlocks.add(block);
                 }
 
-                new ParkourBlockGenerateEvent(blocks, this, player).call();
+                new ParkourBlockGenerateEvent(movedBlocks, this, player).call();
 
-                particles(blocks);
-                sound(blocks);
+                particles(movedBlocks);
+                sound(movedBlocks);
 
-                history.addAll(blocks);
+                history.addAll(movedBlocks);
                 schematicCooldown--;
             }
             case SCHEMATIC -> {

@@ -16,8 +16,8 @@ generation:
     distance:
       1: 10
       2: 55
-      3: 30
-      4: 5
+      3: 34
+      4: 1
 
     # -= Height chances =-
     # The chances of the different heights a jump can have in %. Can be above 100%.
