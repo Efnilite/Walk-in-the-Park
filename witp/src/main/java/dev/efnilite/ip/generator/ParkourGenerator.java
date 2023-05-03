@@ -317,7 +317,7 @@ public class ParkourGenerator {
         }
 
         if (height > 0) {
-            height = Math.max(height - distance, 1);
+            distance = Math.max(distance - height, 1);
         }
 
         double mean = 0;
@@ -447,9 +447,9 @@ public class ParkourGenerator {
         }
         lastPositionIndexPlayer = currentIndex;
 
-        for (int i = currentIndex - BLOCK_TRAIL; i < currentIndex; i++) {
+        for (int i = currentIndex - BLOCK_TRAIL; i > currentIndex - 2 * BLOCK_TRAIL; i--) {
             // avoid setting beginning block to air
-            if (i == 0) {
+            if (i <= 0) {
                 continue;
             }
 
@@ -492,7 +492,8 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
-        history.forEach(block -> block.setType(Material.AIR));
+        history.remove(0);
+        history.forEach(block -> block.setType(Material.AIR, false));
         history.clear();
 
         waitForSchematicCompletion = false;

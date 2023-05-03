@@ -82,8 +82,6 @@ public final class Island {
             return;
         }
 
-        for (Block block : blocks) {
-            block.setType(Material.AIR, false);
-        }
+        blocks.forEach(block -> block.setType(Material.AIR, false));
     }
 }
