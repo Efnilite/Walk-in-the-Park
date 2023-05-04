@@ -34,6 +34,7 @@
 - Added Japanese localization
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed heading not being reset on fall
 - Fixed impossible special jumps
 - Fixed world deletion not working at all
 - Fixed leaderboard sorting mode not being clear

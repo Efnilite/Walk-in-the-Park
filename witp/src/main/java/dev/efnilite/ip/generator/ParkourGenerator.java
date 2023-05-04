@@ -542,6 +542,7 @@ public class ParkourGenerator {
 
         score = 0;
         start = null;
+        heading = Option.HEADING;
 
         if (regenerate) { // generate back the blocks
             player.teleport(playerSpawn);

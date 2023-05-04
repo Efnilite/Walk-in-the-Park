@@ -79,7 +79,7 @@ advanced:
 
   # -= Border size =-
   # The diameter of the playing area of a person in the single mode.
-  border-size: 5000
+  border-size: 10000
 
   # -= Schematic cooldown =-
   # The amount of blocks that provide a cooldown for the schematics.
