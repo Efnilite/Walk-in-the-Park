@@ -80,31 +80,35 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 return item;
             }
 
-            List<Double> difficulties = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
+            List<Double> difficulties = List.of(0.0, 0.25, 0.5, 0.75, 1.0);
             List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATICS.path + ".values");
 
+            if (!difficulties.contains(player.schematicDifficulty)) {
+                player.schematicDifficulty = difficulties.get(0);
+            }
+
             return new SliderItem()
-                    .initial(difficulties.indexOf(player.schematicDifficulty))
-                    .add(0, item.clone()
-                                    .material(Material.RED_STAINED_GLASS_PANE)
-                                    .modifyLore(line -> line.replace("%s", values.get(0))),
-                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.0))
-                    .add(1, item.clone()
-                                    .material(Material.LIME_STAINED_GLASS_PANE)
-                                    .modifyLore(line -> line.replace("%s", values.get(1))),
-                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.25))
-                    .add(2, item.clone()
-                                    .material(Material.YELLOW_STAINED_GLASS_PANE)
-                                    .modifyLore(line -> line.replace("%s", values.get(2))),
-                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.5))
-                    .add(3, item.clone()
-                                    .material(Material.ORANGE_STAINED_GLASS_PANE)
-                                    .modifyLore(line -> line.replace("%s", values.get(3))),
-                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.75))
-                    .add(4, item.clone()
-                                    .material(Material.SKELETON_SKULL)
-                                    .modifyLore(line -> line.replace("%s", values.get(4))),
-                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 1.0));
+                .initial(Math.min(difficulties.indexOf(player.schematicDifficulty), 0))
+                .add(0, item.clone()
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(0))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.0))
+                .add(1, item.clone()
+                        .material(Material.LIME_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(1))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.25))
+                .add(2, item.clone()
+                        .material(Material.YELLOW_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(2))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.5))
+                .add(3, item.clone()
+                        .material(Material.ORANGE_STAINED_GLASS_PANE)
+                        .modifyLore(line -> line.replace("%s", values.get(3))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.75))
+                .add(4, item.clone()
+                        .material(Material.SKELETON_SKULL)
+                        .modifyLore(line -> line.replace("%s", values.get(4))),
+                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 1.0));
         }, player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
 
         // time
@@ -122,17 +126,17 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return new SliderItem()
                 .initial(times.indexOf(player.selectedTime))
                 .add(0, item.clone()
-                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
-                        event -> handleSettingChange(player, () -> player.selectedTime = 0))
-                    .add(1, item.clone()
-                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
-                        event -> handleSettingChange(player, () -> player.selectedTime = 6000))
-                    .add(2, item.clone()
-                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
-                        event -> handleSettingChange(player, () -> player.selectedTime = 12000))
-                    .add(3, item.clone()
-                            .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
-                        event -> handleSettingChange(player, () -> player.selectedTime = 18000));
+                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
+                    event -> handleSettingChange(player, () -> player.selectedTime = 0))
+                .add(1, item.clone()
+                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
+                    event -> handleSettingChange(player, () -> player.selectedTime = 6000))
+                .add(2, item.clone()
+                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
+                    event -> handleSettingChange(player, () -> player.selectedTime = 12000))
+                .add(3, item.clone()
+                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
+                    event -> handleSettingChange(player, () -> player.selectedTime = 18000));
         }, player -> checkOptions(player, ParkourOption.TIME, disabled));
 
         // ---------- bottom row ----------
@@ -183,10 +187,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, true))),
                     event -> handleSettingChange(player, () -> player.showFallMessage = true))
                 .add(1, item.clone()
-                    .material(Material.RED_STAINED_GLASS_PANE)
-                    .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
-                    .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
-                event -> handleSettingChange(player, () -> player.showFallMessage = false));
+                        .material(Material.RED_STAINED_GLASS_PANE)
+                        .modifyName(name -> "<red><bold>" + ChatColor.stripColor(name))
+                        .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
+                    event -> handleSettingChange(player, () -> player.showFallMessage = false));
         }, player -> checkOptions(player, ParkourOption.FALL_MESSAGE, disabled));
 
         // show sound
