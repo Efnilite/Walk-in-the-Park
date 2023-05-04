@@ -52,7 +52,7 @@ public class ParkourPlayer extends ParkourUser {
             player._locale = v;
             player.locale = v;
         }));
-        PLAYER_COLUMNS.put("schematicDifficulty", new OptionContainer(ParkourOption.SCHEMATIC_DIFFICULTY, (player, v) -> player.schematicDifficulty = Double.parseDouble(v)));
+        PLAYER_COLUMNS.put("schematicDifficulty", new OptionContainer(ParkourOption.SCHEMATICS, (player, v) -> player.schematicDifficulty = Double.parseDouble(v)));
         PLAYER_COLUMNS.put("sound", new OptionContainer(ParkourOption.SOUND, (player, v) -> player.sound = parseBoolean(v)));
     }
 

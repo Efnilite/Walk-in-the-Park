@@ -61,6 +61,7 @@ public interface WorldManager {
         if (!Option.DELETE_ON_RELOAD || !Option.JOINING) {
             return;
         }
+        getWorld().getPlayers().forEach(player -> player.kickPlayer("Server is restarting"));
 
         getInstance().deleteWorld();
     }

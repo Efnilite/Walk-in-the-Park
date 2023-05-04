@@ -22,7 +22,9 @@
   - 37% file size reduction on large files
   - Schematics no longer need to be built facing north
   - Parkour schematics no longer need to end in a number to be accepted in schematics.yml
-- Reworked points awarded for schematic
+- Reworked schematic difficulty
+  - Schematic settings have been moved to a single item instead of a whole inventory
+  - Schematics permission has been changed to `ip.settings.schematics`
   - Points received now depends on the difficulty of the schematic
   - Old formula: always 10 points
   - New formula: difficulty * 15, e.g. 0.5 * 15 = 7 points

@@ -72,8 +72,43 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return item;
         }, player -> checkOptions(player, ParkourOption.LEADS, disabled));
 
+        // schematics
+        registerMainItem(1, 8, (p, user) -> {
+            Item item = Locales.getItem(p, ParkourOption.SCHEMATICS.path);
+
+            if (!(user instanceof ParkourPlayer player)) {
+                return item;
+            }
+
+            List<Double> difficulties = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
+            List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATICS.path + ".values");
+
+            return new SliderItem()
+                    .initial(difficulties.indexOf(player.schematicDifficulty))
+                    .add(0, item.clone()
+                                    .material(Material.RED_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", values.get(0))),
+                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.0))
+                    .add(1, item.clone()
+                                    .material(Material.LIME_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", values.get(1))),
+                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.25))
+                    .add(2, item.clone()
+                                    .material(Material.YELLOW_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", values.get(2))),
+                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.5))
+                    .add(3, item.clone()
+                                    .material(Material.ORANGE_STAINED_GLASS_PANE)
+                                    .modifyLore(line -> line.replace("%s", values.get(3))),
+                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.75))
+                    .add(4, item.clone()
+                                    .material(Material.SKELETON_SKULL)
+                                    .modifyLore(line -> line.replace("%s", values.get(4))),
+                            event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 1.0));
+        }, player -> checkOptions(player, ParkourOption.SCHEMATICS, disabled));
+
         // time
-        registerMainItem(1, 10, (p, user) -> {
+        registerMainItem(1, 9, (p, user) -> {
             Item item = Locales.getItem(p, ParkourOption.TIME.path);
 
             if (!(user instanceof ParkourPlayer player)) {
@@ -218,41 +253,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
                         .modifyLore(line -> line.replace("%s", getBooleanSymbol(user, false))),
                     event -> handleScoreSettingChange(player, event, () -> player.useSpecialBlocks = false));
         }, player -> checkOptions(player, ParkourOption.SPECIAL_BLOCKS, disabled));
-
-        // schematics
-        registerMainItem(2, 5, (p, user) -> {
-            Item item = Locales.getItem(p, ParkourOption.SCHEMATIC_DIFFICULTY.path);
-
-            if (!(user instanceof ParkourPlayer player)) {
-                return item;
-            }
-
-            List<Double> difficulties = Arrays.asList(0.0, 0.25, 0.5, 0.75, 1.0);
-            List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATIC_DIFFICULTY.path + ".values");
-
-            return new SliderItem()
-                .initial(difficulties.indexOf(player.schematicDifficulty))
-                .add(0, item.clone()
-                        .material(Material.RED_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", values.get(0))),
-                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.0))
-                .add(1, item.clone()
-                        .material(Material.LIME_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", values.get(0))),
-                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.25))
-                .add(2, item.clone()
-                        .material(Material.YELLOW_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", values.get(1))),
-                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.5))
-                .add(3, item.clone()
-                        .material(Material.ORANGE_STAINED_GLASS_PANE)
-                        .modifyLore(line -> line.replace("%s", values.get(2))),
-                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 0.75))
-                .add(4, item.clone()
-                        .material(Material.SKELETON_SKULL)
-                        .modifyLore(line -> line.replace("%s", values.get(3))),
-                    event -> handleScoreSettingChange(player, event, () -> player.schematicDifficulty = 1.0));
-        }, player -> checkOptions(player, ParkourOption.SCHEMATIC_DIFFICULTY, disabled));
 
         // Always allow closing of the menu
         registerMainItem(3, 10,

@@ -124,7 +124,7 @@ public class ParkourCommand extends ViCommand {
                     Menus.PLAY.open(player);
                 }
                 case "schematic" -> {
-                    if (!player.hasPermission(ParkourOption.SCHEMATIC.permission)) { // default players shouldn't have access even if perms are disabled
+                    if (!player.hasPermission(ParkourOption.ADMIN.permission)) { // default players shouldn't have access even if perms are disabled
                         send(sender, Locales.getString(defaultLocale, "other.no_do"));
                         return true;
                     }

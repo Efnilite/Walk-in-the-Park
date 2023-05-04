@@ -154,8 +154,6 @@ public final class IP extends ViPlugin {
         // write all IP gamemodes
         Modes.DEFAULT.getLeaderboard().write(false);
 
-        WorldManager.getWorld().getPlayers().forEach(player -> player.kickPlayer("Server is restarting"));
-
         storage.close();
         WorldManager.delete();
     }

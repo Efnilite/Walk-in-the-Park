@@ -311,16 +311,9 @@ default-values:
           enabled: true
           default: 6000
 
-        schematic_difficulty:
+        schematics:
           enabled: true
           default: 0.6
-
-        schematic_use:
-          enabled: true
-          default: true
-
-        schematic:
-          enabled: true
 
         scoreboard:
           enabled: true
@@ -339,10 +332,6 @@ default-values:
           default: true
 
         special_blocks:
-          enabled: true
-          default: true
-
-        score_difficulty:
           enabled: true
           default: true
 
