@@ -6,9 +6,11 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Colls;
+import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -60,7 +62,7 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
-        initStyles("styles.list", "default");
+        initStyles("styles.list", "default", Config.CONFIG.fileConfiguration);
 
         STORAGE_UPDATE_INTERVAL = Config.CONFIG.getInt("storage-update-interval");
 
@@ -300,10 +302,10 @@ public class Option {
 
     // --------------------------------------------------------------
 
-    public static void initStyles(String path, String type) {
+    public static void initStyles(String path, String type, FileConfiguration config) {
         BiFunction<List<BlockData>, Session, BlockData> defaultMaterialSelector = (materials, session) -> Colls.random(materials);
 
-        for (String style : Config.CONFIG.getChildren(path, false)) {
+        for (String style : Util.getChildren(config, path, false)) {
             Registry.register(new Style(
                 style,
                 Config.CONFIG.getStringList("%s.%s".formatted(path, style)).stream()
