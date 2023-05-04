@@ -577,7 +577,7 @@ public class ParkourGenerator {
         }
 
         Map<JumpType, Double> chances = new HashMap<>(defaultChances);
-        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS) || !profile.get("useStructure").asBoolean()) {
+        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS) || profile.get("schematicDifficulty").asDouble() == 0.0) {
             chances.remove(JumpType.SCHEMATIC);
         }
         if (!profile.get("useSpecialBlocks").asBoolean()) {
@@ -667,17 +667,24 @@ public class ParkourGenerator {
         Vector end = optionalEnd.get();
         Vector startToEnd = end.clone().subtract(start);
 
-        // the angle between heading and normalized direction of schematic, snapped to 90 deg angles
-        double anglePer90Deg = angleInY(heading,
-                Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ()) // normalized direction of schematic snapped to 90 deg angles
-                        ? new Vector(Math.signum(startToEnd.getX()), 0, 0)   // x > z
-                        : new Vector(0, 0, Math.signum(startToEnd.getZ()))); // z > x
+        /// snapped vector, supports no rotation if x == z
+        Vector snapped;
+        if (startToEnd.equals(heading)) {
+            snapped = new Vector(0, 0, 0);
+        } else if (Math.abs(startToEnd.getX()) > Math.abs(startToEnd.getZ())) {
+            snapped = new Vector(Math.signum(startToEnd.getX()), 0, 0);
+        } else {
+            snapped = new Vector(0, 0, Math.signum(startToEnd.getZ()));
+        }
 
-        Location rotatedStart = location.clone().subtract(start.clone().rotateAroundY(anglePer90Deg));
-        Vector rotatedStartToEnd = startToEnd.clone().rotateAroundY(anglePer90Deg);
+        // the angle between heading and normalized direction of schematic, snapped to 90 deg angles
+        double snappedAngle = angleInY(heading, snapped);
+
+        Location rotatedStart = location.clone().subtract(start.clone().rotateAroundY(snappedAngle));
+        Vector rotatedStartToEnd = startToEnd.clone().rotateAroundY(snappedAngle);
 
         history.add(location.clone().add(rotatedStartToEnd).subtract(0, 1, 0).getBlock());
-        return schematic.paste(rotatedStart, new Vector(0, anglePer90Deg, 0)); // only yaw
+        return schematic.paste(rotatedStart, snappedAngle); // only yaw
     }
 
     private double angleInY(Vector a, Vector b) {

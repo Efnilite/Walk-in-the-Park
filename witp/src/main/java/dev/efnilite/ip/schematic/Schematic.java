@@ -72,9 +72,9 @@ public class Schematic {
      * Pastes a schematic at angles rotation.
      *
      * @param location The smallest location.
-     * @param rotation The rotation where x = roll in rad, y = yaw in rad and z = pitch in rad.
+     * @param rotation The rotation where y = yaw in rad.
      */
-    public List<Block> paste(Location location, Vector rotation) {
+    public List<Block> paste(Location location, double rotation) {
         return new SchematicPaster().paste(location, rotation, vectorBlockMap);
     }
 
