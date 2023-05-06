@@ -535,9 +535,7 @@ public class ParkourGenerator {
         }
 
         if (leaderboard != null && score > record) {
-            for (ParkourPlayer player : session.getPlayers()) {
-                leaderboard.put(player.getUUID(), new Score(player.getName(), getTime(), Double.toString(getDifficultyScore()).substring(0, 3), score));
-            }
+            registerScore(getTime(), Double.toString(getDifficultyScore()).substring(0, 3), score);
         }
 
         score = 0;
@@ -552,9 +550,17 @@ public class ParkourGenerator {
 
         island.destroy();
 
-        for (ParkourSpectator spectator : session.getSpectators()) {
-            ParkourUser.register(spectator.player);
+        session.getSpectators().forEach(spectator -> ParkourUser.register(spectator.player));
+    }
+
+    protected void registerScore(String time, String difficulty, int score) {
+        Leaderboard leaderboard = getMode().getLeaderboard();
+
+        if (leaderboard == null) {
+            return;
         }
+
+        session.getPlayers().forEach(player -> leaderboard.put(player.getUUID(), new Score(player.getName(), time, difficulty, score)));
     }
 
     private void deleteSchematic() {
