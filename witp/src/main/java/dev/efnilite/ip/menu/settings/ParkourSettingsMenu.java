@@ -81,14 +81,14 @@ public class ParkourSettingsMenu extends DynamicMenu {
             }
 
             List<Double> difficulties = List.of(0.0, 0.25, 0.5, 0.75, 1.0);
-            List<String> values = Locales.getStringList(user.locale, ParkourOption.SCHEMATICS.path + ".values");
+            List<String> values = Locales.getStringList(user.locale, "%s.values".formatted(ParkourOption.SCHEMATICS.path));
 
             if (!difficulties.contains(player.schematicDifficulty)) {
                 player.schematicDifficulty = difficulties.get(0);
             }
 
             return new SliderItem()
-                .initial(Math.min(difficulties.indexOf(player.schematicDifficulty), 0))
+                .initial(difficulties.indexOf(player.schematicDifficulty))
                 .add(0, item.clone()
                         .material(Material.RED_STAINED_GLASS_PANE)
                         .modifyLore(line -> line.replace("%s", values.get(0))),
