@@ -308,7 +308,7 @@ public class Option {
         for (String style : Util.getChildren(config, path, false)) {
             Registry.register(new Style(
                 style,
-                Config.CONFIG.getStringList("%s.%s".formatted(path, style)).stream()
+                config.getStringList("%s.%s".formatted(path, style)).stream()
                     .map(name -> {
                         Material material = Material.getMaterial(name.toUpperCase());
 

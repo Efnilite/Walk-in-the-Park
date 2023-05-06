@@ -31,7 +31,6 @@
 - Reworked storage system
   - Improved reliability
 
-- Added Japanese localization
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
 - Fixed heading not being reset on fall

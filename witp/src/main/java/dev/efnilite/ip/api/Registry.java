@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public final class Registry {
 
-    private static final Map<String, Mode> modes = new HashMap<>();
-    private static final Map<String, Style> styles = new HashMap<>();
+    private static final Map<String, Mode> modes = new LinkedHashMap<>();
+    private static final Map<String, Style> styles = new LinkedHashMap<>();
 
     /**
      * Registers a {@link Mode}.
