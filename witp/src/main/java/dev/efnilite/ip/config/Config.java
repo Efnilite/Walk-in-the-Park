@@ -28,7 +28,7 @@ public enum Config {
     /**
      * Reloads all config files.
      */
-    public static void reload() {
+    public static void reload(boolean initialLoad) {
         for (Config config : values()) {
             config.load();
         }
@@ -37,6 +37,7 @@ public enum Config {
         Rewards.init();
         Locales.init();
         Schematics.init();
+        Option.init(initialLoad);
 
         IP.logging().info("Loaded all config files");
     }

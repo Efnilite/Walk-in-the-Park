@@ -88,8 +88,7 @@ public final class IP extends ViPlugin {
 
         // ----- Configurations -----
 
-        Config.reload();
-        Option.init(true);
+        Config.reload(true);
 
         // ----- SQL and data -----
 

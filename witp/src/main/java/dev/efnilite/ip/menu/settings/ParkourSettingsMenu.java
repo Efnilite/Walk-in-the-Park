@@ -271,12 +271,10 @@ public class ParkourSettingsMenu extends DynamicMenu {
      * @param user The ParkourPlayer
      */
     public void open(ParkourPlayer user) {
-        Player player = user.player;
-
-        display(player, new Menu(4, Locales.getString(player, "settings.name"))
+        display(user.player, new Menu(4, Locales.getString(user.locale, "settings.name"))
             .distributeRowEvenly(0, 1, 2, 3)
-            .item(27, Locales.getItem(player, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
-            .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
+            .item(27, Locales.getItem(user.locale, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
+            .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
     }
 
     /**
