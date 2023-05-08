@@ -7,12 +7,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Schematic pasting handler.
@@ -31,8 +33,8 @@ public class SchematicPaster {
      */
     public List<Block> paste(Location location, Map<Vector, BlockData> vectorDataMap) {
         return paste(() -> Colls.thread(vectorDataMap)
-                .mapk((k, v) -> location.clone().add(k).getBlock())
-                .get());
+            .mapk((k, v) -> location.clone().add(k).getBlock())
+            .get());
     }
 
     /**
@@ -49,14 +51,27 @@ public class SchematicPaster {
             .mapkv((vector) -> location.clone().add(round(vector.rotateAroundY(rotation))).getBlock(),
                 (data) -> {
                     if (data instanceof Directional directional) {
-                        Vector direction = directional.getFacing().getDirection();
-                        Vector rotated = round(direction.rotateAroundY(rotation));
-                        directional.setFacing(getClosestMatchingBlockFace(directional, rotated));
+                        directional.setFacing(getClosest(directional.getFacing().getDirection(), rotation, directional.getFaces()));
+                    }
+                    if (data instanceof MultipleFacing facing) {
+                        Set<BlockFace> rotatedFaces = facing.getFaces().stream()
+                                .map(face -> getClosest(face.getDirection(), rotation, facing.getAllowedFaces()))
+                                .collect(Collectors.toUnmodifiableSet());
+
+                        facing.getAllowedFaces().forEach(face -> facing.setFace(face, rotatedFaces.contains(face)));
                     }
 
                     return data;
                 })
             .get());
+    }
+
+    private BlockFace getClosest(Vector direction, double rotation, Set<BlockFace> allowedFaces) {
+        Vector rotated = round(direction.rotateAroundY(rotation));
+
+        return allowedFaces.stream()
+                .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
+                .orElseThrow();
     }
 
     // rounds a vector to avoid small discrepancies like having an offset of E-16
@@ -69,13 +84,6 @@ public class SchematicPaster {
         return new Vector(Math.abs(x) >= epsilon ? x : 0,
                 Math.abs(y) >= epsilon ? y : 0,
                 Math.abs(z) >= epsilon ? z : 0);
-    }
-
-    // returns an available BlockFace that matches the closest to the rotated direction of the block
-    private BlockFace getClosestMatchingBlockFace(Directional directional, Vector rotated) {
-        return directional.getFaces().stream()
-                .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
-                .orElseThrow();
     }
 
     private List<Block> paste(Supplier<Map<Block, BlockData>> blocksGetter) {

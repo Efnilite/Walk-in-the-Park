@@ -77,9 +77,9 @@ public class SchematicWriter {
         Map<String, Integer> palette = new HashMap<>();
 
         blocks.stream()
-                .map(block -> block.getBlockData().getAsString())
-                .distinct()
-                .forEach(datum -> palette.put(datum, palette.size()));
+            .map(block -> block.getBlockData().getAsString())
+            .distinct()
+            .forEach(datum -> palette.put(datum, palette.size()));
 
         return palette;
     }
@@ -99,8 +99,8 @@ public class SchematicWriter {
             State state = State.getState(data);
 
             offsetData.put(loc.subtract(min).toVector().toString(), new Object[] {
-                    palette.get(data.getAsString()),
-                    state != null ? state.serialize(data) : null
+                palette.get(data.getAsString()),
+                state != null ? state.serialize(data) : null
             });
         }
 
