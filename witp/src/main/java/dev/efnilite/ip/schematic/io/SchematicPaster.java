@@ -55,8 +55,8 @@ public class SchematicPaster {
                     }
                     if (data instanceof MultipleFacing facing) {
                         Set<BlockFace> rotatedFaces = facing.getFaces().stream()
-                                .map(face -> getClosest(face.getDirection(), rotation, facing.getAllowedFaces()))
-                                .collect(Collectors.toUnmodifiableSet());
+                            .map(face -> getClosest(face.getDirection(), rotation, facing.getAllowedFaces()))
+                            .collect(Collectors.toSet());
 
                         facing.getAllowedFaces().forEach(face -> facing.setFace(face, rotatedFaces.contains(face)));
                     }
@@ -70,8 +70,8 @@ public class SchematicPaster {
         Vector rotated = round(direction.rotateAroundY(rotation));
 
         return allowedFaces.stream()
-                .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
-                .orElseThrow();
+            .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
+            .orElseThrow();
     }
 
     // rounds a vector to avoid small discrepancies like having an offset of E-16
