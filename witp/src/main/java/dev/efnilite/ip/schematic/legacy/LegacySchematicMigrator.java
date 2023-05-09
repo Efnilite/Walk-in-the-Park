@@ -22,12 +22,12 @@ public class LegacySchematicMigrator {
                 .filter(path -> path.toFile().getName().endsWith(".witp"))) {
 
             stream.map(Path::toFile)
-                    .forEach(file -> {
-                        IP.logging().info("Migrating schematic %s".formatted(file.getName()));
+                .forEach(file -> {
+                    IP.logging().info("Migrating schematic %s".formatted(file.getName()));
 
-                        read(file);
-                        file.delete();
-                    });
+                    read(file);
+                    file.delete();
+                });
 
         } catch (IOException ex) {
             IP.logging().stack("Error while migrating schematics", ex);
@@ -114,9 +114,8 @@ public class LegacySchematicMigrator {
         Map<String, Integer> noDuplicatePalette = new HashMap<>();
         intermediateOffsetData.values().stream().distinct().forEach(data -> noDuplicatePalette.put(data, noDuplicatePalette.size()));
 
-        Map<String, Object[]> offsetData = Colls.thread(intermediateOffsetData)
+        Map<String, Integer> offsetData = Colls.thread(intermediateOffsetData)
                 .mapv((offset, data) -> noDuplicatePalette.get(data))
-                .mapv((offset, id) -> new Object[]{id, null})
                 .get();
 
         return new Object[] { noDuplicatePalette, offsetData };

@@ -23,7 +23,7 @@ public enum Config {
     CONFIG("config.yml", List.of("styles")),
     GENERATION("generation.yml", null),
     REWARDS("rewards-v2.yml", List.of("score-rewards", "interval-rewards", "one-time-rewards")),
-    SCHEMATICS("schematics.yml", List.of("difficulty"));
+    SCHEMATICS("schematics/schematics.yml", List.of("difficulty"));
 
     /**
      * Reloads all config files.

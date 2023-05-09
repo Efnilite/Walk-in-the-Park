@@ -1,5 +1,7 @@
 **[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
+35 new schematics have been added. On existing installs, clear the IP/schematics folder to download them.
+
 - Reworked block generation
   - Fixed invisible blocks
   - Jump distance is now actually the distance between blocks
@@ -28,6 +30,7 @@
 - Reworked storage system
   - Improved reliability
 
+- Added 35 new schematics
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
 - Fixed heading not being reset on fall
