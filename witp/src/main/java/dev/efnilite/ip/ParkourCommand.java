@@ -465,8 +465,8 @@ public class ParkourCommand extends ViCommand {
                     case "wand" -> {
                         player.getInventory().addItem(WAND);
 
-                        send(player, "<dark_gray>----------- <dark_red><bold>Schematics <dark_gray>-----------");
-                        send(player, "<gray><dark_gray>Left click<gray> -> set first position | <dark_gray>Right click <gray> -> set second position");
+                        send(player, "<dark_gray>----------- <dark_red><bold>Schematics <reset><dark_gray>-----------");
+                        send(player, "<gray><red>Left click<gray> -> set first position | <red>Right click<gray> -> set second position");
                         send(player, "<gray>If you can't place a block and need to set a position mid-air, use <dark_gray>/ip schematic pos1/pos2 <gray>instead.");
                     }
                     case "pos1" -> {
@@ -499,13 +499,13 @@ public class ParkourCommand extends ViCommand {
                         }
 
                         if (existingSelection == null || existingSelection[0] == null || existingSelection[1] == null) {
-                            send(player, "<dark_red><bold>Schematics <gray>Your schematic isn't complete yet. Make sure you've set the first and second position.");
+                            send(player, "<dark_red><bold>Schematics <reset><gray>Your schematic isn't complete yet. Make sure you've set the first and second position.");
                             return;
                         }
 
                         String code = UUID.randomUUID().toString().split("-")[0];
 
-                        send(player, ("<dark_red><bold>Schematics <gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to<dark_gray>schematics.yml<gray>.").formatted(code));
+                        send(player, ("<dark_red><bold>Schematics <reset><gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to<dark_gray>schematics.yml<gray>.").formatted(code));
 
                         Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
                     }

@@ -2,7 +2,6 @@ package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.schematic.Schematic;
-import dev.efnilite.ip.schematic.state.State;
 import dev.efnilite.ip.util.Colls;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
@@ -28,7 +27,7 @@ public class SchematicReader {
         try (ObjectInputStream stream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
             var version = (int) stream.readObject();
             var palette = (Map<String, Integer>) stream.readObject();
-            var offsets = (Map<String, Object[]>) stream.readObject();
+            var offsets = (Map<String, Integer>) stream.readObject();
 
             Map<Integer, BlockData> paletteRef = Colls.thread(palette).inverse().mapv((k, ov) -> {
                 try {
@@ -39,19 +38,7 @@ public class SchematicReader {
             }).get();
 
             // create final map by parse Map<String, Object> -> Vector and applying possible State
-
-            return Colls.thread(offsets).mapkv(this::fromString, v -> {
-                BlockData data = paletteRef.get((int) v[0]);
-
-                if (v.length == 1) {
-                    return data;
-                }
-
-                State state = State.getState(data);
-                String extra = (String) v[1];
-
-                return state != null ? state.deserialize(data, extra) : data;
-            }).get();
+            return Colls.thread(offsets).mapkv(this::fromString, paletteRef::get).get();
         } catch (IOException | ClassNotFoundException ex) {
             IP.logging().stack("Error while trying to read schematic %s".formatted(file), ex);
         }

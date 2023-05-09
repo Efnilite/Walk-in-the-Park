@@ -2,12 +2,10 @@ package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.schematic.Schematic;
-import dev.efnilite.ip.schematic.state.State;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class SchematicWriter {
         List<Block> blocks = getBlocks(Locations.min(pos1, pos2), Locations.max(pos1, pos2));
 
         Map<String, Integer> palette = getPalette(blocks);
-        Map<String, Object[]> offsetData = getOffsetData(blocks, palette);
+        Map<String, Integer> offsetData = getOffsetData(blocks, palette);
 
         // write to file
         try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
@@ -88,20 +86,14 @@ public class SchematicWriter {
     // is mapped to the data at that position.
     // the first item in the array is the generic BlockData of that block.
     // the second item in the array is the special data of that block, as encoded by the State instances.
-    private Map<String, Object[]> getOffsetData(List<Block> blocks, Map<String, Integer> palette) {
+    private Map<String, Integer> getOffsetData(List<Block> blocks, Map<String, Integer> palette) {
         List<Location> locations = blocks.stream().map(Block::getLocation).toList();
         Location min = locations.stream().reduce(Locations::min).orElseThrow();
 
-        Map<String, Object[]> offsetData = new HashMap<>();
+        Map<String, Integer> offsetData = new HashMap<>();
 
         for (Location loc : locations) {
-            BlockData data = loc.getBlock().getBlockData();
-            State state = State.getState(data);
-
-            offsetData.put(loc.subtract(min).toVector().toString(), new Object[] {
-                palette.get(data.getAsString()),
-                state != null ? state.serialize(data) : null
-            });
+            offsetData.put(loc.subtract(min).toVector().toString(), palette.get(loc.getBlock().getBlockData().getAsString()));
         }
 
         return offsetData;

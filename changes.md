@@ -15,9 +15,6 @@
   - Changed weights of each setting
   - Now allows for difficulties above 0.8: possible difficulties are now 0.25, 0.5, 0.75 and 1.0 instead of 0.2, 0.4, 0.6 and 0.8.
 - Reworked schematics
-  - Added schematic support to signs
-  - Added schematic support to player heads
-  - Added schematic support to spawners
   - 70% saving time reduction
   - 37% file size reduction on large files
   - Schematics no longer need to be built facing north

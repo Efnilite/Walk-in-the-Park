@@ -39,7 +39,7 @@ public class SchematicPaster {
 
     /**
      * Pastes a schematic at angle rotation with the provided map of offsets and BlockData.
-     * Rotates {@link Directional} blocks.
+     * Rotates {@link Directional} and {@link MultipleFacing} blocks.
      *
      * @param location      The smallest location.
      * @param rotation      The rotation where y is the yaw in rad.
