@@ -67,7 +67,7 @@ public class SchematicPaster {
     }
 
     private BlockFace getClosest(Vector direction, double rotation, Set<BlockFace> allowedFaces) {
-        Vector rotated = round(direction.rotateAroundY(rotation));
+        Vector rotated = round(direction.clone().rotateAroundY(rotation));
 
         return allowedFaces.stream()
             .min(Comparator.comparingDouble(f -> f.getDirection().angle(rotated)))
