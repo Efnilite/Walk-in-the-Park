@@ -505,7 +505,7 @@ public class ParkourCommand extends ViCommand {
 
                         String code = UUID.randomUUID().toString().split("-")[0];
 
-                        send(player, ("<dark_red><bold>Schematics <reset><gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to<dark_gray>schematics.yml<gray>.").formatted(code));
+                        send(player, ("<dark_red><bold>Schematics <reset><gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to <dark_gray>schematics.yml<gray>.").formatted(code));
 
                         Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
                     }

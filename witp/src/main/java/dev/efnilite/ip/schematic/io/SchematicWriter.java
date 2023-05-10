@@ -93,7 +93,8 @@ public class SchematicWriter {
         Map<String, Integer> offsetData = new HashMap<>();
 
         for (Location loc : locations) {
-            offsetData.put(loc.subtract(min).toVector().toString(), palette.get(loc.getBlock().getBlockData().getAsString()));
+            offsetData.put(loc.clone().subtract(min).toVector().toString(),
+                    palette.get(loc.clone().getBlock().getBlockData().getAsString()));
         }
 
         return offsetData;
