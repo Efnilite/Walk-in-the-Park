@@ -47,6 +47,7 @@ public class Schematics {
 
             if (files == null || files.length == 0) {
                 download();
+                init();
                 return;
             }
 

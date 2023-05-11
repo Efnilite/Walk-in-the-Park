@@ -1,5 +1,6 @@
 **[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
+# todo test normal, SQL, every + mode, leaderboard sort, then fire and forget  
 35 new schematics have been added. On existing installs, clear the IP/schematics folder to download them.
 
 - Reworked block generation
@@ -19,7 +20,7 @@
 - Reworked schematics
   - 70% saving time reduction
   - 37% file size reduction on large files
-  - Schematics no longer need to be built facing north
+  - Schematics no longer need to be built facing north (except when using fences or wood logs, but this will be fixed at a later date)
   - Parkour schematics no longer need to end in a number to be accepted in schematics.yml
 - Reworked schematic difficulty
   - Schematic settings have been moved to a single item instead of a whole inventory
@@ -33,6 +34,7 @@
 - Added 35 new schematics
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed schematics not initializing after download
 - Fixed heading not being reset on fall
 - Fixed impossible special jumps
 - Fixed world deletion not working at all

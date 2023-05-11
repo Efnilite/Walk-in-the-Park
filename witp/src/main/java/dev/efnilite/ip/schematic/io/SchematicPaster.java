@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Schematic pasting handler.
@@ -53,13 +52,11 @@ public class SchematicPaster {
                     if (data instanceof Directional directional) {
                         directional.setFacing(getClosest(directional.getFacing().getDirection(), rotation, directional.getFaces()));
                     }
-                    if (data instanceof MultipleFacing facing) {
-                        Set<BlockFace> rotatedFaces = facing.getFaces().stream()
-                            .map(face -> getClosest(face.getDirection(), rotation, facing.getAllowedFaces()))
-                            .collect(Collectors.toSet());
 
-                        facing.getAllowedFaces().forEach(face -> facing.setFace(face, rotatedFaces.contains(face)));
-                    }
+                    // todo add
+                    // - MultipleFacing
+                    // - Orientatable
+                    // why are there so many?
 
                     return data;
                 })
