@@ -10,3 +10,8 @@ by <a href="https://github.com/Efnilite">Efnilite</a> </strong>
 </div>
 
 Welcome to the Infinite Parkour repo.
+
+### Collaborating
+
+To use this project, you can use **[Jitpack](https://jitpack.io/#efnilite/walk-in-the-park)** to get the source and include it in your preferred build method.
+
