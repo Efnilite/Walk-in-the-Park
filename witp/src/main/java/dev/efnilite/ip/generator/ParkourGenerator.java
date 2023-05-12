@@ -377,15 +377,15 @@ public class ParkourGenerator {
         reset(true);
     }
 
-    public void menu() {
+    public void menu(ParkourPlayer player) {
         Menus.PARKOUR_SETTINGS.open(player);
     }
 
     public void startTick() {
         task = Task.create(IP.getPlugin())
-                .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
-                .execute(this::tick)
-                .run();
+            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
+            .execute(this::tick)
+            .run();
     }
 
     /**

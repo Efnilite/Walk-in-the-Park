@@ -26,7 +26,7 @@ public class SettingsMenu extends DynamicMenu {
             ParkourPlayer pp = ParkourPlayer.getPlayer(event.getPlayer());
 
             if (pp != null) {
-                pp.session.generator.menu();
+                pp.session.generator.menu(pp);
             }
         }), player -> ParkourOption.PARKOUR_SETTINGS.mayPerform(player) && ParkourPlayer.isPlayer(player));
 
