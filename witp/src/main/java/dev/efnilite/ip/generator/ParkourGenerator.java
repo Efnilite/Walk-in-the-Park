@@ -188,7 +188,7 @@ public class ParkourGenerator {
         this.session = session;
         this.generatorOptions = Arrays.asList(generatorOptions);
 
-        player = session.getPlayers().get(0);
+        player = getPlayers().get(0);
         island = new Island(session, schematic);
         zone = WorldDivider.toSelection(session);
 
@@ -274,8 +274,8 @@ public class ParkourGenerator {
         }
 
         // play sound
-        session.getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
-        session.getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
+        getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
+        getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
     }
 
     protected BlockData selectBlockData() {
@@ -397,13 +397,13 @@ public class ParkourGenerator {
             return;
         }
 
-        session.getPlayers().forEach(other -> {
+        getPlayers().forEach(other -> {
             updateVisualTime(other, other.selectedTime);
             other.updateScoreboard(this);
             other.player.setSaturation(20);
         });
 
-        session.getSpectators().forEach(ParkourSpectator::update);
+        getSpectators().forEach(ParkourSpectator::update);
 
         if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
             fall();
@@ -523,7 +523,7 @@ public class ParkourGenerator {
                 message = "settings.parkour_settings.items.fall_message.formats.miss";
             }
 
-            for (ParkourPlayer players : session.getPlayers()) {
+            for (ParkourPlayer players : getPlayers()) {
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
                 players.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
                 players.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
@@ -549,8 +549,8 @@ public class ParkourGenerator {
 
         island.destroy();
 
-        if (session.getPlayers().size() == 0) {
-            session.getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.player));
+        if (getPlayers().size() == 0) {
+            getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.player));
         }
     }
 
@@ -561,7 +561,7 @@ public class ParkourGenerator {
             return;
         }
 
-        session.getPlayers().forEach(player -> leaderboard.put(player.getUUID(), new Score(player.getName(), time, difficulty, score)));
+        getPlayers().forEach(player -> leaderboard.put(player.getUUID(), new Score(player.getName(), time, difficulty, score)));
     }
 
     private void deleteSchematic() {
@@ -771,6 +771,22 @@ public class ParkourGenerator {
      */
     public Mode getMode() {
         return Modes.DEFAULT;
+    }
+
+    /**
+     * @return The players in this session.
+     */
+    @NotNull
+    public List<ParkourPlayer> getPlayers() {
+        return session.getPlayers();
+    }
+
+    /**
+     * @return The spectators in this session.
+     */
+    @NotNull
+    public List<ParkourSpectator> getSpectators() {
+        return session.getSpectators();
     }
 
     protected enum JumpType {
