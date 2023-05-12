@@ -25,7 +25,7 @@ public class LegacySchematicMigrator {
                 .forEach(file -> {
                     IP.logging().info("Migrating schematic %s".formatted(file.getName()));
 
-                    read(file);
+                    migrate(file);
                     file.delete();
                 });
 
@@ -35,7 +35,7 @@ public class LegacySchematicMigrator {
     }
 
     @SuppressWarnings("unchecked")
-    private void read(File file) {
+    private void migrate(File file) {
         List<String> lines;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             lines = reader.lines().toList(); // read the lines of the file
