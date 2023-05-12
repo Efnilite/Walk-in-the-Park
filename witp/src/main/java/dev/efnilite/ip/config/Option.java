@@ -62,7 +62,7 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
-        initStyles("styles.list", "default", Config.CONFIG.fileConfiguration);
+        initStyles("styles.list", "default", Config.CONFIG.fileConfiguration, (materials, session) -> Colls.random(materials));
 
         STORAGE_UPDATE_INTERVAL = Config.CONFIG.getInt("storage-update-interval");
 
@@ -302,9 +302,7 @@ public class Option {
 
     // --------------------------------------------------------------
 
-    public static void initStyles(String path, String type, FileConfiguration config) {
-        BiFunction<List<BlockData>, Session, BlockData> defaultMaterialSelector = (materials, session) -> Colls.random(materials);
-
+    public static void initStyles(String path, String type, FileConfiguration config, BiFunction<List<BlockData>, Session, BlockData> materialSelector) {
         for (String style : Util.getChildren(config, path, false)) {
             Registry.register(new Style(
                 style,
@@ -321,7 +319,7 @@ public class Option {
                     })
                     .toList(),
                 type,
-                defaultMaterialSelector));
+                materialSelector));
         }
     }
 }
