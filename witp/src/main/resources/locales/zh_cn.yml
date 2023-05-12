@@ -104,6 +104,9 @@ settings:
 
   parkour_settings:
 
+    enabled: "<#0DCB07><bold>✔"
+    disabled: "<red><bold>✘"
+
     item:
       material: "redstone"
       name: "<#A10404><bold>跑酷设置"
