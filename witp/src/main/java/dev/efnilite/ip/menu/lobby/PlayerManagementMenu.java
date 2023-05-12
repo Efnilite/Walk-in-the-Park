@@ -1,8 +1,8 @@
 package dev.efnilite.ip.menu.lobby;
 
 import dev.efnilite.ip.config.Locales;
-import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.menu.Menus;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
@@ -79,9 +79,7 @@ public class PlayerManagementMenu {
 
                 switch (click) {
                     case LEFT -> {
-                        Session.create(ParkourGenerator::new)
-                                .addPlayers(ParkourUser.register(other.player))
-                                .complete();
+                        Modes.DEFAULT.create(other.player);
 
                         other.sendTranslated("lobby.player_management.kicked");
 
