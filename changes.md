@@ -33,6 +33,7 @@
 - Added 35 new schematics
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed zh_cn.yml not having some keys
 - Fixed schematics not initializing after download
 - Fixed heading not being reset on fall
 - Fixed impossible special jumps

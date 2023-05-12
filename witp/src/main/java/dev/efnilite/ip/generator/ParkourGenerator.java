@@ -188,7 +188,7 @@ public class ParkourGenerator {
         this.session = session;
         this.generatorOptions = Arrays.asList(generatorOptions);
 
-        player = getPlayers().get(0);
+        player = session.getPlayers().get(0);
         island = new Island(session, schematic);
         zone = WorldDivider.toSelection(session);
 
@@ -326,7 +326,7 @@ public class ParkourGenerator {
         }
 
         double mean = 0;
-        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.75 : 1;
+        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.6 : 1;
 
         int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
 
@@ -497,9 +497,11 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
-        history.remove(0);
-        history.forEach(block -> block.setType(Material.AIR, false));
-        history.clear();
+        if (history.size() > 0) {
+            history.remove(0);
+            history.forEach(block -> block.setType(Material.AIR, false));
+            history.clear();
+        }
 
         waitForSchematicCompletion = false;
         deleteSchematic = true;
@@ -585,7 +587,7 @@ public class ParkourGenerator {
         }
 
         Map<JumpType, Double> chances = new HashMap<>(defaultChances);
-        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS) || profile.get("schematicDifficulty").asDouble() == 0.0) {
+        if (schematicCooldown > 0 || generatorOptions.contains(GeneratorOption.DISABLE_SCHEMATICS) || profile.get("schematicDifficulty").asDouble() == 0.0 || !schematicBlocks.isEmpty()) {
             chances.remove(JumpType.SCHEMATIC);
         }
         if (!profile.get("useSpecialBlocks").asBoolean()) {
