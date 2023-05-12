@@ -1,6 +1,6 @@
 name: 'IP'
 description: 'Infinitely automatically generating parkour plugin.'
-author: Efnilite, Ice_Pancake
+author: Efnilite
 version: 5.0.0
 api-version: 1.16
 main: dev.efnilite.ip.IP
