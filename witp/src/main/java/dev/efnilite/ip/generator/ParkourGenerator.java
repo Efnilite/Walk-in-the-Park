@@ -16,7 +16,6 @@ import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
-import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
@@ -327,7 +326,7 @@ public class ParkourGenerator {
         }
 
         double mean = 0;
-        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
+        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.75 : 1;
 
         int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
 
@@ -453,7 +452,7 @@ public class ParkourGenerator {
         }
         lastPositionIndexPlayer = currentIndex;
 
-        for (int i = currentIndex - BLOCK_TRAIL; i >= currentIndex - 4 * BLOCK_TRAIL; i--) {
+        for (int i = currentIndex - BLOCK_TRAIL - 1; i >= currentIndex - 4 * BLOCK_TRAIL; i--) {
             // avoid setting beginning block to air
             if (i <= 0) {
                 continue;
@@ -550,7 +549,9 @@ public class ParkourGenerator {
 
         island.destroy();
 
-        session.getSpectators().forEach(spectator -> ParkourUser.register(spectator.player));
+        if (session.getPlayers().size() == 0) {
+            session.getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.player));
+        }
     }
 
     protected void registerScore(String time, String difficulty, int score) {
@@ -734,7 +735,7 @@ public class ParkourGenerator {
     public void generateFirst(Location spawn, Location block) {
         playerSpawn = spawn;
         lastStandingPlayerLocation = spawn;
-        blockSpawn = block; // avoid 5 block jumps
+        blockSpawn = block;
         history.add(blockSpawn.getBlock());
 
         generate(profile.get("blockLead").asInt());

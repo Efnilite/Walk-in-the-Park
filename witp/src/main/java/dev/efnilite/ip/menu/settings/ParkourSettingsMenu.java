@@ -298,7 +298,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .glowing(player.style.equals(style.name()))
                 .click(event -> {
                     player.style = style.name();
-                    player.updateGeneratorSettings();
+                    player.updateGeneratorSettings(player.session.generator);
                     open(player);
                 }));
         }
@@ -313,7 +313,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
     private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {
         onAllowed.run();
-        player.updateGeneratorSettings();
+        player.updateGeneratorSettings(player.session.generator);
         return true;
     }
 

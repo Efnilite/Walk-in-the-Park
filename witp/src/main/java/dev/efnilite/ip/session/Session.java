@@ -74,6 +74,8 @@ public class Session {
      */
     public void addPlayers(ParkourPlayer... players) {
         for (ParkourPlayer player : players) {
+            player.session = this;
+
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
             }
@@ -95,6 +97,8 @@ public class Session {
         }
 
         for (ParkourPlayer player : players) {
+            player.session = null;
+
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_leave").formatted(player.getName()));
             }
@@ -269,7 +273,7 @@ public class Session {
                 // todo move to generator?
                 Arrays.asList(players).forEach(p -> {
                     p.session = session;
-                    p.updateGeneratorSettings();
+                    p.updateGeneratorSettings(session.generator);
                 });
             }
 
