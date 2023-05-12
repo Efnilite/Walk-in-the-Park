@@ -1,6 +1,8 @@
 **[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
-35 new schematics have been added. On existing installs, clear the IP/schematics folder to download them.
+**This update adds 35 new schematics.** On existing installs, clear the IP/schematics folder to download them. This is highly recommended, since the old schematics are pretty bad. The new ones have drastically improved quality.
+
+Every line of code has been rewritten over the course of the past 2 months, totaling over 120 hours of work, excluding rigorous testing. Please notify me of any bugs.
 
 - Reworked block generation
   - Fixed invisible blocks
@@ -33,6 +35,7 @@
 - Added 35 new schematics
 - Added option to change enabled/disabled icon/colour
 - Added option to change style items
+- Fixed schematics building on high block leads when another one exists, causing the former to not be deleted
 - Fixed zh_cn.yml not having some keys
 - Fixed schematics not initializing after download
 - Fixed heading not being reset on fall
