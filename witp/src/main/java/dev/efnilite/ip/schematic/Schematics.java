@@ -17,7 +17,7 @@ public class Schematics {
             "spawn-island", "spawn-island-duels"
     };
     private static final String[] PARKOUR_SCHEMATICS = new String[] {
-            "d0e227d2", "dbef835e", "27f41406", "a359eb36", "5b7fdc6c",
+            "d0e227d2", "dbef835e", "27f41406", "b1e93c42", "5b7fdc6c",
             "4a67b679", "3f66b71e", "b951e6ec", "7ba9f27e", "fce2a825",
             "194fdb81", "9078de5a", "def6f9d9", "3fda7be9", "9debcf7f",
             "c086c587", "c27bbddb", "564cf053", "47770924", "0442a82a",

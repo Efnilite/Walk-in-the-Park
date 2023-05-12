@@ -1,13 +1,13 @@
 # -------- Add your schematics here --------
-# Add your schematic random number code or custom name here, followed by the difficulty.
-# If your file is named parkour-658391, then you can either rename the file to parkour-22 ('22: 0.6') or
-# just add '658391: 0.6'. Any questions? Join the Discord.
+# Add your schematic random code or custom name here, followed by the difficulty.
+# If your file is named parkour-d0f227d2, then you can either rename the file to parkour-4 ('4: 0.5') or
+# just add 'd0f227d2: 0.5'. Any questions? Join the Discord.
 
 # -------- The difficulty of schematics --------
 # These are represented by a number below or equal to 1.0.
 
 # Difficulties are also represented by an easy word, which is nice for users.
-# Players who pick i.e. "hard" will get every schematic below difficulty 0.7, so sometimes they will get easy (0.3).
+# Players who pick i.e. "hard" will get every schematic below difficulty 0.75, so sometimes they will get easy (0.25).
 # 0.75 to 1.0 = very hard
 # 0.5 to 0.75 = hard
 # 0.25 to 0.5 = medium
@@ -17,7 +17,7 @@ difficulty:
   d0e227d2: 0.25
   dbef835e: 0.25
   27f41406: 1.0
-  a359eb36: 0.5
+  b1e93c42: 0.5
   5b7fdc6c: 0.75
   4a67b679: 1.0
   3f66b71e: 1.0
@@ -47,5 +47,5 @@ difficulty:
   7de341cf: 0.25
   9d08e9fc: 0.25
   7ecc32fe: 0.5
-  21e87090: 1.0
   c59e233e: 0.75
+  21e87090: 1.0
