@@ -453,7 +453,7 @@ public class ParkourGenerator {
         }
         lastPositionIndexPlayer = currentIndex;
 
-        for (int i = currentIndex - BLOCK_TRAIL; i >= currentIndex - 2 * BLOCK_TRAIL; i--) {
+        for (int i = currentIndex - BLOCK_TRAIL; i >= currentIndex - 4 * BLOCK_TRAIL; i--) {
             // avoid setting beginning block to air
             if (i <= 0) {
                 continue;
@@ -590,60 +590,61 @@ public class ParkourGenerator {
         if (!profile.get("useSpecialBlocks").asBoolean()) {
             chances.remove(JumpType.SPECIAL);
         }
+        if (chances.isEmpty()) {
+            chances.put(JumpType.DEFAULT, 1.0);
+        }
 
         JumpType jump = Probs.random(chances);
-        switch (jump) {
-            case DEFAULT, SPECIAL -> {
-                List<Block> blocks = selectBlocks();
+        if (jump == JumpType.SCHEMATIC) {
+            double difficulty = profile.get("schematicDifficulty").asDouble();
 
-                if (blocks.isEmpty()) {
-                    IP.logging().stack("Error while trying to generate parkour", new NoSuchElementException("No blocks to generate found"));
-                    return;
-                }
+            Schematic schematic = Schematics.CACHE.get(Colls.random(Schematics.CACHE.keySet().stream()
+                    .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
+                    .toList()));
 
-                List<Block> movedBlocks = new ArrayList<>();
-                for (Block block : blocks) {
-                    BlockData data = (jump == JumpType.SPECIAL && !generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) ? Probs.random(specialChances) : selectBlockData();
+            schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
 
-                    if (data instanceof Fence) {
-                        block = block.getLocation().subtract(0, 1, 0).getBlock();
-                    }
+            particles(schematicBlocks);
+            sound(schematicBlocks);
 
-                    block.setBlockData(data, data instanceof Fence || data instanceof GlassPane);
-                    movedBlocks.add(block);
-                }
+            new ParkourSchematicGenerateEvent(schematic, this, player).call();
 
-                new ParkourBlockGenerateEvent(movedBlocks, this, player).call();
-
-                particles(movedBlocks);
-                sound(movedBlocks);
-
-                history.addAll(movedBlocks);
-                schematicCooldown--;
+            if (schematicBlocks.isEmpty()) {
+                IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NoSuchElementException("No schematic blocks found"));
+                return;
             }
-            case SCHEMATIC -> {
-                double difficulty = profile.get("schematicDifficulty").asDouble();
 
-                Schematic schematic = Schematics.CACHE.get(Colls.random(Schematics.CACHE.keySet().stream()
-                        .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
-                        .toList()));
-
-                schematicBlocks = rotatedPaste(schematic, selectBlocks().get(0).getLocation());
-
-                particles(schematicBlocks);
-                sound(schematicBlocks);
-
-                new ParkourSchematicGenerateEvent(schematic, this, player).call();
-
-                if (schematicBlocks.isEmpty()) {
-                    IP.logging().stack("Error while trying to paste schematic %s".formatted(schematic.getFile().getName()), new NoSuchElementException("No schematic blocks found"));
-                    return;
-                }
-
-                schematicCooldown = Option.SCHEMATIC_COOLDOWN;
-                waitForSchematicCompletion = true;
-            }
+            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+            waitForSchematicCompletion = true;
+            return;
         }
+
+        List<Block> blocks = selectBlocks();
+
+        if (blocks.isEmpty()) {
+            IP.logging().stack("Error while trying to generate parkour", new NoSuchElementException("No blocks to generate found"));
+            return;
+        }
+
+        List<Block> movedBlocks = new ArrayList<>();
+        for (Block block : blocks) {
+            BlockData data = (jump == JumpType.SPECIAL && !generatorOptions.contains(GeneratorOption.DISABLE_SPECIAL)) ? Probs.random(specialChances) : selectBlockData();
+
+            if (data instanceof Fence) {
+                block = block.getLocation().subtract(0, 1, 0).getBlock();
+            }
+
+            block.setBlockData(data, data instanceof Fence || data instanceof GlassPane);
+            movedBlocks.add(block);
+        }
+
+        new ParkourBlockGenerateEvent(movedBlocks, this, player).call();
+
+        particles(movedBlocks);
+        sound(movedBlocks);
+
+        history.addAll(movedBlocks);
+        schematicCooldown--;
     }
 
     private @NotNull List<Block> rotatedPaste(Schematic schematic, Location location) {
@@ -704,7 +705,13 @@ public class ParkourGenerator {
     }
 
     private double getDifficulty(String fileName) {
-        return Config.SCHEMATICS.getDouble("difficulty.%s".formatted(fileName.split("[-.]")[1]));
+        String path = "difficulty.%s".formatted(fileName.split("[-.]")[1]);
+
+        if (!Config.SCHEMATICS.isPath(path))  {
+            return 1.0; // todo remove
+        }
+
+        return Config.SCHEMATICS.getDouble(path);
     }
 
     /**
