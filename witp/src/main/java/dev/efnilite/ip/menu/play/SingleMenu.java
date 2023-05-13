@@ -32,12 +32,8 @@ public class SingleMenu {
 
         List<Mode> modes = Registry.getModes();
 
-        if (modes.size() == 1) {
-            modes.get(0).create(player);
-            return;
-        }
-
         List<MenuItem> items = new ArrayList<>();
+        List<Mode> modeSet = new ArrayList<>();
         for (Mode mode : modes) {
             boolean permissions = Option.PERMISSIONS && !player.hasPermission("ip.gamemode." + mode.getName());
 
@@ -47,11 +43,18 @@ public class SingleMenu {
                 continue;
             }
 
+            modeSet.add(mode);
+
             items.add(item.clone().click(event -> {
                 if (user == null || Duration.between(user.joined, Instant.now()).toSeconds() > 3) {
                     mode.create(player);
                 }
             }));
+        }
+
+        if (modeSet.size() == 1) {
+            modeSet.get(0).create(player);
+            return;
         }
 
         PagedMenu mode = new PagedMenu(3, Locales.getString(player, "play.single.name"));
