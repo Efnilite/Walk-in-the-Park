@@ -47,9 +47,12 @@ public class Schematics {
             for (File file : files) {
                 Schematic schematic = Schematic.create().load(file);
 
-                if (schematic.isSupported()) {
-                    CACHE.put(file.getName(), schematic);
+                if (!schematic.isSupported()) {
+                    IP.logging().info("Schematic %s is not supported.".formatted(file.getName()));
+                    continue;
                 }
+
+                CACHE.put(file.getName(), schematic);
             }
 
             IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - CACHE.keySet().size()));
