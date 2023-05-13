@@ -1,7 +1,10 @@
 package dev.efnilite.ip.reward;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.hook.VaultHook;
+import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +25,17 @@ public record RewardString(@NotNull String string) {
             return;
         }
         String string = this.string;
+
+        Mode mode = Registry.getModes().stream()
+                .filter(m -> this.string.contains("%s:".formatted(m.getName().toLowerCase())))
+                .findFirst()
+                .orElse(Modes.DEFAULT);
+
+        if (player.session.generator.getMode() != mode) {
+            return;
+        }
+
+        string = string.replaceFirst(mode.getName().toLowerCase(), "");
 
         // check for placeholders
         if (string.toLowerCase().contains("%player%")) {

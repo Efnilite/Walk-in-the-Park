@@ -3,15 +3,17 @@
 # You can copy the format below and change the score/commands to add a reward.
 # Reward commands are executed by the console. These have a / in front of them.
 # Scores of 0 do not work.
-#
+# If no mode is specified, "default" will be used.
+
 # Custom reward syntaxes:
-# %player% - the player's name
-# /test %player% - execute a console command.
-# leave:test - executes a command on leave
-# send:<bold>test - sends a message
+# %player% - the player's name.
+# /test %player% - execute a console command. "/" is required.
+# leave:/test - executes a command on leave.
+# send:<bold>test - sends a message.
 # vault:-87 - deposits a specific amount of money (Vault required)
+# default:/test - mode-specific rewards. Mode names are "default", or for IP+ modes the same as the name used in the IP+ config.
 #
-# Learn more about colouring: https://github.com/Efnilite/fyCore/wiki/Colouring
+# Learn more about colouring: https://docs.advntr.dev/minimessage/format.html
 
 # -= Rewards enabled =-
 # Are rewards enabled?
@@ -21,7 +23,8 @@ enabled: false
 # Rewards when a player reaches a specific score
 score-rewards:
   420:
-    - "send:gj"
+    - "send:good job :)"
+    - "speed:send:You're like Lightning McQueen"
 
 # -= Interval rewards =-
 # Rewards which will be given at certain intervals.
@@ -38,10 +41,12 @@ interval-rewards:
 one-time-rewards:
   1:
     - "send:You made your first jump!"
-  2022:
+    - "team_survival:send:<gray>Be sure to invite your friends!"
+    - "duels:send:<gray>Good luck!"
+  2023:
     - "leave:/currentyear"
     - "vault:100"
-  2023:
+  2024:
     - "send:&r"
     - "send:<red><bold>Time travelling is illegal!"
     - "send:&r"
