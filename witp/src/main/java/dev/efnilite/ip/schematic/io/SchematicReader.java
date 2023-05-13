@@ -33,6 +33,15 @@ public class SchematicReader {
                 try {
                     return Bukkit.createBlockData(ov);
                 } catch (IllegalArgumentException ex) {
+                    try {
+                        // < 1.19 versions for spawn schematic
+                        if (ov.contains("leaves")) {
+                            return Bukkit.createBlockData(ov.replaceAll(",?waterlogged=(false|true)", ""));
+                        }
+                    } catch (IllegalArgumentException ex2) {
+                        return null;
+                    }
+
                     return null;
                 }
             }).get();

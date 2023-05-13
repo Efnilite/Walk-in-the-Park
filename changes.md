@@ -1,56 +1,5 @@
 **[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
-**This update adds 35 new schematics.** On existing installs, clear the IP/schematics folder to download them. This is highly recommended, since the old schematics are pretty bad. The new ones have drastically improved quality.
-
-Every line of code has been rewritten over the course of the past 2 months, totaling over 120 hours of work, excluding rigorous testing. Please notify me of any bugs.
-
-- Reworked block generation
-  - Fixed invisible blocks
-  - Jump distance is now actually the distance between blocks
-    - 4 block jumps now have a gap of 4 blocks
-    - 3 block jumps now have a gap of 3 blocks
-    - 2 block jumps now have a gap of 2 blocks
-    - 1 block jumps now have a gap of 1 block
-  - Removed 0-block jumps
-  - Removed parkour clutter
-  - Improved performance
-  - Improved reliability
-- Reworked difficulty score
-  - Changed weights of each setting
-  - Now allows for difficulties above 0.8: possible difficulties are now 0.25, 0.5, 0.75 and 1.0 instead of 0.2, 0.4, 0.6 and 0.8.
-- Reworked schematics
-  - 70% saving time reduction
-  - 37% file size reduction on large files
-  - Schematics no longer need to be built facing north (except when using fences or wood logs, but this will be fixed at a later date)
-  - Parkour schematics no longer need to end in a number to be accepted in schematics.yml
-- Reworked schematic difficulty
-  - Schematic settings have been moved to a single item instead of a whole inventory
-  - Schematics permission has been changed to `ip.settings.schematics`
-  - Points received now depends on the difficulty of the schematic
-  - Old formula: always 10 points
-  - New formula: difficulty * 15, e.g. 0.5 * 15 = 7 points
-- Reworked storage system
-  - Improved reliability
-
-- Added 35 new schematics
-- Added option to change enabled/disabled icon/colour
-- Added option to change style items
-- Fixed schematics building on high block leads when another one exists, causing the former to not be deleted
-- Fixed zh_cn.yml not having some keys
-- Fixed schematics not initializing after download
-- Fixed heading not being reset on fall
-- Fixed impossible special jumps
-- Fixed world deletion not working at all
-- Fixed leaderboard sorting mode not being clear
-- Fixed scoreboard timer not going up consistently
-- Fixed rewards parsing when rewards are disabled
-- Fixed players getting a default style while styles are disabled
-- Fixed players getting a default locale while locales are disabled
-- Fixed scoreboard not showing when default scoreboard is set to false
-- Fixed losing items when player was a spectator for a lobby that was disbanded
-- Fixed multiplayer modes not registering scores for all players
-- Fixed changing name causing players to not get their items when they left
-- Fixed players being locked out of joining after a server crash
-- Removed adaptive distance
-  - Its effects were too small to be noticed in regular gameplay
-- Removed unused keys from config.yml and generation.yml
+- Fixed players having to click twice to join Default when there are no other modes
+- Fixed unsupported schematics message not mentioning which schematics are unsupported
+- Fixed <1.19 servers not being able to use the spawn island
