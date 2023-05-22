@@ -49,6 +49,8 @@ public interface WorldManager {
         world.setGameRule(GameRule.KEEP_INVENTORY, true);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
+        world.getWorldBorder().setCenter(0, 0);
+        world.getWorldBorder().setSize(10_000_000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setClearWeatherDuration(1000000);
         world.setAutoSave(false);
