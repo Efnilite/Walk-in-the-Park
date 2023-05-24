@@ -115,7 +115,13 @@ public final class StorageSQL implements Storage {
                 return;
             }
 
-            results.next(); // move cursor
+            boolean hasNext = results.next(); // move cursor
+
+            if (!hasNext) {
+                player.setSettings(new HashMap<>());
+                return;
+            }
+
             Map<String, Object> settings = Colls.thread(ParkourPlayer.PLAYER_COLUMNS).mapv((key, value) -> {
                 try {
                     return results.getObject(key);
