@@ -11,7 +11,6 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
-import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -38,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -134,22 +134,22 @@ public class ParkourGenerator {
     /**
      * The chances of which distance the jump should have
      */
-    public final HashMap<Integer, Double> distanceChances = new HashMap<>();
+    public final Map<Integer, Double> distanceChances = new HashMap<>();
 
     /**
      * The chances of which height the jump should have
      */
-    public final HashMap<Integer, Double> heightChances = new HashMap<>();
+    public final Map<Integer, Double> heightChances = new HashMap<>();
 
     /**
      * The chances of which type of special jump
      */
-    public final HashMap<BlockData, Double> specialChances = new HashMap<>();
+    public final Map<BlockData, Double> specialChances = new HashMap<>();
 
     /**
      * The chances of default jump types: schematic, 'special' (ice, etc.) or normal
      */
-    public final HashMap<JumpType, Double> defaultChances = new HashMap<>();
+    public final Map<JumpType, Double> defaultChances = new HashMap<>();
 
     /**
      * Whether the schematic should be deleted on the next jump.
@@ -184,7 +184,7 @@ public class ParkourGenerator {
      * @param schematic        The schematic to use for the spawn island.
      * @param generatorOptions The options.
      */
-    public ParkourGenerator(@NotNull Session session, @NotNull Schematic schematic, GeneratorOption... generatorOptions) {
+    public ParkourGenerator(@NotNull Session session, @Nullable Schematic schematic, GeneratorOption... generatorOptions) {
         this.session = session;
         this.generatorOptions = Arrays.asList(generatorOptions);
 
@@ -347,7 +347,7 @@ public class ParkourGenerator {
     }
 
     private void checkRewards() {
-        if (!Rewards.REWARDS_ENABLED || score == 0 || !(getMode() instanceof DefaultMode)) {
+        if (!Rewards.REWARDS_ENABLED || score == 0) {
             return;
         }
 

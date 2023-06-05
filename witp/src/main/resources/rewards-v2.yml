@@ -38,6 +38,7 @@ interval-rewards:
 # Rewards which players will receive just once.
 # These are based on the score required.
 # Changing the commands when a player already has achieved this score will not give it to them again.
+# Warning: one-time rewards only work based on score. This might cause issues with per-mode rewards not being awarded.
 one-time-rewards:
   1:
     - "send:You made your first jump!"
@@ -47,7 +48,7 @@ one-time-rewards:
     - "leave:/currentyear"
     - "vault:100"
   2024:
-    - "send:&r"
+    - "send:<reset>"
     - "send:<red><bold>Time travelling is illegal!"
-    - "send:&r"
+    - "send:<reset>"
     - "vault:-100"

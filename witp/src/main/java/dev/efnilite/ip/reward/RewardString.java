@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * A class for handling reward commands, etc.
  */
 // todo add cross-server support
+// todo mode-specific way of saving one-time-rewards
 public record RewardString(@NotNull String string) {
 
     /**
@@ -35,7 +36,7 @@ public record RewardString(@NotNull String string) {
             return;
         }
 
-        string = string.replaceFirst(mode.getName().toLowerCase(), "");
+        string = string.replaceFirst("%s:".formatted(mode.getName().toLowerCase()), "");
 
         // check for placeholders
         if (string.toLowerCase().contains("%player%")) {
