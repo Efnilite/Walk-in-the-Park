@@ -406,6 +406,12 @@ public class ParkourCommand extends ViCommand {
                 }
 
                 Mode mode = Registry.getMode(arg2);
+
+                if (mode != null) {
+                    mode.create(player);
+                    return;
+                }
+
                 Player other = Bukkit.getPlayer(arg2);
 
                 if (other == null) {
@@ -413,20 +419,15 @@ public class ParkourCommand extends ViCommand {
                     return;
                 }
 
-                ParkourPlayer sessionOwner = ParkourPlayer.getPlayer(other);
+                ParkourPlayer parkourPlayer = ParkourPlayer.getPlayer(other);
 
-                if (mode != null) {
-                    mode.create(player);
-                    return;
-                }
-
-                if (sessionOwner == null) {
+                if (parkourPlayer == null) {
                     send(sender, "%sUnknown player! Try typing the name again.".formatted(IP.PREFIX)); // could not find, so go to default
                     return;
                 }
 
                 ParkourUser user = ParkourUser.getUser(player);
-                Session session = sessionOwner.session;
+                Session session = parkourPlayer.session;
                 if (user != null && user.session == session) { // already in same session
                     return;
                 }
