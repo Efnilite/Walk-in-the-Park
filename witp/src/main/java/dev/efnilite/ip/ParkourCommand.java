@@ -330,6 +330,7 @@ public class ParkourCommand extends ViCommand {
                         }
 
                         leaderboard.resetAll();
+                        leaderboard.write(true);
                     }
 
                     send(sender, IP.PREFIX + "Successfully reset all high scores in memory and the files.");
@@ -368,6 +369,7 @@ public class ParkourCommand extends ViCommand {
                     }
 
                     leaderboard.remove(finalUuid);
+                    leaderboard.write(true);
                 }
 
                 send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
