@@ -1,7 +1,7 @@
 package dev.efnilite.ip.schematic.io;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.Colls;
+import dev.efnilite.vilib.util.Colls;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

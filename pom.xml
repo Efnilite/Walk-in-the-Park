@@ -7,12 +7,8 @@
     <groupId>dev.efnilite</groupId>
     <artifactId>IP</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.1</version>
+    <version>5.1.0</version>
     <modules>
         <module>witp</module>
     </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>

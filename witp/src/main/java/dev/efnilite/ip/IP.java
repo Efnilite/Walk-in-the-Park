@@ -40,8 +40,9 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<#FF6464><bold>Infinite Parkour<reset>";
     public static final String PREFIX = NAME + " <dark_gray>» <gray>";
-    public static final String REQUIRED_VILIB_VERSION = "1.1.0";
+    public static final String REQUIRED_VILIB_VERSION = "1.2.0";
 
+    private static Logging logging;
     private static IP instance;
     private static Storage storage;
 
@@ -51,6 +52,7 @@ public final class IP extends ViPlugin {
     @Override
     public void onLoad() {
         instance = this;
+        logging = new Logging(this);
     }
 
     @Override
@@ -141,7 +143,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        logging.info("Loaded IP in " + Time.timerEnd("load") + "ms!");
+        logging.info("Loaded IP in %dms!".formatted(Time.timerEnd("load")));
     }
 
     @Override
@@ -168,14 +170,14 @@ public final class IP extends ViPlugin {
      * @return A file from within the plugin folder.
      */
     public static File getInFolder(String child) {
-        return new File(getPlugin().getDataFolder(), child);
+        return new File(instance.getDataFolder(), child);
     }
 
     /**
      * @return This plugin's {@link Logging} instance.
      */
     public static Logging logging() {
-        return getPlugin().logging;
+        return logging;
     }
 
     /**

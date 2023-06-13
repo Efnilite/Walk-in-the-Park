@@ -120,9 +120,7 @@ public class Leaderboard {
      * Resets all registered scores for this mode
      */
     public void resetAll() {
-        for (UUID uuid : new ArrayList<>(scores.keySet())) {
-            remove(uuid);
-        }
+        scores.keySet().forEach(this::remove);
     }
 
     /**

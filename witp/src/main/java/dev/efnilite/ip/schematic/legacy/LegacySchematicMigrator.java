@@ -1,7 +1,7 @@
 package dev.efnilite.ip.schematic.legacy;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.util.Colls;
+import dev.efnilite.vilib.util.Colls;
 import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
