@@ -1,4 +1,4 @@
-**[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
+**[Visit IP+](https://www.spigotmc.org/resources/105019/)** // **This build requires a newer version [vilib v1.1.0](https://github.com/Efnilite/vilib/releases/tag/v1.1.0) ✨**
 
 If you're updating from a version below 5.0.0, you should read **[the 5.0.0 notes](https://github.com/Efnilite/Walk-in-the-Park/releases/tag/v5.0.0)**.
 

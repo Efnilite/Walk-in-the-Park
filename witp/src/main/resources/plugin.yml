@@ -1,7 +1,7 @@
 name: 'IP'
 description: 'Infinitely automatically generating parkour plugin.'
 author: Efnilite
-version: ${project.version}
+version: 5.1.0
 api-version: 1.16
 main: dev.efnilite.ip.IP
 depend: [vilib]
