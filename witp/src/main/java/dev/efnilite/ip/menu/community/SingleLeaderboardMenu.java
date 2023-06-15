@@ -8,11 +8,11 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.util.OfflineSkullSetter;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
-import dev.efnilite.vilib.util.SkullSetter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -69,7 +69,7 @@ public class SingleLeaderboardMenu {
                     SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                     if (meta != null) {
-                        SkullSetter.setPlayerHead(Bukkit.getPlayer(uuid), meta);
+                        OfflineSkullSetter.setPlayerHead(op, meta);
                         item.meta(meta);
                     }
                 }
