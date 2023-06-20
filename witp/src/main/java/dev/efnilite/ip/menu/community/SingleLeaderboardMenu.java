@@ -54,7 +54,17 @@ public class SingleLeaderboardMenu {
                 continue;
             }
 
-            Item item = base.clone().material(Material.PLAYER_HEAD).modifyName(name -> name.replace("%r", Integer.toString(rank)).replace("%s", Integer.toString(score.score())).replace("%p", score.name()).replace("%t", score.time()).replace("%d", score.difficulty())).modifyLore(line -> line.replace("%r", Integer.toString(rank)).replace("%s", Integer.toString(score.score())).replace("%p", score.name()).replace("%t", score.time()).replace("%d", score.difficulty()));
+            Item item = base.clone().material(Material.PLAYER_HEAD)
+                    .modifyName(name -> name.replace("%r", Integer.toString(rank))
+                            .replace("%s", Integer.toString(score.score()))
+                            .replace("%p", score.name())
+                            .replace("%t", score.time())
+                            .replace("%d", score.difficulty()))
+                    .modifyLore(line -> line.replace("%r", Integer.toString(rank))
+                            .replace("%s", Integer.toString(score.score()))
+                            .replace("%p", score.name())
+                            .replace("%t", score.time())
+                            .replace("%d", score.difficulty()));
 
             // Player head gathering
             ItemStack stack = item.build();

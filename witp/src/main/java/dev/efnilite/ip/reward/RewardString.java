@@ -21,22 +21,22 @@ public record RewardString(@NotNull String string) {
      *
      * @param player The player to which to give this reward to
      */
-    public void execute(@NotNull ParkourPlayer player) {
+    public void execute(@NotNull ParkourPlayer player, @NotNull Mode mode) {
         if (string.isEmpty()) {
             return;
         }
         String string = this.string;
 
-        Mode mode = Registry.getModes().stream()
+        Mode rewardMode = Registry.getModes().stream()
                 .filter(m -> this.string.contains("%s:".formatted(m.getName().toLowerCase())))
                 .findFirst()
                 .orElse(Modes.DEFAULT);
 
-        if (player.session.generator.getMode() != mode) {
+        if (mode != rewardMode) {
             return;
         }
 
-        string = string.replaceFirst("%s:".formatted(mode.getName().toLowerCase()), "");
+        string = string.replaceFirst("%s:".formatted(rewardMode.getName().toLowerCase()), "");
 
         // check for placeholders
         if (string.toLowerCase().contains("%player%")) {

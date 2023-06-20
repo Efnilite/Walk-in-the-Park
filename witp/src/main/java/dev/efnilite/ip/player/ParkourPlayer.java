@@ -10,6 +10,7 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Colls;
 import dev.efnilite.vilib.util.Task;
@@ -201,33 +202,17 @@ public class ParkourPlayer extends ParkourUser {
                 List<Item> items = new ArrayList<>();
 
                 if (ParkourOption.PLAY.mayPerform(player)) items.add(Locales.getItem(locale, "play.item"));
-                if (ParkourOption.COMMUNITY.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "community.item"));
-                if (ParkourOption.SETTINGS.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "settings.item"));
-                if (ParkourOption.LOBBY.mayPerform(player)) items.add(items.size(), Locales.getItem(locale, "lobby.item"));
+                if (ParkourOption.COMMUNITY.mayPerform(player)) items.add(Locales.getItem(locale, "community.item"));
+                if (ParkourOption.SETTINGS.mayPerform(player)) items.add(Locales.getItem(locale, "settings.item"));
+                if (ParkourOption.LOBBY.mayPerform(player)) items.add(Locales.getItem(locale, "lobby.item"));
 
-                items.add(items.size(), Locales.getItem(locale, "other.quit"));
+                items.add(Locales.getItem(locale, "other.quit"));
 
-                List<Integer> slots = getEvenlyDistributedSlots(items.size());
+                List<Integer> slots = Menu.getEvenlyDistributedSlots(items.size());
                 Colls.range(0, items.size()).forEach(idx -> player.getInventory().setItem(slots.get(idx), items.get(idx).build()));
             }).run();
         } else {
             sendTranslated("other.customize");
         }
-    }
-
-    // todo remove this
-    private List<Integer> getEvenlyDistributedSlots(int amountInRow) {
-        return switch (amountInRow) {
-            case 0 -> Collections.emptyList();
-            case 1 -> Collections.singletonList(4);
-            case 2 -> Arrays.asList(3, 5);
-            case 3 -> Arrays.asList(3, 4, 5);
-            case 4 -> Arrays.asList(2, 3, 5, 6);
-            case 5 -> Arrays.asList(2, 3, 4, 5, 6);
-            case 6 -> Arrays.asList(1, 2, 3, 5, 6, 7);
-            case 7 -> Arrays.asList(1, 2, 3, 4, 5, 6, 7);
-            case 8 -> Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8);
-            default -> Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
-        };
     }
 }

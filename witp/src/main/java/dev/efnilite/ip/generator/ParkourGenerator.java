@@ -353,7 +353,7 @@ public class ParkourGenerator {
 
         // check generic score rewards
         if (Rewards.SCORE_REWARDS.containsKey(score)) {
-            Rewards.SCORE_REWARDS.get(score).forEach(s -> s.execute(player));
+            Rewards.SCORE_REWARDS.get(score).forEach(s -> s.execute(player, getMode()));
         }
 
         // gets the correct type of score to check based on the config option
@@ -363,11 +363,11 @@ public class ParkourGenerator {
                 continue;
             }
 
-            Rewards.INTERVAL_REWARDS.get(interval).forEach(s -> s.execute(player));
+            Rewards.INTERVAL_REWARDS.get(interval).forEach(s -> s.execute(player, getMode()));
         }
 
         if (Rewards.ONE_TIME_REWARDS.containsKey(score) && !player.collectedRewards.contains(Integer.toString(score))) {
-            Rewards.ONE_TIME_REWARDS.get(score).forEach(s -> s.execute(player));
+            Rewards.ONE_TIME_REWARDS.get(score).forEach(s -> s.execute(player, getMode()));
             player.collectedRewards.add(Integer.toString(score));
         }
     }

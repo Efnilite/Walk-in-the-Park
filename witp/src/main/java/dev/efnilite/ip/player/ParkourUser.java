@@ -12,6 +12,7 @@ import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
@@ -99,6 +100,7 @@ public abstract class ParkourUser {
     public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
         new ParkourLeaveEvent(user).call();
 
+        Mode mode = user.session.generator.getMode();
         try {
             user.unregister();
 
@@ -118,7 +120,7 @@ public abstract class ParkourUser {
         user.previousData.apply(user.player, restorePreviousData);
 
         if (user instanceof ParkourPlayer player) {
-            user.previousData.onLeave.forEach(r -> r.execute(player));
+            user.previousData.onLeave.forEach(r -> r.execute(player, mode));
         }
 
         user.player.resetPlayerTime();
