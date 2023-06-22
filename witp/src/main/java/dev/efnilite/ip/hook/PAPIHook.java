@@ -70,6 +70,11 @@ public class PAPIHook extends PlaceholderExpansion {
             return getInfiniteScore(params.replace("score_rank_", ""), Score::score);
         } else if (params.contains("time_rank_")) {
             return getInfiniteScore(params.replace("time_rank_", ""), Score::time);
+        } else if (params.contains("difficulty_rank_")) {
+            return getInfiniteScore(params.replace("difficulty_rank_", ""), Score::difficulty);
+        } else if (params.contains("difficulty_string_rank_")) {
+            return getInfiniteScore(params.replace("difficulty_string_rank_", ""),
+                    score -> parseDifficulty(Double.parseDouble(score.difficulty())));
         }
 
         // placeholders that require player
