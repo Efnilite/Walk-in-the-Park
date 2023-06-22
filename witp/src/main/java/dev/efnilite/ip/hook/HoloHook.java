@@ -54,8 +54,22 @@ public class HoloHook {
                 case "name" -> score.name();
                 case "time" -> score.time();
                 case "difficulty" -> score.difficulty();
+                case "difficulty_string" -> parseDifficulty(Double.parseDouble(score.difficulty()));
                 default -> "?";
             };
         });
+    }
+
+    private static String parseDifficulty(double difficulty) {
+        if (difficulty <= 0.25) {
+            return "easy";
+        } else if (difficulty <= 0.5) {
+            return "medium";
+        } else if (difficulty <= 0.75) {
+            return "hard";
+        } else if (difficulty <= 1) {
+            return "very hard";
+        }
+        return "?";
     }
 }
