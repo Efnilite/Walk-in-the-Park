@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu.community;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -94,6 +95,11 @@ public class SingleLeaderboardMenu {
         }
 
         List<String> values = Locales.getStringList(locale, "%s.sort.values".formatted(ParkourOption.LEADERBOARDS.path));
+
+        if (values.size() != 3) {
+            IP.logging().stack("Error while trying to get locales for sort values: not enough sort values present",
+                    "check your %s locale file".formatted(locale), new IllegalArgumentException());
+        }
 
         String name = switch (sort) {
             case SCORE -> values.get(0);
