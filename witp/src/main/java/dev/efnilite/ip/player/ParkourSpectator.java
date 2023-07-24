@@ -25,12 +25,12 @@ import java.util.Comparator;
  */
 public class ParkourSpectator extends ParkourUser {
 
+    private final BukkitTask closestChecker;
     /**
      * The closest player.
      */
     @NotNull
     public ParkourPlayer closest;
-    private final BukkitTask closestChecker;
 
     public ParkourSpectator(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
         super(player, previousData);
@@ -40,30 +40,37 @@ public class ParkourSpectator extends ParkourUser {
 
         new ParkourSpectateEvent(this).call();
 
-        teleport(closest.getLocation());
-        sendTranslated("play.spectator.join");
+        Task.create(IP.getPlugin())
+            .delay(1)
+            .execute(() -> {
+                teleport(closest.getLocation());
 
-        player.setGameMode(GameMode.SPECTATOR);
-        player.setAllowFlight(true);
-        player.setFlying(true);
-        if (Util.isBedrockPlayer(player)) {  // bedrock has no spectator mode, so just make the player invisible
-            player.setInvisible(true);
-            player.setCollidable(false);
-        }
+                sendTranslated("play.spectator.join");
+
+                player.setGameMode(GameMode.SPECTATOR);
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                if (Util.isBedrockPlayer(player)) {  // bedrock has no spectator mode, so just make the player invisible
+                    player.setInvisible(true);
+                    player.setCollidable(false);
+                }
+            })
+            .run();
 
         closestChecker = Task.create(IP.getPlugin())
-                .async()
-                .execute(() -> {
-                    if (session.getPlayers().isEmpty()) {
-                        return;
-                    }
+            .async()
+            .delay(1)
+            .repeat(10)
+            .execute(() -> {
+                if (session.getPlayers().isEmpty()) {
+                    return;
+                }
 
-                    closest = session.getPlayers().stream()
+                closest = session.getPlayers().stream()
                         .min(Comparator.comparing(other -> other.getLocation().distanceSquared(player.getLocation()))) // x or x^2 doesn't matter in getting smallest
                         .orElse(session.getPlayers().get(0));
-                })
-                .repeat(10)
-                .run();
+            })
+            .run();
     }
 
     /**
