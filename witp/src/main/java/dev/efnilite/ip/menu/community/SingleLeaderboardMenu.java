@@ -135,8 +135,8 @@ public class SingleLeaderboardMenu {
             @Override
             Map<UUID, Score> sort(Map<UUID, Score> scores) {
                 return scores.entrySet().stream().sorted((o1, o2) -> {
-                            long one = o1.getValue().toMillis();
-                            long two = o2.getValue().toMillis();
+                            long one = o1.getValue().getTimeMillis();
+                            long two = o2.getValue().getTimeMillis();
 
                             return Math.toIntExact(one - two); // natural order (lower == better)
                         }) // reverse natural order

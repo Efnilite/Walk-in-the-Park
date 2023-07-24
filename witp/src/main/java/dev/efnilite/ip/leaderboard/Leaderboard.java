@@ -7,10 +7,7 @@ import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class for handling leaderboards.
@@ -82,7 +79,11 @@ public class Leaderboard {
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
 
         scores.entrySet().stream()
-                .sorted((one, two) -> two.getValue().score() - one.getValue().score())
+                .sorted((one, two) -> switch (sort) {
+                    case SCORE -> two.getValue().score() - one.getValue().score();
+                    case TIME -> two.getValue().getTimeMillis() - one.getValue().getTimeMillis();
+                    case DIFFICULTY -> (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) - Double.parseDouble(one.getValue().difficulty()));
+                })
                 .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
 
         scores.clear();
@@ -120,7 +121,7 @@ public class Leaderboard {
      * Resets all registered scores for this mode
      */
     public void resetAll() {
-        scores.keySet().forEach(this::remove);
+        new HashSet<>(scores.keySet()).forEach(this::remove);
     }
 
     /**

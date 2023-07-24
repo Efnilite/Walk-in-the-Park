@@ -78,7 +78,7 @@ public record Score(String name, String time, String difficulty, int score) {
     /**
      * @return This score's time in millis.
      */
-    public int toMillis() {
+    public int getTimeMillis() {
         String[] split = time.split(":");
 
         int m = Integer.parseInt(split[0]);
