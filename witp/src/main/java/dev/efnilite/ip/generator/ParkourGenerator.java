@@ -751,7 +751,7 @@ public class ParkourGenerator {
         double score = 0;
 
         if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
-        if (profile.get("useStructure").asBoolean()) {
+        if (profile.get("schematicDifficulty").asDouble() > 0) {
             if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
             if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
             if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
