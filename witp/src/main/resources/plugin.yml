@@ -4,6 +4,8 @@ author: Efnilite
 version: 5.1.0
 api-version: 1.16
 main: dev.efnilite.ip.IP
+libraries:
+  - org.mariadb.jdbc:mariadb-java-client:3.1.4
 depend: [vilib]
 softdepend: [floodgate, Vault, PlaceholderAPI, Multiverse-Core, HolographicDisplays, VoidGen]
 commands:
