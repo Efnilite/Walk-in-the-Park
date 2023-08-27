@@ -68,7 +68,7 @@ public class ParkourSpectator extends ParkourUser {
 
                 closest = session.getPlayers().stream()
                         .min(Comparator.comparing(other -> other.getLocation().distanceSquared(player.getLocation()))) // x or x^2 doesn't matter in getting smallest
-                        .orElse(session.getPlayers().get(0));
+                        .orElse(closest);
             })
             .run();
     }
