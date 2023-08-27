@@ -82,6 +82,18 @@ public class PAPIHook extends PlaceholderExpansion {
             return "player doesn't exist";
         }
 
+        switch (params) {
+            case "rank" -> {
+                return Integer.toString(Modes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
+            }
+            case "highscore", "high_score" -> {
+                return Integer.toString(Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).score());
+            }
+            case "high_score_time" -> {
+                return Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).time();
+            }
+        }
+
         ParkourUser user = ParkourUser.getUser(player);
         ParkourPlayer pp = null;
         if (user instanceof ParkourPlayer) {
@@ -116,15 +128,6 @@ public class PAPIHook extends PlaceholderExpansion {
                 }
                 case "difficulty_string" -> {
                     return parseDifficulty(pp.schematicDifficulty);
-                }
-                case "rank" -> {
-                    return Integer.toString(Modes.DEFAULT.getLeaderboard().getRank(player.getUniqueId()));
-                }
-                case "highscore", "high_score" -> {
-                    return Integer.toString(Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).score());
-                }
-                case "high_score_time" -> {
-                    return Modes.DEFAULT.getLeaderboard().get(player.getUniqueId()).time();
                 }
                 default -> {
                     if (params.contains("score_until_")) {
