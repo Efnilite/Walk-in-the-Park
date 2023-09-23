@@ -171,15 +171,11 @@ public final class StorageSQL implements Storage {
         try {
             IP.logging().info("Connecting to MySQL");
 
-            try { // load drivers
-                Class.forName("com.mysql.cj.jdbc.Driver"); // for newer versions
-            } catch (ClassNotFoundException old) {
-                Class.forName("com.mysql.jdbc.Driver"); // for older versions
-            }
+	    Class.forName("org.mariadb.jdbc.Driver");
 
-            connection = DriverManager.getConnection("jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
+            connection = DriverManager.getConnection("jdbc:mariadb://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
                     "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" +
-                    "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
+                    "&maxReconnects=5" + "&user=" + Option.SQL_USERNAME + "&password=" + Option.SQL_PASSWORD);
 
             sendUpdate("CREATE DATABASE IF NOT EXISTS `%s`;".formatted(Option.SQL_DB));
             sendUpdate("USE `" + Option.SQL_DB + "`;");
