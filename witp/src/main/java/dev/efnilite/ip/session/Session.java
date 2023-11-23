@@ -104,7 +104,7 @@ public class Session {
             }
         }
 
-        if (players.length > 0 && this.players.size() == 0) {
+        if (players.length > 0 && this.players.isEmpty()) {
             generator.reset(false);
             WorldDivider.disassociate(this);
         }

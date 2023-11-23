@@ -3,7 +3,7 @@ package dev.efnilite.ip.config;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematics;
-import dev.efnilite.vilib.lib.configupdater.configupdater.ConfigUpdater;
+import dev.efnilite.vilib.configupdater.ConfigUpdater;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,6 +26,37 @@ public enum Config {
     SCHEMATICS("schematics/schematics.yml", List.of("difficulty"));
 
     /**
+     * The path to this file, incl. plugin folder.
+     */
+    public final File path;
+    /**
+     * The name of this file, e.g. config.yml
+     */
+    public final String fileName;
+    /**
+     * The sections in the file that will be ignored when updating the keys.
+     */
+    public final List<String> ignoredSections;
+    /**
+     * The {@link FileConfiguration} instance associated with this config file.
+     */
+    public FileConfiguration fileConfiguration;
+
+    Config(String fileName, @Nullable List<String> ignoredSections) {
+        this.fileName = fileName;
+        this.ignoredSections = ignoredSections;
+        this.path = IP.getInFolder(fileName);
+
+        if (!path.exists()) {
+            IP.getPlugin().saveResource(fileName, false);
+            IP.logging().info("Created config file %s".formatted(fileName));
+        }
+
+        update();
+        load();
+    }
+
+    /**
      * Reloads all config files.
      */
     public static void reload(boolean initialLoad) {
@@ -40,40 +71,6 @@ public enum Config {
         Option.init(initialLoad);
 
         IP.logging().info("Loaded all config files");
-    }
-
-    /**
-     * The {@link FileConfiguration} instance associated with this config file.
-     */
-    public FileConfiguration fileConfiguration;
-
-    /**
-     * The path to this file, incl. plugin folder.
-     */
-    public final File path;
-
-    /**
-     * The name of this file, e.g. config.yml
-     */
-    public final String fileName;
-
-    /**
-     * The sections in the file that will be ignored when updating the keys.
-     */
-    public final List<String> ignoredSections;
-
-    Config(String fileName, @Nullable List<String> ignoredSections) {
-        this.fileName = fileName;
-        this.ignoredSections = ignoredSections;
-        this.path = IP.getInFolder(fileName);
-
-        if (!path.exists()) {
-            IP.getPlugin().saveResource(fileName, false);
-            IP.logging().info("Created config file %s".formatted(fileName));
-        }
-
-        update();
-        load();
     }
 
     /**

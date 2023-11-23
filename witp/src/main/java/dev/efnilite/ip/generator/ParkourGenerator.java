@@ -405,6 +405,10 @@ public class ParkourGenerator {
 
         getSpectators().forEach(ParkourSpectator::update);
 
+        if (player.getLocation().getWorld() != lastStandingPlayerLocation.getWorld()) {
+            return;
+        }
+
         if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
             fall();
             return;
@@ -497,7 +501,7 @@ public class ParkourGenerator {
         }
 
         lastPositionIndexPlayer = 0;
-        if (history.size() > 0) {
+        if (!history.isEmpty()) {
             history.remove(0);
             history.forEach(block -> block.setType(Material.AIR, false));
             history.clear();
@@ -551,7 +555,7 @@ public class ParkourGenerator {
 
         island.destroy();
 
-        if (getPlayers().size() == 0) {
+        if (getPlayers().isEmpty()) {
             getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.player));
         }
     }

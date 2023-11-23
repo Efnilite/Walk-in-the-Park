@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu.play;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -45,7 +46,7 @@ public class SpectatorMenu {
                 continue;
             }
 
-            AutoSliderItem slider = new AutoSliderItem(1, spectator).initial(0); // slideritem
+            AutoSliderItem slider = new AutoSliderItem(1, spectator, IP.getPlugin()).initial(0); // slideritem
 
             int index = 0;
             for (ParkourPlayer pp : session.getPlayers()) {

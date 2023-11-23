@@ -3,11 +3,11 @@
   <parent>
     <artifactId>IP</artifactId>
     <groupId>dev.efnilite</groupId>
-    <version>4.1.3</version>
+    <version>5.1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>witp</artifactId>
-  <version>4.1.3</version>
+  <version>5.1.1</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <plugins>
@@ -21,31 +21,39 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
-            <id>shade</id>
+            <id>attach-javadocs</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>dev.efnilite.vilib</pattern>
+                  <shadedPattern>dev.efnilite.ip.vilib</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <relocations>
-            <relocation>
-              <pattern>de.tr7zw.changeme.nbtapi</pattern>
-              <shadedPattern>dev.efnilite.ip.lib</shadedPattern>
-            </relocation>
-          </relocations>
-        </configuration>
       </plugin>
     </plugins>
   </build>
   <repositories>
     <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+      <id>papermc</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
@@ -78,15 +86,9 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.19-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.Efnilite</groupId>
-      <artifactId>vilib</artifactId>
-      <version>efca5cccde</version>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.19.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -29,6 +29,36 @@
                     <target>16</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>dev.efnilite.vilib</pattern>
+                                    <shadedPattern>dev.efnilite.ip.vilib</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -78,8 +108,8 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>4df6c10a45</version>
-            <scope>provided</scope>
+            <version>3cb63e3174</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

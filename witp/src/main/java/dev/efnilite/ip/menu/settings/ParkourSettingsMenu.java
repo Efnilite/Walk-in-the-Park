@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu.settings;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
@@ -10,6 +11,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -17,7 +19,6 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import dev.efnilite.vilib.inventory.item.TimedItem;
-import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Colls;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -321,7 +322,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return handleSettingChange(player, onAllowed);
         }
 
-        event.menu().item(event.slot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {}), event).stay(5 * 20));
+        event.menu().item(event.slot(), new TimedItem(Locales.getItem(player.locale, "settings.parkour_settings.items.no_change").click((event1) -> {}), event, IP.getPlugin()).stay(5 * 20));
         event.menu().updateItem(event.slot());
         return false;
 

@@ -54,6 +54,9 @@ public final class Probs {
                 return entry.getKey();
             }
         }
-        return distribution.keySet().stream().findFirst().orElseThrow();
+
+        return distribution.keySet().stream()
+                .findFirst()
+                .orElseThrow();
     }
 }

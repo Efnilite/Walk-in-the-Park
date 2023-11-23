@@ -18,7 +18,7 @@ import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
-import dev.efnilite.vilib.lib.fastboard.fastboard.FastBoard;
+import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
