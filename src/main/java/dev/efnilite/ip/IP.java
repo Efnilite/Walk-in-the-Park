@@ -23,7 +23,6 @@ import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +38,6 @@ public final class IP extends ViPlugin {
 
     public static final String NAME = "<#FF6464><bold>Infinite Parkour<reset>";
     public static final String PREFIX = NAME + " <dark_gray>» <gray>";
-    public static final String REQUIRED_VILIB_VERSION = "1.2.0";
 
     private static Logging logging;
     private static IP instance;
@@ -56,33 +54,6 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
-        // ----- Check vilib -----
-
-        Plugin vilib = getServer().getPluginManager().getPlugin("vilib");
-        if (vilib == null || !vilib.isEnabled()) {
-            logging.error("##");
-            logging.error("## Infinite Parkour requires vilib to work!");
-            logging.error("##");
-            logging.error("## Please download it here:");
-            logging.error("## https://github.com/Efnilite/vilib/releases/latest");
-            logging.error("##");
-
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        if (!VersionComparator.FROM_SEMANTIC.isLatest(REQUIRED_VILIB_VERSION, vilib.getDescription().getVersion())) {
-            logging.error("##");
-            logging.error("## Infinite Parkour requires *a newer version* of vilib to work!");
-            logging.error("##");
-            logging.error("## Please download it here: ");
-            logging.error("## https://github.com/Efnilite/vilib/releases/latest");
-            logging.error("##");
-
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         // ----- Start time -----
 
         Time.timerStart("load");
