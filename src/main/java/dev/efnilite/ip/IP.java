@@ -4,6 +4,7 @@ import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
 import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.mode.Modes;
@@ -74,6 +75,12 @@ public final class IP extends ViPlugin {
 
         Modes.init();
         Menu.init(this);
+
+        // hook with hd / papi after gamemode leaderboards have initialized
+        if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            logging.info("Connecting with Holographic Displays...");
+            HoloHook.init();
+        }
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             logging.info("Connecting with PlaceholderAPI...");
