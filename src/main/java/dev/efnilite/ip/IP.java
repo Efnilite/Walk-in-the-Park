@@ -19,6 +19,7 @@ import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.bstats.bukkit.Metrics;
 import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
+import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
@@ -72,6 +73,7 @@ public final class IP extends ViPlugin {
         Registry.register(new SpectatorMode());
 
         Modes.init();
+        Menu.init(this);
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             logging.info("Connecting with PlaceholderAPI...");
