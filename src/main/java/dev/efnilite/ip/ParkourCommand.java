@@ -13,13 +13,13 @@ import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
-import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
+import dev.efnilite.vilib.schematic.Schematic;
 import dev.efnilite.vilib.util.Locations;
 import org.bukkit.*;
 import org.bukkit.command.BlockCommandSender;
@@ -510,7 +510,7 @@ public class ParkourCommand extends ViCommand {
 
                         send(player, ("<dark_red><bold>Schematics <reset><gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to <dark_gray>schematics.yml<gray>.").formatted(code));
 
-                        Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1]);
+                        Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1], IP.getPlugin());
                     }
                 }
             }

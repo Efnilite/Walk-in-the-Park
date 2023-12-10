@@ -2,9 +2,9 @@ package dev.efnilite.ip.generator;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.vilib.schematic.Schematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,19 +23,18 @@ import java.util.NoSuchElementException;
 public final class Island {
 
     /**
-     * The blocks that have been affected by the schematic.
-     */
-    public List<Block> blocks;
-
-    /**
      * The session.
      */
     public final Session session;
-
     /**
      * The schematic.
      */
     public final Schematic schematic;
+
+    /**
+     * The blocks that have been affected by the schematic.
+     */
+    public List<Block> blocks;
 
     public Island(@NotNull Session session, @Nullable Schematic schematic) {
         this.session = session;

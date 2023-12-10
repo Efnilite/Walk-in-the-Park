@@ -3,24 +3,24 @@ package dev.efnilite.ip.schematic;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.schematic.legacy.LegacySchematicMigrator;
+import dev.efnilite.vilib.schematic.Schematic;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Stores schematics, so they don't have to be read every time.
  */
 public class Schematics {
 
-    private static final String[] SPAWN_SCHEMATICS = new String[] {
+    public static final Map<String, Schematic> CACHE = new HashMap<>();
+    private static final String[] SPAWN_SCHEMATICS = new String[]{
             "spawn-island", "spawn-island-duels"
     };
-
     private static final File FOLDER = IP.getInFolder("schematics");
-
-    public static final Map<String, Schematic> CACHE = new HashMap<>();
 
     /**
      * Reads all files.
@@ -45,14 +45,18 @@ public class Schematics {
 
             CACHE.clear();
             for (File file : files) {
-                Schematic schematic = Schematic.create().load(file);
+                try {
+                    Schematic schematic = Schematic.create().load(file);
 
-                if (!schematic.isSupported()) {
-                    IP.logging().info("Schematic %s is not supported.".formatted(file.getName()));
-                    continue;
+                    if (!schematic.isSupported()) {
+                        IP.logging().info("Schematic %s is not supported.".formatted(file.getName()));
+                        continue;
+                    }
+
+                    CACHE.put(file.getName(), schematic);
+                } catch (ExecutionException | InterruptedException ex) {
+                    IP.logging().stack("Error whihle trying to load schematic", ex);
                 }
-
-                CACHE.put(file.getName(), schematic);
             }
 
             IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - CACHE.keySet().size()));

@@ -2,8 +2,8 @@ package dev.efnilite.ip.api.event;
 
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.schematic.Schematic;
 import dev.efnilite.vilib.event.EventWrapper;
+import dev.efnilite.vilib.schematic.Schematic;
 
 /**
  * Gets called when a new jump is generated. Read-only.
