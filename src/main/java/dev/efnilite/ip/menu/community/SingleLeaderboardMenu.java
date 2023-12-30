@@ -119,7 +119,7 @@ public class SingleLeaderboardMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, mode, next)))
-                .item(23, Locales.getItem(player, "other.close").click(event -> Menus.COMMUNITY.open(event.getPlayer())))
+                .item(23, Locales.getItem(player, "other.close").click(event -> Menus.LEADERBOARDS.open(event.getPlayer())))
                 .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);
     }

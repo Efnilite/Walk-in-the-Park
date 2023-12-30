@@ -6,7 +6,7 @@
 
     <groupId>dev.efnilite</groupId>
     <artifactId>IP</artifactId>
-    <version>5.1.2</version>
+    <version>5.1.3</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>3cb63e3174</version>
+            <version>3e1930d405</version>
             <scope>compile</scope>
         </dependency>
 
