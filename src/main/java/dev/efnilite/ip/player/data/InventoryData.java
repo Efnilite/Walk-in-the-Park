@@ -79,7 +79,7 @@ public class InventoryData {
         }
 
         String command = Option.ALT_INVENTORY_SAVING_COMMAND;
-        if (command != null && command.length() > 0) {
+        if (command != null && !command.isEmpty()) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.getName()));
         }
 

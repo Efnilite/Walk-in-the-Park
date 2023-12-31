@@ -13,23 +13,19 @@ import dev.efnilite.vilib.util.Time;
 public record Score(String name, String time, String difficulty, int score) {
 
     /**
-     * The character used for splitting in strings
-     */
-    private static final String SPLITTER = ",";
-
-    /**
      * Gets a {@link Score} instance from a string
      *
      * @param string The string
      * @return a {@link Score} instance based off the provided string
      */
     public static Score fromString(String string) {
-        String[] parts = string.split(SPLITTER);
+        String[] parts = string.split(",");
 
         return new Score(parts[0], parseV1Score(parts[1]), parts[2], Integer.parseInt(parts[3]));
     }
 
     /**
+     * Legacy migration.
      * @param old The old score format.
      * @return The new score format.
      */
@@ -54,17 +50,15 @@ public record Score(String name, String time, String difficulty, int score) {
     }
 
     /**
-     * @param millis The duration in millis.
+     * @param ms The duration in millis.
      * @return The formatted time.
      */
-    public static String timeFromMillis(int millis) {
-        int m = millis / (60 * 1000);
-        millis = millis - (m * 60 * 1000);
+    public static String timeFromMillis(int ms) {
+        int m = ms / (60 * 1000);
+        ms -= (m * 60 * 1000);
 
-        int s = millis / 1000;
-        millis = millis - (s * 1000);
-
-        int ms = millis;
+        int s = ms / 1000;
+        ms -= (s * 1000);
 
         return "%s:%s:%s".formatted(padLeft(Integer.toString(m), (m < 10) ? 1 : 0),
                 padLeft(Integer.toString(s), (s < 10) ? 1 : 0),
@@ -90,6 +84,6 @@ public record Score(String name, String time, String difficulty, int score) {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s%s%s%s%s", name, SPLITTER, time, SPLITTER, difficulty, SPLITTER, score);
+        return String.format("%s,%s,%s,%s", name, time, difficulty, score);
     }
 }

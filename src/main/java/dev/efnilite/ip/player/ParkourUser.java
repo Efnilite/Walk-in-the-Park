@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Superclass of every type of player. This encompasses every player currently in the Parkour world.
@@ -48,7 +47,7 @@ public abstract class ParkourUser {
      * @param player The player
      * @return the ParkourPlayer instance of the newly joined player
      */
-    public static @NotNull ParkourPlayer register(@NotNull Player player) {
+    public static @NotNull ParkourPlayer register(@NotNull Player player, @NotNull Session session) {
         PreviousData data = null;
         ParkourUser existing = getUser(player);
 
@@ -57,7 +56,7 @@ public abstract class ParkourUser {
             unregister(existing, false, false);
         }
 
-        ParkourPlayer pp = new ParkourPlayer(player, data);
+        ParkourPlayer pp = new ParkourPlayer(player, session, data);
 
         // stats
         joinCount++;
@@ -165,14 +164,9 @@ public abstract class ParkourUser {
      */
     public static List<ParkourUser> getUsers() {
         return WorldDivider.sessions.values().stream()
-                .flatMap(session -> Stream.concat(session.getPlayers().stream(), session.getSpectators().stream()))
+                .flatMap(session -> session.getUsers().stream())
                 .toList();
     }
-
-    /**
-     * This player's session.
-     */
-    public Session session;
 
     /**
      * This user's locale
@@ -197,6 +191,11 @@ public abstract class ParkourUser {
     public SessionChat.ChatType chatType = SessionChat.ChatType.PUBLIC;
 
     /**
+     * The {@link Session} this user is in.
+     */
+    public final Session session;
+
+    /**
      * The Bukkit player instance associated with this user.
      */
     public final Player player;
@@ -211,8 +210,9 @@ public abstract class ParkourUser {
      */
     public static int joinCount;
 
-    public ParkourUser(@NotNull Player player, @Nullable PreviousData previousData) {
+    public ParkourUser(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
         this.player = player;
+        this.session = session;
         this.joined = Instant.now();
         this.previousData = previousData == null ? new PreviousData(player) : previousData;
 

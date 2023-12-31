@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class JumpDirector {
 
+    private static final int SAFE_DISTANCE = 5;
     private final BoundingBox bb;
     private final double[][] progress;
 
@@ -52,15 +53,11 @@ public class JumpDirector {
         double ty = relativeY / dy;
         double tz = relativeZ / dz;
 
-        // the minimum distance allowed to the border
-        // max block jump distance is 4, so 5 is the max safe distance
-        double safeDistance = 5;
-
         // the margin until the border
         // if tx < borderMarginX, it means the x coordinate is within 'safeDistance' blocks of the border
-        double borderMarginX = safeDistance / dx;
-        double borderMarginY = safeDistance / dy;
-        double borderMarginZ = safeDistance / dz;
+        double borderMarginX = SAFE_DISTANCE / dx;
+        double borderMarginY = SAFE_DISTANCE / dy;
+        double borderMarginZ = SAFE_DISTANCE / dz;
 
         return new double[][]{{tx, borderMarginX}, {ty, borderMarginY}, {tz, borderMarginZ}};
     }

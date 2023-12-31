@@ -86,7 +86,7 @@ public class PlayerManagementMenu {
                         open(viewer.player);
                     }
                     case RIGHT -> {
-                        session.mute(other);
+                        session.toggleMute(other);
 
                         if (!muted) {
                             other.sendTranslated("lobby.player_management.muted");

@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class PreviousData {
 
-    private Double health;
-    private Double maxHealth;
-    private InventoryData inventoryData;
+    private final double health;
+    private final double maxHealth;
+    private final InventoryData inventoryData;
 
     private final int hunger;
     private final boolean flying;
@@ -42,21 +42,21 @@ public class PreviousData {
         allowFlight = player.getAllowFlight();
         flying = player.getAllowFlight();
         effects = player.getActivePotionEffects();
+        health = player.getHealth();
+        maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
         for (PotionEffect effect : effects) {
             player.removePotionEffect(effect.getType());
         }
 
+        inventoryData = new InventoryData(player);
+
         if (Option.INVENTORY_HANDLING) {
-            inventoryData = new InventoryData(player);
             inventoryData.save(Option.INVENTORY_SAVING);
         }
 
         // health handling after removing effects and inventory to avoid them affecting it
         if (Option.HEALTH_HANDLING) {
-            health = player.getHealth();
-            maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(maxHealth);
         }
@@ -73,10 +73,8 @@ public class PreviousData {
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
 
-            if (maxHealth != null) {
+            if (Option.HEALTH_HANDLING) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-            }
-            if (health != null) {
                 player.setHealth(health);
             }
 
