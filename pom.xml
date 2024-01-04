@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>3e1930d405</version>
+            <version>bbeddc3203</version>
             <scope>compile</scope>
         </dependency>
 

@@ -120,8 +120,8 @@ public class Session {
         }
 
         List<ParkourPlayer> players = getPlayers();
-        for (ParkourPlayer player : players) {
-            for (ParkourPlayer to : getPlayers()) {
+        for (ParkourPlayer player : toRemove) {
+            for (ParkourPlayer to : players) {
                 to.send(Locales.getString(player.locale, "lobby.other_leave").formatted(player.getName()));
             }
         }
