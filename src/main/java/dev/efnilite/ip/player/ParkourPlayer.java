@@ -204,7 +204,7 @@ public class ParkourPlayer extends ParkourUser {
                 if (ParkourOption.SETTINGS.mayPerform(player)) items.add(Locales.getItem(locale, "settings.item"));
                 if (ParkourOption.LOBBY.mayPerform(player)) items.add(Locales.getItem(locale, "lobby.item"));
 
-                items.add(Locales.getItem(locale, "other.quit"));
+                if (ParkourOption.QUIT.mayPerform(player)) items.add(Locales.getItem(locale, "other.quit"));
 
                 List<Integer> slots = Menu.getEvenlyDistributedSlots(items.size());
                 Colls.range(0, items.size()).forEach(idx -> player.getInventory().setItem(slots.get(idx), items.get(idx).build()));
