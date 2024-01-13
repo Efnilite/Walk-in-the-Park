@@ -17,7 +17,7 @@ public class MainMenu extends DynamicMenu {
         registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "community.item").click(event -> Menus.COMMUNITY.open(event.getPlayer())), ParkourOption.COMMUNITY::mayPerform);
         registerMainItem(1, 2, (player, user) -> Locales.getItem(player, "settings.item").click(event -> Menus.SETTINGS.open(event.getPlayer())), player -> ParkourOption.SETTINGS.mayPerform(player) && ParkourUser.isUser(player));
         registerMainItem(1, 3, (player, user) -> Locales.getItem(player, "lobby.item").click(event -> Menus.LOBBY.open(event.getPlayer())), player -> ParkourOption.LOBBY.mayPerform(player) && ParkourUser.isUser(player));
-        registerMainItem(1, 4, (player, user) -> Locales.getItem(player, "other.quit").click(event -> ParkourPlayer.leave(player)), ParkourUser::isUser);
+        registerMainItem(1, 4, (player, user) -> Locales.getItem(player, "other.quit").click(event -> ParkourPlayer.leave(player)), player -> ParkourOption.QUIT.mayPerform(player) && ParkourUser.isUser(player));
     }
 
     public void open(Player player) {

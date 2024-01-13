@@ -267,6 +267,9 @@ default-values:
   main:
     enabled: true
 
+  quit:
+    enabled: true
+
   play:
     enabled: true
 
