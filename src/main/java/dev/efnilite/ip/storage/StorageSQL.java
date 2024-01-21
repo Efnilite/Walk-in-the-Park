@@ -177,21 +177,21 @@ public final class StorageSQL implements Storage {
                 Class.forName("com.mysql.jdbc.Driver"); // for older versions
             }
 
-            connection = DriverManager.getConnection("jdbc:mysql://" + Option.SQL_URL + ":" + Option.SQL_PORT + "/" + Option.SQL_DB +
-                    "?allowPublicKeyRetrieval=true" + "&useSSL=false" + "&useUnicode=true" + "&characterEncoding=utf-8" + "&autoReconnect=true" +
-                    "&maxReconnects=5", Option.SQL_USERNAME, Option.SQL_PASSWORD);
+            connection = DriverManager.getConnection(("jdbc:mysql://%s:%d/%s?allowPublicKeyRetrieval=true" +
+                    "&useSSL=false&useUnicode=true&characterEncoding=utf-8" +
+                    "&autoReconnect=true&maxReconnects=5").formatted(Option.SQL_URL, Option.SQL_PORT, Option.SQL_DB), Option.SQL_USERNAME, Option.SQL_PASSWORD);
 
             sendUpdate("CREATE DATABASE IF NOT EXISTS `%s`;".formatted(Option.SQL_DB));
-            sendUpdate("USE `" + Option.SQL_DB + "`;");
+            sendUpdate("USE `%s`;".formatted(Option.SQL_DB));
 
-            sendUpdate("CREATE TABLE IF NOT EXISTS `" + Option.SQL_PREFIX + "options` " + "(`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), " + "`blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useSpecial` BOOLEAN, " + "`showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;");
+            sendUpdate("CREATE TABLE IF NOT EXISTS `%soptions` (`uuid` CHAR(36) NOT NULL, `time` VARCHAR(8), `style` VARCHAR(32), `blockLead` INT, `useParticles` BOOLEAN, `useDifficulty` BOOLEAN, `useSpecial` BOOLEAN, `showFallMsg` BOOLEAN, `showScoreboard` BOOLEAN, PRIMARY KEY (`uuid`)) ENGINE = InnoDB CHARSET = utf8;".formatted(Option.SQL_PREFIX));
 
             // v3.0.0
-            sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` DROP COLUMN `time`;");
-            sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `selectedTime` INT NOT NULL;");
+            sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `time`;".formatted(Option.SQL_PREFIX));
+            sendUpdateSuppressed("ALTER TABLE `%soptions` ADD `selectedTime` INT NOT NULL;".formatted(Option.SQL_PREFIX));
 
             // v3.1.0
-            sendUpdateSuppressed("ALTER TABLE `" + Option.SQL_PREFIX + "options` ADD `collectedRewards` MEDIUMTEXT;");
+            sendUpdateSuppressed("ALTER TABLE `%soptions` ADD `collectedRewards` MEDIUMTEXT;".formatted(Option.SQL_PREFIX));
 
             // v3.6.0
             sendUpdateSuppressed("ALTER TABLE `%s` ADD `locale` VARCHAR(8);".formatted(Option.SQL_PREFIX + "options"));

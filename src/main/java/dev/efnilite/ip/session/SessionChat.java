@@ -34,10 +34,7 @@ public class SessionChat implements Listener {
 
         event.setCancelled(true);
         switch (user.chatType) {
-            case LOBBY_ONLY -> {
-                session.getPlayers().forEach(other -> other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage()));
-                session.getSpectators().forEach(other -> other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage()));
-            }
+            case LOBBY_ONLY -> session.getUsers().forEach(other -> other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage()));
             case PLAYERS_ONLY -> session.getPlayers().forEach(other -> other.sendTranslated("settings.chat.formats.players", player.getName(), event.getMessage()));
             default -> event.setCancelled(false);
         }

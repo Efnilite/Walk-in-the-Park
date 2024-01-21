@@ -102,7 +102,7 @@ public class PAPIHook extends PlaceholderExpansion {
             pp = ((ParkourSpectator) user).closest;
         }
 
-        if (pp != null && pp.session != null && pp.session.generator != null) {
+        if (pp != null && pp.session.generator != null) {
             ParkourGenerator generator = pp.session.generator;
             switch (params) {
                 case "score", "current_score" -> {

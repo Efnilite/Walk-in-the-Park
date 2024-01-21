@@ -9,6 +9,7 @@ import dev.efnilite.ip.generator.Profile;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -58,13 +59,37 @@ public class ParkourPlayer extends ParkourUser {
         PLAYER_COLUMNS.put("sound", new OptionContainer(ParkourOption.SOUND, (player, v) -> player.sound = parseBoolean(v)));
     }
 
+    public @Expose Double schematicDifficulty;
+    public @Expose Integer blockLead;
+    public @Expose Boolean particles;
+    public @Expose Boolean sound;
+    public @Expose Boolean useSpecialBlocks;
+    public @Expose Boolean showFallMessage;
+    public @Expose Boolean showScoreboard;
+    public @Expose Integer selectedTime;
+    public @Expose String style;
+    public @Expose String _locale;
+    public @Expose List<String> collectedRewards;
+    /**
+     * Creates a new instance of a ParkourPlayer<br>
+     * If you are using the API, please use {@link ParkourPlayer#register(Player, Session)} instead
+     */
+    public ParkourPlayer(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
+        super(player, session, previousData);
+
+        this._locale = locale;
+
+        // generic player settings
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        player.setInvisible(false);
+    }
+
     private static boolean parseBoolean(String string) {
         return string == null
                 || string.equals("1") // for MySQL
                 || string.equals("true"); // for disk
     }
-
-    public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) { }
 
     /**
      * @param player The player.
@@ -92,33 +117,6 @@ public class ParkourPlayer extends ParkourUser {
         return WorldDivider.sessions.values().stream()
                 .flatMap(session -> session.getPlayers().stream())
                 .toList();
-    }
-
-    public @Expose Double schematicDifficulty;
-    public @Expose Integer blockLead;
-    public @Expose Boolean particles;
-    public @Expose Boolean sound;
-    public @Expose Boolean useSpecialBlocks;
-    public @Expose Boolean showFallMessage;
-    public @Expose Boolean showScoreboard;
-    public @Expose Integer selectedTime;
-    public @Expose String style;
-    public @Expose String _locale;
-    public @Expose List<String> collectedRewards;
-
-    /**
-     * Creates a new instance of a ParkourPlayer<br>
-     * If you are using the API, please use {@link ParkourPlayer#register(Player)} instead
-     */
-    public ParkourPlayer(@NotNull Player player, @Nullable PreviousData previousData) {
-        super(player, previousData);
-
-        this._locale = locale;
-
-        // generic player settings
-        player.setFlying(false);
-        player.setAllowFlight(false);
-        player.setInvisible(false);
     }
 
     @Override
@@ -206,7 +204,7 @@ public class ParkourPlayer extends ParkourUser {
                 if (ParkourOption.SETTINGS.mayPerform(player)) items.add(Locales.getItem(locale, "settings.item"));
                 if (ParkourOption.LOBBY.mayPerform(player)) items.add(Locales.getItem(locale, "lobby.item"));
 
-                items.add(Locales.getItem(locale, "other.quit"));
+                if (ParkourOption.QUIT.mayPerform(player)) items.add(Locales.getItem(locale, "other.quit"));
 
                 List<Integer> slots = Menu.getEvenlyDistributedSlots(items.size());
                 Colls.range(0, items.size()).forEach(idx -> player.getInventory().setItem(slots.get(idx), items.get(idx).build()));
@@ -214,5 +212,9 @@ public class ParkourPlayer extends ParkourUser {
         } else {
             sendTranslated("other.customize");
         }
+    }
+
+    public record OptionContainer(ParkourOption option, BiConsumer<ParkourPlayer, String> consumer) {
+
     }
 }

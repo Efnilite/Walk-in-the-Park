@@ -6,6 +6,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.world.WorldDivider;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -22,13 +23,14 @@ import java.util.function.Function;
 public class Session {
 
     /**
-     * Creates a new builder.
-     *
-     * @return A new builder instance.
+     * List of muted users.
      */
-    public static Builder create(Function<Session, ParkourGenerator> generatorFunction) {
-        return new Builder(generatorFunction);
-    }
+    public final List<ParkourUser> muted = new ArrayList<>();
+
+    /**
+     * List of users.
+     */
+    protected final Map<UUID, ParkourUser> users = new HashMap<>();
 
     /**
      * The generator.
@@ -51,60 +53,80 @@ public class Session {
     private Function<Session, Boolean> isAcceptingSpectators = session -> session.visibility == Visibility.PUBLIC;
 
     /**
-     * List of muted users.
+     * Creates a new session.
+     *
+     * @param generatorFunction     The generator function.
+     * @param isAcceptingPlayers    The function that takes the current session and returns whether new players should be accepted.
+     * @param isAcceptingSpectators The function that takes the current session and returns whether new spectators should be accepted.
+     * @param players               The players.
+     * @return The session.
      */
-    public final List<ParkourUser> muted = new ArrayList<>();
+    public static Session create(Function<Session, ParkourGenerator> generatorFunction,
+                                 Function<Session, Boolean> isAcceptingPlayers,
+                                 Function<Session, Boolean> isAcceptingSpectators,
+                                 Player... players) {
+        Session session = new Session();
 
-    /**
-     * List of players.
-     */
-    protected final Map<UUID, ParkourPlayer> players = new HashMap<>();
+        session.generator = generatorFunction.apply(session);
 
-    /**
-     * List of spectators.
-     */
-    protected final Map<UUID, ParkourSpectator> spectators = new HashMap<>();
+        WorldDivider.associate(session);
 
-    protected Session() { }
+        if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
+        if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
+
+        List<ParkourPlayer> pps = new ArrayList<>();
+        if (players != null) {
+            for (Player player : players) {
+                ParkourPlayer pp = ParkourUser.register(player, session);
+                session.addPlayers(pp);
+                pps.add(pp);
+            }
+        }
+
+        session.generator = generatorFunction.apply(session);
+
+        if (players != null) {
+            pps.forEach(p -> p.updateGeneratorSettings(session.generator));
+        }
+
+        session.generator.island.build();
+
+        return session;
+    }
 
     /**
      * Adds provided players to this session's player list.
      *
-     * @param players The players to add.
+     * @param toRemove The players to add.
      */
-    public void addPlayers(ParkourPlayer... players) {
-        for (ParkourPlayer player : players) {
-            player.session = this;
-
+    public void addPlayers(ParkourPlayer... toRemove) {
+        for (ParkourPlayer player : toRemove) {
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
             }
-        }
 
-        for (ParkourPlayer player : players) {
-            this.players.put(player.getUUID(), player);
+            users.put(player.getUUID(), player);
         }
     }
 
     /**
      * Removes provided players from this session's player list.
      *
-     * @param players The players to remove.
+     * @param toRemove The players to remove.
      */
-    public void removePlayers(ParkourPlayer... players) {
-        for (ParkourPlayer player : players) {
-            this.players.remove(player.getUUID());
+    public void removePlayers(ParkourPlayer... toRemove) {
+        for (ParkourPlayer player : toRemove) {
+            users.remove(player.getUUID());
         }
 
-        for (ParkourPlayer player : players) {
-            player.session = null;
-
-            for (ParkourPlayer to : getPlayers()) {
+        List<ParkourPlayer> players = getPlayers();
+        for (ParkourPlayer player : toRemove) {
+            for (ParkourPlayer to : players) {
                 to.send(Locales.getString(player.locale, "lobby.other_leave").formatted(player.getName()));
             }
         }
 
-        if (players.length > 0 && this.players.isEmpty()) {
+        if (toRemove.length > 0 && players.isEmpty()) {
             generator.reset(false);
             WorldDivider.disassociate(this);
         }
@@ -114,7 +136,10 @@ public class Session {
      * @return The players.
      */
     public List<ParkourPlayer> getPlayers() {
-        return new ArrayList<>(players.values());
+        return users.values().stream()
+                .filter(user -> user instanceof ParkourPlayer)
+                .map(user -> (ParkourPlayer) user)
+                .toList();
     }
 
     /**
@@ -124,11 +149,11 @@ public class Session {
      */
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
-            for (ParkourPlayer player : players.values()) {
+            for (ParkourPlayer player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_join", spectator.getName());
             }
 
-            this.spectators.put(spectator.getUUID(), spectator);
+            users.put(spectator.getUUID(), spectator);
         }
     }
 
@@ -139,12 +164,29 @@ public class Session {
      */
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
-            for (ParkourPlayer player : players.values()) {
+            for (ParkourPlayer player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_leave", spectator.getName());
             }
 
-            this.spectators.remove(spectator.getUUID());
+            users.remove(spectator.getUUID());
         }
+    }
+
+    /**
+     * @return The spectators.
+     */
+    public List<ParkourSpectator> getSpectators() {
+        return users.values().stream()
+                .filter(user -> user instanceof ParkourSpectator)
+                .map(user -> (ParkourSpectator) user)
+                .toList();
+    }
+
+    /**
+     * @return The users.
+     */
+    public List<ParkourUser> getUsers() {
+        return new ArrayList<>(users.values());
     }
 
     /**
@@ -152,7 +194,7 @@ public class Session {
      *
      * @param user The user to (un)mute.
      */
-    public void mute(@NotNull ParkourUser user) {
+    public void toggleMute(@NotNull ParkourUser user) {
         if (!muted.remove(user)) {
             muted.add(user);
         }
@@ -165,19 +207,11 @@ public class Session {
         return isAcceptingPlayers.apply(this);
     }
 
-
     /**
      * @return True when spectators may join this session, false if not.
      */
     public boolean isAcceptingSpectators() {
         return isAcceptingSpectators.apply(this);
-    }
-
-    /**
-     * @return The spectators.
-     */
-    public List<ParkourSpectator> getSpectators() {
-        return new ArrayList<>(spectators.values());
     }
 
     public enum Visibility {
@@ -197,89 +231,5 @@ public class Session {
          */
         PUBLIC,
 
-    }
-
-    /**
-     * Helper class for constructing a session.
-     */
-    public static class Builder {
-
-        private Function<Session, Boolean> isAcceptingPlayers;
-        private Function<Session, Boolean> isAcceptingSpectators;
-        private ParkourPlayer[] players;
-        private final Function<Session, ParkourGenerator> generator;
-
-        private Builder(Function<Session, ParkourGenerator> generator) {
-            this.generator = generator;
-        }
-
-        /**
-         * Sets the accepting players function.
-         *
-         * @param f The function.
-         * @return This instance.
-         * @see Session#isAcceptingPlayers
-         */
-        public Builder isAcceptingPlayers(Function<Session, Boolean> f) {
-            isAcceptingPlayers = f;
-
-            return this;
-        }
-
-        /**
-         * Sets the accepting spectators function.
-         *
-         * @param f The function.
-         * @return This instance.
-         * @see Session#isAcceptingSpectators
-         */
-        public Builder isAcceptingSpectators(Function<Session, Boolean> f) {
-            isAcceptingSpectators = f;
-
-            return this;
-        }
-
-        /**
-         * Adds initial players.
-         *
-         * @param p The players.
-         * @return This instance.
-         * @see Session#players
-         */
-        public Builder addPlayers(ParkourPlayer... p) {
-            players = p;
-
-            return this;
-        }
-
-        /**
-         * Builds a new session instance with the provided settings.
-         * Assigns the session with {@link WorldDivider#associate(Session)}.
-         *
-         * @return The constructed session.
-         */
-        public Session complete() {
-            Session session = new Session();
-
-            WorldDivider.associate(session);
-
-            if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
-            if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
-            if (players != null) session.addPlayers(players);
-
-            session.generator = generator.apply(session);
-
-            if (players != null) {
-                // todo move to generator?
-                Arrays.asList(players).forEach(p -> {
-                    p.session = session;
-                    p.updateGeneratorSettings(session.generator);
-                });
-            }
-
-            session.generator.island.build();
-
-            return session;
-        }
     }
 }
