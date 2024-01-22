@@ -33,9 +33,8 @@ public class ParkourSpectator extends ParkourUser {
     public ParkourPlayer closest;
 
     public ParkourSpectator(@NotNull Player player, @NotNull Session session, @Nullable PreviousData previousData) {
-        super(player, previousData);
+        super(player, session, previousData);
 
-        this.session = session;
         this.closest = session.getPlayers().get(0);
 
         new ParkourSpectateEvent(this).call();

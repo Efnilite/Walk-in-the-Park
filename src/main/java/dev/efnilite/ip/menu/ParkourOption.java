@@ -44,6 +44,7 @@ public enum ParkourOption {
 
     // other
     JOIN("join", "ip.join"),
+    QUIT("quit", "ip.quit"),
     ADMIN("admin", "ip.admin");
 
     /**

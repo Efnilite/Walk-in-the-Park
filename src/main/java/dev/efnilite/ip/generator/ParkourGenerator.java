@@ -815,7 +815,7 @@ public class ParkourGenerator {
         return session.getSpectators();
     }
 
-    protected enum JumpType {
+    public enum JumpType {
         DEFAULT, SCHEMATIC, SPECIAL
     }
 }

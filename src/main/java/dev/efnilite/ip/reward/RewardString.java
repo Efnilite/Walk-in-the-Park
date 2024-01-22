@@ -25,6 +25,7 @@ public record RewardString(@NotNull String string) {
         if (string.isEmpty()) {
             return;
         }
+
         String string = this.string;
 
         Mode rewardMode = Registry.getModes().stream()
@@ -55,7 +56,6 @@ public record RewardString(@NotNull String string) {
             string = string.replaceFirst("send:", "");
 
             player.send(string);
-
         } else if (string.toLowerCase().contains("vault:")) {
             string = string.replaceFirst("vault:", "");
 

@@ -25,6 +25,7 @@ public record Score(String name, String time, String difficulty, int score) {
     }
 
     /**
+     * Legacy migration.
      * @param old The old score format.
      * @return The new score format.
      */
@@ -49,17 +50,15 @@ public record Score(String name, String time, String difficulty, int score) {
     }
 
     /**
-     * @param millis The duration in millis.
+     * @param ms The duration in millis.
      * @return The formatted time.
      */
-    public static String timeFromMillis(int millis) {
-        int m = millis / (60 * 1000);
-        millis = millis - (m * 60 * 1000);
+    public static String timeFromMillis(int ms) {
+        int m = ms / (60 * 1000);
+        ms -= (m * 60 * 1000);
 
-        int s = millis / 1000;
-        millis = millis - (s * 1000);
-
-        int ms = millis;
+        int s = ms / 1000;
+        ms -= (s * 1000);
 
         return "%s:%s:%s".formatted(padLeft(Integer.toString(m), (m < 10) ? 1 : 0),
                 padLeft(Integer.toString(s), (s < 10) ? 1 : 0),
