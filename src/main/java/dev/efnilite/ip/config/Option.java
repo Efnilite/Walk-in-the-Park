@@ -44,7 +44,8 @@ public class Option {
     public static boolean INVENTORY_SAVING;
     public static String ALT_INVENTORY_SAVING_COMMAND;
 
-    public static int OPTIONS_TIME_FORMAT;
+    public static int TIME_FORMAT;
+    public static String SCORE_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
@@ -87,7 +88,9 @@ public class Option {
 
         // Options
 
-        OPTIONS_TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
+        TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
+        SCORE_TIME_FORMAT = Config.CONFIG.getString("options.time.score-format");
+
         HEALTH_HANDLING = Config.CONFIG.getBoolean("options.health-handling");
         INVENTORY_SAVING = Config.CONFIG.getBoolean("options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = Config.CONFIG.getString("options.alt-inventory-saving-command");

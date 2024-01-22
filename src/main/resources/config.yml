@@ -136,6 +136,10 @@ options:
     # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
     format: 24
 
+    # -= Score time format =-
+    # H = hours, m = minutes, s = seconds, S = milliseconds
+    score-format: "mm:ss:SSS"
+
   # -= Inventory handling =-
   # Toggles the inventory handling system.
   # True = players' inventories get saved and cleared when they join the parkour and when they leave they get their items back

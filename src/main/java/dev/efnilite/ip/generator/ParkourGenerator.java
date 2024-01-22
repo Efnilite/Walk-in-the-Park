@@ -39,8 +39,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -513,7 +514,6 @@ public class ParkourGenerator {
 
         Leaderboard leaderboard = getMode().getLeaderboard();
         int record = leaderboard != null ? leaderboard.get(player.getUUID()).score() : 0;
-        String time = getTime();
 
         if (profile.get("showFallMessage").asBoolean()) {
             String message;
@@ -532,7 +532,7 @@ public class ParkourGenerator {
             for (ParkourPlayer players : getPlayers()) {
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
                 players.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
-                players.sendTranslated("settings.parkour_settings.items.fall_message.time", time);
+                players.sendTranslated("settings.parkour_settings.items.fall_message.time", getFormattedTime());
                 players.sendTranslated("settings.parkour_settings.items.fall_message.high_score", Integer.toString(record));
                 players.sendTranslated(message, Integer.toString(number));
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
@@ -540,7 +540,7 @@ public class ParkourGenerator {
         }
 
         if (leaderboard != null && score > record) {
-            registerScore(getTime(), Double.toString(getDifficultyScore()).substring(0, 3), score);
+            registerScore(getDetailedTime(), Double.toString(getDifficultyScore()).substring(0, 3), score);
         }
 
         score = 0;
@@ -766,10 +766,30 @@ public class ParkourGenerator {
     }
 
     /**
-     * @return The current duration of the run.
+     * @return The time in custom format.
      */
-    public String getTime() {
-        return Score.timeFromMillis(start != null ? (int) Duration.between(start, Instant.now()).toMillis() : 0);
+    public String getFormattedTime() {
+        return getTime(Option.SCORE_TIME_FORMAT);
+    }
+
+    /**
+     * @return The current detailed duration of the run.
+     */
+    public String getDetailedTime() {
+        return getTime("mm:ss:SSS");
+    }
+
+    private String getTime(String format) {
+        var timeMs = Instant.now().minusMillis(start != null ? start.toEpochMilli() : 0);
+
+        try {
+            return DateTimeFormatter.ofPattern(format)
+                    .withZone(ZoneOffset.UTC)
+                    .format(timeMs);
+        } catch (IllegalArgumentException ex) {
+            IP.logging().stack("Invalid score time format %s".formatted(Option.SCORE_TIME_FORMAT), ex);
+            return "";
+        }
     }
 
     /**

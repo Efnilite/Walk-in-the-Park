@@ -13,18 +13,13 @@ import dev.efnilite.vilib.util.Time;
 public record Score(String name, String time, String difficulty, int score) {
 
     /**
-     * The character used for splitting in strings
-     */
-    private static final String SPLITTER = ",";
-
-    /**
      * Gets a {@link Score} instance from a string
      *
      * @param string The string
      * @return a {@link Score} instance based off the provided string
      */
     public static Score fromString(String string) {
-        String[] parts = string.split(SPLITTER);
+        String[] parts = string.split(",");
 
         return new Score(parts[0], parseV1Score(parts[1]), parts[2], Integer.parseInt(parts[3]));
     }
@@ -33,7 +28,7 @@ public record Score(String name, String time, String difficulty, int score) {
      * @param old The old score format.
      * @return The new score format.
      */
-    public static String parseV1Score(String old) {
+    private static String parseV1Score(String old) {
         if (old.contains(":")) {
             return old;
         }
@@ -90,6 +85,6 @@ public record Score(String name, String time, String difficulty, int score) {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s%s%s%s%s", name, SPLITTER, time, SPLITTER, difficulty, SPLITTER, score);
+        return String.format("%s,%s,%s,%s", name, time, difficulty, score);
     }
 }

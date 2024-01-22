@@ -126,16 +126,16 @@ public class ParkourSettingsMenu extends DynamicMenu {
             return new SliderItem()
                 .initial(times.indexOf(player.selectedTime))
                 .add(0, item.clone()
-                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
+                        .modifyLore(line -> line.replace("%s", Option.TIME_FORMAT == 12 ? "12:00 AM" : "00:00")),
                     event -> handleSettingChange(player, () -> player.selectedTime = 0))
                 .add(1, item.clone()
-                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
+                        .modifyLore(line -> line.replace("%s", Option.TIME_FORMAT == 12 ? "6:00 AM" : "6:00")),
                     event -> handleSettingChange(player, () -> player.selectedTime = 6000))
                 .add(2, item.clone()
-                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
+                        .modifyLore(line -> line.replace("%s", Option.TIME_FORMAT == 12 ? "12:00 PM" : "12:00")),
                     event -> handleSettingChange(player, () -> player.selectedTime = 12000))
                 .add(3, item.clone()
-                        .modifyLore(line -> line.replace("%s", Option.OPTIONS_TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
+                        .modifyLore(line -> line.replace("%s", Option.TIME_FORMAT == 12 ? "6:00 PM" : "18:00")),
                     event -> handleSettingChange(player, () -> player.selectedTime = 18000));
         }, player -> checkOptions(player, ParkourOption.TIME, disabled));
 
