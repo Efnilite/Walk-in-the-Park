@@ -178,7 +178,7 @@ permissions:
 
   # -= Per style permissions =-
   # Gives every style a permission. The permission is the name of the style.
-  # Syntax: ip.option.styles.<style> - example: ip.option.styles.red
+  # Syntax: ip.settings.styles.<style> - example: ip.settings.styles.red
   # Useful for servers with ranks.
   per-style: false
 
