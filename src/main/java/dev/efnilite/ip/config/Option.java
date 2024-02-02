@@ -185,6 +185,7 @@ public class Option {
     public static ParticleShape PARTICLE_SHAPE;
     public static Sound SOUND_TYPE;
     public static int SOUND_PITCH;
+    public static int SOUND_VOLUME;
     public static Particle PARTICLE_TYPE;
     public static ParticleData<?> PARTICLE_DATA;
 
@@ -207,6 +208,7 @@ public class Option {
         }
 
         SOUND_PITCH = Config.CONFIG.getInt("particles.sound-pitch");
+        SOUND_VOLUME = Config.CONFIG.getInt("particles.sound-volume");
         PARTICLE_SHAPE = ParticleShape.valueOf(Config.CONFIG.getString("particles.particle-shape").toUpperCase());
         PARTICLE_DATA = new ParticleData<>(PARTICLE_TYPE, null, 10, 0, 0, 0, 0);
     }

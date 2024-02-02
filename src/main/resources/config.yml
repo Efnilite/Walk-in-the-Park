@@ -265,6 +265,9 @@ particles:
   # The pitch of the sound that will play when a new block generates.
   sound-pitch: 3
 
+  # -= Sound volume =-
+  sound-volume: 3
+
 # -= Default values =-
 # This is a list of all options and defaults.
 default-values:

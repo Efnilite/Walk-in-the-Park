@@ -275,8 +275,8 @@ public class ParkourGenerator {
         }
 
         // play sound
-        getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
-        getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, 4, Option.SOUND_PITCH));
+        getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
+        getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
     }
 
     protected BlockData selectBlockData() {
