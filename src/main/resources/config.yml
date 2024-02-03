@@ -266,7 +266,7 @@ particles:
   sound-pitch: 3
 
   # -= Sound volume =-
-  sound-volume: 3
+  sound-volume: 2
 
 # -= Default values =-
 # This is a list of all options and defaults.

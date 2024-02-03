@@ -780,7 +780,7 @@ public class ParkourGenerator {
     }
 
     private String getTime(String format) {
-        var timeMs = Instant.now().minusMillis(start != null ? start.toEpochMilli() : 0);
+        var timeMs = Instant.now().minusMillis(start != null ? start.toEpochMilli() : Instant.now().toEpochMilli());
 
         try {
             return DateTimeFormatter.ofPattern(format)
