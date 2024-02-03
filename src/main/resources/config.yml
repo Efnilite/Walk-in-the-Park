@@ -136,6 +136,10 @@ options:
     # 12 - 12 hour clock. (12:00 AM, 12:00 PM, 11:59 PM)
     format: 24
 
+    # -= Score time format =-
+    # H = hours, m = minutes, s = seconds, S = milliseconds
+    score-format: "mm:ss:SSS"
+
   # -= Inventory handling =-
   # Toggles the inventory handling system.
   # True = players' inventories get saved and cleared when they join the parkour and when they leave they get their items back
@@ -174,7 +178,7 @@ permissions:
 
   # -= Per style permissions =-
   # Gives every style a permission. The permission is the name of the style.
-  # Syntax: ip.option.styles.<style> - example: ip.option.styles.red
+  # Syntax: ip.settings.styles.<style> - example: ip.settings.styles.red
   # Useful for servers with ranks.
   per-style: false
 
@@ -260,6 +264,9 @@ particles:
   # -= Sound pitch =-
   # The pitch of the sound that will play when a new block generates.
   sound-pitch: 3
+
+  # -= Sound volume =-
+  sound-volume: 2
 
 # -= Default values =-
 # This is a list of all options and defaults.

@@ -109,7 +109,7 @@ public class PAPIHook extends PlaceholderExpansion {
                     return Integer.toString(generator.score);
                 }
                 case "time", "current_time" -> {
-                    return generator.getTime();
+                    return generator.getFormattedTime();
                 }
                 case "blocklead", "lead" -> {
                     return Integer.toString(pp.blockLead);

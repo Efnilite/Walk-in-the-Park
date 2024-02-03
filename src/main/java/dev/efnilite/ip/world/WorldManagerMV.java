@@ -29,7 +29,7 @@ public class WorldManagerMV implements WorldManager {
             return null;
         }
 
-        MANAGER.addWorld(Option.WORLD_NAME, World.Environment.NORMAL, null, WorldType.FLAT, false, VoidGenerator.getMultiverseGenerator());
+        MANAGER.addWorld(Option.WORLD_NAME, World.Environment.NORMAL, null, WorldType.NORMAL, false, VoidGenerator.getMultiverseGenerator());
         MultiverseWorld world = MANAGER.getMVWorld(Option.WORLD_NAME);
 
         // optimizations to reduce memory usage

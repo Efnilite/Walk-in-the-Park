@@ -67,8 +67,6 @@ public class Session {
                                  Player... players) {
         Session session = new Session();
 
-        session.generator = generatorFunction.apply(session);
-
         WorldDivider.associate(session);
 
         if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;

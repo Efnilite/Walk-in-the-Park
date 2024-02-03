@@ -283,7 +283,7 @@ public abstract class ParkourUser {
     private String replace(String s, Score top, Score high, ParkourGenerator generator) {
         return Strings.colour(translate(player, s)
                 .replace("%score%", Integer.toString(generator.score))
-                .replace("%time%", generator.getTime())
+                .replace("%time%", generator.getFormattedTime())
                 .replace("%difficulty%", Double.toString(generator.getDifficultyScore()))
 
                 .replace("%top_score%", Integer.toString(top.score()))

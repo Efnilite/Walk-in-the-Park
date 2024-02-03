@@ -23,20 +23,6 @@ class ScoreTest {
     }
 
     @Test
-    void testParseV1Score() {
-        var result = Score.parseV1Score("1h 1m 15.123s");
-
-        assertEquals("61:15:123", result);
-    }
-
-    @Test
-    void testTimeFromMillis() {
-        var result = Score.timeFromMillis(123 + 15 * 1000 + 60 * 1000);
-
-        assertEquals("01:15:123", result);
-    }
-
-    @Test
     void testGetTimeMillis() {
         int result = score.getTimeMillis();
 

@@ -44,7 +44,8 @@ public class Option {
     public static boolean INVENTORY_SAVING;
     public static String ALT_INVENTORY_SAVING_COMMAND;
 
-    public static int OPTIONS_TIME_FORMAT;
+    public static int TIME_FORMAT;
+    public static String SCORE_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
@@ -87,7 +88,9 @@ public class Option {
 
         // Options
 
-        OPTIONS_TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
+        TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
+        SCORE_TIME_FORMAT = Config.CONFIG.getString("options.time.score-format");
+
         HEALTH_HANDLING = Config.CONFIG.getBoolean("options.health-handling");
         INVENTORY_SAVING = Config.CONFIG.getBoolean("options.inventory-saving");
         ALT_INVENTORY_SAVING_COMMAND = Config.CONFIG.getString("options.alt-inventory-saving-command");
@@ -182,6 +185,7 @@ public class Option {
     public static ParticleShape PARTICLE_SHAPE;
     public static Sound SOUND_TYPE;
     public static int SOUND_PITCH;
+    public static int SOUND_VOLUME;
     public static Particle PARTICLE_TYPE;
     public static ParticleData<?> PARTICLE_DATA;
 
@@ -204,6 +208,7 @@ public class Option {
         }
 
         SOUND_PITCH = Config.CONFIG.getInt("particles.sound-pitch");
+        SOUND_VOLUME = Config.CONFIG.getInt("particles.sound-volume");
         PARTICLE_SHAPE = ParticleShape.valueOf(Config.CONFIG.getString("particles.particle-shape").toUpperCase());
         PARTICLE_DATA = new ParticleData<>(PARTICLE_TYPE, null, 10, 0, 0, 0, 0);
     }
