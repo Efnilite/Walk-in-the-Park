@@ -49,10 +49,11 @@ public class PreviousData {
             player.removePotionEffect(effect.getType());
         }
 
-        inventoryData = new InventoryData(player);
-
         if (Option.INVENTORY_HANDLING) {
+            inventoryData = new InventoryData(player);
             inventoryData.save(Option.INVENTORY_SAVING);
+        } else {
+            inventoryData = null;
         }
 
         // health handling after removing effects and inventory to avoid them affecting it
