@@ -20,10 +20,10 @@ import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.WorldDivider;
 import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
+import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -227,12 +227,12 @@ public abstract class ParkourUser {
     protected abstract void unregister();
 
     /**
-     * Teleports the player asynchronously, which helps with unloaded chunks (?)
+     * Teleports the player asynchronously.
      *
      * @param to Where the player will be teleported to
      */
     public void teleport(@NotNull Location to) {
-        player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        PaperLib.teleportAsync(player, to);
     }
 
     /**

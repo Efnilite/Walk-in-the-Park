@@ -16,6 +16,7 @@ import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
+import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -88,16 +89,15 @@ public class Handler implements EventWatcher {
         World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
 
         if (fallback != null) {
-            player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            PaperLib.teleportAsync(player, fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             return;
         }
 
-        player.teleport(Bukkit.getWorlds().stream()
+        PaperLib.teleportAsync(player, Bukkit.getWorlds().stream()
                 .filter(world -> !world.equals(WorldManager.getWorld()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
-                .getSpawnLocation(),
-            PlayerTeleportEvent.TeleportCause.PLUGIN);
+                .getSpawnLocation());
     }
 
     @EventHandler
