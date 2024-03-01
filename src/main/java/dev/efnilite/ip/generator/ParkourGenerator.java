@@ -283,11 +283,11 @@ public class ParkourGenerator {
         Style style = Registry.getStyle(profile.get("style").value());
 
         if (style == null) {
-            profile.set("style", Registry.getStyles().get(0).name());
+            profile.set("style", Registry.getStyles().stream().findFirst().get().getName());
             return selectBlockData();
         }
 
-        return style.get(session);
+        return style.getNext().createBlockData();
     }
 
     protected List<Block> selectBlocks() {
