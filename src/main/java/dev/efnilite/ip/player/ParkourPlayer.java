@@ -10,7 +10,8 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.ip.storage.Storage;
+import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Colls;
@@ -114,7 +115,7 @@ public class ParkourPlayer extends ParkourUser {
      * @return List with all players.
      */
     public static List<ParkourPlayer> getPlayers() {
-        return WorldDivider.sessions.values().stream()
+        return Divider.sections.keySet().stream()
                 .flatMap(session -> session.getPlayers().stream())
                 .toList();
     }
@@ -176,7 +177,7 @@ public class ParkourPlayer extends ParkourUser {
      * Saves the player's data to their file
      */
     public void save(boolean async) {
-        Runnable write = () -> IP.getStorage().writePlayer(this);
+        Runnable write = () -> Storage.writePlayer(this);
 
         if (async) {
             Task.create(IP.getPlugin()).async().execute(write).run();

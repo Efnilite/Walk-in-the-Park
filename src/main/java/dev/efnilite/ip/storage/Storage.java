@@ -1,5 +1,6 @@
 package dev.efnilite.ip.storage;
 
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.player.ParkourPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -13,19 +14,19 @@ import java.util.UUID;
  * @author Efnilite
  * @since 5.0.0
  */
-public interface Storage {
+public class Storage {
 
-    /**
-     * Called when a mode leaderboard gets initiated.
-     *
-     * @param mode The mode.
-     */
-    void init(String mode);
+    public static void init(String mode) {
+        if (Option.SQL) {
+            StorageSQL.init(mode);
+        }
+    }
 
-    /**
-     * Called on plugin shutdown.
-     */
-    void close();
+    public static void close() {
+        if (Option.SQL) {
+            StorageSQL.close();
+        }
+    }
 
     /**
      * Reads scores.
@@ -33,7 +34,13 @@ public interface Storage {
      * @param mode The mode.
      * @return Map with all scores, unsorted.
      */
-    @NotNull Map<UUID, Score> readScores(@NotNull String mode);
+    public static @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
+        if (Option.SQL) {
+            return StorageSQL.readScores(mode);
+        } else {
+            return StorageDisk.readScores(mode);
+        }
+    }
 
     /**
      * Writes scores.
@@ -41,20 +48,39 @@ public interface Storage {
      * @param mode   The mode.
      * @param scores The score map.
      */
-    void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores);
+    public static void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
+        if (Option.SQL) {
+            StorageSQL.writeScores(mode, scores);
+        } else {
+            StorageDisk.writeScores(mode, scores);
+        }
+    }
 
     /**
      * Reads player data and applies changes.
      *
      * @param player The player.
      */
-    void readPlayer(@NotNull ParkourPlayer player);
+    public static void readPlayer(@NotNull ParkourPlayer player) {
+        if (Option.SQL) {
+            StorageSQL.readPlayer(player);
+        } else {
+            StorageDisk.readPlayer(player);
+        }
+
+    }
 
     /**
      * Writes player data.
      *
      * @param player The player.
      */
-    void writePlayer(@NotNull ParkourPlayer player);
+    public static void writePlayer(@NotNull ParkourPlayer player) {
+        if (Option.SQL) {
+            StorageSQL.writePlayer(player);
+        } else {
+            StorageDisk.writePlayer(player);
+        }
+    }
 
 }

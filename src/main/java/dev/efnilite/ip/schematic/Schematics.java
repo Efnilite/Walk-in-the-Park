@@ -2,7 +2,6 @@ package dev.efnilite.ip.schematic;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.schematic.legacy.LegacySchematicMigrator;
 import dev.efnilite.vilib.schematic.Schematic;
 import dev.efnilite.vilib.util.Task;
 import dev.efnilite.vilib.util.Time;
@@ -32,8 +31,6 @@ public class Schematics {
             if (!FOLDER.exists()) {
                 FOLDER.mkdirs();
             }
-
-            new LegacySchematicMigrator().migrate();
 
             File[] files = FOLDER.listFiles((dir, name) -> name.contains("parkour-") || name.contains("spawn-island"));
 
