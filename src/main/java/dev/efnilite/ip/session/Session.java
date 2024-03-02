@@ -5,7 +5,7 @@ import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.ip.world.Divider;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * <p>A session is bound to a {@link WorldDivider} section.
+ * <p>A session is bound to a {@link Divider} section.
  * It manages all players, all spectators, visibility, the generator, etc.</p>
  * <p>Iteration 2.</p>
  *
@@ -67,7 +67,7 @@ public class Session {
                                  Player... players) {
         Session session = new Session();
 
-        WorldDivider.associate(session);
+        Divider.add(session);
 
         if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
         if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
@@ -126,7 +126,7 @@ public class Session {
 
         if (toRemove.length > 0 && players.isEmpty()) {
             generator.reset(false);
-            WorldDivider.disassociate(this);
+            Divider.remove(this);
         }
     }
 

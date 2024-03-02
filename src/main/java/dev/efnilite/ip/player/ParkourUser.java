@@ -16,8 +16,9 @@ import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.session.SessionChat;
+import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.ip.util.Util;
-import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
 import io.papermc.lib.PaperLib;
@@ -30,7 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Superclass of every type of player. This encompasses every player currently in the Parkour world.
@@ -62,7 +65,7 @@ public abstract class ParkourUser {
         joinCount++;
         new ParkourJoinEvent(pp).call();
 
-        IP.getStorage().readPlayer(pp);
+        Storage.readPlayer(pp);
         return pp;
     }
 
@@ -160,12 +163,12 @@ public abstract class ParkourUser {
     }
 
     /**
-     * @return List with all users.
+     * @return Set with all users.
      */
-    public static List<ParkourUser> getUsers() {
-        return WorldDivider.sessions.values().stream()
+    public static Set<ParkourUser> getUsers() {
+        return Divider.sections.keySet().stream()
                 .flatMap(session -> session.getUsers().stream())
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     /**
