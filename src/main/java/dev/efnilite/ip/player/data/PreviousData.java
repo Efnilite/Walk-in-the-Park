@@ -40,7 +40,7 @@ public class PreviousData {
         location = player.getLocation();
         hunger = player.getFoodLevel();
         allowFlight = player.getAllowFlight();
-        flying = player.getAllowFlight();
+        flying = player.isFlying();
         effects = player.getActivePotionEffects();
         health = player.getHealth();
         maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
