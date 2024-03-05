@@ -22,7 +22,6 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.jetbrains.annotations.NotNull;
@@ -56,10 +55,6 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
-        // ----- Start time -----
-
-        Time.timerStart("load");
-
         // ----- Configurations -----
 
         Config.reload(true);
@@ -78,19 +73,19 @@ public final class IP extends ViPlugin {
 
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            logging.info("Connecting with Holographic Displays...");
             HoloHook.init();
+            logging.info("Registered Holographic Displays Hook");
         }
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            logging.info("Connecting with PlaceholderAPI...");
             placeholderHook = new PAPIHook();
             placeholderHook.register();
+            logging.info("Registered PlaceholderAPI Hook");
         }
 
         if (Option.ON_JOIN) {
-            logging.info("Connecting with BungeeCord..");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            logging.info("Registered BungeeCord Hook");
         }
 
         // ----- Worlds -----
@@ -117,7 +112,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        logging.info("Loaded IP in %dms!".formatted(Time.timerEnd("load")));
+        logging.info("Loaded IP!");
     }
 
     @Override
@@ -168,5 +163,11 @@ public final class IP extends ViPlugin {
 
     public static Storage getStorage() {
         return storage;
+    }
+
+    public static void log(String message) {
+        if (Config.CONFIG.getBoolean("debug")) {
+            logging.info("[Debug] " + message);
+        }
     }
 }

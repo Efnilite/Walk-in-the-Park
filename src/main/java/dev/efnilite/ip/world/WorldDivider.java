@@ -1,5 +1,6 @@
 package dev.efnilite.ip.world;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -36,6 +37,8 @@ public class WorldDivider {
         }
 
         sessions.put(n, session);
+
+        IP.log("Added session at %s".formatted(toLocation(session).toVector()));
     }
 
     /**

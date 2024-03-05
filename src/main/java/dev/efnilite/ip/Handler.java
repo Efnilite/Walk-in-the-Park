@@ -8,7 +8,6 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.world.VoidGenerator;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.ip.world.WorldManagerMV;
@@ -36,9 +35,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 import static dev.efnilite.ip.util.Util.send;
 
@@ -48,15 +45,9 @@ import static dev.efnilite.ip.util.Util.send;
 @ApiStatus.Internal
 public class Handler implements EventWatcher {
 
-    /**
-     * If a player quits and rejoins, give them their stuff back
-     */
-    private final HashMap<UUID, PreviousData> quitPreviousData = new HashMap<>();
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
 
         // admin messages
         if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
@@ -71,11 +62,6 @@ public class Handler implements EventWatcher {
             send(player, "");
         }
 
-        if (quitPreviousData.containsKey(uuid)) {
-            quitPreviousData.get(uuid).apply(player, false);
-            quitPreviousData.remove(uuid);
-        }
-
         if (Option.ON_JOIN) {
             Modes.DEFAULT.create(player);
             return;
@@ -88,7 +74,7 @@ public class Handler implements EventWatcher {
         World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
 
         if (fallback != null) {
-            player.teleport(fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            player.teleport(fallback.getSpawnLocation());
             return;
         }
 
@@ -96,8 +82,7 @@ public class Handler implements EventWatcher {
                 .filter(world -> !world.equals(WorldManager.getWorld()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
-                .getSpawnLocation(),
-            PlayerTeleportEvent.TeleportCause.PLUGIN);
+                .getSpawnLocation());
     }
 
     @EventHandler
@@ -107,8 +92,6 @@ public class Handler implements EventWatcher {
         if (user == null) {
             return;
         }
-
-        quitPreviousData.put(user.getUUID(), user.previousData);
 
         ParkourUser.leave(user);
     }

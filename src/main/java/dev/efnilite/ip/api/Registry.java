@@ -29,12 +29,12 @@ public final class Registry {
      */
     public static void register(@NotNull Mode mode) {
         modes.put(mode.getName(), mode);
-        IP.logging().info("Registered mode %s".formatted(mode.getName()));
+        IP.log("Registered mode %s".formatted(mode.getName()));
     }
 
     public static void register(@NotNull Style style) {
         styles.put(style.name(), style);
-        IP.logging().info("Registered style %s".formatted(style.name()));
+        IP.log("Registered style %s".formatted(style.name()));
     }
 
     /**

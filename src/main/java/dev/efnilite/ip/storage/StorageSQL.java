@@ -46,7 +46,7 @@ public final class StorageSQL implements Storage {
     public void close() {
         try {
             connection.close();
-            IP.logging().info("Closed connection to MySQL");
+            IP.log("Closed connection to MySQL");
         } catch (SQLException ex) {
             IP.logging().stack("Error while trying to close connection to SQL database", ex);
         }
@@ -169,7 +169,7 @@ public final class StorageSQL implements Storage {
 
     public void connect() {
         try {
-            IP.logging().info("Connecting to MySQL");
+            IP.log("Connecting to MySQL");
 
             try { // load drivers
                 Class.forName("com.mysql.cj.jdbc.Driver"); // for newer versions

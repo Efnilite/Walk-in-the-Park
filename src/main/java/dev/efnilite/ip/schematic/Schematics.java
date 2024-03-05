@@ -5,7 +5,6 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.schematic.legacy.LegacySchematicMigrator;
 import dev.efnilite.vilib.schematic.Schematic;
 import dev.efnilite.vilib.util.Task;
-import dev.efnilite.vilib.util.Time;
 
 import java.io.File;
 import java.util.*;
@@ -27,8 +26,6 @@ public class Schematics {
      */
     public static void init() {
         Task.create(IP.getPlugin()).async().execute(() -> {
-            Time.timerStart("ip load schematics");
-
             if (!FOLDER.exists()) {
                 FOLDER.mkdirs();
             }
@@ -49,18 +46,15 @@ public class Schematics {
                     Schematic schematic = Schematic.create().load(file);
 
                     if (!schematic.isSupported()) {
-                        IP.logging().info("Schematic %s is not supported.".formatted(file.getName()));
+                        IP.logging().warn("Schematic %s is not supported.".formatted(file.getName()));
                         continue;
                     }
 
                     CACHE.put(file.getName(), schematic);
                 } catch (ExecutionException | InterruptedException ex) {
-                    IP.logging().stack("Error whihle trying to load schematic", ex);
+                    IP.logging().stack("Error while trying to load schematic", ex);
                 }
             }
-
-            IP.logging().info("Found %d unsupported schematic(s).".formatted(files.length - CACHE.keySet().size()));
-            IP.logging().info("Loaded all schematics in %d ms!".formatted(Time.timerEnd("ip load schematics")));
         }).run();
     }
 

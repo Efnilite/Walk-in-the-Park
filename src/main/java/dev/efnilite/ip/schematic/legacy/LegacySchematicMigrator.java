@@ -23,7 +23,7 @@ public class LegacySchematicMigrator {
 
             stream.map(Path::toFile)
                 .forEach(file -> {
-                    IP.logging().info("Migrating schematic %s".formatted(file.getName()));
+                    IP.log("Migrating schematic %s".formatted(file.getName()));
 
                     migrate(file);
                     file.delete();
