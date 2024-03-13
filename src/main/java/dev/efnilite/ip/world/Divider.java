@@ -1,6 +1,5 @@
 package dev.efnilite.ip.world;
 
-import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.util.Util;
@@ -8,6 +7,7 @@ import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * <p>Divides the parkour world in sections, each with an active session.</p>
@@ -16,27 +16,26 @@ import java.util.Map;
  * @author Efnilite
  * @since 5.0.0
  */
-public class WorldDivider {
+public class Divider {
 
     /**
      * Map with all session ids map to the session instances.
      */
-    public static final Map<Integer, Session> sessions = new HashMap<>();
+    public static final Map<Session, Integer> sections = new HashMap<>();
 
     /**
      * Associates a session to a specific section.
      *
      * @param session The session.
      */
-    public static synchronized void associate(Session session) {
+    public static synchronized void add(Session session) {
         // attempts to get the closest available section to the center
-        int n = 0;
+        var missing = IntStream.range(0, sections.size() + 1)
+                .filter(i -> !sections.containsValue(i))
+                .findFirst()
+                .orElseThrow();
 
-        while (sessions.containsKey(n)) {
-            n++;
-        }
-
-        sessions.put(n, session);
+        sections.put(session, missing);
 
         IP.log("Added session at %s".formatted(toLocation(session).toVector()));
     }
@@ -46,8 +45,8 @@ public class WorldDivider {
      *
      * @param session The session.
      */
-    public static void disassociate(Session session) {
-        sessions.remove(getSectionId(session));
+    public static void remove(Session session) {
+        sections.remove(session);
     }
 
     /**
@@ -55,7 +54,7 @@ public class WorldDivider {
      * @return The location at the center of section n.
      */
     public static Location toLocation(Session session) {
-        int[] xz = Util.spiralAt(getSectionId(session));
+        int[] xz = Util.spiralAt(sections.get(session));
 
         return new Location(WorldManager.getWorld(),
                 xz[0] * Option.BORDER_SIZE,
@@ -63,15 +62,6 @@ public class WorldDivider {
                 xz[1] * Option.BORDER_SIZE);
     }
 
-
-    // returns the section id from the session instance. error if no found.
-    private static int getSectionId(Session session) {
-        return sessions.entrySet().stream()
-                .filter(entry -> entry.getValue() == session)
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow();
-    }
 
     /**
      * @param session The session.
@@ -87,6 +77,6 @@ public class WorldDivider {
         max.setY(Option.MAX_Y);
         min.setY(Option.MIN_Y);
 
-        return new Location[] { min, max };
+        return new Location[]{min, max};
     }
 }

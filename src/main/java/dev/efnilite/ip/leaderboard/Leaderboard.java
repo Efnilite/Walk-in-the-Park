@@ -3,6 +3,7 @@ package dev.efnilite.ip.leaderboard;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
+import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +34,7 @@ public class Leaderboard {
         this.mode = mode.toLowerCase();
         this.sort = sort;
 
-        IP.getStorage().init(mode);
+        Storage.init(mode);
 
         // read all data
         read(true);
@@ -51,7 +52,7 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
-        run(() -> IP.getStorage().writeScores(mode, scores), async);
+        run(() -> Storage.writeScores(mode, scores), async);
     }
 
     /**
@@ -60,7 +61,7 @@ public class Leaderboard {
     public void read(boolean async) {
         run(() -> {
             scores.clear();
-            scores.putAll(IP.getStorage().readScores(mode));
+            scores.putAll(Storage.readScores(mode));
 
             sort();
         }, async);

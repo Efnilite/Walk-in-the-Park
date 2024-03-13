@@ -20,21 +20,9 @@ import java.util.UUID;
  *
  * @since 5.0.0
  */
-// todo add concurrency locks
-public final class StorageDisk implements Storage {
+class StorageDisk {
 
-    @Override
-    public void init(String mode) {
-        // nothing to see here...
-    }
-
-    @Override
-    public void close() {
-        // nothing to see here...
-    }
-
-    @Override
-    public @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
+    public static @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
         File file = getLeaderboardFile(mode);
 
         if (!file.exists()) {
@@ -60,8 +48,7 @@ public final class StorageDisk implements Storage {
         }
     }
 
-    @Override
-    public void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
+    public static void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
         LeaderboardContainer container = new LeaderboardContainer();
         scores.forEach((uuid, score) -> container.serialized.put(uuid, score.toString()));
 
@@ -76,7 +63,7 @@ public final class StorageDisk implements Storage {
         }
     }
 
-    private File getLeaderboardFile(String mode) {
+    private static File getLeaderboardFile(String mode) {
         return IP.getInFolder("leaderboards/%s.json".formatted(mode.toLowerCase()));
     }
 
@@ -85,8 +72,7 @@ public final class StorageDisk implements Storage {
         public final Map<UUID, String> serialized = new LinkedHashMap<>();
     }
 
-    @Override
-    public void readPlayer(@NotNull ParkourPlayer player) {
+    public static void readPlayer(@NotNull ParkourPlayer player) {
         if (!getPlayerFile(player).exists()) {
             player.setSettings(new HashMap<>());
             return;
@@ -115,8 +101,7 @@ public final class StorageDisk implements Storage {
         }
     }
 
-    @Override
-    public void writePlayer(@NotNull ParkourPlayer player) {
+    public static void writePlayer(@NotNull ParkourPlayer player) {
         File file = getPlayerFile(player);
 
         createFile(file);
@@ -129,7 +114,7 @@ public final class StorageDisk implements Storage {
         }
     }
 
-    private void createFile(File file) {
+    private static void createFile(File file) {
         if (file.exists()) {
             return;
         }
@@ -142,7 +127,7 @@ public final class StorageDisk implements Storage {
         }
     }
 
-    private File getPlayerFile(ParkourPlayer player) {
+    private static File getPlayerFile(ParkourPlayer player) {
         return IP.getInFolder("players/%s.json".formatted(player.getUUID()));
     }
 }

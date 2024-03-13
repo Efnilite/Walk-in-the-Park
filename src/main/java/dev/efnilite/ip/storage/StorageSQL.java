@@ -18,32 +18,30 @@ import java.util.UUID;
  *
  * @since 5.0.0
  */
-public final class StorageSQL implements Storage {
+class StorageSQL {
 
-    private Connection connection;
+    private static Connection connection;
 
-    public StorageSQL() {
+    static {
         connect();
     }
 
-    @Override
-    public void init(String mode) {
+    public static void init(String mode) {
         sendUpdate("""
-                    CREATE TABLE IF NOT EXISTS `%s`
-                    (
-                        uuid       CHAR(36) NOT NULL PRIMARY KEY,
-                        name       VARCHAR(16),
-                        time       VARCHAR(16),
-                        difficulty VARCHAR(3),
-                        score      INT
-                    )
-                    CHARSET = utf8 ENGINE = InnoDB;
-                    """
-                    .formatted(getTableName(mode)));
+                CREATE TABLE IF NOT EXISTS `%s`
+                (
+                    uuid       CHAR(36) NOT NULL PRIMARY KEY,
+                    name       VARCHAR(16),
+                    time       VARCHAR(16),
+                    difficulty VARCHAR(3),
+                    score      INT
+                )
+                CHARSET = utf8 ENGINE = InnoDB;
+                """
+                .formatted(getTableName(mode)));
     }
 
-    @Override
-    public void close() {
+    public static void close() {
         try {
             connection.close();
             IP.log("Closed connection to MySQL");
@@ -52,13 +50,12 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    @Override
-    public @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
+    public static @NotNull Map<UUID, Score> readScores(@NotNull String mode) {
         try (ResultSet results = sendQuery(
                 """
-                SELECT * FROM `%s`;
-                """
-                .formatted(getTableName(mode)))) {
+                        SELECT * FROM `%s`;
+                        """
+                        .formatted(getTableName(mode)))) {
 
             if (results == null) {
                 return new HashMap<>();
@@ -81,34 +78,32 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    @Override
-    public void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
+    public static void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
         scores.forEach((uuid, score) -> sendUpdate(
                 """
-                INSERT INTO `%s`
-                    (uuid, name, time, difficulty, score)
-                VALUES ('%s', '%s', '%s', '%s', %d)
-                ON DUPLICATE KEY UPDATE name       = '%s',
-                                        time       = '%s',
-                                        difficulty = '%s',
-                                        score      = %d;
-                """
-                .formatted(getTableName(mode), uuid.toString(), score.name(), score.time(), score.difficulty(), score.score(),
-                        score.name(), score.time(), score.difficulty(), score.score())));
+                        INSERT INTO `%s`
+                            (uuid, name, time, difficulty, score)
+                        VALUES ('%s', '%s', '%s', '%s', %d)
+                        ON DUPLICATE KEY UPDATE name       = '%s',
+                                                time       = '%s',
+                                                difficulty = '%s',
+                                                score      = %d;
+                        """
+                        .formatted(getTableName(mode), uuid.toString(), score.name(), score.time(), score.difficulty(), score.score(),
+                                score.name(), score.time(), score.difficulty(), score.score())));
     }
 
     // returns leaderboard table name
-    private String getTableName(String mode) {
+    private static String getTableName(String mode) {
         return "%sleaderboard-%s".formatted(Option.SQL_PREFIX, mode);
     }
 
-    @Override
-    public void readPlayer(@NotNull ParkourPlayer player) {
+    public static void readPlayer(@NotNull ParkourPlayer player) {
         try (ResultSet results = sendQuery(
                 """
-                SELECT * FROM `%s` WHERE uuid = '%s';
-                """
-                .formatted("%soptions".formatted(Option.SQL_PREFIX), player.getUUID()))) {
+                        SELECT * FROM `%s` WHERE uuid = '%s';
+                        """
+                        .formatted("%soptions".formatted(Option.SQL_PREFIX), player.getUUID()))) {
 
             if (results == null) {
                 player.setSettings(new HashMap<>());
@@ -137,8 +132,7 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    @Override
-    public void writePlayer(@NotNull ParkourPlayer player) {
+    public static void writePlayer(@NotNull ParkourPlayer player) {
         sendUpdate("""
                 INSERT INTO `%s`
                 (uuid, style, blockLead, useParticles, useSpecial, showFallMsg, showScoreboard,
@@ -167,7 +161,7 @@ public final class StorageSQL implements Storage {
                         player.schematicDifficulty, player.sound));
     }
 
-    public void connect() {
+    public static void connect() {
         try {
             IP.log("Connecting to MySQL");
 
@@ -211,7 +205,7 @@ public final class StorageSQL implements Storage {
         }
     }
 
-    private void validateConnection() {
+    private static void validateConnection() {
         try {
             if (!connection.isValid(10)) {
                 connect();
@@ -222,7 +216,7 @@ public final class StorageSQL implements Storage {
     }
 
     // send query and get result
-    private ResultSet sendQuery(String sql) {
+    private static ResultSet sendQuery(String sql) {
         validateConnection();
 
         try {
@@ -234,7 +228,7 @@ public final class StorageSQL implements Storage {
     }
 
     // send update
-    private void sendUpdate(String sql) {
+    private static void sendUpdate(String sql) {
         validateConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -245,7 +239,7 @@ public final class StorageSQL implements Storage {
     }
 
     // if query throws an error, ignore it
-    private void sendUpdateSuppressed(String sql) {
+    private static void sendUpdateSuppressed(String sql) {
         validateConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

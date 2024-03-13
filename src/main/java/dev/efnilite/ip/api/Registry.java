@@ -6,10 +6,8 @@ import dev.efnilite.ip.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Registers stuff.
@@ -19,8 +17,8 @@ import java.util.Map;
  */
 public final class Registry {
 
-    private static final Map<String, Mode> modes = new LinkedHashMap<>();
-    private static final Map<String, Style> styles = new LinkedHashMap<>();
+    private static final Set<Mode> modes = new HashSet<>();
+    private static final Set<Style> styles = new HashSet<>();
 
     /**
      * Registers a {@link Mode}.
@@ -28,12 +26,14 @@ public final class Registry {
      * @param mode The mode.
      */
     public static void register(@NotNull Mode mode) {
-        modes.put(mode.getName(), mode);
+        modes.add(mode);
+
         IP.log("Registered mode %s".formatted(mode.getName()));
     }
 
     public static void register(@NotNull Style style) {
-        styles.put(style.name(), style);
+        styles.add(style);
+
         IP.log("Registered style %s".formatted(style.name()));
     }
 
@@ -43,22 +43,25 @@ public final class Registry {
      */
     @Nullable
     public static Mode getMode(@NotNull String name) {
-        return modes.get(name);
+        return modes.stream()
+                .filter(mode -> mode.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     @Nullable
     public static Style getStyle(@NotNull String name) {
-        return styles.get(name);
+        return styles.stream()
+                .filter(style -> style.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
-    public static List<Style> getStyles() {
-        return new ArrayList<>(styles.values());
+    public static Set<Style> getStyles() {
+        return styles;
     }
 
-    /**
-     * @return All modes in registration order.
-     */
-    public static List<Mode> getModes() {
-        return new ArrayList<>(modes.values());
+    public static Set<Mode> getModes() {
+        return modes;
     }
 }

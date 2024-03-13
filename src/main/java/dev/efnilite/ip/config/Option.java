@@ -3,13 +3,11 @@ package dev.efnilite.ip.config;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.menu.ParkourOption;
-import dev.efnilite.ip.session.Session;
+import dev.efnilite.ip.style.RandomStyle;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
-import dev.efnilite.vilib.util.Colls;
 import org.bukkit.*;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
@@ -63,7 +61,8 @@ public class Option {
         initEnums();
         initGeneration();
         initAdvancedGeneration();
-        initStyles("styles.list", "default", Config.CONFIG.fileConfiguration, (materials, session) -> Colls.random(materials));
+        initStyles("styles.list", Config.CONFIG.fileConfiguration, RandomStyle::new)
+                .forEach(Registry::register);
 
         STORAGE_UPDATE_INTERVAL = Config.CONFIG.getInt("storage-update-interval");
 
@@ -307,24 +306,25 @@ public class Option {
 
     // --------------------------------------------------------------
 
-    public static void initStyles(String path, String type, FileConfiguration config, BiFunction<List<BlockData>, Session, BlockData> materialSelector) {
+    public static Set<Style> initStyles(String path, FileConfiguration config, BiFunction<String, List<Material>, Style> fn) {
+        var styles = new HashSet<Style>();
+
         for (String style : Util.getChildren(config, path, false)) {
-            Registry.register(new Style(
-                style,
-                config.getStringList("%s.%s".formatted(path, style)).stream()
-                    .map(name -> {
-                        Material material = Material.getMaterial(name.toUpperCase());
+            styles.add(fn.apply(style,
+                    config.getStringList("%s.%s".formatted(path, style)).stream()
+                            .map(name -> {
+                                var material = Material.getMaterial(name.toUpperCase());
 
-                        if (material == null) {
-                            IP.logging().warn("Unknown material %s in style %s".formatted(name, style));
-                            return Material.SMOOTH_QUARTZ.createBlockData();
-                        }
+                                if (material == null) {
+                                    IP.logging().error("Invalid material %s in style %s".formatted(name, style));
+                                    return Material.STONE;
+                                }
 
-                        return material.createBlockData();
-                    })
-                    .toList(),
-                type,
-                materialSelector));
+                                return material;
+                            })
+                            .toList()));
         }
+
+        return styles;
     }
 }

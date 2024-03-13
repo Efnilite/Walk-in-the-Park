@@ -13,8 +13,6 @@ import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.storage.StorageDisk;
-import dev.efnilite.ip.storage.StorageSQL;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.bstats.bukkit.Metrics;
@@ -22,6 +20,7 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +41,6 @@ public final class IP extends ViPlugin {
 
     private static Logging logging;
     private static IP instance;
-    private static Storage storage;
 
     @Nullable
     private static PAPIHook placeholderHook;
@@ -55,13 +53,10 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
+
         // ----- Configurations -----
 
         Config.reload(true);
-
-        // ----- SQL and data -----
-
-        storage = Option.SQL ? new StorageSQL() : new StorageDisk();
 
         // ----- Registry -----
 
@@ -124,7 +119,7 @@ public final class IP extends ViPlugin {
         // write all IP gamemodes
         Modes.DEFAULT.getLeaderboard().write(false);
 
-        storage.close();
+        Storage.close();
         WorldManager.delete();
     }
 
@@ -159,10 +154,6 @@ public final class IP extends ViPlugin {
     @Nullable
     public static PAPIHook getPlaceholderHook() {
         return placeholderHook;
-    }
-
-    public static Storage getStorage() {
-        return storage;
     }
 
     public static void log(String message) {

@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The menu to select single player modes
@@ -29,7 +30,7 @@ public class SingleMenu {
         ParkourUser user = ParkourUser.getUser(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
-        List<Mode> modes = Registry.getModes();
+        Set<Mode> modes = Registry.getModes();
 
         List<MenuItem> items = new ArrayList<>();
         List<Mode> modeSet = new ArrayList<>();

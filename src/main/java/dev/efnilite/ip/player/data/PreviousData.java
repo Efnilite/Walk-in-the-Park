@@ -63,9 +63,16 @@ public class PreviousData {
         }
     }
 
-    public void apply(Player player) {
-        player.teleport(Option.GO_BACK ? Option.GO_BACK_LOC : location);
+    public void apply(Player player, boolean teleportBack) {
+        if (teleportBack) {
+            PaperLib.teleportAsync(player, Option.GO_BACK ? Option.GO_BACK_LOC : location)
+                    .thenRun(() -> apply(player));
+        } else {
+            apply(player);
+        }
+    }
 
+    private void apply(Player player) {
         try {
             player.setFoodLevel(hunger);
             player.setGameMode(gamemode);

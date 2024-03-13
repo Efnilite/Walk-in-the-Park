@@ -9,6 +9,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.style.RandomStyle;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.fastboard.FastBoard;
@@ -19,7 +20,6 @@ import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.inventory.item.SliderItem;
 import dev.efnilite.vilib.inventory.item.TimedItem;
-import dev.efnilite.vilib.util.Colls;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -288,16 +288,20 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
         List<MenuItem> items = new ArrayList<>();
         for (Style style : Registry.getStyles()) {
-            String perm = ParkourOption.STYLES.permission + "." + style.name().toLowerCase();
+            var name = style.getName();
+
+            var perm = "%s.%s".formatted(ParkourOption.STYLES.permission, name.toLowerCase());
             if (Option.PERMISSIONS_STYLES && !player.player.hasPermission(perm.replace(" ", "."))) {
                 continue;
             }
 
-            items.add(Locales.getItem(player.player, ParkourOption.STYLES.path + ".style_item", style.name(), style.category())
-                .material(Colls.random(style.materials()).getMaterial())
-                .glowing(player.style.equals(style.name()))
+            var category = style instanceof RandomStyle ? "random" : "incremental";
+
+            items.add(Locales.getItem(player.player, ParkourOption.STYLES.path + ".style_item", name, category)
+                .material(style.getNext())
+                .glowing(player.style.equals(name))
                 .click(event -> {
-                    player.style = style.name();
+                    player.style = name;
                     player.updateGeneratorSettings(player.session.generator);
                     open(player);
                 }));

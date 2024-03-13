@@ -19,7 +19,7 @@ import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.style.Style;
-import dev.efnilite.ip.world.WorldDivider;
+import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.schematic.Schematic;
@@ -191,7 +191,7 @@ public class ParkourGenerator {
 
         player = session.getPlayers().get(0);
         island = new Island(session, schematic);
-        zone = WorldDivider.toSelection(session);
+        zone = Divider.toSelection(session);
 
         calculateChances();
     }
@@ -283,11 +283,11 @@ public class ParkourGenerator {
         Style style = Registry.getStyle(profile.get("style").value());
 
         if (style == null) {
-            profile.set("style", Registry.getStyles().get(0).name());
+            profile.set("style", Registry.getStyles().stream().findFirst().get().getName());
             return selectBlockData();
         }
 
-        return style.get(session);
+        return style.getNext().createBlockData();
     }
 
     protected List<Block> selectBlocks() {
