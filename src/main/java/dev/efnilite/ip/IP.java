@@ -11,7 +11,6 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.SpectatorMode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
-import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
@@ -90,7 +89,6 @@ public final class IP extends ViPlugin {
         // ----- Events -----
 
         registerListener(new Events());
-        registerListener(new SessionChat());
         registerCommand("ip", new Command());
 
         // ----- Metrics -----

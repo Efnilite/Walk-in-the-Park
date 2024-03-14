@@ -5,10 +5,10 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.vilib.util.Task;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Stores schematics, so they don't have to be read every time.
@@ -39,7 +39,7 @@ public class Schematics {
 
             try {
                 dev.efnilite.vilib.schematic.Schematics.addFromFiles(IP.getPlugin(), files);
-            } catch (ExecutionException | InterruptedException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 IP.logging().stack("Error while trying to load schematics", ex);
             }
         }).run();
