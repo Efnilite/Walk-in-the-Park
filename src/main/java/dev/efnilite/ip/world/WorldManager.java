@@ -1,6 +1,7 @@
 package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -27,7 +28,7 @@ public interface WorldManager {
     static void create() {
         World world = getWorld();
 
-        if (!Option.JOINING || (!Option.DELETE_ON_RELOAD && world != null)) {
+        if (!Config.CONFIG.getBoolean("joining") || (!Config.CONFIG.getBoolean("world.delete-on-reload") && world != null)) {
             return;
         }
 
@@ -60,7 +61,7 @@ public interface WorldManager {
      * Deletes the world.
      */
     static void delete() {
-        if (!Option.DELETE_ON_RELOAD || !Option.JOINING) {
+        if (!Config.CONFIG.getBoolean("world.delete-on-reload") || !Config.CONFIG.getBoolean("joining")) {
             return;
         }
         getWorld().getPlayers().forEach(player -> player.kickPlayer("Server is restarting"));

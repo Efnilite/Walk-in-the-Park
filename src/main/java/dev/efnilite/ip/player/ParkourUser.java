@@ -114,7 +114,7 @@ public abstract class ParkourUser {
             user.send("<red><bold>There was an error while trying to handle leaving.");
         }
 
-        if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
+        if (restorePreviousData && Config.CONFIG.getBoolean("bungeecord.enabled") && kickIfBungee) {
             sendPlayerToServer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }

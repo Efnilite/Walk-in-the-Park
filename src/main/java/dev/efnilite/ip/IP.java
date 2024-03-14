@@ -20,7 +20,6 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +52,6 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
-        // ----- Start time -----
-
-        Time.timerStart("load");
-
         // ----- Configurations -----
 
         Config.reload(true);
@@ -81,14 +76,14 @@ public final class IP extends ViPlugin {
             placeholderHook.register();
         }
 
-        if (Option.ON_JOIN) {
+        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
             logging.info("Connecting with BungeeCord..");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
         // ----- Worlds -----
 
-        if (Option.JOINING) {
+        if (Config.CONFIG.getBoolean("joining")) {
             WorldManager.create();
         }
 
@@ -110,7 +105,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        logging.info("Loaded IP in %dms!".formatted(Time.timerEnd("load")));
+        logging.info("Loaded IP!");
     }
 
     @Override
@@ -129,7 +124,10 @@ public final class IP extends ViPlugin {
     @Override
     @NotNull
     public GitElevator getElevator() {
-        return new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
+        return new GitElevator("Efnilite/Walk-in-the-Park",
+                this,
+                VersionComparator.FROM_SEMANTIC,
+                Config.CONFIG.getBoolean("auto-updater"));
     }
 
     /**

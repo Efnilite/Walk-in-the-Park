@@ -1,7 +1,7 @@
 package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.vilib.util.Task;
@@ -39,12 +39,14 @@ public class Leaderboard {
         // read all data
         read(true);
 
+        var interval = Config.CONFIG.getInt("storage-update-interval");
+
         // read/write all data every x seconds after x seconds to allow time for reading/writing
         Task.create(IP.getPlugin())
-                .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
-                .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
+                .delay(interval * 20)
+                .repeat(interval * 20)
                 .async()
-                .execute(Option.JOINING ? () -> write(true) : () -> read(true))
+                .execute(Config.CONFIG.getBoolean("joining") ? () -> write(true) : () -> read(true))
                 .run();
     }
 

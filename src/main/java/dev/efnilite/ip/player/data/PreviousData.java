@@ -1,6 +1,7 @@
 package dev.efnilite.ip.player.data;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.reward.RewardString;
 import io.papermc.lib.PaperLib;
@@ -41,7 +42,7 @@ public class PreviousData {
         location = player.getLocation();
         hunger = player.getFoodLevel();
         allowFlight = player.getAllowFlight();
-        flying = player.getAllowFlight();
+        flying = player.isFlying();
         effects = player.getActivePotionEffects();
         health = player.getHealth();
         maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
@@ -50,15 +51,15 @@ public class PreviousData {
             player.removePotionEffect(effect.getType());
         }
 
-        if (Option.INVENTORY_HANDLING) {
+        if (Config.CONFIG.getBoolean("options.inventory-handling")) {
             inventoryData = new InventoryData(player);
-            inventoryData.save(Option.INVENTORY_SAVING);
+            inventoryData.save(Config.CONFIG.getBoolean("options.inventory-saving"));
         } else {
             inventoryData = null;
         }
 
         // health handling after removing effects and inventory to avoid them affecting it
-        if (Option.HEALTH_HANDLING) {
+        if (Config.CONFIG.getBoolean("options.health-handling")) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(maxHealth);
         }
@@ -66,7 +67,7 @@ public class PreviousData {
 
     public void apply(Player player, boolean teleportBack) {
         if (teleportBack) {
-            PaperLib.teleportAsync(player, Option.GO_BACK ? Option.GO_BACK_LOC : location)
+            PaperLib.teleportAsync(player, Config.CONFIG.getBoolean("bungeecord.go-back-enabled") ? Option.GO_BACK_LOC : location)
                     .thenRun(() -> apply(player));
         } else {
             apply(player);
@@ -80,7 +81,7 @@ public class PreviousData {
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
 
-            if (Option.HEALTH_HANDLING) {
+            if (Config.CONFIG.getBoolean("options.health-handling")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }

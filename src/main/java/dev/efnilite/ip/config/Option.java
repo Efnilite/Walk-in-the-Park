@@ -19,52 +19,26 @@ import java.util.function.BiFunction;
  */
 public class Option {
 
-    public static boolean AUTO_UPDATER;
-
-    // Config stuff
-    public static boolean ALL_POINTS;
-    public static boolean REWARDS_USE_TOTAL_SCORE;
-
-    public static boolean INVENTORY_HANDLING;
-    public static boolean PERMISSIONS;
-    public static boolean FOCUS_MODE;
-    public static List<String> FOCUS_MODE_WHITELIST;
-    public static boolean GO_BACK;
-    public static boolean ON_JOIN;
-
+    public static double BORDER_SIZE;
     public static List<Integer> POSSIBLE_LEADS;
 
     // Advanced settings
     public static Vector HEADING;
-    public static boolean JOINING;
-    public static boolean PERMISSIONS_STYLES;
-    public static boolean HEALTH_HANDLING;
-    public static boolean INVENTORY_SAVING;
-    public static String ALT_INVENTORY_SAVING_COMMAND;
-
-    public static int TIME_FORMAT;
-    public static String SCORE_TIME_FORMAT;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
 
     // Worlds
-    public static boolean DELETE_ON_RELOAD;
     public static String WORLD_NAME;
 
     public static Location GO_BACK_LOC;
-
-    public static int STORAGE_UPDATE_INTERVAL = 30;
 
     public static void init(boolean firstLoad) {
         initSql();
         initEnums();
         initGeneration();
-        initAdvancedGeneration();
         initStyles("styles.list", Config.CONFIG.fileConfiguration, RandomStyle::new)
                 .forEach(Registry::register);
-
-        STORAGE_UPDATE_INTERVAL = Config.CONFIG.getInt("storage-update-interval");
 
         GO_BACK_LOC = parseLocation(Config.CONFIG.getString("bungeecord.go-back"));
         String[] axes = Config.CONFIG.getString("bungeecord.go-back-axes").split(",");
@@ -72,11 +46,8 @@ public class Option {
         GO_BACK_LOC.setYaw(Float.parseFloat(axes[1]));
 
         // General settings
-        AUTO_UPDATER = Config.CONFIG.getBoolean("auto-updater");
-        JOINING = Config.CONFIG.getBoolean("joining");
 
         // Worlds
-        DELETE_ON_RELOAD = Config.CONFIG.getBoolean("world.delete-on-reload");
         WORLD_NAME = Config.CONFIG.getString("world.name");
 
         if (!WORLD_NAME.matches("[a-zA-Z0-9_-]+")) {
@@ -86,13 +57,6 @@ public class Option {
         }
 
         // Options
-
-        TIME_FORMAT = Config.CONFIG.getInt("options.time.format");
-        SCORE_TIME_FORMAT = Config.CONFIG.getString("options.time.score-format");
-
-        HEALTH_HANDLING = Config.CONFIG.getBoolean("options.health-handling");
-        INVENTORY_SAVING = Config.CONFIG.getBoolean("options.inventory-saving");
-        ALT_INVENTORY_SAVING_COMMAND = Config.CONFIG.getString("options.alt-inventory-saving-command");
 
         List<ParkourOption> options = new ArrayList<>(Arrays.asList(ParkourOption.values()));
 
@@ -126,8 +90,6 @@ public class Option {
 
         // =====================================
 
-        PERMISSIONS_STYLES = Config.CONFIG.getBoolean("permissions.per-style");
-
         // Config stuff
 
         POSSIBLE_LEADS = Config.CONFIG.getIntList("options.leads.amount");
@@ -138,21 +100,10 @@ public class Option {
             }
         }
 
-        INVENTORY_HANDLING = Config.CONFIG.getBoolean("options.inventory-handling");
-        PERMISSIONS = Config.CONFIG.getBoolean("permissions.enabled");
-        FOCUS_MODE = Config.CONFIG.getBoolean("focus-mode.enabled");
-        FOCUS_MODE_WHITELIST = Config.CONFIG.getStringList("focus-mode.whitelist");
-
-        // Bungeecord
-        GO_BACK = Config.CONFIG.getBoolean("bungeecord.go-back-enabled");
-        ON_JOIN = Config.CONFIG.getBoolean("bungeecord.enabled");
-
         // Generation
         HEADING = stringToVector(Config.GENERATION.getString("advanced.island.parkour.heading"));
 
         // Scoring
-        ALL_POINTS = Config.CONFIG.getBoolean("scoring.all-points");
-        REWARDS_USE_TOTAL_SCORE = Config.CONFIG.getBoolean("scoring.rewards-use-total-score");
 
         if (firstLoad) {
             BORDER_SIZE = Config.GENERATION.getDouble("advanced.border-size");
@@ -289,19 +240,6 @@ public class Option {
 
             IP.logging().stack("Provided minimum y is the same or larger than maximum y!", "check your generation.yml file");
         }
-    }
-
-    // --------------------------------------------------------------
-    // Advanced settings in generation
-
-    public static double BORDER_SIZE;
-    public static int GENERATOR_CHECK;
-    public static int SCHEMATIC_COOLDOWN;
-
-    private static void initAdvancedGeneration() {
-        GENERATOR_CHECK = Config.GENERATION.getInt("advanced.generator-check");
-
-        SCHEMATIC_COOLDOWN = Config.GENERATION.getInt("advanced.schematic-cooldown");
     }
 
     // --------------------------------------------------------------

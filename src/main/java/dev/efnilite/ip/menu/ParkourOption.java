@@ -1,5 +1,6 @@
 package dev.efnilite.ip.menu;
 
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
 import org.bukkit.permissions.Permissible;
 
@@ -70,7 +71,7 @@ public enum ParkourOption {
         boolean value = Option.OPTIONS_ENABLED.getOrDefault(this, true);
 
         if (value) {
-            if (Option.PERMISSIONS) {
+            if (Config.CONFIG.getBoolean("permissions.enabled")) {
                 return permissible.hasPermission(permission);
             }
             return true;

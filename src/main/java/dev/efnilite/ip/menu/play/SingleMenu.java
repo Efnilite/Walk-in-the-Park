@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.play;
 
 import dev.efnilite.ip.api.Registry;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
@@ -35,7 +36,7 @@ public class SingleMenu {
         List<MenuItem> items = new ArrayList<>();
         List<Mode> modeSet = new ArrayList<>();
         for (Mode mode : modes) {
-            boolean permissions = Option.PERMISSIONS && !player.hasPermission("ip.gamemode." + mode.getName());
+            boolean permissions = Config.CONFIG.getBoolean("permissions.enabled") && !player.hasPermission("ip.gamemode." + mode.getName());
 
             Item item = mode.getItem(locale);
 

@@ -1,7 +1,7 @@
 package dev.efnilite.ip.mode;
 
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
-import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
@@ -40,7 +40,7 @@ public class DefaultMode implements Mode {
 
     @Override
     public void create(Player player) {
-        if (!Option.JOINING) {
+        if (!Config.CONFIG.getBoolean("joining")) {
             Util.send(player, "<red><bold>Joining is currently disabled.");
             return;
         }

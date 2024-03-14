@@ -70,7 +70,7 @@ public class ParkourGenerator {
     /**
      * The schematic cooldown
      */
-    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+    public int schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
 
     /**
      * Whether this generator has been stopped
@@ -358,7 +358,7 @@ public class ParkourGenerator {
         }
 
         // gets the correct type of score to check based on the config option
-        int intervalScore = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
+        int intervalScore = Config.CONFIG.getBoolean("scoring.rewards-use-total-score") ? totalScore : score;
         for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
             if (intervalScore % interval != 0) {
                 continue;
@@ -384,7 +384,7 @@ public class ParkourGenerator {
 
     public void startTick() {
         task = Task.create(IP.getPlugin())
-            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
+            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Config.GENERATION.getInt("advanced.generator-check"))
             .execute(this::tick)
             .run();
     }
@@ -430,7 +430,7 @@ public class ParkourGenerator {
                 score();
             }
             waitForSchematicCompletion = false;
-            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+            schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
             generate(profile.get("blockLead").asInt());
             deleteSchematic = true;
             return;
@@ -468,7 +468,7 @@ public class ParkourGenerator {
 
         deleteSchematic();
 
-        for (int i = 0; i < (Option.ALL_POINTS ? deltaFromLast : 1); i++) { // score the difference
+        for (int i = 0; i < (Config.CONFIG.getBoolean("scoring.all-points") ? deltaFromLast : 1); i++) { // score the difference
             score();
         }
 
@@ -579,7 +579,7 @@ public class ParkourGenerator {
         schematicBlocks.clear();
 
         deleteSchematic = false;
-        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+        schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
     }
 
     /**
@@ -621,7 +621,7 @@ public class ParkourGenerator {
                 return;
             }
 
-            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+            schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
             waitForSchematicCompletion = true;
             return;
         }
@@ -769,7 +769,7 @@ public class ParkourGenerator {
      * @return The time in custom format.
      */
     public String getFormattedTime() {
-        return getTime(Option.SCORE_TIME_FORMAT);
+        return getTime(Config.CONFIG.getString("options.time.score-format"));
     }
 
     /**
@@ -787,7 +787,7 @@ public class ParkourGenerator {
                     .withZone(ZoneOffset.UTC)
                     .format(timeMs);
         } catch (IllegalArgumentException ex) {
-            IP.logging().stack("Invalid score time format %s".formatted(Option.SCORE_TIME_FORMAT), ex);
+            IP.logging().stack("Invalid score time format %s".formatted(Config.CONFIG.getString("options.time.score-format")), ex);
             return "";
         }
     }

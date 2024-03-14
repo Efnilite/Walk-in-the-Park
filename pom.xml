@@ -117,13 +117,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
             <version>4.3.0</version>

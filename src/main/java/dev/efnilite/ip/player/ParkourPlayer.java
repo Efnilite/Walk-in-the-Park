@@ -2,6 +2,7 @@ package dev.efnilite.ip.player;
 
 import com.google.gson.annotations.Expose;
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
@@ -194,7 +195,7 @@ public class ParkourPlayer extends ParkourUser {
         player.setGameMode(GameMode.ADVENTURE);
 
         // -= Inventory =-
-        if (Option.INVENTORY_HANDLING) {
+        if (Config.CONFIG.getBoolean("options.inventory-handling")) {
             Task.create(IP.getPlugin()).delay(5).execute(() -> {
                 player.getInventory().clear();
 

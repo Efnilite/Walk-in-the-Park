@@ -2,7 +2,6 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
-import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Modes;
@@ -77,7 +76,7 @@ public class Handler implements EventWatcher {
             quitPreviousData.remove(uuid);
         }
 
-        if (Option.ON_JOIN) {
+        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
             Modes.DEFAULT.create(player);
             return;
         }
@@ -115,7 +114,7 @@ public class Handler implements EventWatcher {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void command(PlayerCommandPreprocessEvent event) {
-        if (!Option.FOCUS_MODE) {
+        if (!Config.CONFIG.getBoolean("focus-mode.enabled")) {
             return;
         }
 
@@ -126,7 +125,7 @@ public class Handler implements EventWatcher {
         }
 
         String command = event.getMessage().toLowerCase();
-        if (Option.FOCUS_MODE_WHITELIST.stream().anyMatch(c -> command.contains(c.toLowerCase()))) {
+        if (Config.CONFIG.getStringList("focus-mode.whitelist").stream().anyMatch(c -> command.contains(c.toLowerCase()))) {
             return;
         }
 
@@ -237,7 +236,7 @@ public class Handler implements EventWatcher {
         ParkourUser user = ParkourUser.getUser(player);
         World parkour = WorldManager.getWorld();
 
-        boolean isAdmin = Option.PERMISSIONS ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
+        boolean isAdmin = Config.CONFIG.getBoolean("permissions.enabled") ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
         if (player.getWorld() == parkour && user == null && !isAdmin && player.getTicksLived() > 20) {
             player.kickPlayer("You can't enter the parkour world by teleporting!");
