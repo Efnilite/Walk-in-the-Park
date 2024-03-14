@@ -426,9 +426,13 @@ public class ParkourGenerator {
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteSchematic) { // Structure deletion check
-            for (int i = 0; i < getDifficultyScore() * 15; i++) {
+            System.out.println("schematic score call");
+            System.out.println(profile.get("schematicDifficulty").asDouble());
+
+            for (int i = 0; i < profile.get("schematicDifficulty").asDouble() * 15; i++) {
                 score();
             }
+
             waitForSchematicCompletion = false;
             schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
             generate(profile.get("blockLead").asInt());
@@ -757,9 +761,9 @@ public class ParkourGenerator {
         if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
         if (profile.get("schematicDifficulty").asDouble() > 0) {
             if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
-            if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
+            else if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
+            else if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
+            else if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
         }
 
         return score;

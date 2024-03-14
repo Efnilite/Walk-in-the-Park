@@ -124,7 +124,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
             // Source: https://minecraft.fandom.com/wiki/Daylight_cycle?file=Day_Night_Clock_24h.png
             List<Integer> times = Arrays.asList(0, 6000, 12000, 18000); // 00:00 -> 6:00 -> 12:00 -> 18:00
 
-            var format = Config.CONFIG.getInt("options.time.format")
+            var format = Config.CONFIG.getInt("options.time.format");
 
             return new SliderItem()
                 .initial(times.indexOf(player.selectedTime))
