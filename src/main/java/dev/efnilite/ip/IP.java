@@ -89,9 +89,9 @@ public final class IP extends ViPlugin {
 
         // ----- Events -----
 
-        registerListener(new Handler());
+        registerListener(new Events());
         registerListener(new SessionChat());
-        registerCommand("ip", new ParkourCommand());
+        registerCommand("ip", new Command());
 
         // ----- Metrics -----
 

@@ -7,7 +7,6 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +40,7 @@ public class DefaultMode implements Mode {
     @Override
     public void create(Player player) {
         if (!Config.CONFIG.getBoolean("joining")) {
-            Util.send(player, "<red><bold>Joining is currently disabled.");
+            player.sendMessage("Joining is currently disabled.");
             return;
         }
 

@@ -3,10 +3,10 @@ package dev.efnilite.ip.config;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -19,10 +19,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +50,7 @@ public class Locales {
             FileConfiguration embedded = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("locales/en.yml"), StandardCharsets.UTF_8));
 
             // get all nodes from the plugin's english resource, aka the most updated version
-            resourceNodes = Util.getChildren(embedded, "", true);
+            resourceNodes = getChildren(embedded, "", true);
 
             File folder = IP.getInFolder("locales");
 
@@ -94,7 +91,7 @@ public class Locales {
     // validates whether a lang file contains all required keys.
     // if it doesn't, automatically add them
     private static void validate(FileConfiguration provided, FileConfiguration user, File localPath) {
-        List<String> userNodes = Util.getChildren(user, "", true);
+        List<String> userNodes = getChildren(user, "", true);
 
         for (String node : resourceNodes) {
             if (userNodes.contains(node)) {
@@ -241,5 +238,11 @@ public class Locales {
         }
 
         return item;
+    }
+
+    public static List<String> getChildren(FileConfiguration file, String path, boolean deep) {
+        ConfigurationSection section = file.getConfigurationSection(path);
+
+        return section != null ? new ArrayList<>(section.getKeys(deep)) : Collections.emptyList();
     }
 }

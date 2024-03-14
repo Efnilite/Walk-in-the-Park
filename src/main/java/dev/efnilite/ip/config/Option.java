@@ -5,7 +5,6 @@ import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.style.RandomStyle;
 import dev.efnilite.ip.style.Style;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -247,7 +246,7 @@ public class Option {
     public static Set<Style> initStyles(String path, FileConfiguration config, BiFunction<String, List<Material>, Style> fn) {
         var styles = new HashSet<Style>();
 
-        for (String style : Util.getChildren(config, path, false)) {
+        for (String style : Locales.getChildren(config, path, false)) {
             styles.add(fn.apply(style,
                     config.getStringList("%s.%s".formatted(path, style)).stream()
                             .map(name -> {

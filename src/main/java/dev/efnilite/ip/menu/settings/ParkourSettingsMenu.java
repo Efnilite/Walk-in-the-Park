@@ -12,7 +12,6 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.style.RandomStyle;
 import dev.efnilite.ip.style.Style;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.MenuClickEvent;
@@ -277,7 +276,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
         display(user.player, new Menu(4, Locales.getString(user.locale, "settings.name"))
             .distributeRowEvenly(0, 1, 2, 3)
             .item(27, Locales.getItem(user.locale, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
-            .fillBackground(Util.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
+            .fillBackground(ParkourUser.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
     }
 
     /**
@@ -315,7 +314,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)))
-                .fillBackground(Util.isBedrockPlayer(player.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player.player);
+                .fillBackground(ParkourUser.isBedrockPlayer(player.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player.player);
     }
 
     private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {

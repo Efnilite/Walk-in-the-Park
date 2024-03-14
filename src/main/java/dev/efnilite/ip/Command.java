@@ -13,14 +13,15 @@ import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.InventoryData;
-import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.schematic.Schematic;
+import dev.efnilite.vilib.schematic.Schematics;
 import dev.efnilite.vilib.util.Locations;
+import dev.efnilite.vilib.util.Strings;
 import org.bukkit.*;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -32,10 +33,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static dev.efnilite.ip.util.Util.send;
-
 @SuppressWarnings("deprecation")
-public class ParkourCommand extends ViCommand {
+public class Command extends ViCommand {
 
     public static final HashMap<Player, Location[]> selections = new HashMap<>();
 
@@ -510,7 +509,7 @@ public class ParkourCommand extends ViCommand {
 
                         send(player, ("<dark_red><bold>Schematics <reset><gray>Your schematic is being saved. It will use code <red>'%s'<gray>. " + "You can change the code to whatever you like. " + "Don't forget to add this schematic to <dark_gray>schematics.yml<gray>.").formatted(code));
 
-                        Schematic.create().save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1], IP.getPlugin());
+                        Schematic.save(IP.getInFolder("schematics/parkour-%s".formatted(code)), existingSelection[0], existingSelection[1], IP.getPlugin());
                     }
                 }
             }
@@ -531,7 +530,7 @@ public class ParkourCommand extends ViCommand {
                 return;
             }
 
-            Schematic schematic = Schematics.CACHE.get(arg3);
+            Schematic schematic = Schematics.getSchematic(IP.getPlugin(), arg3);
             if (schematic == null) {
                 send(sender, "%sCouldn't find %s".formatted(IP.PREFIX, arg3));
                 return;
@@ -540,5 +539,9 @@ public class ParkourCommand extends ViCommand {
             schematic.paste(player.getLocation());
             send(sender, "%sPasted schematic %s".formatted(IP.PREFIX, arg3));
         }
+    }
+
+    private void send(CommandSender sender, String message) {
+        sender.sendMessage(Strings.colour(message));
     }
 }

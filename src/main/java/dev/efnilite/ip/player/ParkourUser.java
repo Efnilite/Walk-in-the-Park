@@ -9,20 +9,20 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
+import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
 import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
@@ -189,9 +189,9 @@ public abstract class ParkourUser {
     public PreviousData previousData;
 
     /**
-     * The selected {@link SessionChat.ChatType}
+     * The selected {@link Session.ChatType}
      */
-    public SessionChat.ChatType chatType = SessionChat.ChatType.PUBLIC;
+    public Session.ChatType chatType = Session.ChatType.PUBLIC;
 
     /**
      * The {@link Session} this user is in.
@@ -244,7 +244,7 @@ public abstract class ParkourUser {
      * @param message The message
      */
     public void send(String message) {
-        Util.send(player, message);
+        player.sendMessage(Strings.colour(message));
     }
 
     /**
@@ -321,5 +321,13 @@ public abstract class ParkourUser {
      */
     public String getName() {
         return player.getName();
+    }
+
+    /**
+     * @param player The player
+     * @return true if the player is a Bedrock player, false if not.
+     */
+    public static boolean isBedrockPlayer(Player player) {
+        return Bukkit.getPluginManager().isPluginEnabled("floodgate") && FloodgateHook.isBedrockPlayer(player);
     }
 }

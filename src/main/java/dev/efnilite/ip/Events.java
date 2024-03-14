@@ -2,21 +2,25 @@ package dev.efnilite.ip;
 
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
+import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.player.data.PreviousData;
-import dev.efnilite.ip.world.VoidGenerator;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.ip.world.WorldManagerMV;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
+import dev.efnilite.vilib.util.Strings;
+import dev.efnilite.vilib.util.VoidGenerator;
 import io.papermc.lib.PaperLib;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -40,13 +44,38 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static dev.efnilite.ip.util.Util.send;
-
 /**
  * Internal event handler
  */
 @ApiStatus.Internal
-public class Handler implements EventWatcher {
+public class Events implements EventWatcher {
+
+    @EventHandler
+    public void chat(AsyncPlayerChatEvent event) {
+        if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT)) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        ParkourUser user = ParkourUser.getUser(player);
+
+        if (user == null) {
+            return;
+        }
+
+        Session session = user.session;
+
+        if (session.muted.contains(user)) {
+            return;
+        }
+
+        event.setCancelled(true);
+        switch (user.chatType) {
+            case LOBBY_ONLY -> session.getUsers().forEach(other -> other.sendTranslated("settings.chat.formats.lobby", player.getName(), event.getMessage()));
+            case PLAYERS_ONLY -> session.getPlayers().forEach(other -> other.sendTranslated("settings.chat.formats.players", player.getName(), event.getMessage()));
+            default -> event.setCancelled(false);
+        }
+    }
 
     /**
      * If a player quits and rejoins, give them their stuff back
@@ -145,7 +174,7 @@ public class Handler implements EventWatcher {
         }
 
         Location location = event.getClickedBlock().getLocation();
-        Location[] existingSelection = ParkourCommand.selections.get(player);
+        Location[] existingSelection = Command.selections.get(player);
 
         event.setCancelled(true);
 
@@ -154,11 +183,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 1 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[]{location, null});
+                    Command.selections.put(player, new Location[]{location, null});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[]{location, existingSelection[1]});
+                Command.selections.put(player, new Location[]{location, existingSelection[1]});
 
                 Particles.box(BoundingBox.of(location, existingSelection[1]), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
@@ -166,11 +195,11 @@ public class Handler implements EventWatcher {
                 send(player, IP.PREFIX + "Position 2 was set to " + Locations.toString(location, true));
 
                 if (existingSelection == null) {
-                    ParkourCommand.selections.put(player, new Location[]{null, location});
+                    Command.selections.put(player, new Location[]{null, location});
                     return;
                 }
 
-                ParkourCommand.selections.put(player, new Location[]{existingSelection[0], location});
+                Command.selections.put(player, new Location[]{existingSelection[0], location});
 
                 Particles.box(BoundingBox.of(existingSelection[0], location), player.getWorld(), new ParticleData<>(Particle.END_ROD, null, 2), player, 0.2);
             }
@@ -296,5 +325,9 @@ public class Handler implements EventWatcher {
         }
 
         event.setCancelled(true);
+    }
+
+    private void send(CommandSender sender, String message) {
+        sender.sendMessage(Strings.colour(message));
     }
 }
