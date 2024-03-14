@@ -16,13 +16,13 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.reward.Rewards;
-import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.schematic.Schematic;
+import dev.efnilite.vilib.schematic.Schematics;
 import dev.efnilite.vilib.util.Colls;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Probs;
@@ -203,7 +203,7 @@ public class ParkourGenerator {
      * @param generatorOptions The options.
      */
     public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
-        this(session, Schematics.CACHE.get("spawn-island"), generatorOptions);
+        this(session, Schematics.getSchematic(IP.getPlugin(), "spawn-island"), generatorOptions);
     }
 
     /**
@@ -426,9 +426,6 @@ public class ParkourGenerator {
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteSchematic) { // Structure deletion check
-            System.out.println("schematic score call");
-            System.out.println(profile.get("schematicDifficulty").asDouble());
-
             for (int i = 0; i < profile.get("schematicDifficulty").asDouble() * 15; i++) {
                 score();
             }
@@ -609,7 +606,8 @@ public class ParkourGenerator {
         if (jump == JumpType.SCHEMATIC) {
             double difficulty = profile.get("schematicDifficulty").asDouble();
 
-            Schematic schematic = Schematics.CACHE.get(Colls.random(Schematics.CACHE.keySet().stream()
+            Schematic schematic = Schematics.getSchematic(IP.getPlugin(),
+                    Colls.random(Schematics.getSchematicNames(IP.getPlugin()).stream()
                     .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
                     .toList()));
 

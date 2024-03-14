@@ -97,10 +97,9 @@
         <dependency>
             <groupId>com.github.Efnilite</groupId>
             <artifactId>vilib</artifactId>
-            <version>77fac130f5</version>
+            <version>e1b76afad0</version>
             <scope>compile</scope>
         </dependency>
-
 
         <dependency>
             <groupId>io.papermc</groupId>
