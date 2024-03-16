@@ -55,10 +55,13 @@ public abstract class ParkourUser {
         ParkourUser existing = getUser(player);
 
         if (existing != null) {
+            IP.log("Registering player %s with existing data".formatted(player.getName()));
+
             data = existing.previousData;
             unregister(existing, false, false);
+        } else {
+            IP.log("Registering player %s".formatted(player.getName()));
         }
-
         ParkourPlayer pp = new ParkourPlayer(player, session, data);
 
         // stats
@@ -101,6 +104,7 @@ public abstract class ParkourUser {
      */
     public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
         new ParkourLeaveEvent(user).call();
+        IP.log("Unregistering player %s, restorePreviousData = %s, kickIfBungee = %s".formatted(user.getName(), restorePreviousData, kickIfBungee));
 
         Mode mode = user.session.generator.getMode();
         try {
@@ -119,7 +123,7 @@ public abstract class ParkourUser {
             return;
         }
 
-        user.previousData.apply(user.player, restorePreviousData);
+        user.previousData.apply(user.player);
 
         if (user instanceof ParkourPlayer player) {
             user.previousData.onLeave.forEach(r -> r.execute(player, mode));

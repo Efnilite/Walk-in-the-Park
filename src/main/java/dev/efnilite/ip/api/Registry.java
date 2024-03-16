@@ -33,7 +33,7 @@ public final class Registry {
 
     public static void register(@NotNull Style style) {
         styles.add(style);
-
+      
         IP.log("Registered style %s".formatted(style.getName()));
     }
 

@@ -51,6 +51,7 @@ public final class IP extends ViPlugin {
 
     @Override
     public void enable() {
+
         // ----- Configurations -----
 
         Config.reload(true);
@@ -76,8 +77,8 @@ public final class IP extends ViPlugin {
         }
 
         if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
-            logging.info("Registered BungeeCord hook");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            logging.info("Registered BungeeCord hook");
         }
 
         // ----- Worlds -----

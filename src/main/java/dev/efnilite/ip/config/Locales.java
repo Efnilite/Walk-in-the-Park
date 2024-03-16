@@ -99,7 +99,7 @@ public class Locales {
             if (userNodes.contains(node)) {
                 continue;
             }
-
+          
             IP.log("Fixing missing config node %s in %s".formatted(node, localPath.getName()));
 
             user.set(node, provided.get(node));

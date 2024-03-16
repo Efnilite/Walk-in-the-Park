@@ -106,7 +106,7 @@ world:
   delete-on-reload: true
 
   # -= World fall back =-
-  # The world players will be teleported to if they accidentally join the Parkour world without joining
+  # The world players will be teleported to if they accidentally join the Parkour world without joining parkour
   fall-back: 'world'
 
 # -= General options =-

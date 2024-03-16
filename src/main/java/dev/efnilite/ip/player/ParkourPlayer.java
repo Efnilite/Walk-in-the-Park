@@ -123,6 +123,8 @@ public class ParkourPlayer extends ParkourUser {
 
     @Override
     public void unregister() {
+        IP.log("Unregistering player %s".formatted(player.getName()));
+
         if (session.generator.getMode() instanceof MultiMode mode) {
             mode.leave(player, session);
         }
@@ -188,6 +190,8 @@ public class ParkourPlayer extends ParkourUser {
     }
 
     public void setup(Location to) {
+        IP.log("Setting up player %s".formatted(player.getName()));
+
         if (to != null) {
             teleport(to);
         }
@@ -197,6 +201,8 @@ public class ParkourPlayer extends ParkourUser {
         // -= Inventory =-
         if (Config.CONFIG.getBoolean("options.inventory-handling")) {
             Task.create(IP.getPlugin()).delay(5).execute(() -> {
+                IP.log("Setting up inventory for player %s".formatted(player.getName()));
+
                 player.getInventory().clear();
 
                 List<Item> items = new ArrayList<>();

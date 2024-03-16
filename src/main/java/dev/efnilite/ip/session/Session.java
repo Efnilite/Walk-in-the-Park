@@ -66,6 +66,8 @@ public class Session {
                                  Function<Session, Boolean> isAcceptingPlayers,
                                  Function<Session, Boolean> isAcceptingSpectators,
                                  Player... players) {
+        IP.log("Creating session with players %s".formatted(Arrays.toString(players)));
+
         Session session = new Session();
 
         Divider.add(session);
@@ -96,10 +98,10 @@ public class Session {
     /**
      * Adds provided players to this session's player list.
      *
-     * @param toRemove The players to add.
+     * @param toAdd The players to add.
      */
-    public void addPlayers(ParkourPlayer... toRemove) {
-        for (ParkourPlayer player : toRemove) {
+    public void addPlayers(ParkourPlayer... toAdd) {
+        for (ParkourPlayer player : toAdd) {
             IP.log("Adding player %s to session".formatted(player.getName()));
 
             for (ParkourPlayer to : getPlayers()) {

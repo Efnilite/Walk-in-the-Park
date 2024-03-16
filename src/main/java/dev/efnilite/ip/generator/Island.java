@@ -50,6 +50,8 @@ public final class Island {
         }
         IP.log("Building island");
 
+        IP.log("Building island");
+
         blocks = schematic.paste(Divider.toLocation(session).subtract(0, schematic.getDimensions().getY(), 0));
 
         Material playerMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.spawn.player-block").toUpperCase());

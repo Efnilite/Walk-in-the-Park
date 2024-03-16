@@ -36,7 +36,7 @@ public class Schematics {
                 init();
                 return;
             }
-
+          
             try {
                 dev.efnilite.vilib.schematic.Schematics.addFromFiles(IP.getPlugin(), files);
             } catch (IOException | ClassNotFoundException ex) {
