@@ -38,6 +38,8 @@ public interface WorldManager {
 
         WorldManager manager = getInstance();
 
+        IP.log("Initializing world rules");
+
         manager.deleteWorld();
         world = manager.createWorld();
 
@@ -64,6 +66,8 @@ public interface WorldManager {
         if (!Config.CONFIG.getBoolean("world.delete-on-reload") || !Config.CONFIG.getBoolean("joining")) {
             return;
         }
+        IP.log("Deleting world");
+
         getWorld().getPlayers().forEach(player -> player.kickPlayer("Server is restarting"));
 
         getInstance().deleteWorld();

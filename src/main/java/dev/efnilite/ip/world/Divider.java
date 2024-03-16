@@ -1,7 +1,9 @@
 package dev.efnilite.ip.world;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.session.Session;
+import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -35,6 +37,8 @@ public class Divider {
                 .orElseThrow();
 
         sections.put(session, missing);
+
+        IP.log("Added session at %s".formatted(Locations.toString(toLocation(session), true)));
     }
 
     /**
@@ -43,6 +47,8 @@ public class Divider {
      * @param session The session.
      */
     public static void remove(Session session) {
+        IP.log("Removed session at %s".formatted(Locations.toString(toLocation(session), true)));
+
         sections.remove(session);
     }
 

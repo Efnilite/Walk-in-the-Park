@@ -1,5 +1,6 @@
 package dev.efnilite.ip.session;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
@@ -99,6 +100,8 @@ public class Session {
      */
     public void addPlayers(ParkourPlayer... toRemove) {
         for (ParkourPlayer player : toRemove) {
+            IP.log("Adding player %s to session".formatted(player.getName()));
+
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
             }
@@ -114,6 +117,8 @@ public class Session {
      */
     public void removePlayers(ParkourPlayer... toRemove) {
         for (ParkourPlayer player : toRemove) {
+            IP.log("Removing player %s from session".formatted(player.getName()));
+
             users.remove(player.getUUID());
         }
 
@@ -147,6 +152,8 @@ public class Session {
      */
     public void addSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
+            IP.log("Adding spectator %s to session".formatted(spectator.getName()));
+
             for (ParkourPlayer player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_join", spectator.getName());
             }
@@ -162,6 +169,8 @@ public class Session {
      */
     public void removeSpectators(ParkourSpectator... spectators) {
         for (ParkourSpectator spectator : spectators) {
+            IP.log("Removing spectator %s from session".formatted(spectator.getName()));
+
             for (ParkourPlayer player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_leave", spectator.getName());
             }

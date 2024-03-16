@@ -3,6 +3,7 @@ package dev.efnilite.ip.world;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.vilib.util.VoidGenerator;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ public class WorldManagerMV implements WorldManager {
         if (MANAGER == null) {
             return null;
         }
+        IP.log("Creating MV world");
 
         MANAGER.addWorld(Option.WORLD_NAME, World.Environment.NORMAL, null, WorldType.NORMAL, false, VoidGenerator.getMultiverseGenerator());
         MultiverseWorld world = MANAGER.getMVWorld(Option.WORLD_NAME);
@@ -46,6 +48,7 @@ public class WorldManagerMV implements WorldManager {
         if (MANAGER == null) {
             return;
         }
+        IP.log("Deleting MV world");
 
         MANAGER.deleteWorld(Option.WORLD_NAME, false); // deleteFromConfig
     }

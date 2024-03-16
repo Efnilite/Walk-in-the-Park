@@ -65,18 +65,18 @@ public final class IP extends ViPlugin {
 
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            logging.info("Connecting with Holographic Displays...");
+            logging.info("Registered Holographic Displays hook");
             HoloHook.init();
         }
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            logging.info("Connecting with PlaceholderAPI...");
+            logging.info("Registered PlaceholderAPI hook");
             placeholderHook = new PAPIHook();
             placeholderHook.register();
         }
 
         if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
-            logging.info("Connecting with BungeeCord..");
+            logging.info("Registered BungeeCord hook");
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
@@ -126,6 +126,12 @@ public final class IP extends ViPlugin {
                 this,
                 VersionComparator.FROM_SEMANTIC,
                 Config.CONFIG.getBoolean("auto-updater"));
+    }
+
+    public static void log(String message) {
+        if (Config.CONFIG.getBoolean("debug")) {
+            logging.info("[Debug] " + message);
+        }
     }
 
     /**

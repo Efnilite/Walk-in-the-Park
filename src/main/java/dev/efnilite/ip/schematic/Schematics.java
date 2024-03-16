@@ -46,6 +46,8 @@ public class Schematics {
     }
 
     private static void download() {
+        IP.log("Downloading schematics");
+
         List<String> schematics = new ArrayList<>();
         schematics.addAll(Arrays.asList(SPAWN_SCHEMATICS));
         schematics.addAll(Config.SCHEMATICS.getChildren("difficulty", false).stream().map("parkour-%s"::formatted).toList());

@@ -21,6 +21,8 @@ public class WorldManagerMC implements WorldManager {
 
     @Override
     public World createWorld() {
+        IP.log("Creating Spigot world");
+
         World world = null;
 
         try {
@@ -39,6 +41,8 @@ public class WorldManagerMC implements WorldManager {
 
     @Override
     public void deleteWorld() {
+        IP.log("Deleting Spigot world");
+
         File file = new File(Option.WORLD_NAME);
 
         // world has already been deleted

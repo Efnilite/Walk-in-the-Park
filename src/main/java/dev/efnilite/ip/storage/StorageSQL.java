@@ -44,7 +44,7 @@ class StorageSQL {
     public static void close() {
         try {
             connection.close();
-            IP.logging().info("Closed connection to MySQL");
+            IP.log("Closed connection to MySQL");
         } catch (SQLException ex) {
             IP.logging().stack("Error while trying to close connection to SQL database", ex);
         }
@@ -163,7 +163,7 @@ class StorageSQL {
 
     public static void connect() {
         try {
-            IP.logging().info("Connecting to MySQL");
+            IP.log("Connecting to MySQL");
 
             try { // load drivers
                 Class.forName("com.mysql.cj.jdbc.Driver"); // for newer versions
@@ -198,7 +198,7 @@ class StorageSQL {
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useStructure`;".formatted(Option.SQL_PREFIX));
 
-            IP.logging().info("Connected to MySQL");
+            IP.log("Connected to MySQL");
         } catch (Exception ex) {
             IP.logging().stack("Could not connect to MySQL", "check your SQL settings in the config", ex);
             Bukkit.getPluginManager().disablePlugin(IP.getPlugin()); // disable plugin since data handling without db will go horribly wrong

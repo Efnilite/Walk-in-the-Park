@@ -48,6 +48,7 @@ public final class Island {
         if (schematic == null) {
             return;
         }
+        IP.log("Building island");
 
         blocks = schematic.paste(Divider.toLocation(session).subtract(0, schematic.getDimensions().getY(), 0));
 

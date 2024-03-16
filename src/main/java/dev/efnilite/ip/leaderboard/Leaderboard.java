@@ -46,7 +46,15 @@ public class Leaderboard {
                 .delay(interval * 20)
                 .repeat(interval * 20)
                 .async()
-                .execute(Config.CONFIG.getBoolean("joining") ? () -> write(true) : () -> read(true))
+                .execute(Config.CONFIG.getBoolean("joining") ? () -> {
+                    IP.log("Periodic saving of leaderboard data of %s".formatted(mode));
+
+                    write(true);
+                } : () -> {
+                    IP.log("Periodic reading of leaderboard data of %s".formatted(mode));
+
+                    read(true);
+                })
                 .run();
     }
 
@@ -54,6 +62,8 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
+        IP.log("Saving leaderboard data of %s".formatted(mode));
+
         run(() -> Storage.writeScores(mode, scores), async);
     }
 
@@ -61,6 +71,8 @@ public class Leaderboard {
      * Reads all scores from the leaderboard file
      */
     public void read(boolean async) {
+        IP.log("Reading leaderboard data of %s".formatted(mode));
+
         run(() -> {
             scores.clear();
             scores.putAll(Storage.readScores(mode));

@@ -28,13 +28,13 @@ public final class Registry {
     public static void register(@NotNull Mode mode) {
         modes.add(mode);
 
-        IP.logging().info("Registered mode %s".formatted(mode.getName()));
+        IP.log("Registered mode %s".formatted(mode.getName()));
     }
 
     public static void register(@NotNull Style style) {
         styles.add(style);
 
-        IP.logging().info("Registered style %s".formatted(style.getName()));
+        IP.log("Registered style %s".formatted(style.getName()));
     }
 
     /**

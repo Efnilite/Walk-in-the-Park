@@ -77,6 +77,8 @@ public class Locales {
                     // get locale from file name
                     String locale = file.getName().split("\\.")[0];
 
+                    IP.log("Found locale " + locale);
+
                     FileConfiguration config = YamlConfiguration.loadConfiguration(file);
                     validate(embedded, config, file);
 
@@ -98,10 +100,12 @@ public class Locales {
                 continue;
             }
 
-            IP.logging().info("Fixing missing config node %s (%s)".formatted(node, localPath.getName()));
+            IP.log("Fixing missing config node %s in %s".formatted(node, localPath.getName()));
 
             user.set(node, provided.get(node));
         }
+
+        IP.log("Validated locale " + localPath.getName());
 
         try {
             user.save(localPath);

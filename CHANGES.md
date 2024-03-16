@@ -5,4 +5,6 @@
 - Fixed schematic points being based on all settings difficulty, not schematic difficulty
 - Fixed inventories being cleared on leave with inventory handling off
 - Fixed teleporting not being async when possible
+- Fixed incorrect rewards documentation
+- Added debugging messages
 - Improved unsupported schematic message clarity

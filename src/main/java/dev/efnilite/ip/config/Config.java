@@ -49,7 +49,7 @@ public enum Config {
 
         if (!path.exists()) {
             IP.getPlugin().saveResource(fileName, false);
-            IP.logging().info("Created config file %s".formatted(fileName));
+            IP.log("Created config file %s".formatted(fileName));
         }
 
         update();
@@ -70,7 +70,7 @@ public enum Config {
         Schematics.init();
         Option.init(initialLoad);
 
-        IP.logging().info("Loaded all config files");
+        IP.log("Loaded all config files");
     }
 
     /**

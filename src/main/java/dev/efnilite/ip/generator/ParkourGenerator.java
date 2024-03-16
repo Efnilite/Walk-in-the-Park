@@ -411,6 +411,8 @@ public class ParkourGenerator {
         }
 
         if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
+            IP.log("Player %s is falling".formatted(player.getName()));
+
             fall();
             return;
         }
@@ -494,6 +496,8 @@ public class ParkourGenerator {
      * @param regenerate True if parkour should regenerate, false if not.
      */
     public void reset(boolean regenerate) {
+        IP.log("Resetting generator, regenerate = %s".formatted(regenerate));
+
         stopped = !regenerate;
 
         if (!regenerate && task == null) {
@@ -575,6 +579,7 @@ public class ParkourGenerator {
         if (!deleteSchematic) {
             return;
         }
+        IP.log("Deleting schematic");
 
         schematicBlocks.forEach(block -> block.setType(Material.AIR));
         schematicBlocks.clear();
@@ -604,6 +609,8 @@ public class ParkourGenerator {
 
         JumpType jump = Probs.random(chances);
         if (jump == JumpType.SCHEMATIC) {
+            IP.log("Generating schematic jump at index %s".formatted(history.size() + 1));
+
             double difficulty = profile.get("schematicDifficulty").asDouble();
 
             Schematic schematic = Schematics.getSchematic(IP.getPlugin(),
@@ -627,6 +634,8 @@ public class ParkourGenerator {
             waitForSchematicCompletion = true;
             return;
         }
+
+        IP.log("Generating normal jump at index %s".formatted(history.size() + 1));
 
         List<Block> blocks = selectBlocks();
 
@@ -741,6 +750,8 @@ public class ParkourGenerator {
      * @param block The location used to begin the parkour of off
      */
     public void generateFirst(Location spawn, Location block) {
+        IP.log("First generation");
+
         playerSpawn = spawn;
         lastStandingPlayerLocation = spawn;
         blockSpawn = block;
