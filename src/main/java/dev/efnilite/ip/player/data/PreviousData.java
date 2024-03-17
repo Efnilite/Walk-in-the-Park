@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.reward.RewardString;
+import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -64,11 +65,14 @@ public class PreviousData {
         }
     }
 
-    public void apply(Player player, boolean teleportBack) {
-        if (teleportBack) {
-            PaperLib.teleportAsync(player, Config.CONFIG.getBoolean("bungeecord.go-back-enabled") ? Option.GO_BACK_LOC : location)
-                    .thenRun(() -> apply(player));
-        } else {
+    public void apply(Player player, boolean urgent) {
+        var to = Config.CONFIG.getBoolean("bungeecord.go-back-enabled") ? Option.GO_BACK_LOC : location;
+
+        if (!urgent)
+            PaperLib.teleportAsync(player, to).thenRun(() -> apply(player));
+        else {
+            player.teleport(to);
+
             apply(player);
         }
     }

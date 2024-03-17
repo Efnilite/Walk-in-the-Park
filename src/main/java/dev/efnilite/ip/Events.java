@@ -8,7 +8,6 @@ import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.ip.world.WorldManagerMV;
@@ -40,9 +39,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 /**
  * Internal event handler
@@ -77,15 +74,9 @@ public class Events implements EventWatcher {
         }
     }
 
-    /**
-     * If a player quits and rejoins, give them their stuff back
-     */
-    private final HashMap<UUID, PreviousData> quitPreviousData = new HashMap<>();
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
 
         // admin messages
         if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
@@ -98,11 +89,6 @@ public class Events implements EventWatcher {
             send(player, "");
             send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
             send(player, "");
-        }
-
-        if (quitPreviousData.containsKey(uuid)) {
-            quitPreviousData.get(uuid).apply(player, false);
-            quitPreviousData.remove(uuid);
         }
 
         if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
@@ -136,9 +122,7 @@ public class Events implements EventWatcher {
             return;
         }
 
-        quitPreviousData.put(user.getUUID(), user.previousData);
-
-        ParkourUser.leave(user);
+        ParkourUser.unregister(user, true, false, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -273,7 +257,7 @@ public class Events implements EventWatcher {
         }
 
         if (event.getFrom() == parkour && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
-            ParkourUser.unregister(user, false, false);
+            ParkourUser.unregister(user, true, false, false);
         }
     }
 

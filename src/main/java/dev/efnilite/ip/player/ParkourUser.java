@@ -58,7 +58,7 @@ public abstract class ParkourUser {
             IP.log("Registering player %s with existing data".formatted(player.getName()));
 
             data = existing.previousData;
-            unregister(existing, false, false);
+            unregister(existing, false, false, false);
         } else {
             IP.log("Registering player %s".formatted(player.getName()));
         }
@@ -92,7 +92,7 @@ public abstract class ParkourUser {
      * @param user The user.
      */
     public static void leave(@NotNull ParkourUser user) {
-        unregister(user, true, true);
+        unregister(user, true, true, false);
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class ParkourUser {
      * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
      * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
      */
-    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean urgent) {
         new ParkourLeaveEvent(user).call();
         IP.log("Unregistering player %s, restorePreviousData = %s, kickIfBungee = %s".formatted(user.getName(), restorePreviousData, kickIfBungee));
 
@@ -123,7 +123,7 @@ public abstract class ParkourUser {
             return;
         }
 
-        user.previousData.apply(user.player);
+        user.previousData.apply(user.player, urgent);
 
         if (user instanceof ParkourPlayer player) {
             user.previousData.onLeave.forEach(r -> r.execute(player, mode));
