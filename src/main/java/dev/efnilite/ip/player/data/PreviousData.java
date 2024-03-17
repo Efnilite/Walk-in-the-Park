@@ -1,8 +1,10 @@
 package dev.efnilite.ip.player.data;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.reward.RewardString;
+import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -49,25 +51,28 @@ public class PreviousData {
             player.removePotionEffect(effect.getType());
         }
 
-        if (Option.INVENTORY_HANDLING) {
+        if (Config.CONFIG.getBoolean("options.inventory-handling")) {
             inventoryData = new InventoryData(player);
-            inventoryData.save(Option.INVENTORY_SAVING);
+            inventoryData.save(Config.CONFIG.getBoolean("options.inventory-saving"));
         } else {
             inventoryData = null;
         }
 
         // health handling after removing effects and inventory to avoid them affecting it
-        if (Option.HEALTH_HANDLING) {
+        if (Config.CONFIG.getBoolean("options.health-handling")) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
             player.setHealth(maxHealth);
         }
     }
 
-    public void apply(Player player, boolean teleportBack) {
-        if (teleportBack) {
-            PaperLib.teleportAsync(player, Option.GO_BACK ? Option.GO_BACK_LOC : location)
-                    .thenRun(() -> apply(player));
-        } else {
+    public void apply(Player player, boolean urgent) {
+        var to = Config.CONFIG.getBoolean("bungeecord.go-back-enabled") ? Option.GO_BACK_LOC : location;
+
+        if (!urgent)
+            PaperLib.teleportAsync(player, to).thenRun(() -> apply(player));
+        else {
+            player.teleport(to);
+
             apply(player);
         }
     }
@@ -79,7 +84,7 @@ public class PreviousData {
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
 
-            if (Option.HEALTH_HANDLING) {
+            if (Config.CONFIG.getBoolean("options.health-handling")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
                 player.setHealth(health);
             }

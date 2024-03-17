@@ -2,7 +2,7 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.vilib.util.Version;
+import dev.efnilite.vilib.util.VoidGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -21,13 +21,15 @@ public class WorldManagerMC implements WorldManager {
 
     @Override
     public World createWorld() {
+        IP.log("Creating Spigot world");
+
         World world = null;
 
         try {
             WorldCreator creator = new WorldCreator(Option.WORLD_NAME)
                     .generateStructures(false)
                     .type(WorldType.NORMAL)
-                    .generator(Version.isHigherOrEqual(Version.V1_17) ? new VoidGenerator.VoidGenerator_v1_17() : new VoidGenerator.VoidGenerator_v1_16()) // to fix No keys in MapLayer etc.
+                    .generator(VoidGenerator.getGenerator()) // to fix No keys in MapLayer etc.
                     .environment(World.Environment.NORMAL);
 
             world = Bukkit.createWorld(creator);
@@ -39,6 +41,8 @@ public class WorldManagerMC implements WorldManager {
 
     @Override
     public void deleteWorld() {
+        IP.log("Deleting Spigot world");
+
         File file = new File(Option.WORLD_NAME);
 
         // world has already been deleted

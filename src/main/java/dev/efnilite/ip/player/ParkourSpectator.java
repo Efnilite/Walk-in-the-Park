@@ -5,7 +5,6 @@ import dev.efnilite.ip.api.event.ParkourSpectateEvent;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.Task;
 import net.md_5.bungee.api.ChatMessageType;
@@ -49,7 +48,7 @@ public class ParkourSpectator extends ParkourUser {
                 player.setGameMode(GameMode.SPECTATOR);
                 player.setAllowFlight(true);
                 player.setFlying(true);
-                if (Util.isBedrockPlayer(player)) {  // bedrock has no spectator mode, so just make the player invisible
+                if (ParkourUser.isBedrockPlayer(player)) {  // bedrock has no spectator mode, so just make the player invisible
                     player.setInvisible(true);
                     player.setCollidable(false);
                 }

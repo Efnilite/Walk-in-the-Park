@@ -6,8 +6,7 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.session.SessionChat;
-import dev.efnilite.ip.util.Util;
+import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.SliderItem;
@@ -46,7 +45,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = SessionChat.ChatType.LOBBY_ONLY;
+                    u.chatType = Session.ChatType.LOBBY_ONLY;
                 }
 
                 return true;
@@ -54,7 +53,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = SessionChat.ChatType.PLAYERS_ONLY;
+                    u.chatType = Session.ChatType.PLAYERS_ONLY;
                 }
 
                 return true;
@@ -62,7 +61,7 @@ public class SettingsMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.chatType = SessionChat.ChatType.PUBLIC;
+                    u.chatType = Session.ChatType.PUBLIC;
                 }
 
                 return true;
@@ -74,7 +73,7 @@ public class SettingsMenu extends DynamicMenu {
 
     public void open(Player player) {
         display(player, new Menu(3, Locales.getString(player, "settings.name"))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .animation(new SplitMiddleOutAnimation())
                 .distributeRowsEvenly());
     }

@@ -9,7 +9,6 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.AutoSliderItem;
@@ -58,7 +57,7 @@ public class SpectatorMenu {
                 stack.setType(Material.PLAYER_HEAD);
 
                 // bedrock has no player skull support
-                if (!Util.isBedrockPlayer(player)) {
+                if (!ParkourUser.isBedrockPlayer(player)) {
                     if (pp.getName() != null && !pp.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
                         SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
@@ -80,7 +79,7 @@ public class SpectatorMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> spectator.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> spectator.page(-1)))
                 .item(22, Locales.getItem(player, "other.close").click(event -> Menus.PLAY.open(event.getPlayer())))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);
 
     }

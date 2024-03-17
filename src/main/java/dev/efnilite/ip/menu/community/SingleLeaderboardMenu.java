@@ -9,7 +9,6 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
@@ -73,7 +72,7 @@ public class SingleLeaderboardMenu {
 
             // if there are more than 36 players, don't show the heads to avoid server crashing
             // and bedrock has no player skull support
-            if (rank <= 36 && !Util.isBedrockPlayer(player)) {
+            if (rank <= 36 && !ParkourUser.isBedrockPlayer(player)) {
                 OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
 
                 if (op.getName() != null && !op.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
@@ -120,7 +119,7 @@ public class SingleLeaderboardMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, mode, next)))
                 .item(23, Locales.getItem(player, "other.close").click(event -> Menus.LEADERBOARDS.open(event.getPlayer())))
-                .fillBackground(Util.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
+                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);
     }
 

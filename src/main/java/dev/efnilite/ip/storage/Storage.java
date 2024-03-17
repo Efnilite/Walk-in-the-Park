@@ -67,7 +67,6 @@ public class Storage {
         } else {
             StorageDisk.readPlayer(player);
         }
-
     }
 
     /**
@@ -82,5 +81,4 @@ public class Storage {
             StorageDisk.writePlayer(player);
         }
     }
-
 }

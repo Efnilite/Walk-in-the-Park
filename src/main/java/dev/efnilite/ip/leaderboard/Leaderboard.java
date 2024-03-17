@@ -1,7 +1,7 @@
 package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.vilib.util.Task;
@@ -39,12 +39,22 @@ public class Leaderboard {
         // read all data
         read(true);
 
+        var interval = Config.CONFIG.getInt("storage-update-interval");
+
         // read/write all data every x seconds after x seconds to allow time for reading/writing
         Task.create(IP.getPlugin())
-                .delay(Option.STORAGE_UPDATE_INTERVAL * 20)
-                .repeat(Option.STORAGE_UPDATE_INTERVAL * 20)
+                .delay(interval * 20)
+                .repeat(interval * 20)
                 .async()
-                .execute(Option.JOINING ? () -> write(true) : () -> read(true))
+                .execute(Config.CONFIG.getBoolean("joining") ? () -> {
+                    IP.log("Periodic saving of leaderboard data of %s".formatted(mode));
+
+                    write(true);
+                } : () -> {
+                    IP.log("Periodic reading of leaderboard data of %s".formatted(mode));
+
+                    read(true);
+                })
                 .run();
     }
 
@@ -52,6 +62,8 @@ public class Leaderboard {
      * Writes all scores to the leaderboard file associated with this leaderboard
      */
     public void write(boolean async) {
+        IP.log("Saving leaderboard data of %s".formatted(mode));
+
         run(() -> Storage.writeScores(mode, scores), async);
     }
 
@@ -59,6 +71,8 @@ public class Leaderboard {
      * Reads all scores from the leaderboard file
      */
     public void read(boolean async) {
+        IP.log("Reading leaderboard data of %s".formatted(mode));
+
         run(() -> {
             scores.clear();
             scores.putAll(Storage.readScores(mode));

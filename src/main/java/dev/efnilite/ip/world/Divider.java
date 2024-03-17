@@ -1,8 +1,9 @@
 package dev.efnilite.ip.world;
 
+import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Util;
+import dev.efnilite.vilib.util.Locations;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class Divider {
 
         sections.put(session, missing);
 
-        IP.log("Added session at %s".formatted(toLocation(session).toVector()));
+        IP.log("Added session at %s".formatted(Locations.toString(toLocation(session), true)));
     }
 
     /**
@@ -46,6 +47,8 @@ public class Divider {
      * @param session The session.
      */
     public static void remove(Session session) {
+        IP.log("Removed session at %s".formatted(Locations.toString(toLocation(session), true)));
+
         sections.remove(session);
     }
 
@@ -54,7 +57,7 @@ public class Divider {
      * @return The location at the center of section n.
      */
     public static Location toLocation(Session session) {
-        int[] xz = Util.spiralAt(sections.get(session));
+        int[] xz = spiralAt(sections.get(session));
 
         return new Location(WorldManager.getWorld(),
                 xz[0] * Option.BORDER_SIZE,
@@ -78,5 +81,42 @@ public class Divider {
         min.setY(Option.MIN_Y);
 
         return new Location[]{min, max};
+    }
+
+    /**
+     * Gets a spiral
+     *
+     * @param n The number of  value
+     * @return the coords of this value
+     */
+    // https://math.stackexchange.com/a/163101
+    private static int[] spiralAt(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Invalid n bound: %d".formatted(n));
+        }
+
+        n++; // one-index
+        int k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        int t = 2 * k + 1;
+        int m = t * t;
+        t--;
+
+        if (n > m - t) {
+            return new int[]{k - (m - n), -k};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k, -k + (m - n)};
+        } else {
+            m -= t;
+        }
+
+        if (n > m - t) {
+            return new int[]{-k + (m - n), k};
+        } else {
+            return new int[]{k, k - (m - n - t)};
+        }
     }
 }

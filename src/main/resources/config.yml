@@ -17,8 +17,8 @@
 #                                                                               #
 #===============================================================================#
 
-# -= Debug =-
-debug: false
+# -= Debugging =-
+debug: true
 
 # -= Auto updater =-
 # The auto updater will automatically download updates if they are available.
@@ -68,8 +68,8 @@ bungeecord:
 # In this update, the in-memory scores will be written to storage.
 # A lower number might reduce the chance of losing data on server crashes,
 # but will increase the amount of requests to the disk/database.
-# (requires a restart, default = 30)
-storage-update-interval: 30
+# (requires a restart, default = 300)
+storage-update-interval: 300
 
 # -= MySQL =-
 # The options for using MySQL as storage.

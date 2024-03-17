@@ -1,7 +1,7 @@
 package dev.efnilite.ip.player.data;
 
 import dev.efnilite.ip.IP;
-import dev.efnilite.ip.config.Option;
+import dev.efnilite.ip.config.Config;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -78,8 +78,8 @@ public class InventoryData {
             index++;
         }
 
-        String command = Option.ALT_INVENTORY_SAVING_COMMAND;
-        if (command != null && !command.isEmpty()) {
+        String command = Config.CONFIG.getString("options.alt-inventory-saving-command");
+        if (!command.isEmpty()) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.getName()));
         }
 

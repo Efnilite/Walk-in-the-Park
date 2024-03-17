@@ -198,7 +198,7 @@ class StorageSQL {
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useDifficulty`;".formatted(Option.SQL_PREFIX));
             sendUpdateSuppressed("ALTER TABLE `%soptions` DROP COLUMN `useStructure`;".formatted(Option.SQL_PREFIX));
 
-            IP.logging().info("Connected to MySQL");
+            IP.log("Connected to MySQL");
         } catch (Exception ex) {
             IP.logging().stack("Could not connect to MySQL", "check your SQL settings in the config", ex);
             Bukkit.getPluginManager().disablePlugin(IP.getPlugin()); // disable plugin since data handling without db will go horribly wrong

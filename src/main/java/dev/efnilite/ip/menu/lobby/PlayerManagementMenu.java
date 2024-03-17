@@ -6,7 +6,6 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.SkullSetter;
@@ -46,7 +45,7 @@ public class PlayerManagementMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .item(22, Locales.getItem(viewer.locale, "other.close").click(event -> Menus.LOBBY.open(event.getPlayer())))
-                .fillBackground(Util.isBedrockPlayer(p) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE)
+                .fillBackground(ParkourUser.isBedrockPlayer(p) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }
 
@@ -103,7 +102,7 @@ public class PlayerManagementMenu {
             stack.setType(Material.PLAYER_HEAD);
 
             // bedrock has no player skull support
-            if (menu.getTotalToDisplay().size() <= 36 && !Util.isBedrockPlayer(other.player)) {
+            if (menu.getTotalToDisplay().size() <= 36 && !ParkourUser.isBedrockPlayer(other.player)) {
                 if (other.getName() != null && !other.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
                     SkullMeta meta = (SkullMeta) stack.getItemMeta();
 

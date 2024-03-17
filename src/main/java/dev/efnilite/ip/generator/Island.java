@@ -48,6 +48,7 @@ public final class Island {
         if (schematic == null) {
             return;
         }
+        IP.log("Building island");
 
         IP.log("Building island");
 

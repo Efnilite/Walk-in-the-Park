@@ -9,20 +9,20 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.generator.ParkourGenerator;
+import dev.efnilite.ip.hook.FloodgateHook;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.util.Util;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.fastboard.FastBoard;
 import dev.efnilite.vilib.util.Strings;
 import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
@@ -58,7 +58,7 @@ public abstract class ParkourUser {
             IP.log("Registering player %s with existing data".formatted(player.getName()));
 
             data = existing.previousData;
-            unregister(existing, false, false);
+            unregister(existing, false, false, false);
         } else {
             IP.log("Registering player %s".formatted(player.getName()));
         }
@@ -92,7 +92,7 @@ public abstract class ParkourUser {
      * @param user The user.
      */
     public static void leave(@NotNull ParkourUser user) {
-        unregister(user, true, true);
+        unregister(user, true, true, false);
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class ParkourUser {
      * @param restorePreviousData Whether to restore the data from before the player joined the parkour.
      * @param kickIfBungee        Whether to kick the player if Bungeecord mode is enabled.
      */
-    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee) {
+    public static void unregister(@NotNull ParkourUser user, boolean restorePreviousData, boolean kickIfBungee, boolean urgent) {
         new ParkourLeaveEvent(user).call();
         IP.log("Unregistering player %s, restorePreviousData = %s, kickIfBungee = %s".formatted(user.getName(), restorePreviousData, kickIfBungee));
 
@@ -118,12 +118,12 @@ public abstract class ParkourUser {
             user.send("<red><bold>There was an error while trying to handle leaving.");
         }
 
-        if (restorePreviousData && Option.ON_JOIN && kickIfBungee) {
+        if (restorePreviousData && Config.CONFIG.getBoolean("bungeecord.enabled") && kickIfBungee) {
             sendPlayerToServer(user.player, Config.CONFIG.getString("bungeecord.return_server"));
             return;
         }
 
-        user.previousData.apply(user.player);
+        user.previousData.apply(user.player, urgent);
 
         if (user instanceof ParkourPlayer player) {
             user.previousData.onLeave.forEach(r -> r.execute(player, mode));
@@ -193,9 +193,9 @@ public abstract class ParkourUser {
     public PreviousData previousData;
 
     /**
-     * The selected {@link SessionChat.ChatType}
+     * The selected {@link Session.ChatType}
      */
-    public SessionChat.ChatType chatType = SessionChat.ChatType.PUBLIC;
+    public Session.ChatType chatType = Session.ChatType.PUBLIC;
 
     /**
      * The {@link Session} this user is in.
@@ -248,7 +248,7 @@ public abstract class ParkourUser {
      * @param message The message
      */
     public void send(String message) {
-        Util.send(player, message);
+        player.sendMessage(Strings.colour(message));
     }
 
     /**
@@ -325,5 +325,13 @@ public abstract class ParkourUser {
      */
     public String getName() {
         return player.getName();
+    }
+
+    /**
+     * @param player The player
+     * @return true if the player is a Bedrock player, false if not.
+     */
+    public static boolean isBedrockPlayer(Player player) {
+        return Bukkit.getPluginManager().isPluginEnabled("floodgate") && FloodgateHook.isBedrockPlayer(player);
     }
 }

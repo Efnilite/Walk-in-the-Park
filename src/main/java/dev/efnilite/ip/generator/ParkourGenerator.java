@@ -16,13 +16,13 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.reward.Rewards;
-import dev.efnilite.ip.schematic.Schematics;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.schematic.Schematic;
+import dev.efnilite.vilib.schematic.Schematics;
 import dev.efnilite.vilib.util.Colls;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Probs;
@@ -70,7 +70,7 @@ public class ParkourGenerator {
     /**
      * The schematic cooldown
      */
-    public int schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+    public int schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
 
     /**
      * Whether this generator has been stopped
@@ -203,7 +203,7 @@ public class ParkourGenerator {
      * @param generatorOptions The options.
      */
     public ParkourGenerator(@NotNull Session session, GeneratorOption... generatorOptions) {
-        this(session, Schematics.CACHE.get("spawn-island"), generatorOptions);
+        this(session, Schematics.getSchematic(IP.getPlugin(), "spawn-island"), generatorOptions);
     }
 
     /**
@@ -358,7 +358,7 @@ public class ParkourGenerator {
         }
 
         // gets the correct type of score to check based on the config option
-        int intervalScore = Option.REWARDS_USE_TOTAL_SCORE ? totalScore : score;
+        int intervalScore = Config.CONFIG.getBoolean("scoring.rewards-use-total-score") ? totalScore : score;
         for (int interval : Rewards.INTERVAL_REWARDS.keySet()) {
             if (intervalScore % interval != 0) {
                 continue;
@@ -384,7 +384,7 @@ public class ParkourGenerator {
 
     public void startTick() {
         task = Task.create(IP.getPlugin())
-            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Option.GENERATOR_CHECK)
+            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Config.GENERATION.getInt("advanced.generator-check"))
             .execute(this::tick)
             .run();
     }
@@ -411,6 +411,8 @@ public class ParkourGenerator {
         }
 
         if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
+            IP.log("Player %s is falling".formatted(player.getName()));
+
             fall();
             return;
         }
@@ -426,11 +428,12 @@ public class ParkourGenerator {
         }
 
         if (schematicBlocks.contains(blockBelowPlayer) && blockBelowPlayer.getType() == Material.RED_WOOL && !deleteSchematic) { // Structure deletion check
-            for (int i = 0; i < getDifficultyScore() * 15; i++) {
+            for (int i = 0; i < profile.get("schematicDifficulty").asDouble() * 15; i++) {
                 score();
             }
+
             waitForSchematicCompletion = false;
-            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+            schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
             generate(profile.get("blockLead").asInt());
             deleteSchematic = true;
             return;
@@ -468,7 +471,7 @@ public class ParkourGenerator {
 
         deleteSchematic();
 
-        for (int i = 0; i < (Option.ALL_POINTS ? deltaFromLast : 1); i++) { // score the difference
+        for (int i = 0; i < (Config.CONFIG.getBoolean("scoring.all-points") ? deltaFromLast : 1); i++) { // score the difference
             score();
         }
 
@@ -493,6 +496,8 @@ public class ParkourGenerator {
      * @param regenerate True if parkour should regenerate, false if not.
      */
     public void reset(boolean regenerate) {
+        IP.log("Resetting generator, regenerate = %s".formatted(regenerate));
+
         stopped = !regenerate;
 
         if (!regenerate && task == null) {
@@ -574,12 +579,13 @@ public class ParkourGenerator {
         if (!deleteSchematic) {
             return;
         }
+        IP.log("Deleting schematic");
 
         schematicBlocks.forEach(block -> block.setType(Material.AIR));
         schematicBlocks.clear();
 
         deleteSchematic = false;
-        schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+        schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
     }
 
     /**
@@ -603,9 +609,12 @@ public class ParkourGenerator {
 
         JumpType jump = Probs.random(chances);
         if (jump == JumpType.SCHEMATIC) {
+            IP.log("Generating schematic jump at index %s".formatted(history.size() + 1));
+
             double difficulty = profile.get("schematicDifficulty").asDouble();
 
-            Schematic schematic = Schematics.CACHE.get(Colls.random(Schematics.CACHE.keySet().stream()
+            Schematic schematic = Schematics.getSchematic(IP.getPlugin(),
+                    Colls.random(Schematics.getSchematicNames(IP.getPlugin()).stream()
                     .filter(name -> name.contains("parkour-") && getDifficulty(name) <= difficulty)
                     .toList()));
 
@@ -621,10 +630,12 @@ public class ParkourGenerator {
                 return;
             }
 
-            schematicCooldown = Option.SCHEMATIC_COOLDOWN;
+            schematicCooldown = Config.GENERATION.getInt("advanced.schematic-cooldown");
             waitForSchematicCompletion = true;
             return;
         }
+
+        IP.log("Generating normal jump at index %s".formatted(history.size() + 1));
 
         List<Block> blocks = selectBlocks();
 
@@ -739,6 +750,8 @@ public class ParkourGenerator {
      * @param block The location used to begin the parkour of off
      */
     public void generateFirst(Location spawn, Location block) {
+        IP.log("First generation");
+
         playerSpawn = spawn;
         lastStandingPlayerLocation = spawn;
         blockSpawn = block;
@@ -757,9 +770,9 @@ public class ParkourGenerator {
         if (profile.get("useSpecialBlocks").asBoolean()) score += 0.5;
         if (profile.get("schematicDifficulty").asDouble() > 0) {
             if (profile.get("schematicDifficulty").asDouble() <= 0.25) score += 0.2;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
-            if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
-            if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
+            else if (profile.get("schematicDifficulty").asDouble() <= 0.5) score += 0.3;
+            else if (profile.get("schematicDifficulty").asDouble() <= 0.75) score += 0.4;
+            else if (profile.get("schematicDifficulty").asDouble() <= 1.0) score += 0.5;
         }
 
         return score;
@@ -769,7 +782,7 @@ public class ParkourGenerator {
      * @return The time in custom format.
      */
     public String getFormattedTime() {
-        return getTime(Option.SCORE_TIME_FORMAT);
+        return getTime(Config.CONFIG.getString("options.time.score-format"));
     }
 
     /**
@@ -787,7 +800,7 @@ public class ParkourGenerator {
                     .withZone(ZoneOffset.UTC)
                     .format(timeMs);
         } catch (IllegalArgumentException ex) {
-            IP.logging().stack("Invalid score time format %s".formatted(Option.SCORE_TIME_FORMAT), ex);
+            IP.logging().stack("Invalid score time format %s".formatted(Config.CONFIG.getString("options.time.score-format")), ex);
             return "";
         }
     }

@@ -6,8 +6,8 @@ import dev.efnilite.ip.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Registers stuff.
@@ -17,8 +17,8 @@ import java.util.Set;
  */
 public final class Registry {
 
-    private static final Set<Mode> modes = new HashSet<>();
-    private static final Set<Style> styles = new HashSet<>();
+    private static final LinkedList<Mode> modes = new LinkedList<>();
+    private static final LinkedList<Style> styles = new LinkedList<>();
 
     /**
      * Registers a {@link Mode}.
@@ -33,8 +33,8 @@ public final class Registry {
 
     public static void register(@NotNull Style style) {
         styles.add(style);
-
-        IP.log("Registered style %s".formatted(style.name()));
+      
+        IP.log("Registered style %s".formatted(style.getName()));
     }
 
     /**
@@ -57,11 +57,11 @@ public final class Registry {
                 .orElse(null);
     }
 
-    public static Set<Style> getStyles() {
+    public static List<Style> getStyles() {
         return styles;
     }
 
-    public static Set<Mode> getModes() {
+    public static List<Mode> getModes() {
         return modes;
     }
 }

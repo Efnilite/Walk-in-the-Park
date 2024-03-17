@@ -11,7 +11,6 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.SpectatorMode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
-import dev.efnilite.ip.session.SessionChat;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.ip.world.WorldManager;
 import dev.efnilite.vilib.ViPlugin;
@@ -20,7 +19,6 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.Time;
 import dev.efnilite.vilib.util.elevator.GitElevator;
 import dev.efnilite.vilib.util.elevator.VersionComparator;
 import org.jetbrains.annotations.NotNull;
@@ -68,32 +66,31 @@ public final class IP extends ViPlugin {
 
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            logging.info("Registered Holographic Displays hook");
             HoloHook.init();
-            logging.info("Registered Holographic Displays Hook");
         }
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            logging.info("Registered PlaceholderAPI hook");
             placeholderHook = new PAPIHook();
             placeholderHook.register();
-            logging.info("Registered PlaceholderAPI Hook");
         }
 
-        if (Option.ON_JOIN) {
+        if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-            logging.info("Registered BungeeCord Hook");
+            logging.info("Registered BungeeCord hook");
         }
 
         // ----- Worlds -----
 
-        if (Option.JOINING) {
+        if (Config.CONFIG.getBoolean("joining")) {
             WorldManager.create();
         }
 
         // ----- Events -----
 
-        registerListener(new Handler());
-        registerListener(new SessionChat());
-        registerCommand("ip", new ParkourCommand());
+        registerListener(new Events());
+        registerCommand("ip", new Command());
 
         // ----- Metrics -----
 
@@ -126,7 +123,16 @@ public final class IP extends ViPlugin {
     @Override
     @NotNull
     public GitElevator getElevator() {
-        return new GitElevator("Efnilite/Walk-in-the-Park", this, VersionComparator.FROM_SEMANTIC, Option.AUTO_UPDATER);
+        return new GitElevator("Efnilite/Walk-in-the-Park",
+                this,
+                VersionComparator.FROM_SEMANTIC,
+                Config.CONFIG.getBoolean("auto-updater"));
+    }
+
+    public static void log(String message) {
+        if (Config.CONFIG.getBoolean("debug")) {
+            logging.info("[Debug] " + message);
+        }
     }
 
     /**
@@ -154,11 +160,5 @@ public final class IP extends ViPlugin {
     @Nullable
     public static PAPIHook getPlaceholderHook() {
         return placeholderHook;
-    }
-
-    public static void log(String message) {
-        if (Config.CONFIG.getBoolean("debug")) {
-            logging.info("[Debug] " + message);
-        }
     }
 }
