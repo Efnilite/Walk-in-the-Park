@@ -17,7 +17,8 @@ public class PlayMenu extends DynamicMenu {
 
     public PlayMenu() {
         registerMainItem(1, 0, (player, user) -> Locales.getItem(player, "play.single.item").click(event -> Menus.SINGLE.open(event.getPlayer())), ParkourOption.SINGLE::mayPerform);
-        registerMainItem(1, 2, (player, user) -> Locales.getItem(player, "play.spectator.item").click(event -> Menus.SPECTATOR.open(event.getPlayer())), ParkourOption.SPECTATOR::mayPerform);
+        registerMainItem(1, 1, (player, user) -> Locales.getItem(player, "other.iep").click(event -> event.getPlayer().performCommand("/infiniteelytraparkour join")), player -> true);
+        registerMainItem(1, 6, (player, user) -> Locales.getItem(player, "play.spectator.item").click(event -> Menus.SPECTATOR.open(event.getPlayer())), ParkourOption.SPECTATOR::mayPerform);
         registerMainItem(2, 0, (player, user) -> Locales.getItem(player, "other.close").click(event -> event.getPlayer().closeInventory()), player -> true);
     }
 
