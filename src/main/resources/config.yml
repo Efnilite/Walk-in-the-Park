@@ -18,12 +18,7 @@
 #===============================================================================#
 
 # -= Debugging =-
-debug: true
-
-# -= Auto updater =-
-# The auto updater will automatically download updates if they are available.
-# It's highly recommended to keep this on!
-auto-updater: true
+debug: false
 
 # -= Enable joining =-
 # Whether players can join the parkour.

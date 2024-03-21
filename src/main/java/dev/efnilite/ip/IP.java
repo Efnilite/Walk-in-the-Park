@@ -20,8 +20,6 @@ import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
 import dev.efnilite.vilib.util.elevator.GitElevator;
-import dev.efnilite.vilib.util.elevator.VersionComparator;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -121,12 +119,8 @@ public final class IP extends ViPlugin {
     }
 
     @Override
-    @NotNull
     public GitElevator getElevator() {
-        return new GitElevator("Efnilite/Walk-in-the-Park",
-                this,
-                VersionComparator.FROM_SEMANTIC,
-                Config.CONFIG.getBoolean("auto-updater"));
+        return null;
     }
 
     public static void log(String message) {

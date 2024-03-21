@@ -78,13 +78,6 @@ public class Events implements EventWatcher {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // admin messages
-        if (player.isOp() && IP.getPlugin().getElevator().isOutdated()) {
-            send(player, "");
-            send(player, IP.PREFIX + "Your version is outdated. Please visit the Spigot page to update.");
-            send(player, "");
-        }
-
         if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             send(player, "");
             send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
