@@ -107,15 +107,19 @@ public final class IP extends ViPlugin {
 
     @Override
     public void disable() {
-        for (ParkourUser user : ParkourUser.getUsers()) {
-            ParkourUser.leave(user);
+        try {
+            for (ParkourUser user : ParkourUser.getUsers()) {
+                ParkourUser.leave(user);
+            }
+
+            // write all IP gamemodes
+            Modes.DEFAULT.getLeaderboard().write(false);
+
+            Storage.close();
+            WorldManager.delete();
+        } catch (Exception ignored) {
+
         }
-
-        // write all IP gamemodes
-        Modes.DEFAULT.getLeaderboard().write(false);
-
-        Storage.close();
-        WorldManager.delete();
     }
 
     @Override
