@@ -29,7 +29,7 @@ public class Divider {
      *
      * @param session The session.
      */
-    public static synchronized void add(Session session) {
+    public static synchronized Location add(Session session) {
         // attempts to get the closest available section to the center
         var missing = IntStream.range(0, sections.size() + 1)
                 .filter(i -> !sections.containsValue(i))
@@ -38,7 +38,11 @@ public class Divider {
 
         sections.put(session, missing);
 
-        IP.log("Added session at %s".formatted(Locations.toString(toLocation(session), true)));
+        var location = toLocation(session);
+
+        IP.log("Added session at %s".formatted(Locations.toString(location, true)));
+
+        return location;
     }
 
     /**
@@ -56,7 +60,7 @@ public class Divider {
      * @param session The session.
      * @return The location at the center of section n.
      */
-    public static Location toLocation(Session session) {
+    private static Location toLocation(Session session) {
         int[] xz = spiralAt(sections.get(session));
 
         return new Location(WorldManager.getWorld(),
@@ -64,7 +68,6 @@ public class Divider {
                 (Option.MAX_Y + Option.MIN_Y) / 2.0,
                 xz[1] * Option.BORDER_SIZE);
     }
-
 
     /**
      * @param session The session.

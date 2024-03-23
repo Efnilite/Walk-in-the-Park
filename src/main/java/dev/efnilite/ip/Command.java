@@ -138,7 +138,7 @@ public class Command extends ViCommand {
         send(sender, "");
         send(sender, "<gray>/parkour <dark_gray>- Main command");
         if (sender.hasPermission(ParkourOption.JOIN.permission)) {
-            send(sender, "<gray>/parkour join [mode] <dark_gray>- Join the default mode or specify one.");
+            send(sender, "<gray>/parkour join [mode/player] <dark_gray>- Join the default mode or specify one.");
             send(sender, "<gray>/parkour leave <dark_gray>- Leave the game on this server");
         }
         if (sender.hasPermission(ParkourOption.MAIN.permission)) {
