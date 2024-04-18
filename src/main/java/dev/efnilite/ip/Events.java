@@ -28,6 +28,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -46,6 +47,17 @@ import java.util.NoSuchElementException;
  */
 @ApiStatus.Internal
 public class Events implements EventWatcher {
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void mount(EntityMountEvent event) {
+        var entity = event.getEntity();
+
+        if (entity instanceof Player player) {
+            if (ParkourUser.isUser(player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
     @EventHandler
     public void chat(AsyncPlayerChatEvent event) {
@@ -278,7 +290,7 @@ public class Events implements EventWatcher {
         handleRestriction(player, event);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void inventory(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player) || event.getInventory().getType() == InventoryType.CRAFTING) {
             return;

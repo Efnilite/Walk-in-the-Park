@@ -68,10 +68,10 @@ public class JumpDirector {
      * the heading will automatically be turned around to ensure that the edge does not get
      * destroyed.
      *
-     * @return The recommended new heading. (0,0,0) if no modification is needed.
+     * @return The recommended new heading. Current heading if no modification is needed.
      */
     @NotNull
-    public Vector getRecommendedHeading() {
+    public Vector getRecommendedHeading(Vector current) {
         // get x values from progress array
         double tx = progress[0][0];
         double borderMarginX = progress[0][1];
@@ -84,21 +84,25 @@ public class JumpDirector {
         // check border
         if (tx < borderMarginX) {
             // x should increase
-            recommendedHeading.add(new Vector(1, 0, 0));
+            recommendedHeading = new Vector(1, 0, 1);
         } else if (tx > 1 - borderMarginX) {
             // x should decrease
-            recommendedHeading.add(new Vector(-1, 0, 0));
+            recommendedHeading = new Vector(-1, 0, -1);
         }
 
         if (tz < borderMarginZ) {
             // z should increase
-            recommendedHeading.add(new Vector(0, 0, 1));
+            recommendedHeading = new Vector(1, 0, 1);
         } else if (tz > 1 - borderMarginZ) {
             // z should decrease
-            recommendedHeading.add(new Vector(0, 0, -1));
+            recommendedHeading = new Vector(-1, 0, -1);
         }
 
-        return recommendedHeading;
+        if (recommendedHeading.isZero()) {
+            return current;
+        } else {
+            return recommendedHeading;
+        }
     }
 
     /**
@@ -109,7 +113,7 @@ public class JumpDirector {
      *
      * @return The recommended new height. 0 if no modification is needed.
      */
-    public int getRecommendedHeight() {
+    public int getRecommendedHeight(int current) {
         double ty = progress[1][0];
         double borderMarginY = progress[1][1];
 
@@ -120,7 +124,7 @@ public class JumpDirector {
             // y should decrease
             return -1;
         }
-        return 0;
+        return current;
     }
 
     /**
