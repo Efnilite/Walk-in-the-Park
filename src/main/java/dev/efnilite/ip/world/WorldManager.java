@@ -28,7 +28,7 @@ public interface WorldManager {
     static void create() {
         World world = getWorld();
 
-        if (!Config.CONFIG.getBoolean("joining") || (!Config.CONFIG.getBoolean("world.delete-on-reload") && world != null)) {
+        if (!Config.CONFIG.getBoolean("joining")) {
             return;
         }
 
@@ -40,7 +40,10 @@ public interface WorldManager {
 
         IP.log("Initializing world rules");
 
-        manager.deleteWorld();
+        if (Config.CONFIG.getBoolean("world.delete-on-reload")) {
+            manager.deleteWorld();
+        }
+
         world = manager.createWorld();
 
         world.setGameRule(GameRule.DO_FIRE_TICK, false);

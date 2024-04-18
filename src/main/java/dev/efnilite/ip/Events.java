@@ -48,17 +48,6 @@ import java.util.NoSuchElementException;
 @ApiStatus.Internal
 public class Events implements EventWatcher {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void mount(EntityMountEvent event) {
-        var entity = event.getEntity();
-
-        if (entity instanceof Player player) {
-            if (ParkourUser.isUser(player)) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
     @EventHandler
     public void chat(AsyncPlayerChatEvent event) {
         if (!Option.OPTIONS_ENABLED.get(ParkourOption.CHAT)) {
@@ -306,6 +295,15 @@ public class Events implements EventWatcher {
         }
 
         handleRestriction(event.getPlayer(), event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void mount(EntityMountEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        handleRestriction(player, event);
     }
 
     private void handleRestriction(Player player, Cancellable event) {
