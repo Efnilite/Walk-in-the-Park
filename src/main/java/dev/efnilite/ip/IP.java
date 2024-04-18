@@ -117,7 +117,7 @@ public final class IP extends ViPlugin {
 
             Storage.close();
             WorldManager.delete();
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
 
         }
     }

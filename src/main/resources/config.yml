@@ -158,11 +158,6 @@ options:
   # This command will be executed by console.
   alt-inventory-saving-command: ''
 
-  # -= Health handling =-
-  # Enables/disables the health handling system. This will reset (max) health to default values on join of the parkour.
-  # Disable this if you're experiencing errors with max health, etc.
-  health-handling: true
-
 # -= Permissions options =-
 # These permissions are used to determine which things the player can change.
 # Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
