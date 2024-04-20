@@ -7,3 +7,4 @@
 - Fixed bad parkour pathfinding near edges
 - Fixed player mounting causing issues
 - Fixed players being able to transfer inventory items with some plugins
+- Fixed not being able to close leaderboard if not using IP+ 
