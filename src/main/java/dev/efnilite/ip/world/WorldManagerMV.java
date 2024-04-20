@@ -30,6 +30,13 @@ public class WorldManagerMV implements WorldManager {
         if (MANAGER == null) {
             return null;
         }
+
+        // world has already been loaded
+        var existing = MANAGER.getMVWorld(Option.WORLD_NAME);
+        if (existing != null) {
+            return existing.getCBWorld();
+        }
+
         IP.log("Creating MV world");
 
         MANAGER.addWorld(Option.WORLD_NAME, World.Environment.NORMAL, null, WorldType.NORMAL, false, VoidGenerator.getMultiverseGenerator());
