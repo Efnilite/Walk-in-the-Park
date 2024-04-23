@@ -158,6 +158,10 @@ options:
   # This command will be executed by console.
   alt-inventory-saving-command: ''
 
+  # -= Disables inventory blocks =-
+  # Disables the ability for a player to open blocks with an inventory.
+  disable-inventory-blocks: false
+
 # -= Permissions options =-
 # These permissions are used to determine which things the player can change.
 # Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp

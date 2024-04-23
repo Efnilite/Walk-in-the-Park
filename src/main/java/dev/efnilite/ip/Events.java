@@ -228,7 +228,9 @@ public class Events implements EventWatcher {
         } else if (held == quit) {
             ParkourUser.leave(player);
         } else {
-            event.setCancelled(false);
+            if (!Config.CONFIG.getBoolean("options.disable-inventory-blocks")) {
+                event.setCancelled(false);
+            }
         }
     }
 
