@@ -81,7 +81,7 @@ public class Events implements EventWatcher {
 
         if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
             send(player, "");
-            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please visit the wiki to fix this.");
+            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please install the plugin 'VoidGen' to fix this.");
             send(player, "");
         }
 
