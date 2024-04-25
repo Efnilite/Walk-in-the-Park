@@ -240,8 +240,8 @@ scoreboard:
 
 other:
 
-  no_do: "<gray>You can''t do this right now."
-  no_teleporting: "<white>You can''t enter the parkour world by teleporting!"
+  no_do: "<gray>You can't do this right now."
+  no_teleporting: "<white>You can't enter the parkour world by teleporting!"
   customize: "<gray>Customize your parkour experience by using \"/parkour\""
 
   quit:
