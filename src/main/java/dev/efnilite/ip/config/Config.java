@@ -49,7 +49,6 @@ public enum Config {
 
         if (!path.exists()) {
             IP.getPlugin().saveResource(fileName, false);
-            IP.log("Created config file %s".formatted(fileName));
         }
 
         update();

@@ -123,6 +123,8 @@ public abstract class ParkourUser {
             return;
         }
 
+        if (!restorePreviousData) return;
+
         user.previousData.apply(user.player, urgent);
 
         if (user instanceof ParkourPlayer player) {

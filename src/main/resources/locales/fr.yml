@@ -253,3 +253,8 @@ other:
     material: "arrow"
     name: "<#F5A3A3><bold>Fermé"
     lore: ""
+
+  iep:
+    material: "elytra"
+    name: "<#4800FF><bold>Flying"
+    lore: "<gray>Parkour with elytra!"

@@ -79,6 +79,11 @@ public class ParkourSpectator extends ParkourUser {
         player.setGameMode(GameMode.SPECTATOR);
         updateScoreboard(session.generator);
 
+        // spectator is still being teleported to world
+        if (closest.getLocation().getWorld() != player.getLocation().getWorld()) {
+            return;
+        }
+
         if (closest.getLocation().distanceSquared(player.getLocation()) < 100 * 100) { // avoid sqrt
             return;
         }

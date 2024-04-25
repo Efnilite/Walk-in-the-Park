@@ -19,7 +19,6 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
-import dev.efnilite.vilib.util.elevator.GitElevator;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -107,20 +106,19 @@ public final class IP extends ViPlugin {
 
     @Override
     public void disable() {
-        for (ParkourUser user : ParkourUser.getUsers()) {
-            ParkourUser.leave(user);
+        try {
+            for (ParkourUser user : ParkourUser.getUsers()) {
+                ParkourUser.leave(user);
+            }
+
+            // write all IP gamemodes
+            Modes.DEFAULT.getLeaderboard().write(false);
+
+            Storage.close();
+            WorldManager.delete();
+        } catch (Throwable ignored) {
+
         }
-
-        // write all IP gamemodes
-        Modes.DEFAULT.getLeaderboard().write(false);
-
-        Storage.close();
-        WorldManager.delete();
-    }
-
-    @Override
-    public GitElevator getElevator() {
-        return null;
     }
 
     public static void log(String message) {

@@ -70,7 +70,7 @@ public class Session {
 
         Session session = new Session();
 
-        Divider.add(session);
+        var location = Divider.add(session);
 
         if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
         if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
@@ -90,7 +90,7 @@ public class Session {
             pps.forEach(p -> p.updateGeneratorSettings(session.generator));
         }
 
-        session.generator.island.build();
+        session.generator.island.build(location);
 
         return session;
     }

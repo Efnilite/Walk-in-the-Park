@@ -58,11 +58,7 @@ public class PreviousData {
             inventoryData = null;
         }
 
-        // health handling after removing effects and inventory to avoid them affecting it
-        if (Config.CONFIG.getBoolean("options.health-handling")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-            player.setHealth(maxHealth);
-        }
+        player.setHealth(maxHealth);
     }
 
     public void apply(Player player, boolean urgent) {
@@ -83,11 +79,7 @@ public class PreviousData {
             player.setGameMode(gamemode);
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
-
-            if (Config.CONFIG.getBoolean("options.health-handling")) {
-                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-                player.setHealth(health);
-            }
+            player.setHealth(health);
 
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());

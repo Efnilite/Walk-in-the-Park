@@ -1,6 +1,7 @@
 package dev.efnilite.ip.menu.community;
 
 import dev.efnilite.ip.IP;
+import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
@@ -118,7 +119,19 @@ public class SingleLeaderboardMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player, ParkourOption.LEADERBOARDS.path + ".sort", name.toLowerCase()).click(event -> open(player, mode, next)))
-                .item(23, Locales.getItem(player, "other.close").click(event -> Menus.LEADERBOARDS.open(event.getPlayer())))
+                .item(23, Locales.getItem(player, "other.close").click(event -> {
+                    List<Mode> modes = Registry.getModes()
+                            .stream()
+                            .filter(m -> m.getLeaderboard() != null && m.getItem(locale) != null)
+                            .toList();
+
+                    if (modes.size() == 1) {
+                        Menus.COMMUNITY.open(player);
+                        return;
+                    }
+
+                    Menus.LEADERBOARDS.open(event.getPlayer());
+                }))
                 .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);
     }

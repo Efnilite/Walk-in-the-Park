@@ -304,17 +304,8 @@ public class ParkourGenerator {
     protected Block selectNext(Block current, int distance, int height) {
         JumpDirector director = new JumpDirector(BoundingBox.of(zone[0], zone[1]), getLatest().getLocation().toVector());
 
-        Vector recommendedHeading = director.getRecommendedHeading();
-
-        if (!recommendedHeading.equals(new Vector(0, 0, 0))) {
-            heading = recommendedHeading;
-        }
-
-        int recommendedHeight = director.getRecommendedHeight();
-
-        if (recommendedHeight != 0) {
-            height = recommendedHeight;
-        }
+        heading = director.getRecommendedHeading(heading);
+        height = director.getRecommendedHeight(height);
 
         // ensure special is possible
         switch (getLatest().getType()) {

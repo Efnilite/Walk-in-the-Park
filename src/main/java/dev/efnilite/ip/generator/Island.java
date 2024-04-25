@@ -3,7 +3,6 @@ package dev.efnilite.ip.generator;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.schematic.Schematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,22 +43,20 @@ public final class Island {
     /**
      * Builds the island and teleports the player.
      */
-    public void build() {
+    public void build(Location location) {
         if (schematic == null) {
             return;
         }
         IP.log("Building island");
 
-        IP.log("Building island");
-
-        blocks = schematic.paste(Divider.toLocation(session).subtract(0, schematic.getDimensions().getY(), 0));
+        blocks = schematic.paste(location.subtract(0, schematic.getDimensions().getY(), 0));
 
         Material playerMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.spawn.player-block").toUpperCase());
         Material parkourMaterial = Material.getMaterial(Config.GENERATION.getString("advanced.island.parkour.begin-block").toUpperCase());
 
         try {
-            Block player = blocks.stream().filter(block -> block.getType() == playerMaterial).findAny().get();
-            Block parkour = blocks.stream().filter(block -> block.getType() == parkourMaterial).findAny().get();
+            Block player = blocks.stream().filter(block -> block.getType() == playerMaterial).findAny().orElseThrow();
+            Block parkour = blocks.stream().filter(block -> block.getType() == parkourMaterial).findAny().orElseThrow();
 
             player.setType(Material.AIR);
             parkour.setType(Material.AIR);
