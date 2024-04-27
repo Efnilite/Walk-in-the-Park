@@ -1,4 +1,4 @@
-**New Plugin [Infinite Elytra Parkour](https://www.spigotmc.org/resources/115322/) | [IP+](https://www.spigotmc.org/resources/105019/)**
+**[IEP](https://www.spigotmc.org/resources/115322/) | [IP+](https://www.spigotmc.org/resources/105019/)**
 
 - Added item for IEP support
 - Added option to disable players opening blocks with inventories 

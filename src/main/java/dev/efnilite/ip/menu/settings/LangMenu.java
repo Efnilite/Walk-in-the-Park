@@ -30,7 +30,7 @@ public class LangMenu {
         for (String lang : Locales.locales.keySet()) {
             Item item = new Item(Material.PAPER, "<#238681><bold>" + Locales.getString(lang, "name"));
 
-            items.add(item.glowing(user.locale.equals(lang)).click(event -> {
+            items.add(item.click(event -> {
                 user.locale = lang;
                 user._locale = lang;
                 Menus.SETTINGS.open(event.getPlayer());
