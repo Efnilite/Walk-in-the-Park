@@ -301,7 +301,6 @@ public class ParkourSettingsMenu extends DynamicMenu {
 
             items.add(Locales.getItem(player.player, ParkourOption.STYLES.path + ".style_item", name, category)
                 .material(style.getNext())
-                .glowing(player.style.equals(name))
                 .click(event -> {
                     player.style = name;
                     player.updateGeneratorSettings(player.session.generator);

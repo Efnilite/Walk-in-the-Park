@@ -88,7 +88,6 @@ public class SingleLeaderboardMenu {
 
             if (uuid.equals(player.getUniqueId())) {
                 menu.item(21, item.clone());
-                item.glowing();
             }
 
             items.add(item);
