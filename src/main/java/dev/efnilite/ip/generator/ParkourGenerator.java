@@ -662,12 +662,20 @@ public class ParkourGenerator {
         }
 
         Optional<Vector> optionalStart = schematic.getVectorBlockMap().entrySet().stream()
-                .filter(e -> e.getValue().getMaterial() == Material.LIME_WOOL)
+                .filter(entry -> {
+                    if (entry == null || entry.getValue() == null) return false;
+
+                    return entry.getValue().getMaterial() == Material.LIME_WOOL;
+                })
                 .map(Map.Entry::getKey)
                 .findAny();
 
         Optional<Vector> optionalEnd = schematic.getVectorBlockMap().entrySet().stream()
-                .filter(e -> e.getValue().getMaterial() == Material.RED_WOOL)
+                .filter(entry -> {
+                    if (entry == null || entry.getValue() == null) return false;
+
+                    return entry.getValue().getMaterial() == Material.RED_WOOL;
+                })
                 .map(Map.Entry::getKey)
                 .findAny();
 
