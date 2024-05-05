@@ -7,7 +7,6 @@ import dev.efnilite.ip.reward.RewardString;
 import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +20,6 @@ import java.util.List;
  */
 public class PreviousData {
 
-    private final double health;
-    private final double maxHealth;
     private final InventoryData inventoryData;
 
     private final int hunger;
@@ -44,8 +41,6 @@ public class PreviousData {
         allowFlight = player.getAllowFlight();
         flying = player.isFlying();
         effects = player.getActivePotionEffects();
-        health = player.getHealth();
-        maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
         for (PotionEffect effect : effects) {
             player.removePotionEffect(effect.getType());
@@ -57,8 +52,6 @@ public class PreviousData {
         } else {
             inventoryData = null;
         }
-
-        player.setHealth(maxHealth);
     }
 
     public void apply(Player player, boolean urgent) {
@@ -79,7 +72,6 @@ public class PreviousData {
             player.setGameMode(gamemode);
             player.setAllowFlight(allowFlight);
             player.setFlying(flying);
-            player.setHealth(health);
 
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());
