@@ -98,7 +98,7 @@ public class JumpDirector {
             recommendedHeading = new Vector(-1, 0, -1);
         }
 
-        if (recommendedHeading.isZero()) {
+        if (recommendedHeading.lengthSquared() == 0) {
             return current;
         } else {
             return recommendedHeading;
