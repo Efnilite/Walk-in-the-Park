@@ -27,18 +27,18 @@ debug: false
 # true = players can join, false = players can't join.
 joining: true
 
-# -= BungeeCord options =-
-# Change the BungeeCord settings.
+# -= Proxy options =-
+# Change the proxy settings. Applies to Velocity as well.
 # This also applies to servers who only want to run this plugin.
 bungeecord:
 
-  # -= BungeeCord enabled =-
+  # -= Proxy enabled =-
   # Enabling this will make players who join the server automatically join the parkour.
   # You can enable this even without BungeeCord to make this a parkour-only server.
   # True = players will automatically join the parkour on join, false = players have to use the menu/parkour command.
   enabled: false
 
-  # -= BungeeCord return server =-
+  # -= Proxy return server =-
   # The server the players will be returned to after they leave.
   return_server: 'Lobby'
 
@@ -49,7 +49,7 @@ bungeecord:
 
   # -= Go back location =-
   # The place players will go back to when they leave
-  # Only applies if BungeeCord mode is disabled and the go-back-enabled option is true.
+  # Only applies if proxy mode is disabled and the go-back-enabled option is true.
   # Syntax: '(x,y,z,worldName)'
   go-back: '(0,100,0,world)'
 

@@ -28,7 +28,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -299,14 +298,14 @@ public class Events implements EventWatcher {
         handleRestriction(event.getPlayer(), event);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void mount(EntityMountEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
-
-        handleRestriction(player, event);
-    }
+//    @EventHandler(priority = EventPriority.HIGHEST)
+//    public void mount(EntityMountEvent event) {
+//        if (!(event.getEntity() instanceof Player player)) {
+//            return;
+//        }
+//
+//        handleRestriction(player, event);
+//    }
 
     private void handleRestriction(Player player, Cancellable event) {
         if (!ParkourUser.isUser(player)) {
