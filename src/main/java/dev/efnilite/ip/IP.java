@@ -40,6 +40,39 @@ public final class IP extends ViPlugin {
     @Nullable
     private static PAPIHook placeholderHook;
 
+    public static void log(String message) {
+        if (Config.CONFIG.getBoolean("debug")) {
+            logging.info("[Debug] " + message);
+        }
+    }
+
+    /**
+     * @param child The file name.
+     * @return A file from within the plugin folder.
+     */
+    public static File getInFolder(String child) {
+        return new File(instance.getDataFolder(), child);
+    }
+
+    /**
+     * @return This plugin's {@link Logging} instance.
+     */
+    public static Logging logging() {
+        return logging;
+    }
+
+    /**
+     * @return The plugin instance.
+     */
+    public static IP getPlugin() {
+        return instance;
+    }
+
+    @Nullable
+    public static PAPIHook getPlaceholderHook() {
+        return placeholderHook;
+    }
+
     @Override
     public void onLoad() {
         instance = this;
@@ -119,38 +152,5 @@ public final class IP extends ViPlugin {
         } catch (Throwable ignored) {
 
         }
-    }
-
-    public static void log(String message) {
-        if (Config.CONFIG.getBoolean("debug")) {
-            logging.info("[Debug] " + message);
-        }
-    }
-
-    /**
-     * @param child The file name.
-     * @return A file from within the plugin folder.
-     */
-    public static File getInFolder(String child) {
-        return new File(instance.getDataFolder(), child);
-    }
-
-    /**
-     * @return This plugin's {@link Logging} instance.
-     */
-    public static Logging logging() {
-        return logging;
-    }
-
-    /**
-     * @return The plugin instance.
-     */
-    public static IP getPlugin() {
-        return instance;
-    }
-
-    @Nullable
-    public static PAPIHook getPlaceholderHook() {
-        return placeholderHook;
     }
 }
