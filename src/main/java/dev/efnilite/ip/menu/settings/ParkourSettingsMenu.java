@@ -311,7 +311,8 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .addToDisplay(items)
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
-                .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)));
+                .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)))
+                .open(player.player);
     }
 
     private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {

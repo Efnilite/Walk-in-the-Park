@@ -70,7 +70,6 @@ public class SettingsMenu extends DynamicMenu {
     }
 
     public void open(Player player) {
-        display(player, new Menu(3, Locales.getString(player, "settings.name"))
-                .distributeRowsEvenly());
+        display(player, new Menu(3, Locales.getString(player, "settings.name")).distributeRowsEvenly());
     }
 }
