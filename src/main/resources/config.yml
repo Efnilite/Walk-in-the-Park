@@ -164,7 +164,7 @@ options:
 
 # -= Permissions options =-
 # These permissions are used to determine which things the player can change.
-# Find them at at https://efnilite.github.io/efnilite.dev/wiki/witp
+# Find them at https://efnilite.dev/projects/ip/wiki
 permissions:
 
   # -= Permissions enabled =-
