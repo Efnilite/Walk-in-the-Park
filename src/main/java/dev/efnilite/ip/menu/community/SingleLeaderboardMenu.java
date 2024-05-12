@@ -131,7 +131,6 @@ public class SingleLeaderboardMenu {
 
                     Menus.LEADERBOARDS.open(event.getPlayer());
                 }))
-                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
                 .open(player);
     }
 

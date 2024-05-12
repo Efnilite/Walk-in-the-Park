@@ -8,9 +8,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.animation.SplitMiddleOutAnimation;
 import dev.efnilite.vilib.inventory.item.SliderItem;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -73,8 +71,6 @@ public class SettingsMenu extends DynamicMenu {
 
     public void open(Player player) {
         display(player, new Menu(3, Locales.getString(player, "settings.name"))
-                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE)
-                .animation(new SplitMiddleOutAnimation())
                 .distributeRowsEvenly());
     }
 }

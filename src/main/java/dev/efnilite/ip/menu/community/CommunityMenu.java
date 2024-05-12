@@ -4,10 +4,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.menu.DynamicMenu;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
-import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.Menu;
-import dev.efnilite.vilib.inventory.animation.WaveWestAnimation;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,8 +19,6 @@ public class CommunityMenu extends DynamicMenu {
 
     public void open(Player player) {
         display(player, new Menu(3, Locales.getString(player, "community.name"))
-                .distributeRowsEvenly()
-                .animation(new WaveWestAnimation())
-                .fillBackground(ParkourUser.isBedrockPlayer(player) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE));
+                .distributeRowsEvenly());
     }
 }
