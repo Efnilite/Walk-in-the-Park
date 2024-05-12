@@ -9,8 +9,7 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.world.WorldManager;
-import dev.efnilite.ip.world.WorldManagerMV;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -18,7 +17,10 @@ import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Strings;
 import dev.efnilite.vilib.util.VoidGenerator;
 import io.papermc.lib.PaperLib;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -76,9 +78,9 @@ public class Events implements EventWatcher {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        var player = event.getPlayer();
 
-        if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
+        if (player.isOp() && IP.getMv() != null && VoidGenerator.getMultiverseGenerator() == null) {
             send(player, "");
             send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please install the plugin 'VoidGen' to fix this.");
             send(player, "");
@@ -89,11 +91,11 @@ public class Events implements EventWatcher {
             return;
         }
 
-        if (!player.getWorld().equals(WorldManager.getWorld())) {
+        if (!player.getWorld().equals(World.getWorld())) {
             return;
         }
 
-        World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
+        var fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
 
         if (fallback != null) {
             PaperLib.teleportAsync(player, fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -101,7 +103,7 @@ public class Events implements EventWatcher {
         }
 
         PaperLib.teleportAsync(player, Bukkit.getWorlds().stream()
-                .filter(world -> !world.equals(WorldManager.getWorld()))
+                .filter(world -> !world.equals(World.getWorld()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
                 .getSpawnLocation());
@@ -242,16 +244,15 @@ public class Events implements EventWatcher {
     public void switchWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        World parkour = WorldManager.getWorld();
 
         boolean isAdmin = Config.CONFIG.getBoolean("permissions.enabled") ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
-        if (player.getWorld() == parkour && user == null && !isAdmin && player.getTicksLived() > 20) {
+        if (player.getWorld() == World.getWorld() && user == null && !isAdmin && player.getTicksLived() > 20) {
             player.kickPlayer("You can't enter the parkour world by teleporting!");
             return;
         }
 
-        if (event.getFrom() == parkour && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
+        if (event.getFrom() == World.getWorld() && user != null && Duration.between(user.joined, Instant.now()).toMillis() > 100) {
             ParkourUser.unregister(user, true, false, false);
         }
     }

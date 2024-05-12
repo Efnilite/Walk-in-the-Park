@@ -1,5 +1,7 @@
 package dev.efnilite.ip;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
@@ -12,7 +14,7 @@ import dev.efnilite.ip.mode.SpectatorMode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.world.WorldManager;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.bstats.bukkit.Metrics;
 import dev.efnilite.vilib.bstats.charts.SimplePie;
@@ -39,6 +41,8 @@ public final class IP extends ViPlugin {
 
     @Nullable
     private static PAPIHook placeholderHook;
+    @Nullable
+    private static MVWorldManager mv;
 
     public static void log(String message) {
         if (Config.CONFIG.getBoolean("debug")) {
@@ -73,6 +77,10 @@ public final class IP extends ViPlugin {
         return placeholderHook;
     }
 
+    public static @Nullable MVWorldManager getMv() {
+        return mv;
+    }
+
     @Override
     public void onLoad() {
         instance = this;
@@ -94,6 +102,11 @@ public final class IP extends ViPlugin {
         Modes.init();
         Menu.init(this);
 
+        if (getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
+            logging.info("Registered Multiverse-Core hook");
+            mv = ((MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core")).getMVWorldManager();
+        }
+
         // hook with hd / papi after gamemode leaderboards have initialized
         if (getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
             logging.info("Registered Holographic Displays hook");
@@ -114,7 +127,7 @@ public final class IP extends ViPlugin {
         // ----- Worlds -----
 
         if (Config.CONFIG.getBoolean("joining")) {
-            WorldManager.create();
+            World.create();
         }
 
         // ----- Events -----
@@ -148,7 +161,7 @@ public final class IP extends ViPlugin {
             Modes.DEFAULT.getLeaderboard().write(false);
 
             Storage.close();
-            WorldManager.delete();
+            World.delete();
         } catch (Throwable ignored) {
 
         }
