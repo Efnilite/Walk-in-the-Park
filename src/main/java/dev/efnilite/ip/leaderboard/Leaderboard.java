@@ -96,7 +96,7 @@ public class Leaderboard {
         scores.entrySet().stream()
                 .sorted((one, two) -> switch (sort) {
                     case SCORE -> two.getValue().score() - one.getValue().score();
-                    case TIME -> two.getValue().getTimeMillis() - one.getValue().getTimeMillis();
+                    case TIME -> one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
                     case DIFFICULTY -> (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) - Double.parseDouble(one.getValue().difficulty()));
                 })
                 .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));

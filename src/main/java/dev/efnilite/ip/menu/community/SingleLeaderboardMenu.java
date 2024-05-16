@@ -21,8 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Menu for a single leaderboard
@@ -37,19 +39,19 @@ public class SingleLeaderboardMenu {
         }
 
         // init vars
-        ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
-        PagedMenu menu = new PagedMenu(3, Locales.getString(player, "%s.name".formatted(ParkourOption.LEADERBOARDS.path)));
+        var user = ParkourUser.getUser(player);
+        var locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
+        var menu = new PagedMenu(3, Locales.getString(player, "%s.name".formatted(ParkourOption.LEADERBOARDS.path)));
 
-        List<MenuItem> items = new ArrayList<>();
+        var items = new ArrayList<MenuItem>();
 
-        Item base = Locales.getItem(player, "%s.head".formatted(ParkourOption.LEADERBOARDS.path));
+        var base = Locales.getItem(player, "%s.head".formatted(ParkourOption.LEADERBOARDS.path));
 
-        Map<UUID, Score> sorted = sort.sort(leaderboard.scores);
-
-        for (UUID uuid : sorted.keySet()) {
+        for (Map.Entry<UUID, Score> entry : leaderboard.scores.entrySet()) {
             int rank = items.size() + 1;
-            Score score = sorted.get(uuid);
+
+            var uuid = entry.getKey();
+            var score = entry.getValue();
 
             if (score == null) {
                 continue;
@@ -136,38 +138,6 @@ public class SingleLeaderboardMenu {
 
     public enum Sort {
 
-        SCORE {
-            @Override
-            Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores; // already sorted
-            }
-        }, TIME {
-            @Override
-            Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores.entrySet().stream().sorted((o1, o2) -> {
-                            long one = o1.getValue().getTimeMillis();
-                            long two = o2.getValue().getTimeMillis();
-
-                            return Math.toIntExact(one - two); // natural order (lower == better)
-                        }) // reverse natural order
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-            }
-        }, DIFFICULTY {
-            @Override
-            Map<UUID, Score> sort(Map<UUID, Score> scores) {
-                return scores.entrySet().stream().sorted((o1, o2) -> {
-                            String first = o1.getValue().difficulty();
-                            String second = o2.getValue().difficulty();
-
-                            double one = Double.parseDouble(first.equals("?") ? "1.0" : first);
-                            double two = Double.parseDouble(second.equals("?") ? "1.0" : second);
-
-                            return (int) (100 * (two - one)); // reverse natural order (higher == better)
-                        }) // reverse natural order
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-            }
-        };
-
-        abstract Map<UUID, Score> sort(Map<UUID, Score> scores);
+        SCORE, TIME, DIFFICULTY
     }
 }
