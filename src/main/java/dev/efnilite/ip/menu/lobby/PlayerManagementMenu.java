@@ -45,7 +45,6 @@ public class PlayerManagementMenu {
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .item(22, Locales.getItem(viewer.locale, "other.close").click(event -> Menus.LOBBY.open(event.getPlayer())))
-                .fillBackground(ParkourUser.isBedrockPlayer(p) ? Material.AIR : Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .open(p);
     }
 

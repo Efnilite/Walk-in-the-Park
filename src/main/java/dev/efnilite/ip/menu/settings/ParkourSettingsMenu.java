@@ -275,8 +275,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
     public void open(ParkourPlayer user) {
         display(user.player, new Menu(4, Locales.getString(user.locale, "settings.name"))
             .distributeRowEvenly(0, 1, 2, 3)
-            .item(27, Locales.getItem(user.locale, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer())))
-            .fillBackground(ParkourUser.isBedrockPlayer(user.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE));
+            .item(27, Locales.getItem(user.locale, "other.close").click(event -> Menus.SETTINGS.open(event.getPlayer()))));
     }
 
     /**
@@ -313,7 +312,7 @@ public class ParkourSettingsMenu extends DynamicMenu {
                 .nextPage(26, new Item(Material.LIME_DYE, "<#0DCB07><bold>»").click(event -> menu.page(1)))
                 .prevPage(18, new Item(Material.RED_DYE, "<#DE1F1F><bold>«").click(event -> menu.page(-1)))
                 .item(22, Locales.getItem(player.locale, "other.close").click(event -> open(player)))
-                .fillBackground(ParkourUser.isBedrockPlayer(player.player) ? Material.AIR : Material.GRAY_STAINED_GLASS_PANE).open(player.player);
+                .open(player.player);
     }
 
     private boolean handleSettingChange(ParkourPlayer player, Runnable onAllowed) {

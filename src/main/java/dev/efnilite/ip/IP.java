@@ -19,6 +19,7 @@ import dev.efnilite.vilib.bstats.charts.SimplePie;
 import dev.efnilite.vilib.bstats.charts.SingleLineChart;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.util.Logging;
+import dev.efnilite.vilib.util.UpdateChecker;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -39,6 +40,39 @@ public final class IP extends ViPlugin {
 
     @Nullable
     private static PAPIHook placeholderHook;
+
+    public static void log(String message) {
+        if (Config.CONFIG.getBoolean("debug")) {
+            logging.info("[Debug] " + message);
+        }
+    }
+
+    /**
+     * @param child The file name.
+     * @return A file from within the plugin folder.
+     */
+    public static File getInFolder(String child) {
+        return new File(instance.getDataFolder(), child);
+    }
+
+    /**
+     * @return This plugin's {@link Logging} instance.
+     */
+    public static Logging logging() {
+        return logging;
+    }
+
+    /**
+     * @return The plugin instance.
+     */
+    public static IP getPlugin() {
+        return instance;
+    }
+
+    @Nullable
+    public static PAPIHook getPlaceholderHook() {
+        return placeholderHook;
+    }
 
     @Override
     public void onLoad() {
@@ -101,7 +135,7 @@ public final class IP extends ViPlugin {
             return joins;
         }));
 
-        logging.info("Loaded IP!");
+        UpdateChecker.check(this, 87226);
     }
 
     @Override
@@ -119,38 +153,5 @@ public final class IP extends ViPlugin {
         } catch (Throwable ignored) {
 
         }
-    }
-
-    public static void log(String message) {
-        if (Config.CONFIG.getBoolean("debug")) {
-            logging.info("[Debug] " + message);
-        }
-    }
-
-    /**
-     * @param child The file name.
-     * @return A file from within the plugin folder.
-     */
-    public static File getInFolder(String child) {
-        return new File(instance.getDataFolder(), child);
-    }
-
-    /**
-     * @return This plugin's {@link Logging} instance.
-     */
-    public static Logging logging() {
-        return logging;
-    }
-
-    /**
-     * @return The plugin instance.
-     */
-    public static IP getPlugin() {
-        return instance;
-    }
-
-    @Nullable
-    public static PAPIHook getPlaceholderHook() {
-        return placeholderHook;
     }
 }
