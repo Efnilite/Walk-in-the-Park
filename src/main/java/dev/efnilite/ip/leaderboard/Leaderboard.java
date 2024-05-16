@@ -97,10 +97,26 @@ public class Leaderboard {
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
 
         scores.entrySet().stream()
-                .sorted((one, two) -> switch (sort) {
-                    case SCORE -> two.getValue().score() - one.getValue().score();
-                    case TIME -> one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
-                    case DIFFICULTY -> (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) - Double.parseDouble(one.getValue().difficulty()));
+                .sorted((one, two) -> {
+                    switch (sort) {
+                        case SCORE -> {
+                            int scoreComparison = two.getValue().score() - one.getValue().score();
+
+                            if (scoreComparison != 0) {
+                                return scoreComparison;
+                            } else {
+                                return one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
+                            }
+                        }
+                        case TIME -> {
+                            return one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
+                        }
+                        case DIFFICULTY -> {
+                            return (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) -
+                                    Double.parseDouble(one.getValue().difficulty()));
+                        }
+                        default -> throw new IllegalArgumentException("Invalid sort method");
+                    }
                 })
                 .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
 
@@ -109,15 +125,7 @@ public class Leaderboard {
 
     // sorts all scores in the map
     private void sort() {
-        LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
-
-        scores.entrySet().stream()
-                .sorted((one, two) -> switch (sort) {
-                    case SCORE -> two.getValue().score() - one.getValue().score();
-                    case TIME -> one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
-                    case DIFFICULTY -> (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) - Double.parseDouble(one.getValue().difficulty()));
-                })
-                .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
+        var sorted = sort(sort);
 
         scores.clear();
         scores.putAll(sorted);
