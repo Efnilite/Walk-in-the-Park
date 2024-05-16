@@ -6,7 +6,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
-import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.MultiMode;
@@ -451,7 +450,7 @@ public class Command extends ViCommand {
                 if (mode == null) {
                     Menus.LEADERBOARDS.open(player);
                 } else {
-                    Menus.SINGLE_LEADERBOARD.open(player, mode, SingleLeaderboardMenu.Sort.SCORE);
+                    Menus.SINGLE_LEADERBOARD.open(player, mode, Leaderboard.Sort.SCORE);
                 }
             }
             case "schematic" -> {

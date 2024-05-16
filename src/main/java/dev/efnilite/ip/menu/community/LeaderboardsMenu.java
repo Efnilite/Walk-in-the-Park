@@ -43,7 +43,7 @@ public class LeaderboardsMenu {
         }
 
         if (items.size() == 1) {
-            Menus.SINGLE_LEADERBOARD.open(player, latest, SingleLeaderboardMenu.Sort.SCORE);
+            Menus.SINGLE_LEADERBOARD.open(player, latest, Leaderboard.Sort.SCORE);
             return;
         }
 

@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 public class SingleLeaderboardMenu {
 
-    public void open(Player player, Mode mode, Sort sort) {
+    public void open(Player player, Mode mode, Leaderboard.Sort sort) {
         Leaderboard leaderboard = mode.getLeaderboard();
 
         if (leaderboard == null) {
@@ -47,7 +47,7 @@ public class SingleLeaderboardMenu {
 
         var base = Locales.getItem(player, "%s.head".formatted(ParkourOption.LEADERBOARDS.path));
 
-        for (Map.Entry<UUID, Score> entry : leaderboard.scores.entrySet()) {
+        for (Map.Entry<UUID, Score> entry : leaderboard.sort(sort).entrySet()) {
             int rank = items.size() + 1;
 
             var uuid = entry.getKey();
@@ -75,7 +75,7 @@ public class SingleLeaderboardMenu {
 
             // if there are more than 36 players, don't show the heads to avoid server crashing
             // and bedrock has no player skull support
-            if (rank <= 36 && !ParkourUser.isBedrockPlayer(player)) {
+            if (rank <= 20 && !ParkourUser.isBedrockPlayer(player)) {
                 OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
 
                 if (op.getName() != null && !op.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
@@ -109,10 +109,10 @@ public class SingleLeaderboardMenu {
         };
 
         // get next sorting type
-        Sort next = switch (sort) {
-            case SCORE -> Sort.TIME;
-            case TIME -> Sort.DIFFICULTY;
-            default -> Sort.SCORE;
+        var next = switch (sort) {
+            case SCORE -> Leaderboard.Sort.TIME;
+            case TIME -> Leaderboard.Sort.DIFFICULTY;
+            default -> Leaderboard.Sort.SCORE;
         };
 
         menu.displayRows(0, 1)
@@ -134,10 +134,5 @@ public class SingleLeaderboardMenu {
                     Menus.LEADERBOARDS.open(event.getPlayer());
                 }))
                 .open(player);
-    }
-
-    public enum Sort {
-
-        SCORE, TIME, DIFFICULTY
     }
 }
