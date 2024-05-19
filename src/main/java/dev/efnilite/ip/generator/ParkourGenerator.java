@@ -7,6 +7,7 @@ import dev.efnilite.ip.api.event.ParkourFallEvent;
 import dev.efnilite.ip.api.event.ParkourSchematicGenerateEvent;
 import dev.efnilite.ip.api.event.ParkourScoreEvent;
 import dev.efnilite.ip.config.Config;
+import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
@@ -14,11 +15,12 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourSpectator;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.ip.world.Divider;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.schematic.Schematic;
@@ -80,12 +82,12 @@ public class ParkourGenerator {
     /**
      * The zone in which the parkour can take place. (playable area)
      */
-    public Location[] zone;
+    public Vector[] zone;
 
     /**
      * The player
      */
-    public ParkourPlayer player;
+    public ParkourPlayer2 player;
 
     /**
      * The task used in checking the player's current location
@@ -95,12 +97,12 @@ public class ParkourGenerator {
     /**
      * Where blocks from schematics spawn
      */
-    public Location blockSpawn;
+    public Vector blockSpawn;
 
     /**
      * Where the player spawns on reset
      */
-    public Location playerSpawn;
+    public Vector playerSpawn;
 
     /**
      * Instant when run started.
@@ -260,7 +262,7 @@ public class ParkourGenerator {
         switch (Option.PARTICLE_SHAPE) {
             case DOT -> Particles.draw(center.add(0.5, 1, 0.5), data.speed(0.4).size(20).offsetX(0.5).offsetY(1).offsetZ(0.5));
             case CIRCLE -> Particles.circle(center.add(0.5, 0.5, 0.5), data.size(5), (int) Math.sqrt(blocks.size()), 20);
-            case BOX -> Particles.box(BoundingBox.of(max, min), player.player.getWorld(), data.size(1), 0.2);
+            case BOX -> Particles.box(BoundingBox.of(max, min), World.getWorld(), data.size(1), 0.2);
         }
     }
 
@@ -275,15 +277,15 @@ public class ParkourGenerator {
         }
 
         // play sound
-        getPlayers().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
-        getSpectators().forEach(viewer -> viewer.player.playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
+        getPlayers().forEach(viewer -> viewer.getPlayer().playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
+        getSpectators().forEach(viewer -> viewer.getPlayer().playSound(blocks.get(0).getLocation(), Option.SOUND_TYPE, Option.SOUND_VOLUME, Option.SOUND_PITCH));
     }
 
     protected BlockData selectBlockData() {
         Style style = Registry.getStyle(profile.get("style").value());
 
         if (style == null) {
-            profile.set("style", Registry.getStyles().stream().findFirst().get().getName());
+            profile.set("style", Registry.getStyles().stream().findFirst().orElseThrow().getName());
             return selectBlockData();
         }
 
@@ -345,7 +347,7 @@ public class ParkourGenerator {
 
         // check generic score rewards
         if (Rewards.SCORE_REWARDS.containsKey(score)) {
-            Rewards.SCORE_REWARDS.get(score).forEach(s -> s.execute(player, getMode()));
+            Rewards.SCORE_REWARDS.get(score).forEach(s -> s.execute(player.getPlayer(), getMode()));
         }
 
         // gets the correct type of score to check based on the config option
@@ -355,7 +357,7 @@ public class ParkourGenerator {
                 continue;
             }
 
-            Rewards.INTERVAL_REWARDS.get(interval).forEach(s -> s.execute(player, getMode()));
+            Rewards.INTERVAL_REWARDS.get(interval).forEach(s -> s.execute(player.getPlayer(), getMode()));
         }
 
         if (Rewards.ONE_TIME_REWARDS.containsKey(score) && !player.collectedRewards.contains(Integer.toString(score))) {
@@ -375,7 +377,7 @@ public class ParkourGenerator {
 
     public void startTick() {
         task = Task.create(IP.getPlugin())
-            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Config.GENERATION.getInt("advanced.generator-check"))
+            .repeat(1)
             .execute(this::tick)
             .run();
     }
@@ -391,25 +393,27 @@ public class ParkourGenerator {
 
         getPlayers().forEach(other -> {
             updateVisualTime(other, other.selectedTime);
-            other.updateScoreboard(this);
-            other.player.setSaturation(20);
+            other.updateBoard(score, getFormattedTime());
+            other.getPlayer().setSaturation(20);
         });
 
-        getSpectators().forEach(ParkourSpectator::update);
+        getSpectators().forEach(other -> {
+            other.sendActionBar(Locales.getString(player, "play.spectator.action_bar"));
+        });
 
-        if (player.getLocation().getWorld() != lastStandingPlayerLocation.getWorld()) {
+        if (player.getPlayer().getWorld() != lastStandingPlayerLocation.getWorld()) {
             return;
         }
 
-        if (player.getLocation().subtract(lastStandingPlayerLocation).getY() < -10) { // fall check
+        if (player.getPosition().subtract(lastStandingPlayerLocation.toVector()).getY() < -10) { // fall check
             IP.log("Player %s is falling".formatted(player.getName()));
 
             fall();
             return;
         }
 
-        Location belowPlayer = player.getLocation().subtract(0, 1, 0);
-        Block blockBelowPlayer = belowPlayer.getBlock(); // Get the block below
+        var belowPlayer = player.getPosition().subtract(new Vector(0, 1, 0));
+        var blockBelowPlayer = belowPlayer.getBlock(); // Get the block below
 
         if (blockBelowPlayer.getType() == Material.AIR) {
             if (belowPlayer.subtract(0, 0.5, 0).getBlock().getType() == Material.AIR) {
@@ -441,7 +445,7 @@ public class ParkourGenerator {
             return;
         }
 
-        lastStandingPlayerLocation = player.getLocation();
+        lastStandingPlayerLocation = player.getPosition();
 
         int blockLead = profile.get("blockLead").asInt();
 
@@ -525,7 +529,7 @@ public class ParkourGenerator {
                 message = "settings.parkour_settings.items.fall_message.formats.miss";
             }
 
-            for (ParkourPlayer players : getPlayers()) {
+            for (ParkourPlayer2 players : getPlayers()) {
                 players.sendTranslated("settings.parkour_settings.items.fall_message.divider");
                 players.sendTranslated("settings.parkour_settings.items.fall_message.score", Integer.toString(score));
                 players.sendTranslated("settings.parkour_settings.items.fall_message.time", getFormattedTime());
@@ -552,7 +556,7 @@ public class ParkourGenerator {
         island.destroy();
 
         if (getPlayers().isEmpty()) {
-            getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.player));
+            getSpectators().forEach(spectator -> Modes.DEFAULT.create(spectator.getPlayer()));
         }
     }
 
@@ -748,7 +752,7 @@ public class ParkourGenerator {
      * @param spawn The spawn of the player
      * @param block The location used to begin the parkour of off
      */
-    public void generateFirst(Location spawn, Location block) {
+    public void generateFirst(Vector spawn, Location block) {
         IP.log("First generation");
 
         playerSpawn = spawn;
@@ -814,16 +818,14 @@ public class ParkourGenerator {
     /**
      * @return The players in this session.
      */
-    @NotNull
-    public List<ParkourPlayer> getPlayers() {
+    public List<ParkourPlayer2> getPlayers() {
         return session.getPlayers();
     }
 
     /**
      * @return The spectators in this session.
      */
-    @NotNull
-    public List<ParkourSpectator> getSpectators() {
+    public List<ParkourPlayer2> getSpectators() {
         return session.getSpectators();
     }
 

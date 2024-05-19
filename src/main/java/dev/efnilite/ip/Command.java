@@ -12,7 +12,6 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.MultiMode;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
-import dev.efnilite.ip.player.data.InventoryData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.command.ViCommand;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -156,7 +155,6 @@ public class Command extends ViCommand {
             send(sender, "<gray>/ip reset <everyone/player> <dark_gray>- Resets all high scores. <red>This can't be recovered!");
             send(sender, "<gray>/ip forcejoin <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to join");
             send(sender, "<gray>/ip forceleave <everyone/nearest/player> <dark_gray>- Forces a specific player, the nearest or everyone to leave");
-            send(sender, "<gray>/ip recoverinventory <player> <dark_gray>- Recover a player's saved inventory. <red>Useful for recovering data after server crashes or errors when leaving.");
         }
         send(sender, "");
     }
@@ -372,27 +370,6 @@ public class Command extends ViCommand {
                 }
 
                 send(sender, IP.PREFIX + "Successfully reset the high score of " + finalName + " in memory and the files.");
-            }
-            case "recoverinventory" -> {
-                if (!cooldown(sender, "recoverinventory", 2500) || !sender.hasPermission(ParkourOption.ADMIN.permission)) {
-                    return;
-                }
-
-                Player other = Bukkit.getPlayer(arg2);
-                if (other == null) {
-                    send(sender, IP.PREFIX + "That player isn't online!");
-                    return;
-                }
-
-                new InventoryData(other).load(result -> {
-                    if (result != null) {
-                        send(sender, "%sSuccessfully recovered the inventory of %s from their file".formatted(IP.PREFIX, other.getName()));
-                        send(sender, "%sGiving %s their items now...".formatted(IP.PREFIX, other.getName()));
-                    } else {
-                        send(sender, "%s<red>There was an error recovering the inventory of %s from their file".formatted(IP.PREFIX, other.getName()));
-                        send(sender, "%s%s has no saved inventory or there was an error. Check the console.".formatted(IP.PREFIX, other.getName()));
-                    }
-                });
             }
         }
 

@@ -10,6 +10,7 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,10 @@ import java.util.regex.Pattern;
 public class PAPIHook extends PlaceholderExpansion {
 
     private static final Pattern INFINITE_REGEX = Pattern.compile("(.+)_(\\d+)");
+
+    public String replace(Player player, String message) {
+        return PlaceholderAPI.setPlaceholders(player, message);
+    }
 
     @Override
     public @NotNull String getIdentifier() {

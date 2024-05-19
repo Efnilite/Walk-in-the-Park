@@ -8,15 +8,13 @@ import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.MultiMode;
-import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import java.util.List;
 public class SingleMenu {
 
     public void open(Player player) {
-        ParkourUser user = ParkourUser.getUser(player);
+        var user = ParkourPlayer2.as(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
         List<Mode> modes = Registry.getModes();
@@ -45,7 +43,7 @@ public class SingleMenu {
             modeSet.add(mode);
 
             items.add(item.clone().click(event -> {
-                if (user == null || Duration.between(user.joined, Instant.now()).toSeconds() > 3) {
+                if (user == null) {
                     mode.create(player);
                 }
             }));

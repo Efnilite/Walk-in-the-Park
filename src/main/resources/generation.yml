@@ -61,10 +61,6 @@ advanced:
       # This block will be set to air once the schematic has been pasted.
       player-block: diamond_block
 
-      # -= Spawn yaw/pitch =-
-      yaw: -90
-      pitch: 0
-
     parkour:
 
       # -= Begin block =-
@@ -84,8 +80,3 @@ advanced:
   # -= Schematic cooldown =-
   # The amount of blocks that provide a cooldown for the schematics.
   schematic-cooldown: 20
-
-  # -= Generator check interval =-
-  # The amount of ticks between checks of the player's location and score.
-  # Lowering this is not recommended. Raising this may cause additional lag.
-  generator-check: 2

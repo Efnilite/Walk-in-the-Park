@@ -1,6 +1,6 @@
 package dev.efnilite.ip.menu;
 
-import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public abstract class DynamicMenu {
      * @param item          The item
      * @param shouldDisplay Whether this item should be displayed right now.
      */
-    public void registerMainItem(int row, int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item, Predicate<Player> shouldDisplay) {
+    public void registerMainItem(int row, int id, BiFunction<@NotNull Player, @Nullable ParkourPlayer2, MenuItem> item, Predicate<Player> shouldDisplay) {
         if (id < 0 || row < 0 || row > 4) {
             return;
         }
@@ -50,7 +50,7 @@ public abstract class DynamicMenu {
      * @param menu   The menu
      */
     public void display(Player player, Menu menu) {
-        ParkourUser user = ParkourUser.getUser(player);
+        var user = ParkourPlayer2.as(player);
         for (int row : registeredItems.keySet()) {
             int actualSlot = row * 9; // 0, 9, 18, etc.
 
@@ -71,6 +71,6 @@ public abstract class DynamicMenu {
     /**
      * Data class for registered items
      */
-    protected record ItemContainer(int id, BiFunction<@NotNull Player, @Nullable ParkourUser, MenuItem> item,
+    protected record ItemContainer(int id, BiFunction<@NotNull Player, @Nullable ParkourPlayer2, MenuItem> item,
                                    Predicate<Player> predicate) {}
 }

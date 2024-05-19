@@ -8,6 +8,7 @@ import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.world.Divider;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,8 +142,8 @@ public class Session {
     /**
      * @return The players.
      */
-    public Collection<ParkourPlayer2> getPlayers() {
-        return players.values();
+    public List<ParkourPlayer2> getPlayers() {
+        return new ArrayList<>(players.values());
     }
 
     /**
@@ -159,6 +160,19 @@ public class Session {
             }
 
             players.put(spectator.getUUID(), spectator);
+
+            spectator.teleport(getPlayers().stream().findAny().orElseThrow().getPosition());
+
+            spectator.sendTranslated("play.spectator.join");
+
+            spectator.getPlayer().setGameMode(GameMode.SPECTATOR);
+            spectator.getPlayer().setAllowFlight(true);
+            spectator.getPlayer().setFlying(true);
+
+            if (ParkourUser.isBedrockPlayer(spectator.getPlayer())) {  // bedrock has no spectator mode, so just make the player invisible
+                spectator.getPlayer().setInvisible(true);
+                spectator.getPlayer().setCollidable(false);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package dev.efnilite.ip.config;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Task;
@@ -116,7 +117,7 @@ public class Locales {
 
     /**
      * Gets a String from the provided path in the provided player's locale.
-     * If the player is a {@link ParkourUser}, their locale value will be used.
+     * If the player is a {@link ParkourPlayer2}, their locale value will be used.
      * If not, the default locale will be used.
      *
      * @param player The player
@@ -124,9 +125,14 @@ public class Locales {
      * @return a String
      */
     public static String getString(Player player, String path) {
-        ParkourUser user = ParkourUser.getUser(player);
+        var user = ParkourPlayer2.as(player);
+        var locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
-        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
+        return getString(locale, path);
+    }
+
+    public static String getString(ParkourPlayer2 player, String path) {
+        String locale = player == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : player.locale;
 
         return getString(locale, path);
     }
@@ -175,8 +181,8 @@ public class Locales {
      */
     @NotNull
     public static Item getItem(@NotNull Player player, String path, String... replace) {
-        ParkourUser user = ParkourUser.getUser(player);
-        String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
+        var user = ParkourPlayer2.as(player);
+        var locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
         return getItem(locale, path, replace);
     }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * Spawn island handler.
@@ -61,13 +62,11 @@ public final class Island {
             player.setType(Material.AIR);
             parkour.setType(Material.AIR);
 
-            Location ps = player.getLocation().add(0.5, 0, 0.5);
-            ps.setYaw(Config.GENERATION.getInt("advanced.island.spawn.yaw"));
-            ps.setPitch(Config.GENERATION.getInt("advanced.island.spawn.pitch"));
+            var ps = player.getLocation().add(0.5, 0, 0.5).toVector();
 
             session.generator.generateFirst(ps, parkour.getLocation().subtract(session.generator.heading).subtract(0, 1, 0));
             session.generator.startTick();
-            session.getPlayers().forEach(pp -> pp.setup(ps));
+            session.getPlayers().forEach(pp -> pp.getData().setup(ps));
         } catch (NoSuchElementException ex) {
             IP.logging().stack("Error while trying to find parkour or player spawn in schematic %s".formatted(schematic.getFile().getName()),
                     "check if you used the same material as the one in generation.yml", ex);

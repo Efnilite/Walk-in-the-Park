@@ -1,4 +1,4 @@
-package dev.efnilite.ip.player.data;
+package dev.efnilite.ip.player;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
@@ -10,6 +10,7 @@ import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.inventory.Menu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.util.Colls;
+import dev.efnilite.vilib.util.Strings;
 import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -74,7 +75,7 @@ public class PreviousData {
             player.setAllowFlight(false);
 
             if (Config.CONFIG.getBoolean("options.inventory-handling")) {
-                player.sendTranslated("other.customize");
+                player.sendMessage(Strings.colour(Locales.getString(player, "other.customize")));
             } else {
                 player.getInventory().clear();
 

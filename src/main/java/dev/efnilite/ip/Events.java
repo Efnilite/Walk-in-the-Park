@@ -80,12 +80,6 @@ public class Events implements EventWatcher {
     public void join(PlayerJoinEvent event) {
         var player = event.getPlayer();
 
-        if (player.isOp() && IP.getMv() != null && VoidGenerator.getMultiverseGenerator() == null) {
-            send(player, "");
-            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please install the plugin 'VoidGen' to fix this.");
-            send(player, "");
-        }
-
         if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
             Modes.DEFAULT.create(player);
             return;

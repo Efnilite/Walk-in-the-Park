@@ -6,8 +6,7 @@ import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Modes;
-import dev.efnilite.ip.player.ParkourPlayer;
-import dev.efnilite.ip.player.ParkourUser;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.Divider;
 import dev.efnilite.vilib.inventory.PagedMenu;
@@ -29,7 +28,7 @@ import java.util.List;
 public class SpectatorMenu {
 
     public void open(Player player) {
-        ParkourUser user = ParkourUser.getUser(player);
+        var user = ParkourPlayer2.as(player);
         String locale = user == null ? Option.OPTIONS_DEFAULTS.get(ParkourOption.LANG) : user.locale;
 
         PagedMenu spectator = new PagedMenu(3, Locales.getString(player, "play.spectator.name"));
@@ -48,7 +47,8 @@ public class SpectatorMenu {
             AutoSliderItem slider = new AutoSliderItem(1, spectator, IP.getPlugin()).initial(0); // slideritem
 
             int index = 0;
-            for (ParkourPlayer pp : session.getPlayers()) {
+            for (ParkourPlayer2 pp : session.getPlayers()) {
+
                 Item item = Locales.getItem(locale, "play.spectator.head", pp.getName());
                 // Player head gathering
                 item.material(Material.PLAYER_HEAD);
@@ -57,12 +57,12 @@ public class SpectatorMenu {
                 stack.setType(Material.PLAYER_HEAD);
 
                 // bedrock has no player skull support
-                if (!ParkourUser.isBedrockPlayer(player)) {
+                if (!IP.isBedrockPlayer(player)) {
                     if (pp.getName() != null && !pp.getName().startsWith(".")) { // bedrock players' names with geyser start with a .
                         SkullMeta meta = (SkullMeta) stack.getItemMeta();
 
                         if (meta != null) {
-                            SkullSetter.setPlayerHead(pp.player, meta);
+                            SkullSetter.setPlayerHead(pp.getPlayer(), meta);
                             item.meta(meta);
                         }
                     }
