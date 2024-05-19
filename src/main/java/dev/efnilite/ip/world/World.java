@@ -2,7 +2,6 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.config.Option;
 import dev.efnilite.vilib.util.VoidGenerator;
 import org.bukkit.*;
 
@@ -22,17 +21,11 @@ public class World {
 
         IP.log("Creating world %s".formatted(name));
 
-        if (IP.getMv() != null) {
-            IP.getMv().addWorld(name, org.bukkit.World.Environment.NORMAL, null, WorldType.NORMAL,
-                    false, VoidGenerator.getMultiverseGenerator());
-            world = IP.getMv().getMVWorld(name).getCBWorld();
-        } else {
-            world = new WorldCreator(name)
-                    .generator(VoidGenerator.getGenerator())
-                    .generateStructures(false)
-                    .type(WorldType.NORMAL)
-                    .createWorld();
-        }
+        world = new WorldCreator(name)
+                .generator(VoidGenerator.getGenerator())
+                .generateStructures(false)
+                .type(WorldType.NORMAL)
+                .createWorld();
 
         setup();
     }
@@ -74,11 +67,6 @@ public class World {
             return;
         }
         IP.log("Unloading world %s".formatted(name));
-
-        if (IP.getMv() != null) {
-            IP.getMv().deleteWorld(Option.WORLD_NAME, false);
-            return;
-        }
 
         Bukkit.unloadWorld(name, false);
 

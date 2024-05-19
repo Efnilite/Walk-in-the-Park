@@ -18,19 +18,19 @@ public class Rewards {
      * A map with all Score-type score rewards.
      * The key is the score, and the value are the commands that will be executed once this score is reached.
      */
-    public static Map<Integer, List<RewardString>> SCORE_REWARDS = new HashMap<>();
+    public static Map<Integer, List<Reward>> SCORE_REWARDS = new HashMap<>();
 
     /**
      * A map with all Interval-type score rewards.
      * The key is the score, and the value are the commands that will be executed once this score is reached.
      */
-    public static Map<Integer, List<RewardString>> INTERVAL_REWARDS = new HashMap<>();
+    public static Map<Integer, List<Reward>> INTERVAL_REWARDS = new HashMap<>();
 
     /**
      * A map with all One time-type score rewards.
      * The key is the score, and the value are the commands that will be executed once this score is reached.
      */
-    public static Map<Integer, List<RewardString>> ONE_TIME_REWARDS = new HashMap<>();
+    public static Map<Integer, List<Reward>> ONE_TIME_REWARDS = new HashMap<>();
 
     /**
      * Reads the rewards from the rewards-v2.yml file
@@ -48,14 +48,14 @@ public class Rewards {
         ONE_TIME_REWARDS = parseScores("one-time-rewards");
     }
 
-    private static Map<Integer, List<RewardString>> parseScores(String path) {
-        Map<Integer, List<RewardString>> rewardMap = new HashMap<>();
+    private static Map<Integer, List<Reward>> parseScores(String path) {
+        Map<Integer, List<Reward>> rewardMap = new HashMap<>();
 
         for (String score : Config.REWARDS.getChildren(path)) {
 
             // read commands for this score
-            List<RewardString> rewardStrings = Config.REWARDS.getStringList("%s.%s".formatted(path, score)).stream()
-                    .map(RewardString::new)
+            List<Reward> rewardStrings = Config.REWARDS.getStringList("%s.%s".formatted(path, score)).stream()
+                    .map(Reward::new)
                     .toList();
 
             try {

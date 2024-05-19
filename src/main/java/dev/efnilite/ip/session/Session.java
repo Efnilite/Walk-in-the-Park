@@ -4,6 +4,7 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.world.Divider;
@@ -26,12 +27,12 @@ public class Session {
     /**
      * List of muted users.
      */
-    public final List<ParkourUser> muted = new ArrayList<>();
+    public final List<ParkourPlayer2> muted = new ArrayList<>();
 
     /**
      * List of users.
      */
-    protected final Map<UUID, ParkourUser> users = new HashMap<>();
+    protected final Map<UUID, ParkourPlayer2> players = new HashMap<>();
 
     /**
      * The generator.
@@ -75,10 +76,10 @@ public class Session {
         if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
         if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
 
-        List<ParkourPlayer> pps = new ArrayList<>();
+        List<ParkourPlayer2> pps = new ArrayList<>();
         if (players != null) {
             for (Player player : players) {
-                ParkourPlayer pp = ParkourUser.register(player, session);
+                ParkourPlayer pp = new ParkourPlayer2(player, session);
                 session.addPlayers(pp);
                 pps.add(pp);
             }
@@ -100,15 +101,15 @@ public class Session {
      *
      * @param toAdd The players to add.
      */
-    public void addPlayers(ParkourPlayer... toAdd) {
-        for (ParkourPlayer player : toAdd) {
+    public void addPlayers(ParkourPlayer2... toAdd) {
+        for (ParkourPlayer2 player : toAdd) {
             IP.log("Adding player %s to session".formatted(player.getName()));
 
             for (ParkourPlayer to : getPlayers()) {
                 to.send(Locales.getString(player.locale, "lobby.other_join").formatted(player.getName()));
             }
 
-            users.put(player.getUUID(), player);
+            players.put(player.getUUID(), player);
         }
     }
 
@@ -117,15 +118,15 @@ public class Session {
      *
      * @param toRemove The players to remove.
      */
-    public void removePlayers(ParkourPlayer... toRemove) {
-        for (ParkourPlayer player : toRemove) {
+    public void removePlayers(ParkourPlayer2... toRemove) {
+        for (ParkourPlayer2 player : toRemove) {
             IP.log("Removing player %s from session".formatted(player.getName()));
 
-            users.remove(player.getUUID());
+            players.remove(player.getUUID());
         }
 
-        List<ParkourPlayer> players = getPlayers();
-        for (ParkourPlayer player : toRemove) {
+        List<ParkourPlayer2> players = getPlayers();
+        for (ParkourPlayer2 player : toRemove) {
             for (ParkourPlayer to : players) {
                 to.send(Locales.getString(player.locale, "lobby.other_leave").formatted(player.getName()));
             }
@@ -140,11 +141,8 @@ public class Session {
     /**
      * @return The players.
      */
-    public List<ParkourPlayer> getPlayers() {
-        return users.values().stream()
-                .filter(user -> user instanceof ParkourPlayer)
-                .map(user -> (ParkourPlayer) user)
-                .toList();
+    public Collection<ParkourPlayer2> getPlayers() {
+        return players.values();
     }
 
     /**
@@ -152,15 +150,15 @@ public class Session {
      *
      * @param spectators The spectators to add.
      */
-    public void addSpectators(ParkourSpectator... spectators) {
-        for (ParkourSpectator spectator : spectators) {
+    public void addSpectators(ParkourPlayer2... spectators) {
+        for (ParkourPlayer2 spectator : spectators) {
             IP.log("Adding spectator %s to session".formatted(spectator.getName()));
 
-            for (ParkourPlayer player : getPlayers()) {
+            for (ParkourPlayer2 player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_join", spectator.getName());
             }
 
-            users.put(spectator.getUUID(), spectator);
+            players.put(spectator.getUUID(), spectator);
         }
     }
 
@@ -173,29 +171,21 @@ public class Session {
         for (ParkourSpectator spectator : spectators) {
             IP.log("Removing spectator %s from session".formatted(spectator.getName()));
 
-            for (ParkourPlayer player : getPlayers()) {
+            for (ParkourPlayer2 player : getPlayers()) {
                 player.sendTranslated("play.spectator.other_leave", spectator.getName());
             }
 
-            users.remove(spectator.getUUID());
+            players.remove(spectator.getUUID());
         }
     }
 
     /**
      * @return The spectators.
      */
-    public List<ParkourSpectator> getSpectators() {
-        return users.values().stream()
-                .filter(user -> user instanceof ParkourSpectator)
-                .map(user -> (ParkourSpectator) user)
+    public List<ParkourPlayer2> getSpectators() {
+        return players.values().stream()
+                .filter(ParkourPlayer2::isSpectator)
                 .toList();
-    }
-
-    /**
-     * @return The users.
-     */
-    public List<ParkourUser> getUsers() {
-        return new ArrayList<>(users.values());
     }
 
     /**
@@ -203,7 +193,7 @@ public class Session {
      *
      * @param user The user to (un)mute.
      */
-    public void toggleMute(@NotNull ParkourUser user) {
+    public void toggleMute(@NotNull ParkourPlayer2 user) {
         if (!muted.remove(user)) {
             muted.add(user);
         }

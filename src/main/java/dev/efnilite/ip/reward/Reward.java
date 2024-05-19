@@ -5,8 +5,10 @@ import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.hook.VaultHook;
 import dev.efnilite.ip.mode.Mode;
 import dev.efnilite.ip.mode.Modes;
-import dev.efnilite.ip.player.ParkourPlayer;
+import dev.efnilite.ip.player.ParkourPlayer2;
+import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,14 +16,14 @@ import org.jetbrains.annotations.NotNull;
  */
 // todo add cross-server support
 // todo mode-specific way of saving one-time-rewards
-public record RewardString(@NotNull String string) {
+public record Reward(@NotNull String string) {
 
     /**
      * Parses and executes this reward
      *
      * @param player The player to which to give this reward to
      */
-    public void execute(@NotNull ParkourPlayer player, @NotNull Mode mode) {
+    public void execute(@NotNull Player player, @NotNull Mode mode) {
         if (string.isEmpty()) {
             return;
         }
@@ -47,7 +49,11 @@ public record RewardString(@NotNull String string) {
         // check for extra data
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            player.previousData.onLeave.add(new RewardString(string));
+            var pp = ParkourPlayer2.as(player);
+
+            if (pp == null) return;
+
+            pp.addReward(mode, new Reward(string));
             return;
         }
 
@@ -55,12 +61,12 @@ public record RewardString(@NotNull String string) {
         if (string.toLowerCase().contains("send:")) {
             string = string.replaceFirst("send:", "");
 
-            player.send(string);
+            player.sendMessage(Strings.colour(string));
         } else if (string.toLowerCase().contains("vault:")) {
             string = string.replaceFirst("vault:", "");
 
             try {
-                VaultHook.deposit(player.player, Double.parseDouble(string));
+                VaultHook.deposit(player, Double.parseDouble(string));
             } catch (NumberFormatException ex) {
                 IP.logging().stack("Error while trying to process Vault reward", "check your rewards file for incorrect numbers", ex);
             }
