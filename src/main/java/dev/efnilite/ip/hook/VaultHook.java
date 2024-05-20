@@ -18,7 +18,7 @@ public class VaultHook {
      * @param player The player.
      * @param amount The amount.
      */
-    public static void deposit(Player player, double amount) {
+    public static void give(Player player, double amount) {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return;
         }

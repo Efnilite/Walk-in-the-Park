@@ -1,0 +1,37 @@
+# -= Rewards enabled? =-
+enabled: false
+
+# Rewards use the following format:
+# <time of execution>||<mode>||<command>||<value>
+# - <time of execution> is when the reward will be given. It can be "now" or "leave", which will apply rewards on leave.
+# - <mode> is the mode the reward will be given in. It can be "all" or a specific mode.
+#   List of modes: default, close, min speed, obstacle, speed demon, time trial.
+# - <command> is the command that will be executed. It can be "vault" for Vault rewards,
+#  "console command" (without /), "player command" (without /) or "send".
+# - <value> is the value of the command. It can be a message, a command or the amount of money to give.
+# To get the name of the player, use %player%.
+
+# -= Score rewards =-
+# Rewards when a player reaches a specific score.
+score:
+  10:
+    - "now||all||send||You've reached 10 points!"
+  2500:
+    - "leave||all||console command||give %player% diamond 1"
+    - "now||all||send||Good job for completing your run!"
+
+# -= Interval rewards =-
+# Rewards which will be given at certain intervals.
+# An interval of 10 means a player will get a reward at 10, 20, 30, etc.
+interval:
+  100:
+    - "now||all||player command||me hello :)"
+    - "leave||time trial||send||<green>Good job!"
+    - "now||all||vault||10"
+
+# -= One-time rewards =-
+# Rewards which will be given only once.
+# Changing this reward will not cause players who have already received it to receive it again.
+one-time:
+  5000:
+    - "now||all||send||You've reached 5000 points! Nice!"

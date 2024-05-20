@@ -4,7 +4,6 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.hook.VaultHook;
 import dev.efnilite.ip.mode.Mode;
-import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer2;
 import dev.efnilite.vilib.util.Strings;
 import org.bukkit.Bukkit;
@@ -14,64 +13,56 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A class for handling reward commands, etc.
  */
-// todo add cross-server support
-// todo mode-specific way of saving one-time-rewards
 public record Reward(@NotNull String string) {
 
-    /**
-     * Parses and executes this reward
-     *
-     * @param player The player to which to give this reward to
-     */
-    public void execute(@NotNull Player player, @NotNull Mode mode) {
-        if (string.isEmpty()) {
-            return;
-        }
+    public void execute(Player player, Mode currentMode) {
+        var parts = string.split("\\|\\|", 4);
 
-        String string = this.string;
+        var time = parts[0].toLowerCase();
 
-        Mode rewardMode = Registry.getModes().stream()
-                .filter(m -> this.string.contains("%s:".formatted(m.getName().toLowerCase())))
-                .findFirst()
-                .orElse(Modes.DEFAULT);
-
-        if (mode != rewardMode) {
-            return;
-        }
-
-        string = string.replaceFirst("%s:".formatted(rewardMode.getName().toLowerCase()), "");
-
-        // check for placeholders
-        if (string.toLowerCase().contains("%player%")) {
-            string = string.replaceAll("%player%", player.getName());
-        }
-
-        // check for extra data
-        if (string.toLowerCase().contains("leave:")) { // leave:
-            string = string.replaceFirst("leave:", "");
+        if (time.equals("leave")) {
             var pp = ParkourPlayer2.as(player);
 
-            if (pp == null) return;
+            if (pp != null) {
+                pp.addReward(currentMode, new Reward("now||%s||%s||%s"
+                        .formatted(parts[1], parts[2], parts[3])));
+            }
 
-            pp.addReward(mode, new Reward(string));
             return;
         }
 
-        // check for things to perform
-        if (string.toLowerCase().contains("send:")) {
-            string = string.replaceFirst("send:", "");
+        var modeName = parts[1].toLowerCase();
 
-            player.sendMessage(Strings.colour(string));
-        } else if (string.toLowerCase().contains("vault:")) {
-            string = string.replaceFirst("vault:", "");
+        if (!modeName.equals("all")) {
+            var mode = Registry.getMode(modeName);
 
-            try {
-                VaultHook.deposit(player, Double.parseDouble(string));
-            } catch (NumberFormatException ex) {
-                IP.logging().stack("Error while trying to process Vault reward", "check your rewards file for incorrect numbers", ex);
+            if (mode == null) {
+                IP.logging().error("Invalid mode %s in rewards".formatted(modeName));
+                return;
             }
-        } else {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string);
+
+            if (mode != currentMode) {
+                return;
+            }
+        }
+
+        var command = parts[2].toLowerCase();
+        var value = parts[3].replace("%player%", player.getName());
+
+        switch (command) {
+            case "send" -> player.sendMessage(Strings.colour(value));
+            case "player command" -> player.performCommand(value);
+            case "console command" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
+            case "vault" -> {
+                try {
+                    var amount = Double.parseDouble(value);
+
+                    VaultHook.give(player, amount);
+                } catch (NumberFormatException ex) {
+                    IP.logging().error("Invalid numerical value %s in rewards".formatted(value));
+                }
+            }
+            default -> IP.logging().error("Invalid command %s in rewards".formatted(command));
         }
     }
 }

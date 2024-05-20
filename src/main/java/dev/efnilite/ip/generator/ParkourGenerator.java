@@ -361,7 +361,7 @@ public class ParkourGenerator {
         }
 
         if (Rewards.ONE_TIME_REWARDS.containsKey(score) && !player.collectedRewards.contains(Integer.toString(score))) {
-            Rewards.ONE_TIME_REWARDS.get(score).forEach(s -> s.execute(player, getMode()));
+            Rewards.ONE_TIME_REWARDS.get(score).forEach(s -> s.execute(player.getPlayer(), getMode()));
             player.collectedRewards.add(Integer.toString(score));
         }
     }

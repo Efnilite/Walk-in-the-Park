@@ -22,7 +22,7 @@ public enum Config {
 
     CONFIG("config.yml", List.of("styles")),
     GENERATION("generation.yml", null),
-    REWARDS("rewards-v2.yml", List.of("score-rewards", "interval-rewards", "one-time-rewards")),
+    REWARDS("rewards.yml", List.of("score", "interval", "one-time")),
     SCHEMATICS("schematics/schematics.yml", List.of("difficulty"));
 
     /**
