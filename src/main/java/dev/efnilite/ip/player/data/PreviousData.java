@@ -3,7 +3,7 @@ package dev.efnilite.ip.player.data;
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.reward.RewardString;
+import dev.efnilite.ip.reward.Reward;
 import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -30,9 +30,9 @@ public class PreviousData {
     private final Collection<PotionEffect> effects;
 
     /**
-     * List of all {@link RewardString} to execute on leave.
+     * List of all {@link Reward} to execute on leave.
      */
-    public List<RewardString> onLeave = new ArrayList<>();
+    public List<Reward> onLeave = new ArrayList<>();
 
     public PreviousData(@NotNull Player player) {
         gamemode = player.getGameMode();

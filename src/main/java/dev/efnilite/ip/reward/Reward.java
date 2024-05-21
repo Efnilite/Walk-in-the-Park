@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 // todo add cross-server support
 // todo mode-specific way of saving one-time-rewards
-public record RewardString(@NotNull String string) {
+public record Reward(@NotNull String string) {
 
     /**
      * Parses and executes this reward
@@ -47,7 +47,7 @@ public record RewardString(@NotNull String string) {
         // check for extra data
         if (string.toLowerCase().contains("leave:")) { // leave:
             string = string.replaceFirst("leave:", "");
-            player.previousData.onLeave.add(new RewardString(string));
+            player.previousData.onLeave.add(new Reward(string));
             return;
         }
 

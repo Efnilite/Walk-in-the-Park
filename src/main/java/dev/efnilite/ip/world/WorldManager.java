@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public class WorldManager {
 
     private static String name;
+    private static World world;
 
     /**
      * Creates a new world and sets all according settings in it.
@@ -21,7 +22,7 @@ public class WorldManager {
     public static void create() {
         name = Config.CONFIG.getString("world.name");
 
-        World world = getWorld();
+        var world = Bukkit.getWorld(name);
 
         if (!Config.CONFIG.getBoolean("joining")) {
             return;
@@ -31,21 +32,16 @@ public class WorldManager {
             IP.logging().warn("Crash detected! The parkour world loading twice is not usual behaviour. This only happens after a server crash.");
         }
 
-        IP.log("Initializing world rules");
-
         if (Config.CONFIG.getBoolean("world.delete-on-reload")) {
             deleteWorld();
         }
 
-        world = createWorld();
-
-        setup(world);
+        createWorld();
+        setup();
     }
 
-    private static World createWorld() {
+    private static void createWorld() {
         IP.log("Creating Spigot world");
-
-        World world = null;
 
         try {
             WorldCreator creator = new WorldCreator(name)
@@ -58,11 +54,11 @@ public class WorldManager {
         } catch (Exception ex) {
             IP.logging().stack("Error while trying to create the parkour world", "delete the parkour world folder and restart the server", ex);
         }
-
-        return world;
     }
 
-    private static void setup(World world) {
+    private static void setup() {
+        IP.log("Initializing world rules");
+
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
@@ -115,11 +111,16 @@ public class WorldManager {
     }
 
     /**
-     * Gets the parkour world.
-     *
+     * @return the name of the parkour world.
+     */
+    public static String getName() {
+        return name;
+    }
+
+    /**
      * @return the Bukkit world wherein IP is currently active.
      */
     public static World getWorld() {
-        return Bukkit.getWorld(name);
+        return world;
     }
 }
