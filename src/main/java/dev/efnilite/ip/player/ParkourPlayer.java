@@ -19,6 +19,7 @@ import dev.efnilite.vilib.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Registry;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +86,8 @@ public class ParkourPlayer extends ParkourUser {
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setInvisible(false);
+
+        Registry.EFFECT.stream().forEach(player::removePotionEffect);
     }
 
     private static boolean parseBoolean(String string) {

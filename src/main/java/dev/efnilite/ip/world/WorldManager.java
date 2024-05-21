@@ -2,30 +2,25 @@ package dev.efnilite.ip.world;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.config.Option;
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
-import org.bukkit.GameRule;
-import org.bukkit.World;
+import dev.efnilite.vilib.util.VoidGenerator;
+import org.bukkit.*;
 
-public interface WorldManager {
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
-    /**
-     * Implementation for creating a world.
-     *
-     * @return The created world.
-     */
-    World createWorld();
+public class WorldManager {
 
-    /**
-     * Implementation for deleting a world.
-     */
-    void deleteWorld();
+    private static String name;
 
     /**
      * Creates a new world and sets all according settings in it.
      */
-    static void create() {
+    public static void create() {
+        name = Config.CONFIG.getString("world.name");
+
         World world = getWorld();
 
         if (!Config.CONFIG.getBoolean("joining")) {
@@ -36,16 +31,38 @@ public interface WorldManager {
             IP.logging().warn("Crash detected! The parkour world loading twice is not usual behaviour. This only happens after a server crash.");
         }
 
-        WorldManager manager = getInstance();
-
         IP.log("Initializing world rules");
 
         if (Config.CONFIG.getBoolean("world.delete-on-reload")) {
-            manager.deleteWorld();
+            deleteWorld();
         }
 
-        world = manager.createWorld();
+        world = createWorld();
 
+        setup(world);
+    }
+
+    private static World createWorld() {
+        IP.log("Creating Spigot world");
+
+        World world = null;
+
+        try {
+            WorldCreator creator = new WorldCreator(name)
+                    .generateStructures(false)
+                    .type(WorldType.NORMAL)
+                    .generator(VoidGenerator.getGenerator()) // to fix No keys in MapLayer etc.
+                    .environment(World.Environment.NORMAL);
+
+            world = Bukkit.createWorld(creator);
+        } catch (Exception ex) {
+            IP.logging().stack("Error while trying to create the parkour world", "delete the parkour world folder and restart the server", ex);
+        }
+
+        return world;
+    }
+
+    private static void setup(World world) {
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_TILE_DROPS, false);
@@ -65,7 +82,7 @@ public interface WorldManager {
     /**
      * Deletes the world.
      */
-    static void delete() {
+    public static void delete() {
         if (!Config.CONFIG.getBoolean("world.delete-on-reload") || !Config.CONFIG.getBoolean("joining")) {
             return;
         }
@@ -73,7 +90,28 @@ public interface WorldManager {
 
         getWorld().getPlayers().forEach(player -> player.kickPlayer("Server is restarting"));
 
-        getInstance().deleteWorld();
+        deleteWorld();
+    }
+
+    private static void deleteWorld() {
+        IP.log("Deleting Spigot world");
+
+        File file = new File(name);
+
+        // world has already been deleted
+        if (!file.exists()) {
+            return;
+        }
+
+        Bukkit.unloadWorld(name, false);
+
+        try (Stream<Path> files = Files.walk(file.toPath())) {
+            files.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (Exception ex) {
+            IP.logging().stack("Error while trying to delete the parkour world", ex);
+        }
     }
 
     /**
@@ -81,16 +119,7 @@ public interface WorldManager {
      *
      * @return the Bukkit world wherein IP is currently active.
      */
-    static World getWorld() {
-        return Bukkit.getWorld(Option.WORLD_NAME);
-    }
-
-    /**
-     * Returns the appropriate instance.
-     *
-     * @return The appropriate instance.
-     */
-    static WorldManager getInstance() {
-        return WorldManagerMV.MANAGER != null ? new WorldManagerMV() : new WorldManagerMC();
+    public static World getWorld() {
+        return Bukkit.getWorld(name);
     }
 }

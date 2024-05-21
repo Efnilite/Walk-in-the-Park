@@ -27,9 +27,6 @@ public class Option {
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
 
-    // Worlds
-    public static String WORLD_NAME;
-
     public static Location GO_BACK_LOC;
 
     public static void init(boolean firstLoad) {
@@ -45,15 +42,6 @@ public class Option {
         GO_BACK_LOC.setYaw(Float.parseFloat(axes[1]));
 
         // General settings
-
-        // Worlds
-        WORLD_NAME = Config.CONFIG.getString("world.name");
-
-        if (!WORLD_NAME.matches("[a-zA-Z0-9_-]+")) {
-            IP.logging().stack("Invalid world name: %s".formatted(WORLD_NAME), "world names need to contain only a-z, A-Z, 0-9, _ or -.");
-
-            WORLD_NAME = "witp";
-        }
 
         // Options
 
