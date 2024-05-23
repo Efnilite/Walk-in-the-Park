@@ -130,9 +130,6 @@ public abstract class ParkourUser {
         if (user instanceof ParkourPlayer player) {
             user.previousData.onLeave.forEach(r -> r.execute(player, mode));
         }
-
-        user.player.resetPlayerTime();
-        user.player.resetPlayerWeather();
     }
 
     // Sends a player to a BungeeCord server. server is the server name.

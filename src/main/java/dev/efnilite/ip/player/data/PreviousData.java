@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -79,6 +80,11 @@ public class PreviousData {
             for (PotionEffect effect : effects) {
                 player.addPotionEffect(effect);
             }
+
+            player.resetPlayerTime();
+            player.resetPlayerWeather();
+            player.setVelocity(new Vector(0, 0, 0));
+            player.setFallDistance(0f);
         } catch (Exception ex) { // not the best way to do this... too bad!
             IP.logging().stack("Error while recovering stats of %s".formatted(player.getName()), ex);
         }
