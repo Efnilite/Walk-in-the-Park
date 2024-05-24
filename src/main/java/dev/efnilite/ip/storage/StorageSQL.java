@@ -9,7 +9,10 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -133,32 +136,35 @@ class StorageSQL {
     }
 
     public static void writePlayer(@NotNull ParkourPlayer player) {
+        DecimalFormat df = new DecimalFormat("#.######", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        String schematicDifficulty = df.format(player.schematicDifficulty);
+
         sendUpdate("""
-                INSERT INTO `%s`
-                (uuid, style, blockLead, useParticles, useSpecial, showFallMsg, showScoreboard,
-                 selectedTime, collectedRewards, locale, schematicDifficulty, sound)
-                VALUES ('%s', '%s', %d, %b, %b, %b, %b, %d, '%s', '%s', %f, %b)
-                ON DUPLICATE KEY UPDATE style               = '%s',
-                                        blockLead           = %d,
-                                        useParticles        = %b,
-                                        useSpecial          = %b,
-                                        showFallMsg         = %b,
-                                        showScoreboard      = %b,
-                                        selectedTime        = %d,
-                                        collectedRewards    = '%s',
-                                        locale              = '%s',
-                                        schematicDifficulty = %f,
-                                        sound               = %b;
-                                        """
+            INSERT INTO `%s`
+            (uuid, style, blockLead, useParticles, useSpecial, showFallMsg, showScoreboard,
+             selectedTime, collectedRewards, locale, schematicDifficulty, sound)
+            VALUES ('%s', '%s', %d, %b, %b, %b, %b, %d, '%s', '%s', %s, %b)
+            ON DUPLICATE KEY UPDATE style               = '%s',
+                                    blockLead           = %d,
+                                    useParticles        = %b,
+                                    useSpecial          = %b,
+                                    showFallMsg         = %b,
+                                    showScoreboard      = %b,
+                                    selectedTime        = %d,
+                                    collectedRewards    = '%s',
+                                    locale              = '%s',
+                                    schematicDifficulty = %s,
+                                    sound               = %b;
+                                    """
                 .formatted("%soptions".formatted(Option.SQL_PREFIX), player.getUUID(), player.style, player.blockLead,
                         player.particles, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.locale,
-                        player.schematicDifficulty, player.sound,
+                        schematicDifficulty, player.sound,
 
                         player.style, player.blockLead,
                         player.particles, player.useSpecialBlocks, player.showFallMessage,
                         player.showScoreboard, player.selectedTime, String.join(",", player.collectedRewards), player.locale,
-                        player.schematicDifficulty, player.sound));
+                        schematicDifficulty, player.sound));
     }
 
     public static void connect() {

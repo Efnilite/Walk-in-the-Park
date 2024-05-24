@@ -375,7 +375,7 @@ public class ParkourGenerator {
 
     public void startTick() {
         task = Task.create(IP.getPlugin())
-            .repeat(generatorOptions.contains(GeneratorOption.INCREASED_TICK_ACCURACY) ? 1 : Config.GENERATION.getInt("advanced.generator-check"))
+            .repeat(1)
             .execute(this::tick)
             .run();
     }

@@ -67,7 +67,7 @@ community:
 
     sort:
       material: "bookshelf"
-      name: "<#DEA11F><bold>Sorteren op %s"
+      name: "<#DEA11F><bold>Gesorteerd op %s"
       lore: ""
       values: ["score", "tijd", "moeilijkheid"]
 

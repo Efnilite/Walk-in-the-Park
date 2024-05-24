@@ -4,7 +4,6 @@ import dev.efnilite.ip.config.Config;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.generator.ParkourGenerator;
 import dev.efnilite.ip.leaderboard.Leaderboard;
-import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.vilib.inventory.item.Item;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class DefaultMode implements Mode {
 
-    private final Leaderboard leaderboard = new Leaderboard(getName(), SingleLeaderboardMenu.Sort.SCORE);
+    private final Leaderboard leaderboard = new Leaderboard(getName(), Leaderboard.Sort.SCORE);
 
     @Override
     @NotNull

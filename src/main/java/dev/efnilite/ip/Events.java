@@ -10,13 +10,11 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.WorldManager;
-import dev.efnilite.ip.world.WorldManagerMV;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
 import dev.efnilite.vilib.util.Locations;
 import dev.efnilite.vilib.util.Strings;
-import dev.efnilite.vilib.util.VoidGenerator;
 import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -77,12 +75,6 @@ public class Events implements EventWatcher {
     @EventHandler(priority = EventPriority.LOWEST)
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        if (player.isOp() && WorldManagerMV.MANAGER != null && VoidGenerator.getMultiverseGenerator() == null) {
-            send(player, "");
-            send(player, IP.PREFIX + "You are running Multiverse without VoidGen. This causes extreme lag spikes and performance issues while playing. Please install the plugin 'VoidGen' to fix this.");
-            send(player, "");
-        }
 
         if (Config.CONFIG.getBoolean("bungeecord.enabled")) {
             Modes.DEFAULT.create(player);

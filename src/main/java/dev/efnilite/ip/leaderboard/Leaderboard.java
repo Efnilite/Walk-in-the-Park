@@ -2,7 +2,6 @@ package dev.efnilite.ip.leaderboard;
 
 import dev.efnilite.ip.IP;
 import dev.efnilite.ip.config.Config;
-import dev.efnilite.ip.menu.community.SingleLeaderboardMenu;
 import dev.efnilite.ip.storage.Storage;
 import dev.efnilite.vilib.util.Task;
 import org.jetbrains.annotations.NotNull;
@@ -23,14 +22,14 @@ public class Leaderboard {
     /**
      * The way in which items will be sorted.
      */
-    public final SingleLeaderboardMenu.Sort sort;
+    public final Sort sort;
 
     /**
      * A map of all scores for this mode
      */
     public final Map<UUID, Score> scores = new LinkedHashMap<>();
 
-    public Leaderboard(@NotNull String mode, SingleLeaderboardMenu.Sort sort) {
+    public Leaderboard(@NotNull String mode, Sort sort) {
         this.mode = mode.toLowerCase();
         this.sort = sort;
 
@@ -89,17 +88,44 @@ public class Leaderboard {
         }
     }
 
-    // sorts all scores in the map
-    private void sort() {
+    /**
+     * Returns sorted copy of the score map.
+     * @param sort The sorting method.
+     * @return A sorted map of scores.
+     */
+    public Map<UUID, Score> sort(Sort sort) {
         LinkedHashMap<UUID, Score> sorted = new LinkedHashMap<>();
 
         scores.entrySet().stream()
-                .sorted((one, two) -> switch (sort) {
-                    case SCORE -> two.getValue().score() - one.getValue().score();
-                    case TIME -> two.getValue().getTimeMillis() - one.getValue().getTimeMillis();
-                    case DIFFICULTY -> (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) - Double.parseDouble(one.getValue().difficulty()));
+                .sorted((one, two) -> {
+                    switch (sort) {
+                        case SCORE -> {
+                            int scoreComparison = two.getValue().score() - one.getValue().score();
+
+                            if (scoreComparison != 0) {
+                                return scoreComparison;
+                            } else {
+                                return one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
+                            }
+                        }
+                        case TIME -> {
+                            return one.getValue().getTimeMillis() - two.getValue().getTimeMillis();
+                        }
+                        case DIFFICULTY -> {
+                            return (int) Math.signum(Double.parseDouble(two.getValue().difficulty()) -
+                                    Double.parseDouble(one.getValue().difficulty()));
+                        }
+                        default -> throw new IllegalArgumentException("Invalid sort method");
+                    }
                 })
                 .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
+
+        return sorted;
+    }
+
+    // sorts all scores in the map
+    private void sort() {
+        var sorted = sort(sort);
 
         scores.clear();
         scores.putAll(sorted);
@@ -170,5 +196,9 @@ public class Leaderboard {
         }
 
         return new ArrayList<>(scores.values()).get(rank - 1);
+    }
+
+    public enum Sort {
+        SCORE, TIME, DIFFICULTY
     }
 }
