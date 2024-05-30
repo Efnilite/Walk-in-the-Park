@@ -165,9 +165,9 @@ settings:
         high_score: "<#80C7FD><bold>最高分数 <reset><white>%s"
 
         formats:
-          miss: "<gray>你比最高分低了 %s 分!"
-          beat: "<gray>你超过了最高分 %s 分!"
-          tied: "<gray>你追平了最高分!"
+          miss: "<gray>你与自己的最高记录相差%s分!"
+          beat: "<gray>你以%s分的差距创造了新记录!"
+          tied: "<gray>你打平了自己的最高记录!"
 
       particles:
         material: ""
