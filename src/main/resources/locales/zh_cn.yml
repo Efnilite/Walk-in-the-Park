@@ -1,47 +1,47 @@
-# Chinese (Simplified, zh_cn)
-# By YaoSiQian
-# Copy this file and rename it to add your own language!
-# Materials have to be from: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-# Learn more about colouring: https://docs.adventure.kyori.net/minimessage/format.html#format
+# 简体中文 (zh_cn)
+# 作者: jhqwqmc
+# 复制此文件并重命名以添加您自己的语言!
+# 材质(material)必须来自: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# 了解有关消息颜色的更多信息: https://docs.adventure.kyori.net/minimessage/format.html#format
 
-name: "中文（简体）"
+name: "简体中文"
 
 main:
   name: "<white>跑酷"
 
 play:
-  name: "<white>游玩"
+  name: "<white>游戏"
 
   item:
     material: "sugar_cane"
-    name: "<#60EB76><bold>游玩"
+    name: "<#60EB76><bold>开始游戏"
     lore: ""
 
   single:
-    name: "<white>单人"
+    name: "<white>单人模式"
 
     item:
       material: "ender_pearl"
-      name: "<#6E92B1><bold>单人模式"
+      name: "<#6E92B1><bold>单人游戏"
       lore: ""
 
     default:
       material: "barrel"
-      name: "<#6693E7><bold>默认"
-      lore: "<dark_gray>默认游戏模式"
+      name: "<#6693E7><bold>经典"
+      lore: "<dark_gray>经典模式"
 
   spectator:
-    name: "<white>旁观者"
+    name: "<white>旁观模式"
 
-    join: "<#4CB3FF>你现在是旁观者。你可以使用 \"/parkour\" 离开/切换 你的游戏模式"
-    action_bar: "<#4CB3FF>旁观者模式 <gray>• <#4CB3FF>使用 \"/parkour\" 离开"
+    join: "<#4CB3FF>你当前处于旁观模式。你可以使用 \"/parkour\" 离开或更改你的游戏模式"
+    action_bar: "<#4CB3FF>你当前处于旁观模式 <gray>• <#4CB3FF>使用 \"/parkour\" 离开"
 
-    other_join: "<dark_green><bold>+ <reset><gray>%s 开始观察你。"
-    other_leave: "<red><bold>- <reset><gray>%s 不再观察你。"
+    other_join: "<dark_green><bold>+ <reset><gray>%s 正在观看你的跑酷"
+    other_leave: "<red><bold>- <reset><gray>%s 不再观看你的跑酷比赛"
 
     item:
       material: "glass"
-      name: "<#39D5AB><bold>观察者"
+      name: "<#39D5AB><bold>旁观模式"
       lore: ""
 
     head:
@@ -50,24 +50,24 @@ play:
       lore: ""
 
 community:
-  name: "<white>社区"
+  name: "<white>排行榜"
 
   item:
     material: "oak_boat"
-    name: "<#60C9DF><bold>社区"
+    name: "<#60C9DF><bold>排行榜"
     lore: ""
 
   leaderboards:
-    name: "<white>排行榜"
+    name: "<white>跑酷排行榜"
 
     item:
       material: "gold_nugget"
-      name: "<#6693E7><bold>排行榜"
+      name: "<#6693E7><bold>跑酷记录"
       lore: ""
 
     sort:
       material: "bookshelf"
-      name: "<#DEA11F><bold>由 %s 排列"
+      name: "<#DEA11F><bold>以%s排序"
       lore: ""
       values: ["分数", "时间", "难度"]
 
@@ -77,7 +77,7 @@ community:
       lore: "<#5574AF>分数: <gray>%s||<#5574AF>时间: <gray>%t||<#5574AF>难度: <gray>%d<dark_gray>/1.0"
 
 settings:
-  name: "<white>设置"
+  name: "<white>个人设置"
 
   item:
     material: "comparator"
@@ -85,17 +85,17 @@ settings:
     lore: ""
 
   lang:
-    name: "<white>语言"
+    name: "<white>语言设置"
 
     item:
       material: "writable_book"
-      name: "<#6693E7><bold>语言"
-      lore: "<dark_gray>当前: <#5574AF><bold>%s"
+      name: "<#6693E7><bold>语言设置"
+      lore: "<dark_gray>当前语言: <#5574AF><bold>%s"
 
   chat:
     material: "crossbow"
-    name: "<#20C6BC><bold>聊天"
-    lore: "<dark_gray>当前: <#17B2CE><bold>%s||<dark_gray>选择你可以聊天的对象"
+    name: "<#20C6BC><bold>聊天范围"
+    lore: "<dark_gray>当前聊天范围: <#17B2CE><bold>%s||<dark_gray>设置聊天范围"
     values: ["仅大厅", "仅玩家", "公开"]
 
     formats:
@@ -109,55 +109,55 @@ settings:
 
     item:
       material: "redstone"
-      name: "<#A10404><bold>跑酷设置"
-      lore: "<dark_gray>修改你的跑酷路线"
+      name: "<#A10404><bold>外观设置"
+      lore: "<dark_gray>改变跑酷的外观"
 
     items:
 
       no_change:
         material: "barrier"
-        name: "<dark_red><bold>你现在不能修改这个！"
-        lore: "<gray>你有高于 0 的分数||<gray>这代表你不能修改这项设置"
+        name: "<dark_red><bold>你现在不能更改这个!"
+        lore: "<gray>当你的分数高于0时,||<gray>你将不能更改此设置"
 
       styles:
-        name: "<white>Styles"
+        name: "<white>方块外观"
 
         style_item:
           material: ""
           name: "<white><bold>%s"
-          lore: "<#5574AF>Category: <gray>%s"
+          lore: "<#5574AF>类别: <gray>%s"
 
         item:
           material: "crafting_table"
-          name: "<#6693E7><bold>风格"
-          lore: "<#5574AF>当前: <gray>%s||<gray>选择你要使用的方块"
+          name: "<#6693E7><bold>方块外观"
+          lore: "<#5574AF>当前外观: <gray>%s||<gray>选择一个你喜欢的方块外观"
 
       leads:
         material: "feather"
-        name: "<#6693E7><bold>领路"
-        lore: "<#5574AF>当前: <gray>%s 个方块||<gray>选择你前面会生成多少个方块"
+        name: "<#6693E7><bold>领路方块数量"
+        lore: "<#5574AF>当前数量: <gray>%s个方块||<gray>将生成在你前面的方块数"
 
       time:
         material: "clock"
-        name: "<#6693E7><bold>时间"
-        lore: "<#5574AF>当前: <gray>%s||<gray>你当前的虚拟时间"
+        name: "<#6693E7><bold>改变时间"
+        lore: "<#5574AF>当前时间: <gray>%s||<gray>你当前的视觉时间"
 
       schematics:
         material: ""
         name: "<#6693E7><bold>结构难度"
-        lore: "<#5574AF>当前: <gray>%s||<gray>结构的难度"
-        values: ["<red>off", "<#0DCB07>简单", "<yellow>普通", "<#FF6C17>困难", "<dark_red>地狱"]
+        lore: "<#5574AF>当前: <gray>%s||<gray>结构难度"
+        values: ["<red>关闭", "<#0DCB07>简单", "<yellow>中等", "<#FF6C17>困难", "<dark_red>地狱"]
 
       scoreboard:
         material: ""
         name: "显示记分板"
-        lore: "<gray>当前: %s||<gray>当启用时显示记分板"
+        lore: "<gray>当前状态: %s||<gray>如果启用将会出现记分板"
 
       fall_message:
         item:
           material: ""
-          name: "显示全部信息"
-          lore: "<gray>当前: %s||<gray>如果启用，当您跌倒时会显示一条消息并提供额外信息。"
+          name: "显示结算信息"
+          lore: "<gray>当前状态: %s||<gray>如果启用||<gray>当你摔落虚空以后将||<gray>会显示结算消息"
 
         divider: "<dark_gray><strikethrough>-----------------------------------"
         score: "<#80C7FD><bold>分数 <reset><white>%s"
@@ -165,66 +165,66 @@ settings:
         high_score: "<#80C7FD><bold>最高分数 <reset><white>%s"
 
         formats:
-          miss: "<gray>你距离最高分数还有 %s 分！"
-          beat: "<gray>你超越你的最高分数 %s 分！"
-          tied: "<gray>你追平了你的最高分数！"
+          miss: "<gray>你与自己的最高记录相差%s分!"
+          beat: "<gray>你以%s分的差距创造了新记录!"
+          tied: "<gray>你打平了自己的最高记录!"
 
       particles:
         material: ""
-        name: "显示粒子效果"
-        lore: "<gray>当前: %s||<gray>当启用时||<gray>所有生成的方块都会产生粒子效果"
+        name: "方块粒子效果"
+        lore: "<gray>当前效果: %s||<gray>如果启用||<gray>每一个方块生成时||<gray>都会显示这个效果"
 
       sound:
         material: ""
-        name: "播放音效"
-        lore: "<gray>当前: %s||<gray>当启用时||<gray>所有生成的方块都会播放声音"
+        name: "方块声音效果"
+        lore: "<gray>当前状态: %s||<gray>如果启用||<gray>每一个方块生成时||<gray>将播放声音"
 
       special_blocks:
         material: ""
-        name: "使用特殊方块"
-        lore: "<gray>当前: %s||<gray>当启用时，会使用类似于冰和台阶的特殊方块"
+        name: "特殊方块效果"
+        lore: "<gray>当前状态: %s||<gray>如果启用||<gray>将会生成蓝冰与||<gray>台阶等特殊方块"
 
       score_difficulty:
         material: ""
-        name: "逐级加大难度"
-        lore: "<gray>当前: %s||<gray>当启用时||<gray>更高的分数会带来更大的难度"
+        name: "以分数定难度"
+        lore: "<gray>当前状态: %s||<gray>如果启用||<gray>分数越高||<gray>难度越高"
 
 lobby:
-  name: "<white>大厅"
+  name: "<white>游戏大厅"
 
-  other_join: '<dark_green><bold>+ <reset><gray>%s joined your lobby'
-  other_leave: '<red><bold>- <reset><gray>%s left your lobby'
+  other_join: '<dark_green><bold>+ <reset><gray>%s 加入了你的大厅'
+  other_leave: '<red><bold>- <reset><gray>%s 离开了你的大厅'
 
   item:
     material: "iron_ingot"
-    name: "<#EB608C><bold>你的大厅"
+    name: "<#EB608C><bold>游戏大厅"
     lore: ""
 
   visibility:
     material: "firework_rocket"
-    name: "<#A1E1DD><bold>可视度"
-    lore: "<dark_gray>当前: <#2BD4E2><bold>%s||<dark_gray>选择谁可以加入你的大厅"
-    values: ["私人", "仅邀请", "公开"]
+    name: "<#A1E1DD><bold>大厅可见范围"
+    lore: "<dark_gray>当前范围: <#2BD4E2><bold>%s||<dark_gray>设置大厅可见范围"
+    values: ["私人大厅", "仅限邀请", "公开大厅"]
 
   player_management:
-    name: "<white>管理玩家"
+    name: "<white>管理大厅玩家"
 
-    kicked: "<gray>你被房主踢出了大厅"
-    advice: "<gray>将你的大厅能见度设置为只接受邀请或私人可以避免人们随机加入"
-    muted: "<gray>你被房主禁言了"
-    unmuted: "<gray>你被房主解除禁言了"
+    kicked: "<gray>你已被大厅所有者踢出大厅"
+    advice: "<gray>将大厅可见性设置为仅限邀请或私有,以避免随机加入的玩家"
+    muted: "<gray>你已被大厅所有者禁言"
+    unmuted: "<gray>你已被大厅所有者解除禁言"
 
     item:
       material: "cake"
-      name: "<#8DC9E5><bold>管理玩家"
-      lore: "<dark_gray>在这里 禁言/踢 玩家"
+      name: "<#8DC9E5><bold>管理大厅玩家"
+      lore: "<dark_gray>在这里踢出或禁言玩家"
 
     head:
       material: ""
       name: "<#4BD16D><bold>%s"
       lore: ""
-      top: "<dark_gray>在大厅被禁言||"
-      bottom: "<#8DE5A3>左键点击<dark_gray> 踢出大厅||<#8DE5A3>右键点击<dark_gray> （解除）禁言"
+      top: "<dark_gray>大厅禁言||"
+      bottom: "<#8DE5A3>左键点击<dark_gray> 踢出大厅||<#8DE5A3>右键点击<dark_gray>禁言或解除禁言"
 
 scoreboard:
 
@@ -232,29 +232,29 @@ scoreboard:
 
   lines:
     - "<blue>"
-    - "<#F6A8A8>分数 <white>%score%"
-    - "<#F6A8A8>时间 <white>%time%"
+    - "<#F6A8A8>当前分数 <white>%score%"
+    - "<#F6A8A8>当前时间 <white>%time%"
     - "<#F6A8A8>最高分数 <white>%high_score%"
     - "<red>"
     - "<#FF6464><bold>server.ip"
 
 other:
 
-  no_do: "<gray>你现在不能做这个。"
-  no_teleporting: "<white>You can't enter the parkour world by teleporting!"
-  customize: "<gray>使用 \"/parkour\" 自定义你的跑酷"
+  no_do: "<gray>你现在不能这样做"
+  no_teleporting: "<white>你不能通过传送进入跑酷世界!"
+  customize: "<gray>使用 \"/parkour\" 自定义你的跑酷体验"
 
   quit:
     material: "barrier"
-    name: "<#D71F1F><bold>退出"
+    name: "<#D71F1F><bold>退出游戏"
     lore: ""
 
   close:
     material: "arrow"
-    name: "<#F5A3A3><bold>关闭"
+    name: "<#F5A3A3><bold>关闭菜单"
     lore: ""
 
   iep:
     material: "elytra"
-    name: "<#4800FF><bold>Flying"
-    lore: "<gray>Parkour with elytra!"
+    name: "<#4800FF><bold>飞行"
+    lore: "<gray>使用鞘翅进行跑酷!"
