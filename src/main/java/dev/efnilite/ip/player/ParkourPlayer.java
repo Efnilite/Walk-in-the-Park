@@ -21,6 +21,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,9 @@ public class ParkourPlayer extends ParkourUser {
         player.setAllowFlight(false);
         player.setInvisible(false);
 
-        Registry.EFFECT.stream().forEach(player::removePotionEffect);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
     }
 
     private static boolean parseBoolean(String string) {
