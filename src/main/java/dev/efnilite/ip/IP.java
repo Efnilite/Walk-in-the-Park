@@ -12,7 +12,7 @@ import dev.efnilite.ip.mode.SpectatorMode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.world.WorldManager;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.bstats.bukkit.Metrics;
 import dev.efnilite.vilib.bstats.charts.SimplePie;
@@ -115,7 +115,7 @@ public final class IP extends ViPlugin {
         // ----- Worlds -----
 
         if (Config.CONFIG.getBoolean("joining")) {
-            WorldManager.create();
+            World.create();
         }
 
         // ----- Events -----
@@ -149,7 +149,7 @@ public final class IP extends ViPlugin {
             Modes.DEFAULT.getLeaderboard().write(false);
 
             Storage.close();
-            WorldManager.delete();
+            World.delete();
         } catch (Throwable ignored) {
 
         }
