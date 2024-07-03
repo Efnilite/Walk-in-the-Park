@@ -318,7 +318,7 @@ public class ParkourGenerator {
         }
 
         double mean = 0;
-        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.6 : 1;
+        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
 
         int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
 
