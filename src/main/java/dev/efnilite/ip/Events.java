@@ -239,7 +239,10 @@ public class Events implements EventWatcher {
         boolean isAdmin = Config.CONFIG.getBoolean("permissions.enabled") ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
         if (player.getWorld() == parkour && user == null && !isAdmin && player.getTicksLived() > 20) {
-            player.kickPlayer("You can't enter the parkour world by teleporting!");
+            Bukkit.getWorlds().stream()
+                    .filter(world -> !world.equals(parkour))
+                    .findAny()
+                    .ifPresent(world -> PaperLib.teleportAsync(player, world.getSpawnLocation()));
             return;
         }
 
