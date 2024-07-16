@@ -7,6 +7,7 @@ import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourSpectator;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.world.Divider;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,8 @@ import java.util.function.Function;
  * @since 5.0.0
  */
 public class Session {
+
+    private Location location;
 
     /**
      * List of muted users.
@@ -86,14 +89,14 @@ public class Session {
             }
         }
 
+        session.location = Divider.add(session);
         session.generator = generatorFunction.apply(session);
 
         if (players != null) {
             pps.forEach(p -> p.updateGeneratorSettings(session.generator));
         }
 
-        var location = Divider.add(session);
-        session.generator.island.build(location);
+        session.generator.island.build(session.location);
 
         return session;
     }
@@ -199,6 +202,13 @@ public class Session {
      */
     public List<ParkourUser> getUsers() {
         return new ArrayList<>(users.values());
+    }
+
+    /**
+     * @return the spawn location for this {@link Session}.
+     */
+    public Location getSpawnLocation() {
+        return location.clone();
     }
 
     /**
