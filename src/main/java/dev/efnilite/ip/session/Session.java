@@ -24,17 +24,10 @@ import java.util.function.Function;
  */
 public class Session {
 
-    private Location location;
-
     /**
-     * List of muted users.
+     * The spawn location of this session.
      */
-    public final List<ParkourUser> muted = new ArrayList<>();
-
-    /**
-     * List of users.
-     */
-    protected final Map<UUID, ParkourUser> users = new HashMap<>();
+    private Location spawnLocation;
 
     /**
      * The generator.
@@ -44,7 +37,17 @@ public class Session {
     /**
      * The visibility of this session. Default public.
      */
-    public Visibility visibility = Visibility.PUBLIC;
+    private Visibility visibility = Visibility.PUBLIC;
+
+    /**
+     * List of muted users.
+     */
+    private final List<ParkourUser> muted = new ArrayList<>();
+
+    /**
+     * List of users.
+     */
+    private final Map<UUID, ParkourUser> users = new HashMap<>();
 
     /**
      * Function that takes the current session and returns whether new players should be accepted.
@@ -89,16 +92,31 @@ public class Session {
             }
         }
 
-        session.location = Divider.add(session);
+        session.spawnLocation = Divider.add(session);
         session.generator = generatorFunction.apply(session);
 
         if (players != null) {
             pps.forEach(p -> p.updateGeneratorSettings(session.generator));
         }
 
-        session.generator.island.build(session.location);
+        session.generator.island.build(session.spawnLocation);
 
         return session;
+    }
+
+    /**
+     * Sets the visibility of this session.
+     * @param visibility The visibility.
+     */
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    /**
+     * @return The visibility of this session.
+     */
+    public Visibility getVisibility() {
+        return visibility;
     }
 
     /**
@@ -207,8 +225,9 @@ public class Session {
     /**
      * @return the spawn location for this {@link Session}.
      */
+    @SuppressWarnings("unused")
     public Location getSpawnLocation() {
-        return location.clone();
+        return spawnLocation.clone();
     }
 
     /**
@@ -220,6 +239,14 @@ public class Session {
         if (!muted.remove(user)) {
             muted.add(user);
         }
+    }
+
+    /**
+     * @param user The user.
+     * @return True when the user is muted, false if not.
+     */
+    public boolean isMuted(@NotNull ParkourUser user) {
+        return muted.contains(user);
     }
 
     /**

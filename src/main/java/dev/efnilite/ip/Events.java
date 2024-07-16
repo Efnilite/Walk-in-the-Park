@@ -60,7 +60,7 @@ public class Events implements EventWatcher {
 
         Session session = user.session;
 
-        if (session.muted.contains(user)) {
+        if (session.isMuted(user)) {
             return;
         }
 

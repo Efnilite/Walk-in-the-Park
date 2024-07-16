@@ -29,7 +29,7 @@ public class LobbyMenu extends DynamicMenu {
 
             List<String> values = Locales.getStringList(user.locale, "lobby.visibility.values");
 
-            return new SliderItem().initial(switch (user.session.visibility) {
+            return new SliderItem().initial(switch (user.session.getVisibility()) {
                 case PUBLIC -> 0;
                 case ID_ONLY -> 1;
                 case PRIVATE -> 2;
@@ -37,7 +37,7 @@ public class LobbyMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.session.visibility = Session.Visibility.PUBLIC;
+                    u.session.setVisibility(Session.Visibility.PUBLIC);
                 }
 
                 return true;
@@ -45,7 +45,7 @@ public class LobbyMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.session.visibility = Session.Visibility.ID_ONLY;
+                    u.session.setVisibility(Session.Visibility.ID_ONLY);
                 }
 
                 return true;
@@ -53,7 +53,7 @@ public class LobbyMenu extends DynamicMenu {
                 ParkourUser u = ParkourUser.getUser(event.getPlayer());
 
                 if (u != null) {
-                    u.session.visibility = Session.Visibility.PRIVATE;
+                    u.session.setVisibility(Session.Visibility.PRIVATE);
                 }
 
                 return true;
