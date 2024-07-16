@@ -66,11 +66,13 @@ public class Session {
                                  Function<Session, Boolean> isAcceptingPlayers,
                                  Function<Session, Boolean> isAcceptingSpectators,
                                  Player... players) {
-        IP.log("Creating session with players %s".formatted(Arrays.toString(players)));
+        IP.log("Creating session");
+
+        if (players != null) {
+            IP.log("Players in session: %s".formatted(Arrays.stream(players).map(Player::getName).toList()));
+        }
 
         Session session = new Session();
-
-        var location = Divider.add(session);
 
         if (isAcceptingPlayers != null) session.isAcceptingPlayers = isAcceptingPlayers;
         if (isAcceptingSpectators != null) session.isAcceptingSpectators = isAcceptingSpectators;
@@ -90,6 +92,7 @@ public class Session {
             pps.forEach(p -> p.updateGeneratorSettings(session.generator));
         }
 
+        var location = Divider.add(session);
         session.generator.island.build(location);
 
         return session;
