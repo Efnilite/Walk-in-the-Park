@@ -75,6 +75,7 @@ public class SingleLeaderboardMenu {
 
             // Player head gathering
             ItemStack stack = item.build();
+            stack.setType(Material.PLAYER_HEAD);
 
             // if there are more than 36 players, don't show the heads to avoid server crashing
             // and bedrock has no player skull support
