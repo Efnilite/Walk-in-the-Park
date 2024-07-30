@@ -106,7 +106,6 @@ public abstract class ParkourUser {
         new ParkourLeaveEvent(user).call();
         IP.log("Unregistering player %s, restorePreviousData = %s, kickIfBungee = %s".formatted(user.getName(), restorePreviousData, kickIfBungee));
 
-        Mode mode = user.session.generator.getMode();
         try {
             user.unregister();
 
@@ -128,7 +127,7 @@ public abstract class ParkourUser {
         user.previousData.apply(user.player, urgent);
 
         if (user instanceof ParkourPlayer player) {
-            user.previousData.onLeave.forEach(r -> r.execute(player, mode));
+            user.previousData.onLeave.forEach(r -> r.execute(player, user.session.generator.getMode()));
         }
     }
 
