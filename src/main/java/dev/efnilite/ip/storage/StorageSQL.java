@@ -82,7 +82,7 @@ class StorageSQL {
     }
 
     public static void writeScores(@NotNull String mode, @NotNull Map<UUID, Score> scores) {
-        scores.forEach((uuid, score) -> sendUpdate(
+        new HashMap<>(scores).forEach((uuid, score) -> sendUpdate(
                 """
                         INSERT INTO `%s`
                             (uuid, name, time, difficulty, score)
