@@ -162,7 +162,7 @@ public class PAPIHook extends PlaceholderExpansion {
 
     private String getInfiniteScore(String rankData, Function<Score, ?> f) {
         int rank;
-        Leaderboard leaderboard;
+        Leaderboard leaderboard = null;
         Matcher matcher = INFINITE_REGEX.matcher(rankData);
 
         // use mode-specific format
@@ -174,13 +174,14 @@ public class PAPIHook extends PlaceholderExpansion {
             Mode mode = Registry.getMode(name);
             if (mode != null) {
                 leaderboard = mode.getLeaderboard();
-            } else {
-                leaderboard = Modes.DEFAULT.getLeaderboard();
             }
             // use generic format
             // x_rank
         } else {
             rank = Integer.parseInt(rankData);
+        }
+
+        if (leaderboard == null) {
             leaderboard = Modes.DEFAULT.getLeaderboard();
         }
 
