@@ -1,9 +1,8 @@
 **[Infinite Elytra Parkour](https://www.spigotmc.org/resources/115322/) | [Infinite Parkour+](https://www.spigotmc.org/resources/105019/)**
 
-- Running Multiverse with IP now does not require VoidGen
-- Improved responsiveness of parkour and scoreboard
-- Added update checker
-- Fixed leaderboards sorting being wrong
-- Fixed placeholders returning wrong values
-- Fixed vague sorting locale in leaderboard menu
-- Fixed MySQL causing problems in some locales
+- Added model id support (thanks **[@wilddip](https://github.com/wilddip)**)
+- Added SkinsRestorer support (thanks **[@TheJCN](https://github.com/TheJCN)**)
+- Fixed Chinese translation (thanks **[@jhqwqmc](https://github.com/jhqwqmc)**)
+- Fixed MySQL error on score saving
+- Fixed being able to take out items in the leaderboard
+- Fixed error on joining spectator
