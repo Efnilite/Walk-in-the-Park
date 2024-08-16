@@ -5,4 +5,5 @@
 - Fixed Chinese translation (thanks **[@jhqwqmc](https://github.com/jhqwqmc)**)
 - Fixed MySQL error on score saving
 - Fixed being able to take out items in the leaderboard
-- Fixed error on joining spectator
+- Fixed errors on joining spectator
+- Fixed heading not working on parkour

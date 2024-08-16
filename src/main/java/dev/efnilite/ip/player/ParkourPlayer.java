@@ -130,7 +130,9 @@ public class ParkourPlayer extends ParkourUser {
     public void unregister() {
         IP.log("Unregistering player %s".formatted(player.getName()));
 
-        if (session.generator.getMode() instanceof MultiMode mode) {
+        if (session.generator != null &&
+                session.generator.getMode() != null &&
+                session.generator.getMode() instanceof MultiMode mode) {
             mode.leave(player, session);
         }
 
