@@ -110,7 +110,7 @@ public class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    public Vector heading = Option.HEADING.clone();
+    public Vector heading = Option.HEADING.getDirection();
 
     /**
      * Generator options
@@ -325,10 +325,17 @@ public class ParkourGenerator {
 
         int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
 
-        Vector offset = new Vector(distance + 1, height, randomOffset);
+        Vector offset = heading.clone()
+                .multiply(distance + 1)
+                .setY(height);
+        if (offset.getX() == 0) {
+            offset.setX(randomOffset);
+        } else {
+            offset.setZ(randomOffset);
+        }
 
         // rotate offset to match heading
-        offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
+        offset.rotateAroundY(angleInY(heading, Option.HEADING.getDirection()));
 
         return current.getLocation().add(offset).getBlock();
     }
@@ -544,7 +551,7 @@ public class ParkourGenerator {
 
         score = 0;
         start = null;
-        heading = Option.HEADING;
+        heading = Option.HEADING.getDirection();
 
         if (regenerate) { // generate back the blocks
             player.teleport(playerSpawn);
