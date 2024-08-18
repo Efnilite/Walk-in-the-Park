@@ -202,6 +202,7 @@ public class Locales {
         String material = base.getString("%s.material".formatted(path));
         String name = base.getString("%s.name".formatted(path));
         String lore = base.getString("%s.lore".formatted(path));
+        int modelId = base.getInt("%s.model_id".formatted(path), -1);
 
         if (material == null) {
             material = "";
@@ -239,6 +240,10 @@ public class Locales {
 
         if (!lore.isEmpty()) {
             item.lore(lore.split("\\|\\|"));
+        }
+
+        if (modelId != -1) {
+            item.modelId(modelId);
         }
 
         return item;

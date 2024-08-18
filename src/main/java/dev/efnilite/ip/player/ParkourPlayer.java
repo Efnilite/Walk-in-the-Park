@@ -20,7 +20,7 @@ import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,8 +87,8 @@ public class ParkourPlayer extends ParkourUser {
         player.setAllowFlight(false);
         player.setInvisible(false);
 
-        for (var effect : PotionEffectType.values()) {
-            player.removePotionEffect(effect);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
         }
     }
 
