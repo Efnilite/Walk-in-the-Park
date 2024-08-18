@@ -6,7 +6,6 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
-import dev.efnilite.ip.hook.SkinsRestorerHook;
 import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.SpectatorMode;
@@ -92,12 +91,6 @@ public final class IP extends ViPlugin {
 
         Registry.register(new DefaultMode());
         Registry.register(new SpectatorMode());
-
-        try {
-            SkinsRestorerHook.initialize();
-        } catch (NoClassDefFoundError e) {
-            getLogger().warning("SkinsRestorer is not available: " + e.getMessage());
-        }
 
         Modes.init();
         Menu.init(this);

@@ -89,10 +89,6 @@
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
-        <repository>
-            <id>codemc</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -157,13 +153,6 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.11.0-M1</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.skinsrestorer</groupId>
-            <artifactId>skinsrestorer-api</artifactId>
-            <version>15.2.0</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
