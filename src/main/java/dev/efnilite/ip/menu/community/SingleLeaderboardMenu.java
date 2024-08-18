@@ -4,7 +4,6 @@ import dev.efnilite.ip.IP;
 import dev.efnilite.ip.api.Registry;
 import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
-import dev.efnilite.ip.hook.SkinsRestorerHook;
 import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.Menus;
@@ -15,16 +14,13 @@ import dev.efnilite.vilib.inventory.PagedMenu;
 import dev.efnilite.vilib.inventory.item.Item;
 import dev.efnilite.vilib.inventory.item.MenuItem;
 import dev.efnilite.vilib.util.SkullSetter;
-import net.skinsrestorer.api.exception.DataRequestException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +71,6 @@ public class SingleLeaderboardMenu {
 
             // Player head gathering
             ItemStack stack = item.build();
-            stack.setType(Material.PLAYER_HEAD);
 
             // if there are more than 36 players, don't show the heads to avoid server crashing
             // and bedrock has no player skull support
@@ -88,14 +83,6 @@ public class SingleLeaderboardMenu {
                     if (meta != null) {
                         SkullSetter.setPlayerHead(op, meta);
                         item.meta(meta);
-                    } else {
-                        if (SkinsRestorerHook.isInitialized()) {
-                            PlayerProfile pp = SkinsRestorerHook.getPlayerHead(op.getUniqueId(), op.getName());
-                            if (pp != null) {
-                                meta.setOwnerProfile(pp);
-                                item.meta(meta);
-                            }
-                        }
                     }
                 }
             }

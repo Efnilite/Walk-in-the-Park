@@ -9,7 +9,7 @@ import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourPlayer;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
-import dev.efnilite.ip.world.WorldManager;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.event.EventWatcher;
 import dev.efnilite.vilib.particle.ParticleData;
 import dev.efnilite.vilib.particle.Particles;
@@ -60,7 +60,7 @@ public class Events implements EventWatcher {
 
         Session session = user.session;
 
-        if (session.muted.contains(user)) {
+        if (session.isMuted(user)) {
             return;
         }
 
@@ -81,11 +81,11 @@ public class Events implements EventWatcher {
             return;
         }
 
-        if (!player.getWorld().equals(WorldManager.getWorld())) {
+        if (!player.getWorld().equals(World.getWorld())) {
             return;
         }
 
-        World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
+        org.bukkit.World fallback = Bukkit.getWorld(Config.CONFIG.getString("world.fall-back"));
 
         if (fallback != null) {
             PaperLib.teleportAsync(player, fallback.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -93,7 +93,7 @@ public class Events implements EventWatcher {
         }
 
         PaperLib.teleportAsync(player, Bukkit.getWorlds().stream()
-                .filter(world -> !world.equals(WorldManager.getWorld()))
+                .filter(world -> !world.equals(World.getWorld()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No fallback world was found!"))
                 .getSpawnLocation());
@@ -234,12 +234,15 @@ public class Events implements EventWatcher {
     public void switchWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         ParkourUser user = ParkourUser.getUser(player);
-        World parkour = WorldManager.getWorld();
+        org.bukkit.World parkour = World.getWorld();
 
         boolean isAdmin = Config.CONFIG.getBoolean("permissions.enabled") ? ParkourOption.ADMIN.mayPerform(player) : player.isOp();
 
         if (player.getWorld() == parkour && user == null && !isAdmin && player.getTicksLived() > 20) {
-            player.kickPlayer("You can't enter the parkour world by teleporting!");
+            Bukkit.getWorlds().stream()
+                    .filter(world -> !world.equals(parkour))
+                    .findAny()
+                    .ifPresent(world -> PaperLib.teleportAsync(player, world.getSpawnLocation()));
             return;
         }
 

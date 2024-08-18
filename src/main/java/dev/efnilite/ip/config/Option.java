@@ -7,6 +7,7 @@ import dev.efnilite.ip.style.RandomStyle;
 import dev.efnilite.ip.style.Style;
 import dev.efnilite.vilib.particle.ParticleData;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
@@ -22,7 +23,7 @@ public class Option {
     public static List<Integer> POSSIBLE_LEADS;
 
     // Advanced settings
-    public static Vector HEADING;
+    public static BlockFace HEADING;
 
     public static Map<ParkourOption, Boolean> OPTIONS_ENABLED;
     public static Map<ParkourOption, String> OPTIONS_DEFAULTS;
@@ -88,7 +89,15 @@ public class Option {
         }
 
         // Generation
-        HEADING = stringToVector(Config.GENERATION.getString("advanced.island.parkour.heading"));
+        String heading = Config.GENERATION.getString("advanced.island.parkour.heading");
+
+        switch (heading.toLowerCase()) {
+            case "north" -> HEADING = BlockFace.NORTH;
+            case "south" -> HEADING = BlockFace.SOUTH;
+            case "west" -> HEADING = BlockFace.WEST;
+            case "east" -> HEADING = BlockFace.EAST;
+            default -> IP.logging().error("Invalid heading: %s".formatted(heading));
+        }
 
         // Scoring
 
@@ -100,9 +109,9 @@ public class Option {
 
     private static Vector stringToVector(String direction) {
         return switch (direction.toLowerCase()) {
-            case "north" -> new org.bukkit.util.Vector(0, 0, -1);
-            case "south" -> new org.bukkit.util.Vector(0, 0, 1);
-            case "west" -> new org.bukkit.util.Vector(-1, 0, 0);
+            case "north" -> new Vector(0, 0, -1);
+            case "south" -> new Vector(0, 0, 1);
+            case "west" -> new Vector(-1, 0, 0);
             default -> new Vector(1, 0, 0); // east
         };
     }

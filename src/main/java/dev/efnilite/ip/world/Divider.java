@@ -60,10 +60,10 @@ public class Divider {
      * @param session The session.
      * @return The location at the center of section n.
      */
-    public static Location toLocation(Session session) {
+    private static Location toLocation(Session session) {
         int[] xz = spiralAt(sections.get(session));
 
-        return new Location(WorldManager.getWorld(),
+        return new Location(World.getWorld(),
                 xz[0] * Option.BORDER_SIZE,
                 (Option.MAX_Y + Option.MIN_Y) / 2.0,
                 xz[1] * Option.BORDER_SIZE);

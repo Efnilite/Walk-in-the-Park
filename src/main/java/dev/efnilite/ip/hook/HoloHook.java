@@ -40,6 +40,10 @@ public class HoloHook {
 
             Leaderboard leaderboard = mode.getLeaderboard();
 
+            if (leaderboard == null) {
+                return "?";
+            }
+
             String type = split[1].toLowerCase();
             String rank = split[2].replace("#", "");
 

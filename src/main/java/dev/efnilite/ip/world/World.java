@@ -11,10 +11,10 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class WorldManager {
+public class World {
 
     private static String name;
-    private static World world;
+    private static org.bukkit.World world;
 
     /**
      * Creates a new world and sets all according settings in it.
@@ -48,7 +48,7 @@ public class WorldManager {
                     .generateStructures(false)
                     .type(WorldType.NORMAL)
                     .generator(VoidGenerator.getGenerator()) // to fix No keys in MapLayer etc.
-                    .environment(World.Environment.NORMAL);
+                    .environment(org.bukkit.World.Environment.NORMAL);
 
             world = Bukkit.createWorld(creator);
         } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class WorldManager {
     /**
      * @return the Bukkit world wherein IP is currently active.
      */
-    public static World getWorld() {
+    public static org.bukkit.World getWorld() {
         return world;
     }
 }

@@ -6,14 +6,13 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.hook.HoloHook;
 import dev.efnilite.ip.hook.PAPIHook;
-import dev.efnilite.ip.hook.SkinsRestorerHook;
 import dev.efnilite.ip.mode.DefaultMode;
 import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.mode.SpectatorMode;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.reward.Rewards;
 import dev.efnilite.ip.storage.Storage;
-import dev.efnilite.ip.world.WorldManager;
+import dev.efnilite.ip.world.World;
 import dev.efnilite.vilib.ViPlugin;
 import dev.efnilite.vilib.bstats.bukkit.Metrics;
 import dev.efnilite.vilib.bstats.charts.SimplePie;
@@ -93,12 +92,6 @@ public final class IP extends ViPlugin {
         Registry.register(new DefaultMode());
         Registry.register(new SpectatorMode());
 
-        try {
-            SkinsRestorerHook.initialize();
-        } catch (NoClassDefFoundError e) {
-            getLogger().warning("SkinsRestorer is not available: " + e.getMessage());
-        }
-
         Modes.init();
         Menu.init(this);
 
@@ -122,7 +115,7 @@ public final class IP extends ViPlugin {
         // ----- Worlds -----
 
         if (Config.CONFIG.getBoolean("joining")) {
-            WorldManager.create();
+            World.create();
         }
 
         // ----- Events -----
@@ -156,7 +149,7 @@ public final class IP extends ViPlugin {
             Modes.DEFAULT.getLeaderboard().write(false);
 
             Storage.close();
-            WorldManager.delete();
+            World.delete();
         } catch (Throwable ignored) {
 
         }

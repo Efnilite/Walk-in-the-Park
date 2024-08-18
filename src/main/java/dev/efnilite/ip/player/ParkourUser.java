@@ -14,6 +14,7 @@ import dev.efnilite.ip.leaderboard.Leaderboard;
 import dev.efnilite.ip.leaderboard.Score;
 import dev.efnilite.ip.menu.ParkourOption;
 import dev.efnilite.ip.mode.Mode;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.data.PreviousData;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.storage.Storage;
@@ -106,7 +107,6 @@ public abstract class ParkourUser {
         new ParkourLeaveEvent(user).call();
         IP.log("Unregistering player %s, restorePreviousData = %s, kickIfBungee = %s".formatted(user.getName(), restorePreviousData, kickIfBungee));
 
-        Mode mode = user.session.generator.getMode();
         try {
             user.unregister();
 
@@ -127,8 +127,15 @@ public abstract class ParkourUser {
 
         user.previousData.apply(user.player, urgent);
 
+        Mode mode = user.session.generator.getMode();
+        if (mode == null) {
+            IP.logging().error("Mode is null for %s".formatted(user.getName()));
+            mode = Modes.DEFAULT;
+        }
+
         if (user instanceof ParkourPlayer player) {
-            user.previousData.onLeave.forEach(r -> r.execute(player, mode));
+            Mode finalMode = mode;
+            user.previousData.onLeave.forEach(r -> r.execute(player, finalMode));
         }
     }
 

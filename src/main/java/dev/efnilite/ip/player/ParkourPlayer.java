@@ -19,7 +19,6 @@ import dev.efnilite.vilib.util.Colls;
 import dev.efnilite.vilib.util.Task;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Registry;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
@@ -131,7 +130,9 @@ public class ParkourPlayer extends ParkourUser {
     public void unregister() {
         IP.log("Unregistering player %s".formatted(player.getName()));
 
-        if (session.generator.getMode() instanceof MultiMode mode) {
+        if (session.generator != null &&
+                session.generator.getMode() != null &&
+                session.generator.getMode() instanceof MultiMode mode) {
             mode.leave(player, session);
         }
 

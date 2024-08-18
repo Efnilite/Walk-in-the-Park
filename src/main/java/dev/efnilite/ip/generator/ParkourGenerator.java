@@ -110,7 +110,7 @@ public class ParkourGenerator {
     /**
      * The direction of the parkour
      */
-    public Vector heading = Option.HEADING.clone();
+    public Vector heading = Option.HEADING.getDirection();
 
     /**
      * Generator options
@@ -283,7 +283,10 @@ public class ParkourGenerator {
         Style style = Registry.getStyle(profile.get("style").value());
 
         if (style == null) {
-            profile.set("style", Registry.getStyles().stream().findFirst().get().getName());
+            profile.set("style", Registry.getStyles().stream()
+                    .findFirst()
+                    .orElseThrow()
+                    .getName());
             return selectBlockData();
         }
 
@@ -318,14 +321,21 @@ public class ParkourGenerator {
         }
 
         double mean = 0;
-        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.6 : 1;
+        double standardDeviation = generatorOptions.contains(GeneratorOption.REDUCE_RANDOM_BLOCK_SELECTION_ANGLE) ? 0.5 : 1;
 
         int randomOffset = new JumpOffsetGenerator(height, distance).getRandomOffset(mean, standardDeviation);
 
-        Vector offset = new Vector(distance + 1, height, randomOffset);
+        Vector offset = heading.clone()
+                .multiply(distance + 1)
+                .setY(height);
+        if (offset.getX() == 0) {
+            offset.setX(randomOffset);
+        } else {
+            offset.setZ(randomOffset);
+        }
 
         // rotate offset to match heading
-        offset.rotateAroundY(angleInY(heading, Option.HEADING.clone()));
+        offset.rotateAroundY(angleInY(heading, Option.HEADING.getDirection()));
 
         return current.getLocation().add(offset).getBlock();
     }
@@ -541,7 +551,7 @@ public class ParkourGenerator {
 
         score = 0;
         start = null;
-        heading = Option.HEADING;
+        heading = Option.HEADING.getDirection();
 
         if (regenerate) { // generate back the blocks
             player.teleport(playerSpawn);

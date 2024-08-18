@@ -59,7 +59,7 @@ public class PlayerManagementMenu {
             Item item = Locales.getItem(viewer.locale, "lobby.player_management.head", other.getName());
             item.material(Material.PLAYER_HEAD);
 
-            boolean muted = session.muted.contains(other);
+            boolean muted = session.isMuted(other);
 
             List<String> lore = new ArrayList<>();
             if (muted) {
