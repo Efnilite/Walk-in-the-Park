@@ -4,6 +4,7 @@ import dev.efnilite.ip.config.Locales;
 import dev.efnilite.ip.config.Option;
 import dev.efnilite.ip.menu.Menus;
 import dev.efnilite.ip.menu.ParkourOption;
+import dev.efnilite.ip.mode.Modes;
 import dev.efnilite.ip.player.ParkourUser;
 import dev.efnilite.ip.session.Session;
 import dev.efnilite.ip.world.Divider;
@@ -65,6 +66,8 @@ public class SpectatorMenu {
                     }
                 }
             }
+
+            item.click(event -> Modes.SPECTATOR.create(player, session));
 
             display.add(item);
         }
